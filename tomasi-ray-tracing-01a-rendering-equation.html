@@ -392,7 +392,7 @@ L(\mathbf{x} \rightarrow \Theta) = L_e\qquad\text{(costante)}.
 </section>
 <section id="la-brdf" class="slide level1">
 <h1>La BRDF</h1>
-<p>La Bidirectional Reflectance Distribution Function (BDRF), indicata con <span class="math inline">f_r(x, \Psi \rightarrow \Theta)</span>, è il rapporto tra la <em>radianza</em> che abbandona una superficie lungo <span class="math inline">\Theta</span> rispetto all’<em>emittanza</em> ricevuta da una direzione <span class="math inline">\Psi</span>:</p>
+<p>La Bidirectional Reflectance Distribution Function (BRDF), indicata con <span class="math inline">f_r(x, \Psi \rightarrow \Theta)</span>, è il rapporto tra la <em>radianza</em> che abbandona una superficie lungo <span class="math inline">\Theta</span> rispetto all’<em>emittanza</em> ricevuta da una direzione <span class="math inline">\Psi</span>:</p>
 <p><span class="math display">
 \begin{aligned}
 f_r(x, \Psi \rightarrow \Theta) &amp;= \frac{\mathrm{d}L (x \rightarrow \Theta)}{\mathrm{d}E(x \leftarrow \Psi)} = \\
@@ -478,102 +478,6 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 &amp;\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
 \end{aligned}
 </span> dove <span class="math inline">L_e</span> è la radianza emessa dalla superficie nel punto <span class="math inline">x</span> lungo la direzione <span class="math inline">\Theta</span>.</p>
-</section>
-<section id="esempi-banali" class="slide level1">
-<h1>Esempi banali</h1>
-<ul>
-<li><p>Assenza di radiazione: in questo caso <span class="math inline">L_e = 0</span> e <span class="math inline">\forall\Psi: L(x \leftarrow \Psi) = 0</span>, quindi</p>
-<p><span class="math display">
-L = 0.
-</span></p>
-<p>È una scena perfettamente buia: molto poco interessante!</p></li>
-<li><p>Se un punto emette radiazione isotropa con radianza <span class="math inline">L_e</span> in <span class="math inline">x_0</span>, allora in ogni altro punto <span class="math inline">x</span> dello spazio vale che</p>
-<p><span class="math display">
-L(x_0 \rightarrow \Theta) = L_e
-</span></p>
-<p>Tutto lo spazio è riempito dalla medesima radianza: poco interessante!</p></li>
-</ul>
-</section>
-<section id="esempio-più-complesso" class="slide level1">
-<h1>Esempio più complesso</h1>
-<p>Piano infinito diffusivo ideale e non emettente (<span class="math inline">L_e = 0</span>) e una sferetta di raggio <span class="math inline">r</span> a una distanza <span class="math inline">d \gg r</span> dal piano che emette isotropicamente con radianza <span class="math inline">L_d</span>.</p>
-<p><img data-src="./media/plane.png" height="360" /></p>
-</section>
-<section id="esempio-più-complesso-1" class="slide level1">
-<h1>Esempio più complesso</h1>
-<p>Dato un punto <span class="math inline">x</span> sul piano, vale che:</p>
-<p><span class="math display">
-L(x \rightarrow \Theta) = \int_{2\pi} \frac{\rho_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
-</span> Già qui le cose si complicano! Qual è il valore di <span class="math inline">L(x \leftarrow \Psi)</span>? (No, <em>non</em> è <span class="math inline">L_d</span>!)</p>
-</section>
-<section id="radianza-entrante" class="slide level1">
-<h1>Radianza entrante</h1>
-<p>Il valore di <span class="math inline">L(x \leftarrow \Psi)</span> è <strong>nullo</strong>, tranne quando <span class="math inline">\Psi</span> punta verso la sorgente luminosa. Dividiamo il dominio dell’integrale: <span class="math display">
-\int_{2\pi} = \int_{\Omega(d)} + \int_{2\pi - \Omega{d}},
-</span> dove <span class="math inline">\Omega(d)</span> è l’angolo solido della sfera alla distanza <span class="math inline">d</span>. Il secondo integrale è nullo, perché su quell’angolo solido <span class="math inline">L(x \leftarrow \Psi) = 0</span>.</p>
-</section>
-<section id="radianza-entrante-1" class="slide level1">
-<h1>Radianza entrante</h1>
-<p>L’integrale sull’angolo solido <span class="math inline">\Omega(d)</span> è semplice se supponiamo che nel dominio sia <span class="math inline">d</span> che l’angolo <span class="math inline">\theta</span> tra <span class="math inline">N_x</span> e <span class="math inline">\Psi</span> siano costanti (la sfera è piccola): <span class="math display">
-L(x \rightarrow \Theta) = \int_{\Omega(d)} \frac{\rho_d}\pi\,L_d\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi \approx \frac{\rho_d}\pi\,L_d\,\cos\theta \times \pi\left(\frac{r}d\right)^2,
-</span> dove <span class="math inline">\theta</span> è l’angolo tra la normale e la direzione della sferetta.</p>
-</section>
-<section id="proprietà-della-soluzione" class="slide level1">
-<h1>Proprietà della soluzione</h1>
-<ul>
-<li><span class="math inline">L(x \rightarrow \Theta) \approx \rho_d\,L_d\,\cos\theta\,\left(\frac{r}d\right)^2.</span></li>
-<li>Anche se il punto emette isotropicamente e la superficie è diffusiva ideale, c’è comunque una dipendenza dal coseno di <span class="math inline">\theta</span>.</li>
-<li>La radianza riflessa è proporzionale alla superficie della sfera (<span class="math inline">\propto r^2</span>).</li>
-<li>All’aumentare di <span class="math inline">d</span>, la radiazione emessa dal piano diminuisce come <span class="math inline">d^{-2}</span>.</li>
-</ul>
-</section>
-<section id="doppio-piano" class="slide level1">
-<h1>Doppio piano</h1>
-<p>Supponiamo ora di avere <em>due</em> piani diffusivi ideali:</p>
-<p><img data-src="./media/double-plane.png" height="360" /></p>
-<p>Come si tratta questo caso?</p>
-</section>
-<section id="doppio-piano-1" class="slide level1">
-<h1>Doppio piano</h1>
-<p>Consideriamo ancora il piano sottostante. Vale che:</p>
-<p><span class="math display">
-L_\text{down}(x \rightarrow \Theta) = \int_{\Omega_x} \frac{\rho_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
-</span> Ma ora l’integrale non è più una semplice delta di Dirac: oltre alla sferetta c’è il piano superiore. Qual è il valore di <span class="math inline">L_\text{up}(x \leftarrow \Psi)</span> prodotto dal piano superiore?</p>
-</section>
-<section id="doppio-piano-2" class="slide level1">
-<h1>Doppio piano</h1>
-<p>Il valore di <span class="math inline">L(x \leftarrow \Psi)</span> causato da una direzioneper il piano superiore si calcola con la stessa formula della slide precedente:</p>
-<p><span class="math display">
-L_\text{up}(x \rightarrow \Theta) = \int_{\Omega_x} \frac{\rho_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
-</span></p>
-<p>Ma così ci invischiamo in un problema ricorsivo!</p>
-</section>
-<section id="il-problema-generale" class="slide level1">
-<h1>Il problema generale</h1>
-<p>Nel caso generale avviene che l’integrale da calcolare è <em>multiplo</em>:</p>
-<p><span class="math display">
-L(x \rightarrow \Theta) = \int_{\Omega^{(1)}_x} \int_{\Omega^{(2)}_x} \int_{\Omega^{(3)}_x} \ldots
-</span></p>
-<p>È un integrale a molte dimensioni (i termini successivi al primo sono sempre meno importanti e tendono a zero, quindi le dimensioni non sono <em>infinite</em>).</p>
-</section>
-<section id="il-problema-generale-1" class="slide level1">
-<h1>Il problema generale</h1>
-<ul>
-<li>L’equazione del rendering è impossibile da risolvere analiticamente nel caso generale.</li>
-<li>Durante il corso studieremo modi per approssimarne la soluzione.</li>
-<li>Come detto nell’introduzione, il nostro scopo principale sarà imparare a programmare bene: la produzione di immagini realistiche sarà un sottoprodotto!</li>
-</ul>
-</section>
-<section id="lezioni-imparate-oggi" class="slide level1">
-<h1>Lezioni imparate oggi</h1>
-</section>
-<section class="slide level1">
-
-<ul>
-<li>Sempre definire in modo accurato le quantità misurabili (energia, flusso, radianza, etc.).</li>
-<li>Assicurarsi di studiare un modello fisico in casi semplici (spazio vuoto, sferetta e piano, sferetta e due piani, etc.), per <em>capire</em> il modello prima di usarlo.</li>
-<li>Il mondo è <em>complicato</em>!</li>
-</ul>
 </section>
     </div>
   </div>

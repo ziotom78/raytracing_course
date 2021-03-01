@@ -3,6 +3,7 @@ PANDOC = /usr/bin/pandoc
 .phony: all
 
 all: \
+	tomasi-ray-tracing-04a-raytracing.html \
 	tomasi-ray-tracing-03b.html \
 	tomasi-ray-tracing-03a-images.html \
 	tomasi-ray-tracing-02b-tests.html \
