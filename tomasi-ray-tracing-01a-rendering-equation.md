@@ -112,6 +112,12 @@ Vivian Maier, Autoritratto (1926–2009)
 
 ![](./media/cornell-box-schema.svg){height=560}
 
+# Bibliografia
+
+-   [*Physically Based Rendering: from Theory to Implementation*](http://www.pbr-book.org/) (M. Pharr, W. Jakob, G. Humphreys, terza ed.): molto complesso e completo, è il testo di riferimento in materia. È disponibile online.
+-   *Advanced Global Illumination* (P. Dutré, K. Bala, P. Bekaert, seconda ed.): lo useremo soprattutto per le parti più «fisiche».
+-   *Realistic Ray Tracing* (P. Shirley, R. K. Morley, seconda ed.): molto antiquato, è utile soprattutto come testo introduttivo.
+
 # Radiometria
 
 # Propagazione della luce
@@ -120,7 +126,7 @@ Vivian Maier, Autoritratto (1926–2009)
 -   Modello ondulatorio (diffrazione, es. bolle di sapone)
 -   Ottica geometrica
 
-[(v. Dutré, 2006)]{style="float:right"}
+[(v. Dutré, Bala, Bekaert)]{style="float:right"}
 
 # Ottica geometrica
 
