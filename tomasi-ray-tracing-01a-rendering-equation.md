@@ -257,7 +257,7 @@ $$
 ![](./media/radiance-distance.svg){height=320px}
 
 -   Dato che $I \propto A^{-1} \propto d^{-2}$, l'irradianza su $\mathrm{d}A$ a $3d$ è 1/9 di quella a $d$
--   Ma $\mathrm{d}\Omega = dA/d^2 \propto 1/d^2$
+-   Ma $\mathrm{d}\Omega = dA/d^2 \propto d^{-2}$
 -   Quindi $L \propto I/\mathrm{d}\Omega$ non dipende da $d$
 
 # Radianza
@@ -314,8 +314,7 @@ $$
     
 2.  In assenza di attenuazione vale che $L(\mathbf{x} \rightarrow
     \mathbf{y}) = L(\mathbf{x} \rightarrow \mathbf{z}),$ se
-    $\mathbf{x}$, $\mathbf{y}$, $\mathbf{z}$ sono sulla stessa retta
-    ($L$ è normalizzato sull'angolo solido).
+    $\mathbf{x}$, $\mathbf{y}$, $\mathbf{z}$ sono sulla stessa retta; vale lo stesso per $L_\lambda$, ovviamente.
     
 3.  Il fatto che $L$ e $L_\lambda$ non dipendano dalla distanza implica che il colore percepito di un oggetto alla distanza $d$ non cambia al variare di $d$.
 
@@ -376,7 +375,7 @@ $$
 
 # La BRDF
 
-Introduciamo ora la Bidirectional Reflectance Distribution Function (BDRF), indicata con $f_r(x, \Psi \rightarrow \Theta)$. Essa è il rapporto tra la *radianza* che abbandona una superficie lungo $\Theta$ rispetto all'*emittanza* ricevuta da una direzione $\Psi$:
+La Bidirectional Reflectance Distribution Function (BDRF), indicata con $f_r(x, \Psi \rightarrow \Theta)$, è il rapporto tra la *radianza* che abbandona una superficie lungo $\Theta$ rispetto all'*emittanza* ricevuta da una direzione $\Psi$:
 
 $$
 \begin{aligned}

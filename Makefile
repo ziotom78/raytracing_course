@@ -8,7 +8,11 @@ all: \
 	tomasi-ray-tracing-02b-tests.html \
 	tomasi-ray-tracing-02a-colors.html \
 	tomasi-ray-tracing-01b-github.html \
-	tomasi-ray-tracing-01a-rendering-equation.html
+	tomasi-ray-tracing-01a-rendering-equation.html \
+	index.html
+
+index.html: index.md
+	$(PANDOC) --standalone -o $@ $<
 
 %.html: %.md
 	$(PANDOC) \
@@ -21,7 +25,7 @@ all: \
 		--katex \
 		-V theme=white \
 		-V progress=true \
-		-V slidenum=true \
+		-V slideNumber=true \
 		-V background-image=./media/background.png \
 		-V width=1440 \
 		-V height=810 \
