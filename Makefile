@@ -4,11 +4,11 @@ PANDOC = /usr/bin/pandoc
 
 all: \
 	tomasi-ray-tracing-03b.html \
-	tomasi-ray-tracing-03a.html \
-	tomasi-ray-tracing-02b.html \
-	tomasi-ray-tracing-02a.html \
-	tomasi-ray-tracing-01b.html \
-	tomasi-ray-tracing-01a.html
+	tomasi-ray-tracing-03a-images.html \
+	tomasi-ray-tracing-02b-tests.html \
+	tomasi-ray-tracing-02a-colors.html \
+	tomasi-ray-tracing-01b-github.html \
+	tomasi-ray-tracing-01a-rendering-equation.html
 
 %.html: %.md
 	$(PANDOC) \
@@ -22,6 +22,7 @@ all: \
 		-V theme=white \
 		-V progress=true \
 		-V slidenum=true \
+		-V background-image=./media/background.png \
 		-V width=1440 \
 		-V height=810 \
 		-f markdown+tex_math_single_backslash \
