@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Esercitazione 1</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Esercitazione 1</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="gestione-di-progetti" class="slide level1">
+<h1>Gestione di progetti</h1>
+</section>
+<section id="panoramica" class="slide level1">
+<h1>Panoramica</h1>
+<ul>
+<li>In questo corso svilupperemo un programma complesso per generare immagini fotorealistiche;</li>
+<li>La gestione di programmi complessi richiede una serie di accorgimenti:
+<ul>
+<li>Controlli automatici della qualità del codice</li>
+<li>Monitoraggio delle modifiche</li>
+<li>Visibilità del codice ad altri utenti</li>
+<li>Accesso alla documentazione</li>
+</ul></li>
+</ul>
+</section>
+<section id="sistemi-di-controllo-delle-versioni" class="slide level1">
+<h1>Sistemi di controllo delle versioni</h1>
+<ul>
+<li>Un sistema di controllo di versione (<em>version control system</em>, VCS) registra le modifiche fatte al codice;</li>
+<li>Possibilità di annullare modifiche;</li>
+<li>Rilascio di «release» (es., 1.0, 1.1, 1.2) con possibilità di recuperare quelle più vecchie;</li>
+<li>Garantisce a più programmatori di modificare il codice <em>contemporaneamente</em> (con alcune avvertenze).</li>
+</ul>
+</section>
+<section id="modo-duso-di-un-vcs" class="slide level1">
+<h1>Modo d’uso di un VCS</h1>
+<ul>
+<li>Un VCS gestisce una <em>directory</em>, con tutte le sue sottodirectory;</li>
+<li>Quando si crea/modifica un file dentro la directory, si chiede al VCS di <em>registrare</em> la modifica;</li>
+<li>Il VCS scatta «istantanee» della directory, che salva in un proprio database.</li>
+</ul>
+</section>
+<section id="esempio-duso" class="slide level1">
+<h1>Esempio d’uso</h1>
+<ul>
+<li><p>Creo una directory <code>raytracer</code> e un file <code>raytracer/hello.py</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Hello, wold!&quot;</span>)</span></code></pre></div></li>
+<li><p>Invoco il VCS per «salvare» un’istantanea della directory <code>raytracer</code></p></li>
+<li><p>Modifico il file <code>raytracer/hello.py</code> per correggere il messaggio:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Hello, world!&quot;</span>)</span></code></pre></div></li>
+<li><p>Invoco di nuovo il VCS per «salvare» una nuova istantanea della directory</p></li>
+</ul>
+</section>
+<section id="esempio-duso-1" class="slide level1">
+<h1>Esempio d’uso</h1>
+<p>Alla fine dell’esempio, il database del VCS contiene due istantanee:</p>
+<ol type="1">
+<li><p>File <code>raytracer/hello.py</code> con questo contenuto:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Hello, wold!&quot;</span>)</span></code></pre></div></li>
+<li><p>File <code>raytracer/hello.py</code> con questo contenuto:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Hello, world!&quot;</span>)</span></code></pre></div></li>
+</ol>
+</section>
+<section id="commit" class="slide level1">
+<h1>Commit</h1>
+<ul>
+<li><p>A ogni «istantanea» sono sempre associate dai VCS alcune informazioni aggiuntive:</p>
+<ul>
+<li>Utente che ha eseguito l’istantanea</li>
+<li>Data e ora dell’istantanea</li>
+</ul></li>
+<li><p>Nel gergo dei VCS, una istantanea si dice <strong>commit</strong>.</p></li>
+</ul>
+</section>
+<section id="un-semplice-vcs-12" class="slide level1">
+<h1>Un semplice VCS (1/2)</h1>
+<ul>
+<li><p>In Linux/Mac OS X, è possibile realizzare un semplice VCS con il comando seguente (da shell Bash/Zsh):</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> -c -f <span class="st">&quot;/vcsdatabase/raytracer-</span><span class="va">$(</span><span class="fu">date</span> +%Y%m%d%H%M%S<span class="va">)</span><span class="st">-</span><span class="va">$(</span><span class="fu">whoami</span><span class="va">)</span><span class="st">.tar&quot;</span> *</span></code></pre></div></li>
+<li><p>Il comando crea in un folder <code>/vcsdatabase</code> un file <code>.tar</code> contenente tutti i file della directory corrente</p></li>
+<li><p>Il nome del file contiene il nome dell’utente e la data; quest’ultima è codificata come un lungo numero (es., <code>20200926155130</code> per la data 2020-09-26, 15:51:30)</p></li>
+</ul>
+</section>
+<section id="un-semplice-vcs-22" class="slide level1">
+<h1>Un semplice VCS (2/2)</h1>
+<p>È sempre utile associare un breve commento a un commit. Estendiamo la nostra idea in uno shell script, che possiamo chiamare <code>my_vcs.sh</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">destpath=</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">tag=</span><span class="st">&quot;</span><span class="va">$2</span><span class="st">&quot;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span><span class="bu"> [</span> <span class="st">&quot;</span><span class="va">$tag</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;&quot;</span><span class="bu"> ]</span>; <span class="kw">then</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Usage: </span><span class="va">$0</span><span class="st"> PATH TAG&quot;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">exit</span> 1</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="kw">fi</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">filename=</span><span class="st">&quot;</span><span class="va">${destpath}</span><span class="st">/</span><span class="va">$(</span><span class="fu">date</span> +%Y%m%d%H%M%S<span class="va">)</span><span class="st">-</span><span class="va">$(</span><span class="fu">whoami</span><span class="va">)</span><span class="st">-</span><span class="va">${tag}</span><span class="st">.tar&quot;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> -c -f <span class="st">&quot;</span><span class="va">$filename</span><span class="st">&quot;</span> *</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;File </span><span class="dt">\&quot;</span><span class="va">$filename</span><span class="dt">\&quot;</span><span class="st"> created successfully&quot;</span></span></code></pre></div>
+<p>Rendete lo script eseguibile con <code>chmod +x my_vcs.sh</code>.</p>
+</section>
+<section id="esempio-duso-2" class="slide level1">
+<h1>Esempio d’uso</h1>
+<p><asciinema-player src="cast/hello_world.cast" rows="20" cols="94" font-size="medium"></asciinema-player></p>
+</section>
+<section id="vantaggi-di-un-vcs" class="slide level1">
+<h1>Vantaggi di un VCS</h1>
+<ul>
+<li><p>Abbiamo un backup del codice: se cancelliamo per sbaglio un file sorgente dalla directory di lavoro, possiamo recuperarlo da <code>/vcsdatabase</code></p></li>
+<li><p>Se ci accorgiamo che una modifica non funziona, possiamo ripristinare la versione precedente</p></li>
+<li><p>Possiamo ricostruire la storia dello sviluppo del codice, semplicemente guardando l’elenco dei file in <code>/vcsdatabase</code>:</p>
+<pre><code>20200926153856-tomasi-first-release.tar
+20200926155130-tomasi-fix-bug.tar</code></pre></li>
+<li><p>Se ci accorgiamo dell’esistenza di un bug, possiamo controllare a ritroso in quale momento il bug è stato introdotto</p></li>
+</ul>
+</section>
+<section id="problemi-del-nostro-vcs-14" class="slide level1">
+<h1>Problemi del nostro VCS (1/4)</h1>
+<ul>
+<li><p>Se si usa un VCS, è probabilmente perché il progetto è complesso e ha molti file</p></li>
+<li><p>Di solito le modifiche influenzano uno o comunque pochi file alla volta</p></li>
+<li><p>Ma la nostra implementazione con <code>tar</code> salva ogni volta <strong>tutti i file</strong>: questo rischia di occupare molto spazio, e non è necessario!</p></li>
+<li><p>C’è anche un altro problema: se nel database ci fossero i file</p>
+<pre><code>20200926153856-tomasi-first-release.tar
+20200926155130-tomasi-fix-bug.tar</code></pre>
+<p>e volessimo capire cos’era il «bug» e com’è stato corretto, dovremmo confrontare uno a uno i file nell’ultimo <code>.tar</code> con i loro analoghi nel <code>.tar</code> precedente per capire cosa sia cambiato.</p></li>
+</ul>
+</section>
+<section id="problemi-del-nostro-vcs-24" class="slide level1">
+<h1>Problemi del nostro VCS (2/4)</h1>
+<ul>
+<li>Potremmo scrivere uno shell script che invoca <code>tar</code> salvando solo i file effettivamente modificati (controllando ad esempio la data di modifica di ciascun file con <code>ls -l</code>).</li>
+<li>Ma neppure questo è ottimale: può darsi che un file molto lungo sia stato cambiato in <strong>una sola riga</strong>, e noi lo salveremmo per intero!</li>
+<li>(Ci sono in giro file «molto lunghi», di decine di migliaia di linee di codice. L’<a href="https://www.sqlite.org/amalgamation.html">amalgamatron</a> di SQLite3 è un file in linguaggio C di 220.000 righe.)</li>
+</ul>
+</section>
+<section id="problemi-del-nostro-vcs-34" class="slide level1">
+<h1>Problemi del nostro VCS (3/4)</h1>
+<ul>
+<li><p>Modifiche complesse sono solitamente implementate in modo graduale; ad esempio:</p>
+<ol type="1">
+<li><p>Modifica che aggiunge la possibilità di salvare il lavoro in un file;</p></li>
+<li><p>Modifica che aggiunge la possibilità di caricare un file;</p></li>
+</ol>
+<p>Se ciascuna delle due attività richiedesse una settimana di lavoro, il programmatore potrebbe voler eseguire un backup terminato il primo punto, e poi passare al secondo.</p></li>
+<li><p>Il nostro sistema non consente di raggruppare modifiche logicamente legate tra loro: ogni file <code>tar</code> è indipendente dagli altri!</p></li>
+</ul>
+</section>
+<section id="problemi-del-nostro-vcs-44" class="slide level1">
+<h1>Problemi del nostro VCS (4/4)</h1>
+<ul>
+<li><p>Il nostro sistema non offre alcun controllo nel caso in cui più di una persona lavori al progetto.</p></li>
+<li><p>Considerate questa situazione:</p>
+<ul>
+<li><p>A parte dal <code>.tar</code> con l’ultima versione del codice per correggere un bug;</p></li>
+<li><p>B parte dallo stesso <code>.tar</code> per aggiungere una funzionalità al programma;</p></li>
+<li><p>A usa <code>my_vcs.sh</code> per salvare la sua versione col bug corretto;</p></li>
+<li><p>B usa <code>my_vcs.sh</code> per salvare la sua versione con la nuova funzionalità.</p></li>
+</ul>
+<p>Al termine ci sarà un file <code>.tar</code> col bug corretto ma senza la funzionalità, e un file <code>.tar</code> con la nuova funzionalità ma in cui il bug è ancora presente.</p></li>
+</ul>
+</section>
+<section id="vcs-professionali" class="slide level1">
+<h1>VCS professionali</h1>
+<ul>
+<li><p>Esistono soluzioni per ciascuno dei problemi che abbiamo individuato nel nostro VCS.</p></li>
+<li><p>I VCS moderni hanno tutti queste caratteristiche:</p>
+<ul>
+<li><p>Salvano solo le parti di file che sono cambiate (usando strumenti simili al comando <code>diff</code> che c’è in Linux e Mac OS X);</p></li>
+<li><p>Consentono di raggruppare commit che sono logicamente legati (es., salvataggio/caricamento file)</p></li>
+<li><p>Nel caso in cui più programmatori lavorino allo stesso file, controllano la consistenza delle modifiche</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="tipi-di-vcs" class="slide level1">
+<h1>Tipi di VCS</h1>
+<dl>
+<dt>Centralizzati</dt>
+<dd>Il database (la nostra directory <code>/vcsdatabase</code>) risiede su un computer remoto, a cui tutti i programmatori accedono.
+</dd>
+<dt>Distribuiti</dt>
+<dd>Il database risiede sul computer locale; più programmatori che lavorano allo stesso codice hanno un proprio database, che sincronizzano tra loro periodicamente (di solito con un comando esplicito).
+</dd>
+</dl>
+</section>
+<section id="alcuni-vcs-importanti" class="slide level1">
+<h1>Alcuni VCS importanti</h1>
+<table>
+<thead>
+<tr class="header">
+<th>Nome</th>
+<th>Tipo</th>
+<th>Esempio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://subversion.apache.org/">Subversion</a></td>
+<td>Centralizzato</td>
+<td>FreePascal, GCC (fino al 2019)</td>
+</tr>
+<tr class="even">
+<td><a href="https://bazaar.canonical.com/en/">GNU Bazaar</a></td>
+<td>Distribuito</td>
+<td>Ubuntu Linux</td>
+</tr>
+<tr class="odd">
+<td><a href="https://www.mercurial-scm.org/">Mercurial</a></td>
+<td>Distribuito</td>
+<td>Facebook, Mozilla, GNU Octave</td>
+</tr>
+<tr class="even">
+<td><a href="https://www.fossil-scm.org/home/doc/trunk/www/index.wiki">Fossil</a></td>
+<td>Distribuito</td>
+<td>SQLite</td>
+</tr>
+<tr class="odd">
+<td><a href="https://www.bitkeeper.org/">BitKeeper</a></td>
+<td>Distribuito</td>
+<td>Linux Kernel (fino al 2005)</td>
+</tr>
+<tr class="even">
+<td><a href="https://git-scm.com/">Git</a></td>
+<td>Distribuito</td>
+<td>Troppi esempi!</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="git" class="slide level1">
+<h1>Git</h1>
+<ul>
+<li>Creato da Linus Torvalds, creatore di Linux</li>
+<li>VCS distribuito</li>
+<li>Estremamente versatile…</li>
+<li>…ma molto complesso da usare!</li>
+<li>Oggi è lo standard tra i VCS (purtroppo)</li>
+</ul>
+</section>
+<section id="usare-git-13" class="slide level1">
+<h1>Usare Git (1/3)</h1>
+<ul>
+<li><p>Sotto sistemi Ubuntu/Mint Linux, installate Git con <code>sudo apt install git</code></p></li>
+<li><p>Appena installato, dovete configurare Git con la vostra identità. Avviate questi comandi:</p>
+<pre><code>git config --global user.email &quot;VOSTRAMAIL@BLABLA&quot;
+git config --global user.name &quot;Nome Cognome&quot;</code></pre>
+<p>Questo permetterà a git di associare il vostro nome alle azioni che effettuerete sul repository. (È ovviamente superfluo se sapete che al repository lavorerete sempre e solo voi, ma Git è pensato per essere uno strumento <em>collaborativo</em>).</p></li>
+</ul>
+</section>
+<section id="usare-git-23" class="slide level1">
+<h1>Usare Git (2/3)</h1>
+<ul>
+<li><p>Per creare un database in una directory, eseguite</p>
+<pre><code>git init</code></pre>
+<p>Questo creerà una directory nascosta <code>.git</code> (equivalente alla nostra <code>/vcsdatabase</code>).</p></li>
+<li><p>La prima volta che eseguite <code>git init</code> potrebbe richiedere di specificare il vostro nome e indirizzo email.</p></li>
+</ul>
+</section>
+<section id="usare-git-33" class="slide level1">
+<h1>Usare Git (3/3)</h1>
+<ul>
+<li><p>Quando volete fare un <em>commit</em>, dovete eseguire due operazioni:</p>
+<pre><code>git add NOMEFILE1 NOMEFILE2…
+git commit</code></pre>
+<p>Il primo comando prepara i file per «scattare l’istantanea», copiandoli nella <em>staging area</em>, la seconda effettua l’istantanea vera e propria.</p></li>
+<li><p>Il comando <code>git commit</code> apre un editor per inserire una descrizione.</p></li>
+</ul>
+</section>
+<section id="come-funziona-git-12" class="slide level1">
+<h1>Come funziona Git (1/2)</h1>
+<ul>
+<li><p>Ogni commit/istantanea è identificata da un lungo numero esadecimale chiamato <em>hash</em> (es., <code>2f2f2cb36bbf02eaf5629b6295e9a47684c16905</code>).</p></li>
+<li><p>A ogni commit sono associati <em>due</em> hash:</p>
+<ul>
+<li>Il proprio hash (ovvio!)</li>
+<li>L’hash del commit precedente</li>
+</ul></li>
+<li><p>L’hash dell’ultimo commit si chiama <code>HEAD</code>, ed è possibile visualizzarla tramite il comando</p>
+<pre><code>git rev-parse HEAD</code></pre></li>
+</ul>
+</section>
+<section id="come-funziona-git-22" class="slide level1">
+<h1>Come funziona Git (2/2)</h1>
+<p>Quando si esegue <code>git commit</code>, avvengono queste cose:</p>
+<ol type="1">
+<li><code>git</code> analizza quali file sono stati modificati rispetto all’ultimo commit (indicato da <code>HEAD</code>);</li>
+<li>Crea un nuovo commit, salvando solo le modifiche rispetto al commit <code>HEAD</code>;</li>
+<li>Salva nel commit il valore <code>HEAD</code> come «hash precedente»</li>
+<li>Crea una nuova hash per il commit;</li>
+<li>Modifica <code>HEAD</code> in modo da puntare alla nuova hash.</li>
+</ol>
+</section>
+<section id="come-funziona-git" class="slide level1">
+<h1>Come funziona git</h1>
+<p><img data-src="./media/git-commit-anim.svg" /></p>
+</section>
+<section id="il-nostro-esempio-con-git" class="slide level1">
+<h1>Il nostro esempio con git</h1>
+<p><asciinema-player src="cast/hello_world_git.cast" rows="20" cols="94" font-size="medium"></asciinema-player></p>
+</section>
+<section id="alcuni-comandi-utili" class="slide level1">
+<h1>Alcuni comandi utili</h1>
+<ul>
+<li><code>git status</code> mostra lo stato del repository (<strong>molto utile!</strong>)</li>
+<li><code>git log</code> stampa la lista di commit partendo dall’ultimo (<code>HEAD</code>) e andando a ritroso</li>
+<li><code>git diff</code> mostra quali file sono stati cambiati dopo l’ultimo commit</li>
+<li><code>git mv</code> rinomina un file</li>
+<li><code>git rm</code> cancella un file</li>
+</ul>
+</section>
+<section id="file-da-escludere" class="slide level1">
+<h1>File da escludere</h1>
+<ul>
+<li><p>I file generati automaticamente non dovrebbero essere inclusi in un repository (es., i file <code>*.o</code>, i backup, gli eseguibili, etc.)</p></li>
+<li><p>Se si crea un file di testo di nome <code>.gitignore</code>, si possono elencare al suo interno i file da <em>escludere</em>. Ad esempio:</p>
+<pre><code>*~
+*.o
+build/</code></pre></li>
+<li><p>Il file <code>.gitignore</code> va aggiunto al repository (<code>git add .gitignore</code>, seguito da <code>git commit</code>).</p></li>
+</ul>
+</section>
+<section id="github" class="slide level1">
+<h1>GitHub</h1>
+</section>
+<section id="sistemi-distribuiti" class="slide level1">
+<h1>Sistemi distribuiti</h1>
+<p><img data-src="./media/distributed%20vcs.svg" /></p>
+</section>
+<section id="introduzione-a-github" class="slide level1">
+<h1>Introduzione a GitHub</h1>
+<iframe src="https://player.vimeo.com/video/513803423?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="960" height="540" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="anGitHub hello_world demo">
+</iframe>
+</section>
+<section id="come-funziona-github" class="slide level1">
+<h1>Come funziona GitHub</h1>
+<p><img data-src="./media/distributed%20vcs.svg" /></p>
+</section>
+<section id="come-funziona-github-1" class="slide level1">
+<h1>Come funziona GitHub</h1>
+<p><img data-src="./media/github-sketch.svg" /></p>
+</section>
+<section id="software-hosting-basato-su-git" class="slide level1">
+<h1>Software hosting basato su Git</h1>
+<ul>
+<li>GitHub (Microsoft): il più diffuso</li>
+<li>GitLab (GitLab Inc.)</li>
+<li>BitBucket (Atlassian)</li>
+<li>SourceForge (Slashdot Media): il primo ad aver avuto grande diffusione, ora è poco usato</li>
+<li>Esistono anche soluzioni self-hosted (<a href="https://github.com/go-gitea/gitea">Gitea</a>, <a href="https://github.com/gitbucket/gitbucket">GitBucket</a>, etc.)</li>
+</ul>
+</section>
+<section id="bitbucket" class="slide level1">
+<h1>BitBucket</h1>
+<iframe src="https://player.vimeo.com/video/513805000" width="960" height="540" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
+</iframe>
+</section>
+<section id="sincronizzare-git" class="slide level1">
+<h1>Sincronizzare Git</h1>
+<p>Siccome Git è un sistema distribuito, occorre sincronizzare manualmente il proprio database. Questi sono i comandi più importanti:</p>
+<ul>
+<li><code>git clone</code> crea una nuova directory basandosi su un database remoto;</li>
+<li><code>git pull</code> sincronizza il proprio database richiedendo le modifiche da uno remoto;</li>
+<li><code>git push</code> invia le proprie modifiche locali a un database remoto.</li>
+</ul>
+</section>
+<section id="git-1" class="slide level1">
+<h1>Git</h1>
+<p><img data-src="./media/xkcd-git.png" /></p>
+</section>
+<section id="git-2" class="slide level1">
+<h1>Git</h1>
+<p><img data-src="./media/git-coffee-mug.jpg" height="560" /></p>
+</section>
+<section id="guida-per-lesercitazione" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+</section>
+<section id="guida-per-lesercitazione-1" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+<ol type="1">
+<li>Creare un proprio account su GitHub (se non lo si ha già)</li>
+<li>Creare un progetto vuoto e aggiungere <code>README.md</code>, <code>CHANGELOG.md</code>, <code>LICENSE.md</code> e <code>.gitignore</code></li>
+<li>Scrivere un programma (nel linguaggio di programmazione scelto) che stampi <code>Hello, wold!</code> [senza <code>r</code>] e pubblicarlo su GitHub</li>
+<li>Aprire una issue, sistemare il messaggio e chiudere la issue</li>
+<li>Aggiungere la possibilità di specificare un nome da linea di comando (come accedere alla linea di comando dipende dal linguaggio: provate a scoprirlo voi!)</li>
+</ol>
+</section>
+<section id="indicazioni-per-c" class="slide level1">
+<h1>Indicazioni per C++</h1>
+<ul>
+<li><p>Installare CMake; sotto Linux Debian/Ubuntu/Mint basta eseguire</p>
+<pre><code>sudo apt install cmake</code></pre></li>
+<li><p>Creare un’applicazione che produca un eseguibile. Strutturare il codice in questo modo:</p>
+<ul>
+<li>Un file <code>CMakeLists.txt</code> nella directory principale</li>
+<li>Una directory <code>src</code> che contiene il file <code>main.cpp</code></li>
+</ul></li>
+<li><p>In <code>.gitignore</code> elencate <code>*.o</code>, il nome dell’eseguibile (es. <code>hello_world</code>) ed eventuali file di backup (<code>*.bak</code>, <code>*~</code> a seconda dell’editor che usate)</p></li>
+</ul>
+</section>
+<section id="esempio-di-cmake-per-c" class="slide level1">
+<h1>Esempio di CMake per C++</h1>
+<div class="sourceCode" id="cb15"><pre class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">cmake_minimum_required</span>(<span class="ot">VERSION</span> 3.12)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a &quot;project&quot;, providing a description and a programming language</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="kw">project</span>(hello_world</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">VERSION</span> 1.0</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">DESCRIPTION</span> <span class="st">&quot;Hello world in C++&quot;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">LANGUAGES</span> <span class="ot">CXX</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Our &quot;project&quot; will be able to build an executable out of a C++ source file</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(hello_world</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    main.cpp</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Force the compiler to use the C++17 standard</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="kw">target_compile_features</span>(hello_world <span class="ot">PUBLIC</span> <span class="ot">cxx_std_17</span>)</span></code></pre></div>
+<p>Riferimenti per CMake: <a href="https://cmake.org/documentation/">Documentazione ufficiale</a>, <a href="https://crascit.com/professional-cmake/"><em>Professional CMake</em></a> (C. Scott).</p>
+</section>
+<section id="indicazioni-per-c-1" class="slide level1">
+<h1>Indicazioni per C#</h1>
+<ul>
+<li>Creare un’applicazione vuota con <code>dotnet new console</code></li>
+</ul>
+</section>
+<section id="indicazioni-per-julia" class="slide level1">
+<h1>Indicazioni per Julia</h1>
+<ul>
+<li><p>Creare un package usando la guida in <a href="https://julialang.github.io/Pkg.jl/v1/creating-packages/">julialang.github.io/Pkg.jl/v1/creating-packages/</a></p></li>
+<li><p>Creare un’applicazione che implementi la funzione <code>main</code>:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env julia</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> main()</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># …</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="indicazioni-per-kotlin" class="slide level1">
+<h1>Indicazioni per Kotlin</h1>
+<ul>
+<li><p>Creare un’applicazione console in IntelliJ IDEA</p></li>
+<li><p>La directory che contiene il progetto ha un eseguibile, <code>gradlew</code>, che può essere usato per produrre una <em>distribution</em> nella directory <code>./build/distributions</code>:</p>
+<pre><code>gradlew assembleDist</code></pre>
+<p>Create una distribuzione del vostro programma e cercate di capire come installarla e usarla.</p></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    </body>
+</html>

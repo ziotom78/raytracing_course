@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Esercitazione 3</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Esercitazione 3</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="formati-grafici" class="slide level1">
+<h1>Formati grafici</h1>
+</section>
+<section id="formati-hdr-e-ldr" class="slide level1">
+<h1>Formati HDR e LDR</h1>
+<ul>
+<li><p>I formati HDR (High Dynamical Range) usano numeri floating-point per coprire ordini di grandezza diversi nelle componenti R, G, B:</p>
+<ul>
+<li>1.3</li>
+<li>6.4e-5</li>
+<li>8.3e+4</li>
+</ul></li>
+<li><p>I formati LDR (Low Dynamical Range) usano numeri interi per le componenti R, G, B, di solito nell’intervallo 0–255:</p>
+<ul>
+<li>0, 1, 2…</li>
+<li>…253, 254, 255</li>
+</ul></li>
+</ul>
+</section>
+<section id="differenza-tra-hdr-e-ldr" class="slide level1">
+<h1>Differenza tra HDR e LDR</h1>
+<table>
+<thead>
+<tr class="header">
+<th>HDR</th>
+<th>LDR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>OpenEXR, PFM</td>
+<td>JPEG, PNG, BMP, GIF, etc.</td>
+</tr>
+<tr class="even">
+<td>Grandi file</td>
+<td>Piccoli file</td>
+</tr>
+<tr class="odd">
+<td>Difficili da visualizzare</td>
+<td>Facili da visualizzare</td>
+</tr>
+<tr class="even">
+<td>Facili da creare</td>
+<td>Difficili da creare</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="formati-richiesti-nel-corso" class="slide level1">
+<h1>Formati richiesti nel corso</h1>
+<ul>
+<li><p>Non è richiesto usare librerie esterne</p></li>
+<li><p>Implementeremo codice per scrivere le immagini nei formati PFM (HDR) e PNM (LDR)…</p></li>
+<li><p>…ma darò indicazioni su come usare librerie esterne, per chi può/vuole</p></li>
+</ul>
+</section>
+<section id="i-formati-netpbm" class="slide level1">
+<h1>I formati Netpbm</h1>
+<ul>
+<li><p>Netpbm è un pacchetto di svariati programmi per gestire file contenenti immagini</p></li>
+<li><p>Definisce anche una serie di formati, molto semplici da leggere e da scrivere</p>
+<ul>
+<li><p><strong>PPM</strong> (Portable PixMap): usa numeri interi per le componenti R, G, B</p></li>
+<li><p><strong>PFM</strong> (Portable FloatMap): usa numeri floating-point per le componenti R, G, B (non ufficiale)</p></li>
+</ul></li>
+<li><p>Svantaggio: pochi programmi sono in grado di leggere PPM sotto Windows (Adobe Photoshop, Gimp), pochissimi leggono PFM</p></li>
+</ul>
+</section>
+<section id="il-formato-pfm" class="slide level1">
+<h1>Il formato PFM</h1>
+<ul>
+<li><p>Nei file PFM si scrivono queste informazioni:</p>
+<ul>
+<li><p><code>PF</code> seguito da un ritorno a capo <code>\n</code></p></li>
+<li><p><code>width height -1.0</code>, dove <code>width</code> è il numero di colonne e <code>height</code> il numero di righe dell’immagine (numeri interi), separati da uno spazio e seguiti da un ritorno a capo <code>\n</code> (il numero <code>-1.0</code> serve per indicare l’ordine dei byte nel resto del file);</p></li>
+<li><p>Una sequenza di numeri <code>float</code> a <strong>32 bit</strong> (sic!), contenenti i valori R, G, B (in quest’ordine) di tutti i pixel dell’immagine</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="file-pfm-in-python" class="slide level1">
+<h1>File PFM in Python</h1>
+<ul>
+<li><p>Useremo come riferimento un’immagine contenente un gradiente di colore:</p></li>
+<li><p>Si può generare l’immagine in Python in questo modo:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>width, height <span class="op">=</span> <span class="dv">256</span>, <span class="dv">256</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> [[Color(i <span class="op">/</span> width, <span class="fl">1.0</span> <span class="op">-</span> j <span class="op">/</span> height, <span class="fl">0.5</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(width)]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>         <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(height)]</span></code></pre></div></li>
+</ul>
+</section>
+<section id="file-pfm-in-python-1" class="slide level1">
+<h1>File PFM in Python</h1>
+<ul>
+<li><p>Dobbiamo convertire un numero floating-point (es., <code>1.3</code>) nella sua rappresentazione in byte (es., <code>66 66 3f a6</code>);</p></li>
+<li><p>Python non supporta <code>float</code> a 32 bit, così dobbiamo usare la libreria NumPy:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> float32_bytes(x):</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;Encode a number into bytes representing a 32-bit floating point&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.float32(x).tobytes()</span></code></pre></div></li>
+</ul>
+</section>
+<section id="file-pfm-in-python-2" class="slide level1">
+<h1>File PFM in Python</h1>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> write_pfm(outf, width, height, image):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;Save an image using PFM format into &#39;outf&#39;&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Write the header</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    outf.write(<span class="bu">bytes</span>(<span class="ss">f&quot;PF</span><span class="ch">\n</span><span class="sc">{</span>width<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>height<span class="sc">}</span><span class="ss"> -1.0</span><span class="ch">\n</span><span class="ss">&quot;</span>, encoding<span class="op">=</span><span class="st">&quot;utf-8&quot;</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note that rows are transversed in reverse order!</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">reversed</span>(<span class="bu">range</span>(height)):</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(width):</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            curpixel <span class="op">=</span> image[row][col]</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            outf.write(float32_bytes(curpixel.red))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            outf.write(float32_bytes(curpixel.green))</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            outf.write(float32_bytes(curpixel.blue))</span></code></pre></div>
+</section>
+<section id="risultato" class="slide level1">
+<h1>Risultato</h1>
+<ul>
+<li><p>Se avete installato <a href="https://imagemagick.org/index.php">ImageMagick</a> (consigliato!), potete visualizzare l’immagine col comando <code>display image.pfm</code>:</p>
+<center>
+<p><img data-src="./media/imagemagick-pfm-display.png" /></p>
+</center></li>
+<li><p>In Ubuntu, installate ImageMagick con <code>apt install imagemagick</code>.</p></li>
+</ul>
+</section>
+<section id="il-formato-pnm" class="slide level1">
+<h1>Il formato PNM</h1>
+</section>
+<section id="libgd" class="slide level1">
+<h1><code>libgd</code></h1>
+<ul>
+<li><p>Libreria C molto diffusa: su sistemi Ubuntu si può installare con</p>
+<pre><code>sudo apt install libgd-dev</code></pre></li>
+<li><p>Supporta il salvataggio di immagini in formato PNG e Jpeg</p></li>
+<li><p>Supporta <code>pkg-config</code>:</p>
+<pre><code>gcc -o main main.c $(pkg-config --cflags --libs gdlib)</code></pre></li>
+</ul>
+</section>
+<section id="creare-immagini-con-libgd" class="slide level1">
+<h1>Creare immagini con <code>libgd</code></h1>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;gd.h&quot;</span><span class="pp">     </span><span class="co">/* The library&#39;s header file */</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">int</span> width = <span class="dv">256</span>, height = <span class="dv">256</span>;</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  gdImagePtr im;</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">FILE</span> *f;</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> row, col;</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  im = gdImageCreateTrueColor(width, height);</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(row = <span class="dv">0</span>; row &lt; height; ++row) {</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(col = <span class="dv">0</span>; col &lt; width; ++col) {</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">int</span> red, green, blue = <span class="dv">128</span>;</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>      red = (<span class="dt">int</span>) (col * <span class="fl">255.0</span> / width);</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      green = (<span class="dt">int</span>) ((<span class="fl">1.0</span> - row * <span class="fl">1.0</span> / height) * <span class="fl">255.0</span>);</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      gdImageSetPixel(im, col, row, gdImageColorExact(im, red, green, blue));</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  f = fopen(<span class="st">&quot;image.png&quot;</span>, <span class="st">&quot;wb&quot;</span>);</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* Output the image to the disk file in PNG format. */</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  gdImagePng(im, f);  <span class="co">/* gdImageJpeg(im, jpegout, -1); */</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  fclose(f);</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  gdImageDestroy(im);</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</section>
+<section id="confronto-tra-png-e-pfm" class="slide level1">
+<h1>Confronto tra PNG e PFM</h1>
+<ul>
+<li><p>Il formato PFM contiene molta più informazione del formato PNG (numeri floating-point anziché interi per le componenti R, G, B)</p></li>
+<li><p>Il formato PNG implementa un compressore molto efficiente! Contiamo il numero di byte scritti nelle immagini del nostro gradiente:</p>
+<pre><code>$ wc -c image.pfm image.png
+786448 image.pfm
+   780 image.png
+787228 total
+$</code></pre>
+<p>Il file PNG è 1000 volte più piccolo!</p></li>
+</ul>
+</section>
+<section id="uso-di-libgd-da-altri-linguaggi" class="slide level1">
+<h1>Uso di <code>libgd</code> da altri linguaggi</h1>
+<ul>
+<li><p>È probabile che <code>libgd</code> sia già disponibile anche per il vostro linguaggio</p></li>
+<li><p>Le uniche funzioni che vi servono sono le seguenti:</p>
+<ul>
+<li><code>gdImageCreateTrueColor</code></li>
+<li><code>gdImageColorExact</code></li>
+<li><code>gdImageSetPixel</code></li>
+<li><code>gdImageGetPixel</code></li>
+<li><code>gdImagePng</code> e/o <code>gdImageJpeg</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="esecuzione-di-test" class="slide level1">
+<h1>Esecuzione di test</h1>
+</section>
+<section id="test-automatici" class="slide level1">
+<h1>Test automatici</h1>
+<p>Da scrivere!</p>
+</section>
+<section id="numeri-di-versione" class="slide level1">
+<h1>Numeri di versione</h1>
+</section>
+<section id="scopo-dei-numeri-di-versione" class="slide level1">
+<h1>Scopo dei numeri di versione</h1>
+<ul>
+<li>Ogni programma dovrebbe avere un <strong>numero di versione</strong> associato</li>
+<li>Esso dice quanto sia aggiornato un programma</li>
+<li>Un utente può confrontare un numero di versione sul sito ufficiale del programma con quello del programma installato sul proprio computer</li>
+<li>Molti diversi approcci ai numeri di versione</li>
+</ul>
+</section>
+<section id="esempio-i-data-di-rilascio" class="slide level1">
+<h1>Esempio I: data di rilascio</h1>
+<ul>
+<li>Ubuntu Linux: distribuzione Linux</li>
+<li>Il numero di versione è la data di rilascio nella forma <code>anno.mese</code>, a cui si associa un soprannome come «Focal fossa» (20.04)</li>
+<li>Associato a un rigido calendario di rilascio (ogni 6 mesi)</li>
+<li>Gli standard ISO del C++ seguono uno schema simile, usando solo l’anno: C++11, C++14, C++17, C++20, …</li>
+<li>Utile soprattutto se si segue un calendario rigido e regolare</li>
+</ul>
+</section>
+<section id="esempio-ii-numero-irrazionale" class="slide level1">
+<h1>Esempio II: numero irrazionale</h1>
+<ul>
+<li><p>TeX: programma di tipografia digitale creato da Donald Knuth (per digitare <em>The art of computer programming</em>, 1962-2019)</p></li>
+<li><p>La versione è l’arrotondamento del valore di <span class="math inline">\pi</span>, dove ogni versione successiva aggiunge una cifra:</p>
+<ul>
+<li>3</li>
+<li>3.1</li>
+<li>3.14</li>
+<li>3.141…</li>
+</ul></li>
+<li><p>METAFONT, il programma che gestisce i font di TeX, usa <span class="math inline">e = 2.71828\ldots</span></p></li>
+<li><p>Matematicamente affascinante, ma poco pratico</p></li>
+</ul>
+</section>
+<section id="esempio-iii-versioni-paridispari" class="slide level1">
+<h1>Esempio III: versioni pari/dispari</h1>
+<ul>
+<li>Versioni indicate con <code>X.Y</code>, dove <code>X</code> è la «major version» e <code>Y</code> la «minor version»</li>
+<li>Se <code>Y</code> è pari, la versione è <strong>stabile</strong>; altrimenti è una versione di <strong>sviluppo</strong>, non pronta per essere usata dal pubblico</li>
+<li><a href="https://nim-lang.org/">Nim</a>, <a href="https://www.gtk.org/">Gtk+</a>, <a href="https://www.gnome.org/">GNOME</a>, <a href="http://lilypond.org/">Lilypond</a> seguono questo approccio</li>
+<li>Molto usato in passato, ora tende ad essere abbandonato</li>
+</ul>
+</section>
+<section id="esempio-iv-semantic-versioning" class="slide level1">
+<h1>Esempio IV: <em>semantic versioning</em></h1>
+<ul>
+<li>Lo schema che useremo nel corso è il cosiddetto <a href="https://semver.org/"><em>semantic versioning</em></a>, usato ad esempio da Julia e Python, che usa lo schema <code>X.Y.Z</code>:
+<ul>
+<li><code>X</code> è la «major version»</li>
+<li><code>Y</code> è la «minor version»</li>
+<li><code>Z</code> è la «patch version»</li>
+</ul></li>
+<li>Le regole per assegnare valori a <code>X</code>, <code>Y</code> e <code>Z</code> sono rigide, e consentono agli utenti di decidere se valga la pena aggiornare un software o no.</li>
+</ul>
+</section>
+<section id="semantic-versioning-12" class="slide level1">
+<h1>Semantic versioning (1/2)</h1>
+<ul>
+<li>Si parte dalla versione <code>0.1.0</code></li>
+<li>Ad ogni rilascio di una nuova versione, si segue una di queste regole:
+<ul>
+<li>Si incrementa <code>Z</code> («patch number») se si sono solo corretti dei bug</li>
+<li>Si incrementa <code>Y</code> («minor number») e si resetta <code>Z</code> se si sono aggiunte funzionalità nuove</li>
+<li>Si incrementa <code>X</code> («major number») e si resettano <code>Y</code> e <code>Z</code> se si sono aggiunte funzionalità che rendono il programma <strong>incompatibile</strong> con l’ultima versione rilasciata</li>
+</ul></li>
+</ul>
+</section>
+<section id="semantic-versioning-22" class="slide level1">
+<h1>Semantic versioning (2/2)</h1>
+<ul>
+<li>Nelle prime fasi di vita di un progetto, si rilasciano rapidamente nuove versioni che sono usate da «beta testers»; non è importante indicare quando si introducono incompatibilità, perché gli utenti sono ancora pochi e selezionati</li>
+<li>La versione <code>1.0.0</code> va rilasciata quando il programma è pronto per essere usato da utenti generici</li>
+<li>Di conseguenza, le versioni precedenti alla <code>1.0.0</code> seguono regole diverse:
+<ul>
+<li>Si incrementa <code>Z</code> se si correggono bug</li>
+<li>Si incrementa <code>Y</code> e si resetta <code>Z</code> in tutti gli altri casi</li>
+</ul></li>
+</ul>
+</section>
+<section id="esempio-12" class="slide level1">
+<h1>Esempio (1/2)</h1>
+<ul>
+<li><p>Abbiamo scritto un programma che stampa <code>Hello, world!</code>:</p>
+<pre><code>$ ./hello
+Hello, wold!</code></pre></li>
+<li><p>La prima versione che rilasciamo è la <code>0.1.0</code></p></li>
+<li><p>Ci accorgiamo che il programma stampa <code>Hello, wold!</code>, così seguiamo queste azioni:</p>
+<ol type="1">
+<li>Apriamo una <em>issue</em> su GitHub;</li>
+<li>Correggiamo il problema e chiudiamo la issue;</li>
+<li>Rilasciamo la versione <code>0.1.1</code> (correzione di un bug)</li>
+</ol></li>
+</ul>
+</section>
+<section id="esempio-22" class="slide level1">
+<h1>Esempio (2/2)</h1>
+<ul>
+<li><p>Aggiungiamo una nuova funzionalità: se si passa un nome come <code>Paperino</code> da riga di comando, il programma stampa <code>Hello, Paperino!</code>. Senza argomenti, il programma scrive ancora <code>Hello, world!</code>:</p>
+<pre><code>$ ./hello Paperino
+Hello, Paperino!
+
+$ ./hello
+Hello, world!</code></pre></li>
+<li><p>Abbiamo aggiunto una funzionalità ma abbiamo preservato la compatibilità (senza argomenti, il programma funziona ugualmente come la versione <code>0.1.1</code>), quindi la nuova versione sarà la <code>0.2.0</code>.</p></li>
+</ul>
+</section>
+<section id="punto-di-vista-di-un-utente" class="slide level1">
+<h1>Punto di vista di un utente</h1>
+<ol type="1">
+<li>Se viene rilasciata una nuova «patch release» della versione che si sta usando (es., <code>1.3.4</code> → <code>1.3.5</code>), l’utente dovrebbe <strong>sempre</strong> aggiornare</li>
+<li>Se viene rilasciata una nuova «minor release» della versione che si sta usando (es., <code>1.3.4</code> → <code>1.4.0</code>), l’utente dovrebbe aggiornare solo se ritiene utili le nuove caratteristiche</li>
+<li>Una nuova «major release» (es., <code>1.3.4</code> → <code>2.0.0</code>) dovrebbe essere installata solo da nuovi utenti, o da chi è intenzionato ad aggiornare il modo in cui si usa il programma</li>
+</ol>
+</section>
+<section id="esempio-julia-1.0" class="slide level1">
+<h1>Esempio: Julia 1.0</h1>
+<ul>
+<li><p>È nato un caso interessante dopo il rilascio di Julia 1.0</p></li>
+<li><p>Nelle versioni di sviluppo (0.1, 0.2, …, 0.7) era possibile scrivere questo codice al prompt di Julia:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="dt">Int</span>[<span class="fl">1</span><span class="op">,</span> <span class="fl">3</span><span class="op">,</span> <span class="fl">2</span><span class="op">,</span> <span class="fl">9</span>]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>cumsum <span class="op">=</span> <span class="fl">0</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">for</span> elem <span class="kw">in</span> x</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    cumsum <span class="op">+=</span> elem    <span class="co"># Incrementa &quot;cumsum&quot;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div></li>
+<li><p>Nella versione 1.0 si è cambiata la regola di visibilità delle variabili: il codice sopra dà errore dentro il ciclo <code>for</code>, perché dalla versione 1.0 la variabile globale <code>cumsum</code> non è modificabile dentro un ciclo <code>for</code> eseguito nella REPL</p></li>
+</ul>
+</section>
+<section id="esempio-julia-1.0-1" class="slide level1">
+<h1>Esempio: Julia 1.0</h1>
+<ul>
+<li><p>La motivazione per la modifica è che Julia non richiede di dichiarare in anticipo le variabili, e modificare una variabile globale può essere molto inefficiente in Julia.</p></li>
+<li><p>In Julia 0.7/1.0 è necessario scrivere questo:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="dt">Int</span>[<span class="fl">1</span><span class="op">,</span> <span class="fl">3</span><span class="op">,</span> <span class="fl">2</span><span class="op">,</span> <span class="fl">9</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>cumsum <span class="op">=</span> <span class="fl">0</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="kw">for</span> elem <span class="kw">in</span> x</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> cumsum     <span class="co"># Obbliga Julia a usare &quot;cumsum&quot; globale nel &quot;for&quot;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    cumsum <span class="op">+=</span> elem    <span class="co"># Incrementa &quot;cumsum&quot; correttamente in Julia 1.0</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div></li>
+<li><p>Questo <strong>non vale</strong> all’interno delle funzioni, solo nella REPL!</p></li>
+</ul>
+</section>
+<section id="esempio-julia-1.0-2" class="slide level1">
+<h1>Esempio: Julia 1.0</h1>
+<ul>
+<li>Sebbene la modifica fosse stata annunciata in previsione del rilascio della versione 0.7/1.0, molti utenti sono rimasti stupiti da essa!</li>
+<li>C’è stato un lungo dibattito nel forum di Julia: <a href="https://discourse.julialang.org/t/confused-about-global-vs-local-scoping-in-for-loops-in-1-0/16318/1">qui</a>, <a href="https://discourse.julialang.org/t/local-vs-global-scope-again/44227/1">qui</a>, <a href="https://discourse.julialang.org/t/documentation-on-for-loops-and-scoping-in-and-out-of-repl/21922">qui</a>, <a href="https://discourse.julialang.org/t/scope-and-global-in-repl-julia-0-7/10233">qui</a>, <a href="https://discourse.julialang.org/t/scope-of-variables-inside-functions-for-loops-and-if-statments/38981">qui</a>, <a href="https://discourse.julialang.org/t/another-possible-solution-to-the-global-scope-debacle/15894">qui</a>, <a href="https://discourse.julialang.org/t/global-scope-confusion-again/20044">qui</a>, <a href="https://discourse.julialang.org/t/remove-the-soft-scope-altogether-and-make-it-global/33333/1">qui</a>, <a href="https://discourse.julialang.org/t/repl-and-for-loops-scope-behavior-change/13514">qui</a>, <a href="https://discourse.julialang.org/t/explain-scoping-confusion-to-a-programming-beginner/43206">qui</a>, <a href="https://discourse.julialang.org/t/tips-to-cope-with-scoping-rules-of-top-level-for-loops-etc/24902">qui</a>, <a href="https://discourse.julialang.org/t/new-scope-solution/16707">qui</a>, <a href="https://discourse.julialang.org/t/why-not-an-even-harder-scope/50087">qui</a>, e dimentico sicuramente qualcosa!</li>
+<li>In ognuna di queste discussioni, gli sviluppatori facevano notare che tanti dei cambiamenti suggeriti dagli utenti avrebbero obbligato a rilasciare Julia 2.0.0!</li>
+</ul>
+</section>
+<section id="dopo-julia-1.0" class="slide level1">
+<h1>Dopo Julia 1.0</h1>
+<ul>
+<li>Il funzionamento delle variabili globali in Julia non è stato cambiato, e la compatibilità è sempre stata preservata nelle versioni successive di Julia (1.1, 1.2, 1.3, 1.4, 1.5)</li>
+<li>Questo vuol dire che <strong>qualsiasi</strong> programma scritto in Julia 1.0 può funzionare con le versioni successive del compilatore (nel senso che se non lo fa c’è un bug in Julia che va corretto)</li>
+</ul>
+</section>
+<section id="documentazione" class="slide level1">
+<h1>Documentazione</h1>
+</section>
+<section id="documentazione-1" class="slide level1">
+<h1>Documentazione</h1>
+</section>
+<section id="importanza-della-documentazione" class="slide level1">
+<h1>Importanza della documentazione</h1>
+<ul>
+<li>«Se una cosa non è documentata, non esiste!»</li>
+<li>«Meglio avere un brutto programma documentato bene, che un buon programma documentato male!»</li>
+</ul>
+</section>
+<section id="tipi-di-documentazione" class="slide level1">
+<h1>Tipi di documentazione</h1>
+<ul>
+<li><p>Esistono vari tipi di documentazione:</p>
+<ol type="1">
+<li>README</li>
+<li>CHANGELOG</li>
+<li>LICENSE</li>
+<li>Tutorial</li>
+<li>Manuale d’uso</li>
+<li>Documentazione delle funzioni fornite da una libreria</li>
+</ol></li>
+<li><p>Oggi ci occuperemo solo dei primi tre</p></li>
+</ul>
+</section>
+<section id="scopo-del-readme" class="slide level1">
+<h1>Scopo del README</h1>
+<ul>
+<li>Primo documento in cui si imbatte un potenziale utente</li>
+<li>Deve comunicare in maniera concisa questi concetti:
+<ol type="1">
+<li>A cosa serve il programma</li>
+<li>Cosa richiede per funzionare (Windows? Linux? una GPU? una stampante?)</li>
+<li>Come si installa</li>
+<li>Esempi pratici che mostrino cos’è in grado di fare il programma (possibilmente esempi ricchi e complessi!)</li>
+<li>Licenza d’uso</li>
+</ol></li>
+<li>Non deve addentrarsi troppo nei dettagli: più è conciso, meglio è</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<ul>
+<li><p>Cercate di essere <em>chiari</em> ma anche <em>sintetici</em>!</p></li>
+<li><p>Esempio negativo (<code>boost.array</code>). L’introduzione inizia così:</p>
+<blockquote>
+<p>The C++ Standard Template Library STL as part of the C++ Standard Library provides a framework for processing algorithms on different kind of containers. However, ordinary arrays don’t provide the interface of STL containers (although, they provide the iterator interface of STL containers).</p>
+</blockquote>
+<p>Un intero paragrafo, e ancora non si dice cosa faccia la libreria! (Non viene detto neppure nel paragrafo successivo…)</p></li>
+</ul>
+</section>
+<section id="scopo-di-changelog" class="slide level1">
+<h1>Scopo di CHANGELOG</h1>
+<ul>
+<li><p>Elenca tutte le caratteristiche delle versioni di un codice</p></li>
+<li><p>Ordine cronologico <strong>inverso</strong> (più recente in cima)</p></li>
+<li><p>Esempio: file <code>CHANGELOG.md</code></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Version 0.1.1</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Fix bug</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Version 0.1.0</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>First release</span></code></pre></div></li>
+</ul>
+</section>
+<section id="scopo-di-license" class="slide level1">
+<h1>Scopo di LICENSE</h1>
+<ul>
+<li><p>Riporta la licenza d’uso del software</p></li>
+<li><p>Sembra burocratese, ma è <strong>molto</strong> importante!</p></li>
+<li><p>Nessuna licenza: divieto d’uso del software</p></li>
+<li><p>Molto usate licenze open-source: <a href="https://opensource.org/licenses/MIT">MIT</a>, <a href="https://opensource.org/licenses/BSD-3-Clause">BSD</a>, <a href="https://opensource.org/licenses/gpl-license">GPL</a>, etc.</p></li>
+<li><p>Vedi il sito <a href="https://opensource.org/">Open Source Initiative</a> per ulteriori dettagli</p></li>
+<li><p>Per questo corso è importante che scegliate una licenza tra le tre elencate sopra (MIT/BSD/GPL). Se non avete idea di cosa scegliere, usate MIT.</p></li>
+</ul>
+</section>
+<section id="markdown" class="slide level1">
+<h1>Markdown</h1>
+<ul>
+<li><p>Di solito i documenti README/CHANGELOG/LICENSE/… vengono scritti in Markdown (estensione <code>.md</code>)</p></li>
+<li><p>Usando <a href="https://pandoc.org/">pandoc</a>, un file <code>.md</code> può essere convertito in:</p>
+<ul>
+<li>Pagine HTML (queste slide ne sono un esempio!)</li>
+<li>LaTeX (le dispense di questo corso, quando saranno disponibili)</li>
+<li>Presentazioni LaTeX Beamer (<a href="https://ctan.org/pkg/beamer">ctan.org/pkg/beamer</a>)</li>
+<li>File Microsoft Word</li>
+<li>Slide Microsoft PowerPoint</li>
+<li>Ebook in formato <code>.epub</code></li>
+<li>Etc.</li>
+</ul></li>
+</ul>
+</section>
+<section id="installazione-di-pandoc" class="slide level1">
+<h1>Installazione di Pandoc</h1>
+<ul>
+<li><p>Pandoc (su sistemi Debian/Ubuntu/Mint):</p>
+<pre><code>sudo apt install pandoc</code></pre></li>
+<li><p>TeX/LaTeX (idem):</p>
+<pre><code>sudo apt install texlive-full</code></pre></li>
+</ul>
+</section>
+<section id="esempio-di-markdown" class="slide level1">
+<h1>Esempio di markdown</h1>
+<ul>
+<li><p>Testo in Markdown (<code>README.md</code>):</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Titolo</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>Testo in *italico*, **grassetto**, <span class="in">`monospaced`</span>. Lista:</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Primo</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Secondo</span></code></pre></div></li>
+<li><p>Convertibile in HTML con <code>pandoc -t html5 --standalone README.md</code></p></li>
+</ul>
+</section>
+<section id="titolo" class="slide level1">
+<h1>Titolo</h1>
+<p>Testo in <em>italico</em>, <strong>grassetto</strong>, <code>monospaced</code>. Lista:</p>
+<ul>
+<li><p>Primo</p></li>
+<li><p>Secondo</p></li>
+</ul>
+</section>
+<section id="markdown-latex" class="slide level1">
+<h1>Markdown → LaTeX:</h1>
+<ul>
+<li><p>Convertito con <code>pandoc -t latex README.md</code></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode latex"><code class="sourceCode latex"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">\section</span>{Titolo}</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>Testo in <span class="fu">\textit</span>{italico}, <span class="fu">\textbf</span>{grassetto},</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">\texttt</span>{monospaced}. Lista:</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="kw">\begin</span>{<span class="ex">itemize</span>}</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">\item</span> Primo</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">\item</span> Secondo</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">itemize</span>}</span></code></pre></div></li>
+<li><p>Usando <code>--standalone</code> viene generato un documento LaTeX completo</p></li>
+<li><p>Se si specifica come output un file con estensione <code>.pdf</code>, il file viene compilato automaticamente usando pdfLaTeX:</p>
+<pre><code>pandoc -t latex -o README.pdf README.md</code></pre></li>
+</ul>
+</section>
+<section id="markdown-word" class="slide level1">
+<h1>Markdown → Word</h1>
+<ul>
+<li><p>Convertito con <code>pandoc -t docx -o README.docx README.md</code></p>
+<p><img data-src="./media/pandoc-to-word.png" height="480" /></p></li>
+</ul>
+</section>
+<section id="markdown-in-github" class="slide level1">
+<h1>Markdown in GitHub</h1>
+<ul>
+<li><p>In GitHub non è necessario convertire il Markdown</p></li>
+<li><p>Se si carica in un repository un file con nome <code>README.md</code>, GitHub lo mostrerà automaticamente convertito in una pagina HTML:</p>
+<p><img data-src="./media/harlequin-readme.png" height="400" /></p></li>
+</ul>
+</section>
+<section id="scopo-del-manuale-duso" class="slide level1">
+<h1>Scopo del manuale d’uso</h1>
+<ul>
+<li>Un manuale d’uso deve illustrare in maniera analitica come usare ciascuna delle funzionalità del programma</li>
+<li>Il manuale dovrebbe essere consultabile senza richiedere una lettura lineare: ogni capitolo dovrebbe essere il più possibile autonomo</li>
+<li>Si può supporre che chi sta leggendo il manuale abbia già un’infarinatura del programma (magari perché ha fatto il tutorial tempo prima)</li>
+<li>Analogia con la matematica: si definisce il campo reale e un polinomio generico <span class="math inline">p(x) = \sum_{i=0}^n a_i x^i</span>, illustrandone le proprietà partendo dalla definizione generale</li>
+</ul>
+</section>
+<section id="scopo-del-tutorial" class="slide level1">
+<h1>Scopo del tutorial</h1>
+<ul>
+<li>Deve essere il primo documento che venga studiato seriamente da un utente interessato al programma</li>
+<li>Si può iniziare descrivendo come si installa il programma, se questo non è già fatto nel README</li>
+<li>Si deve partire da esempi semplici, e complicarli progressivamente</li>
+<li>Analogia con la matematica: spiegazione dei polinomi iniziando dai più semplici di 1^ grado e, definendo somma e prodotto, introduzione di quelli di grado superiore</li>
+</ul>
+</section>
+<section id="documentazione-di-funzioni" class="slide level1">
+<h1>Documentazione di funzioni</h1>
+<ul>
+<li><p>Valido per librerie di funzioni (es., ROOT, <a href="https://github.com/fmtlib/fmt">fmt</a>)</p></li>
+<li><p>Documentazione di ciascuna funzione</p></li>
+<li><p>Linguaggi con REPL (Julia, Python, …) implementano le <em>docstring</em>, accessibili dalla REPL:</p>
+<pre><code>julia&gt; ?sin
+sin(x)
+
+Compute sine of x, where x is in radians.</code></pre></li>
+<li><p>Non ha senso per programmi eseguibili</p></li>
+</ul>
+</section>
+<section id="strumenti-per-documentazione" class="slide level1">
+<h1>Strumenti per documentazione</h1>
+<dl>
+<dt>Python</dt>
+<dd>Sphinx
+</dd>
+<dt>Julia</dt>
+<dd>Documenter
+</dd>
+<dt>C, C++, C#, D</dt>
+<dd>Doxygen (esempio: <a href="http://eigen.tuxfamily.org/dox/GettingStarted.html">Eigen</a>)
+</dd>
+<dt>Free Pascal</dt>
+<dd>fpdoc
+</dd>
+<dt>Rust</dt>
+<dd>mdbook
+</dd>
+</dl>
+</section>
+<section id="linguaggi-di-markup" class="slide level1">
+<h1>Linguaggi di markup</h1>
+<ul>
+<li>Ogni strumento di documentazione usa convenzioni diverse</li>
+<li>La maggior parte usa varianti di qualche linguaggio di markup:
+<ul>
+<li>Markdown (Doxygen, Documenter, …)</li>
+<li>Restructured text (RST, usato nel mondo Python e in Nim)</li>
+</ul></li>
+<li>Se potete, scegliete Markdown: è il linguaggio di markup più diffuso e anche il più semplice. RST è inutilmente complicato.</li>
+</ul>
+</section>
+<section id="modalità-di-lavoro" class="slide level1">
+<h1>Modalità di lavoro</h1>
+<ol type="1">
+<li>Estrazione di documentazione da file sorgente</li>
+<li>Costruzione di documentazione da file di testo</li>
+</ol>
+</section>
+<section id="esempio-c-e-doxygen" class="slide level1">
+<h1>Esempio: C++ e Doxygen</h1>
+<div class="sourceCode" id="cb19"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">/** </span><span class="an">\brief</span><span class="co"> Calculate the square root of a number</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * Calculate the square root of number x. It uses a bisection formula</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * until the value </span><span class="an">\f$</span><span class="co">\left|result - x * x\right|\f$ is less than epsilon.</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * \param x The number to use as input for the calculation</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"> * \param epsilon The required precision of the result</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"> * \return The square root, or -1.0 if x was negative</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co"> </span><span class="er">*/</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co">double square_root(double x, double epsilon = 1e-9) {</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co">  // ...</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co">}</span></span></code></pre></div>
+</section>
+<section id="ottimi-esempi" class="slide level1">
+<h1>Ottimi esempi</h1>
+<ul>
+<li><a href="https://docs.dask.org/en/latest/">Dask</a></li>
+<li><a href="https://xarray.pydata.org/en/stable/">xarray</a></li>
+<li><a href="https://spacy.io/usage/spacy-101#what-spacy-isnt">spaCy</a></li>
+<li><a href="https://docs.sentry.io/">Sentry</a></li>
+<li><a href="https://objax.readthedocs.io/en/latest/">Objax</a></li>
+<li><a href="https://docs.pylonsproject.org/projects/pyramid/en/1.10-branch/narr/testing.html?highlight=testing">Pyramid</a></li>
+<li><a href="https://www.balena.io/docs/learn/welcome/introduction/">Balena</a></li>
+</ul>
+</section>
+<section id="guida-per-lesercitazione" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+</section>
+<section id="guida-per-lesercitazione-1" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+<ol type="1">
+<li><p>Implementare il tipo <code>Image</code> con le seguenti caratteristiche:</p>
+<ul>
+<li>Campi <code>width</code> ed <code>height</code>, array di valori <code>Color</code>;</li>
+<li>Caricamento/salvataggio in formato PFM;</li>
+<li>Caricamento/salvataggio in formato PNM (con aggiustamento tramite <span class="math inline">\gamma</span>).</li>
+</ul></li>
+<li><p>Implementare una serie di test per le funzioni implementate.</p></li>
+</ol>
+</section>
+<section id="test-1" class="slide level1">
+<h1>Test (1)</h1>
+<ul>
+<li><p>Creazione di un’immagine (che all’inizio deve essere tutta nera):</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image(width<span class="op">=</span><span class="dv">320</span>, height<span class="op">=</span><span class="dv">240</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.width <span class="op">==</span> <span class="dv">320</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.height <span class="op">==</span> <span class="dv">240</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(img.height):</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(img.width):</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        img.get_pixel(col, row).is_close(BLACK_COLOR)</span></code></pre></div></li>
+<li><p>Scrittura/lettura di pixel:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Change the value of one pixel</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>img.set_pixel(<span class="dv">100</span>, <span class="dv">200</span>, Color(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>))</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.get_pixel(<span class="dv">100</span>, <span class="dv">200</span>).is_close(Color(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>))</span></code></pre></div></li>
+</ul>
+</section>
+<section id="test-2" class="slide level1">
+<h1>Test (2)</h1>
+<ul>
+<li><p>Salvataggio/caricamento di un’immagine PFM; per rendere il test rappresentativo, assegnamo a ogni pixel un colore diverso dagli altri:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill the image so that every pixel has a different color</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(img.height):</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(img.width):</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        img.set_pixel(col, row, Color(col, row, col <span class="op">-</span> row))</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the image in a file</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">&quot;test.pfm&quot;</span>, <span class="st">&quot;wb&quot;</span>) <span class="im">as</span> outf:</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    img.save_pfm(outf)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the file in a new variable</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">&quot;test.pfm&quot;</span>, <span class="st">&quot;rb&quot;</span>) <span class="im">as</span> inpf:</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    newimg <span class="op">=</span> Image.from_pfm(inpf)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that the two images match</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> newimg.width <span class="op">==</span> img.width</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> newimg.height <span class="op">==</span> img.height</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(newimg.height):</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(newimg.width):</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>        orig_col <span class="op">=</span> img.get_pixel(col, row)</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>        new_col <span class="op">=</span> newimg.get_pixel(col, row)</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> new_col.is_close(orig_col)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="test-3" class="slide level1">
+<h1>Test (3)</h1>
+<ul>
+<li><p>Salvataggio/caricamento di un’immagine PNM:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">&quot;test.pnm&quot;</span>, <span class="st">&quot;wb&quot;</span>) <span class="im">as</span> outf:</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    img.save_pnm(outf)</span></code></pre></div></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    </body>
+</html>

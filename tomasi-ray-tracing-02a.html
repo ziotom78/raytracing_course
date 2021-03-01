@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Lezione 2</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Lezione 2</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="lezione-precedente" class="slide level1">
+<h1>Lezione precedente</h1>
+<ul>
+<li><p><strong>Radianza</strong> (flusso <span class="math inline">\Phi</span> in Watt normalizzato sulla superficie proiettata per unità di angolo solido): <span class="math display">
+L = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A^\perp}
+  = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A\,\cos\theta},
+\qquad [L] = \mathrm{W}/\mathrm{m}^2/\mathrm{sr}.
+</span></p></li>
+<li><p>Equazione del rendering: <span class="math display">
+\begin{aligned}
+L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
+&amp;\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
+\end{aligned}
+</span></p></li>
+</ul>
+</section>
+<section id="codifica-del-colore" class="slide level1">
+<h1>Codifica del colore</h1>
+<ul>
+<li><p>Le quantità <span class="math inline">\Phi</span>, <span class="math inline">L</span>, etc. sono tutte dipendenti dalla lunghezza d’onda <span class="math inline">\lambda</span> (radianza → <em>radianza spettrale</em>), e vanno rappresentate come funzioni <span class="math inline">\mathbb{R} \rightarrow \mathbb{R}</span>.</p></li>
+<li><p>In codici numerici che simulano la propagazione della luce, dobbiamo risolvere due problemi:</p>
+<ol type="1">
+<li><p>Una funzione come <span class="math inline">L: \mathbb{R} \rightarrow \mathbb{R}</span> ha un numero infinito di gradi di libertà: come rappresentarla numericamente?</p></li>
+<li><p>Nel nostro caso, la radianza viene percepita come un colore: ma come si specifica un colore quando si comanda un monitor o una stampante?</p></li>
+</ol></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p><img data-src="./media/electromagnetic-spectrum.png" /></p>
+</section>
+<section id="emissioni-realistiche" class="slide level1">
+<h1>Emissioni realistiche</h1>
+<ul>
+<li><p>La forma dello spettro <strong>non</strong> deve però far pensare che basti un valore di <span class="math inline">\lambda</span> per indicare un colore!</p></li>
+<li><p>Gli spettri di emissione di oggetti del mondo reale possono essere molto complessi (v. lezione precedente):</p>
+<center>
+<p><img data-src="./media/led-lighting-2.jpg" height="300" /></p>
+</center></li>
+</ul>
+</section>
+<section id="spd" class="slide level1">
+<h1>SPD</h1>
+<ul>
+<li><p>Il termine <em>Spectral Power Distribution</em> (SPD) è un termine generico che indica la forma funzionale di una quantità dipendente da <span class="math inline">\lambda</span>: SPD della radianza, SPD del flusso, SPD dell’emittanza, etc.</p></li>
+<li><p>I grafici della slide precedente sono di fatto rappresentazioni di diverse SPD.</p></li>
+<li><p>La percezione che il nostro occhio ha di un colore dipende dalla SPD del flusso che raggiunge i fotorecettori della retina sensibili al colore (<em>coni</em>).</p></li>
+</ul>
+</section>
+<section id="percezione-del-colore" class="slide level1">
+<h1>Percezione del colore</h1>
+<ul>
+<li><p>I fotorecettori presenti nell’occhio umano sono di due tipi:</p>
+<ol type="1">
+<li><p><strong>Bastoncelli</strong>: cellule fotorecettrici fortemente sensibili all’intensità della luce (~100 milioni per occhio)</p></li>
+<li><p><strong>Coni</strong>: cellule fotorecettrici sensibili al colore della luce (~ 5 milioni per occhio)</p></li>
+</ol></li>
+<li><p>I bastoncelli non sono sensibili alla SPD, e sono usati soprattutto in condizioni di scarsa luminosità.</p></li>
+<li><p>Ovviamente a noi oggi interessano i coni!</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p><img data-src="./media/cone_cell_eng_wikipedia.png" /></p>
+</section>
+<section id="tipi-di-coni" class="slide level1">
+<h1>Tipi di coni</h1>
+<ul>
+<li><p>Esistono tre tipi di coni:</p>
+<ol type="1">
+<li>Tipo S (<em>short</em>): sensibile al blu</li>
+<li>Tipo M (<em>medium</em>): sensibile al verde</li>
+<li>Tipo L (<em>long</em>): sensibile al rosso</li>
+</ol></li>
+<li><p>Ci sono più teorie che spiegano come il cervello combini le informazioni dei tre tipi di coni per rappresentare un colore.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p><img data-src="./media/Cone-fundamentals-with-srgb-spectrum.svg" width="920" /></p>
+</section>
+<section id="sistema-xyz" class="slide level1">
+<h1>Sistema XYZ</h1>
+<ul>
+<li><p>Teoria tristimolare dei colori: è sempre possibile codificare il colore percepito dall’occhio umano usando tre quantità scalari legate alla SPD:</p>
+<p><span class="math display">
+\begin{aligned}
+x &amp;= \frac{
+    \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,X(\lambda)
+}{
+    \int_\lambda \mathrm{d}\lambda\,Y(\lambda)
+},\\
+y &amp;= \frac{
+    \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Y(\lambda)
+}{
+    \int_\lambda \mathrm{d}\lambda\,Y(\lambda)
+},\\
+z &amp;= \frac{
+    \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Z(\lambda)
+}{
+    \int_\lambda \mathrm{d}\lambda\,Y(\lambda)
+}.
+\end{aligned}
+</span></p></li>
+</ul>
+</section>
+<section id="sistema-xyz-1" class="slide level1">
+<h1>Sistema XYZ</h1>
+<ul>
+<li><p>Le curve <span class="math inline">X(\lambda)</span>, <span class="math inline">Y(\lambda)</span> e <span class="math inline">Z(\lambda)</span> sono predefinite.</p></li>
+<li><p>Definite dalla Commission Internationale de l’Éclairage (CIE)</p></li>
+<li><p>Basate su esperimenti con volontari.</p></li>
+<li><p>La costante di normalizzazione è sempre</p>
+<p><span class="math display">
+\int_\lambda \mathrm{d}\lambda\,Y(\lambda) \approx 106.856895\,\text{nm}.
+</span></p></li>
+</ul>
+</section>
+<section id="curve-x-y-z" class="slide level1">
+<h1>Curve X, Y, Z</h1>
+<figure>
+<img data-src="plots/4784551943712677857.svg" />
+</figure>
+</section>
+<section id="metamerismo-cromatico" class="slide level1">
+<h1>Metamerismo cromatico</h1>
+<ul>
+<li><p>È possibile che due SED diverse portino agli stessi valori XYZ</p></li>
+<li><p>In questo caso il colore dei due oggetti è indistinguibile all’occhio umano</p></li>
+<li><p>Il fenomeno è detto <em>metamerismo cromatico</em>, e i due colori si dicono <em>metamerici</em></p></li>
+<li><p>Il metamerismo dipende dal tipo di illuminazione (sole, lampada a fluorescenza, luce laser, etc.)</p></li>
+</ul>
+</section>
+<section id="xyz-e-rgb" class="slide level1">
+<h1>XYZ e RGB</h1>
+<ul>
+<li><p>Il sistema XYZ è basato sul funzionamento dell’occhio umano (coni)</p></li>
+<li><p>Non è in generale adatto per la fabbricazione di hardware</p></li>
+<li><p>Sistemi molto usati sono RGB (monitor) e CYMK (stampanti)</p></li>
+</ul>
+</section>
+<section id="sistema-rgb" class="slide level1">
+<h1>Sistema RGB</h1>
+<ul>
+<li><p>Il sistema RGB usa tre quantità scalari per identificare un colore: rosso, verde, blu (<strong>R</strong>ed, <strong>G</strong>reen, <strong>B</strong>lue).</p></li>
+<li><p>Basato sulla sintesi <em>additiva</em> dei colori, che è perfetta per i monitor (le stampanti usano la sintesi <em>sottrattiva</em>, e usano il sistema CYMK).</p></li>
+<li><p>Legato al funzionamento dei vecchi televisori a tubo catodico e replicato sui moderni schermi LED e LCD</p></li>
+</ul>
+<p><img data-src="./media/lcd-pixels-closeup.png" height="200" /></p>
+</section>
+<section id="da-xyz-a-rgb" class="slide level1">
+<h1>Da XYZ a RGB</h1>
+<p><span class="math display">
+\begin{aligned}
+\begin{pmatrix}R\\G\\B\end{pmatrix} &amp;=
+M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}X\\Y\\Z\end{pmatrix} =\\
+&amp;=
+\begin{pmatrix}
++3.2404542&amp; -1.5371385&amp; -0.4985314\\
+-0.9692660&amp; +1.8760108&amp; +0.0415560\\
++0.0556434&amp; -0.2040259&amp; +1.0572252
+\end{pmatrix}
+\begin{pmatrix}X\\Y\\Z\end{pmatrix}.\\
+\end{aligned}
+</span></p>
+</section>
+<section id="colori-rgb" class="slide level1" data-state="rgb-colors">
+<h1 data-state="rgb-colors">Colori RGB</h1>
+<table style="width:60%">
+<tr>
+<th>
+Red
+</th>
+<th>
+Green
+</th>
+<th>
+Blue
+</th>
+</tr>
+<tr>
+<td id="valRed">
+</td>
+<td id="valGreen">
+</td>
+<td id="valBlue">
+</td>
+</tr>
+<tr>
+<td id="red" style="height:50px;background-color:red">
+</td>
+<td id="green" style="background-color:green">
+</td>
+<td id="blue" style="background-color:blue">
+</td>
+</tr>
+<tr>
+<td>
+<input oninput="rgbChangeRed(this.value)" onchange="rgbChangeRed(this.value)" type="range" id="slideRed" name="slideRed" min="0" max="255" value="0">
+</td>
+<td>
+<input oninput="rgbChangeGreen(this.value)" onchange="rgbChangeGreen(this.value)" type="range" id="slideGreen" name="slideGreen" min="0" max="255" value="0">
+</td>
+<td>
+<input oninput="rgbChangeBlue(this.value)" onchange="rgbChangeBlue(this.value)" type="range" id="slideBlue" name="slideBlue" min="0" max="255" value="0">
+</td>
+</tr>
+</table>
+<div id="rgbChange" style="margin:auto;width:50%;height:50px">
+
+</div>
+<script>
+function rgbChangeRed(value) {
+    document.getElementById('valRed').innerHTML = value;
+    rgbChangeAll();
+}
+function rgbChangeGreen(value) {
+    document.getElementById('valGreen').innerHTML = value;
+    rgbChangeAll();
+}
+function rgbChangeBlue(value) {
+    document.getElementById('valBlue').innerHTML = value;
+    rgbChangeAll();
+}
+function rgbChangeAll() {
+    var r = document.getElementById('valRed').innerHTML;
+    var g = document.getElementById('valGreen').innerHTML;
+    var b = document.getElementById('valBlue').innerHTML;
+    document.getElementById('rgbChange').style.backgroundColor = "rgb(" + r + "," + g + "," + b + ")";
+}
+
+document.addEventListener('rgb-colors', function() {
+    document.getElementById('valRed').innerHTML = 0;
+    document.getElementById('valGreen').innerHTML = 0;
+    document.getElementById('valBlue').innerHTML = 0;
+    rgbChangeAll();
+});
+</script>
+</section>
+<section id="da-l_lambda-a-rgb" class="slide level1">
+<h1>Da <span class="math inline">L_\lambda</span> a RGB</h1>
+<ul>
+<li><p>Equazione del rendering espressa per <span class="math inline">L_\lambda</span> <span class="math display">
+\begin{aligned}
+L_\lambda(x \rightarrow \Theta) = &amp;L_{e,\lambda}(x \rightarrow \Theta) +\\
+&amp;\int_{\Omega_x} f_{r,\lambda}(x, \Psi \rightarrow \Theta)\,L_\lambda(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
+\end{aligned}
+</span></p></li>
+<li><p>Equazione espressa per <span class="math inline">X</span> (lo stesso per <span class="math inline">Y</span> e <span class="math inline">Z</span>): <span class="math display">
+\begin{aligned}
+x = \frac1k \int_\lambda\,\mathrm{d}\lambda X(\lambda)\, L_\lambda(x \rightarrow \Theta).
+\end{aligned}
+</span></p></li>
+</ul>
+</section>
+<section id="operazioni-sui-colori" class="slide level1">
+<h1>Operazioni sui colori</h1>
+<ul>
+<li><p>Per valutare l’integrale nell’equazione del rendering occorrono queste operazioni:</p>
+<ul>
+<li>Somma di densità di radianza: <span class="math inline">L_\lambda^{(1)} + L_\lambda^{(2)}</span></li>
+<li>Prodotto di densità di radianza per uno scalare: <span class="math inline">\xi\,L_\lambda</span></li>
+</ul></li>
+<li><p>Le due operazioni sono lineari</p></li>
+<li><p>La definizione di <span class="math inline">X</span>, <span class="math inline">Y</span>, <span class="math inline">Z</span> è lineare (integrale)</p></li>
+<li><p>La conversione a RGB è lineare (matrice)</p></li>
+<li><p>Quindi le due operazioni (somma e prodotto per scalare) possono essere implementate direttamente sui valori RGB.</p></li>
+</ul>
+</section>
+<section id="esempio-12" class="slide level1">
+<h1>Esempio (1/2)</h1>
+<p><span class="math display">
+\begin{aligned}
+L_\lambda &amp;= \alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)},\\
+\int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &amp;= \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,\bigl(\alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)}\bigr),\\
+\int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &amp;= \alpha\int_\lambda\mathrm{d}\lambda\,X(\lambda)\, L_\lambda^{(1)} +
+  \beta \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda^{(2)},\\
+X &amp;= \alpha X^{(1)} + \beta X^{(2)},\\
+\end{aligned}
+</span> e quindi operazioni lineari sulla radianza si traducono in operazioni lineari sulle componenti di colore <span class="math inline">X</span>, <span class="math inline">Y</span> e <span class="math inline">Z</span>.</p>
+</section>
+<section id="esempio-22" class="slide level1">
+<h1>Esempio (2/2)</h1>
+<p><span class="math display">
+\begin{aligned}
+M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}X\\Y\\Z\end{pmatrix} &amp;=
+M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}\alpha X^{(1)} + \beta X^{(2)}\\\alpha Y^{(1)} + \beta Y^{(2)}\\\alpha Z^{(1)} + \beta Z^{(2)}\end{pmatrix},\\
+\begin{pmatrix}R\\G\\B\end{pmatrix} &amp;=
+\alpha M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}X^{(1)}\\Y^{(1)}\\Z^{(1)}\end{pmatrix} +
+\beta M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}X^{(2)}\\Y^{(2)}\\Z^{(2)}\end{pmatrix},\\
+R &amp;= \alpha R^{(1)} + \beta R^{(2)},\\
+\end{aligned}
+</span> e quindi la linearità è preservata anche per <span class="math inline">R</span>, <span class="math inline">G</span> e <span class="math inline">B</span>.</p>
+</section>
+<section id="risposta-dei-monitor" class="slide level1">
+<h1>Risposta dei monitor</h1>
+<ul>
+<li><p>Per specificare l’intensità di ciascuno dei canali RGB, una scheda grafica moderna richiede un valore <em>intero</em> da 0 a 255;</p></li>
+<li><p>La potenza emessa dai punti di uno schermo non varia linearmente: <span class="math display">
+\text{output} = \text{input}^\gamma,
+</span></p>
+<p>dove <span class="math inline">\text{input}, \text{output} \in [0, 1]</span>, e <span class="math inline">\gamma</span> è un parametro caratteristico del dispositivo.</p></li>
+</ul>
+</section>
+<section id="andamento-di-gamma" class="slide level1">
+<h1>Andamento di <span class="math inline">\gamma</span></h1>
+<figure>
+<img data-src="plots/6404139930120174351.svg" />
+</figure>
+</section>
+<section id="calibrazione-dei-monitor" class="slide level1">
+<h1>Calibrazione dei monitor</h1>
+<p><img data-src="./media/checkered-pattern.svg" /></p>
+<p><span class="math display">
+\text{value} = \frac12^\gamma \quad\Rightarrow\quad \gamma = \frac{\log 1/2}{\log(\text{value})}
+</span></p>
+</section>
+<section id="calibrazione-dei-monitor-1" class="slide level1" data-state="monitor-calibration-state">
+<h1 data-state="monitor-calibration-state">Calibrazione dei monitor</h1>
+<table>
+<tr>
+<td>
+<canvas id="monitor-calibration" width="300px" height="300px" style="image-rendering: pixelated">
+</canvas>
+</td>
+<td>
+<canvas id="gamma-plot" width="300px" height="300px">
+</canvas>
+</td>
+</tr>
+</table>
+<div class="slidecontainer">
+<input type="range" min="0.0" max="1.0"
+    value="0.5" step="0.01" class="slider" id="gamma-slider">
+<p id="gamma-value">
+</p>
+</div>
+<script>
+var checker_canvas_width;
+var checker_canvas_height;
+var checker_canvas_ctx;
+
+var gamma_canvas_width;
+var gamma_canvas_height;
+var gamma_canvas_ctx;
+
+var gamma_slider = document.getElementById("gamma-slider");
+var gamma_value = document.getElementById("gamma-value");
+var black_white_checkers;
+gamma_value.innerHTML = gamma_slider.value;
+
+function calc_gamma(val05) {
+    return Math.log(0.5) / Math.log(val05);
+}
+
+function redraw_gamma() {
+  var val = (gamma_slider.value * 255.0).toFixed(0);
+
+  // Grey border around the image
+  checker_canvas_ctx.fillStyle = `rgb(${val}, ${val}, ${val})`;
+  checker_canvas_ctx.fillRect(0, 0, checker_canvas_width, checker_canvas_height);
+
+  // Checkered image
+  var cornerx = (checker_canvas_width - black_white_checkers.width) / 2;
+  var cornery = (checker_canvas_height - black_white_checkers.height) / 2;
+  checker_canvas_ctx.drawImage(black_white_checkers,
+                               cornerx, cornery);
+
+  // Gamma plot
+  gamma_canvas_ctx.clearRect(0, 0, gamma_canvas_width, gamma_canvas_height);
+
+  var gamma = calc_gamma(gamma_slider.value * 1.0);
+  const numOfPoints = 30;
+  gamma_canvas_ctx.beginPath();
+  gamma_canvas_ctx.moveTo(0, gamma_canvas_height);
+  for(i = 1; i <= numOfPoints; i++) {
+    gamma_canvas_ctx.lineTo(gamma_canvas_height * i / numOfPoints,
+                            gamma_canvas_height * (1.0 - Math.pow(i * 1.0 / numOfPoints, gamma)));
+  }
+  gamma_canvas_ctx.stroke();
+}
+
+function refresh_gamma_text(val) {
+  var gamma = calc_gamma(val);
+  gamma_value.innerHTML = `Value: ${val.toFixed(2)} (${(val * 255.0).toFixed(0)}), γ: ${gamma.toFixed(2)}`;
+  redraw_gamma();
+}
+
+gamma_slider.oninput = function() {
+  refresh_gamma_text(this.value * 1.0);
+}
+
+document.addEventListener('monitor-calibration-state', function() {
+  var canvas = document.getElementById("monitor-calibration");
+  checker_canvas_ctx = canvas.getContext("2d");
+  checker_canvas_width = canvas.width;
+  checker_canvas_height = canvas.height;
+
+  canvas = document.getElementById("gamma-plot");
+  gamma_canvas_ctx = canvas.getContext("2d");
+  gamma_canvas_width = canvas.width;
+  gamma_canvas_height = canvas.height;
+
+  black_white_checkers = new Image();
+  black_white_checkers.src = "./media/black-white-checkers.png";
+  black_white_checkers.addEventListener("load", redraw_gamma, false);
+
+  refresh_gamma_text(0.5);
+});
+</script>
+</section>
+<section id="risposta-dei-monitor-1" class="slide level1">
+<h1>Risposta dei monitor</h1>
+<ul>
+<li>Una volta ottenuta una terna RGB di numeri reali, per pilotare un monitor occorre convertirla in una cosiddetta «<a href="https://en.wikipedia.org/wiki/SRGB">terna sRGB</a>».</li>
+<li>La conversione è parametrizzata da <span class="math inline">\gamma</span>, e <strong>non è lineare</strong>.</li>
+<li>Quanto abbiamo visto per la conversione <span class="math inline">L_\lambda \rightarrow (X, Y, Z) \rightarrow (R, G, B)</span> non si applica quindi a sRGB.</li>
+</ul>
+</section>
+<section id="conversione-da-rgb-a-srgb" class="slide level1">
+<h1>Conversione da RGB a sRGB</h1>
+<ul>
+<li>La conversione da RGB a sRGB è esprimibile con la formula <span class="math display">
+\begin{aligned}
+r &amp;= \left[k\,R^\gamma\right],\\
+g &amp;= \left[k\,G^\gamma\right],\\
+b &amp;= \left[k\,B\gamma\right],\\
+\end{aligned}
+</span> dove <span class="math inline">[\cdot]</span> è indica l’arrotondamento a intero, e <span class="math inline">k</span> è una costante di normalizzazione.</li>
+<li>Determinare un «buon» valore per <span class="math inline">k</span> è critico!</li>
+</ul>
+</section>
+<section id="determinazione-di-k" class="slide level1">
+<h1>Determinazione di <span class="math inline">k</span></h1>
+<ul>
+<li>Se i valori R, G e B fossero compresi nell’intervallo <span class="math inline">[0, 1]</span>, allora basterebbe porre <span class="math inline">k = 255</span>.</li>
+<li>Ma l’intervallo dei possibili valori di R, G e B è infinito:
+<ul>
+<li>Dipende dall’unità di misura usata per <span class="math inline">L_\lambda</span>;</li>
+<li>Dipende dal tipo di scena (astronave vicino a una supernova? grotta?)</li>
+</ul></li>
+<li>Lo standard CIE XYZ definisce una normalizzazione di riferimento in termini di un colore standard, il <em>D65</em>, che corrisponde all’emissione di un corpo nero a 6500 K (più o meno l’emissione del cielo in una giornata limpida).</li>
+<li>Vedremo meglio questo punto quando avremo discusso il salvataggio di immagini.</li>
+</ul>
+</section>
+<section id="emissione-di-schermi" class="slide level1">
+<h1>Emissione di schermi</h1>
+<p>Esistono vari tipi di schermi (tubi catodici, LED, etc.), e gli spettri di emissione possono essere diversi:</p>
+<p><img data-src="./media/screen-emission.svg" height="400" /></p>
+<p>Non spenderemo troppo tempo su questo per motivi di tempo.</p>
+</section>
+<section id="lezioni-imparate-oggi" class="slide level1">
+<h1>Lezioni imparate oggi</h1>
+</section>
+<section class="slide level1">
+
+<ul>
+<li>Mai dimenticarsi che le misurazioni fisiche passano da uno strumento: occorre conoscerne le caratteristiche e le non-idealità!</li>
+<li>Semplificare il più possibile: invece di trattare <span class="math inline">L_\lambda</span>, usiamo <span class="math inline">R</span>, <span class="math inline">G</span> e <span class="math inline">B</span>.</li>
+<li>Il mondo è <em>complicato</em>!</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    </body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Lezione 3</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Lezione 3</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="immagini" class="slide level1">
+<h1>Immagini</h1>
+</section>
+<section id="salvataggio-di-immagini" class="slide level1">
+<h1>Salvataggio di immagini</h1>
+<ul>
+<li><p>Due tipi di file grafici:</p>
+<ul>
+<li>Vettoriali: SVG, PDF, EPS, AI…</li>
+<li>Raster (matriciali): JPEG, PNG, GIF, RAW…</li>
+</ul></li>
+<li><p>I file <strong>vettoriali</strong> contengono istruzioni per disegnare un’immagine:</p>
+<pre><code>- cerchio centrato in (3.5, 2.6) con raggio 1.5 di colore nero
+- linea da (1.1, 1.7) a (3.7, 7.4) di colore nero con spessore 2
+- etc.</code></pre></li>
+<li><p>I file <strong>raster</strong> salvano una matrice di colori, e sono quelli che ci interessano per questo corso.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/difference-between-raster-and-vector-image.png" />
+</center>
+</section>
+<section id="grafica-vettoriale" class="slide level1">
+<h1>Grafica vettoriale</h1>
+<center>
+<img data-src="./media/Carnot-cycle-p-V-diagram.svg" />
+</center>
+</section>
+<section id="grafica-raster" class="slide level1">
+<h1>Grafica raster</h1>
+<center>
+<img data-src="./media/gilles_tran.jpg" />
+</center>
+</section>
+<section id="codifica-di-immagini-raster" class="slide level1">
+<h1>Codifica di immagini raster</h1>
+<ul>
+<li>Un’immagine è una matrice di colori, dove ogni colore è solitamente una tripletta RGB;</li>
+<li>L’ordine con cui viene salvata la matrice (destra-sinistra, alto-basso, per righe o per colonne) è determinato dal formato;</li>
+<li>Formati diversi implementano compressioni diverse.</li>
+</ul>
+</section>
+<section id="compressione-di-immagini" class="slide level1">
+<h1>Compressione di immagini</h1>
+</section>
+<section id="tone-mapping" class="slide level1">
+<h1>Tone Mapping</h1>
+</section>
+<section id="tone-mapping-1" class="slide level1">
+<h1>Tone mapping</h1>
+<ul>
+<li>Per <em>tone mapping</em> si intende una conversione da RGB a sRGB che preservi la «tinta» complessiva di un’immagine.</li>
+<li>Noi useremo il <em>tone mapping</em> descritto da Shirley (2003) anziché la normalizzazione su D65 per stabilire la conversione da RGB a sRGB: è fisicamente meno preciso, ma più semplice da implementare e fornisce risultati visivamente gradevoli.</li>
+</ul>
+</section>
+<section id="algoritmo-di-tone-mapping" class="slide level1">
+<h1>Algoritmo di tone mapping</h1>
+<ol type="1">
+<li>Stabilire un valore «neutro» per la radianza;</li>
+<li>Normalizzare il colore di ogni punto sul valore neutro;</li>
+<li>Aggiustare i punti di maggiore luminosità.</li>
+</ol>
+</section>
+<section id="valore-neutro" class="slide level1">
+<h1>Valore neutro</h1>
+<ul>
+<li><p>Il valore «neutro» per la radianza è definito dalla media logaritmica della luminosità <span class="math inline">l</span> dei pixel:</p>
+<p><span class="math display">
+\left&lt;l\right&gt; = \exp\left(\frac{\sum_i \log(\delta + l_i)}N\right),
+</span> dove <span class="math inline">i</span> itera su <span class="math inline">N</span> pixel, e <span class="math inline">\delta \ll 1</span> evita la singolarità di <span class="math inline">\log x</span> in <span class="math inline">x = 0</span>.</p></li>
+<li><p>Quale valore usare per <span class="math inline">S</span> nel <em>tone mapping</em>?</p></li>
+</ul>
+</section>
+<section id="valore-neutro-1" class="slide level1">
+<h1>Valore neutro</h1>
+<ul>
+<li><p><span class="math inline">S = (R + G + B) / 3</span>;</p></li>
+<li><p><span class="math inline">S = (R + G + B) / 3</span>;</p></li>
+<li><p><span class="math inline">S = \frac{\max(R, G, B) + \min(R, G, B)}2</span> (<em>luminosità</em>).</p>
+<p>Noi useremo quest’ultima definizione: la luminosità non è una quantità fisicamente significativa, ma è quella che porta a risultati visivamente migliori.</p></li>
+</ul>
+</section>
+<section id="perché-la-media-logaritmica" class="slide level1">
+<h1>Perché la media logaritmica?</h1>
+<ul>
+<li><p>La risposta dell’occhio a uno stimolo <span class="math inline">S</span> è logaritmica (<em>leggi di Weber-Fechner</em>):</p>
+<p><span class="math display">
+p = k \log \frac{S}{S_0}
+</span> dove <span class="math inline">p</span> è il valore percepito, e <span class="math inline">S</span> è l’intensità dello stimolo.</p></li>
+<li><p>La media logaritmica è una media sugli <em>esponenti</em>: <span class="math display">
+10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
+</span> mentre la media aritmetica è <span class="math inline">(10^2 + 10^4 + 10^6)/3 \approx 10^6/3</span>.</p></li>
+</ul>
+</section>
+<section id="normalizzazione" class="slide level1">
+<h1>Normalizzazione</h1>
+<p>Una volta stimato il valore neutro, i valori R, G, B dell’immagine sono aggiornati tramite la trasformazione <span class="math display">
+R_i \rightarrow a \times \frac{R_i}{\left&lt;l\right&gt;},
+</span> dove <span class="math inline">a</span> è un valore impostabile dall’utente (Shirley suggerisce <span class="math inline">a = 0.18</span>).</p>
+</section>
+<section id="punti-luminosi" class="slide level1">
+<h1>Punti luminosi</h1>
+<p><img data-src="./media/bright-light-in-room.jpg" height="520" /></p>
+<p>Sono notoriamente difficili da trattare!</p>
+</section>
+<section id="punti-luminosi-1" class="slide level1">
+<h1>Punti luminosi</h1>
+<p>Shirley suggerisce di applicare ai valori R, G, B di ogni pixel la trasformazione <span class="math display">
+R_i \rightarrow \frac{R_i}{1 + R_i},
+</span> che ha le seguenti caratteristiche: <span class="math display">
+\begin{aligned}
+R_i \ll 1 &amp;\Rightarrow R_i \rightarrow R_i,\\
+R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
+\end{aligned}
+</span></p>
+</section>
+<section id="punti-luminosi-2" class="slide level1">
+<h1>Punti luminosi</h1>
+<figure>
+<img data-src="plots/13657019977014987196.svg" />
+</figure>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Push each slide change to the browser history
+        history: true,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    </body>
+</html>
