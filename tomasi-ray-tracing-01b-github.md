@@ -36,16 +36,16 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Esempio d'uso
 
--   Creo una directory `raytracer` e un file `raytracer/hello.py`:
+-   Creo una directory `hello_world` e un file `hello_world/hello.py`:
 
     ```python
     print("Hello, wold!")
     ```
 
 -   Invoco il VCS per «salvare» un'istantanea della directory
-    `raytracer`
+    `hello_world`
 
--   Modifico il file `raytracer/hello.py` per correggere il messaggio:
+-   Modifico il file `hello_world/hello.py` per correggere il messaggio:
 
     ```python
     print("Hello, world!")
@@ -58,13 +58,13 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 Alla fine dell'esempio, il database del VCS contiene due istantanee:
 
-1.  File `raytracer/hello.py` con questo contenuto:
+1.  File `hello_world/hello.py` con questo contenuto:
 
     ```python
     print("Hello, wold!")
     ```
 
-2.  File `raytracer/hello.py` con questo contenuto:
+2.  File `hello_world/hello.py` con questo contenuto:
 
     ```python
     print("Hello, world!")
@@ -79,13 +79,30 @@ Alla fine dell'esempio, il database del VCS contiene due istantanee:
 
 -   Nel gergo dei VCS, una istantanea si dice **commit**.
 
-# Un semplice VCS (1/2)
+# Un semplice VCS (1/3)
 
--   In Linux/Mac OS X, è possibile realizzare un semplice VCS con il
-    comando seguente (da shell Bash/Zsh):
+-   Possiamo realizzare un semplice VCS in Linux/Mac OS X (da shell Bash/Zsh) usando due programmi da linea di comando: `date` (stampa data e ora) e `whoami` (stampa il nome dell'utente).
 
     ```sh
-    tar -c -f "/vcsdatabase/raytracer-$(date +%Y%m%d%H%M%S)-$(whoami).tar" *
+    $ date +%Y-%m-%d  # Data nel formato ANNO-MESE-GIORNO
+    2021-03-03
+    $ whoami
+    tomasi
+    ```
+        
+-   Usiamo la possibilità delle shell Unix di sostituire comandi usando `$()`:
+
+    ```sh
+    $ echo "Ciao, io sono $(whoami) e oggi è $(date +%Y-%m-%d)"
+    Ciao, io sono tomasi e oggi è 2021-03-03
+    ```
+
+# Un semplice VCS (2/3)
+
+-   Questo comando realizza una copia di backup dei file nella directory corrente:
+
+    ```sh
+    tar -c -f "/vcsdatabase/hello_world-$(date +%Y%m%d%H%M%S)-$(whoami).tar" *
     ```
 
 -   Il comando crea in un folder `/vcsdatabase` un file `.tar` contenente
@@ -95,10 +112,9 @@ Alla fine dell'esempio, il database del VCS contiene due istantanee:
     quest'ultima è codificata come un lungo numero (es.,
     `20200926155130` per la data 2020-09-26, 15:51:30)
 
-# Un semplice VCS (2/2)
+# Un semplice VCS (3/3)
 
-È sempre utile associare un breve commento a un commit. Estendiamo
-la nostra idea in uno shell script, che possiamo chiamare `my_vcs.sh`:
+È sempre utile associare un breve commento a un commit. Estendiamo la nostra idea in uno shell script chiamato `my_vcs.sh`:
 
 ```sh
 #!/bin/bash
@@ -111,12 +127,13 @@ if [ "$tag" == "" ]; then
     exit 1
 fi
 
+# Create the folder, if it does not exist
+mkdir -p "${destpath}"
+
 readonly filename="${destpath}/$(date +%Y%m%d%H%M%S)-$(whoami)-${tag}.tar"
 tar -c -f "$filename" *
 echo "File \"$filename\" created successfully"
 ```
-
-Rendete lo script eseguibile con `chmod +x my_vcs.sh`.
 
 # Esempio d'uso
 
@@ -351,6 +368,15 @@ Quando si esegue `git commit`, avvengono queste cose:
 
 <iframe src="https://player.vimeo.com/video/513803423?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="960" height="540" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="anGitHub hello_world demo"></iframe>
 
+# Sincronizzare Git
+
+Siccome Git è un sistema distribuito, quando ci si connette a un server remoto occorre *sincronizzare* il proprio database. Questi sono i comandi più importanti:
+
+- `git clone` crea una nuova directory basandosi su un database remoto, e scarica l'intero database in `.git`;
+- `git pull` sincronizza il proprio database in `.git` richiedendo le modifiche
+  da uno remoto;
+- `git push` invia le proprie modifiche locali in `.git` a un database remoto.
+
 # Come funziona GitHub
 
 ![](./media/distributed vcs.svg)
@@ -361,29 +387,15 @@ Quando si esegue `git commit`, avvengono queste cose:
 
 # Software hosting basato su Git
 
--   GitHub (Microsoft): il più diffuso
--   GitLab (GitLab Inc.)
--   BitBucket (Atlassian)
--   SourceForge (Slashdot Media): il primo ad aver avuto grande diffusione, ora è poco usato
+-   [GitHub](https://github.com) (Microsoft): il più diffuso
+-   [GitLab](https://about.gitlab.com/) (GitLab Inc.)
+-   [BitBucket](https://bitbucket.org/product) (Atlassian)
+-   [SourceForge](https://sourceforge.net/) (Slashdot Media): il primo ad aver avuto grande diffusione, ora è poco usato
 -   Esistono anche soluzioni self-hosted ([Gitea](https://github.com/go-gitea/gitea), [GitBucket](https://github.com/gitbucket/gitbucket), etc.)
 
 # BitBucket
 
 <iframe src="https://player.vimeo.com/video/513805000" width="960" height="540" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-
-# Sincronizzare Git
-
-Siccome Git è un sistema distribuito, occorre sincronizzare
-manualmente il proprio database. Questi sono i comandi più importanti:
-
-- `git clone` crea una nuova directory basandosi su un database remoto;
-- `git pull` sincronizza il proprio database richiedendo le modifiche
-  da uno remoto;
-- `git push` invia le proprie modifiche locali a un database remoto.
-
-# Git
-
-![](./media/xkcd-git.png)
 
 # Git
 
@@ -397,12 +409,21 @@ manualmente il proprio database. Questi sono i comandi più importanti:
 # Guida per l'esercitazione
 
 1.  Creare un proprio account su GitHub (se non lo si ha già)
-2.  Creare un progetto vuoto e aggiungere `README.md`, `CHANGELOG.md`, `LICENSE.md` e `.gitignore`
-4.  Scrivere un programma (nel linguaggio di programmazione scelto) che stampi `Hello, wold!` [senza `r`] e pubblicarlo su GitHub
-5.  Aprire una issue, sistemare il messaggio e chiudere la issue
-6.  Aggiungere la possibilità di specificare un nome da linea di comando (come accedere alla linea di comando dipende dal linguaggio: provate a scoprirlo voi!)
+2.  Creare un progetto vuoto e aggiungere `.gitignore`
+4.  Scrivere un programma (nel linguaggio di programmazione scelto) che stampi `Hello, wold!` [senza `r`], fare un commit (1) e pubblicarlo su GitHub
+5.  Sistemare l'errore nella scritta e fare un commit (2)
+6.  Aggiungere la possibilità di specificare un nome e fare un commit (3):
+
+    ```sh
+    $ hello_world
+    Hello, world!
+    $ hello_world Maurizio
+    Hello, Maurizio!
+    ```
 
 # Indicazioni per C++
+
+# Istruzioni
 
 -   Installare CMake; sotto Linux Debian/Ubuntu/Mint basta eseguire
 
@@ -415,7 +436,7 @@ manualmente il proprio database. Questi sono i comandi più importanti:
     -   Un file `CMakeLists.txt` nella directory principale
     -   Una directory `src` che contiene il file `main.cpp`
 
--   In `.gitignore` elencate `*.o`, il nome dell'eseguibile (es. `hello_world`) ed eventuali file di backup (`*.bak`, `*~` a seconda dell'editor che usate)
+-   In `.gitignore` elencate `*.o`, il nome dell'eseguibile (es. `hello_world`), eventuali file di backup (`*.bak`, `*~` a seconda dell'editor che usate) e la directory `build`
 
 # Esempio di CMake per C++
 
@@ -431,37 +452,152 @@ project(hello_world
 
 # Our "project" will be able to build an executable out of a C++ source file
 add_executable(hello_world
-    main.cpp
+    src/main.cpp
 )
 
 # Force the compiler to use the C++17 standard
 target_compile_features(hello_world PUBLIC cxx_std_17)
 ```
 
-Riferimenti per CMake: [Documentazione ufficiale](https://cmake.org/documentation/), [*Professional CMake*](https://crascit.com/professional-cmake/) (C. Scott).
+# Esempio d'uso di CMake
+
+<asciinema-player src="cast/cmake-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
+
+# Riferimenti per CMake
+
+- [Documentazione ufficiale](https://cmake.org/documentation/) (abbastanza illeggibile, ma è la più aggiornata per definizione)
+- [*Professional CMake*](https://crascit.com/professional-cmake/) (C. Scott)
+- [*An Introduction to Modern CMake*](https://cliutils.gitlab.io/modern-cmake/)
+
+# Formattazione
+
+-   Esistono tool per formattare automaticamente codice sorgente. Per il C++ esiste `clang-format`; installatelo con
+
+    ```sh
+    sudo apt install clang-format
+    ```
+    
+-   Se scrivete questo:
+
+    ```c++
+    int sum  ( int a,int b    )    {    return a+ b;}
+    ```
+    
+    la formattazione automatica lo trasforma in
+    ```c++
+    int sum(int a, int b) { return a + b; }
+    ```
+
+# Formattazione
+
+-   Il programma `clang-format` si usa da linea di comando:
+
+    ```sh
+    clang-format -i main.cpp
+    ```
+    
+-   È possibile configurare gli editor moderni perché lo chiamino automaticamente ad ogni salvataggio. Per Visual Studio Code esiste il package [clang-format](https://github.com/xaverh/vscode-clang-format-provider); analoghi strumenti esistono per Emacs, Vim, etc.
+
+-   Questi strumenti sono utilissimi per mantenere il codice pulito e chiaro da leggere: cercate di configurarli al meglio.
 
 # Indicazioni per C\#
 
--   Creare un'applicazione vuota con `dotnet new console`
+# Istruzioni (1/2)
+
+-   Installate [.NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0): è disponibile per Windows, Mac OS X e Linux
+-   Questo installerà il programma `dotnet` (da usare dalla linea di comando)
+-   Se usate il comando `dotnet`, sarà così facile che sembra di barare!
+-   Come editor vi consiglio [Visual Studio Code](https://code.visualstudio.com/) (Windows, Mac OS X, Linux), oppure [Visual Studio Community](https://visualstudio.microsoft.com/it/vs/community/) (solo per Windows, complesso!)
+
+# Istruzioni (2/2)
+
+-   Creare un'applicazione vuota e il file `.gitignore` con
+
+    ```sh
+    $ dotnet new console
+    $ dotnet new gitignore
+    ```
+    
+-   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
+    
+-   Compilate ed eseguite con
+
+    ```
+    dotnet run
+    ```
+
+# Esempio
+
+<asciinema-player src="cast/dotnet-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
+
+# Formattazione
+
+-   Per formattare automaticamente il codice in Visual Studio Code, installate il package [C\#](https://code.visualstudio.com/docs/languages/csharp).
+
+-   Per formattare il codice da linea di comando, installate `dotnet-format`:
+
+    ```sh
+    $ dotnet tool install -g dotnet-format
+    ```
 
 # Indicazioni per Julia
 
--   Creare un package usando la guida in [julialang.github.io/Pkg.jl/v1/creating-packages/](https://julialang.github.io/Pkg.jl/v1/creating-packages/)
+# Istruzioni
 
--   Creare un'applicazione che implementi la funzione `main`:
+-   Creare un package usando la guida in [julialang.github.io/Pkg.jl/v1/creating-packages/](https://julialang.github.io/Pkg.jl/v1/creating-packages/) (vedi l'esempio nella slide seguente)
+
+-   Creare un'applicazione (non in `src`) in questo modo:
 
     ```julia
     #!/usr/bin/env julia
-
+    
+    using Pkg
+    Pkg.activate(normpath(@__DIR__))
+    
+    using hello_world
+    
     function main()
-        # …
+        hello_world.greet()
     end
+    
+    main()
     ```
 
+# Esempio
+
+<asciinema-player src="cast/julia-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
+
+# Formattazione
+
+-   Se usate Visual Studio Code, esiste il pacchetto [julia-vscode](https://www.julia-vscode.org/docs/stable/gettingstarted/).
+
+-   Dovrebbe garantire la possibilità di formattare il codice, ma è bene che verifichiate che funzioni.
+
+-   Esiste anche un package autonomo, [DocumentFormat](https://github.com/julia-vscode/DocumentFormat.jl).
 
 # Indicazioni per Kotlin
 
--   Creare un'applicazione console in IntelliJ IDEA
+# Istruzioni
+
+-   Creare un'applicazione in IntelliJ IDEA:
+
+    -   Come *Build system* scegliete «Gradle Kotlin»
+    
+    -   Come JDK, se non ne avete di installati scegliete il numero (versione) 11
+    
+    -   Usate «Console application» come template
+    
+-   L'applicazione vuota stampa `Hello World!`: come prima cosa, cambiate il messaggio in `Hello, wold!`.
+
+-   Per usare Git, meglio fare affidamento al menu «VCS» di IntelliJ (gestisce automaticamente i `.gitignore`).
+
+---
+
+<center>
+![](./media/intellij_new_kotlin_project.png)
+</center>
+
+# Compilare ed eseguire
 
 -   La directory che contiene il progetto ha un eseguibile, `gradlew`, che può essere usato per produrre una *distribution* nella directory `./build/distributions`:
 
@@ -469,4 +605,10 @@ Riferimenti per CMake: [Documentazione ufficiale](https://cmake.org/documentatio
     gradlew assembleDist
     ```
 
-    Create una distribuzione del vostro programma e cercate di capire come installarla e usarla.
+-   Siccome è una funzione molto utile, esploratela! Create una distribuzione del vostro programma e cercate di capire come installarla e usarla.
+
+# Suggerimenti
+
+-   In Kotlin (come in Java) si fa grande affidamento sull'ambiente di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!
+
+-   Abituatevi a invocare regolarmente il comando «Code | Reformat code» (Ctrl+Alt+L).
