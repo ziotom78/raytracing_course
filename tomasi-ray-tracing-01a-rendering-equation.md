@@ -183,6 +183,13 @@ la misurano.
 
 ![](./media/flux.svg){height=260}
 
+# Flusso e irradianza
+
+-   Le definizioni date sin qui sono quelle usate nella *computer graphics*
+-   I fisici usano convenzioni un po' diverse: il *flusso* è
+    normalizzato sull'area, e coincide quindi con quello che qui
+    abbiamo chiamato *irradianza*.
+
 # Radianza
 
 -   Ciò che ci interessa!
