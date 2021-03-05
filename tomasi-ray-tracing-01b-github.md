@@ -544,9 +544,9 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
 
 # Istruzioni
 
--   Creare un package usando la guida in [julialang.github.io/Pkg.jl/v1/creating-packages/](https://julialang.github.io/Pkg.jl/v1/creating-packages/) (vedi l'esempio nella slide seguente)
+-   Creare un package usando il [manuale di Julia](https://julialang.github.io/Pkg.jl/v1/creating-packages/) (vedi l'esempio nella slide seguente)
 
--   Creare un'applicazione (non in `src`) in questo modo:
+-   Creare un'applicazione `hello_world` (nella directory dove c'è `Project.toml`) in questo modo:
 
     ```julia
     #!/usr/bin/env julia
@@ -574,6 +574,16 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
 -   Dovrebbe garantire la possibilità di formattare il codice, ma è bene che verifichiate che funzioni.
 
 -   Esiste anche un package autonomo, [DocumentFormat](https://github.com/julia-vscode/DocumentFormat.jl).
+
+# Uso di package
+
+-   Aspetto fondamentale di Julia!
+
+-   Corrispondono ai *virtual environments* di Python
+
+-   Con `Pkg.generate` si crea un nuovo package, con `Pkg.activate` si attiva il package
+
+-   Lo script `hello_world` mostrato prima attiva il package e lo invoca
 
 # Indicazioni per Kotlin
 
