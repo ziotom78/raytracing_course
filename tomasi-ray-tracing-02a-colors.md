@@ -32,7 +32,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   In codici numerici che simulano la propagazione della luce,
     dobbiamo risolvere due problemi:
 
-    1.  Una funzione come $L: \mathbb{R} \rightarrow \mathbb{R}$ ha un
+    1.  Una funzione $f(\lambda)$ dipendente dalla lunghezza d'onda ha un
         numero infinito di gradi di libertà: come rappresentarla
         numericamente?
 
@@ -46,8 +46,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Emissioni realistiche
 
--   La forma dello spettro **non** deve però far pensare che basti un
-    valore di $\lambda$ per indicare un colore!
+-   La forma dello spettro **non** deve però far pensare che basti *un solo* valore scalare per indicare un colore: questo è vero solo per un corpo nero ideale (dove è sufficiente la temperatura `T`)!
 
 -   Gli spettri di emissione di oggetti del mondo reale possono essere
     molto complessi (v. lezione precedente):
@@ -133,13 +132,18 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Le curve $X(\lambda)$, $Y(\lambda)$ e $Z(\lambda)$ sono
     predefinite.
+
 -   Definite dalla Commission Internationale de l'Éclairage (CIE)
--   Basate su esperimenti con volontari.
+
+-   Basate su esperimenti degli anni '20 con 17 volontari.
+
 -   La costante di normalizzazione è sempre
 
     $$
     \int_\lambda \mathrm{d}\lambda\,Y(\lambda) \approx 106.856895\,\text{nm}.
     $$
+
+-   Essendo state derivate prima della scoperta dei coni (anni '50), le curve $X$, $Y$ e $Z$ seguono un andamento diverso dall'effettiva risposta delle cellule.
 
 # Curve X, Y, Z
 
@@ -269,12 +273,7 @@ document.addEventListener('rgb-colors', function() {
     \end{aligned}
     $$
 
--   Equazione espressa per $X$ (lo stesso per $Y$ e $Z$):
-    $$
-    \begin{aligned}
-    x = \frac1k \int_\lambda\,\mathrm{d}\lambda X(\lambda)\, L_\lambda(x \rightarrow \Theta).
-    \end{aligned}
-    $$
+-   Possiamo esprimere l'equazione usando $R$, $G$ e $B$ anziché $L_\lambda$?
 
 # Operazioni sui colori
 
@@ -299,36 +298,64 @@ L_\lambda &= \alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)},\\
 \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &= \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,\bigl(\alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)}\bigr),\\
 \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &= \alpha\int_\lambda\mathrm{d}\lambda\,X(\lambda)\, L_\lambda^{(1)} +
   \beta \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda^{(2)},\\
-X &= \alpha X^{(1)} + \beta X^{(2)},\\
+x &= \alpha x^{(1)} + \beta x^{(2)},\\
 \end{aligned}
 $$
-e quindi operazioni lineari sulla radianza si traducono in operazioni lineari sulle componenti di colore $X$, $Y$ e $Z$.
+e quindi operazioni lineari sulla radianza si traducono in operazioni lineari sulle componenti di colore $x$, $y$ e $z$.
 
 # Esempio (2/2)
 
 $$
 \begin{aligned}
-M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}X\\Y\\Z\end{pmatrix} &=
-M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}\alpha X^{(1)} + \beta X^{(2)}\\\alpha Y^{(1)} + \beta Y^{(2)}\\\alpha Z^{(1)} + \beta Z^{(2)}\end{pmatrix},\\
+M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x\\y\\z\end{pmatrix} &=
+M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}\alpha x^{(1)} + \beta x^{(2)}\\\alpha y^{(1)} + \beta y^{(2)}\\\alpha z^{(1)} + \beta z^{(2)}\end{pmatrix},\\
 \begin{pmatrix}R\\G\\B\end{pmatrix} &=
-\alpha M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}X^{(1)}\\Y^{(1)}\\Z^{(1)}\end{pmatrix} +
-\beta M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}X^{(2)}\\Y^{(2)}\\Z^{(2)}\end{pmatrix},\\
+\alpha M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x^{(1)}\\y^{(1)}\\z^{(1)}\end{pmatrix} +
+\beta M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x^{(2)}\\y^{(2)}\\z^{(2)}\end{pmatrix},\\
 R &= \alpha R^{(1)} + \beta R^{(2)},\\
 \end{aligned}
 $$
 e quindi la linearità è preservata anche per $R$, $G$ e $B$.
 
-# Risposta dei monitor
+# Equazione del rendering
 
--   Per specificare l'intensità di ciascuno dei canali RGB, una scheda
-    grafica moderna richiede un valore *intero* da 0 a 255;
+Se indichiamo con $R$, $G$ e $B$ la radianza integrata e convertita nel sistema RGB, l'equazione del rendering si traduce in un sistema di tre equazioni identiche:
+$$
+\begin{aligned}
+R(x \rightarrow \Theta) = &R_{e}(x \rightarrow \Theta) +\\
+    &\int_{\Omega_x} f_{r,R}(x, \Psi \rightarrow \Theta)\,R(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,\\
+\end{aligned}
+$$
+e analogamente per $G$ e $B$, ma solo a patto che la BRDF $f_r$ sia una funzione costante se $\lambda$ varia all'interno della risposta in banda $X$, $Y$ e $Z$!
 
--   La potenza emessa dai punti di uno schermo non varia linearmente:
+
+# Visualizzazione su dispositivi
+
+# Funzionamento di un monitor
+
+-   Un monitor visualizza le immagini tramite una matrice di punti (*pixel*: *picture element*)
+-   Ogni punto è comandato tramite una terna RGB di valori
+-   I valori possibili spaziano in un intervallo limitato
+-   Il realismo nell'emissione di $L$ è quindi in genere impossibile
+
+---
+
+<center>
+![](./media/monitor-in-dark-room.jpg)
+</center>
+
+# Non-linearità dei monitor
+
+-   La potenza emessa dai punti di uno schermo non varia linearmente.
+
+-   La relazione tra il livello di emissione richiesto $I$ e il flusso $\Phi$ effettivamente emesso da un pixel è di solito della forma
     $$
-    \text{output} = \text{input}^\gamma,
+    \Phi \propto I^\gamma,
     $$
 
-    dove $\text{input}, \text{output} \in [0, 1]$, e $\gamma$ è un parametro caratteristico del dispositivo.
+    dove $I \in [0, 1]$, e $\gamma$ è un parametro caratteristico del dispositivo.
+    
+-   Nei monitor moderni, $I$ non è un numero reale ma un valore *intero* da 0 a 255.
 
 # Andamento di $\gamma$
 
@@ -460,12 +487,12 @@ document.addEventListener('monitor-calibration-state', function() {
 
 # Conversione da RGB a sRGB
 
--   La conversione da RGB a sRGB è esprimibile con la formula
+-   La conversione da RGB, $(R, G, B)$, a sRGB, $(r, g, b)$, è esprimibile con la formula
     $$
     \begin{aligned}
     r &= \left[k\,R^\gamma\right],\\
     g &= \left[k\,G^\gamma\right],\\
-    b &= \left[k\,B\gamma\right],\\
+    b &= \left[k\,B^\gamma\right],\\
     \end{aligned}
     $$
     dove $[\cdot]$ è indica l'arrotondamento a intero, e $k$ è una costante di normalizzazione.
@@ -476,7 +503,7 @@ document.addEventListener('monitor-calibration-state', function() {
 -   Se i valori R, G e B fossero compresi nell'intervallo $[0, 1]$, allora basterebbe porre $k = 255$.
 -   Ma l'intervallo dei possibili valori di R, G e B è infinito:
     -   Dipende dall'unità di misura usata per $L_\lambda$;
-    -   Dipende dal tipo di scena (astronave vicino a una supernova? grotta?)
+    -   Dipende dalla scena (astronave vicino a una supernova? stanza in penombra?)
 -   Lo standard CIE XYZ definisce una normalizzazione di riferimento in termini di un colore standard, il *D65*, che corrisponde all'emissione di un corpo nero a 6500 K (più o meno l'emissione del cielo in una giornata limpida).
 -   Vedremo meglio questo punto quando avremo discusso il salvataggio di immagini.
 
