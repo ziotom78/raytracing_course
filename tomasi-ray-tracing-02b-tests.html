@@ -119,6 +119,7 @@
 <li>Abbiamo visto che i colori percepiti dall’occhio umano possono essere codificati tramite tre valori scalari <span class="math inline">X</span>, <span class="math inline">Y</span>, <span class="math inline">Z</span>.</li>
 <li>Il sistema più usato per codificare colori è però RGB (Red, Green, Blue), che si può convertire in XYZ tramite una trasformazione matriciale.</li>
 <li>Il compito di oggi è implementare un tipo di dato <code>Color</code> che codifichi un colore secondo i livelli di rosso, verde e blu.</li>
+<li>La conversione da RGB a sRGB sarà oggetto dell’esercitazione di settimana prossima, quando introdurremmo i formati grafici (PNG, Jpeg, etc.)</li>
 </ul>
 </section>
 <section id="colori-in-python" class="slide level1">
@@ -134,37 +135,197 @@
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    green: <span class="bu">float</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    blue: <span class="bu">float</span></span></code></pre></div></li>
 <li><p>È possibile creare un colore con questa sintassi:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(red<span class="op">=</span><span class="fl">3.4</span>, green<span class="op">=</span><span class="fl">0.4</span>, blue<span class="op">=</span><span class="fl">1.7</span>)</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(r<span class="op">=</span><span class="fl">3.4</span>, g<span class="op">=</span><span class="fl">0.4</span>, b<span class="op">=</span><span class="fl">1.7</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">3.4</span>, <span class="fl">0.4</span>, <span class="fl">1.7</span>)  <span class="co"># Shorter version</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="definire-operazioni" class="slide level1">
+<h1>Definire operazioni</h1>
+<ul>
+<li><p>Per il tipo <code>Color</code> abbiamo bisogno di definire la somma/differenza tra due colori e il prodotto con uno scalare.</p></li>
+<li><p>Questi sono gli operatori della classe <code>Color</code> (non mostro la sottrazione):</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">__add__</span>(<span class="va">self</span>, other):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Color(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.r <span class="op">+</span> other.r,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.g <span class="op">+</span> other.g,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.b <span class="op">+</span> other.b,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">__mul__</span>(<span class="va">self</span>, scalar):</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Color(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.r <span class="op">*</span> scalar,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.g <span class="op">*</span> scalar,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.b <span class="op">*</span> scalar,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div></li>
 </ul>
 </section>
 <section id="verifica-del-codice" class="slide level1">
 <h1>Verifica del codice</h1>
 </section>
+<section id="perché-verificare-il-codice" class="slide level1">
+<h1>Perché verificare il codice?</h1>
+<ul>
+<li><p>Gli errori sono dietro l’angolo!</p></li>
+<li><p>Esempio della scorsa settimana (esame di TNDS):</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>CampoVettoriale <span class="kw">operator</span>+(<span class="at">const</span> CampoVettoriale &amp;v) <span class="at">const</span> { </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  CampoVettoriale sum(v); <span class="co">// invoco costruttore di copia di v</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  sum.Addcomponent(getFx(), getFx(), getFz());</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> sum;</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<li><p>Per verificare la correttezza di una funzione, occorrerebbe invocarla con dati <em>non banali</em> e controllarne il risultato.</p></li>
+</ul>
+</section>
+<section id="come-verificare-il-codice" class="slide level1">
+<h1>Come verificare il codice?</h1>
+<ul>
+<li><p>Una volta scritto, il codice va <em>verificato</em> su casi il cui risultato è già noto</p></li>
+<li><p>Il modo più semplice è testare il codice stampando a video i valori:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)  <span class="co"># Avoid trivial cases like Color(3.0, 3.0, 3.0)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)  <span class="co"># in your tests!</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">+</span> color2)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (color1 <span class="op">*</span> <span class="dv">2</span>)</span></code></pre></div>
+<p>che produce l’output</p>
+<pre class="text"><code>Color(r=6.0, g=8.0, b=10.0)
+Color(r=2.0, g=4.0, b=6.0)</code></pre></li>
+<li><p>Possiamo fare di meglio?</p></li>
+</ul>
+</section>
 <section id="scrittura-di-test-automatici" class="slide level1">
 <h1>Scrittura di test automatici</h1>
-</section>
-<section id="continuous-integration" class="slide level1">
-<h1>Continuous Integration</h1>
-</section>
-<section id="implementazione" class="slide level1">
-<h1>Implementazione</h1>
-</section>
-<section id="dettagli-di-color" class="slide level1">
-<h1>Dettagli di <code>Color</code></h1>
 <ul>
-<li><p>Definite un tipo <code>Color</code> e le seguenti operazioni su esso:</p>
+<li><p>Il compito di verificare la correttezza dei calcoli è tedioso e facile da sbagliare</p></li>
+<li><p>Per i compiti tediosi, dovremmo affidarci al computer!</p></li>
+<li><p>Tutti i linguaggi moderni offrono sistemi per l’esecuzione automatica di test</p></li>
+</ul>
+</section>
+<section id="test-automatici" class="slide level1">
+<h1>Test automatici</h1>
 <ul>
-<li>Somma/sottrazione di due colori, componente per componente (la sottrazione sarà utile in seguito);</li>
-<li>Prodotto per uno scalare.</li>
-</ul></li>
-<li><p>Se il vostro linguaggio lo consente, definite il tipo <code>Color</code> come un <em>value type</em>:</p>
+<li>In Python, il nostro codice di partenza è questo:</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">+</span> color2)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (color1 <span class="op">*</span> <span class="dv">2</span>)</span></code></pre></div>
 <ul>
-<li>In C++, usate <code>struct</code> oppure <code>class</code>;</li>
-<li>In C#, usate <code>struct</code>, ma non usate <code>class</code>;</li>
-<li>In Pascal, usate <code>object</code> o <code>record</code>, ma non usate <code>class</code>;</li>
-<li>In Nim, usate <code>object</code>, ma non usate <code>ref object</code>.</li>
-</ul></li>
+<li>Possiamo migliorarlo facilmente usando <code>assert</code>:</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (color1 <span class="op">+</span> color2) <span class="op">==</span> Color(<span class="fl">6.0</span>, <span class="fl">8.0</span>, <span class="fl">10.0</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (<span class="dv">2</span> <span class="op">*</span> color1) <span class="op">==</span> Color(<span class="fl">2.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>)</span></code></pre></div>
+<ul>
+<li>Se eseguiamo il codice, non produrrà alcun output: tutto bene!</li>
+</ul>
+</section>
+<section id="come-testare-i-test" class="slide level1">
+<h1>Come testare i test?</h1>
+<ul>
+<li><p>Il fatto che il nostro programma non produca output è atteso (non ha bug), ma non tranquillizzante: siamo <em>sicuri</em> che abbia davvero eseguito il test?</p></li>
+<li><p>Una pratica molto diffusa è quella di iniziare scrivendo test <em>sbagliati</em>, e verificando che si generi effettivamente un errore:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (color1 <span class="op">+</span> color2) <span class="op">==</span> Color(<span class="fl">6.0</span>, <span class="fl">8.0</span>, <span class="fl">11.0</span>) <span class="co"># 10 -&gt; 11</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (<span class="dv">2</span> <span class="op">*</span> color1) <span class="op">==</span> Color(<span class="fl">3.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>) <span class="co"># 2 -&gt; 3</span></span></code></pre></div>
+<p>Solo quando l’errore viene emesso si corregge il test.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p><asciinema-player src="cast/color-test-python.cast" rows="27" cols="94" font-size="medium"></asciinema-player></p>
+</section>
+<section id="verifiche-su-floating-point" class="slide level1">
+<h1>Verifiche su floating point</h1>
+<ul>
+<li><p>Nei test che scriveremo dovremo usare operazioni logiche e di confronto (in Python: <code>==</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, etc.)</p></li>
+<li><p>Occorre prestare molta attenzione ai numeri floating point!</p>
+<p><asciinema-player src="cast/floating-point-python.cast" rows="15" cols="80"
+    font-size="medium"></asciinema-player></p></li>
+</ul>
+</section>
+<section id="accorgimenti-per-floating-point" class="slide level1">
+<h1>Accorgimenti per floating point</h1>
+<ul>
+<li><p>Evitate dei test che coinvolgano numeri con parti decimali (es., <code>2.1</code>, <code>5.09</code>)</p></li>
+<li><p>Numeri interi piccoli (es., <code>16.0</code>) sono codificati senza arrotondamenti…</p></li>
+<li><p>…quindi nei test, se possibile, usate numeri floating point interi (come abbiamo fatto per la classe <code>Color</code> in Python)</p></li>
+<li><p>Se non è possibile, definite una funzione <code>are_close</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> are_close(x, y, epsilon <span class="op">=</span> <span class="fl">1e-10</span>):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">abs</span>(x <span class="op">-</span> y) <span class="op">&lt;</span> epsilon</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">sum</span>([<span class="fl">0.1</span>] <span class="op">*</span> <span class="dv">10</span>)       <span class="co"># Sum of the values in [0.1, 0.1, ..., 0.1]</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x)                  <span class="co"># Output: 0.9999999999999999</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> are_close(<span class="fl">1.0</span>, x)  <span class="co"># This test passes successfully</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="funzioni-di-supporto-ai-test" class="slide level1">
+<h1>Funzioni di supporto ai test</h1>
+<ul>
+<li><p>Nel nostro codice Python, per verificare la corrispondenza tra due colori abbiamo usato <code>==</code>, che funziona perché abbiamo specificato numeri interi:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ot">assert</span> (color1 + color2) == Color(<span class="fl">6.0</span>, <span class="fl">8.0</span>, <span class="fl">10.0</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ot">assert</span> (<span class="dv">2</span> * color1) == Color(<span class="fl">2.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>)</span></code></pre></div></li>
+<li><p>Però <span class="math inline">\pi</span> compare spesso nei calcoli radiometrici!</p></li>
+<li><p>Definite una funzione <code>are_colors_close</code> che funzioni con <code>Color</code>:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> are_colors_close(a, b):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> are_close(a.r, b.r) <span class="kw">and</span> are_close(a.g, b.g) <span class="kw">and</span> are_close(a.b, b.b)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> are_colors_close(color1, color2)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="continuous-integration-ci" class="slide level1">
+<h1>Continuous Integration (CI)</h1>
+</section>
+<section id="cosa-significa-ci" class="slide level1">
+<h1>Cosa significa CI?</h1>
+<ul>
+<li><p><em>Continuous Integration</em> (CI) è la pratica di fare spesso commit sul server Git (nel nostro caso, il sito GitHub).</p></li>
+<li><p>Fare spesso commit è il modo migliore per obbligarsi a stare sincronizzati col lavoro di altri.</p></li>
+<li><p>Questo però crea potenziali problemi: cosa succede se le mie modifiche interferiscono con quelle di un altro?</p></li>
+<li><p>I test automatici possono venirci in soccorso, ma <strong>occorre ricordarsi di eseguirli sempre</strong>!</p></li>
+</ul>
+</section>
+<section id="build-automatici" class="slide level1">
+<h1>Build automatici</h1>
+<ul>
+<li><p>Per mettere in pratica la CI è necessario che il computer sappia eseguire i test automatici da solo.</p></li>
+<li><p>La pratica della <em>continuous integration</em> richiede quindi che il computer sia istruito perché compili il codice ed esegua i test automatici ogni volta che fa un commit.</p></li>
+</ul>
+</section>
+<section id="potenziali-problemi" class="slide level1">
+<h1>Potenziali problemi</h1>
+<ul>
+<li><p>È sufficiente che un test fatto girare sul <strong>mio</strong> computer abbia successo?</p></li>
+<li><p><strong>No</strong>! Il mio computer potrebbe avere delle librerie installate che il codice usa, ma che su altri computer non sono (ancora) state installate</p></li>
+<li><p>Perché un test sia rappresentativo, deve essere eseguito su una macchina «vergine» (ossia, su cui sia installato solo il sistema operativo di base).</p></li>
+</ul>
+</section>
+<section id="ci-builds" class="slide level1">
+<h1>CI builds</h1>
+<ul>
+<li><p>Un <em>CI build</em> è un processo che esegue i test su una macchina virtuale creata appositamente, che viene cancellata subito dopo.</p></li>
+<li><p>L’esito del test può essere segnalato tramite email, oppure tramite un’icona sulla pagina del repository in GitHub</p></li>
+<li><p>GitHub implementa le «Actions», che altro non sono che <em>CI builds</em></p></li>
+</ul>
+</section>
+<section id="workflow" class="slide level1">
+<h1>Workflow</h1>
+<ol type="1">
+<li>Crea una nuova macchina virtuale (solitamente nel Cloud) e installa una versione di Linux/Mac OS X/Windows;</li>
+<li>Scarica le librerie e i programmi necessari alla compilazione (es., Julia);</li>
+<li>Scarica da un repository Git (es., una pagina GitHub) il codice che deve essere verificato;</li>
+<li>Compila il codice;</li>
+<li>Esegue i test automatici;</li>
+<li>Se necessario, avvisa l’utente di malfunzionamenti.</li>
+</ol>
+</section>
+<section id="github-actions" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li>Il sito GitHub non offre solo l’<em>hosting</em> di repository Git, ma anche l’esecuzione di <em>CI builds</em>.</li>
+<li>Questi builds sono chiamate «Actions».</li>
+<li>Il punto di forza di GitHub è che esistono librerie di «actions», ossia template che permettono velocemente di configurare <em>CI builds</em>.</li>
+<li>Vedremo un esempio pratico più tardi, nel caso del C++.</li>
 </ul>
 </section>
 <section id="guida-per-lesercitazione" class="slide level1">
@@ -173,48 +334,615 @@
 <section id="guida-per-lesercitazione-1" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
 <ol type="1">
-<li><p>Creare un nuovo repository GitHub: questo sarà il repository che userete per il resto del corso!</p></li>
-<li><p>Implementare il tipo <code>Color</code> con le seguenti caratteristiche:</p>
+<li><p>Create una nuova directory in cui tenere il vostro progetto, scegliendo un nome appropriato! (Qui useremo il nome <code>raytracer</code>).</p></li>
+<li><p>Strutturare il progetto nel modo seguente:</p>
 <ul>
-<li>Campi <code>red</code>, <code>green</code>, <code>blue</code>;</li>
-<li>Funzione <code>is_close</code> per verificare se due colori sono simili;</li>
-<li>Somma e differenza tra colori, prodotto colore-scalare;</li>
-<li>Costante <code>BLACK_COLOR = Color(0.0, 0.0, 0.0)</code>.</li>
+<li>Una libreria che implementi <code>Color</code> e le operazioni su di esso</li>
+<li>Un eseguibile da linea di comando, che per il momento stampi solo <code>Hello, world!</code></li>
+<li>Una serie di test automatici sul tipo <code>Color</code></li>
 </ul></li>
-<li><p>Implementare una suite completa di test;</p></li>
-<li><p>Attivare un sistema di Continuous Integration con GitHub Actions.</p></li>
+<li><p>Registrare il progetto su GitHub</p></li>
+<li><p>Configurare una «action» che esegua i test automatici</p></li>
 </ol>
+</section>
+<section id="lavoro-in-gruppo" class="slide level1">
+<h1>Lavoro in gruppo</h1>
+<ul>
+<li>In ogni gruppo, solo <strong>uno</strong> di voi dovrebbe creare lo scheletro del progetto, creare la pagina GitHub e salvarlo Gli altri membri dovranno diventare collaboratori (v. slide seguente)</li>
+<li>Pensate a un modo per suddividere il lavoro tra membri del vostro gruppo</li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/github-add-collaborators.png" />
+</center>
+</section>
+<section id="grafico-delle-dipendenze" class="slide level1">
+<h1>Grafico delle dipendenze</h1>
+<figure>
+<img data-src="plots/11623936740612938705.png" />
+</figure>
+</section>
+<section id="caratteristiche-di-color" class="slide level1">
+<h1>Caratteristiche di <code>Color</code></h1>
+<ul>
+<li>Tre campi <code>r</code>, <code>g</code>, <code>b</code> di tipo floating-point (non perdete tempo a definire <code>GetR</code>/<code>SetR</code> e simili: il tipo <code>Color</code> deve essere agile da usare!);</li>
+<li>Metodo <code>Color.is_close</code> o funzione <code>are_close</code> per verificare se due colori sono simili (utile nei test);</li>
+<li>Somma e differenza tra colori;</li>
+<li>Prodotto colore-scalare.</li>
+</ul>
+</section>
+<section id="uso-della-memoria" class="slide level1">
+<h1>Uso della memoria</h1>
+<ul>
+<li><p>Nella maggior parte dei linguaggi c’è una distinzione tra <em>value types</em> e <em>reference types</em></p></li>
+<li><p>I <em>value types</em> sono allocati sullo stack: sono molto veloci da usare, ma non possono occupare troppa memoria (alcuni kB al massimo)</p></li>
+<li><p>I <em>reference types</em> possono occupare tutta la memoria che vogliono, ma sono più lenti da leggere e scrivere dei <em>value types</em></p></li>
+<li><p>Fanno eccezione i linguaggi basati su JVM (Java, Kotlin, Scala, etc.), per cui esistono solo <em>reference types</em> (ma la JVM può autonomamente convertire variabili in <em>value types</em> se capisce che è conveniente).</p></li>
+</ul>
+</section>
+<section id="value-types" class="slide level1">
+<h1>Value types</h1>
+<ul>
+<li><p>La classe <code>Color</code> è molto piccola: richiede memoria per 3 numeri floating-point. È quindi logico definirla come un <em>value type</em>.</p></li>
+<li><p>A seconda del linguaggio</p>
+<ul>
+<li>In C++, usate <code>struct</code> oppure <code>class</code> (è uguale);</li>
+<li>In C#, usate <code>struct</code> (value type), ma non <code>class</code> (reference type);</li>
+<li>In Pascal, usate <code>object</code> o <code>record</code>, ma non usate <code>class</code>;</li>
+<li>In Nim, usate <code>object</code>, ma non usate <code>ref object</code>.</li>
+<li>In Julia, usate il package <a href="https://juliaarrays.github.io/StaticArrays.jl/stable/"><code>StaticArrays</code></a></li>
+</ul></li>
+</ul>
 </section>
 <section id="test-1" class="slide level1">
 <h1>Test (1)</h1>
 <ul>
 <li><p>Creazione di colori e funzione <code>is_close</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>col1 <span class="op">=</span> Color(<span class="fl">0.7</span>, <span class="fl">0.4</span>, <span class="fl">0.3</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> col1.is_close(Color(<span class="fl">0.7</span>, <span class="fl">0.4</span>, <span class="fl">0.3</span>))</span></code></pre></div></li>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>col1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> col1.is_close(Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span></code></pre></div></li>
 <li><p>Verifica che <code>is_close</code> fallisca quando è necessario:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> col2.is_close(Color(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>))</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="va">False</span>  <span class="co"># You shouldn&#39;t reach this line!</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">AssertionError</span>:</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span>  <span class="co"># Ok!</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> col2.is_close(Color(<span class="fl">3.0</span>, <span class="fl">4.0</span>, <span class="fl">5.0</span>))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="va">False</span>  <span class="co"># You shouldn&#39;t reach this line!</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">AssertionError</span>:</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span>  <span class="co"># Ok!</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="test-2" class="slide level1">
 <h1>Test (2)</h1>
 <ul>
 <li><p>Somma/differenza di colori:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>col2 <span class="op">=</span> Color(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.9</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>sum_col <span class="op">=</span> col1 <span class="op">+</span> col2</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sum_col.is_close(Color(<span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">1.2</span>))</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>sub_col <span class="op">=</span> col1 <span class="op">-</span> col2</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sub_col.is_close(Color(<span class="fl">0.6</span>, <span class="fl">0.2</span>, <span class="op">-</span><span class="fl">0.6</span>))</span></code></pre></div></li>
-<li><p>Prodotto scalare-colore (potete implementare anche colore-scalare, se volete):</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>prod_col <span class="op">=</span> <span class="fl">2.0</span> <span class="op">*</span> col1</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> prod_col.is_close(Color(<span class="fl">1.4</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>))</span></code></pre></div></li>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>col1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)  <span class="co"># Do not use the previous definition,</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>col2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">7.0</span>, <span class="fl">9.0</span>)  <span class="co"># it&#39;s better to define it again here</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>sum_col <span class="op">=</span> col1 <span class="op">+</span> col2</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sum_col.is_close(Color(<span class="fl">6.0</span>, <span class="fl">9.0</span>, <span class="fl">12.0</span>))</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>sub_col <span class="op">=</span> col1 <span class="op">-</span> col2</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> sub_col.is_close(Color(<span class="op">-</span><span class="fl">4.0</span>, <span class="op">-</span><span class="fl">5.0</span>, <span class="op">-</span><span class="fl">6.0</span>))</span></code></pre></div></li>
+<li><p>Prodotto colore-scalare (implementate anche scalare-colore, se volete):</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>prod_col <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>) <span class="op">*</span> <span class="fl">2.0</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> prod_col.is_close(Color(<span class="fl">2.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>))</span></code></pre></div></li>
+</ul>
+</section>
+<section id="test-3" class="slide level1">
+<h1>Test (3)</h1>
+<ul>
+<li><p>Aggiungete un <em>workflow</em> al vostro repository GitHub</p></li>
+<li><p>Ci sono molti template disponibili in GitHub: scegliete il più appropriato</p></li>
+<li><p>Il workflow deve eseguire le seguenti azioni:</p>
+<ol type="1">
+<li>Scaricare il codice dal repository GitHub (verifica che non manchino file)</li>
+<li>Compilare il codice (verifica che non ci siano errori di sintassi)</li>
+<li>Eseguire i test (verifica che il codice funzioni a dovere)</li>
+</ol></li>
+<li><p>Modificate un test in modo che fallisca e verificate che quando fate il commit ciò vi venga segnalato. (Poi rimettete a posto il test).</p></li>
+</ul>
+</section>
+<section id="indicazioni-per-c" class="slide level1">
+<h1>Indicazioni per C++</h1>
+</section>
+<section id="uso-di-cmake" class="slide level1">
+<h1>Uso di CMake</h1>
+<ul>
+<li><p>CMake permette non solo di generare automaticamente un <code>Makefile</code>, ma anche di eseguire test automatici.</p></li>
+<li><p>Create il seguente albero di directory:</p>
+<pre class="text"><code>$ tree raytracer
+raytracer
+├── CMakeLists.txt
+├── include
+│   └── colors.h
+├── src
+│   ├── colors.cpp
+│   └── raytracer.cpp
+└── test
+    └── colors.cpp</code></pre></li>
+</ul>
+</section>
+<section id="struttura-di-cmakelists.txt" class="slide level1">
+<h1>Struttura di <code>CMakeLists.txt</code></h1>
+<ul>
+<li><p>CMake dovrà creare tre prodotti:</p>
+<ol type="1">
+<li>Una libreria che implementi <code>Color</code>; sceglietele un nome (noi useremo <code>trace</code>).</li>
+<li>Un programma eseguibile che usi la libreria, che chiameremo <code>raytracer</code>. Al momento basta che stampi <code>Hello, world!</code>.</li>
+<li>Un programma che esegua i test, che chiameremo <code>colorTest</code>.</li>
+</ol></li>
+<li><p>Per creare programmi sappiamo che c’è il comando <code>add_executable</code>; per le librerie esiste l’analogo <code>add_library</code>.</p></li>
+<li><p>Le dipendenze tra libreria <code>trace</code> e programmi si specificano con <code>target_link_libraries</code></p></li>
+</ul>
+</section>
+<section id="librerie-ed-eseguibili" class="slide level1">
+<h1>Librerie ed eseguibili</h1>
+<ul>
+<li><p>La sequenza di librerie e di eseguibili da produrre si specifica così:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">add_library</span>(trace</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  src/colors.cpp</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This is needed if we keep .h files in the &quot;include&quot; directory</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="kw">target_include_directories</span>(trace <span class="ot">PUBLIC</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">$&lt;</span><span class="kw">BUILD_INTERFACE</span><span class="ot">:</span><span class="dv">${CMAKE_CURRENT_SOURCE_DIR}</span><span class="ot">/include&gt;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">$&lt;</span><span class="kw">INSTALL_INTERFACE</span><span class="ot">:include&gt;</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(raytracer</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  src/raytracer.cpp</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(raytracer <span class="ot">PUBLIC</span> trace)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(colorTest</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  test/colors.cpp</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(colorTest <span class="ot">PUBLIC</span> trace)</span></code></pre></div></li>
+<li><p><code>target_include_directories</code> specifica dove cercare <code>colors.h</code>.</p></li>
+</ul>
+</section>
+<section id="eseguire-test" class="slide level1">
+<h1>Eseguire test</h1>
+<ul>
+<li><p>Per eseguire test automatici, occorre invocare due comandi:</p>
+<ol type="1">
+<li><p><code>enable_testing</code> abilita la possibilità di eseguire test, e va scritto subito dopo il comando <code>project</code>.</p></li>
+<li><p><code>add_test</code> specifica quale dei file eseguibili da produrre esegue effettivamente test. (Si può usare più volte).</p></li>
+</ol></li>
+<li><p>Nel nostro caso, invocheremo <code>add_test</code> una sola volta per eseguire <code>colorTest</code></p></li>
+<li><p>Per eseguire i test, nella directory <code>build</code> basta invocare <code>ctest</code></p></li>
+</ul>
+</section>
+<section id="cmakelists.txt" class="slide level1">
+<h1><code>CMakeLists.txt</code></h1>
+<div class="sourceCode" id="cb19"><pre class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">cmake_minimum_required</span>(<span class="ot">VERSION</span> 3.12)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a &quot;project&quot;, providing a description and a programming language</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="kw">project</span>(raytracer</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">VERSION</span> 1.0</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">DESCRIPTION</span> <span class="st">&quot;Hello world in C++&quot;</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">LANGUAGES</span> <span class="ot">CXX</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Turn on the support for automatic tests</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="kw">enable_testing</span>()</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the library. Pick the name you like the most; we use &quot;trace&quot;</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="kw">add_library</span>(trace</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  src/colors.cpp</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Help the compiler when you write &quot;#include &lt;colors.h&gt;&quot;</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="kw">target_include_directories</span>(trace <span class="ot">PUBLIC</span> <span class="ot">$&lt;</span><span class="kw">BUILD_INTERFACE</span><span class="ot">:</span><span class="dv">${CMAKE_CURRENT_SOURCE_DIR}</span><span class="ot">/include&gt;</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="ot">$&lt;</span><span class="kw">INSTALL_INTERFACE</span><span class="ot">:include&gt;</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the program that we will run from the command line</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(raytracer</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>  src/raytracer.cpp</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="co"># The command-line program needs to be linked to the &quot;trace&quot; library</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(raytracer <span class="ot">PUBLIC</span> trace)</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="co"># This program runs the automatic tests on the &quot;Color&quot; class</span></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(colorTest</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>  test/colors.cpp</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a><span class="co"># The test program too needs to be linked to &quot;trace&quot;</span></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(colorTest <span class="ot">PUBLIC</span> trace)</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we specify that &quot;colorTest&quot; is a special executable, because</span></span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a><span class="co"># it is meant to be run automatically whenever we want to check our code</span></span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a><span class="kw">add_test</span>(<span class="ot">NAME</span> colorTest</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>  <span class="ot">COMMAND</span> colorTest</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Force the compiler to use the C++17 standard</span></span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a><span class="kw">target_compile_features</span>(raytracer <span class="ot">PUBLIC</span> <span class="ot">cxx_std_17</span>)</span></code></pre></div>
+</section>
+<section class="slide level1">
+
+<p><asciinema-player src="cast/c++-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player></p>
+</section>
+<section id="github-actions-1" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li><p>Una volta salvato il codice in un repository su GitHub, configurate una nuova «Action» (v. video seguente).</p></li>
+<li><p>Il modello è «CMake based projects» (ignorate il fatto che sembri supportare solo il linguaggio C):</p>
+<center>
+<p><img data-src="./media/cmake-github-action.png" /></p>
+</center></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<iframe src="https://player.vimeo.com/video/520878087?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Setting up GitHub Actions for CMake-based projects">
+</iframe>
+</section>
+<section id="esecuzione-dei-test" class="slide level1">
+<h1>Esecuzione dei test</h1>
+<ul>
+<li><p>Provate a modificare uno dei test sul tipo <code>Color</code>, in modo che fallisca:</p>
+<ul>
+<li>Cambiate il file <code>test/colors.cpp</code></li>
+<li>Andate nella directory <code>build</code> ed eseguite <code>ctest</code></li>
+<li>Fate il commit delle modifiche</li>
+<li>Inviate le modifiche a GitHub col comando <code>git push</code></li>
+</ul></li>
+<li><p>Cosa succede al <em>CI build</em>? Fallisce come vi aspettavate?</p></li>
+</ul>
+</section>
+<section id="suggerimenti" class="slide level1">
+<h1>Suggerimenti</h1>
+<ul>
+<li>Se il build <strong>non</strong> fallisce, è probabilmente perché viene usato come tipo di build il <code>Release</code> anziché il <code>Debug</code>, e avete usato <code>assert</code> nel vostro codice</li>
+<li>Soluzioni:
+<ul>
+<li>Cambiate il file <code>.yml</code> in modo da usare <code>Debug</code> anziché <code>Release</code></li>
+<li>Usate <code>#undef NDEBUG</code> prima di <code>#include &lt;cassert&gt;</code> (meglio!)</li>
+<li>Definite una vostra funzione <code>my_assert</code> (ancora meglio!)</li>
+<li>Usate una libreria di testing C++, come <a href="https://github.com/catchorg/Catch2/tree/v2.x">Catch2</a> (ottimo!)</li>
+</ul></li>
+<li>Insegnamento: provare <strong>sempre</strong> a far fallire uno o più test quando si configura un <em>CI build</em>!</li>
+</ul>
+</section>
+<section id="indicazioni-per-c-1" class="slide level1">
+<h1>Indicazioni per C#</h1>
+</section>
+<section id="soluzioni-e-progetti" class="slide level1">
+<h1>Soluzioni e progetti</h1>
+<figure>
+<img data-src="plots/4841380286894432949.png" />
+</figure>
+<ul>
+<li><p>Il comando <code>dotnet</code> supporta la creazione di <em>soluzioni</em> e <em>progetti</em>.</p></li>
+<li><p>Per <em>progetto</em> si intende qualsiasi cosa che possa essere prodotta a partire da file contenenti codice C#</p></li>
+<li><p>Una <em>soluzione</em> è un insieme di progetti. Nel grafico sopra, ogni elemento del grafico è un <em>progetto</em>, e il grafico nel suo complesso è una <em>soluzione</em>.</p></li>
+</ul>
+</section>
+<section id="creare-soluzioniprogetti" class="slide level1">
+<h1>Creare soluzioni/progetti</h1>
+<ul>
+<li>Per creare una soluzione, basta scrivere <code>dotnet new sln</code></li>
+<li>I progetti in <code>dotnet</code> si dividono in più tipi:
+<ul>
+<li>Eseguibili (<code>dotnet new console</code>)</li>
+<li>Librerie (<code>dotnet new classlib</code>)</li>
+<li>Test automatici (<code>dotnet new xunit</code>)</li>
+</ul></li>
+<li>Per specificare che il progetto <code>A</code> dipende da <code>B</code>, si usa <code>dotnet add A reference B</code></li>
+<li>Per aggiungere progetti a una soluzione, si usa <code>dotnet sln add</code></li>
+</ul>
+</section>
+<section id="la-nostra-soluzione" class="slide level1">
+<h1>La nostra soluzione</h1>
+<div class="sourceCode" id="cb20"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new sln -o <span class="st">&quot;Raytracer&quot;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Raytracer</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new classlib -o <span class="st">&quot;Trace&quot;</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace/Trace.csproj</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new console -o <span class="st">&quot;Raytracer&quot;</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Raytracer/Raytracer.csproj</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new xunit -o <span class="st">&quot;Trace.Tests&quot;</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace.Tests/Trace.Tests.csproj</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> add Raytracer/Raytracer.csproj reference Trace/Trace.csproj</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> add Trace.Tests/Trace.Tests.csproj reference Trace/Trace.csproj</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new gitignore</span></code></pre></div>
+</section>
+<section id="albero-delle-directory" class="slide level1">
+<h1>Albero delle directory</h1>
+<ul>
+<li><p>La soluzione così com’è creata ha nomi generici per i file, ed è meglio cambiarli in qualcosa di più facile da riconoscere;</p></li>
+<li><p>Rinominate i file in modo da avere una struttura con questa forma:</p>
+<pre class="text"><code>Raytracer
+├── Raytracer.sln
+├── Raytracer
+│   ├── Main.cs             &lt;-- This was Program.cs
+│   └── Raytracer.csproj
+├── Trace
+│   ├── Color.cs            &lt;-- This was Class1.cs
+│   └── Trace.csproj
+└── Trace.Tests
+    ├── ColorTests.cs       &lt;-- This was UnitTest1.cs
+    └── Trace.Tests.csproj</code></pre></li>
+</ul>
+</section>
+<section id="scrittura-di-test" class="slide level1">
+<h1>Scrittura di test</h1>
+<div class="sourceCode" id="cb22"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> System;</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Xunit;</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Trace;</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="kw">namespace</span> Trace.<span class="fu">Tests</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">class</span> ColorTests</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        [Fact]</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">TestAdd</span>()</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>            Color a = <span class="kw">new</span> <span class="fu">Color</span>(<span class="fl">1.0f</span>, <span class="fl">2.0f</span>, <span class="fl">3.0f</span>);</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>            Color b = <span class="kw">new</span> <span class="fu">Color</span>(<span class="fl">5.0f</span>, <span class="fl">6.0f</span>, <span class="fl">7.0f</span>);</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>            <span class="co">// C# convention: *first* the expected value, *then* the test value</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>            Assert.<span class="fu">True</span>(Color.<span class="fu">are_close</span>(<span class="kw">new</span> <span class="fu">Color</span>(<span class="fl">6.0f</span>, <span class="fl">8.0f</span>, <span class="fl">10.0f</span>), a + b));</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</section>
+<section id="github-actions-2" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li><p>Aggiungete una Action al repository GitHub, una volta che avete fatto il commit ed eseguito <code>git push</code>.</p></li>
+<li><p>Il modello è «.NET» (evitate il modello «.NET desktop», a noi serve quello per i programmi che funzionano da linea di comando):</p>
+<center>
+<p><img data-src="./media/dotnet-github-action.png" /></p>
+</center></li>
+</ul>
+</section>
+<section id="indicazioni-per-julia" class="slide level1">
+<h1>Indicazioni per Julia</h1>
+</section>
+<section id="struttura-del-package" class="slide level1">
+<h1>Struttura del package</h1>
+<ul>
+<li><p>Julia implementa in modo nativo il tipo di struttura richiesta (libreria, eseguibile, eseguibile con i test):</p>
+<ul>
+<li>Ogni package può essere usato come una libreria</li>
+<li>Lo script che abbiamo mostrato la volta scorsa può essere usato come eseguibile</li>
+<li>I package possono includere una serie di test se al loro interno è presente una directory chiamata <code>test</code></li>
+</ul></li>
+<li><p>La creazione di un nuovo package configura quindi tutto già nel modo richiesto.</p></li>
+</ul>
+</section>
+<section id="creazione-del-package" class="slide level1">
+<h1>Creazione del package</h1>
+<ul>
+<li><p>Create un nuovo package con i comandi visti la volta scorsa:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Pkg</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>Pkg.generate(<span class="st">&quot;Raytracer&quot;</span>)  <span class="co"># Upper case is customary in Julia</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>Pkg.activate(<span class="st">&quot;Raytracer&quot;</span>)</span></code></pre></div></li>
+<li><p>Julia supporta la gestione dei colori tramite <a href="https://github.com/JuliaGraphics/ColorTypes.jl">ColorTypes</a> e <a href="https://juliagraphics.github.io/Colors.jl/stable/">Colors</a>:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Pkg.add(<span class="st">&quot;ColorTypes&quot;</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Pkg.add(<span class="st">&quot;Colors&quot;</span>)</span></code></pre></div>
+<p>Questo modificherà <code>Project.toml</code> e aggiungerà <code>Manifest.toml</code>, che vanno salvati in Git (guardate cosa contengono!).</p></li>
+</ul>
+</section>
+<section id="operazioni-sui-colori" class="slide level1">
+<h1>Operazioni sui colori</h1>
+<ul>
+<li><p>La libreria Colors implementa una serie di tipi template:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Colors</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> RGB(<span class="fl">0.1</span><span class="op">,</span> <span class="fl">0.3</span><span class="op">,</span> <span class="fl">0.7</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> XYZ(<span class="fl">0.8</span><span class="op">,</span> <span class="fl">0.4</span><span class="op">,</span> <span class="fl">0.2</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>println(convert(XYZ<span class="op">,</span> a))  <span class="co"># Convert a from RGB to XYZ space</span></span></code></pre></div></li>
+<li><p>La libreria non implementa però le operazioni sui colori che ci interessano (somma di colori, prodotto con uno scalare). Implementatele voi nel file <code>src/Raytracer.jl</code> (il nome del file dipende dal nome che avete scelto per il progetto).</p></li>
+</ul>
+</section>
+<section id="complicazioni" class="slide level1">
+<h1>Complicazioni</h1>
+<ul>
+<li><p>I tipi in ColorTypes sono <a href="https://docs.julialang.org/en/v1/manual/types/#Parametric-Types"><em>parametrici</em></a> (come i template in C++): il tipo <code>RGB</code> è in realtà <code>RGB{T}</code>, con <code>T</code> parametro.</p></li>
+<li><p>Dovete ridefinire le operazioni fondamentali <code>+</code> e <code>*</code>, che in Julia sono presenti nel package <code>Base</code>.</p>
+<p>Dovrete scrivere qualcosa del genere in <code>src/Raytracer.jl</code>:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> ColorTypes</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="bu">Base</span>.<span class="op">:+,</span> <span class="bu">Base</span>.<span class="op">:*</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define here the sum and the product of the form &quot;scalar * c&quot;, then…</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="bu">Base</span>.<span class="op">:*</span>(c<span class="op">::</span>ColorTypes.RGB{T}<span class="op">,</span> scalar) <span class="kw">where</span> {T} <span class="op">=</span> scalar <span class="op">*</span> c</span></code></pre></div></li>
+</ul>
+</section>
+<section id="creazione-di-test" class="slide level1">
+<h1>Creazione di test</h1>
+<ul>
+<li><p>Per implementare i test, create un file <code>test/runtests.jl</code>, in modo che la struttura delle directory sia la seguente:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">tree</span> Raytracer</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Raytracer</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>├── <span class="ex">Manifest.toml</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>├── <span class="ex">Project.toml</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>├── <span class="ex">src</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>│   └── <span class="ex">Raytracer.jl</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>└── <span class="bu">test</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    └── <span class="ex">runtests.jl</span></span></code></pre></div></li>
+<li><p>Per scrivere test, dovete aggiungere la libreria <a href="">Test</a>:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>Pkg.add(<span class="st">&quot;Test&quot;</span>)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="come-scrivere-test" class="slide level1">
+<h1>Come scrivere test</h1>
+<ul>
+<li><p>Nel file <code>runtests.jl</code> dovete scrivere le procedure di test. La libreria Test implementa le macro <code>@testset</code> (raggruppa test) e <code>@test</code>:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Raytracer   <span class="co"># Mettete il nome che avete scelto</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Test</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="pp">@testset</span> <span class="st">&quot;Colors&quot;</span> <span class="kw">begin</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Put here the tests required for color sum and product</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@test</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">==</span> <span class="fl">2</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div></li>
+<li><p>Per eseguirli dalla REPL, scrivete</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>Pkg.test()</span></code></pre></div></li>
+</ul>
+</section>
+<section id="esecuzione-di-test" class="slide level1">
+<h1>Esecuzione di test</h1>
+<p><asciinema-player src="cast/julia-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player></p>
+</section>
+<section id="github-actions-3" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li>A differenza del C++ e del C#, Julia non ha una action preconfigurata nel sito.</li>
+<li>Ma GitHub gestisce un «marketplace», e il team Julia l’ha usato per fornire alla comunità una <a href="https://github.com/julia-actions">serie di actions</a>.</li>
+<li>Le azioni che servono sono le seguenti:
+<ul>
+<li><code>julia-actions/setup-julia@v1</code> (installa Julia);</li>
+<li><code>actions/cache@v1</code> (evita di reinstallare pacchetti Julia ogni volta)</li>
+<li><code>julia-actions/julia-buildpkg@latest</code> (compila il package)</li>
+<li><code>julia-actions/julia-runtest@latest</code> (esegue i test)</li>
+</ul></li>
+</ul>
+</section>
+<section id="file-unittests.yml" class="slide level1">
+<h1>File <code>UnitTests.yml</code></h1>
+<div class="sourceCode" id="cb31"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Unit tests</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> master</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">test</span><span class="kw">:</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.arch }}</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ${{ matrix.os }}</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">strategy</span><span class="kw">:</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">matrix</span><span class="kw">:</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">julia-version</span><span class="kw">:</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="st">&#39;1.5&#39;</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">os</span><span class="kw">:</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">arch</span><span class="kw">:</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> x64</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v2</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Set up Julia&quot;</span></span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/setup-julia@v1</span></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">version</span><span class="kw">:</span><span class="at"> ${{ matrix.julia-version }}</span></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">arch</span><span class="kw">:</span><span class="at"> ${{ matrix.arch }}</span></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Cache artifacts&quot;</span></span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/cache@v1</span></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache-name</span><span class="kw">:</span><span class="at"> cache-artifacts</span></span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">path</span><span class="kw">:</span><span class="at"> ~/.julia/artifacts</span></span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">key</span><span class="kw">:</span><span class="at"> ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles(&#39;**/Project.toml&#39;) }}</span></span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a><span class="fu">          restore-keys</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-test-${{ env.cache-name }}-</span>
+<span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-test-</span>
+<span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-</span>
+<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Build package&quot;</span></span>
+<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/julia-buildpkg@latest</span></span>
+<span id="cb31-44"><a href="#cb31-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-45"><a href="#cb31-45" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Run unit tests&quot;</span></span>
+<span id="cb31-46"><a href="#cb31-46" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/julia-runtest@latest</span></span></code></pre></div>
+</section>
+<section id="indicazioni-per-kotlin" class="slide level1">
+<h1>Indicazioni per Kotlin</h1>
+</section>
+<section id="gestione-di-progetti" class="slide level1">
+<h1>Gestione di progetti</h1>
+<ul>
+<li><p>IntelliJ IDEA si basa su Gradle, che è l’equivalente di CMake in C++</p></li>
+<li><p>Gradle può essere programmato in Groovy (un linguaggio basato su Java) o in Kotlin</p></li>
+<li><p>È un sistema molto più complesso di CMake!</p></li>
+<li><p>Siccome Kotlin (come Java) permette un’ottima modularità, per questo corso non è necessario differenziare tra libreria ed eseguibile</p></li>
+<li><p>Create quindi un nuovo progetto esattamente come avete fatto la volta scorsa</p></li>
+</ul>
+</section>
+<section id="creazione-di-color" class="slide level1">
+<h1>Creazione di <code>Color</code></h1>
+<p>In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):</p>
+<center>
+<img data-src="./media/kotlin-new-class.png" height="480" />
+</center>
+</section>
+<section id="creazione-di-color-1" class="slide level1">
+<h1>Creazione di <code>Color</code></h1>
+<ul>
+<li><p>Usate le <em>data classes</em> per definire la classe Color: sono molto veloci da usare!</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">/** A RGB color</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param r The level of red</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param g The level of green</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param b The level of blue</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">data</span> <span class="kw">class</span> Color(<span class="kw">val</span> <span class="va">r</span>: <span class="dt">Double</span>, <span class="kw">val</span> <span class="va">g</span>: <span class="dt">Double</span>, <span class="kw">val</span> <span class="va">b</span>: <span class="dt">Double</span>) {</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<li><p>Definite <code>is_close</code> e gli operatori <code>plus</code> (somma di due colori) e <code>times</code> (prodotto tra colore e scalare)</p></li>
+</ul>
+</section>
+<section id="scrittura-di-test-1" class="slide level1">
+<h1>Scrittura di test</h1>
+<ul>
+<li><p>IntelliJ IDEA genera e gestisce il codice di test</p></li>
+<li><p>Usa la libreria <a href="https://junit.org/">JUnit</a>, che oggi è usata in due versioni: la versione 4 e la 5 (più recente, ma ancora poco usata). Di default, IntelliJ IDEA seleziona la versione 4.</p></li>
+<li><p>Controllate la versione usata nel vostro progetto aprendo il menu «File | Project structure»</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/kotlin-project-structure.png" height="560" />
+</center>
+<p>Qui la versione usata è la 4</p>
+</section>
+<section id="creazione-di-test-vuoti" class="slide level1">
+<h1>Creazione di test vuoti</h1>
+<ul>
+<li><p>Fate click col tasto destro sul nome di una classe e scegliete «Generate»</p></li>
+<li><p>Nella finestra che compare, scegliete la versione giusta per JUnit e poi fate un segno di spunta accanto ai metodi per cui volete scrivere test. (Nel nostro caso saranno <code>is_close</code>, <code>plus</code> e <code>times</code>).</p></li>
+<li><p>Una volta implementati i test (usando <code>assertTrue</code> e <code>assertFalse</code>), eseguiteli usando le icone a sinistra dell’editor.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/kotlin-generate-test.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/kotlin-run-test.png" />
+</center>
+</section>
+<section id="github-actions-4" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li><p>Selezionate «Java with Gradle»:</p>
+<center>
+<p><img data-src="./media/gradle-github-action.png" /></p>
+</center>
+<p>Gradle scaricherà automaticamente il supporto Kotlin.</p></li>
+<li><p>Il processo proverà a compilare il codice e a eseguire <em>tutti</em> i test nel repository</p></li>
+</ul>
+</section>
+<section id="risoluzione-dei-problemi" class="slide level1">
+<h1>Risoluzione dei problemi</h1>
+<ul>
+<li><p>Ricordatevi di aggiungere al commit i file in <code>gradle/wrapper/</code></p></li>
+<li><p>Se avete problemi a causa della versione di Gradle, rigenerate <code>gradlew</code> da linea di comando così:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> wrapper --gradle-version 5.3</span></code></pre></div>
+<p>(Gradle supporta Kotlin a partire dalla versione 5.3).</p></li>
 </ul>
 </section>
     </div>

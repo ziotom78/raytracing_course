@@ -46,7 +46,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Emissioni realistiche
 
--   La forma dello spettro **non** deve però far pensare che basti *un solo* valore scalare per indicare un colore: questo è vero solo per un corpo nero ideale (dove è sufficiente la temperatura `T`)!
+-   Anche se nella scorsa lezione abbiamo parlato di «colore», non dobbiamo pensare che basti **un** numero a codificarlo: questo è vero solo per un corpo nero ideale (dove è sufficiente la temperatura `T`)!
 
 -   Gli spettri di emissione di oggetti del mondo reale possono essere
     molto complessi (v. lezione precedente):
@@ -65,7 +65,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     diverse SPD.
 
 -   La percezione che il nostro occhio ha di un colore dipende dalla
-    SPD del flusso che raggiunge i fotorecettori della retina
+    SPD dell'irradianza che raggiunge i fotorecettori della retina
     sensibili al colore (*coni*).
 
 # Percezione del colore
@@ -97,10 +97,12 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Ci sono più teorie che spiegano come il cervello combini le
     informazioni dei tre tipi di coni per rappresentare un colore.
+    
+-   Nel mondo animale c'è molta varietà: il [gambero mantide](https://www.nature.com/news/mantis-shrimp-s-super-colour-vision-debunked-1.14578) possiede 12 tipi di coni!
 
 ---
 
-![](./media/Cone-fundamentals-with-srgb-spectrum.svg){width=920px}
+![](./media/mantis-shrimp.jpg)
 
 # Sistema XYZ
 
@@ -133,9 +135,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Le curve $X(\lambda)$, $Y(\lambda)$ e $Z(\lambda)$ sono
     predefinite.
 
--   Definite dalla Commission Internationale de l'Éclairage (CIE)
-
--   Basate su esperimenti degli anni '20 con 17 volontari.
+-   Definite dalla Commission Internationale de l'Éclairage (CIE) in seguito ad esperimenti fatti negli anni '20 su 17 volontari.
 
 -   La costante di normalizzazione è sempre
 
@@ -143,7 +143,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     \int_\lambda \mathrm{d}\lambda\,Y(\lambda) \approx 106.856895\,\text{nm}.
     $$
 
--   Essendo state derivate prima della scoperta dei coni (anni '50), le curve $X$, $Y$ e $Z$ seguono un andamento diverso dall'effettiva risposta delle cellule.
+-   Essendo state derivate prima della scoperta dei coni (anni '50), le curve $X$, $Y$ e $Z$ seguono un andamento diverso dall'effettiva risposta dei coni umani.
 
 # Curve X, Y, Z
 
@@ -170,22 +170,33 @@ plot "cie_data.txt" using 1:2 with lines lw 2 lt rgb "#3434ad" t 'X', \
 
 # XYZ e RGB
 
--   Il sistema XYZ è basato sul funzionamento dell'occhio umano (coni)
+-   La codifica XYZ è basata sul funzionamento dell'occhio umano (coni)
 
 -   Non è in generale adatto per la fabbricazione di hardware
 
--   Sistemi molto usati sono RGB (monitor) e CYMK (stampanti)
+-   Codifiche molto usate sono RGB (monitor) e CYMK (stampanti)
+
+-   Noi ci occuperemo solo della codifica RGB
 
 # Sistema RGB
 
--   Il sistema RGB usa tre quantità scalari per identificare un
+-   La codifica RGB usa tre quantità scalari per identificare un
     colore: rosso, verde, blu (**R**ed, **G**reen, **B**lue).
 
--   Basato sulla sintesi *additiva* dei colori, che è perfetta per i monitor (le stampanti usano la sintesi *sottrattiva*, e usano il sistema CYMK).
+-   Basato sulla sintesi *additiva* dei colori, che è perfetta per i monitor (le stampanti usano la sintesi *sottrattiva*, e usano la codifica CYMK).
 
 -   Legato al funzionamento dei vecchi televisori a tubo catodico e replicato sui moderni schermi LED e LCD
 
 ![](./media/lcd-pixels-closeup.png){height=200px}
+
+# Emissione RGB
+
+Esistono vari tipi di schermi (tubi catodici, LED, etc.), e gli
+spettri di emissione dei tre canali RGB possono essere diversi:
+
+![](./media/screen-emission.svg){height=400px}
+
+Non spenderemo troppo tempo su questo per motivi di tempo.
 
 # Da XYZ a RGB
 
@@ -202,6 +213,186 @@ M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}X\\Y\\Z\end{pmatrix} =\\
 \begin{pmatrix}X\\Y\\Z\end{pmatrix}.\\
 \end{aligned}
 $$
+
+# Colori RGB { data-state="rgb-colors-1.0" }
+
+<table style="width:60%">
+    <tr>
+        <th>Red</th>
+        <th>Green</th>
+        <th>Blue</th>
+    </tr>
+    <tr>
+        <td id="val1Red"></td>
+        <td id="val1Green"></td>
+        <td id="val1Blue"></td>
+    </tr>
+    <tr>
+        <td id="red" style="height:50px;background-color:red"></td>
+        <td id="green" style="background-color:green"></td>
+        <td id="blue" style="background-color:blue"></td>
+    </tr>
+    <tr>
+        <td>
+            <input oninput="rgb1ChangeRed(this.value)" onchange="rgb1ChangeRed(this.value)" type="range" id="slideRed" name="slideRed" min="0" max="255" value="0">
+        </td>
+        <td>
+            <input oninput="rgb1ChangeGreen(this.value)" onchange="rgb1ChangeGreen(this.value)" type="range" id="slideGreen" name="slideGreen" min="0" max="255" value="0">
+        </td>
+        <td>
+            <input oninput="rgb1ChangeBlue(this.value)" onchange="rgb1ChangeBlue(this.value)" type="range" id="slideBlue" name="slideBlue" min="0" max="255" value="0">
+        </td>
+    </tr>
+</table>
+<div id="rgb1Change" style="margin:auto;width:50%;height:50px"></div>
+
+<script>
+function roundComponent(value) {
+    return Math.round(value * 1000) / 1000
+}
+
+function rgb1ChangeRed(value) {
+    document.getElementById('val1Red').innerHTML = roundComponent(value / 255.0);
+    rgb1ChangeAll();
+}
+function rgb1ChangeGreen(value) {
+    document.getElementById('val1Green').innerHTML = roundComponent(value / 255.0);
+    rgb1ChangeAll();
+}
+function rgb1ChangeBlue(value) {
+    document.getElementById('val1Blue').innerHTML = roundComponent(value / 255.0);
+    rgb1ChangeAll();
+}
+function rgb1ChangeAll() {
+    var r = Math.round(document.getElementById('val1Red').innerHTML * 255);
+    var g = Math.round(document.getElementById('val1Green').innerHTML * 255);
+    var b = Math.round(document.getElementById('val1Blue').innerHTML * 255);
+    document.getElementById('rgb1Change').style.backgroundColor = 
+        "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
+}
+
+document.addEventListener('rgb-colors-1.0', function() {
+    document.getElementById('val1Red').innerHTML = 0;
+    document.getElementById('val1Green').innerHTML = 0;
+    document.getElementById('val1Blue').innerHTML = 0;
+    rgb1ChangeAll();
+});
+</script>
+
+# Da $L_\lambda$ a RGB
+
+-   Equazione del rendering espressa per $L_\lambda$
+    $$
+    \begin{aligned}
+    L_\lambda(x \rightarrow \Theta) = &L_{e,\lambda}(x \rightarrow \Theta) +\\
+    &\int_{\Omega_x} f_{r,\lambda}(x, \Psi \rightarrow \Theta)\,L_\lambda(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
+    \end{aligned}
+    $$
+
+-   Possiamo esprimere l'equazione usando $R$, $G$ e $B$ anziché $L_\lambda$?
+
+# Operazioni sui colori
+
+-   Per valutare l'integrale nell'equazione del rendering occorrono queste operazioni:
+
+    -   Somma di densità di radianza: $L_\lambda^{(1)} + L_\lambda^{(2)}$
+    -   Prodotto di densità di radianza per uno scalare: $\xi\,L_\lambda$
+
+-   Se $f_{r,\lambda}$ è costante nel dominio di integrazione, le due operazioni sono lineari
+
+-   La definizione di $X$, $Y$, $Z$ è lineare (integrale)
+
+-   La conversione a RGB è lineare (matrice)
+
+-   Quindi le due operazioni (somma e prodotto per scalare) possono essere implementate direttamente sui valori RGB.
+
+# Esempio (1/2)
+
+$$
+\begin{aligned}
+L_\lambda &= \alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)},\\
+\int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &= \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,\bigl(\alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)}\bigr),\\
+\int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &= \alpha\int_\lambda\mathrm{d}\lambda\,X(\lambda)\, L_\lambda^{(1)} +
+  \beta \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda^{(2)},\\
+x &= \alpha x^{(1)} + \beta x^{(2)},\\
+\end{aligned}
+$$
+e quindi operazioni lineari sulla radianza si traducono in operazioni lineari sulle componenti di colore $x$, $y$ e $z$.
+
+# Esempio (2/2)
+
+$$
+\begin{aligned}
+M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x\\y\\z\end{pmatrix} &=
+M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}\alpha x^{(1)} + \beta x^{(2)}\\\alpha y^{(1)} + \beta y^{(2)}\\\alpha z^{(1)} + \beta z^{(2)}\end{pmatrix},\\
+\begin{pmatrix}R\\G\\B\end{pmatrix} &=
+\alpha M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x^{(1)}\\y^{(1)}\\z^{(1)}\end{pmatrix} +
+\beta M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x^{(2)}\\y^{(2)}\\z^{(2)}\end{pmatrix},\\
+R &= \alpha R^{(1)} + \beta R^{(2)},\\
+\end{aligned}
+$$
+e quindi la linearità è preservata anche per $R$, $G$ e $B$.
+
+# Equazione del rendering
+
+Se indichiamo con $R$, $G$ e $B$ la radianza integrata e convertita nel sistema RGB, l'equazione del rendering si traduce in un sistema di tre equazioni identiche:
+$$
+\begin{aligned}
+R(x \rightarrow \Theta) = &R_{e}(x \rightarrow \Theta) +\\
+    &\int_{\Omega_x} f_{r,R}(x, \Psi \rightarrow \Theta)\,R(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,\\
+\end{aligned}
+$$
+e analogamente per $G$ e $B$. Questo ovviamente vale solo se la BRDF $f_r$ è una funzione costante all'interno della risposta in banda $X$, $Y$ e $Z$!
+
+
+# Visualizzazione su dispositivi
+
+# Funzionamento di un monitor
+
+-   Un monitor visualizza le immagini tramite una matrice di punti (*pixel*: *picture element*)
+-   Ogni punto è comandato tramite una terna RGB di valori
+-   I valori possibili spaziano in un intervallo limitato
+-   Il realismo nell'emissione di $L$ è quindi in genere impossibile
+
+---
+
+<center>
+![](./media/monitor-in-dark-room.jpg)
+</center>
+
+---
+
+# Colori in terminali Unix
+
+-   Gli «emulatori di terminale» Unix sono dei programmi che simulano il comportamento dei vecchi terminali a caratteri.
+
+-   Sebbene i terminali originali fossero monocromatici, emulatori come XTerm aggiunsero la possibilità di usare 8 colori
+
+-   Versioni più avanzate, come quelli sui primi Personal Computer Intel, supportavano ben 16 colori!
+
+-   Oggi i terminali supportano 256 colori, e alcuni addirittura 16 milioni.
+
+-   Ma perché questi numeri strani (8, 16, 256, 16 milioni?)
+
+---
+
+<center>
+![](./media/terminal-colors.png)
+</center>
+
+# Codifica RGB di colori (1/2)
+
+-   Nel caso di 8 colori, ogni colore viene rappresentato da tre bit `rgb` (es., `010`, `100`, etc.). Se un bit è `1`, il led di quel colore viene acceso, altrimenti viene spento. Quindi `100` corrisponde al rosso, `110` al giallo, etc. Tre bit possono codificare $2^3 = 8$ colori.
+
+-   Nel caso di 16 colori, viene aggiunto un bit che specifica se i led accesi devono emettere all'intensità massima o a una intermedia. Quindi `0100` è un rosso spento, `1100` è un rosso brillante, `0110` è marrone e `1110` è giallo. Quattro bit possono codificare $2^4 = 16$ colori.
+
+# Codifica RGB di colori (2/2)
+
+-   Nel caso di 256 colori, ci sono molti standard in gioco, e la maggior parte dei quali non sono coerenti con la codifica RGB. In alcune applicazioni si usa la maschera di bit `rrrgggbb`, usando 3 bit (8 livelli) per il rosso e per il verde, e solo 2 bit (4 livelli) per il blu. (L'occhio umano è meno sensibile alle tonalità di blu).
+
+-   Nel caso dei 16 milioni di colori, si usano 8 bit per ciascun livello di colore, così che $2^{8+8+8} = 2^{24} = 16\,777\,216$.
+
+-   La codifica a 16 milioni di colori è rara nei terminali, ma è lo standard per le immagini fotografiche, e viene usato nei formati PNG, Jpeg, TIFF, etc.
 
 # Colori RGB { data-state="rgb-colors" }
 
@@ -263,86 +454,7 @@ document.addEventListener('rgb-colors', function() {
 });
 </script>
 
-# Da $L_\lambda$ a RGB
-
--   Equazione del rendering espressa per $L_\lambda$
-    $$
-    \begin{aligned}
-    L_\lambda(x \rightarrow \Theta) = &L_{e,\lambda}(x \rightarrow \Theta) +\\
-    &\int_{\Omega_x} f_{r,\lambda}(x, \Psi \rightarrow \Theta)\,L_\lambda(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
-    \end{aligned}
-    $$
-
--   Possiamo esprimere l'equazione usando $R$, $G$ e $B$ anziché $L_\lambda$?
-
-# Operazioni sui colori
-
--   Per valutare l'integrale nell'equazione del rendering occorrono queste operazioni:
-
-    -   Somma di densità di radianza: $L_\lambda^{(1)} + L_\lambda^{(2)}$
-    -   Prodotto di densità di radianza per uno scalare: $\xi\,L_\lambda$
-
--   Le due operazioni sono lineari
-
--   La definizione di $X$, $Y$, $Z$ è lineare (integrale)
-
--   La conversione a RGB è lineare (matrice)
-
--   Quindi le due operazioni (somma e prodotto per scalare) possono essere implementate direttamente sui valori RGB.
-
-# Esempio (1/2)
-
-$$
-\begin{aligned}
-L_\lambda &= \alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)},\\
-\int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &= \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,\bigl(\alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)}\bigr),\\
-\int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &= \alpha\int_\lambda\mathrm{d}\lambda\,X(\lambda)\, L_\lambda^{(1)} +
-  \beta \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda^{(2)},\\
-x &= \alpha x^{(1)} + \beta x^{(2)},\\
-\end{aligned}
-$$
-e quindi operazioni lineari sulla radianza si traducono in operazioni lineari sulle componenti di colore $x$, $y$ e $z$.
-
-# Esempio (2/2)
-
-$$
-\begin{aligned}
-M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x\\y\\z\end{pmatrix} &=
-M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}\alpha x^{(1)} + \beta x^{(2)}\\\alpha y^{(1)} + \beta y^{(2)}\\\alpha z^{(1)} + \beta z^{(2)}\end{pmatrix},\\
-\begin{pmatrix}R\\G\\B\end{pmatrix} &=
-\alpha M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x^{(1)}\\y^{(1)}\\z^{(1)}\end{pmatrix} +
-\beta M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x^{(2)}\\y^{(2)}\\z^{(2)}\end{pmatrix},\\
-R &= \alpha R^{(1)} + \beta R^{(2)},\\
-\end{aligned}
-$$
-e quindi la linearità è preservata anche per $R$, $G$ e $B$.
-
-# Equazione del rendering
-
-Se indichiamo con $R$, $G$ e $B$ la radianza integrata e convertita nel sistema RGB, l'equazione del rendering si traduce in un sistema di tre equazioni identiche:
-$$
-\begin{aligned}
-R(x \rightarrow \Theta) = &R_{e}(x \rightarrow \Theta) +\\
-    &\int_{\Omega_x} f_{r,R}(x, \Psi \rightarrow \Theta)\,R(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,\\
-\end{aligned}
-$$
-e analogamente per $G$ e $B$, ma solo a patto che la BRDF $f_r$ sia una funzione costante se $\lambda$ varia all'interno della risposta in banda $X$, $Y$ e $Z$!
-
-
-# Visualizzazione su dispositivi
-
-# Funzionamento di un monitor
-
--   Un monitor visualizza le immagini tramite una matrice di punti (*pixel*: *picture element*)
--   Ogni punto è comandato tramite una terna RGB di valori
--   I valori possibili spaziano in un intervallo limitato
--   Il realismo nell'emissione di $L$ è quindi in genere impossibile
-
----
-
-<center>
-![](./media/monitor-in-dark-room.jpg)
-</center>
+# Comportamento dei monitor
 
 # Non-linearità dei monitor
 
@@ -350,12 +462,12 @@ e analogamente per $G$ e $B$, ma solo a patto che la BRDF $f_r$ sia una funzione
 
 -   La relazione tra il livello di emissione richiesto $I$ e il flusso $\Phi$ effettivamente emesso da un pixel è di solito della forma
     $$
-    \Phi \propto I^\gamma,
+    \Phi \propto \left(\frac{I}{I_\text{max}}\right)^\gamma,
     $$
 
-    dove $I \in [0, 1]$, e $\gamma$ è un parametro caratteristico del dispositivo.
+    dove $I \in [0, I_\text{max}]$, e $\gamma$ è un parametro caratteristico del dispositivo.
     
--   Nei monitor moderni, $I$ non è un numero reale ma un valore *intero* da 0 a 255.
+-   Nei monitor moderni ovviamente $I_\text{max} = 255$, e $I$ è un numero *intero*.
 
 # Andamento di $\gamma$
 
@@ -482,12 +594,12 @@ document.addEventListener('monitor-calibration-state', function() {
 # Risposta dei monitor
 
 -   Una volta ottenuta una terna RGB di numeri reali, per pilotare un monitor occorre convertirla in una cosiddetta «[terna sRGB](https://en.wikipedia.org/wiki/SRGB)».
--   La conversione è parametrizzata da $\gamma$, e **non è lineare**.
+-   La conversione è parametrizzata da $\gamma$ (ma non solo), e **non è lineare**.
 -   Quanto abbiamo visto per la conversione $L_\lambda \rightarrow (X, Y, Z) \rightarrow (R, G, B)$ non si applica quindi a sRGB.
 
 # Conversione da RGB a sRGB
 
--   La conversione da RGB, $(R, G, B)$, a sRGB, $(r, g, b)$, è esprimibile con la formula
+-   Una semplice approssimazione per la conversione da RGB, $(R, G, B)$, a sRGB, $(r, g, b)$, è la seguente:
     $$
     \begin{aligned}
     r &= \left[k\,R^\gamma\right],\\
@@ -507,20 +619,28 @@ document.addEventListener('monitor-calibration-state', function() {
 -   Lo standard CIE XYZ definisce una normalizzazione di riferimento in termini di un colore standard, il *D65*, che corrisponde all'emissione di un corpo nero a 6500 K (più o meno l'emissione del cielo in una giornata limpida).
 -   Vedremo meglio questo punto quando avremo discusso il salvataggio di immagini.
 
-# Emissione di schermi
+# Esempio della vita reale
 
-Esistono vari tipi di schermi (tubi catodici, LED, etc.), e gli
-spettri di emissione possono essere diversi:
+![](./media/celebrating_planck.jpg){height=520}
 
-![](./media/screen-emission.svg){height=400px}
+Planck: missione spaziale ESA (2009–2013)
 
-Non spenderemo troppo tempo su questo per motivi di tempo.
+---
 
+<center>
+![](./media/planck-hfi-2015-adc-paper.png){height=640}
+</center>
+
+# Analogue-to-Digital Converters
+
+<center>
+![](./media/planck-hfi-2015-adc-sect2.png)
+</center>
 
 # Lezioni imparate oggi
 
 ---
 
--   Mai dimenticarsi che le misurazioni fisiche passano da uno strumento: occorre conoscerne le caratteristiche e le non-idealità!
 -   Semplificare il più possibile: invece di trattare $L_\lambda$, usiamo $R$, $G$ e $B$.
+-   Mai dimenticarsi che le misurazioni fisiche passano da uno strumento: occorre conoscerne le caratteristiche e le non-idealità!
 -   Il mondo è *complicato*!

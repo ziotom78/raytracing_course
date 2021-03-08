@@ -19,7 +19,6 @@ index.html: index.md
 	$(PANDOC) \
 	    	--standalone \
 		--filter pandoc-plot \
-		--filter pandoc-graphviz \
 		--css ./css/custom.css \
 		--css ./css/asciinema-player.css \
 		-A asciinema-include.html \
