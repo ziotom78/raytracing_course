@@ -563,9 +563,26 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
     main()
     ```
 
-# Esempio
+---
+
+# Creazione di un package
 
 <asciinema-player src="cast/julia-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
+
+# Struttura della directory
+
+-   Quando avrete completato l'esercizio, la directory dovrebbe avere questo aspetto:
+
+    ```text
+    $ tree hello_world
+    hello_world/
+    ├── hello_world
+    ├── Project.toml
+    └── src
+        └── hello_world.jl
+    ```
+
+-   La logica di questa struttura è che la libreria di funzioni venga implementata dentro `src`, mentre in `hello_world` vada messo il codice relativo alla parte eseguibile (es., interpretazione dei parametri da linea di comando).
 
 # Formattazione
 
@@ -583,7 +600,17 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
 
 -   Con `Pkg.generate` si crea un nuovo package, con `Pkg.activate` si attiva il package
 
--   Lo script `hello_world` mostrato prima attiva il package e lo invoca
+-   Lo script `hello_world` mostrato prima attiva il package e lo invoca:
+
+    ```julia
+    # This activates the package in the current directory ("hello_world")
+    using Pkg
+    Pkg.activate(normpath(@__DIR__))
+    
+    # Not calling "activate" above would make this "using" statement fail
+    using hello_world
+    ```
+
 
 # Indicazioni per Kotlin
 
