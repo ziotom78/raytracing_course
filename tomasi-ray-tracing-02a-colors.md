@@ -394,6 +394,16 @@ e analogamente per $G$ e $B$. Questo ovviamente vale solo se la BRDF $f_r$ è un
 
 -   La codifica a 16 milioni di colori è rara nei terminali, ma è lo standard per le immagini fotografiche, e viene usato nei formati PNG, Jpeg, TIFF, etc.
 
+---
+
+Sinistra: 16 milioni di colori
+
+Destra: 256 colori con codifica 3+3+2
+
+![](./media/cafe-forum-arles.jpg)
+
+[*Terrazza del caffè la sera, Place du Forum, Arles*. Vincent Van Gogh (1888)]{style="float:right"}
+
 # Colori RGB { data-state="rgb-colors" }
 
 <table style="width:60%">
