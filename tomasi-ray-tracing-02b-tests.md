@@ -23,9 +23,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
     @dataclass
     class Color:
-        red: float
-        green: float
-        blue: float
+        r: float = 0.0
+        g: float = 0.0
+        b: float = 0.0
     ```
 
 -   È possibile creare un colore con questa sintassi:
@@ -35,12 +35,19 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     color2 = Color(3.4, 0.4, 1.7)  # Shorter version
     ```
 
-# Definire operazioni
+# Operazioni su `Color`
 
--   Per il tipo `Color` abbiamo bisogno di definire la somma/differenza tra due colori e il prodotto con uno scalare.
--   Questi sono gli operatori della classe `Color` (non mostro la sottrazione):
+-   Somma/differenza tra due colori (analogo di $L_\lambda^{(1)} + L_\lambda^{(2)}$)
+-   Prodotto per uno scalare ($\alpha L_\lambda$)
+-   Prodotto tra due colori ($f_{r,\lambda} \times L_\lambda$ nell'equazione del rendering)
+-   Livello di somiglianza tra due colori (da usare nei test)
 
-    ```python
+# Esempio in Python
+
+```python
+class Color:
+    # ...
+
     def __add__(self, other):
         return Color(
             self.r + other.r,
@@ -54,7 +61,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
             self.g * scalar,
             self.b * scalar,
         )
-    ```
+
+    # Etc.
+```
 
 # Verifica del codice
 
@@ -62,17 +71,17 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Gli errori sono dietro l'angolo!
 
--   Esempio della scorsa settimana (esame di TNDS):
+-   Esempio (in un tema d'esame del corso di TNDS!):
 
     ```c++
-    CampoVettoriale operator+(const CampoVettoriale &v) const { 
+    CampoVettoriale operator+(const CampoVettoriale &v) const {
       CampoVettoriale sum(v); // invoco costruttore di copia di v
       sum.Addcomponent(getFx(), getFx(), getFz());
-      
+
       return sum;
     }
     ```
-    
+
 -   Per verificare la correttezza di una funzione, occorrerebbe invocarla con dati *non banali* e controllarne il risultato.
 
 # Come verificare il codice?
@@ -87,23 +96,23 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     print(color1 + color2)
     print (color1 * 2)
     ```
-    
+
     che produce l'output
-    
+
     ```text
     Color(r=6.0, g=8.0, b=10.0)
     Color(r=2.0, g=4.0, b=6.0)
     ```
-    
+
 -   Possiamo fare di meglio?
 
 # Scrittura di test automatici
 
--   Il compito di verificare la correttezza dei calcoli è tedioso e facile da sbagliare
+-   Il compito di verificare la correttezza dei calcoli è noioso e facile da sbagliare.
 
--   Per i compiti tediosi, dovremmo affidarci al computer!
+-   Dovremmo far svolgere compiti tediosi ai computer!
 
--   Tutti i linguaggi moderni offrono sistemi per l'esecuzione automatica di test
+-   Tutti i linguaggi moderni offrono sistemi per l'esecuzione automatica di test.
 
 # Test automatici
 
@@ -113,7 +122,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 color1 = Color(1.0, 2.0, 3.0)
 color2 = Color(5.0, 6.0, 7.0)
 print(color1 + color2)
-print (color1 * 2)
+print(color1 * 2)
 ```
 
 -   Possiamo migliorarlo facilmente usando `assert`:
@@ -139,9 +148,9 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
     assert (color1 + color2) == Color(6.0, 8.0, 11.0) # 10 -> 11
     assert (2 * color1) == Color(3.0, 4.0, 6.0) # 2 -> 3
     ```
-    
+
     Solo quando l'errore viene emesso si corregge il test.
-    
+
 ---
 
 <asciinema-player src="cast/color-test-python.cast" rows="27" cols="94" font-size="medium"></asciinema-player>
@@ -154,7 +163,7 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 
     <asciinema-player src="cast/floating-point-python.cast" rows="15" cols="80"
         font-size="medium"></asciinema-player>
-        
+
 # Accorgimenti per floating point
 
 -   Evitate dei test che coinvolgano numeri con parti decimali (es., `2.1`, `5.09`)
@@ -165,7 +174,7 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
     ```python
     def are_close(x, y, epsilon = 1e-10):
         return abs(x - y) < epsilon
-        
+
     x = sum([0.1] * 10)       # Sum of the values in [0.1, 0.1, ..., 0.1]
     print(x)                  # Output: 0.9999999999999999
     assert are_close(1.0, x)  # This test passes successfully
@@ -179,17 +188,47 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
     assert (color1 + color2) == Color(6.0, 8.0, 10.0)
     assert (2 * color1) == Color(2.0, 4.0, 6.0)
     ```
-    
+
 -   Però $\pi$ compare spesso nei calcoli radiometrici!
 
--   Definite una funzione `are_colors_close` che funzioni con `Color`:
+-   Definite una funzione che confronti due `Color` come i floating-point:
 
     ```python
     def are_colors_close(a, b):
         return are_close(a.r, b.r) and are_close(a.g, b.g) and are_close(a.b, b.b)
-        
+
     assert are_colors_close(color1, color2)
     ```
+
+# Lavoro in gruppo
+
+-   Da oggi lavorerete in gruppo: ciascuno di voi dovrà scegliere quale parte di codice implementare
+
+-   Inizieremo ad usare le caratteristiche più avanzate di Git per gestire i **conflitti**, ossia le situazioni in cui una parte di codice viene modificata contemporaneamente da più persone.
+
+-   Vediamo un esempio pratico di conflitto per un semplice codice Python
+
+---
+
+<asciinema-player src="cast/git-conflicts-96x27.cast" cols="96" rows="27"  font-size="medium"></asciinema-player>
+
+# *Merge commit*
+
+<center>
+![](./media/merge-commit.svg)
+</center>
+
+# Tipi di conflitti
+
+1.  Due sviluppatori stanno implementando la stessa funzionalità:
+    -   Si sceglie una delle due implementazioni
+    -   Si fondono insieme
+2.  Due sviluppatori implementano funzionalità separate nello stesso punto del codice:
+    -   Se possono coesistere, si mantengono insieme (è il caso del video precedente)
+    -   Se non possono, si separano in due file diversi
+3.  Due sviluppatori implementano due funzionalità incompatibili:
+    -   Decidono quale delle due funzionalità vada mantenuta e quale no…
+    -   …oppure uno dei due si licenzia!
 
 # Guida per l'esercitazione
 
@@ -207,17 +246,28 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 
 4.  Aggiungere tutti i membri del gruppo al progetto.
 
+
 # Lavoro in gruppo
 
--   In ogni gruppo, solo **uno** di voi dovrebbe creare lo scheletro del progetto, creare la pagina GitHub e salvarlo
-    Gli altri membri dovranno diventare collaboratori (v. slide seguente)
--   Pensate a un modo per suddividere il lavoro tra membri del vostro gruppo
+-   In ogni gruppo, solo **uno** di voi dovrebbe creare lo scheletro del progetto, creare la pagina GitHub e salvarlo.
+
+-   Gli altri membri diventeranno collaboratori del progetto (v. slide seguente).
+
+-   Pensate a un modo per suddividere il lavoro tra membri del vostro gruppo:
+
+    1.  Somma/differenza di due colori;
+    2.  Prodotto tra due colori, e prodotto colore-scalare;
+    3.  Funzione `are_colors_close`;
+    4.  Test.
+
+-   Fate in modo che **ciascuno** di voi gestisca almeno un *merge commit*.
 
 ---
 
 <center>
 ![](./media/github-add-collaborators.png)
 </center>
+
 
 # Grafico delle dipendenze
 
@@ -231,34 +281,59 @@ graph "" {
 }
 ```
 
+-   Per *libreria* intendiamo un insieme di funzioni/classi (un file `.a` in C++, un file `.dll` in C\#, un package in Julia, un insieme di classi in Kotlin)
+-   Oggi non faremo nulla con l'eseguibile: basta un «Hello, world!»
+-   I test sono invece molto importanti già da oggi!
+
 # Caratteristiche di `Color`
 
 -   Tre campi `r`, `g`, `b` di tipo floating-point (non perdete tempo a definire `GetR`/`SetR` e simili: il tipo `Color` deve essere agile da usare!);
--   Metodo `Color.is_close` o funzione `are_close` per verificare se due colori sono simili (utile nei test);
+-   Metodo `Color.is_close` o funzione `are_close`/`are_colors_close` per verificare se due colori sono simili (utile nei test);
 -   Somma e differenza tra colori;
--   Prodotto colore-scalare.
+-   Prodotti colore-colore e colore-scalare.
 
 # Uso della memoria
 
--   Nella maggior parte dei linguaggi c'è una distinzione tra *value types* e *reference types*
+-   Nella maggior parte dei linguaggi c'è una distinzione tra *value types* e *reference types*.
 
--   I *value types* sono allocati sullo stack: sono molto veloci da usare, ma non possono occupare troppa memoria (alcuni kB al massimo)
+-   I *value types* sono valori a cui si può accedere direttamente, e sono sempre allocati sullo stack: sono molto veloci da usare, ma non possono occupare troppa memoria (alcuni kB al massimo).
 
--   I *reference types* possono occupare tutta la memoria che vogliono, ma sono più lenti da leggere e scrivere dei *value types*
+-   I *reference types* sono dei puntatori al dato attuale, e possono essere sia sullo *stack* che nello *heap*; in quest'ultimo caso possono occupare tutta la memoria che vogliono, ma sono più lenti da leggere e scrivere.
 
 -   Fanno eccezione i linguaggi basati su JVM (Java, Kotlin, Scala, etc.), per cui esistono solo *reference types* (ma la JVM può autonomamente convertire variabili in *value types* se capisce che è conveniente).
+
+---
+
+<center>
+![](./media/stack-vs-heap-memory.svg)
+</center>
+
+# Dimensione dello stack
+
+-   Per programmi C/C++/Fortran/Julia, la dimensione è fissata dal sistema operativo. Sotto sistemi Posix (Linux/Mac OS X), potete conoscerne il valore in KB col comando `ulimit -s`:
+
+    ```text
+    $ ulimit -s
+    8192
+    ```
+
+    Il valore di 8 MB è caratteristico di Linux; per i Mac è 0,5 MB.
+
+-   La piattaforma .NET (Visual Basic, C\#) usa uno stack di 1 MB
+
+-   La piattaforma JVM (Java, Kotlin) usa uno stack di 1 MB, che è però usato solo per i tipi primitivi (interi, booleani, numeri floating-point)
 
 # Value types
 
 -   La classe `Color` è molto piccola: richiede memoria per 3 numeri floating-point. È quindi logico definirla come un *value type*.
 
--   A seconda del linguaggio
+-   A seconda del linguaggio, l'uso di un *value type* richiede accorgimenti diversi:
 
-    -   In C++, usate `struct` oppure `class` (è uguale);
+    -   In C++, usate `struct` oppure `class` (è uguale), ma evitate `new`/`delete`;
     -   In C\#, usate `struct` (value type), ma non `class` (reference type);
     -   In Pascal, usate `object` o `record`, ma non usate `class`;
-    -   In Nim, usate `object`, ma non usate `ref object`.
-    -   In Julia, usate il package [`StaticArrays`](https://juliaarrays.github.io/StaticArrays.jl/stable/)
+    -   In Nim, usate `object`, ma non usate `ref object`;
+    -   In Julia, usate il package [`StaticArrays`](https://juliaarrays.github.io/StaticArrays.jl/stable/).
 
 # Test (1)
 
@@ -282,7 +357,7 @@ graph "" {
 
 # Test (2)
 
--   Somma/differenza di colori:
+-   Somma/differenza/prodotto di colori:
 
     ```python
     col1 = Color(1.0, 2.0, 3.0)  # Do not use the previous definition,
@@ -293,6 +368,9 @@ graph "" {
 
     sub_col = col1 - col2
     assert sub_col.is_close(Color(-4.0, -5.0, -6.0))
+
+    mul_col = col1 * col2
+    assert mul_col.is_close(Color(5.0, 14.0, 27.0))
     ```
 
 -   Prodotto colore-scalare (implementate anche scalare-colore,
@@ -303,20 +381,6 @@ graph "" {
 
     assert prod_col.is_close(Color(2.0, 4.0, 6.0))
     ```
-
-# Test (3)
-
--   Aggiungete un *workflow* al vostro repository GitHub
-
--   Ci sono molti template disponibili in GitHub: scegliete il più appropriato
-
--   Il workflow deve eseguire le seguenti azioni:
-
-    1.  Scaricare il codice dal repository GitHub (verifica che non manchino file)
-    2.  Compilare il codice (verifica che non ci siano errori di sintassi)
-    3.  Eseguire i test (verifica che il codice funzioni a dovere)
-
--   Modificate un test in modo che fallisca e verificate che quando fate il commit ciò vi venga segnalato. (Poi rimettete a posto il test).
 
 # Indicazioni per C++
 
@@ -346,7 +410,7 @@ graph "" {
     1.  Una libreria che implementi `Color`; sceglietele un nome (noi useremo `trace`).
     2.  Un programma eseguibile che usi la libreria, che chiameremo `raytracer`. Al momento basta che stampi `Hello, world!`.
     3.  Un programma che esegua i test, che chiameremo `colorTest`.
-    
+
 -   Per creare programmi sappiamo che c'è il comando `add_executable`; per le librerie esiste l'analogo `add_library`.
 
 -   Le dipendenze tra libreria `trace` e programmi si specificano con `target_link_libraries`
@@ -364,18 +428,18 @@ graph "" {
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
       $<INSTALL_INTERFACE:include>
       )
-    
+
     add_executable(raytracer
       src/raytracer.cpp
       )
     target_link_libraries(raytracer PUBLIC trace)
-    
+
     add_executable(colorTest
       test/colors.cpp
       )
     target_link_libraries(colorTest PUBLIC trace)
     ```
-    
+
 -   `target_include_directories` specifica dove cercare `colors.h`.
 
 # Eseguire test
@@ -383,9 +447,9 @@ graph "" {
 -   Per eseguire test automatici, occorre invocare due comandi:
 
     1.  `enable_testing` abilita la possibilità di eseguire test, e va scritto subito dopo il comando `project`.
-    
+
     2.  `add_test` specifica quale dei file eseguibili da produrre esegue effettivamente test. (Si può usare più volte).
-    
+
 -   Nel nostro caso, invocheremo `add_test` una sola volta per eseguire `colorTest`
 
 -   Per eseguire i test, nella directory `build` basta invocare `ctest`
@@ -579,44 +643,43 @@ namespace Trace.Tests
     Pkg.generate("Raytracer")  # Upper case is customary in Julia
     Pkg.activate("Raytracer")
     ```
-    
+
 -   Julia supporta la gestione dei colori tramite [ColorTypes](https://github.com/JuliaGraphics/ColorTypes.jl) e [Colors](https://juliagraphics.github.io/Colors.jl/stable/):
 
     ```julia
     Pkg.add("ColorTypes")
     Pkg.add("Colors")
     ```
-    
+
     Questo modificherà `Project.toml` e aggiungerà `Manifest.toml`, che vanno salvati in Git (guardate cosa contengono!).
-    
+
 # Operazioni sui colori
 
 -   La libreria Colors implementa una serie di tipi template:
 
     ```julia
     using Colors
-    
+
     a = RGB(0.1, 0.3, 0.7)
     b = XYZ(0.8, 0.4, 0.2)
     println(convert(XYZ, a))  # Convert a from RGB to XYZ space
     ```
-    
--   La libreria non implementa però le operazioni sui colori che ci interessano (somma di colori, prodotto con uno scalare). Implementatele voi nel file `src/Raytracer.jl` (il nome del file dipende dal nome che avete scelto per il progetto).
+
+-   La libreria non implementa però le operazioni sui colori che ci interessano (somma, differenza, prodotto, confronto). Implementatele voi nel file `src/Raytracer.jl` (il nome del file dipende dal nome che avete scelto per il progetto).
 
 # Complicazioni
 
 -   I tipi in ColorTypes sono [*parametrici*](https://docs.julialang.org/en/v1/manual/types/#Parametric-Types) (come i template in C++): il tipo `RGB` è in realtà `RGB{T}`, con `T` parametro.
 
--   Dovete ridefinire le operazioni fondamentali `+` e `*`, che in Julia sono presenti nel package `Base`.
+-   Dovete ridefinire le operazioni fondamentali `+`, `-`, `*` e `≈` (`\approx`), che in Julia sono presenti nel package `Base`.
 
     Dovrete scrivere qualcosa del genere in `src/Raytracer.jl`:
 
     ```julia
     import ColorTypes
-    import Base.:+, Base.:*
+    import Base.:+, Base.:*, Base.:≈
 
-    # Define here the sum and the product of the form "scalar * c", then…
-    
+    # To make this work, first define the product "scalar * color"
     Base.:*(c::ColorTypes.RGB{T}, scalar) where {T} = scalar * c
     ```
 
@@ -634,13 +697,13 @@ namespace Trace.Tests
     └── test
         └── runtests.jl
     ```
-    
+
 -   Per scrivere test, dovete aggiungere la libreria [Test]():
 
     ```julia
     Pkg.add("Test")
     ```
-    
+
 # Come scrivere test
 
 -   Nel file `runtests.jl` dovete scrivere le procedure di test. La libreria Test implementa le macro `@testset` (raggruppa test) e `@test`:
@@ -648,7 +711,7 @@ namespace Trace.Tests
     ```julia
     using Raytracer   # Mettete il nome che avete scelto
     using Test
-    
+
     @testset "Colors" begin
         # Put here the tests required for color sum and product
         @test 1 + 1 == 2
@@ -731,12 +794,15 @@ Qui la versione usata è la 4
 
 ---
 
+# Generare test
+
 <center>
 ![](./media/kotlin-generate-test.png)
 </center>
 
 ---
 
+# Eseguire test
 <center>
 ![](./media/kotlin-run-test.png)
 </center>
