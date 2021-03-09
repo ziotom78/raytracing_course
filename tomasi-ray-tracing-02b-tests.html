@@ -273,61 +273,6 @@ Color(r=2.0, g=4.0, b=6.0)</code></pre></li>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> are_colors_close(color1, color2)</span></code></pre></div></li>
 </ul>
 </section>
-<section id="continuous-integration-ci" class="slide level1">
-<h1>Continuous Integration (CI)</h1>
-</section>
-<section id="cosa-significa-ci" class="slide level1">
-<h1>Cosa significa CI?</h1>
-<ul>
-<li><p><em>Continuous Integration</em> (CI) è la pratica di fare spesso commit sul server Git (nel nostro caso, il sito GitHub).</p></li>
-<li><p>Fare spesso commit è il modo migliore per obbligarsi a stare sincronizzati col lavoro di altri.</p></li>
-<li><p>Questo però crea potenziali problemi: cosa succede se le mie modifiche interferiscono con quelle di un altro?</p></li>
-<li><p>I test automatici possono venirci in soccorso, ma <strong>occorre ricordarsi di eseguirli sempre</strong>!</p></li>
-</ul>
-</section>
-<section id="build-automatici" class="slide level1">
-<h1>Build automatici</h1>
-<ul>
-<li><p>Per mettere in pratica la CI è necessario che il computer sappia eseguire i test automatici da solo.</p></li>
-<li><p>La pratica della <em>continuous integration</em> richiede quindi che il computer sia istruito perché compili il codice ed esegua i test automatici ogni volta che fa un commit.</p></li>
-</ul>
-</section>
-<section id="potenziali-problemi" class="slide level1">
-<h1>Potenziali problemi</h1>
-<ul>
-<li><p>È sufficiente che un test fatto girare sul <strong>mio</strong> computer abbia successo?</p></li>
-<li><p><strong>No</strong>! Il mio computer potrebbe avere delle librerie installate che il codice usa, ma che su altri computer non sono (ancora) state installate</p></li>
-<li><p>Perché un test sia rappresentativo, deve essere eseguito su una macchina «vergine» (ossia, su cui sia installato solo il sistema operativo di base).</p></li>
-</ul>
-</section>
-<section id="ci-builds" class="slide level1">
-<h1>CI builds</h1>
-<ul>
-<li><p>Un <em>CI build</em> è un processo che esegue i test su una macchina virtuale creata appositamente, che viene cancellata subito dopo.</p></li>
-<li><p>L’esito del test può essere segnalato tramite email, oppure tramite un’icona sulla pagina del repository in GitHub</p></li>
-<li><p>GitHub implementa le «Actions», che altro non sono che <em>CI builds</em></p></li>
-</ul>
-</section>
-<section id="workflow" class="slide level1">
-<h1>Workflow</h1>
-<ol type="1">
-<li>Crea una nuova macchina virtuale (solitamente nel Cloud) e installa una versione di Linux/Mac OS X/Windows;</li>
-<li>Scarica le librerie e i programmi necessari alla compilazione (es., Julia);</li>
-<li>Scarica da un repository Git (es., una pagina GitHub) il codice che deve essere verificato;</li>
-<li>Compila il codice;</li>
-<li>Esegue i test automatici;</li>
-<li>Se necessario, avvisa l’utente di malfunzionamenti.</li>
-</ol>
-</section>
-<section id="github-actions" class="slide level1">
-<h1>GitHub Actions</h1>
-<ul>
-<li>Il sito GitHub non offre solo l’<em>hosting</em> di repository Git, ma anche l’esecuzione di <em>CI builds</em>.</li>
-<li>Questi builds sono chiamate «Actions».</li>
-<li>Il punto di forza di GitHub è che esistono librerie di «actions», ossia template che permettono velocemente di configurare <em>CI builds</em>.</li>
-<li>Vedremo un esempio pratico più tardi, nel caso del C++.</li>
-</ul>
-</section>
 <section id="guida-per-lesercitazione" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
 </section>
@@ -337,12 +282,12 @@ Color(r=2.0, g=4.0, b=6.0)</code></pre></li>
 <li><p>Create una nuova directory in cui tenere il vostro progetto, scegliendo un nome appropriato! (Qui useremo il nome <code>raytracer</code>).</p></li>
 <li><p>Strutturare il progetto nel modo seguente:</p>
 <ul>
-<li>Una libreria che implementi <code>Color</code> e le operazioni su di esso</li>
-<li>Un eseguibile da linea di comando, che per il momento stampi solo <code>Hello, world!</code></li>
-<li>Una serie di test automatici sul tipo <code>Color</code></li>
+<li>Una libreria che implementi <code>Color</code> e le operazioni su di esso;</li>
+<li>Un eseguibile da linea di comando, che per il momento stampi solo <code>Hello, world!</code>;</li>
+<li>Una serie di test automatici sul tipo <code>Color</code>.</li>
 </ul></li>
-<li><p>Registrare il progetto su GitHub</p></li>
-<li><p>Configurare una «action» che esegua i test automatici</p></li>
+<li><p>Registrare il progetto su GitHub.</p></li>
+<li><p>Aggiungere tutti i membri del gruppo al progetto.</p></li>
 </ol>
 </section>
 <section id="lavoro-in-gruppo" class="slide level1">
@@ -563,21 +508,6 @@ raytracer
 
 <p><asciinema-player src="cast/c++-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player></p>
 </section>
-<section id="github-actions-1" class="slide level1">
-<h1>GitHub Actions</h1>
-<ul>
-<li><p>Una volta salvato il codice in un repository su GitHub, configurate una nuova «Action» (v. video seguente).</p></li>
-<li><p>Il modello è «CMake based projects» (ignorate il fatto che sembri supportare solo il linguaggio C):</p>
-<center>
-<p><img data-src="./media/cmake-github-action.png" /></p>
-</center></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<iframe src="https://player.vimeo.com/video/520878087?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Setting up GitHub Actions for CMake-based projects">
-</iframe>
-</section>
 <section id="esecuzione-dei-test" class="slide level1">
 <h1>Esecuzione dei test</h1>
 <ul>
@@ -692,16 +622,6 @@ raytracer
 <span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    }</span>
 <span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </section>
-<section id="github-actions-2" class="slide level1">
-<h1>GitHub Actions</h1>
-<ul>
-<li><p>Aggiungete una Action al repository GitHub, una volta che avete fatto il commit ed eseguito <code>git push</code>.</p></li>
-<li><p>Il modello è «.NET» (evitate il modello «.NET desktop», a noi serve quello per i programmi che funzionano da linea di comando):</p>
-<center>
-<p><img data-src="./media/dotnet-github-action.png" /></p>
-</center></li>
-</ul>
-</section>
 <section id="indicazioni-per-julia" class="slide level1">
 <h1>Indicazioni per Julia</h1>
 </section>
@@ -791,69 +711,6 @@ raytracer
 <h1>Esecuzione di test</h1>
 <p><asciinema-player src="cast/julia-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player></p>
 </section>
-<section id="github-actions-3" class="slide level1">
-<h1>GitHub Actions</h1>
-<ul>
-<li>A differenza del C++ e del C#, Julia non ha una action preconfigurata nel sito.</li>
-<li>Ma GitHub gestisce un «marketplace», e il team Julia l’ha usato per fornire alla comunità una <a href="https://github.com/julia-actions">serie di actions</a>.</li>
-<li>Le azioni che servono sono le seguenti:
-<ul>
-<li><code>julia-actions/setup-julia@v1</code> (installa Julia);</li>
-<li><code>actions/cache@v1</code> (evita di reinstallare pacchetti Julia ogni volta)</li>
-<li><code>julia-actions/julia-buildpkg@latest</code> (compila il package)</li>
-<li><code>julia-actions/julia-runtest@latest</code> (esegue i test)</li>
-</ul></li>
-</ul>
-</section>
-<section id="file-unittests.yml" class="slide level1">
-<h1>File <code>UnitTests.yml</code></h1>
-<div class="sourceCode" id="cb31"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Unit tests</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> master</span></span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">test</span><span class="kw">:</span></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.arch }}</span></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ${{ matrix.os }}</span></span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">strategy</span><span class="kw">:</span></span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">matrix</span><span class="kw">:</span></span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">julia-version</span><span class="kw">:</span></span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="st">&#39;1.5&#39;</span></span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">os</span><span class="kw">:</span></span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> ubuntu-latest</span></span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">arch</span><span class="kw">:</span></span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> x64</span></span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v2</span></span>
-<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Set up Julia&quot;</span></span>
-<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/setup-julia@v1</span></span>
-<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
-<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">version</span><span class="kw">:</span><span class="at"> ${{ matrix.julia-version }}</span></span>
-<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">arch</span><span class="kw">:</span><span class="at"> ${{ matrix.arch }}</span></span>
-<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Cache artifacts&quot;</span></span>
-<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/cache@v1</span></span>
-<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">env</span><span class="kw">:</span></span>
-<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache-name</span><span class="kw">:</span><span class="at"> cache-artifacts</span></span>
-<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
-<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">path</span><span class="kw">:</span><span class="at"> ~/.julia/artifacts</span></span>
-<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">key</span><span class="kw">:</span><span class="at"> ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles(&#39;**/Project.toml&#39;) }}</span></span>
-<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a><span class="fu">          restore-keys</span><span class="kw">: </span><span class="ch">|</span></span>
-<span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-test-${{ env.cache-name }}-</span>
-<span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-test-</span>
-<span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-</span>
-<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Build package&quot;</span></span>
-<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/julia-buildpkg@latest</span></span>
-<span id="cb31-44"><a href="#cb31-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-45"><a href="#cb31-45" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Run unit tests&quot;</span></span>
-<span id="cb31-46"><a href="#cb31-46" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/julia-runtest@latest</span></span></code></pre></div>
-</section>
 <section id="indicazioni-per-kotlin" class="slide level1">
 <h1>Indicazioni per Kotlin</h1>
 </section>
@@ -878,15 +735,15 @@ raytracer
 <h1>Creazione di <code>Color</code></h1>
 <ul>
 <li><p>Usate le <em>data classes</em> per definire la classe Color: sono molto veloci da usare!</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">/** A RGB color</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param r The level of red</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param g The level of green</span></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param b The level of blue</span></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">data</span> <span class="kw">class</span> Color(<span class="kw">val</span> <span class="va">r</span>: <span class="dt">Double</span>, <span class="kw">val</span> <span class="va">g</span>: <span class="dt">Double</span>, <span class="kw">val</span> <span class="va">b</span>: <span class="dt">Double</span>) {</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<div class="sourceCode" id="cb31"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">/** A RGB color</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param r The level of red</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param g The level of green</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param b The level of blue</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">data</span> <span class="kw">class</span> Color(<span class="kw">val</span> <span class="va">r</span>: <span class="dt">Double</span>, <span class="kw">val</span> <span class="va">g</span>: <span class="dt">Double</span>, <span class="kw">val</span> <span class="va">b</span>: <span class="dt">Double</span>) {</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
 <li><p>Definite <code>is_close</code> e gli operatori <code>plus</code> (somma di due colori) e <code>times</code> (prodotto tra colore e scalare)</p></li>
 </ul>
 </section>
@@ -924,26 +781,6 @@ raytracer
 <center>
 <img data-src="./media/kotlin-run-test.png" />
 </center>
-</section>
-<section id="github-actions-4" class="slide level1">
-<h1>GitHub Actions</h1>
-<ul>
-<li><p>Selezionate «Java with Gradle»:</p>
-<center>
-<p><img data-src="./media/gradle-github-action.png" /></p>
-</center>
-<p>Gradle scaricherà automaticamente il supporto Kotlin.</p></li>
-<li><p>Il processo proverà a compilare il codice e a eseguire <em>tutti</em> i test nel repository</p></li>
-</ul>
-</section>
-<section id="risoluzione-dei-problemi" class="slide level1">
-<h1>Risoluzione dei problemi</h1>
-<ul>
-<li><p>Ricordatevi di aggiungere al commit i file in <code>gradle/wrapper/</code></p></li>
-<li><p>Se avete problemi a causa della versione di Gradle, rigenerate <code>gradlew</code> da linea di comando così:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> wrapper --gradle-version 5.3</span></code></pre></div>
-<p>(Gradle supporta Kotlin a partire dalla versione 5.3).</p></li>
-</ul>
 </section>
     </div>
   </div>
