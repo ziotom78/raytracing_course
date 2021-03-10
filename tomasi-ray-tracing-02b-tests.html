@@ -438,14 +438,16 @@ Color(r=2.0, g=4.0, b=6.0)</code></pre></li>
 <ul>
 <li><p>Creazione di colori e funzione <code>is_close</code>:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>col1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> col1.is_close(Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span></code></pre></div></li>
-<li><p>Verifica che <code>is_close</code> fallisca quando è necessario:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> col2.is_close(Color(<span class="fl">3.0</span>, <span class="fl">4.0</span>, <span class="fl">5.0</span>))</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="va">False</span>  <span class="co"># You shouldn&#39;t reach this line!</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">AssertionError</span>:</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span>  <span class="co"># Ok!</span></span></code></pre></div></li>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> col1.is_close(Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span></code></pre></div></li>
+<li><p>Verifica che <code>is_close</code> fallisca (ossia ritorni <code>False</code>) quando è necessario:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> col2.is_close(Color(<span class="fl">3.0</span>, <span class="fl">4.0</span>, <span class="fl">5.0</span>))  <span class="co"># First method</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Second method: it is usually applied for tests that are more complex than this</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> col2.is_close(Color(<span class="fl">3.0</span>, <span class="fl">4.0</span>, <span class="fl">5.0</span>))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="va">False</span>  <span class="co"># You shouldn&#39;t reach this line!</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">AssertionError</span>:</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span>  <span class="co"># If we got here, it means that the first assert failed: ok!</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="test-2" class="slide level1">
