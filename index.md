@@ -8,3 +8,4 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 - Lezione 1 (2021-03-01): [l'equazione del rendering](./tomasi-ray-tracing-01a-rendering-equation.html)
 - Esercitazione 1 (2021-03-03): [introduzione a Git e GitHub](./tomasi-ray-tracing-01b-github.html)
 - Lezione 2 (2021-03-08): [gestione dei colori](./tomasi-ray-tracing-02a-colors.html)
+- Esercitazione 2 (2021-03-10): [test automatici](./tomasi-ray-tracing-02b-tests.html)

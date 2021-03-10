@@ -169,7 +169,7 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 -   Evitate dei test che coinvolgano numeri con parti decimali (es., `2.1`, `5.09`)
 -   Numeri interi piccoli (es., `16.0`) sono codificati senza arrotondamenti…
 -   …quindi nei test, se possibile, usate numeri floating point interi (come abbiamo fatto per la classe `Color` in Python)
--   Se non è possibile, definite una funzione `are_close`:
+-   Per i casi in cui non è possibile, definite una funzione `are_close`:
 
     ```python
     def are_close(x, y, epsilon = 1e-10):
@@ -202,11 +202,11 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 
 # Lavoro in gruppo
 
--   Da oggi lavorerete in gruppo: ciascuno di voi dovrà scegliere quale parte di codice implementare
+-   Da oggi lavorerete in gruppo: ciascuno di voi dovrà scegliere quale parte di codice implementare.
 
 -   Inizieremo ad usare le caratteristiche più avanzate di Git per gestire i **conflitti**, ossia le situazioni in cui una parte di codice viene modificata contemporaneamente da più persone.
 
--   Vediamo un esempio pratico di conflitto per un semplice codice Python
+-   Vediamo un esempio pratico di conflitto per un semplice codice Python.
 
 ---
 
@@ -239,12 +239,12 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 2.  Strutturare il progetto nel modo seguente:
 
     -   Una libreria che implementi `Color` e le operazioni su di esso;
-    -   Un eseguibile da linea di comando, che per il momento stampi solo `Hello, world!`;
+    -   Un eseguibile da linea di comando, che per il momento stampi solo `Hello, world!`, ma che possa usare la libreria;
     -   Una serie di test automatici sul tipo `Color`.
 
-3.  Registrare il progetto su GitHub.
+3.  Registrare il progetto su GitHub e aggiungere i membri del gruppo.
 
-4.  Aggiungere tutti i membri del gruppo al progetto.
+4.  Implementare la classe `Color` e i test.
 
 
 # Lavoro in gruppo
@@ -259,8 +259,6 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
     2.  Prodotto tra due colori, e prodotto colore-scalare;
     3.  Funzione `are_colors_close`;
     4.  Test.
-
--   Fate in modo che **ciascuno** di voi gestisca almeno un *merge commit*.
 
 ---
 
@@ -281,7 +279,7 @@ graph "" {
 }
 ```
 
--   Per *libreria* intendiamo un insieme di funzioni/classi (un file `.a` in C++, un file `.dll` in C\#, un package in Julia, un insieme di classi in Kotlin)
+-   Per *libreria* intendiamo un insieme di funzioni/classi (un file `.a` in C++, un file `.dll` in C\#, un insieme di classi in Kotlin; per Julia la struttura di un package è già sufficiente)
 -   Oggi non faremo nulla con l'eseguibile: basta un «Hello, world!»
 -   I test sono invece molto importanti già da oggi!
 
@@ -294,9 +292,9 @@ graph "" {
 
 # Uso della memoria
 
--   Nella maggior parte dei linguaggi c'è una distinzione tra *value types* e *reference types*.
+-   Nella maggior parte dei linguaggi c'è differenza tra *value* e *reference types*.
 
--   I *value types* sono valori a cui si può accedere direttamente, e sono sempre allocati sullo stack: sono molto veloci da usare, ma non possono occupare troppa memoria (alcuni kB al massimo).
+-   I *value types* sono valori a cui si può accedere direttamente, e sono sempre allocati sullo *stack*: sono molto veloci da usare, ma non possono occupare troppa memoria (alcuni kB al massimo).
 
 -   I *reference types* sono dei puntatori al dato attuale, e possono essere sia sullo *stack* che nello *heap*; in quest'ultimo caso possono occupare tutta la memoria che vogliono, ma sono più lenti da leggere e scrivere.
 
@@ -307,6 +305,24 @@ graph "" {
 <center>
 ![](./media/stack-vs-heap-memory.svg)
 </center>
+
+---
+
+# Esempio in C++
+
+```c++
+#include <iostream>
+
+int main() {
+    int a{};            // Allocated on the stack
+    int * b = new int;  // Allocated on the heap
+
+    a = 15;   // This is fast
+    *b = 16;  // This is slower
+    
+    std::cout << a << ", " << *b << "\n";
+}
+```
 
 # Dimensione dello stack
 
@@ -319,9 +335,9 @@ graph "" {
 
     Il valore di 8 MB è caratteristico di Linux; per i Mac è 0,5 MB.
 
--   La piattaforma .NET (Visual Basic, C\#) usa uno stack di 1 MB
+-   La piattaforma .NET (Visual Basic, C\#) usa uno stack di 1 MB.
 
--   La piattaforma JVM (Java, Kotlin) usa uno stack di 1 MB, che è però usato solo per i tipi primitivi (interi, booleani, numeri floating-point)
+-   La piattaforma JVM (Java, Kotlin) usa uno stack di 1 MB, che è però usato solo per i tipi primitivi (interi, booleani, numeri floating-point).
 
 # Value types
 
@@ -329,7 +345,7 @@ graph "" {
 
 -   A seconda del linguaggio, l'uso di un *value type* richiede accorgimenti diversi:
 
-    -   In C++, usate `struct` oppure `class` (è uguale), ma evitate `new`/`delete`;
+    -   In C++, usate `struct` oppure `class` (è uguale), ma quando la userete nei codici/test evitate `new`/`delete`;
     -   In C\#, usate `struct` (value type), ma non `class` (reference type);
     -   In Pascal, usate `object` o `record`, ma non usate `class`;
     -   In Nim, usate `object`, ma non usate `ref object`;
@@ -363,14 +379,9 @@ graph "" {
     col1 = Color(1.0, 2.0, 3.0)  # Do not use the previous definition,
     col2 = Color(5.0, 7.0, 9.0)  # it's better to define it again here
 
-    sum_col = col1 + col2
-    assert sum_col.is_close(Color(6.0, 9.0, 12.0))
-
-    sub_col = col1 - col2
-    assert sub_col.is_close(Color(-4.0, -5.0, -6.0))
-
-    mul_col = col1 * col2
-    assert mul_col.is_close(Color(5.0, 14.0, 27.0))
+    assert (col1 + col2).is_close(Color(6.0, 9.0, 12.0))
+    assert (col1 - col2).is_close(Color(-4.0, -5.0, -6.0))
+    assert (col1 * col2).is_close(Color(5.0, 14.0, 27.0))
     ```
 
 -   Prodotto colore-scalare (implementate anche scalare-colore,
@@ -413,7 +424,7 @@ graph "" {
 
 -   Per creare programmi sappiamo che c'è il comando `add_executable`; per le librerie esiste l'analogo `add_library`.
 
--   Le dipendenze tra libreria `trace` e programmi si specificano con `target_link_libraries`
+-   Le dipendenze tra libreria `trace` e programmi si specificano con `target_link_libraries`.
 
 # Librerie ed eseguibili
 
@@ -444,18 +455,19 @@ graph "" {
 
 # Eseguire test
 
--   Per eseguire test automatici, occorre invocare due comandi:
+-   Per eseguire test automatici, occorre invocare due comandi in `CMakeLists.txt`:
 
     1.  `enable_testing` abilita la possibilità di eseguire test, e va scritto subito dopo il comando `project`.
 
     2.  `add_test` specifica quale dei file eseguibili da produrre esegue effettivamente test. (Si può usare più volte).
 
--   Nel nostro caso, invocheremo `add_test` una sola volta per eseguire `colorTest`
+-   Nel nostro caso, invocheremo `add_test` una sola volta per eseguire `colorTest`.
 
--   Per eseguire i test, nella directory `build` basta invocare `ctest`
+-   Per eseguire i test, nella directory `build` basta invocare `ctest`.
 
 # `CMakeLists.txt`
 
+Questo è il contenuto completo di `CMakeLists.txt`:
 ```cmake
 cmake_minimum_required(VERSION 3.12)
 
@@ -474,7 +486,9 @@ add_library(trace
   src/colors.cpp
   )
 # Help the compiler when you write "#include <colors.h>"
-target_include_directories(trace PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+# See "cmake-generator-expressions(7)" in the CMake manual
+target_include_directories(trace PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
   )
 
@@ -506,6 +520,27 @@ target_compile_features(raytracer PUBLIC cxx_std_17)
 
 <asciinema-player src="cast/c++-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player>
 
+# Funzionamento dei test
+
+-   Occorre restituire l'esito del test come valore al sistema operativo.
+
+-   La possibilità più elementare è di usare un `return` appropriato nel `main`:
+
+    ```c++
+    #include "colors.h"
+    #include <cstdlib>
+    
+    int main() {
+        Color c1{1.0, 2.0, 3.0};
+        Color c2{5.0, 7.0, 9.0};
+        
+        return are_colors_close(Color{6.0, 9.0, 11.0}, c1 + c2)
+            ? EXIT_SUCCESS : EXIT_FAILURE;
+    }
+    ```
+    
+-   Si può usare [`abort`](https://www.cplusplus.com/reference/cstdlib/abort/?kw=abort) (in caso di fallimento) o [`assert`](https://www.cplusplus.com/reference/cassert/assert/?kw=assert) (occhio a `NDEBUG`!).
+
 # Esecuzione dei test
 
 -   Provate a modificare uno dei test sul tipo `Color`, in modo che fallisca:
@@ -519,12 +554,12 @@ target_compile_features(raytracer PUBLIC cxx_std_17)
 
 # Suggerimenti
 
--   Se il build **non** fallisce, è probabilmente perché viene usato come tipo di build il `Release` anziché il `Debug`, e avete usato `assert` nel vostro codice
+-   Se il build **non** fallisce, è probabilmente perché viene usato come tipo di build il `Release` anziché il `Debug`, e avete usato `assert` nel vostro codice.
 -   Soluzioni:
-    -   Cambiate il file `.yml` in modo da usare `Debug` anziché `Release`
-    -   Usate `#undef NDEBUG` prima di `#include <cassert>` (meglio!)
-    -   Definite una vostra funzione `my_assert` (ancora meglio!)
-    -   Usate una libreria di testing C++, come [Catch2](https://github.com/catchorg/Catch2/tree/v2.x) (ottimo!)
+    -   Cambiate il file `.yml` in modo da usare `Debug` anziché `Release`;
+    -   Usate `#undef NDEBUG` prima di `#include <cassert>` (meglio!);
+    -   Definite una vostra funzione `my_assert` (ancora meglio!);
+    -   Usate una libreria di testing C++, come [Catch2](https://github.com/catchorg/Catch2/tree/v2.x) (ottimo!).
 -   Insegnamento: provare **sempre** a far fallire uno o più test quando si configura un *CI build*!
 
 # Indicazioni per C\#
@@ -559,23 +594,34 @@ graph "" {
 
 # La nostra soluzione
 
+Questi sono i comandi da terminale per produrre la soluzione che vogliamo:
+
 ```sh
+# Create a new solution that will include:
+# 1. The library
+# 2. The executable (currently printing «Hello, world!»)
+# 3. The tests
 dotnet new sln -o "Raytracer"
 
 cd Raytracer
 
+# 1. Create the library and add it to the solution
 dotnet new classlib -o "Trace"
 dotnet sln add Trace/Trace.csproj
 
+# 2. Create the executable and add it to the solution
 dotnet new console -o "Raytracer"
 dotnet sln add Raytracer/Raytracer.csproj
 
+# 3. Create the tests and add them to the solution
 dotnet new xunit -o "Trace.Tests"
 dotnet sln add Trace.Tests/Trace.Tests.csproj
 
+# Both the executable and the tests depend on the «Trace» library
 dotnet add Raytracer/Raytracer.csproj reference Trace/Trace.csproj
 dotnet add Trace.Tests/Trace.Tests.csproj reference Trace/Trace.csproj
 
+# Create a .gitignore file
 dotnet new gitignore
 ```
 
@@ -588,7 +634,7 @@ dotnet new gitignore
     Raytracer
     ├── Raytracer.sln
     ├── Raytracer
-    │   ├── Main.cs             <-- This was Program.cs
+    │   ├── Raytracer.cs        <-- This was Program.cs
     │   └── Raytracer.csproj
     ├── Trace
     │   ├── Color.cs            <-- This was Class1.cs
@@ -601,6 +647,7 @@ dotnet new gitignore
 # Scrittura di test
 
 ```csharp
+// This should be put in Trace.Tests/ColorTests.cs
 using System;
 using Xunit;
 using Trace;
@@ -616,6 +663,7 @@ namespace Trace.Tests
             Color b = new Color(5.0f, 6.0f, 7.0f);
             // C# convention: *first* the expected value, *then* the test value
             Assert.True(Color.are_close(new Color(6.0f, 8.0f, 10.0f), a + b));
+            // ...
         }
     }
 }
@@ -628,11 +676,11 @@ namespace Trace.Tests
 
 -   Julia implementa in modo nativo il tipo di struttura richiesta (libreria, eseguibile, eseguibile con i test):
 
-    -   Ogni package può essere usato come una libreria
-    -   Lo script che abbiamo mostrato la volta scorsa può essere usato come eseguibile
-    -   I package possono includere una serie di test se al loro interno è presente una directory chiamata `test`
+    -   Ogni package può essere usato come una libreria;
+    -   I package possono includere una serie di test se al loro interno è presente una directory chiamata `test`;
+    -   Lo script che implementa il `main` [visto nella precedente esercitazione](https://ziotom78.github.io/raytracing_course/tomasi-ray-tracing-01b-github.html#/istruzioni-1) può essere usato come eseguibile.
 
--   La creazione di un nuovo package configura quindi tutto già nel modo richiesto.
+-   La creazione di un nuovo package configura quindi tutto già nel modo richiesto, tranne l'eseguibile.
 
 # Creazione del package
 
@@ -732,15 +780,15 @@ namespace Trace.Tests
 
 # Gestione di progetti
 
--   IntelliJ IDEA si basa su Gradle, che è l'equivalente di CMake in C++
+-   IntelliJ IDEA si basa su Gradle, che è l'equivalente di CMake in C++.
 
--   Gradle può essere programmato in Groovy (un linguaggio basato su Java) o in Kotlin
+-   Gradle può essere programmato in Groovy (un linguaggio basato su Java) o in Kotlin.
 
 -   È un sistema molto più complesso di CMake!
 
--   Siccome Kotlin (come Java) permette un'ottima modularità, per questo corso non è necessario differenziare tra libreria ed eseguibile
+-   Siccome Kotlin (come Java) permette un'ottima modularità, per questo corso non è necessario differenziare tra libreria ed eseguibile.
 
--   Create quindi un nuovo progetto esattamente come avete fatto la volta scorsa
+-   Create quindi un nuovo progetto esattamente come avete fatto la volta scorsa.
 
 # Creazione di `Color`
 
@@ -766,15 +814,15 @@ In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):
     }
     ```
 
--   Definite `is_close` e gli operatori `plus` (somma di due colori) e `times` (prodotto tra colore e scalare)
+-   Definite `is_close` e gli operatori `plus` (somma di due colori) e `times` (prodotto tra colore e scalare).
 
 # Scrittura di test
 
--   IntelliJ IDEA genera e gestisce il codice di test
+-   IntelliJ IDEA genera e gestisce il codice di test.
 
 -   Usa la libreria [JUnit](https://junit.org/), che oggi è usata in due versioni: la versione 4 e la 5 (più recente, ma ancora poco usata). Di default, IntelliJ IDEA seleziona la versione 4.
 
--   Controllate la versione usata nel vostro progetto aprendo il menu «File | Project structure»
+-   Controllate la versione usata nel vostro progetto aprendo il menu «File | Project structure».
 
 ---
 
@@ -782,11 +830,11 @@ In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):
 ![](./media/kotlin-project-structure.png){height=560}
 </center>
 
-Qui la versione usata è la 4
+Qui la versione usata è la 4.
 
 # Creazione di test vuoti
 
--   Fate click col tasto destro sul nome di una classe e scegliete «Generate»
+-   Fate click col tasto destro sul nome di una classe e scegliete «Generate».
 
 -   Nella finestra che compare, scegliete la versione giusta per JUnit e poi fate un segno di spunta accanto ai metodi per cui volete scrivere test. (Nel nostro caso saranno `is_close`, `plus` e `times`).
 
@@ -806,3 +854,9 @@ Qui la versione usata è la 4
 <center>
 ![](./media/kotlin-run-test.png)
 </center>
+
+# Gather
+
+# Link alla stanza
+
+[gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing](https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing)
