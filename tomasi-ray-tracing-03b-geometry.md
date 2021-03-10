@@ -219,12 +219,6 @@ int main() {
     -   `gdImagePng` e/o `gdImageJpeg`
 
 
-# Esecuzione di test
-
-# Test automatici
-
-Da scrivere!
-
 # Numeri di versione
 
 # Scopo dei numeri di versione

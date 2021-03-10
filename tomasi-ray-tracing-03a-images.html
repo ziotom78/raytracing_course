@@ -48,19 +48,116 @@
   <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
+<section id="tone-mapping" class="slide level1">
+<h1>Tone Mapping</h1>
+</section>
+<section id="da-rgb-a-srgb" class="slide level1">
+<h1>Da RGB a sRGB</h1>
+<ul>
+<li><p>Nella scorsa lezione abbiamo visto che l’equazione del rendering si riscrive naturalmente nelle componenti di colore R, G e B.</p></li>
+<li><p>I dispositivi di visualizzazione (monitor, schermi di tablet, televisori) richiedono però l’uso di sRGB, che ha i seguenti limiti:</p>
+<ul>
+<li>Le componenti R, G e B sono numeri interi in un intervallo limitato</li>
+<li>La risposta dei dispositivi non è lineare</li>
+</ul></li>
+<li><p>Il <em>tone mapping</em> è il processo attraverso cui si converte un’immagine RGB in un’immagine sRGB, dove per <em>immagine</em> si intende una matrice di colori RGB.</p></li>
+</ul>
+</section>
+<section id="tone-mapping-1" class="slide level1">
+<h1>Tone mapping</h1>
+<ul>
+<li>Una conversione da RGB a sRGB dovrebbe preservare la «tinta» complessiva di un’immagine.</li>
+<li>Ecco perché non si parla di <em>tone mapping</em> per un singolo colore RGB, ma per una matrice di colori (ossia un’immagine).</li>
+<li>Noi useremo il <em>tone mapping</em> descritto da Shirley (2003): è fisicamente meno preciso di altri metodi (es., la normalizzazione dello standard CIE usando D65), ma più semplice da implementare e fornisce comunque risultati visivamente gradevoli.</li>
+</ul>
+</section>
+<section id="algoritmo-di-tone-mapping" class="slide level1">
+<h1>Algoritmo di tone mapping</h1>
+<ol type="1">
+<li>Stabilire un valore «medio» per la radianza;</li>
+<li>Normalizzare il colore di ogni punto sul valore medio;</li>
+<li>Aggiustare i punti di maggiore luminosità.</li>
+</ol>
+</section>
+<section id="valore-medio" class="slide level1">
+<h1>Valore medio</h1>
+<ul>
+<li><p>Il valore «neutro» per la radianza è definito dalla media logaritmica della luminosità <span class="math inline">l</span> dei pixel: <span class="math display">
+\left&lt;l\right&gt; = \exp\left(\frac{\sum_i \log(\delta + l_i)}N\right),
+</span> dove <span class="math inline">i</span> itera su <span class="math inline">N</span> pixel, e <span class="math inline">\delta \ll 1</span> evita la singolarità di <span class="math inline">\log x</span> in <span class="math inline">x = 0</span>.</p></li>
+<li><p>Quale valore usare per la luminosità <span class="math inline">l_i</span>?</p></li>
+</ul>
+</section>
+<section id="valore-medio-1" class="slide level1">
+<h1>Valore medio</h1>
+<ul>
+<li><p><span class="math inline">l = (R + G + B) / 3</span>;</p></li>
+<li><p><span class="math inline">l = (R + G + B) / 3</span>;</p></li>
+<li><p><span class="math inline">l = \frac{\max(R, G, B) + \min(R, G, B)}2</span> («<em>luminosità</em>»).</p>
+<p>Noi useremo quest’ultima definizione: nonostante non sia fisicamente significativa, è quella che porta a risultati visivamente migliori.</p></li>
+</ul>
+</section>
+<section id="perché-la-media-logaritmica" class="slide level1">
+<h1>Perché la media logaritmica?</h1>
+<ul>
+<li><p>La risposta dell’occhio a uno stimolo <span class="math inline">S</span> è logaritmica (<em>leggi di Weber-Fechner</em>):</p>
+<p><span class="math display">
+p = k \log \frac{S}{S_0}
+</span> dove <span class="math inline">p</span> è il valore percepito, e <span class="math inline">S</span> è l’intensità dello stimolo.</p></li>
+<li><p>La media logaritmica è una media sugli <em>esponenti</em>: <span class="math display">
+10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
+</span> mentre la media aritmetica è <span class="math inline">(10^2 + 10^4 + 10^6)/3 \approx 10^6/3</span>.</p></li>
+</ul>
+</section>
+<section id="normalizzazione" class="slide level1">
+<h1>Normalizzazione</h1>
+<p>Una volta stimato il valore medio, i valori R, G, B dell’immagine sono aggiornati tramite la trasformazione <span class="math display">
+R_i \rightarrow a \times \frac{R_i}{\left&lt;l\right&gt;},
+</span> dove <span class="math inline">a</span> è un valore impostabile dall’utente (Shirley suggerisce <span class="math inline">a = 0.18</span>).</p>
+</section>
+<section id="punti-luminosi" class="slide level1">
+<h1>Punti luminosi</h1>
+<p><img data-src="./media/bright-light-in-room.jpg" height="520" /></p>
+<p>Sono notoriamente difficili da trattare!</p>
+</section>
+<section id="punti-luminosi-1" class="slide level1">
+<h1>Punti luminosi</h1>
+<p>Shirley suggerisce di applicare ai valori R, G, B di ogni punto dell’immagine la trasformazione <span class="math display">
+R_i \rightarrow \frac{R_i}{1 + R_i},
+</span> che ha le seguenti caratteristiche: <span class="math display">
+\begin{aligned}
+R_i \ll 1 &amp;\Rightarrow R_i \rightarrow R_i,\\
+R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
+\end{aligned}
+</span></p>
+</section>
+<section id="punti-luminosi-2" class="slide level1">
+<h1>Punti luminosi</h1>
+<figure>
+<img data-src="plots/5621502329388772040.svg" />
+</figure>
+</section>
 <section id="immagini" class="slide level1">
 <h1>Immagini</h1>
+</section>
+<section id="formati-grafici" class="slide level1">
+<h1>Formati grafici</h1>
+<ul>
+<li><p>L’obbiettivo del corso è di creare immagini fotorealistiche integrando l’equazione del rendering.</p></li>
+<li><p>Un’immagine fotorealistica dovrebbe essere indistinguibile da quella prodotta da una fotocamera.</p></li>
+<li><p>In che modo una fotocamera registra in un file un’immagine?</p></li>
+</ul>
 </section>
 <section id="salvataggio-di-immagini" class="slide level1">
 <h1>Salvataggio di immagini</h1>
 <ul>
-<li><p>Due tipi di file grafici:</p>
+<li><p>Esistono due famiglie di file grafici:</p>
 <ul>
-<li>Vettoriali: SVG, PDF, EPS, AI…</li>
-<li>Raster (matriciali): JPEG, PNG, GIF, RAW…</li>
+<li>Grafica vettoriale: SVG, PDF, EPS, AI…</li>
+<li>Grafica raster (matriciale): JPEG, PNG, GIF, RAW…</li>
 </ul></li>
 <li><p>I file <strong>vettoriali</strong> contengono istruzioni per disegnare un’immagine:</p>
-<pre><code>- cerchio centrato in (3.5, 2.6) con raggio 1.5 di colore nero
+<pre class="text"><code>- cerchio centrato in (3.5, 2.6) con raggio 1.5 di colore nero
 - linea da (1.1, 1.7) a (3.7, 7.4) di colore nero con spessore 2
 - etc.</code></pre></li>
 <li><p>I file <strong>raster</strong> salvano una matrice di colori, e sono quelli che ci interessano per questo corso.</p></li>
@@ -89,88 +186,135 @@
 <ul>
 <li>Un’immagine è una matrice di colori, dove ogni colore è solitamente una tripletta RGB;</li>
 <li>L’ordine con cui viene salvata la matrice (destra-sinistra, alto-basso, per righe o per colonne) è determinato dal formato;</li>
-<li>Formati diversi implementano compressioni diverse.</li>
+<li>Formati diversi implementano compressioni diverse;</li>
+<li>Non sarà obbligatorio implementare la compressione delle immagini nei nostri codici, ma è comunque indispensabile conoscerne i fondamenti.</li>
+</ul>
+</section>
+<section id="compressione-dati" class="slide level1">
+<h1>Compressione dati</h1>
+<ul>
+<li><p>La compressione dei dati è un argomento molto importante in fisica computazionale.</p></li>
+<li><p>Le simulazioni e gli esperimenti del XXI secolo richiedono di registrare quantità di dati sempre più grandi. Nell’ambito della cosmologia della CMB, bastano questi dati:</p>
+<ul>
+<li>Nel periodo 1989–1993, l’esperimento spaziale COBE/DMR ha registrato meno di 8 GB di dati;</li>
+<li>Nel periodo 2001–2010, l’esperimento WMAP ha registrato 200 GB di dati;</li>
+<li>Nel periodo 2009–2013, l’esperimento Planck ha registrato 30 TB (30,000 GB) di dati.</li>
+</ul>
+<p>Grandi moli di dati sono comuni anche in altri domini della fisica (particelle, climatologia, etc.).</p></li>
+<li><p>Apprendere i principi della compressione dati è estremamente utile!</p></li>
 </ul>
 </section>
 <section id="compressione-di-immagini" class="slide level1">
 <h1>Compressione di immagini</h1>
-</section>
-<section id="tone-mapping" class="slide level1">
-<h1>Tone Mapping</h1>
-</section>
-<section id="tone-mapping-1" class="slide level1">
-<h1>Tone mapping</h1>
 <ul>
-<li>Per <em>tone mapping</em> si intende una conversione da RGB a sRGB che preservi la «tinta» complessiva di un’immagine.</li>
-<li>Noi useremo il <em>tone mapping</em> descritto da Shirley (2003) anziché la normalizzazione su D65 per stabilire la conversione da RGB a sRGB: è fisicamente meno preciso, ma più semplice da implementare e fornisce risultati visivamente gradevoli.</li>
+<li><p>Uno schermo di computer ha solitamente una risoluzione di 1920×1080 pixel.</p></li>
+<li><p>Se vengono usati 8+8+8=24 bit per il colore sRGB di ogni pixel (3 byte per pixel), il numero totale di byte necessari è <span class="math display">
+3 \times 1920 \times 1080 = 6\,220\,800
+</span> che equivale a circa 6 MB.</p></li>
+<li><p>Nelle immagini c’è solitamente molta informazione ridondante che può essere eliminata.</p></li>
 </ul>
 </section>
-<section id="algoritmo-di-tone-mapping" class="slide level1">
-<h1>Algoritmo di tone mapping</h1>
-<ol type="1">
-<li>Stabilire un valore «neutro» per la radianza;</li>
-<li>Normalizzare il colore di ogni punto sul valore neutro;</li>
-<li>Aggiustare i punti di maggiore luminosità.</li>
-</ol>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-13.png" />
+</center>
 </section>
-<section id="valore-neutro" class="slide level1">
-<h1>Valore neutro</h1>
-<ul>
-<li><p>Il valore «neutro» per la radianza è definito dalla media logaritmica della luminosità <span class="math inline">l</span> dei pixel:</p>
-<p><span class="math display">
-\left&lt;l\right&gt; = \exp\left(\frac{\sum_i \log(\delta + l_i)}N\right),
-</span> dove <span class="math inline">i</span> itera su <span class="math inline">N</span> pixel, e <span class="math inline">\delta \ll 1</span> evita la singolarità di <span class="math inline">\log x</span> in <span class="math inline">x = 0</span>.</p></li>
-<li><p>Quale valore usare per <span class="math inline">S</span> nel <em>tone mapping</em>?</p></li>
-</ul>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-14.png" />
+</center>
 </section>
-<section id="valore-neutro-1" class="slide level1">
-<h1>Valore neutro</h1>
-<ul>
-<li><p><span class="math inline">S = (R + G + B) / 3</span>;</p></li>
-<li><p><span class="math inline">S = (R + G + B) / 3</span>;</p></li>
-<li><p><span class="math inline">S = \frac{\max(R, G, B) + \min(R, G, B)}2</span> (<em>luminosità</em>).</p>
-<p>Noi useremo quest’ultima definizione: la luminosità non è una quantità fisicamente significativa, ma è quella che porta a risultati visivamente migliori.</p></li>
-</ul>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-15.png" />
+</center>
 </section>
-<section id="perché-la-media-logaritmica" class="slide level1">
-<h1>Perché la media logaritmica?</h1>
-<ul>
-<li><p>La risposta dell’occhio a uno stimolo <span class="math inline">S</span> è logaritmica (<em>leggi di Weber-Fechner</em>):</p>
-<p><span class="math display">
-p = k \log \frac{S}{S_0}
-</span> dove <span class="math inline">p</span> è il valore percepito, e <span class="math inline">S</span> è l’intensità dello stimolo.</p></li>
-<li><p>La media logaritmica è una media sugli <em>esponenti</em>: <span class="math display">
-10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
-</span> mentre la media aritmetica è <span class="math inline">(10^2 + 10^4 + 10^6)/3 \approx 10^6/3</span>.</p></li>
-</ul>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-16.png" />
+</center>
 </section>
-<section id="normalizzazione" class="slide level1">
-<h1>Normalizzazione</h1>
-<p>Una volta stimato il valore neutro, i valori R, G, B dell’immagine sono aggiornati tramite la trasformazione <span class="math display">
-R_i \rightarrow a \times \frac{R_i}{\left&lt;l\right&gt;},
-</span> dove <span class="math inline">a</span> è un valore impostabile dall’utente (Shirley suggerisce <span class="math inline">a = 0.18</span>).</p>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-17.png" />
+</center>
 </section>
-<section id="punti-luminosi" class="slide level1">
-<h1>Punti luminosi</h1>
-<p><img data-src="./media/bright-light-in-room.jpg" height="520" /></p>
-<p>Sono notoriamente difficili da trattare!</p>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-18.png" />
+</center>
 </section>
-<section id="punti-luminosi-1" class="slide level1">
-<h1>Punti luminosi</h1>
-<p>Shirley suggerisce di applicare ai valori R, G, B di ogni pixel la trasformazione <span class="math display">
-R_i \rightarrow \frac{R_i}{1 + R_i},
-</span> che ha le seguenti caratteristiche: <span class="math display">
-\begin{aligned}
-R_i \ll 1 &amp;\Rightarrow R_i \rightarrow R_i,\\
-R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
-\end{aligned}
-</span></p>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-19.png" />
+</center>
 </section>
-<section id="punti-luminosi-2" class="slide level1">
-<h1>Punti luminosi</h1>
-<figure>
-<img data-src="plots/13657019977014987196.svg" />
-</figure>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-20.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-21.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-22.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-23.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-24.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-25.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-26.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-27.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-28.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-29.png" />
+</center>
 </section>
     </div>
   </div>
