@@ -234,7 +234,7 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 
 # Guida per l'esercitazione
 
-1.  Create una nuova directory in cui tenere il vostro progetto, scegliendo un nome appropriato! (Qui useremo il nome `raytracer`).
+1.  Create una directory per il vostro progetto (qui useremo il nome `raytracer`).
 
 2.  Strutturare il progetto nel modo seguente:
 
@@ -245,6 +245,8 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 3.  Registrare il progetto su GitHub e aggiungere i membri del gruppo.
 
 4.  Implementare la classe `Color` e i test.
+
+5.  Useremo la solita stanza Gather  [LaboratorioRayTracing](https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing).
 
 
 # Lavoro in gruppo
@@ -859,4 +861,3 @@ Qui la versione usata è la 4.
 
 # Link alla stanza
 
-[gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing](https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing)
