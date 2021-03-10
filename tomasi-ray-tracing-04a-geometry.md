@@ -114,8 +114,34 @@ $$
 
 -  L'equazione del rendering è impossibile da risolvere analiticamente
    nel caso generale.
--  Durante il corso studieremo modi per approssimarne la soluzione.
--  Come detto nell'introduzione, il nostro scopo principale sarà imparare a programmare bene: la produzione di immagini realistiche sarà un sottoprodotto!
+-  Ecco quindi la necessità di usare il calcolo numerico
+-  Il nostro codice dovrà implementare una serie di tipi geometrici
+
+# Modellizzazione di oggetti
+
+---
+
+<center>
+![](./media/night-stand-photo.jpg)
+</center>
+
+---
+
+<center>
+![](./media/night-stand-sketch.png)
+</center>
+
+---
+
+<center>
+![](./media/night-stand-lines.png)
+</center>
+
+---
+
+<center>
+![](./media/night-stand-vertexes.png)
+</center>
 
 # Lezioni imparate oggi
 
@@ -124,3 +150,7 @@ $$
 -   Sempre definire in modo accurato le quantità misurabili (energia, flusso, radianza, etc.).
 -   Assicurarsi di studiare un modello fisico in casi semplici (spazio vuoto, sferetta e piano, sferetta e due piani, etc.), per *capire* il modello prima di usarlo.
 -   Il mondo è *complicato*!
+night-stand-lines.png
+night-stand-photo.jpg
+night-stand-sketch.png
+night-stand-vertexes.png

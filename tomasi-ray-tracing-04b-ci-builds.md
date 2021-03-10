@@ -67,6 +67,26 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 3.  Verificare che i test vengano eseguiti facendo un commit, e che i test falliscano modificando un test apposta.
 
+# Test (1)
+
+-   Somma/differenza di vettori 3D:
+
+# Test (2)
+
+# Test (3)
+
+-   Aggiungete un *workflow* al vostro repository GitHub
+
+-   Ci sono molti template disponibili in GitHub: scegliete il più appropriato
+
+-   Il workflow deve eseguire le seguenti azioni:
+
+    1.  Scaricare il codice dal repository GitHub (verifica che non manchino file)
+    2.  Compilare il codice (verifica che non ci siano errori di sintassi)
+    3.  Eseguire i test (verifica che il codice funzioni a dovere)
+
+-   Modificate un test in modo che fallisca e verificate che quando fate il commit ciò vi venga segnalato. (Poi rimettete a posto il test).
+
 # Indicazioni per il C++
 
 # GitHub Actions
