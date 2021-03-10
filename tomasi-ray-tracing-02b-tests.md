@@ -707,6 +707,8 @@ namespace Trace.Tests
 
 # Operazioni sui colori
 
+-   Per oggi non c'è bisogno di comprendere la differenza tra *value* e *reference types*, perché userete Colors e ColorTypes.
+
 -   La libreria Colors implementa una serie di tipi template:
 
     ```julia
@@ -717,7 +719,7 @@ namespace Trace.Tests
     println(convert(XYZ, a))  # Convert a from RGB to XYZ space
     ```
 
--   La libreria non implementa però le operazioni sui colori che ci interessano (somma, differenza, prodotto, confronto). Implementatele voi nel file `src/Raytracer.jl` (il nome del file dipende dal nome che avete scelto per il progetto).
+-   La libreria non implementa però le operazioni sui colori che ci interessano (somma, differenza, prodotto, confronto). Implementatele voi nel file `src/Raytracer.jl` (il nome del file dipende dal nome del vostro progetto).
 
 # Complicazioni
 
@@ -858,8 +860,3 @@ Qui la versione usata è la 4.
 <center>
 ![](./media/kotlin-run-test.png)
 </center>
-
-# Gather
-
-# Link alla stanza
-
