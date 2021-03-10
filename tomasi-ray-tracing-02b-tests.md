@@ -408,13 +408,15 @@ int main() {
     raytracer
     ├── CMakeLists.txt
     ├── include
-    │   └── colors.h
+    │   └── colors.h         <-- Definition of the class "Color"
     ├── src
-    │   ├── colors.cpp
+    │   ├── colors.cpp       <-- Implementation of the class "Color"
     │   └── raytracer.cpp
     └── test
-        └── colors.cpp
+        └── colors.cpp       <-- Tests for the class "Color"
     ```
+    
+-   Se implementate tutti i metodi di `Color` in `include/colors.h` (consigliato, il codice è più veloce così), non c'è bisogno di `src/colors.cpp`.
 
 # Struttura di `CMakeLists.txt`
 
