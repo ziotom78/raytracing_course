@@ -4,7 +4,7 @@ PANDOC = /usr/bin/pandoc
 
 all: \
 	tomasi-ray-tracing-04b-ci-builds.html \
-	tomasi-ray-tracing-04a-geometry.html \
+	tomasi-ray-tracing-05a-geometry.html \
 	tomasi-ray-tracing-03b-images.html \
 	tomasi-ray-tracing-03a-images.html \
 	tomasi-ray-tracing-02b-tests.html \
