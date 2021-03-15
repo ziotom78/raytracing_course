@@ -17,6 +17,68 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
@@ -48,8 +110,8 @@
   <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="tone-mapping" class="slide level1">
-<h1>Tone Mapping</h1>
+<section id="immagini-hdr-e-ldr" class="slide level1">
+<h1>Immagini HDR e LDR</h1>
 </section>
 <section id="da-rgb-a-srgb" class="slide level1">
 <h1>Da RGB a sRGB</h1>
@@ -57,93 +119,23 @@
 <li><p>Nella scorsa lezione abbiamo visto che l’equazione del rendering si riscrive naturalmente nelle componenti di colore R, G e B.</p></li>
 <li><p>I dispositivi di visualizzazione (monitor, schermi di tablet, televisori) richiedono però l’uso di sRGB, che ha i seguenti limiti:</p>
 <ul>
-<li>Le componenti R, G e B sono numeri interi in un intervallo limitato</li>
-<li>La risposta dei dispositivi non è lineare</li>
+<li>Le componenti R, G e B sono numeri interi in un intervallo limitato;</li>
+<li>La risposta dei dispositivi non è lineare.</li>
 </ul></li>
 <li><p>Il <em>tone mapping</em> è il processo attraverso cui si converte un’immagine RGB in un’immagine sRGB, dove per <em>immagine</em> si intende una matrice di colori RGB.</p></li>
 </ul>
 </section>
-<section id="tone-mapping-1" class="slide level1">
-<h1>Tone mapping</h1>
-<ul>
-<li>Una conversione da RGB a sRGB dovrebbe preservare la «tinta» complessiva di un’immagine.</li>
-<li>Ecco perché non si parla di <em>tone mapping</em> per un singolo colore RGB, ma per una matrice di colori (ossia un’immagine).</li>
-<li>Noi useremo il <em>tone mapping</em> descritto da Shirley (2003): è fisicamente meno preciso di altri metodi (es., la normalizzazione dello standard CIE usando D65), ma più semplice da implementare e fornisce comunque risultati visivamente gradevoli.</li>
-</ul>
-</section>
-<section id="algoritmo-di-tone-mapping" class="slide level1">
-<h1>Algoritmo di tone mapping</h1>
-<ol type="1">
-<li>Stabilire un valore «medio» per la radianza;</li>
-<li>Normalizzare il colore di ogni punto sul valore medio;</li>
-<li>Aggiustare i punti di maggiore luminosità.</li>
-</ol>
-</section>
-<section id="valore-medio" class="slide level1">
-<h1>Valore medio</h1>
-<ul>
-<li><p>Il valore «neutro» per la radianza è definito dalla media logaritmica della luminosità <span class="math inline">l</span> dei pixel: <span class="math display">
-\left&lt;l\right&gt; = \exp\left(\frac{\sum_i \log(\delta + l_i)}N\right),
-</span> dove <span class="math inline">i</span> itera su <span class="math inline">N</span> pixel, e <span class="math inline">\delta \ll 1</span> evita la singolarità di <span class="math inline">\log x</span> in <span class="math inline">x = 0</span>.</p></li>
-<li><p>Quale valore usare per la luminosità <span class="math inline">l_i</span>?</p></li>
-</ul>
-</section>
-<section id="valore-medio-1" class="slide level1">
-<h1>Valore medio</h1>
-<ul>
-<li><p><span class="math inline">l = (R + G + B) / 3</span>;</p></li>
-<li><p><span class="math inline">l = (R + G + B) / 3</span>;</p></li>
-<li><p><span class="math inline">l = \frac{\max(R, G, B) + \min(R, G, B)}2</span> («<em>luminosità</em>»).</p>
-<p>Noi useremo quest’ultima definizione: nonostante non sia fisicamente significativa, è quella che porta a risultati visivamente migliori.</p></li>
-</ul>
-</section>
-<section id="perché-la-media-logaritmica" class="slide level1">
-<h1>Perché la media logaritmica?</h1>
-<ul>
-<li><p>La risposta dell’occhio a uno stimolo <span class="math inline">S</span> è logaritmica (<em>leggi di Weber-Fechner</em>):</p>
-<p><span class="math display">
-p = k \log \frac{S}{S_0}
-</span> dove <span class="math inline">p</span> è il valore percepito, e <span class="math inline">S</span> è l’intensità dello stimolo.</p></li>
-<li><p>La media logaritmica è una media sugli <em>esponenti</em>: <span class="math display">
-10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
-</span> mentre la media aritmetica è <span class="math inline">(10^2 + 10^4 + 10^6)/3 \approx 10^6/3</span>.</p></li>
-</ul>
-</section>
-<section id="normalizzazione" class="slide level1">
-<h1>Normalizzazione</h1>
-<p>Una volta stimato il valore medio, i valori R, G, B dell’immagine sono aggiornati tramite la trasformazione <span class="math display">
-R_i \rightarrow a \times \frac{R_i}{\left&lt;l\right&gt;},
-</span> dove <span class="math inline">a</span> è un valore impostabile dall’utente (Shirley suggerisce <span class="math inline">a = 0.18</span>).</p>
-</section>
-<section id="punti-luminosi" class="slide level1">
-<h1>Punti luminosi</h1>
-<p><img data-src="./media/bright-light-in-room.jpg" height="520" /></p>
-<p>Sono notoriamente difficili da trattare!</p>
-</section>
-<section id="punti-luminosi-1" class="slide level1">
-<h1>Punti luminosi</h1>
-<p>Shirley suggerisce di applicare ai valori R, G, B di ogni punto dell’immagine la trasformazione <span class="math display">
-R_i \rightarrow \frac{R_i}{1 + R_i},
-</span> che ha le seguenti caratteristiche: <span class="math display">
-\begin{aligned}
-R_i \ll 1 &amp;\Rightarrow R_i \rightarrow R_i,\\
-R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
-\end{aligned}
-</span></p>
-</section>
-<section id="punti-luminosi-2" class="slide level1">
-<h1>Punti luminosi</h1>
+<section id="obbiettivo-del-corso" class="slide level1">
+<h1>Obbiettivo del corso</h1>
 <figure>
-<img data-src="plots/5621502329388772040.svg" />
+<img data-src="plots/8849328509948761585.png" />
 </figure>
-</section>
-<section id="immagini" class="slide level1">
-<h1>Immagini</h1>
 </section>
 <section id="formati-grafici" class="slide level1">
 <h1>Formati grafici</h1>
 <ul>
-<li><p>L’obbiettivo del corso è di creare immagini fotorealistiche integrando l’equazione del rendering.</p></li>
+<li><p>Nella prossima esercitazione inizieremo la nostra implementazione dal fondo, ossia il salvataggio dell’immagine.</p></li>
+<li><p>A seconda del tipo di immagine (foto, grafico, disegno a mano libera), il formato del salvataggio cambia.</p></li>
 <li><p>Un’immagine fotorealistica dovrebbe essere indistinguibile da quella prodotta da una fotocamera.</p></li>
 <li><p>In che modo una fotocamera registra in un file un’immagine?</p></li>
 </ul>
@@ -160,7 +152,7 @@ R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
 <pre class="text"><code>- cerchio centrato in (3.5, 2.6) con raggio 1.5 di colore nero
 - linea da (1.1, 1.7) a (3.7, 7.4) di colore nero con spessore 2
 - etc.</code></pre></li>
-<li><p>I file <strong>raster</strong> salvano una matrice di colori, e sono quelli che ci interessano per questo corso.</p></li>
+<li><p>I file <strong>raster</strong> salvano una matrice di colori, e sono quelli che ci interessano per questo corso, perché sono i file salvati dalle fotocamere.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -181,140 +173,475 @@ R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
 <img data-src="./media/gilles_tran.jpg" />
 </center>
 </section>
+<section id="tipi-di-immagini-raster" class="slide level1">
+<h1>Tipi di immagini raster</h1>
+<p>Ci sono due categorie di immagini raster che sono rilevanti per questo corso:</p>
+<dl>
+<dt>Immagini LDR (Low-Dynamic Range)</dt>
+<dd>Codificano i colori usando il sistema sRGB: le tre componenti R, G, B sono quindi numeri interi, solitamente nell’intervallo 0–255. Tutti i formati grafici più diffusi (Jpeg, PNG, GIF, etc.) appartengono a questo tipo.
+</dd>
+<dt>Immagini HDR (High-Dynamic Range)</dt>
+<dd>Codificano i colori usando il sistema RGB o sRGB, ma le tre componenti R, G, B sono numeri floating-point e coprono quindi un grande intervallo dinamico; per visualizzarle occorre quindi applicare il <em>tone mapping</em>. Esempi di questo formato sono OpenEXR e PFM.
+</dd>
+</dl>
+</section>
 <section id="codifica-di-immagini-raster" class="slide level1">
 <h1>Codifica di immagini raster</h1>
 <ul>
-<li>Un’immagine è una matrice di colori, dove ogni colore è solitamente una tripletta RGB;</li>
-<li>L’ordine con cui viene salvata la matrice (destra-sinistra, alto-basso, per righe o per colonne) è determinato dal formato;</li>
-<li>Formati diversi implementano compressioni diverse;</li>
-<li>Non sarà obbligatorio implementare la compressione delle immagini nei nostri codici, ma è comunque indispensabile conoscerne i fondamenti.</li>
+<li><p>Sia le immagini LDR che HDR sono codificate tramite una matrice di colori; ogni colore è solitamente una terna (R, G, B).</p></li>
+<li><p>Il file ha solitamente questo contenuto:</p>
+<dl>
+<dt>Header</dt>
+<dd>Specifica il formato dell’immagine, le dimensioni della matrice, e a volte anche altri parametri utili (es., la data e l’ora dello scatto, le coordinate del GPS, il valore di <span class="math inline">\gamma</span> del dispositivo che ha catturato l’immagine, etc.).
+</dd>
+<dt>Matrice dei colori</dt>
+<dd>L’ordine in cui sono salvate le righe/colonne, e anche l’ordine in cui sono salvate le componenti R, G, B (RGB/BGR) varia a seconda del formato.
+</dd>
+</dl></li>
 </ul>
 </section>
-<section id="compressione-dati" class="slide level1">
-<h1>Compressione dati</h1>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/image-save-order.svg" />
+</center>
+</section>
+<section id="esempio-il-formato-ppm" class="slide level1">
+<h1>Esempio: il formato PPM</h1>
 <ul>
-<li><p>La compressione dei dati è un argomento molto importante in fisica computazionale.</p></li>
-<li><p>Le simulazioni e gli esperimenti del XXI secolo richiedono di registrare quantità di dati sempre più grandi. Nell’ambito della cosmologia della CMB, bastano questi dati:</p>
+<li><p>Formato LDR, molto diffuso sui sistemi Unix.</p></li>
+<li><p>Potete leggerlo e scriverlo usando <a href="http://netpbm.sourceforge.net/">NetPBM</a> o <a href="https://imagemagick.org/index.php">ImageMagick</a>. Il secondo è il più diffuso, e può essere installato con</p>
+<pre class="text"><code>$ sudo apt install imagemagick</code></pre>
+<p>Potete convertire immagini col comando</p>
+<pre class="text"><code>$ convert input.png output_p6.ppm                  # Formato P6
+$ convert input.jpg -compress none output_p3.ppm   # Formato P3</code></pre></li>
+<li><p>PPM è un formato pensato per essere scritto e letto facilmente.</p></li>
+</ul>
+</section>
+<section id="file-ppm-p3" class="slide level1">
+<h1>File PPM (P3)</h1>
 <ul>
-<li>Nel periodo 1989–1993, l’esperimento spaziale COBE/DMR ha registrato meno di 8 GB di dati;</li>
-<li>Nel periodo 2001–2010, l’esperimento WMAP ha registrato 200 GB di dati;</li>
-<li>Nel periodo 2009–2013, l’esperimento Planck ha registrato 30 TB (30,000 GB) di dati.</li>
-</ul>
-<p>Grandi moli di dati sono comuni anche in altri domini della fisica (particelle, climatologia, etc.).</p></li>
-<li><p>Apprendere i principi della compressione dati è estremamente utile!</p></li>
+<li><p>Un file PPM è un file di testo, apribile con qualsiasi editor.</p></li>
+<li><p><strong>Header</strong>:</p>
+<ol type="1">
+<li>I due caratteri <code>P3</code>;</li>
+<li>Numero di colonne e di righe, in formato testo e separate da uno spazio;</li>
+<li>Valore massimo per ciascuna delle componenti R, G, B (solitamente 255).</li>
+</ol></li>
+<li><p><strong>Matrice dei colori</strong>: le terne R, G, B devono essere riportate come numeri interi partendo dall’angolo in alto a sinistra a quello in basso a destra, procedendo riga per riga.</p></li>
 </ul>
 </section>
-<section id="compressione-di-immagini" class="slide level1">
-<h1>Compressione di immagini</h1>
+<section id="esempio-p3" class="slide level1">
+<h1>Esempio (P3)</h1>
+<pre class="text"><code>P3
+3 2
+255
+255   0   0
+  0 255   0
+  0   0 255
+255 255   0
+255 255 255
+  0   0   0</code></pre>
+<center>
+<img data-src="./media/tiny-image-6pixels.png" />
+</center>
+</section>
+<section id="file-ppm-p6" class="slide level1">
+<h1>File PPM (P6)</h1>
 <ul>
-<li><p>Uno schermo di computer ha solitamente una risoluzione di 1920×1080 pixel.</p></li>
-<li><p>Se vengono usati 8+8+8=24 bit per il colore sRGB di ogni pixel (3 byte per pixel), il numero totale di byte necessari è <span class="math display">
-3 \times 1920 \times 1080 = 6\,220\,800
-</span> che equivale a circa 6 MB.</p></li>
-<li><p>Nelle immagini c’è solitamente molta informazione ridondante che può essere eliminata.</p></li>
+<li><p>Oltre al tipo <code>P3</code> esiste anche il file di tipo <code>P6</code>.</p></li>
+<li><p>La differenza sta nel modo in cui le terne R, G, B sono salvate: invece di scrivere numeri in codifica testuale, vengono scritti in binario.</p></li>
+<li><p>Vedremo dopo questa differenza, che sarà però fondamentale per l’esercitazione di questa settimana.</p></li>
 </ul>
 </section>
-<section class="slide level1">
+<section id="file-pfm" class="slide level1">
+<h1>File PFM</h1>
+<ul>
+<li><p>È un tipo di file che si ispira a PPM, ma è un formato HDR</p></li>
+<li><p><strong>Molto</strong> importante per questo corso!</p></li>
+<li><p>Non è così ben supportato: sotto Ubuntu esiste solo <code>pftools</code>, che si installa con</p>
+<pre class="text"><code>$ sudo apt install pftools</code></pre></li>
+<li><p>Noi scriveremo i nostri tool che permetteranno di convertire file PFM in PPM.</p></li>
+</ul>
+</section>
+<section id="struttura-di-un-file-pfm" class="slide level1">
+<h1>Struttura di un file PFM</h1>
+<ul>
+<li><p>Come i file PPM in formato P6, anche i file PFM sono parzialmente di testo e parzialmente binari.</p></li>
+<li><p><strong>Header</strong>:</p>
+<ol type="1">
+<li>I due caratteri <code>PF</code>, più il carattere <code>0x0a</code> (ritorno a capo);</li>
+<li><code>ncol nrows</code> (colonne e righe), seguito da ritorno a capo <code>0x0a</code>;</li>
+<li>Il valore <code>-1.0</code>, seguito da <code>0x0a</code>.</li>
+</ol></li>
+<li><p><strong>Matrice dei colori</strong>: le terne R, G, B devono essere scritte come sequenze di numeri a 32 bit (quindi <strong>non</strong> testo!), da sinistra a destra e dal basso all’alto.</p></li>
+</ul>
+</section>
+<section id="codifica-testuale-e-binaria" class="slide level1">
+<h1>Codifica testuale e binaria</h1>
+</section>
+<section id="codifica-binaria" class="slide level1">
+<h1>Codifica binaria</h1>
+<ul>
+<li><p>I file binari sono il tipo più semplice: consistono di una sequenza di byte (ossia, 8 bit scritti in sequenza).</p></li>
+<li><p>Ogni byte può contenere un valore intero nell’intervallo 0–255</p></li>
+<li><p>Per stampare il contenuto di un file binario potete usare il comando <code>xxd</code> (sotto Ubuntu, installatelo con <code>sudo apt install xxd</code>):</p>
+<pre class="text"><code>$ xxd file.bin</code></pre>
+<p>(Su altri sistemi operativi potreste avere <code>hexdump</code> anziché <code>xxd</code>).</p></li>
+<li><p>Salvare dati in un file binario vuol dire scrivere una sequenza di numeri binari sul disco fisso, memorizzati come byte.</p></li>
+</ul>
+</section>
+<section id="da-binario-a-decimale" class="slide level1">
+<h1>Da binario a decimale</h1>
+<ul>
+<li><p>Per ragionare sui valori dei byte si usa la numerazione binaria, che ovviamente usa come base il numero 2:</p>
+<pre><code>0  → 0
+1  → 1
+2  → 10
+3  → 11
+4  → 100
+…</code></pre></li>
+<li><p>Per un numero <code>abcd</code> espresso in una base <span class="math inline">B</span>, il suo valore è</p>
+<p><span class="math display">
+\text{value} = d \times B^0 + c \times B^1 + b \times B^2 + a \times B^3.
+</span></p>
+<p>Quindi il valore binario <code>101</code> corrisponde a <span class="math inline">1 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 5.</span></p></li>
+</ul>
+</section>
+<section id="notazione-ottale" class="slide level1">
+<h1>Notazione ottale</h1>
+<ul>
+<li><p>La notazione binaria è comoda per una CPU ma scomoda per noi!</p></li>
+<li><p>Una base più comoda è quella ottale (8).</p></li>
+<li><p>In C/C++, le cifre ottali si scrivono facendole precedere da <code>0</code>.</p></li>
+<li><p>Siccome <span class="math inline">8 = 2^3</span>, una cifra ottale corrisponde a 3 cifre binarie. Basta imparare a memoria l’associazione binario-ottale per i numeri da 0 a 7 per saper convertire ogni altro valore:</p>
+<pre><code>03  -&gt; 011
+06  -&gt; 110
+036 -&gt; 011 110</code></pre>
+<p>La conversione inversa è ugualmente semplice.</p></li>
+</ul>
+</section>
+<section id="notazione-esadecimale" class="slide level1">
+<h1>Notazione esadecimale</h1>
+<ul>
+<li><p>La notazione ottale è però scomoda, perché i computer lavorano a multipli di 8 bit (i byte), mentre la notazione ottale usa 3 bit per cifra.</p></li>
+<li><p>Oggi la notazione ottale è quasi completamente abbandonata in favore della notazione esadecimale (16), che usa le cifre</p>
+<pre><code>0 1 2 3 4 5 6 7 8 9 A B C D E F</code></pre>
+<p>In C/C++/Julia/C#, i numeri esadecimali si scrivono facendoli iniziare con <code>0x</code>, ad es. <code>0x1F67 = 8039</code>.</p></li>
+<li><p>La notazione esadecimale richiede 4 bit per cifra, perché <span class="math inline">2^4 = 16</span>. Siccome un byte è composto da 8 bit, il valore di un byte è sempre codificabile usando solo due cifre esadecimali (<code>0xFF = 255</code>).</p></li>
+</ul>
+</section>
+<section id="ordine-dei-bit-in-un-byte" class="slide level1">
+<h1>Ordine dei bit in un byte</h1>
+<ul>
+<li><p>C’è sempre un’ambiguità di fondo nel raggruppamento dei bit in byte, e sta nel loro ordine.</p></li>
+<li><p>Se un byte è formato dalla sequenza di bit <code>0011 0101</code>, esistono due modi per interpretarlo:</p>
+<p><span class="math display">
+\begin{aligned}
+2^2 + 2^3 + 2^5 + 2^7 &amp;= 172,\\
+2^5 + 2^4 + 2^2 + 2^0 &amp;= 53.
+\end{aligned}
+</span></p></li>
+</ul>
+</section>
+<section id="endianness-dei-bit" class="slide level1">
+<h1>«Endianness» dei bit</h1>
+<ul>
+<li><p>L’ordine dei bit in un byte è detto in gergo <em>bit-endianness</em>, termine tratto dai <em>Viaggi di Gulliver</em> (1726), di J. Swift:</p>
+<ol type="1">
+<li>La codifica <em>big-endian</em> parte dalla potenza <em>maggiore</em> («big»);</li>
+<li>La codifica <em>little-endian</em> parte dalla potenza <em>minore</em> («little»).</li>
+</ol></li>
+<li><p>Le CPU Intel e AMD oggi usate nei personal computer usano tutte la codifica <em>little-endian</em>. La codifica <em>big-endian</em> è stata molto usata in passato, ma oggi è ancora impiegata in alcune CPU ARM.</p></li>
+</ul>
+</section>
+<section id="salvare-dati-in-binario" class="slide level1">
+<h1>Salvare dati in binario</h1>
+<ul>
+<li><p>Salvare una variabile in forma binaria non è in generale semplice!</p></li>
+<li><p>In C++ ad esempio, il programma seguente <em>non</em> salva il valore di <code>x</code> in binario:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fstream&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> x{<span class="dv">138</span>};  <span class="co">// 138 &lt; 256, so the value fits in *one* byte</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>ofstream outf{<span class="st">&quot;file.bin&quot;</span>};</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  outf &lt;&lt; x; <span class="co">// Ouch! It writes *three* bytes: &#39;1&#39;, &#39;3&#39;, &#39;8&#39;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<li><p>Il valore <code>138</code> è stato salvato in <em>forma testuale</em>. (Se includete <code>&lt;cstdint&gt;</code> e cambiate il tipo di <code>x</code> da <code>int</code> a <code>uint8_t</code>, il valore viene salvato come binario!)</p></li>
+<li><p>Vediamo in cosa consiste la codifica testuale.</p></li>
+</ul>
+</section>
+<section id="codifica-testuale" class="slide level1">
+<h1>Codifica testuale</h1>
+<ul>
+<li><p>I caratteri del computer vengono codificati tramite dei valori precisi; le lettere dell’alfabeto latino, le cifre romane e la punteggiatura di base usano la codifica ASCII:</p>
+<ul>
+<li>La lettera <code>A</code> è codificata dal numero 65, <code>B</code> da 66, <code>C</code> da 67, etc.;</li>
+<li>La lettera <code>a</code> è codificata dal numero 97, <code>b</code> da 98, etc.;</li>
+<li>La cifra ‘0’ è codificata dal numero 48, <code>1</code> da 49, etc.</li>
+</ul></li>
+<li><p>Codificare una parola come <code>Casa</code> vuol dire rappresentare la parola con la sequenza di valori <code>67 97 115 97</code>.</p></li>
+<li><p>Questi codici numerici fanno parte dello standard ASCII, che specifica 128 caratteri. (<a href="https://garbagecollected.org/2017/01/31/four-column-ascii/">Qui c’è la tabella completa</a>, spiegata bene).</p></li>
+</ul>
+</section>
+<section id="codifica-di-testi" class="slide level1">
+<h1>Codifica di testi</h1>
+<ul>
+<li><p>Lo standard ASCII è semplicissimo, eppure sufficiente per codificare testi:</p>
+<pre class="text"><code>Beauty - be not caused - It Is -
+Chase it, and it ceases -
+Chase it not, and it abides -
+Overtake the Creases
 
+In the Meadow - when the Wind
+Runs his fingers thro’ it -
+Deity will see to it
+That You never do it -
+
+(Emily Dickinson)</code></pre></li>
+<li><p>Ma in 128 valori è possibile codificare <em>tutti</em> i caratteri?</p></li>
+<li><p>E come si codifica la fine della riga in ogni verso della poesia?</p></li>
+</ul>
+</section>
+<section id="ritorno-a-capo" class="slide level1">
+<h1>Ritorno a capo</h1>
+<ul>
+<li><p>Il modo per indicare un ritorno a capo dipende dal sistema operativo!</p></li>
+<li><p>Nelle macchine da scrivere c’erano due operazioni da fare per iniziare una nuova riga (vedi <a href="https://www.youtube.com/watch?v=r97JHr13T98">questo video YouTube</a>):</p>
+<ol type="1">
+<li>Spostarsi verso il bordo sinistro/destro del foglio (<em>carriage return</em>);</li>
+<li>Muoversi alla riga successiva (<em>line feed</em>).</li>
+</ol></li>
+<li><p>Anche i computer hanno adottato questi due comandi, che corrispondono a due valori ASCII: <code>13</code> (<em>carriage return</em>, indicato anche come <code>\r</code>) e <code>10</code> (<em>line feed</em>, indicato con <code>\r</code>).</p></li>
+</ul>
+</section>
+<section id="tipi-di-ritorno-a-capo" class="slide level1">
+<h1>Tipi di ritorno a capo</h1>
+<ul>
+<li><p>Il tipo di ritorno a capo dipende dal sistema operativo utilizzato:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Sistema operativo</th>
+<th>Codifica</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Windows, DOS</td>
+<td><code>13 10</code> (<code>\r\n</code>)</td>
+</tr>
+<tr class="even">
+<td>RISC OS</td>
+<td><code>10 13</code> (<code>\n\r</code>)</td>
+</tr>
+<tr class="odd">
+<td>C64, macOS classic</td>
+<td><code>13</code> (<code>\r</code>)</td>
+</tr>
+<tr class="even">
+<td>Linux, Mac OS X</td>
+<td><code>10</code> (<code>\n</code>)</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>Si può convertire un file con i comandi <code>dos2unix</code> e <code>unix2dos</code>.</p></li>
+<li><p>Git si aspetta il formato Linux (<code>\n</code>), ed emette un warning se i file aggiunti con <code>git add</code> ne usano un altro.</p></li>
+</ul>
+</section>
+<section id="da-ascii-a-unicode" class="slide level1">
+<h1>Da ASCII a Unicode</h1>
+<ul>
+<li><p>ASCII è stato usato per la prima volta su un terminale che usava 7 bit per byte: ecco perché l’ultimo carattere ha valore <code>127 = 0x7F</code> (<span class="math inline">127 = 2^7 - 1</span>).</p></li>
+<li><p>Nei 128 caratteri sono inclusi anche caratteri «speciali», come il ritorno a capo (<code>10</code>), la tabulazione (<code>8</code>), etc.</p></li>
+<li><p>ASCII è un sistema centrato sul sistema di scrittura usato negli USA: non include quindi caratteri accentati come «è», «é», «ü», «â», etc.</p></li>
+<li><p>Oltre agli accenti sulle lettere latine, sono esistenti nel mondo molti altri alfabeti e simboli (greco, cirillico, cinese, i simboli matematici, etc.)</p></li>
+<li><p>Lo standard Unicode ha esteso ASCII per includere <em>tutte</em> i possibili simboli testuali (contiene anche i geroglifici egizi e il sumerico!)</p></li>
+</ul>
+</section>
+<section id="lo-standard-unicode" class="slide level1">
+<h1>Lo standard Unicode</h1>
+<ul>
+<li><p>Standard internazionale nato nel 1991, che copre praticamente tutti i sistemi di scrittura oggi esistenti al mondo.</p></li>
+<li><p>Oggi è supportato quasi universalmente.</p></li>
+<li><p>Viene aggiornato periodicamente, circa una volta all’anno.</p></li>
+</ul>
 <center>
-<img data-src="./media/astro_maurizio_1_PkZIP-13.png" />
+<img data-src="./media/unicode-example.png" />
 </center>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-14.png" />
-</center>
+<section id="versioni-unicode" class="slide level1">
+<h1>Versioni Unicode</h1>
+<table>
+<thead>
+<tr class="header">
+<th>Versione</th>
+<th>Data</th>
+<th>Scritture</th>
+<th>Caratteri</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1.0</td>
+<td>Ottobre 1991</td>
+<td>24</td>
+<td>7,129</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>11.0</td>
+<td>Giugno 2018</td>
+<td>146</td>
+<td>137,374</td>
+</tr>
+<tr class="even">
+<td>12.0</td>
+<td>Marzo 2019</td>
+<td>150</td>
+<td>137,928</td>
+</tr>
+<tr class="odd">
+<td>13.0</td>
+<td>Marzo 2020</td>
+<td>154</td>
+<td>143,859</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-15.png" />
-</center>
+<section id="esempi-di-caratteri-unicode" class="slide level1">
+<h1>Esempi di caratteri unicode</h1>
+<ul>
+<li>Lettera A maiuscola: <code>A</code> (65, uguale all’ASCII!);</li>
+<li>Lettera A minuscola con accento acuto: <code>à</code> (224);</li>
+<li>Lettera E maiuscola con accento grave: <code>É</code> (201);</li>
+<li>Puntini di sospensione: <code>…</code> (8230);</li>
+<li>Bemolle: <code>♭</code> (9837);</li>
+<li>Faccina che ride: <code>😀</code> (128.512).</li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-16.png" />
-</center>
+<section id="codifica-unicode" class="slide level1">
+<h1>Codifica Unicode</h1>
+<ul>
+<li><p>Ogni carattere Unicode è associato a un valore numerico, chiamato <em>code point</em>.</p></li>
+<li><p>Si possono <a href="https://en.wikipedia.org/wiki/Combining_character">combinare insieme caratteri</a>: unendo <code>a</code> e <code>^</code> per formare <code>â</code>.</p></li>
+<li><p>Le lettere accentate più comuni hanno però una <a href="https://en.wikipedia.org/wiki/Precomposed_character">codifica dedicata</a>. Queste lettere sono quindi codificabili in <strong>più modi</strong> secondo lo standard Unicode. (Questo rende complicato confrontare due stringhe!)</p></li>
+<li><p>Un <em>grafema</em> è il risultato di una combinazione di uno o più code point. Quindi la parola <code>così</code> è composta da quattro grafemi: <code>c</code>, <code>o</code>, <code>s</code> ed <code>ì</code> (che può essere il <em>code point</em> 236, oppure la combinazione dei code point <code>i</code> e `).</p></li>
+<li><p>La combinazione di caratteri diversi è molto importante in certe scritture come il cinese.</p></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-17.png" />
-</center>
+<section id="codificare-i-code-point" class="slide level1">
+<h1>Codificare i <em>code point</em></h1>
+<ul>
+<li><p>Lo standard Unicode possiede molti <em>code point</em>, e a ogni versione se ne aggiungono di nuovi.</p></li>
+<li><p>Questo pone un problema nella codifica dei <em>code point</em> su file: ASCII usava un byte per carattere perché il set era limitato. Ma per Unicode quanti byte per <em>code point</em> usare? 1? 2? 100?</p>
+<ul>
+<li>Se si scegliesse un valore basso, si limiterebbe l’estendibilità di Unicode.</li>
+<li>Se si scegliesse un valore molto alto, i file di testo aumenterebbero di dimensione inutilmente: la poesia di E. Dickinson richiede 232 byte in codifica ASCII (un byte per carattere). Usare 4 byte per carattere quadruplicherebbe lo spazio.</li>
+</ul></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-18.png" />
-</center>
+<section id="codifiche-oggi-usate" class="slide level1">
+<h1>Codifiche oggi usate</h1>
+<ul>
+<li><p>Storicamente sono state proposte varie codifiche per Unicode.</p></li>
+<li><p>Le più usate oggi sono le codifiche UTF (Unicode Transformation Format), che esistono in tre versioni:</p>
+<ul>
+<li>UTF8 (usata nei sistemi Linux e Mac OS X);</li>
+<li>UTF16 (usata in Windows);</li>
+<li>UTF32 (molto comoda dal punto di vista del software).</li>
+</ul></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-19.png" />
-</center>
+<section id="utf-8" class="slide level1">
+<h1>UTF-8</h1>
+<ul>
+<li><p>È oggi la codifica più usata in assoluto (tranne che sotto Windows 😢).</p></li>
+<li><p>Il numero di byte usati per un <em>code point</em> è variabile da 1 a 4.</p></li>
+<li><p>È compatibile con la codifica ASCII: un file ASCII è automaticamente anche un file UTF-8 valido, perché sfrutta il fatto che la codifica ASCII usa solo 7 degli 8 bit in un byte, e che i primi 127 <em>code point</em> Unicode sono uguali ai valori ASCII.</p></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-20.png" />
-</center>
+<section id="codifica-utf-8" class="slide level1">
+<h1>Codifica UTF-8</h1>
+<table>
+<thead>
+<tr class="header">
+<th>Code point</th>
+<th>Byte 1</th>
+<th>Byte 2</th>
+<th>Byte 3</th>
+<th>Byte 4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>0x0000</code>–<code>0x007F</code></td>
+<td><code>0xxxxxxx</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td><code>0x0080</code>–<code>0x07FF</code></td>
+<td><code>110xxxxx</code></td>
+<td><code>10xxxxxx</code></td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr class="odd">
+<td><code>0x0800</code>–<code>0xFFFF</code></td>
+<td><code>1110xxxx</code></td>
+<td><code>10xxxxxx</code></td>
+<td><code>10xxxxxx</code></td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td><code>0x10000</code>–<code>0x10FFFF</code></td>
+<td><code>11110xxx</code></td>
+<td><code>10xxxxxx</code></td>
+<td><code>10xxxxxx</code></td>
+<td><code>10xxxxxx</code></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-21.png" />
-</center>
+<section id="codifica-utf-16" class="slide level1">
+<h1>Codifica UTF-16</h1>
+<ul>
+<li><p>Funziona come la codifica UTF-8, ma si usano coppie di byte (<span class="math inline">8 + 8 = 16</span>).</p></li>
+<li><p>Un <em>code point</em> può essere codificato da due oppure quattro byte.</p></li>
+<li><p>C’è anche qui un problema di <em>endianness</em>: il valore <code>0x2A6C</code> si scrive come la coppia di byte <code>0x2A 0x6C</code> (<em>big endian</em>) oppure <code>0x6C 0x2A</code> (<em>little endian</em>)?</p></li>
+<li><p>Nei file di testo codificati con UTF-16 si inserisce all’inizio del file il cosiddetto BOM (<em>byte-order marker</em>) che corrisponde al <em>code point</em> <code>0xFEFF</code>. Se i primi due byte di un file sono <code>0xFE 0xFF</code>, allora è chiaro che il file usa <em>big endian</em>, se sono <code>0xFF 0xFE</code> usa <em>little endian</em>.</p></li>
+<li><p>Codifica standard usata da Windows, Java, e alcuni altri sistemi.</p></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-22.png" />
-</center>
+<section id="codifica-utf-32" class="slide level1">
+<h1>Codifica UTF-32</h1>
+<ul>
+<li><p>Ovviamente, usa 32 bit per <em>code point</em>.</p></li>
+<li><p>In questo caso non c’è ambiguità: ogni code point usa esattamente quattro byte.</p></li>
+<li><p>È ovviamente la codifica più inefficiente dal punto di vista dello spazio occupato: la poesia di Emily Dickinson occuperebbe 928 byte in UTF-32, e solo 232 byte in ASCII/UTF-8 (quattro volte tanto!)</p></li>
+<li><p>È però la codifica più semplice: ogni code point occupa sempre lo spazio di un tipo <code>uint32_t</code> in C/C++.</p></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-23.png" />
-</center>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-24.png" />
-</center>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-25.png" />
-</center>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-26.png" />
-</center>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-27.png" />
-</center>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-28.png" />
-</center>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-29.png" />
-</center>
+<section id="file-binari-e-testuali" class="slide level1">
+<h1>File binari e testuali</h1>
+<ul>
+<li><p>Quanto detto oggi spiega perché è spesso più vantaggioso usare <em>file binari</em> anziché testuali: è molto più facile per un programma leggerli e scriverli!</p></li>
+<li><p>Quasi tutti i formati grafici oggi usati (PNG, Jpeg, GIF, etc.) si basano su codifiche binarie.</p></li>
+<li><p>I file testuali hanno però alcuni vantaggi significativi:</p>
+<ul>
+<li><p>Sono più facili da leggere e da scrivere per un essere umano;</p></li>
+<li><p>Non hanno problemi di <em>endianness</em>.</p></li>
+</ul></li>
+<li><p>Questa settimana e la prossima lavoreremo su file binari; tra alcune settimane passeremo ai file testuali.</p></li>
+</ul>
 </section>
     </div>
   </div>
