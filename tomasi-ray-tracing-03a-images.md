@@ -83,7 +83,7 @@ digraph "" {
 Ci sono due categorie di immagini raster che sono rilevanti per questo corso:
 
 Immagini LDR (Low-Dynamic Range)
-: Codificano i colori usando il sistema sRGB: le tre componenti R, G, B sono quindi numeri interi, solitamente nell'intervallo 0–255. Tutti i formati grafici più diffusi (Jpeg, PNG, GIF, etc.) appartengono a questo tipo.
+: Codificano i colori usando il sistema sRGB: le tre componenti R, G, B sono quindi numeri interi, solitamente nell'intervallo 0–255. Tutti i formati grafici più diffusi (JPEG, PNG, GIF, etc.) appartengono a questo tipo.
 
 Immagini HDR (High-Dynamic Range)
 : Codificano i colori usando il sistema RGB o sRGB, ma le tre componenti R, G, B sono numeri floating-point e coprono quindi un grande intervallo dinamico; per visualizzarle occorre quindi applicare il *tone mapping*. Esempi di questo formato sono OpenEXR e PFM.
@@ -185,7 +185,7 @@ P3
     2. `ncol nrows` (colonne e righe), seguito da ritorno a capo `0x0a`;
     3. Il valore `-1.0`, seguito da `0x0a`.
 
--   **Matrice dei colori**: le terne R, G, B devono essere scritte come sequenze di numeri a 32 bit (quindi **non** testo!), da sinistra a destra e dal basso all'alto.
+-   **Matrice dei colori**: le terne R, G, B devono essere scritte come sequenze di numeri a 32 bit (quindi **non** testo!), da sinistra a destra e dal **basso all'alto** (diverso da PPM!).
 
 # Codifica testuale e binaria
 
@@ -218,10 +218,10 @@ P3
     …
     ```
     
--   Per un numero `abcd` espresso in una base $B$, il suo valore è
+-   Per un numero `dcba` espresso in una base $B$, il suo valore è
 
     $$
-    \text{value} = d \times B^0 + c \times B^1 + b \times B^2 + a \times B^3.
+    \text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times B^3.
     $$
     
     Quindi il valore binario `101` corrisponde a $1 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 5.$
@@ -254,9 +254,9 @@ P3
     0 1 2 3 4 5 6 7 8 9 A B C D E F
     ```
     
-    In C/C++/Julia/C\#, i numeri esadecimali si scrivono facendoli iniziare con `0x`, ad es. `0x1F67 = 8039`.
-
 -   La notazione esadecimale richiede 4 bit per cifra, perché $2^4 = 16$. Siccome un byte è composto da 8 bit, il valore di un byte è sempre codificabile usando solo due cifre esadecimali (`0xFF = 255`).
+
+-   In C/C++/Julia/C\#, i numeri esadecimali si scrivono facendoli iniziare con `0x`, ad es. `0x1F67 = 8039`.
 
 # Ordine dei bit in un byte
 
@@ -306,7 +306,7 @@ P3
 
     -  La lettera `A` è codificata dal numero 65, `B` da 66, `C` da 67, etc.;
     -  La lettera `a` è codificata dal numero 97, `b` da 98, etc.;
-    -  La cifra '0' è codificata dal numero 48, `1` da 49, etc.
+    -  La cifra `0` è codificata dal numero 48, `1` da 49, etc.
     
 -   Codificare una parola come `Casa` vuol dire rappresentare la parola con la sequenza di valori `67 97 115 97`.
 
@@ -330,9 +330,9 @@ P3
     (Emily Dickinson)
     ```
 
--   Ma in 128 valori è possibile codificare *tutti* i caratteri?
+-   Ma come si codifica la fine della riga in ogni verso della poesia?
 
--   E come si codifica la fine della riga in ogni verso della poesia?
+-   In 128 valori è possibile codificare *tutti* i caratteri?
 
 # Ritorno a capo
 
@@ -343,7 +343,7 @@ P3
     1.   Spostarsi verso il bordo sinistro/destro del foglio (*carriage return*);
     2.   Muoversi alla riga successiva (*line feed*).
     
--   Anche i computer hanno adottato questi due comandi, che corrispondono a due valori ASCII: `13` (*carriage return*, indicato anche come `\r`) e `10` (*line feed*, indicato con `\r`).
+-   Anche i computer hanno adottato questi due comandi, che corrispondono a due valori ASCII: `13` (*carriage return*, indicato anche come `\r`) e `10` (*line feed*, indicato con `\n`).
 
 # Tipi di ritorno a capo
 
@@ -364,13 +364,13 @@ P3
 
 -   ASCII è stato usato per la prima volta su un terminale che usava 7 bit per byte: ecco perché l'ultimo carattere ha valore `127 = 0x7F` ($127 = 2^7 - 1$).
 
--   Nei 128 caratteri sono inclusi anche caratteri «speciali», come il ritorno a capo (`10`), la tabulazione (`8`), etc.
+-   Nei 128 caratteri sono inclusi anche caratteri «speciali», come il ritorno a capo (`10`), la tabulazione (`8`), etc., che «consumano» posizioni nella tabella.
 
--   ASCII è un sistema centrato sul sistema di scrittura usato negli USA: non include quindi caratteri accentati come «è», «é», «ü», «â», etc.
+-   ASCII è un sistema centrato sul sistema di scrittura usato negli USA, e non include caratteri accentati come «è», «é», «ü», «â», etc.
 
--   Oltre agli accenti sulle lettere latine, sono esistenti nel mondo molti altri alfabeti e simboli (greco, cirillico, cinese, i simboli matematici, etc.)
+-   Oltre agli accenti sulle lettere latine, sono esistenti nel mondo molti altri alfabeti e simboli (greco, cirillico, cinese, i simboli matematici, etc.).
 
--   Lo standard Unicode ha esteso ASCII per includere *tutte* i possibili simboli testuali (contiene anche i geroglifici egizi e il sumerico!)
+-   Lo standard Unicode ha esteso ASCII per includere *tutte* i possibili simboli testuali (contiene anche i geroglifici egizi e il sumerico!).
 
 # Lo standard Unicode
 
@@ -395,7 +395,7 @@ P3
 | 12.0     | Marzo 2019   | 150       | 137,928   |
 | 13.0     | Marzo 2020   | 154       | 143,859   |
 
-# Esempi di caratteri unicode
+# Esempi di caratteri Unicode
 
 -   Lettera A maiuscola: `A` (65, uguale all'ASCII!);
 -   Lettera A minuscola con accento acuto: `à` (224);
@@ -461,9 +461,9 @@ P3
 
 -   C'è anche qui un problema di *endianness*: il valore `0x2A6C` si scrive come la coppia di byte `0x2A 0x6C` (*big endian*) oppure `0x6C 0x2A` (*little endian*)?
 
--   Nei file di testo codificati con UTF-16 si inserisce all'inizio del file il cosiddetto BOM (*byte-order marker*) che corrisponde al *code point* `0xFEFF`. Se i primi due byte di un file sono `0xFE 0xFF`, allora è chiaro che il file usa *big endian*, se sono `0xFF 0xFE` usa *little endian*.
+-   Nei file di testo codificati con UTF-16 si inserisce all'inizio del file il cosiddetto BOM (*byte-order marker*) che corrisponde al *code point* `0xFEFF`. Se i primi due byte di un file sono `0xFE 0xFF`, allora è chiaro che il file usa *big endian*, se sono `0xFF 0xFE` usa *little endian*. (Anche UTF-8 ha un BOM, `0xEF 0xBB 0xBF`, che però non è così utile).
 
--   Codifica standard usata da Windows, Java, e alcuni altri sistemi.
+-   UTF-16 è usato da Windows e nei linguaggi basati su Java (Kotlin, Scala, etc.).
 
 # Codifica UTF-32
 
@@ -479,7 +479,7 @@ P3
 
 -   Quanto detto oggi spiega perché è spesso più vantaggioso usare *file binari* anziché testuali: è molto più facile per un programma leggerli e scriverli!
 
--   Quasi tutti i formati grafici oggi usati (PNG, Jpeg, GIF, etc.) si basano su codifiche binarie.
+-   Quasi tutti i formati grafici oggi usati (PNG, JPEG, GIF, etc.) si basano su codifiche binarie.
 
 -   I file testuali hanno però alcuni vantaggi significativi:
 
@@ -487,4 +487,4 @@ P3
     
     -   Non hanno problemi di *endianness*.
     
--   Questa settimana e la prossima lavoreremo su file binari; tra alcune settimane passeremo ai file testuali.
+-   Questa settimana e la prossima lavoreremo su file binari; tra alcune settimane passeremo ai file testuali per leggere i file di input del nostro programma.

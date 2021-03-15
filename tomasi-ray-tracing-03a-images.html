@@ -178,7 +178,7 @@
 <p>Ci sono due categorie di immagini raster che sono rilevanti per questo corso:</p>
 <dl>
 <dt>Immagini LDR (Low-Dynamic Range)</dt>
-<dd>Codificano i colori usando il sistema sRGB: le tre componenti R, G, B sono quindi numeri interi, solitamente nell’intervallo 0–255. Tutti i formati grafici più diffusi (Jpeg, PNG, GIF, etc.) appartengono a questo tipo.
+<dd>Codificano i colori usando il sistema sRGB: le tre componenti R, G, B sono quindi numeri interi, solitamente nell’intervallo 0–255. Tutti i formati grafici più diffusi (JPEG, PNG, GIF, etc.) appartengono a questo tipo.
 </dd>
 <dt>Immagini HDR (High-Dynamic Range)</dt>
 <dd>Codificano i colori usando il sistema RGB o sRGB, ma le tre componenti R, G, B sono numeri floating-point e coprono quindi un grande intervallo dinamico; per visualizzarle occorre quindi applicare il <em>tone mapping</em>. Esempi di questo formato sono OpenEXR e PFM.
@@ -274,7 +274,7 @@ $ convert input.jpg -compress none output_p3.ppm   # Formato P3</code></pre></li
 <li><code>ncol nrows</code> (colonne e righe), seguito da ritorno a capo <code>0x0a</code>;</li>
 <li>Il valore <code>-1.0</code>, seguito da <code>0x0a</code>.</li>
 </ol></li>
-<li><p><strong>Matrice dei colori</strong>: le terne R, G, B devono essere scritte come sequenze di numeri a 32 bit (quindi <strong>non</strong> testo!), da sinistra a destra e dal basso all’alto.</p></li>
+<li><p><strong>Matrice dei colori</strong>: le terne R, G, B devono essere scritte come sequenze di numeri a 32 bit (quindi <strong>non</strong> testo!), da sinistra a destra e dal <strong>basso all’alto</strong> (diverso da PPM!).</p></li>
 </ul>
 </section>
 <section id="codifica-testuale-e-binaria" class="slide level1">
@@ -301,9 +301,9 @@ $ convert input.jpg -compress none output_p3.ppm   # Formato P3</code></pre></li
 3  → 11
 4  → 100
 …</code></pre></li>
-<li><p>Per un numero <code>abcd</code> espresso in una base <span class="math inline">B</span>, il suo valore è</p>
+<li><p>Per un numero <code>dcba</code> espresso in una base <span class="math inline">B</span>, il suo valore è</p>
 <p><span class="math display">
-\text{value} = d \times B^0 + c \times B^1 + b \times B^2 + a \times B^3.
+\text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times B^3.
 </span></p>
 <p>Quindi il valore binario <code>101</code> corrisponde a <span class="math inline">1 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 5.</span></p></li>
 </ul>
@@ -326,9 +326,9 @@ $ convert input.jpg -compress none output_p3.ppm   # Formato P3</code></pre></li
 <ul>
 <li><p>La notazione ottale è però scomoda, perché i computer lavorano a multipli di 8 bit (i byte), mentre la notazione ottale usa 3 bit per cifra.</p></li>
 <li><p>Oggi la notazione ottale è quasi completamente abbandonata in favore della notazione esadecimale (16), che usa le cifre</p>
-<pre><code>0 1 2 3 4 5 6 7 8 9 A B C D E F</code></pre>
-<p>In C/C++/Julia/C#, i numeri esadecimali si scrivono facendoli iniziare con <code>0x</code>, ad es. <code>0x1F67 = 8039</code>.</p></li>
+<pre><code>0 1 2 3 4 5 6 7 8 9 A B C D E F</code></pre></li>
 <li><p>La notazione esadecimale richiede 4 bit per cifra, perché <span class="math inline">2^4 = 16</span>. Siccome un byte è composto da 8 bit, il valore di un byte è sempre codificabile usando solo due cifre esadecimali (<code>0xFF = 255</code>).</p></li>
+<li><p>In C/C++/Julia/C#, i numeri esadecimali si scrivono facendoli iniziare con <code>0x</code>, ad es. <code>0x1F67 = 8039</code>.</p></li>
 </ul>
 </section>
 <section id="ordine-dei-bit-in-un-byte" class="slide level1">
@@ -378,7 +378,7 @@ $ convert input.jpg -compress none output_p3.ppm   # Formato P3</code></pre></li
 <ul>
 <li>La lettera <code>A</code> è codificata dal numero 65, <code>B</code> da 66, <code>C</code> da 67, etc.;</li>
 <li>La lettera <code>a</code> è codificata dal numero 97, <code>b</code> da 98, etc.;</li>
-<li>La cifra ‘0’ è codificata dal numero 48, <code>1</code> da 49, etc.</li>
+<li>La cifra <code>0</code> è codificata dal numero 48, <code>1</code> da 49, etc.</li>
 </ul></li>
 <li><p>Codificare una parola come <code>Casa</code> vuol dire rappresentare la parola con la sequenza di valori <code>67 97 115 97</code>.</p></li>
 <li><p>Questi codici numerici fanno parte dello standard ASCII, che specifica 128 caratteri. (<a href="https://garbagecollected.org/2017/01/31/four-column-ascii/">Qui c’è la tabella completa</a>, spiegata bene).</p></li>
@@ -399,8 +399,8 @@ Deity will see to it
 That You never do it -
 
 (Emily Dickinson)</code></pre></li>
-<li><p>Ma in 128 valori è possibile codificare <em>tutti</em> i caratteri?</p></li>
-<li><p>E come si codifica la fine della riga in ogni verso della poesia?</p></li>
+<li><p>Ma come si codifica la fine della riga in ogni verso della poesia?</p></li>
+<li><p>In 128 valori è possibile codificare <em>tutti</em> i caratteri?</p></li>
 </ul>
 </section>
 <section id="ritorno-a-capo" class="slide level1">
@@ -412,7 +412,7 @@ That You never do it -
 <li>Spostarsi verso il bordo sinistro/destro del foglio (<em>carriage return</em>);</li>
 <li>Muoversi alla riga successiva (<em>line feed</em>).</li>
 </ol></li>
-<li><p>Anche i computer hanno adottato questi due comandi, che corrispondono a due valori ASCII: <code>13</code> (<em>carriage return</em>, indicato anche come <code>\r</code>) e <code>10</code> (<em>line feed</em>, indicato con <code>\r</code>).</p></li>
+<li><p>Anche i computer hanno adottato questi due comandi, che corrispondono a due valori ASCII: <code>13</code> (<em>carriage return</em>, indicato anche come <code>\r</code>) e <code>10</code> (<em>line feed</em>, indicato con <code>\n</code>).</p></li>
 </ul>
 </section>
 <section id="tipi-di-ritorno-a-capo" class="slide level1">
@@ -453,10 +453,10 @@ That You never do it -
 <h1>Da ASCII a Unicode</h1>
 <ul>
 <li><p>ASCII è stato usato per la prima volta su un terminale che usava 7 bit per byte: ecco perché l’ultimo carattere ha valore <code>127 = 0x7F</code> (<span class="math inline">127 = 2^7 - 1</span>).</p></li>
-<li><p>Nei 128 caratteri sono inclusi anche caratteri «speciali», come il ritorno a capo (<code>10</code>), la tabulazione (<code>8</code>), etc.</p></li>
-<li><p>ASCII è un sistema centrato sul sistema di scrittura usato negli USA: non include quindi caratteri accentati come «è», «é», «ü», «â», etc.</p></li>
-<li><p>Oltre agli accenti sulle lettere latine, sono esistenti nel mondo molti altri alfabeti e simboli (greco, cirillico, cinese, i simboli matematici, etc.)</p></li>
-<li><p>Lo standard Unicode ha esteso ASCII per includere <em>tutte</em> i possibili simboli testuali (contiene anche i geroglifici egizi e il sumerico!)</p></li>
+<li><p>Nei 128 caratteri sono inclusi anche caratteri «speciali», come il ritorno a capo (<code>10</code>), la tabulazione (<code>8</code>), etc., che «consumano» posizioni nella tabella.</p></li>
+<li><p>ASCII è un sistema centrato sul sistema di scrittura usato negli USA, e non include caratteri accentati come «è», «é», «ü», «â», etc.</p></li>
+<li><p>Oltre agli accenti sulle lettere latine, sono esistenti nel mondo molti altri alfabeti e simboli (greco, cirillico, cinese, i simboli matematici, etc.).</p></li>
+<li><p>Lo standard Unicode ha esteso ASCII per includere <em>tutte</em> i possibili simboli testuali (contiene anche i geroglifici egizi e il sumerico!).</p></li>
 </ul>
 </section>
 <section id="lo-standard-unicode" class="slide level1">
@@ -516,7 +516,7 @@ That You never do it -
 </table>
 </section>
 <section id="esempi-di-caratteri-unicode" class="slide level1">
-<h1>Esempi di caratteri unicode</h1>
+<h1>Esempi di caratteri Unicode</h1>
 <ul>
 <li>Lettera A maiuscola: <code>A</code> (65, uguale all’ASCII!);</li>
 <li>Lettera A minuscola con accento acuto: <code>à</code> (224);</li>
@@ -617,8 +617,8 @@ That You never do it -
 <li><p>Funziona come la codifica UTF-8, ma si usano coppie di byte (<span class="math inline">8 + 8 = 16</span>).</p></li>
 <li><p>Un <em>code point</em> può essere codificato da due oppure quattro byte.</p></li>
 <li><p>C’è anche qui un problema di <em>endianness</em>: il valore <code>0x2A6C</code> si scrive come la coppia di byte <code>0x2A 0x6C</code> (<em>big endian</em>) oppure <code>0x6C 0x2A</code> (<em>little endian</em>)?</p></li>
-<li><p>Nei file di testo codificati con UTF-16 si inserisce all’inizio del file il cosiddetto BOM (<em>byte-order marker</em>) che corrisponde al <em>code point</em> <code>0xFEFF</code>. Se i primi due byte di un file sono <code>0xFE 0xFF</code>, allora è chiaro che il file usa <em>big endian</em>, se sono <code>0xFF 0xFE</code> usa <em>little endian</em>.</p></li>
-<li><p>Codifica standard usata da Windows, Java, e alcuni altri sistemi.</p></li>
+<li><p>Nei file di testo codificati con UTF-16 si inserisce all’inizio del file il cosiddetto BOM (<em>byte-order marker</em>) che corrisponde al <em>code point</em> <code>0xFEFF</code>. Se i primi due byte di un file sono <code>0xFE 0xFF</code>, allora è chiaro che il file usa <em>big endian</em>, se sono <code>0xFF 0xFE</code> usa <em>little endian</em>. (Anche UTF-8 ha un BOM, <code>0xEF 0xBB 0xBF</code>, che però non è così utile).</p></li>
+<li><p>UTF-16 è usato da Windows e nei linguaggi basati su Java (Kotlin, Scala, etc.).</p></li>
 </ul>
 </section>
 <section id="codifica-utf-32" class="slide level1">
@@ -634,13 +634,13 @@ That You never do it -
 <h1>File binari e testuali</h1>
 <ul>
 <li><p>Quanto detto oggi spiega perché è spesso più vantaggioso usare <em>file binari</em> anziché testuali: è molto più facile per un programma leggerli e scriverli!</p></li>
-<li><p>Quasi tutti i formati grafici oggi usati (PNG, Jpeg, GIF, etc.) si basano su codifiche binarie.</p></li>
+<li><p>Quasi tutti i formati grafici oggi usati (PNG, JPEG, GIF, etc.) si basano su codifiche binarie.</p></li>
 <li><p>I file testuali hanno però alcuni vantaggi significativi:</p>
 <ul>
 <li><p>Sono più facili da leggere e da scrivere per un essere umano;</p></li>
 <li><p>Non hanno problemi di <em>endianness</em>.</p></li>
 </ul></li>
-<li><p>Questa settimana e la prossima lavoreremo su file binari; tra alcune settimane passeremo ai file testuali.</p></li>
+<li><p>Questa settimana e la prossima lavoreremo su file binari; tra alcune settimane passeremo ai file testuali per leggere i file di input del nostro programma.</p></li>
 </ul>
 </section>
     </div>
