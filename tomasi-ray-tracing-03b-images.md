@@ -4,6 +4,76 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
+# Scrittura/lettura di file
+
+# Accesso ai file
+
+-   Nella lezione di questa settimana abbiamo visto che i file si distinguono in *binari* e *testuali*.
+-   In che modo accedere a questi file da un programma?
+-   Come distinguere tra file binari e testuali?
+
+# Accesso ai file in Python
+
+<asciinema-player src="./cast/binary-text-files-75x25.cast" cols="75" rows="25" font-size="medium"></asciinema-player>
+
+# File di testo/binari
+
+-   Non è possibile in generale dire se un file è codificato in forma testuale o binaria.
+-   Le estensioni dei file possono essere usate per capire il formato (ma si possono sempre prendere svarioni!).
+-   Python mostra che file binari usano tipi di dati (`b"Hello, world!\n"`) diversi da quelli dei file di testo (`"Hello, world!\n"`).
+-   Tutti i linguaggi (Python 3, Julia, C\#, Kotlin, etc.) che supportano nativamente Unicode devono introdurre questa differenza. Il C++ fa eccezione (è una storia triste).
+
+# Comandi utili
+
+-   Convertire un file OpenEXR in PFM:
+
+    ```text
+    $ pfsin input.exr | pfsoutpfm output.pfm
+    ```
+    
+-   Convertire un file PFM in OpenEXR:
+
+    ```text
+    $ pfsinpfm input.pfm | pfsout output.exr
+    ```
+
+# Scrittura di test
+
+# Test di funzioni complesse
+
+-   Oggi dovrete implementare una serie di funzioni complesse:
+
+    -   Un tipo *HdrImage*;
+    -   Un metodo/funzione per il *tone mapping*;
+    -   Un metodo per salvare l'immagine in un file PFM.
+    
+-   Useremo questo compito come pretesto per capire qual è il modo migliore per scrivere test
+
+# Granularità dei test
+
+-   Una funzione non banale deve compiere molte operazioni in sequenza; nel caso del *tone mapping* ad esempio le operazioni sono:
+
+    1.  Stabilire un valore «medio» per l'irradianza misurata in corrispondenza di ogni pixel dell'immagine;
+    2.  Normalizzare il colore di ogni pixel a questo valore medio;
+    3.  Applicare una correzione ai punti di maggiore luminosità.
+    
+-   Come rendere questo tipo di funzioni «facile» da testare?
+
+# Granularità dei test
+
+-   Scrivere un test per la funzione completa, ossia «end-to-end»: verifico che il risultato sia quello che mi aspetto;
+-   Scrivere un test per ciascuno dei singoli task;
+-   Scrivere un test per ogni singola operazione matematica (logaritmo, esponente, somma sui pixel, etc.).
+
+# Funzioni testabili
+
+Quale dei seguenti prototipi di funzione è il più facile da testare? (C++)
+
+```c++
+void tone_mapping(const char *input_file, const char *output_file);
+void tone_mapping(std::ifstream & input_file, std::ofstream & output_file);
+void tone_mapping(const HdrImage & input, const HdrImage & output);
+```
 
 # Formati grafici
 

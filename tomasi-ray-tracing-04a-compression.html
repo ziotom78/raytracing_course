@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Lezione 4</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Lezione 4</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="tone-mapping" class="slide level1">
+<h1>Tone mapping</h1>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/tone-mapping-problem.png" />
+</center>
+</section>
+<section id="tone-mapping-1" class="slide level1">
+<h1>Tone mapping</h1>
+<ul>
+<li>Una conversione da RGB a sRGB dovrebbe preservare la «tinta» complessiva di un’immagine.</li>
+<li>Ecco perché non si parla di <em>tone mapping</em> per un singolo colore RGB, ma per una matrice di colori (ossia un’immagine).</li>
+<li>Noi useremo il <em>tone mapping</em> descritto da Shirley (2003): è fisicamente meno preciso di altri metodi (es., la normalizzazione dello standard CIE usando D65), ma più intuitivo e più semplice da implementare.</li>
+</ul>
+</section>
+<section id="algoritmo-di-tone-mapping" class="slide level1">
+<h1>Algoritmo di tone mapping</h1>
+<ol type="1">
+<li>Stabilire un valore «medio» per l’irradianza misurata in corrispondenza di ogni pixel dell’immagine;</li>
+<li>Normalizzare il colore di ogni pixel a questo valore medio;</li>
+<li>Applicare una correzione ai punti di maggiore luminosità.</li>
+</ol>
+</section>
+<section id="valore-medio" class="slide level1">
+<h1>Valore medio</h1>
+<ul>
+<li><p>Il valore «neutro» per la radianza è definito dalla media logaritmica della luminosità <span class="math inline">l_i</span> dei pixel (con <span class="math inline">i = 1\ldots N</span>): <span class="math display">
+\left&lt;l\right&gt; = \exp\left(\frac{\sum_i \log(\delta + l_i)}N\right),
+</span> dove <span class="math inline">\delta \ll 1</span> evita la singolarità di <span class="math inline">\log x</span> in <span class="math inline">x = 0</span>.</p></li>
+<li><p>A ciascun pixel sono però associati tre valori scalari (R, G, B). Quale valore usare per la luminosità <span class="math inline">l_i</span>?</p></li>
+</ul>
+</section>
+<section id="luminosità" class="slide level1">
+<h1>Luminosità</h1>
+<dl>
+<dt>Media aritmetica</dt>
+<dd><span class="math inline">l_i = \frac{R_i + G_i + B_i}3</span>;
+</dd>
+<dt>Media pesata</dt>
+<dd><span class="math inline">l_i = \frac{w_R R_i + w_G G_i + w_B B_i}{w_R + w_G + w_B}</span>, data una terna di valori positivi <span class="math inline">(w_R, w_G, w_B)</span>;
+</dd>
+<dt>Distanza dall’origine</dt>
+<dd><span class="math inline">l_i = \sqrt{R_i^2 + G_i^2 + B_i^2}</span>;
+</dd>
+<dt>Funzione di luminosità</dt>
+<dd><span class="math inline">l_i = \frac{\max(R_i, G_i, B_i) + \min(R_i, G_i, B_i)}2</span>
+</dd>
+</dl>
+<p>Shirley usa l’ultima definizione perché sostiene che, nonostante non sia fisicamente significativa, produca risultati visivamente migliori.</p>
+</section>
+<section id="perché-la-media-logaritmica" class="slide level1">
+<h1>Perché la media logaritmica?</h1>
+<ul>
+<li><p>Non abbiamo ancora giustificato la formula <span class="math display">
+\left&lt;l\right&gt; = \exp\left(\frac{\sum_i \log(\delta + l_i)}N\right),
+</span></p></li>
+<li><p>Essa è plausibile perché la risposta dell’occhio a uno stimolo <span class="math inline">S</span> è logaritmica (<em>leggi di Weber-Fechner</em>): <span class="math display">
+p = k \log \frac{S}{S_0}
+</span> dove <span class="math inline">p</span> è il valore percepito, e <span class="math inline">S</span> è l’intensità dello stimolo.</p></li>
+</ul>
+</section>
+<section id="proprietà-della-media-logaritmica" class="slide level1">
+<h1>Proprietà della media logaritmica</h1>
+<ul>
+<li><p>La media logaritmica è una media sugli <em>esponenti</em>, mentre la media aritmetica è una media sui valori;</p></li>
+<li><p>Nel caso i valori siano <span class="math inline">10^2</span>, <span class="math inline">10^4</span> e <span class="math inline">10^6</span>, la media logaritmica è <span class="math display">
+10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
+</span> mentre la media aritmetica è <span class="math inline">(10^2 + 10^4 + 10^6)/3 \approx 10^6/3</span>.</p></li>
+</ul>
+</section>
+<section id="normalizzazione" class="slide level1">
+<h1>Normalizzazione</h1>
+<p>Una volta stimato il valore medio, i valori R, G, B dell’immagine sono aggiornati tramite la trasformazione <span class="math display">
+R_i \rightarrow a \times \frac{R_i}{\left&lt;l\right&gt;},
+</span> dove <span class="math inline">a</span> è un valore impostabile dall’utente (Shirley suggerisce <span class="math inline">a = 0.18</span>, ma in realtà si dovrebbe ottimizzare a seconda dell’immagine).</p>
+</section>
+<section id="punti-luminosi" class="slide level1">
+<h1>Punti luminosi</h1>
+<p><img data-src="./media/bright-light-in-room.jpg" height="520" /></p>
+<p>Sono notoriamente difficili da trattare!</p>
+</section>
+<section id="punti-luminosi-1" class="slide level1">
+<h1>Punti luminosi</h1>
+<p>Shirley suggerisce di applicare ai valori R, G, B di ogni punto dell’immagine la trasformazione <span class="math display">
+R_i \rightarrow \frac{R_i}{1 + R_i},
+</span> che ha le seguenti caratteristiche: <span class="math display">
+\begin{aligned}
+R_i \ll 1 &amp;\Rightarrow R_i \rightarrow R_i,\\
+R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
+\end{aligned}
+</span></p>
+</section>
+<section id="punti-luminosi-2" class="slide level1">
+<h1>Punti luminosi</h1>
+<figure>
+<img data-src="plots/5621502329388772040.svg" />
+</figure>
+</section>
+<section id="compressione" class="slide level1">
+<h1>Compressione</h1>
+</section>
+<section id="compressione-dei-dati" class="slide level1">
+<h1>Compressione dei dati</h1>
+<ul>
+<li>Formati diversi implementano compressioni diverse;</li>
+<li>Non sarà obbligatorio implementare la compressione delle immagini nei nostri codici, ma è comunque indispensabile conoscerne i fondamenti.</li>
+</ul>
+</section>
+<section id="compressione-dati" class="slide level1">
+<h1>Compressione dati</h1>
+<ul>
+<li><p>La compressione dei dati è un argomento molto importante in fisica computazionale.</p></li>
+<li><p>Le simulazioni e gli esperimenti del XXI secolo richiedono di registrare quantità di dati sempre più grandi. Nell’ambito della cosmologia della CMB, bastano questi dati:</p>
+<ul>
+<li>Nel periodo 1989–1993, l’esperimento spaziale COBE/DMR ha registrato meno di 8 GB di dati;</li>
+<li>Nel periodo 2001–2010, l’esperimento WMAP ha registrato 200 GB di dati;</li>
+<li>Nel periodo 2009–2013, l’esperimento Planck ha registrato 30 TB (30,000 GB) di dati.</li>
+</ul>
+<p>Grandi moli di dati sono comuni anche in altri domini della fisica (particelle, climatologia, etc.).</p></li>
+<li><p>Apprendere i principi della compressione dati è estremamente utile!</p></li>
+</ul>
+</section>
+<section id="compressione-di-immagini" class="slide level1">
+<h1>Compressione di immagini</h1>
+<ul>
+<li><p>Uno schermo di computer ha solitamente una risoluzione di 1920×1080 pixel.</p></li>
+<li><p>Se vengono usati 8+8+8=24 bit per il colore sRGB di ogni pixel (3 byte per pixel), il numero totale di byte necessari è <span class="math display">
+3 \times 1920 \times 1080 = 6\,220\,800
+</span> che equivale a circa 6 MB.</p></li>
+<li><p>Nelle immagini c’è solitamente molta informazione ridondante che può essere eliminata.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-13.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-14.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-15.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-16.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-17.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-18.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-19.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-20.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-21.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-22.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-23.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-24.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-25.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-26.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-27.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-28.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/astro_maurizio_1_PkZIP-29.png" />
+</center>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    </body>
+</html>
