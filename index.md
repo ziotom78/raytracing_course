@@ -9,3 +9,4 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 - Esercitazione 1 (2021-03-03): [introduzione a Git e GitHub](./tomasi-ray-tracing-01b-github.html)
 - Lezione 2 (2021-03-08): [gestione dei colori](./tomasi-ray-tracing-02a-colors.html)
 - Esercitazione 2 (2021-03-10): [test automatici](./tomasi-ray-tracing-02b-tests.html)
+- Lezione 3 (2021-03-14): [immagini](./tomasi-ray-tracing-03a-images.html)
