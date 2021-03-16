@@ -4,8 +4,9 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-# Implementazione di `Vec2` e `Vec3`
+# Scrittura di immagini LDR
 
+# Gestione delle dipendenze
 
 # Continuous Integration (CI)
 
@@ -103,11 +104,63 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 <iframe src="https://player.vimeo.com/video/520878087?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Setting up GitHub Actions for CMake-based projects"></iframe>
 
+# Il formato PNM
+
+# `libgd`
+
+-   Libreria C molto diffusa: su sistemi Ubuntu si può installare con
+
+    ```
+    sudo apt install libgd-dev
+    ```
+
+-   Supporta il salvataggio di immagini in formato PNG e Jpeg
+
+-   Supporta `pkg-config`:
+
+    ```
+    gcc -o main main.c $(pkg-config --cflags --libs gdlib)
+    ```
+
+# Creare immagini con `libgd`
+
+```c
+#include "gd.h"     /* The library's header file */
+#include <stdio.h>
+
+int main() {
+  const int width = 256, height = 256;
+  gdImagePtr im;
+  FILE *f;
+  int row, col;
+
+  im = gdImageCreateTrueColor(width, height);
+
+  for(row = 0; row < height; ++row) {
+    for(col = 0; col < width; ++col) {
+      int red, green, blue = 128;
+
+      red = (int) (col * 255.0 / width);
+      green = (int) ((1.0 - row * 1.0 / height) * 255.0);
+      gdImageSetPixel(im, col, row, gdImageColorExact(im, red, green, blue));
+    }
+  }
+
+  f = fopen("image.png", "wb");
+
+  /* Output the image to the disk file in PNG format. */
+  gdImagePng(im, f);  /* gdImageJpeg(im, jpegout, -1); */
+
+  fclose(f);
+  gdImageDestroy(im);
+}
+```
+
 # Esecuzione dei test
 
--   Provate a modificare uno dei test sul tipo `Vec3`, in modo che fallisca:
+-   Provate a modificare uno dei test sul tipo `HdrImage`, in modo che fallisca:
 
-    -   Cambiate il file `test/vec3.cpp`
+    -   Cambiate il file `test/hdrimage.cpp`
     -   Andate nella directory `build` ed eseguite `ctest`
     -   Fate il commit delle modifiche
     -   Inviate le modifiche a GitHub col comando `git push`
@@ -135,7 +188,51 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     <center>
     ![](./media/dotnet-github-action.png)
     </center>
+    
+# Scrivere file PNG
 
+-   Aggiungete il package [SixLabors.ImageSharp](https://docs.sixlabors.com/index.html):
+
+    ```text
+    $ dotnet add package SixLabors.ImageSharp
+    ```
+    
+-   Create un bitmap di tipo `Image<Rgb24>` e usatelo come un array bidimensionale:
+
+    ```csharp
+    // Create a sRGB bitmap
+    var bitmap = new Image<Rgb24>(Configuration.Default, width, height);
+    
+    // Draw the pixels in the bitmap, like the following:
+    bitmap[SOMEX, SOMEY] = new Rgb24(red, green, blue); // Three "Byte" values!
+    
+    // Save the bitmap as a PNG file
+    using (Stream fileStream = File.OpenWrite("output.png")) {
+        bitmap.Save(fileStream, new PngEncoder());
+    }
+    ```
+
+# Linea di comando
+
+-   Aggiungete il package [System.CommandLine.DragonFruit](https://github.com/dotnet/command-line-api) ([documentazione](https://github.com/dotnet/command-line-api/blob/main/docs/Your-first-app-with-System-CommandLine-DragonFruit.md)):
+
+    ```text
+    $ dotnet add package --prerelease System.CommandLine.DragonFruit
+    ```
+    
+-   Modificate il `Main` in modo che accetti i parametri che desiderate, e inserite commenti in formato XML come nell'esempio seguente:
+
+    ```csharp
+    /// <summary>
+    /// Convert a HDR image into a LDR image
+    /// </summary>
+    /// <param name="input_file">The path to the PFM file to read.</param>
+    /// <param name="output_file">The name of the PNG file to create.</param>
+    /// <param name="a">The value for a (used in tone mapping).</param>
+    /// <param name="gamma">The value for gamma.</param>
+    static void Main(String input_file, String output_file, 
+                     float a = 0.5f, float gamma = 1.0f)
+    ```
 
 # Indicazioni per Julia
 
