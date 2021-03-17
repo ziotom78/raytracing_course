@@ -489,7 +489,7 @@ def test_pfm_save():
     std::stringstream sstr;
     
     sstr << "PF\n" << width << " " << height << "\n" << endianness;
-    std::string result{sstr.str()};
+    std::string result{sstr.str()};  // "result" is an ASCII string that can
     ```
 
 # Scrittura di dati binari
@@ -682,11 +682,7 @@ def test_pfm_save():
     }
     ```
 
--   Controllare la *endianness* della macchina su cui gira il programma è possibile con la classe [`ByteOrder`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteOrder.html), sempre in `java.nio`:
-
-    ```kotlin
-    val isBigEndian = ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN)
-    ```
+-   La classe `ByteBuffer` usa sempre la codifica *big endian*: questo è una fonte in meno di ambiguità. La cosa più comoda è quindi che nel vostro codice salviate sempre `1.0` nel file PFM (anziché `-1.0`).
 
 # Scrittura di testo
 
