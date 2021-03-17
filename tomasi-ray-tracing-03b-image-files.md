@@ -90,7 +90,7 @@ Data la posizione `(x, y)` di un pixel (con `x` colonna e `y` riga), l'indice ne
         img.set_pixel(-1, 0, Color())
     ```
 
--   Possiamo fare di meglio *modularizzando* il codice, ossia decomponendolo in parti più semplici.
+-   Possiamo fare di meglio *modularizzando* il codice, ossia decomponendolo in parti più semplici (che è un vantaggio già di per sè).
 
 # Nuova implementazione
 
@@ -155,7 +155,7 @@ def set_pixel(self, x, y, new_color):
 -   Le estensioni dei file possono essere usate per capire il formato (ma si possono sempre prendere svarioni!).
 -   Python mostra che file binari usano tipi di dati (`b"Hello, world!\n"`) diversi da quelli dei file di testo (`"Hello, world!\n"`).
 -   Tutti i linguaggi (Python 3, Julia, C\#, Kotlin, etc.) supportano nativamente Unicode e gestiscono correttamente questa differenza…
--   …con l'eccezione del C++ (è una storia triste).
+-   …con l'eccezione del C++ ([è](https://stackoverflow.com/questions/31302506/stdu32string-conversion-to-from-stdstring-and-stdu16string) [una](https://stackoverflow.com/questions/17103925/how-well-is-unicode-supported-in-c11) [triste](https://stackoverflow.com/questions/2259544/is-wchar-t-needed-for-unicode-support) [storia](https://stackoverflow.com/questions/48816848/what-is-the-efficient-standards-compliant-mechanism-for-processing-unicode-usin)).
 
 # Immagini PFM
 
@@ -454,6 +454,10 @@ def test_pfm_save():
 -   Sono presenti in ogni slide una serie di link alla documentazione del linguaggio: imparate a consultarla e a prendere familiarità col modo in cui è organizzata!
 
 -   Via via che procederemo dovrete essere sempre più autonomi nel trovare soluzioni per il vostro linguaggio, e a diventare confidenti con la sua sintassi.
+
+# Link a Gather
+
+-   Useremo il solito link: https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing
 
 # Indicazioni per C++
 
