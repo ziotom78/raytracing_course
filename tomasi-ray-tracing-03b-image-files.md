@@ -100,7 +100,7 @@ def valid_coordinates(self, x, y):
             (y >= 0) and (y < self.height))
 
 def pixel_offset(self, x, y):
-    return y * self.height + x
+    return y * self.width + x
 
 def get_pixel(self, x, y):
     assert self.valid_coordinates(x, y)
@@ -287,9 +287,10 @@ def write_pfm(self, stream):
 
 # Immagine per i test
 
--   Ho creato un file PFM con queste caratteristiche:
+-   Ho creato due file PFM con queste caratteristiche:
 
-    -   Dimensioni: 3 pixel × 2 pixel
+    -   Dimensioni: 3 pixel × 2 pixel;
+    -   Uno è codificato come *little endian*, l'altro come *big endian*;
     -   Matrice dei colori (RGB):
 
         |    | #1              | #2              | #3              |
@@ -297,11 +298,11 @@ def write_pfm(self, stream):
         | #A | (10, 20, 30)    | (40, 50, 60)    | (70, 80, 90)    |
         | #B | (100, 200, 300) | (400, 500, 600) | (700, 800, 900) |
 
--   Se volete il file, scaricatelo con nome [`reference.pfm`](./media/reference.pfm) e salvatelo nel vostro repository, possibilmente nella stessa directory dei test.
+-   È utile che abbiate i file sul vostro disco. Scaricateli con nome [`reference_le.pfm`](./media/reference_le.pfm) e [`reference_be.pfm`](./media/reference_be.pfm) e salvateli nel vostro repository, possibilmente nella stessa directory dei test.
 
 # Scrittura del test (1/3)
 
-Il primo approccio è quello di leggere il file `reference.pfm` e confrontarlo col file che *sarebbe* stato scritto da `write_pfm`:
+Il primo approccio è quello di leggere il file `reference_le.pfm` e confrontarlo col file che *sarebbe* stato scritto da `write_pfm`:
 
 ```python
 img = HdrImage(3, 2)
@@ -313,30 +314,32 @@ img.set_pixel(0, 1, Color(1.0e2, 2.0e2, 3.0e2)) # tests!
 img.set_pixel(1, 1, Color(4.0e2, 5.0e2, 6.0e2))
 img.set_pixel(2, 1, Color(7.0e2, 8.0e2, 9.0e2))
 
-with open("reference.pfm", "wb") as inpf:
+with open("reference_le.pfm", "wb") as inpf:
     reference_bytes = inpf.readall()
 
 buf = BytesIO()
 img.write_pfm(buf)
+
+# This assumes that write_pfm uses little endian
 assert buf.getvalue() == reference_bytes
 ```
 
 # Scrittura dei test (2/3)
 
-Ma se eseguiamo `xxd` sul file `reference.pfm`, possiamo ottenere la sequenza di valori dei byte nel formato C/C++:
+Ma se eseguiamo `xxd` sul file `reference_le.pfm`, possiamo ottenere la sequenza di valori dei byte nel formato C/C++:
 
 ```text
-$ xxd -i reference.pfm
-unsigned char reference_pfm[] = {
+$ xxd -i reference_le.pfm
+unsigned char reference_le_pfm[] = {
   0x50, 0x46, 0x0a, 0x33, 0x20, 0x32, 0x0a, 0x2d, 0x31, 0x2e, 0x30, 0x0a,
   0x00, 0x00, 0xc8, 0x42, 0x00, 0x00, 0x48, 0x43, 0x00, 0x00, 0x96, 0x43,
   0x00, 0x00, 0xc8, 0x43, 0x00, 0x00, 0xfa, 0x43, 0x00, 0x00, 0x16, 0x44,
   0x00, 0x00, 0x2f, 0x44, 0x00, 0x00, 0x48, 0x44, 0x00, 0x00, 0x61, 0x44,
   0x00, 0x00, 0x20, 0x41, 0x00, 0x00, 0xa0, 0x41, 0x00, 0x00, 0xf0, 0x41,
   0x00, 0x00, 0x20, 0x42, 0x00, 0x00, 0x48, 0x42, 0x00, 0x00, 0x70, 0x42,
-  0x00, 0x00, 0xc8, 0x42, 0x00, 0x00, 0x48, 0x43, 0x00, 0x00, 0x96, 0x43
+  0x00, 0x00, 0x8c, 0x42, 0x00, 0x00, 0xa0, 0x42, 0x00, 0x00, 0xb4, 0x42
 };
-unsigned int reference_pfm_len = 84;
+unsigned int reference_le_pfm_len = 84;
 ```
 
 # Scrittura dei test (3/3)
@@ -346,6 +349,7 @@ Se inseriamo questa sequenza di byte nel nostro programma, possiamo fare un conf
 ```python
 # Create "img" as in the previous case, then…
 
+# Little-endian format
 reference_bytes = bytes([
     0x50, 0x46, 0x0a, 0x33, 0x20, 0x32, 0x0a, 0x2d, 0x31, 0x2e, 0x30, 0x0a,
     0x00, 0x00, 0xc8, 0x42, 0x00, 0x00, 0x48, 0x43, 0x00, 0x00, 0x96, 0x43,
@@ -353,7 +357,7 @@ reference_bytes = bytes([
     0x00, 0x00, 0x2f, 0x44, 0x00, 0x00, 0x48, 0x44, 0x00, 0x00, 0x61, 0x44,
     0x00, 0x00, 0x20, 0x41, 0x00, 0x00, 0xa0, 0x41, 0x00, 0x00, 0xf0, 0x41,
     0x00, 0x00, 0x20, 0x42, 0x00, 0x00, 0x48, 0x42, 0x00, 0x00, 0x70, 0x42,
-    0x00, 0x00, 0xc8, 0x42, 0x00, 0x00, 0x48, 0x43, 0x00, 0x00, 0x96, 0x43
+    0x00, 0x00, 0x8c, 0x42, 0x00, 0x00, 0xa0, 0x42, 0x00, 0x00, 0xb4, 0x42
 ])
 
 # No file is being read/written here!
@@ -369,9 +373,9 @@ assert buf.getvalue() == reference_bytes
 1.  Implementate il tipo `HdrImage` con le seguenti caratteristiche:
 
     -   Campi `width` ed `height`, array di valori `Color`;
-    -   Salvataggio in formato PFM.
+    -   Salvataggio in formato PFM; scegliete voi se scrivere il file usando *big endian* (`1.0` nel file) o *little endian* (`-1.0`).
 
-    Il tipo andrebbe salvato in un file a parte, nella stessa directory dove settimana scorsa avete salvato il file che implementa il tipo `Color`.
+    La dichiarazione e l'implementazione di `HdrImage` andrebbe salvata in un file a parte, nella stessa directory dove settimana scorsa avete salvato il file che implementa il tipo `Color`.
 
 2.  Implementate una serie di test per le funzioni del punto precedente.
 
@@ -419,6 +423,7 @@ def test_pfm_save():
     img.set_pixel(1, 1, Color(4.0e2, 5.0e2, 6.0e2))
     img.set_pixel(2, 1, Color(7.0e2, 8.0e2, 9.0e2))
 
+    # This is the content of "reference_le.pfm" (little-endian file)
     reference_bytes = bytes([
         0x50, 0x46, 0x0a, 0x33, 0x20, 0x32, 0x0a, 0x2d, 0x31, 0x2e, 0x30, 0x0a,
         0x00, 0x00, 0xc8, 0x42, 0x00, 0x00, 0x48, 0x43, 0x00, 0x00, 0x96, 0x43,
@@ -457,7 +462,7 @@ def test_pfm_save():
 
 # Link a Gather
 
--   Useremo il solito link: https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing
+Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing](https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing)
 
 # Indicazioni per C++
 
@@ -494,28 +499,50 @@ def test_pfm_save():
 
 # Scrittura di dati binari
 
--   Il C++ non offre molti strumenti per scomporre una variabile `float` nei suoi quattro byte.
-
--   Bisogna lavorare un po' di puntatori, e fare attenzione al fatto che solo scrivendo `uint8_t` in un file si usa la rappresentazione binaria:
+-   Il C++ non offre molti strumenti per scomporre una variabile `float` nei suoi quattro byte; usate questa implementazione e studiatela bene:
 
     ```c++
     #include <cstdint>  // It contains uint8_t
-    
-    // This assumes a little-endian architecture
-    void write_float(std::ofstream & stream, float value) {
-        uint8_t * ptr{(char *)&value};
-        
-        // sizeof(value): number of bytes used for "value" (in this case, 4)
-        for(size_t i{}; i < sizeof(value); ++i)
-            stream << ptr[i];  // Note that ptr[i] is a uint8_t
+
+    enum class Endianness { little_endian, big_endian };
+
+    void write_float(std::ofstream &stream, float value, Endianness endianness) {
+      // Convert "value" in a sequence of 32 bit
+      uint32_t double_word{*((uint32_t *)&value)};
+
+      // Extract the four bytes in "double_word" using bit-level operators
+      uint8_t bytes[] = {
+          static_cast<uint8_t>(double_word & 0xFF),         // Least significant byte
+          static_cast<uint8_t>((double_word >> 8) & 0xFF),
+          static_cast<uint8_t>((double_word >> 16) & 0xFF),
+          static_cast<uint8_t>((double_word >> 24) & 0xFF), // Most significant byte
+      };
+
+      switch (endianness) {
+      case Endianness::little_endian:
+        for (int i{}; i < 4; ++i)    // Forward loop
+          stream << bytes[i];
+        break;
+
+      case Endianness::big_endian:
+        for (int i{3}; i >= 0; --i)  // Backward loop
+          stream << bytes[i];
+        break;
+      }
     }
+    
+    // You can use "write_float" to write little/big endian-encoded floats:
+    // write_float(stream, 10.0, Endianness::little_endian);
+    // write_float(stream, 10.0, Endianness::big_endian);
     ```
     
 # Big/little endian?
 
 -   Nella terza riga del file PFM bisogna scrivere `1.0` o `-1.0` a seconda della *endianness*.
 
--   Il vostro computer molto probabilmente è un sistema *little-endian*; usate comunque questa funzione per verificarlo:
+-   La funzione `write_float` della slide precedente funziona sia in un caso che nell'altro, quindi potete scegliere una possibilità e usare quella.
+
+-   Se siete curiosi, la seguente funzione restituisce `true` quando viene eseguita su un sistema *little endian*, e `false` altrimenti:
 
     ```c++
     bool is_little_endian() {
@@ -526,8 +553,6 @@ def test_pfm_save():
     }
     ```
     
-    Se la funzione ritorna `true`, dovete scrivere `-1.0`, altrimenti `1.0`.
-
 # Indicazioni per C\#
 
 # File e stream
@@ -683,6 +708,33 @@ def test_pfm_save():
     ```
 
 -   La classe `ByteBuffer` usa sempre la codifica *big endian*: questo è una fonte in meno di ambiguità. La cosa più comoda è quindi che nel vostro codice salviate sempre `1.0` nel file PFM (anziché `-1.0`).
+
+-   Usate quindi come riferimento [`reference_be.pfm`](./media/reference_be.pfm), ed evitate `reference_fe.pfm`.
+
+# Inizializzare `ByteBuffer`
+
+-   I byte in Kotlin sono con segno (molto strano!)
+
+-   Per inizializzare un array da valori esadecimali come quelli stampati da `xxd -i reference_be.pfm`, occorre una piccola funzione di aiuto:
+
+    ```kotlin
+    fun byteArrayOfInts(vararg ints: Int) = 
+        ByteArray(ints.size) { pos -> ints[pos].toByte() }
+    ```
+
+# Contenuto di `reference_be.pfm`
+
+```kotlin
+val reference = byteArrayOfInts(
+    0x50, 0x46, 0x0a, 0x33, 0x20, 0x32, 0x0a, 0x31, 0x2e, 0x30, 0x0a, 0x42,
+    0xc8, 0x00, 0x00, 0x43, 0x48, 0x00, 0x00, 0x43, 0x96, 0x00, 0x00, 0x43,
+    0xc8, 0x00, 0x00, 0x43, 0xfa, 0x00, 0x00, 0x44, 0x16, 0x00, 0x00, 0x44,
+    0x2f, 0x00, 0x00, 0x44, 0x48, 0x00, 0x00, 0x44, 0x61, 0x00, 0x00, 0x41,
+    0x20, 0x00, 0x00, 0x41, 0xa0, 0x00, 0x00, 0x41, 0xf0, 0x00, 0x00, 0x42,
+    0x20, 0x00, 0x00, 0x42, 0x48, 0x00, 0x00, 0x42, 0x70, 0x00, 0x00, 0x42,
+    0x8c, 0x00, 0x00, 0x42, 0xa0, 0x00, 0x00, 0x42, 0xb4, 0x00, 0x00
+)
+```
 
 # Scrittura di testo
 

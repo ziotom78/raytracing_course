@@ -191,7 +191,7 @@
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>            (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height))</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pixel_offset(<span class="va">self</span>, x, y):</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y <span class="op">*</span> <span class="va">self</span>.height <span class="op">+</span> x</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pixel(<span class="va">self</span>, x, y):</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="va">self</span>.valid_coordinates(x, y)</span>
@@ -361,9 +361,10 @@ width height
 <section id="immagine-per-i-test" class="slide level1">
 <h1>Immagine per i test</h1>
 <ul>
-<li><p>Ho creato un file PFM con queste caratteristiche:</p>
+<li><p>Ho creato due file PFM con queste caratteristiche:</p>
 <ul>
-<li><p>Dimensioni: 3 pixel × 2 pixel</p></li>
+<li><p>Dimensioni: 3 pixel × 2 pixel;</p></li>
+<li><p>Uno è codificato come <em>little endian</em>, l’altro come <em>big endian</em>;</p></li>
 <li><p>Matrice dei colori (RGB):</p>
 <table>
 <thead>
@@ -390,12 +391,12 @@ width height
 </tbody>
 </table></li>
 </ul></li>
-<li><p>Se volete il file, scaricatelo con nome <a href="./media/reference.pfm"><code>reference.pfm</code></a> e salvatelo nel vostro repository, possibilmente nella stessa directory dei test.</p></li>
+<li><p>È utile che abbiate i file sul vostro disco. Scaricateli con nome <a href="./media/reference_le.pfm"><code>reference_le.pfm</code></a> e <a href="./media/reference_be.pfm"><code>reference_be.pfm</code></a> e salvateli nel vostro repository, possibilmente nella stessa directory dei test.</p></li>
 </ul>
 </section>
 <section id="scrittura-del-test-13" class="slide level1">
 <h1>Scrittura del test (1/3)</h1>
-<p>Il primo approccio è quello di leggere il file <code>reference.pfm</code> e confrontarlo col file che <em>sarebbe</em> stato scritto da <code>write_pfm</code>:</p>
+<p>Il primo approccio è quello di leggere il file <code>reference_le.pfm</code> e confrontarlo col file che <em>sarebbe</em> stato scritto da <code>write_pfm</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> HdrImage(<span class="dv">3</span>, <span class="dv">2</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>img.set_pixel(<span class="dv">0</span>, <span class="dv">0</span>, Color(<span class="fl">1.0e1</span>, <span class="fl">2.0e1</span>, <span class="fl">3.0e1</span>)) <span class="co"># Each component is</span></span>
@@ -405,47 +406,50 @@ width height
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>img.set_pixel(<span class="dv">1</span>, <span class="dv">1</span>, Color(<span class="fl">4.0e2</span>, <span class="fl">5.0e2</span>, <span class="fl">6.0e2</span>))</span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>img.set_pixel(<span class="dv">2</span>, <span class="dv">1</span>, Color(<span class="fl">7.0e2</span>, <span class="fl">8.0e2</span>, <span class="fl">9.0e2</span>))</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">&quot;reference.pfm&quot;</span>, <span class="st">&quot;wb&quot;</span>) <span class="im">as</span> inpf:</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">&quot;reference_le.pfm&quot;</span>, <span class="st">&quot;wb&quot;</span>) <span class="im">as</span> inpf:</span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    reference_bytes <span class="op">=</span> inpf.readall()</span>
 <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>buf <span class="op">=</span> BytesIO()</span>
 <span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>img.write_pfm(buf)</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> buf.getvalue() <span class="op">==</span> reference_bytes</span></code></pre></div>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># This assumes that write_pfm uses little endian</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> buf.getvalue() <span class="op">==</span> reference_bytes</span></code></pre></div>
 </section>
 <section id="scrittura-dei-test-23" class="slide level1">
 <h1>Scrittura dei test (2/3)</h1>
-<p>Ma se eseguiamo <code>xxd</code> sul file <code>reference.pfm</code>, possiamo ottenere la sequenza di valori dei byte nel formato C/C++:</p>
-<pre class="text"><code>$ xxd -i reference.pfm
-unsigned char reference_pfm[] = {
+<p>Ma se eseguiamo <code>xxd</code> sul file <code>reference_le.pfm</code>, possiamo ottenere la sequenza di valori dei byte nel formato C/C++:</p>
+<pre class="text"><code>$ xxd -i reference_le.pfm
+unsigned char reference_le_pfm[] = {
   0x50, 0x46, 0x0a, 0x33, 0x20, 0x32, 0x0a, 0x2d, 0x31, 0x2e, 0x30, 0x0a,
   0x00, 0x00, 0xc8, 0x42, 0x00, 0x00, 0x48, 0x43, 0x00, 0x00, 0x96, 0x43,
   0x00, 0x00, 0xc8, 0x43, 0x00, 0x00, 0xfa, 0x43, 0x00, 0x00, 0x16, 0x44,
   0x00, 0x00, 0x2f, 0x44, 0x00, 0x00, 0x48, 0x44, 0x00, 0x00, 0x61, 0x44,
   0x00, 0x00, 0x20, 0x41, 0x00, 0x00, 0xa0, 0x41, 0x00, 0x00, 0xf0, 0x41,
   0x00, 0x00, 0x20, 0x42, 0x00, 0x00, 0x48, 0x42, 0x00, 0x00, 0x70, 0x42,
-  0x00, 0x00, 0xc8, 0x42, 0x00, 0x00, 0x48, 0x43, 0x00, 0x00, 0x96, 0x43
+  0x00, 0x00, 0x8c, 0x42, 0x00, 0x00, 0xa0, 0x42, 0x00, 0x00, 0xb4, 0x42
 };
-unsigned int reference_pfm_len = 84;</code></pre>
+unsigned int reference_le_pfm_len = 84;</code></pre>
 </section>
 <section id="scrittura-dei-test-33" class="slide level1">
 <h1>Scrittura dei test (3/3)</h1>
 <p>Se inseriamo questa sequenza di byte nel nostro programma, possiamo fare un confronto diretto in memoria:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create &quot;img&quot; as in the previous case, then…</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>reference_bytes <span class="op">=</span> <span class="bu">bytes</span>([</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x50</span>, <span class="bn">0x46</span>, <span class="bn">0x0a</span>, <span class="bn">0x33</span>, <span class="bn">0x20</span>, <span class="bn">0x32</span>, <span class="bn">0x0a</span>, <span class="bn">0x2d</span>, <span class="bn">0x31</span>, <span class="bn">0x2e</span>, <span class="bn">0x30</span>, <span class="bn">0x0a</span>,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x96</span>, <span class="bn">0x43</span>,</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xfa</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x16</span>, <span class="bn">0x44</span>,</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x2f</span>, <span class="bn">0x44</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x44</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x61</span>, <span class="bn">0x44</span>,</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x20</span>, <span class="bn">0x41</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xa0</span>, <span class="bn">0x41</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xf0</span>, <span class="bn">0x41</span>,</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x20</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x70</span>, <span class="bn">0x42</span>,</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x96</span>, <span class="bn">0x43</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># No file is being read/written here!</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>buf <span class="op">=</span> BytesIO()</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>img.write_pfm(buf)</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> buf.getvalue() <span class="op">==</span> reference_bytes</span></code></pre></div>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Little-endian format</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>reference_bytes <span class="op">=</span> <span class="bu">bytes</span>([</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x50</span>, <span class="bn">0x46</span>, <span class="bn">0x0a</span>, <span class="bn">0x33</span>, <span class="bn">0x20</span>, <span class="bn">0x32</span>, <span class="bn">0x0a</span>, <span class="bn">0x2d</span>, <span class="bn">0x31</span>, <span class="bn">0x2e</span>, <span class="bn">0x30</span>, <span class="bn">0x0a</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x96</span>, <span class="bn">0x43</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xfa</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x16</span>, <span class="bn">0x44</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x2f</span>, <span class="bn">0x44</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x44</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x61</span>, <span class="bn">0x44</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x20</span>, <span class="bn">0x41</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xa0</span>, <span class="bn">0x41</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xf0</span>, <span class="bn">0x41</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x20</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x70</span>, <span class="bn">0x42</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x8c</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xa0</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xb4</span>, <span class="bn">0x42</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># No file is being read/written here!</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>buf <span class="op">=</span> BytesIO()</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>img.write_pfm(buf)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> buf.getvalue() <span class="op">==</span> reference_bytes</span></code></pre></div>
 </section>
 <section id="guida-per-lesercitazione" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
@@ -456,9 +460,9 @@ unsigned int reference_pfm_len = 84;</code></pre>
 <li><p>Implementate il tipo <code>HdrImage</code> con le seguenti caratteristiche:</p>
 <ul>
 <li>Campi <code>width</code> ed <code>height</code>, array di valori <code>Color</code>;</li>
-<li>Salvataggio in formato PFM.</li>
+<li>Salvataggio in formato PFM; scegliete voi se scrivere il file usando <em>big endian</em> (<code>1.0</code> nel file) o <em>little endian</em> (<code>-1.0</code>).</li>
 </ul>
-<p>Il tipo andrebbe salvato in un file a parte, nella stessa directory dove settimana scorsa avete salvato il file che implementa il tipo <code>Color</code>.</p></li>
+<p>La dichiarazione e l’implementazione di <code>HdrImage</code> andrebbe salvata in un file a parte, nella stessa directory dove settimana scorsa avete salvato il file che implementa il tipo <code>Color</code>.</p></li>
 <li><p>Implementate una serie di test per le funzioni del punto precedente.</p></li>
 </ol>
 </section>
@@ -503,19 +507,20 @@ unsigned int reference_pfm_len = 84;</code></pre>
 <span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">1</span>, <span class="dv">1</span>, Color(<span class="fl">4.0e2</span>, <span class="fl">5.0e2</span>, <span class="fl">6.0e2</span>))</span>
 <span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">2</span>, <span class="dv">1</span>, Color(<span class="fl">7.0e2</span>, <span class="fl">8.0e2</span>, <span class="fl">9.0e2</span>))</span>
 <span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    reference_bytes <span class="op">=</span> <span class="bu">bytes</span>([</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x50</span>, <span class="bn">0x46</span>, <span class="bn">0x0a</span>, <span class="bn">0x33</span>, <span class="bn">0x20</span>, <span class="bn">0x32</span>, <span class="bn">0x0a</span>, <span class="bn">0x2d</span>, <span class="bn">0x31</span>, <span class="bn">0x2e</span>, <span class="bn">0x30</span>, <span class="bn">0x0a</span>,</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x96</span>, <span class="bn">0x43</span>,</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xfa</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x16</span>, <span class="bn">0x44</span>,</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x2f</span>, <span class="bn">0x44</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x44</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x61</span>, <span class="bn">0x44</span>,</span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x20</span>, <span class="bn">0x41</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xa0</span>, <span class="bn">0x41</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xf0</span>, <span class="bn">0x41</span>,</span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x20</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x70</span>, <span class="bn">0x42</span>,</span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x96</span>, <span class="bn">0x43</span></span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    buf <span class="op">=</span> BytesIO()</span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>    img.write_pfm(buf)</span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> buf.getvalue() <span class="op">==</span> reference_bytes</span></code></pre></div>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is the content of &quot;reference_le.pfm&quot; (little-endian file)</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    reference_bytes <span class="op">=</span> <span class="bu">bytes</span>([</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x50</span>, <span class="bn">0x46</span>, <span class="bn">0x0a</span>, <span class="bn">0x33</span>, <span class="bn">0x20</span>, <span class="bn">0x32</span>, <span class="bn">0x0a</span>, <span class="bn">0x2d</span>, <span class="bn">0x31</span>, <span class="bn">0x2e</span>, <span class="bn">0x30</span>, <span class="bn">0x0a</span>,</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x96</span>, <span class="bn">0x43</span>,</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xfa</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x16</span>, <span class="bn">0x44</span>,</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x2f</span>, <span class="bn">0x44</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x44</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x61</span>, <span class="bn">0x44</span>,</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x20</span>, <span class="bn">0x41</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xa0</span>, <span class="bn">0x41</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xf0</span>, <span class="bn">0x41</span>,</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x20</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x70</span>, <span class="bn">0x42</span>,</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x96</span>, <span class="bn">0x43</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>    buf <span class="op">=</span> BytesIO()</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>    img.write_pfm(buf)</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> buf.getvalue() <span class="op">==</span> reference_bytes</span></code></pre></div>
 </section>
 <section id="lavoro-in-gruppo" class="slide level1">
 <h1>Lavoro in gruppo</h1>
@@ -541,9 +546,7 @@ unsigned int reference_pfm_len = 84;</code></pre>
 </section>
 <section id="link-a-gather" class="slide level1">
 <h1>Link a Gather</h1>
-<ul>
-<li>Useremo il solito link: https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing</li>
-</ul>
+<p>Useremo il solito link: <a href="https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing">gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing</a></p>
 </section>
 <section id="indicazioni-per-c" class="slide level1">
 <h1>Indicazioni per C++</h1>
@@ -576,32 +579,53 @@ unsigned int reference_pfm_len = 84;</code></pre>
 <section id="scrittura-di-dati-binari" class="slide level1">
 <h1>Scrittura di dati binari</h1>
 <ul>
-<li><p>Il C++ non offre molti strumenti per scomporre una variabile <code>float</code> nei suoi quattro byte.</p></li>
-<li><p>Bisogna lavorare un po’ di puntatori, e fare attenzione al fatto che solo scrivendo <code>uint8_t</code> in un file si usa la rappresentazione binaria:</p>
+<li><p>Il C++ non offre molti strumenti per scomporre una variabile <code>float</code> nei suoi quattro byte; usate questa implementazione e studiatela bene:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cstdint&gt;</span><span class="pp">  </span><span class="co">// It contains uint8_t</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">// This assumes a little-endian architecture</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> write_float(<span class="bu">std::</span>ofstream &amp; stream, <span class="dt">float</span> value) {</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> * ptr{(<span class="dt">char</span> *)&amp;value};</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// sizeof(value): number of bytes used for &quot;value&quot; (in this case, 4)</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(<span class="dt">size_t</span> i{}; i &lt; <span class="kw">sizeof</span>(value); ++i)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        stream &lt;&lt; ptr[i];  <span class="co">// Note that ptr[i] is a uint8_t</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> <span class="kw">class</span> Endianness { little_endian, big_endian };</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> write_float(<span class="bu">std::</span>ofstream &amp;stream, <span class="dt">float</span> value, Endianness endianness) {</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Convert &quot;value&quot; in a sequence of 32 bit</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> double_word{*((<span class="dt">uint32_t</span> *)&amp;value)};</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Extract the four bytes in &quot;double_word&quot; using bit-level operators</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> bytes[] = {</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span>&lt;<span class="dt">uint8_t</span>&gt;(double_word &amp; <span class="bn">0xFF</span>),         <span class="co">// Least significant byte</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span>&lt;<span class="dt">uint8_t</span>&gt;((double_word &gt;&gt; <span class="dv">8</span>) &amp; <span class="bn">0xFF</span>),</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span>&lt;<span class="dt">uint8_t</span>&gt;((double_word &gt;&gt; <span class="dv">16</span>) &amp; <span class="bn">0xFF</span>),</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span>&lt;<span class="dt">uint8_t</span>&gt;((double_word &gt;&gt; <span class="dv">24</span>) &amp; <span class="bn">0xFF</span>), <span class="co">// Most significant byte</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  };</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span> (endianness) {</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> Endianness::little_endian:</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="dt">int</span> i{}; i &lt; <span class="dv">4</span>; ++i)    <span class="co">// Forward loop</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>      stream &lt;&lt; bytes[i];</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span>;</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> Endianness::big_endian:</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="dt">int</span> i{<span class="dv">3</span>}; i &gt;= <span class="dv">0</span>; --i)  <span class="co">// Backward loop</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>      stream &lt;&lt; bytes[i];</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span>;</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="co">// You can use &quot;write_float&quot; to write little/big endian-encoded floats:</span></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a><span class="co">// write_float(stream, 10.0, Endianness::little_endian);</span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a><span class="co">// write_float(stream, 10.0, Endianness::big_endian);</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="biglittle-endian" class="slide level1">
 <h1>Big/little endian?</h1>
 <ul>
 <li><p>Nella terza riga del file PFM bisogna scrivere <code>1.0</code> o <code>-1.0</code> a seconda della <em>endianness</em>.</p></li>
-<li><p>Il vostro computer molto probabilmente è un sistema <em>little-endian</em>; usate comunque questa funzione per verificarlo:</p>
+<li><p>La funzione <code>write_float</code> della slide precedente funziona sia in un caso che nell’altro, quindi potete scegliere una possibilità e usare quella.</p></li>
+<li><p>Se siete curiosi, la seguente funzione restituisce <code>true</code> quando viene eseguita su un sistema <em>little endian</em>, e <code>false</code> altrimenti:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> is_little_endian() {</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> word{<span class="bn">0x1234</span>};</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> *ptr{(<span class="dt">uint8_t</span> *)&amp;word};</span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> ptr[<span class="dv">0</span>] == <span class="bn">0x34</span>;</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p>Se la funzione ritorna <code>true</code>, dovete scrivere <code>-1.0</code>, altrimenti <code>1.0</code>.</p></li>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
 </ul>
 </section>
 <section id="indicazioni-per-c-1" class="slide level1">
@@ -732,15 +756,37 @@ unsigned int reference_pfm_len = 84;</code></pre>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    stream.write(ByteBuffer.allocate(<span class="dv">4</span>).putFloat(value).array())</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
 <li><p>La classe <code>ByteBuffer</code> usa sempre la codifica <em>big endian</em>: questo è una fonte in meno di ambiguità. La cosa più comoda è quindi che nel vostro codice salviate sempre <code>1.0</code> nel file PFM (anziché <code>-1.0</code>).</p></li>
+<li><p>Usate quindi come riferimento <a href="./media/reference_be.pfm"><code>reference_be.pfm</code></a>, ed evitate <code>reference_fe.pfm</code>.</p></li>
 </ul>
+</section>
+<section id="inizializzare-bytebuffer" class="slide level1">
+<h1>Inizializzare <code>ByteBuffer</code></h1>
+<ul>
+<li><p>I byte in Kotlin sono con segno (molto strano!)</p></li>
+<li><p>Per inizializzare un array da valori esadecimali come quelli stampati da <code>xxd -i reference_be.pfm</code>, occorre una piccola funzione di aiuto:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">byteArrayOfInts</span>(<span class="kw">vararg</span> <span class="va">ints</span>: <span class="dt">Int</span>) = </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    ByteArray(ints.size) { pos -&gt; ints[pos].toByte() }</span></code></pre></div></li>
+</ul>
+</section>
+<section id="contenuto-di-reference_be.pfm" class="slide level1">
+<h1>Contenuto di <code>reference_be.pfm</code></h1>
+<div class="sourceCode" id="cb33"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">reference</span> = byteArrayOfInts(</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0x50</span>, <span class="dv">0x46</span>, <span class="dv">0x0a</span>, <span class="dv">0x33</span>, <span class="dv">0x20</span>, <span class="dv">0x32</span>, <span class="dv">0x0a</span>, <span class="dv">0x31</span>, <span class="dv">0x2e</span>, <span class="dv">0x30</span>, <span class="dv">0x0a</span>, <span class="dv">0x42</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0xc8</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x43</span>, <span class="dv">0x48</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x43</span>, <span class="dv">0x96</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x43</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0xc8</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x43</span>, <span class="dv">0xfa</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x44</span>, <span class="dv">0x16</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x44</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0x2f</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x44</span>, <span class="dv">0x48</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x44</span>, <span class="dv">0x61</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x41</span>,</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0x20</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x41</span>, <span class="dv">0xa0</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x41</span>, <span class="dv">0xf0</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x42</span>,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0x20</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x42</span>, <span class="dv">0x48</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x42</span>, <span class="dv">0x70</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x42</span>,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0x8c</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x42</span>, <span class="dv">0xa0</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span>, <span class="dv">0x42</span>, <span class="dv">0xb4</span>, <span class="dv">0x00</span>, <span class="dv">0x00</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </section>
 <section id="scrittura-di-testo-2" class="slide level1">
 <h1>Scrittura di testo</h1>
 <ul>
 <li><p>Kotlin rappresenta internamente le stringhe di caratteri usando la codifica UTF-16 (come Java).</p></li>
 <li><p>Per trasformare la codifica in ASCII e poterla salvare in un file binario, si può invocare il metodo <code>toByteArray()</code>:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">header</span> = <span class="st">&quot;PF</span><span class="sc">\n</span><span class="st">$width $height</span><span class="sc">\n</span><span class="st">$endianness</span><span class="sc">\n</span><span class="st">&quot;</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>stream.write(header.toByteArray())</span></code></pre></div></li>
+<div class="sourceCode" id="cb34"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">header</span> = <span class="st">&quot;PF</span><span class="sc">\n</span><span class="st">$width $height</span><span class="sc">\n</span><span class="st">$endianness</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>stream.write(header.toByteArray())</span></code></pre></div></li>
 </ul>
 </section>
     </div>
