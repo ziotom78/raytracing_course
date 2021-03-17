@@ -17,9 +17,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Deve avere tre campi:
     -   `width` ed `height` (numero di colonne e di righe della matrice);
     -   Array di valori `Color`.
--   Servono due costruttori:
+-   Servono due costruttori/funzioni:
     -   Creare un'immagine vuota partendo da una risoluzione;
-    -   Caricare un'immagine da un file PFM (può anche essere una funzione, oppure un metodo statico).
+    -   Scrivere un'immagine in un file PFM.
 -   Ovviamente vogliamo anche una serie completa di test!
 
 # Matrice dei colori
@@ -159,7 +159,7 @@ def set_pixel(self, x, y, new_color):
 
 # Immagini PFM
 
--   Il compito di oggi è relativamente semplice, perché i file PFM hanno un [formato](http://www.pauldebevec.com/Research/HDR/PFM/) molto semplice (decisamente più semplice dei file PPM visti a lezione!)
+-   Scrivere file PFM è relativamente banale, perché hanno un [formato](http://www.pauldebevec.com/Research/HDR/PFM/) molto semplice (decisamente più semplice dei file PPM visti a lezione!)
 
 -   Un file PFM deve iniziare con questi caratteri (tutti ASCII, quindi non dobbiamo preoccuparci di Unicode):
 
