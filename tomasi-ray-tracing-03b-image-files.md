@@ -632,9 +632,9 @@ Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing]
 
     ```julia
     # On little-endian machines
-    assert reinterpret(UInt32, 1.0f0) == 0x3f800000
+    @assert reinterpret(UInt32, 1.0f0) == 0x3f800000
     # On big-endian machines
-    assert reinterpret(UInt32, 1.0f0) == 0x0000803f
+    @assert reinterpret(UInt32, 1.0f0) == 0x0000803f
     ```
 
 # Conversioni
