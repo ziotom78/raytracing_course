@@ -358,18 +358,18 @@ int main() {
 -   Creazione di colori e funzione `is_close`:
 
     ```python
-    col1 = Color(1.0, 2.0, 3.0)
-    assert col1.is_close(Color(1.0, 2.0, 3.0))
+    col = Color(1.0, 2.0, 3.0)
+    assert col.is_close(Color(1.0, 2.0, 3.0))
     ```
 
 -   Verifica che `is_close` fallisca (ossia ritorni `False`) quando è necessario:
 
     ```python
-    assert not col2.is_close(Color(3.0, 4.0, 5.0))  # First method
+    assert not col.is_close(Color(3.0, 4.0, 5.0))  # First method
     
     # Second method: it is usually applied for tests that are more complex than this
     try:
-        assert col2.is_close(Color(3.0, 4.0, 5.0))
+        assert col.is_close(Color(3.0, 4.0, 5.0))
         assert False  # You shouldn't reach this line!
     except AssertionError:
         pass  # If we got here, it means that the first assert failed: ok!
