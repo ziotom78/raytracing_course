@@ -191,7 +191,7 @@ int main() {
     
 # Scrivere file PNG
 
--   Aggiungete il package [SixLabors.ImageSharp](https://docs.sixlabors.com/index.html):
+-   Aggiungete il package [SixLabors.ImageSharp](https://docs.sixlabors.com/index.html) alla libreria di classi (che forse avete chiamato `Tracer`):
 
     ```text
     $ dotnet add package SixLabors.ImageSharp
