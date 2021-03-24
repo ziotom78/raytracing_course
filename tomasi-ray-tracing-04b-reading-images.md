@@ -86,10 +86,10 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     ```c++
     struct HdrImage {
         // Read a PFM file from a stream
-        HdrImage image(std::istream & stream);
+        HdrImage(std::istream & stream);
         
         // Open a PFM file and read the stream of bytes from it
-        HdrImage image(const std::string & file_name)
+        HdrImage(const std::string & file_name)
         : this(std::ifstream{file_name}) { }
     };
     ```
@@ -118,10 +118,10 @@ private:
 
 public:
     // First constructor: invoke `read_pfm_file`
-    HdrImage image(std::istream & stream) { read_pfm_file(stream); }
+    HdrImage(std::istream & stream) { read_pfm_file(stream); }
 
     // Second constructor: again, invoke `read_pfm_file`
-    HdrImage image(const std::string & file_name) {
+    HdrImage(const std::string & file_name) {
         std::ifstream stream{file_name};
         read_pfm_file(stream);
     }
