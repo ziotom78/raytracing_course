@@ -12,3 +12,4 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 - Lezione 3 (2021-03-14): [immagini](./tomasi-ray-tracing-03a-images.html)
 - Esercitazione 3 (2021-03-17): [file PFM](./tomasi-ray-tracing-03b-image-files.html)
 - Lezione 4 (2021-03-22): [documentazione](./tomasi-ray-tracing-04a-documentation.html)
+- Esercitazione 4 (2021-03-24): [lettura file PFM](./tomasi-ray-tracing-04b-reading-images.html)
