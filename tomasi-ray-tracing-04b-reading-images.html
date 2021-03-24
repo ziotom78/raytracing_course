@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Esercitazione 4</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Esercitazione 4</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="repository-github" class="slide level1">
+<h1>Repository GitHub</h1>
+</section>
+<section id="il-progetto-pytracer" class="slide level1">
+<h1>Il progetto <code>pytracer</code></h1>
+<ul>
+<li>Ho creato un repository GitHub con l’implementazione di riferimento in Python: <a href="https://github.com/ziotom78/pytracer">github.com/ziotom78/pytracer</a></li>
+<li>D’ora in poi aggiornerò il codice sul sito ogni settimana, in occasione delle esercitazioni.</li>
+<li>È un buon esempio per chi è interessato a capire come strutturare un progetto in Python.</li>
+</ul>
+</section>
+<section id="leggere-file-pfm" class="slide level1">
+<h1>Leggere file PFM</h1>
+</section>
+<section id="lettura-di-file" class="slide level1">
+<h1>Lettura di file</h1>
+<ul>
+<li>Settimana scorsa avete implementato un codice per salvare i file PFM; oggi implementiamo funzioni che li leggano.</li>
+<li>A differenza della <em>scrittura</em> di un file, la lettura presenta più difficoltà:
+<ul>
+<li>Il file potrebbe essere in un formato errato (problemi nella copia, estensione sbagliata, etc.);</li>
+<li>Dobbiamo essere in grado di leggere sia <em>little endian</em> che <em>big endian</em>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="costruttore-o-funzione" class="slide level1">
+<h1>Costruttore o funzione?</h1>
+<ul>
+<li><p>Si può implementare la lettura di un file PFM in un costruttore (esempio in C++):</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    HdrImage image(<span class="bu">std::</span>istream &amp; stream);</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>};</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>ifstream myfile{<span class="st">&quot;input.pfm&quot;</span>};</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>HdrImage img{myfile};</span></code></pre></div></li>
+<li><p>Ma si può anche pensare di implementare una funzione <code>read_pfm_file</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>HdrImage read_pfm_file(<span class="bu">std::</span>istream &amp; stream);</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>ifstream myfile{<span class="st">&quot;input.pfm&quot;</span>};</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>HdrImage img{read_pfm_file(myfile)};</span></code></pre></div></li>
+</ul>
+</section>
+<section id="scelta-della-api" class="slide level1">
+<h1>Scelta della API</h1>
+<ul>
+<li><p>Il problema di scegliere tra le due possibilità riguarda la scelta della <a href="./tomasi-ray-tracing-03b-image-files.html#/api-di-hdrimage">API</a>.</p></li>
+<li><p>La scelta dipende dal gusto personale e da altri possibili fattori:</p>
+<ol type="1">
+<li><p>In linguaggi OOP come il C#, è più naturale fornire un costruttore;</p></li>
+<li><p>In linguaggi come il Python non è possibile fare l’overloading di costruttori, quindi è meglio implementare una funzione (come faccio nel mio codice);</p></li>
+<li><p>Se pensassimo in futuro di voler implementare la lettura di più file immagine, una funzione permette di differenziare i formati (ma non è molto utile):</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>HdrImage read_pfm_file(<span class="bu">std::</span>istream &amp; stream);</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>HdrImage read_openexr_file(<span class="bu">std::</span>istream &amp; stream);</span></code></pre></div></li>
+</ol></li>
+</ul>
+</section>
+<section id="stream-e-file" class="slide level1">
+<h1>Stream e file</h1>
+<ul>
+<li><p>Nelle slide precedenti l’interfaccia in C++ per leggere un file è attraverso uno <em>stream</em> <code>std::istream</code>;</p></li>
+<li><p>Come abbiamo visto, l’uso di stream semplifica la scrittura dei test (che non sono obbligati ad accedere al disco);</p></li>
+<li><p>Garantisce anche maggiore versatilità: invece di leggere l’immagine da un file, potremmo leggerla da una connessione internet, o da un file compresso con GZip:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gzip</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> gzip.<span class="bu">open</span>(<span class="st">&quot;image_file.pfm.gz&quot;</span>, <span class="st">&quot;rb&quot;</span>) <span class="im">as</span> inpf:</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    read_pfm_file(inpf)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="lettura-diretta-di-file" class="slide level1">
+<h1>Lettura diretta di file</h1>
+<ul>
+<li><p>È però innegabile che sarebbe comodo poter aprire un file anche così:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># How handy!</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> read_pfm_file(<span class="st">&quot;image_file.pfm&quot;</span>)</span></code></pre></div></li>
+<li><p>In C++ si potrebbe usare l’overloading per definire un nuovo costruttore:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Read a PFM file from a stream</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    HdrImage image(<span class="bu">std::</span>istream &amp; stream);</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Open a PFM file and read the stream of bytes from it</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    HdrImage image(<span class="at">const</span> <span class="bu">std::</span>string &amp; file_name)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    : <span class="kw">this</span>(<span class="bu">std::</span>ifstream{file_name}) { }</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>};</span></code></pre></div></li>
+</ul>
+</section>
+<section id="stream-e-nomi-di-file" class="slide level1">
+<h1>Stream e nomi di file</h1>
+<ul>
+<li><p>Purtroppo il codice C++ però è <strong>errato</strong> e non compila!</p></li>
+<li><p>L’oggetto <code>std::ifstream</code> creato nel secondo costruttore è temporaneo e non può essere passato al primo costruttore:</p>
+<pre class="text"><code>$ g++ -c hdrimages.cpp
+hdrimages.cpp: In constructor ‘HdrImage::HdrImage(const string&amp;)’:
+hdrimages.cpp:33:58: error: cannot bind non-const lvalue reference of type ‘std::istream&amp;’ {aka ‘std::basic_istream&lt;char&gt;&amp;’} to an rvalue of type ‘std::basic_istream&lt;char&gt;’</code></pre></li>
+<li><p>Questo problema si ripropone anche in Kotlin e C#, ed è dovuto alle limitazioni del cosiddetto <em>constructor chaining</em> nei linguaggi OOP (Julia viene risparmiato semplicemente perché non è un linguaggio object-oriented, e i costruttori sono implementati come semplici funzioni).</p></li>
+</ul>
+</section>
+<section id="risolvere-il-dilemma" class="slide level1">
+<h1>Risolvere il dilemma</h1>
+<div class="sourceCode" id="cb8"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span>:</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Put the code that reads the PFM file in a separate method</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> read_pfm_file(<span class="bu">std::</span>istream &amp; stream);</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span>:</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// First constructor: invoke `read_pfm_file`</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    HdrImage image(<span class="bu">std::</span>istream &amp; stream) { read_pfm_file(stream); }</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Second constructor: again, invoke `read_pfm_file`</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    HdrImage image(<span class="at">const</span> <span class="bu">std::</span>string &amp; file_name) {</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">std::</span>ifstream stream{file_name};</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        read_pfm_file(stream);</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>};</span></code></pre></div>
+</section>
+<section id="regola-doro-della-oop" class="slide level1">
+<h1>Regola d’oro della OOP</h1>
+<ul>
+<li><p>(I programmatori Julia si tappino le orecchie).</p></li>
+<li><p>Mai, <strong>mai</strong> mettere codice complicato in un costruttore.</p></li>
+<li><p>Molto meglio spostare inizializzazioni complesse in metodi privati, che vengono poi invocati corrispondentemente nel costruttore.</p></li>
+</ul>
+</section>
+<section id="il-formato-pfm" class="slide level1">
+<h1>Il formato PFM</h1>
+<ul>
+<li><p>Ricordiamo com’è fatto il formato PFM:</p>
+<pre class="text"><code>PF
+width height
+±1.0
+&lt;binary data&gt;</code></pre></li>
+<li><p>Il codice di lettura deve verificare le seguenti cose:</p>
+<ol type="1">
+<li>Il file deve iniziare con <code>PF\n</code>, altrimenti non è in formato PFM;</li>
+<li>La seconda riga deve contenere due numeri interi positivi;</li>
+<li>La terza riga deve contenere <code>1.0</code> o <code>-1.0</code>;</li>
+<li>I dati binari devono essere in numero sufficiente; nello specifico, ci aspettiamo <span class="math inline">\text{width} \times \text{height}</span> pixel, ciascuno composto da tre componenti (R, G, B) da 4 byte ciascuno, per un totale di <span class="math inline">12 \times \text{width} \times \text{height}</span> byte.</li>
+</ol></li>
+</ul>
+</section>
+<section id="gestione-degli-errori" class="slide level1">
+<h1>Gestione degli errori</h1>
+<ul>
+<li>La funzione che legge un file deve essere in grado di gestire condizioni di errore.</li>
+<li>Abbiamo visto nella lezione di teoria che gli errori in una funzione di libreria non deve fare nulla di <strong>distruttivo</strong> né di <strong>visibile</strong>, perché non si può sapere a priori se l’errore è stato causato dal programmatore stesso o dall’utente.</li>
+<li>Possiamo gestire le condizioni di errore usando le eccezioni, se il linguaggio le supporta (è il caso di C++, C#, Julia e Kotlin).</li>
+<li>La cosa migliore da fare è definire una nuova classe che sia usata per le eccezioni generate nella lettura di un file PFM.</li>
+</ul>
+</section>
+<section id="invalidpfmfileformat" class="slide level1">
+<h1><code>InvalidPfmFileFormat</code></h1>
+<ul>
+<li><p>In Python basta creare una classe derivata da <code>Exception</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> InvalidPfmFileFormat(<span class="pp">Exception</span>):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, error_message: <span class="bu">str</span>):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(error_message)</span></code></pre></div>
+<p>Notate che accettiamo un messaggio d’errore, in modo da identificare meglio quale problema sia sorto nella lettura del file PFM.</p></li>
+<li><p>Se possibile, seguite la stessa strategia per il vostro linguaggio, avendo magari l’accortezza di derivare la classe da un’eccezione preesistente adatta al contesto (es., <code>System.FormatException</code> in C#, <code>RuntimeException</code> in Kotlin).</p></li>
+</ul>
+</section>
+<section id="condizioni-di-errore" class="slide level1">
+<h1>Condizioni di errore</h1>
+<ul>
+<li><p>Se gestiamo le condizioni di errore usando le eccezioni, possiamo decidere come gestire gli errori in funzione del contesto.</p></li>
+<li><p>Ad esempio, in un <code>main</code> che vuole aprire un file PFM passato dall’utente:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>filename <span class="op">=</span> sys.argv[<span class="dv">1</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(filename, <span class="st">&quot;rb&quot;</span>) <span class="im">as</span> inpf:</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        image <span class="op">=</span> read_pfm_file(inpf)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> InvalidPfmFileFormat <span class="im">as</span> err:</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    printf(<span class="ss">f&quot;impossible to open file </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">, reason: </span><span class="sc">{</span>err<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div></li>
+<li><p>In uno <em>unit test</em> che deve aprire un file contenente dati di riferimento, <strong>non</strong> cattureremmo l’eccezione in un <code>try … except</code>.</p></li>
+</ul>
+</section>
+<section id="altre-eccezioni" class="slide level1">
+<h1>Altre eccezioni</h1>
+<ul>
+<li><p>Per interpretare un file PFM dovremo invocare funzioni della libreria standard del nostro linguaggio:</p>
+<ul>
+<li>Leggere da uno <em>stream</em>;</li>
+<li>Interpretare una stringa di byte come un numero (es., <code>320</code>);</li>
+</ul></li>
+<li><p>In caso di errori, le stesse funzioni di base del linguaggio possono emettere delle eccezioni (es., <code>ValueError</code> se in Python si cerca di convertire in intero una stringa come <code>hello, world!</code>).</p></li>
+<li><p>Dobbiamo assicurarci di «catturare» queste eccezioni e convertirle in <code>InvalidPfmFileFprmat</code>, altrimenti il codice nella slide precedente non funzionerebbe più.</p></li>
+</ul>
+</section>
+<section id="esempio" class="slide level1">
+<h1>Esempio</h1>
+<p><asciinema-player src="./cast/catching-exceptions-78x25.cast" cols="78" rows="25" font-size="medium"></asciinema-player></p>
+</section>
+<section id="scrittura-di-test" class="slide level1">
+<h1>Scrittura di test</h1>
+<ul>
+<li><p>Abbiamo visto nella scorsa lezione che è più facile scrivere test per funzioni di dimensioni ridotte.</p></li>
+<li><p>Nel nostro caso, la lettura di un file PFM potrebbe appoggiarsi alle seguenti funzioni:</p>
+<ol type="1">
+<li>Una funzione che legga un floating-point a 32 bit;</li>
+<li>Una funzione che legga una sequenza di bytes fino a <code>\n</code>;</li>
+<li>Una funzione che interpreti la riga con la dimensione dell’immagine;</li>
+<li>Una funzione che determini la <em>endianness</em> del file.</li>
+</ol>
+<p>Ognuna di queste funzioni può essere testata in uno <a href="./tomasi-ray-tracing-03b-image-files.html#/test"><em>unit test</em></a> dedicato.</p></li>
+</ul>
+</section>
+<section id="funzioni-di-supporto-14" class="slide level1">
+<h1>Funzioni di supporto (1/4)</h1>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _read_line(stream):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> b<span class="st">&quot;&quot;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        cur_byte <span class="op">=</span> stream.read(<span class="dv">1</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> cur_byte <span class="kw">in</span> [b<span class="st">&quot;&quot;</span>, b<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>]:</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> result.decode(<span class="st">&quot;ascii&quot;</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        result <span class="op">+=</span> cur_byte</span></code></pre></div>
+</section>
+<section id="test-14" class="slide level1">
+<h1>Test (1/4)</h1>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_pfm_read_line():</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> BytesIO(b<span class="st">&quot;hello</span><span class="ch">\n</span><span class="st">world&quot;</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> _read_line(line) <span class="op">==</span> <span class="st">&quot;hello&quot;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> _read_line(line) <span class="op">==</span> <span class="st">&quot;world&quot;</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> _read_line(line) <span class="op">==</span> <span class="st">&quot;&quot;</span></span></code></pre></div>
+</section>
+<section id="funzioni-di-supporto-24" class="slide level1">
+<h1>Funzioni di supporto (2/4)</h1>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>_FLOAT_STRUCT_FORMAT <span class="op">=</span> {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    Endianness.LITTLE_ENDIAN: <span class="st">&quot;&lt;f&quot;</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    Endianness.BIG_ENDIAN: <span class="st">&quot;&gt;f&quot;</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># This function is meant to be used with PFM files only! It raises a</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># InvalidPfmFileFormat exception if not enough bytes are available.</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _read_float(stream, endianness<span class="op">=</span>Endianness.LITTLE_ENDIAN):</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    format_str <span class="op">=</span> _FLOAT_STRUCT_FORMAT[endianness]</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> struct.unpack(format_str, stream.read(<span class="dv">4</span>))[<span class="dv">0</span>]</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> struct.error:</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Capture the exception and convert it in a more appropriate type</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> InvalidPfmFileFormat(<span class="st">&quot;impossible to read binary data from the file&quot;</span>)</span></code></pre></div>
+</section>
+<section id="test-24" class="slide level1">
+<h1>Test (2/4)</h1>
+<ul>
+<li><p>Per <code>_read_float</code> possiamo evitare di implementare dei test: è una funzione che agisce semplicemente da <em>wrapper</em> a una funzione standard della libreria Python.</p></li>
+<li><p>Verificheremo comunque il suo comportamento quando testeremo la lettura di un file PFM dall’inizio alla fine.</p></li>
+</ul>
+</section>
+<section id="funzioni-di-supporto-34" class="slide level1">
+<h1>Funzioni di supporto (3/4)</h1>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _parse_endianness(line: <span class="bu">str</span>):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> <span class="bu">float</span>(line)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> InvalidPfmFileFormat(<span class="st">&quot;missing endianness specification&quot;</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> value <span class="op">==</span> <span class="fl">1.0</span>:</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Endianness.BIG_ENDIAN</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> value <span class="op">==</span> <span class="op">-</span><span class="fl">1.0</span>:</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Endianness.LITTLE_ENDIAN</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> InvalidPfmFileFormat(<span class="st">&quot;invalid endianness specification&quot;</span>)</span></code></pre></div>
+</section>
+<section id="test-34" class="slide level1">
+<h1>Test (3/4)</h1>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_pfm_parse_endianness():</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> _parse_endianness(<span class="st">&quot;1.0&quot;</span>) <span class="op">==</span> Endianness.BIG_ENDIAN</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> _parse_endianness(<span class="st">&quot;-1.0&quot;</span>) <span class="op">==</span> Endianness.LITTLE_ENDIAN</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We must test that the function properly raises an exception when</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># wrong input is passed. Here we use the &quot;pytest&quot; framework to do this.</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> pytest.raises(InvalidPfmFileFormat):</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> _parse_endianness(<span class="st">&quot;2.0&quot;</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> pytest.raises(InvalidPfmFileFormat):</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> _parse_endianness(<span class="st">&quot;abc&quot;</span>)</span></code></pre></div>
+</section>
+<section id="funzioni-di-supporto-44" class="slide level1">
+<h1>Funzioni di supporto (4/4)</h1>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _parse_img_size(line: <span class="bu">str</span>):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    elements <span class="op">=</span> line.split(<span class="st">&quot; &quot;</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(elements) <span class="op">!=</span> <span class="dv">2</span>:</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> InvalidPfmFileFormat(<span class="st">&quot;invalid image size specification&quot;</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        width, height <span class="op">=</span> (<span class="bu">int</span>(elements[<span class="dv">0</span>]), <span class="bu">int</span>(elements[<span class="dv">1</span>]))</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (width <span class="op">&lt;</span> <span class="dv">0</span>) <span class="kw">or</span> (height <span class="op">&lt;</span> <span class="dv">0</span>):</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>()</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> InvalidPfmFileFormat(<span class="st">&quot;invalid width/height&quot;</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> width, height</span></code></pre></div>
+</section>
+<section id="test-44" class="slide level1">
+<h1>Test (4/4)</h1>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_pfm_parse_img_size():</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> _parse_img_size(<span class="st">&quot;3 2&quot;</span>) <span class="op">==</span> (<span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> pytest.raises(InvalidPfmFileFormat):</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> _parse_img_size(<span class="st">&quot;-1 3&quot;</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> pytest.raises(InvalidPfmFileFormat):</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> _parse_img_size(<span class="st">&quot;3 2 1&quot;</span>)</span></code></pre></div>
+</section>
+<section id="read_pfm_image" class="slide level1">
+<h1><code>read_pfm_image</code></h1>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_pfm_image(stream):</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The first bytes in a binary file are usually called «magic bytes»</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    magic <span class="op">=</span> _read_line(stream)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> magic <span class="op">!=</span> <span class="st">&quot;PF&quot;</span>:</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> InvalidPfmFileFormat(<span class="st">&quot;invalid magic in PFM file&quot;</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    img_size <span class="op">=</span> _read_line(stream)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    (width, height) <span class="op">=</span> _parse_img_size(img_size)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    endianness_line <span class="op">=</span> _read_line(stream)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    endianness <span class="op">=</span> _parse_endianness(endianness_line)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> HdrImage(width<span class="op">=</span>width, height<span class="op">=</span>height)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(height <span class="op">-</span> <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>):</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(width):</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>            (r, g, b) <span class="op">=</span> [_read_float(stream, endianness) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)]</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>            result.set_pixel(x, y, Color(r, g, b))</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code></pre></div>
+</section>
+<section id="integration-test" class="slide level1">
+<h1>Integration test</h1>
+<ul>
+<li><p>Abbiamo implementato test per tutte le funzioni su cui è costruita <code>read_pfm_image</code>: <code>_read_line</code>, <code>_parse_endianness</code>, etc.</p></li>
+<li><p>Ma chi ci dice che abbiamo combinato bene le funzioni tra loro?</p></li>
+<li><p>È necessario andare oltre gli <em>unit test</em>, ed eseguire un test che metta in moto tutto il macchinario dall’inizio alla fine.</p></li>
+<li><p>Un test su una funzione complessa, che invoca funzioni semplici già testate, si dice <em>integration test</em>.</p></li>
+<li><p>Nello specifico, il nostro test deve verificare il funzionamento su file <em>little endian</em> (<a href="./media/reference_le.pfm"><code>reference_le.pfm</code></a>), su file <em>big endian</em> (<a href="./media/reference_be.pfm"><code>reference_be.pfm</code></a>), e anche su file errati.</p></li>
+</ul>
+</section>
+<section id="test-per-read_pfm_file" class="slide level1">
+<h1>Test per <code>read_pfm_file</code></h1>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the content of &quot;reference_le.pfm&quot; (little-endian file)</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>LE_REFERENCE_BYTES <span class="op">=</span> <span class="bu">bytes</span>([</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x50</span>, <span class="bn">0x46</span>, <span class="bn">0x0a</span>, <span class="bn">0x33</span>, <span class="bn">0x20</span>, <span class="bn">0x32</span>, <span class="bn">0x0a</span>, <span class="bn">0x2d</span>, <span class="bn">0x31</span>, <span class="bn">0x2e</span>, <span class="bn">0x30</span>, <span class="bn">0x0a</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x96</span>, <span class="bn">0x43</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xc8</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xfa</span>, <span class="bn">0x43</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x16</span>, <span class="bn">0x44</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x2f</span>, <span class="bn">0x44</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x44</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x61</span>, <span class="bn">0x44</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x20</span>, <span class="bn">0x41</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xa0</span>, <span class="bn">0x41</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xf0</span>, <span class="bn">0x41</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x20</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x48</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x70</span>, <span class="bn">0x42</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x8c</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xa0</span>, <span class="bn">0x42</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0xb4</span>, <span class="bn">0x42</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the content of &quot;reference_be.pfm&quot; (big-endian file)</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>BE_REFERENCE_BYTES <span class="op">=</span> <span class="bu">bytes</span>([</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x50</span>, <span class="bn">0x46</span>, <span class="bn">0x0a</span>, <span class="bn">0x33</span>, <span class="bn">0x20</span>, <span class="bn">0x32</span>, <span class="bn">0x0a</span>, <span class="bn">0x31</span>, <span class="bn">0x2e</span>, <span class="bn">0x30</span>, <span class="bn">0x0a</span>, <span class="bn">0x42</span>,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0xc8</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x43</span>, <span class="bn">0x48</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x43</span>, <span class="bn">0x96</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x43</span>,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0xc8</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x43</span>, <span class="bn">0xfa</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x44</span>, <span class="bn">0x16</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x44</span>,</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x2f</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x44</span>, <span class="bn">0x48</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x44</span>, <span class="bn">0x61</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x41</span>,</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x20</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x41</span>, <span class="bn">0xa0</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x41</span>, <span class="bn">0xf0</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x42</span>,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x20</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x42</span>, <span class="bn">0x48</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x42</span>, <span class="bn">0x70</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x42</span>,</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x8c</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x42</span>, <span class="bn">0xa0</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span>, <span class="bn">0x42</span>, <span class="bn">0xb4</span>, <span class="bn">0x00</span>, <span class="bn">0x00</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_pfm_read(<span class="va">self</span>):</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> reference_bytes <span class="kw">in</span> [LE_REFERENCE_BYTES, BE_REFERENCE_BYTES]:</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> read_pfm_image(BytesIO(reference_bytes))</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> img.width <span class="op">==</span> <span class="dv">3</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> img.height <span class="op">==</span> <span class="dv">2</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> img.get_pixel(<span class="dv">0</span>, <span class="dv">0</span>).is_close(Color(<span class="fl">1.0e1</span>, <span class="fl">2.0e1</span>, <span class="fl">3.0e1</span>))</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> img.get_pixel(<span class="dv">1</span>, <span class="dv">0</span>).is_close(Color(<span class="fl">4.0e1</span>, <span class="fl">5.0e1</span>, <span class="fl">6.0e1</span>))</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> img.get_pixel(<span class="dv">2</span>, <span class="dv">0</span>).is_close(Color(<span class="fl">7.0e1</span>, <span class="fl">8.0e1</span>, <span class="fl">9.0e1</span>))</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> img.get_pixel(<span class="dv">0</span>, <span class="dv">1</span>).is_close(Color(<span class="fl">1.0e2</span>, <span class="fl">2.0e2</span>, <span class="fl">3.0e2</span>))</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> img.get_pixel(<span class="dv">0</span>, <span class="dv">0</span>).is_close(Color(<span class="fl">1.0e1</span>, <span class="fl">2.0e1</span>, <span class="fl">3.0e1</span>))</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> img.get_pixel(<span class="dv">1</span>, <span class="dv">1</span>).is_close(Color(<span class="fl">4.0e2</span>, <span class="fl">5.0e2</span>, <span class="fl">6.0e2</span>))</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> img.get_pixel(<span class="dv">2</span>, <span class="dv">1</span>).is_close(Color(<span class="fl">7.0e2</span>, <span class="fl">8.0e2</span>, <span class="fl">9.0e2</span>))</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_pfm_read_wrong(<span class="va">self</span>):</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>    buf <span class="op">=</span> BytesIO(b<span class="st">&quot;PF</span><span class="ch">\n</span><span class="st">3 2</span><span class="ch">\n</span><span class="st">-1.0</span><span class="ch">\n</span><span class="st">stop&quot;</span>)</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> pytest.raises(InvalidPfmFileFormat):</span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> read_pfm_image(buf)</span></code></pre></div>
+</section>
+<section id="guida-per-lesercitazione" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+</section>
+<section id="guida-per-lesercitazione-1" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+<ol type="1">
+<li><p>Implementate un costruttore <code>HdrImage::HdrImage</code> o una funzione <code>read_pfm_file</code> che legga un file PFM da uno <em>stream</em>.</p></li>
+<li><p>Per implementare la lettura di file PFM, implementate le seguenti funzioni:</p>
+<ul>
+<li>lettura di una sequenza di 4 byte in un floating-point a 32 bit, tenendo conto della <em>endianness</em> (<code>_read_float</code> nell’esempio Python);</li>
+<li>lettura di una sequenza di byte fino a <code>\n</code> o alla fine dello stream (<code>_read_line</code>);</li>
+<li>lettura delle dimensioni dell’immagini da una stringa (<code>_parse_img_size</code>);</li>
+<li>decodifica del tipo di <em>endianness</em> da una stringa (<code>_parse_endianness</code>).</li>
+</ul></li>
+<li><p>Implementate gli stessi test dell’esempio Python. Verificate anche che i vostri metodi segnalino correttamente gli errori.</p></li>
+</ol>
+</section>
+<section id="lavoro-in-gruppo" class="slide level1">
+<h1>Lavoro in gruppo</h1>
+<ul>
+<li><p>Potete dividere facilmente il lavoro tra di voi se distribuite tra voi le funzioni di base elencate nella slide precedente.</p></li>
+<li><p>A differenza delle lezioni passate, oggi è però importante che chi implementa una funzione scriva anche i test corrispondenti di quella funzione.</p></li>
+<li><p>Uno di voi si preoccupi anche di scrivere un <code>README</code>, e di fornire il repository di una licenza, il cui tipo (MIT, BSD, GPL, etc.) dovrete decidere insieme.</p></li>
+</ul>
+</section>
+<section id="link-a-gather" class="slide level1">
+<h1>Link a Gather</h1>
+<p>Useremo il solito link: <a href="https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing">gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing</a></p>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    </body>
+</html>
