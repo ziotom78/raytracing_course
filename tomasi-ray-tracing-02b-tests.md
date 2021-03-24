@@ -684,7 +684,7 @@ namespace Trace.Tests
 
     -   Ogni package può essere usato come una libreria;
     -   I package possono includere una serie di test se al loro interno è presente una directory chiamata `test`;
-    -   Lo script che implementa il `main` [visto nella precedente esercitazione](https://ziotom78.github.io/raytracing_course/tomasi-ray-tracing-01b-github.html#/istruzioni-1) può essere usato come eseguibile.
+    -   Lo script che implementa il `main` [visto nella precedente esercitazione](./tomasi-ray-tracing-01b-github.html#/istruzioni-1) può essere usato come eseguibile.
 
 -   La creazione di un nuovo package configura quindi tutto già nel modo richiesto, tranne l'eseguibile.
 
