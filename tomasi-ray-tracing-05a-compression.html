@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Lezione 4</title>
+  <title>Lezione 5</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -43,7 +43,7 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Lezione 4</h1>
+  <h1 class="title">Lezione 5</h1>
   <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
   <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
@@ -145,20 +145,56 @@ R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
 <section id="punti-luminosi-2" class="slide level1">
 <h1>Punti luminosi</h1>
 <figure>
-<img data-src="plots/5621502329388772040.svg" />
+<img data-src="plots/14225091037007721294.svg" />
 </figure>
 </section>
-<section id="compressione" class="slide level1">
-<h1>Compressione</h1>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/kitchen-gamma-settings.png" />
+</center>
 </section>
-<section id="compressione-dei-dati" class="slide level1">
-<h1>Compressione dei dati</h1>
+<section id="uso-del-tone-mapping" class="slide level1">
+<h1>Uso del tone mapping</h1>
+<figure>
+<img data-src="plots/1097935430848946603.png" />
+</figure>
+</section>
+<section id="formati-grafici-e-compressione" class="slide level1">
+<h1>Formati grafici e compressione</h1>
+</section>
+<section id="formati-ldr" class="slide level1">
+<h1>Formati LDR</h1>
 <ul>
-<li>Formati diversi implementano compressioni diverse;</li>
-<li>Non sarà obbligatorio implementare la compressione delle immagini nei nostri codici, ma è comunque indispensabile conoscerne i fondamenti.</li>
+<li>Non ci sarà un formato obbligatorio da implementare nel codice (PNG, JPEG, BMP, GIF, etc.): scegliete quello che vi intriga di più, o il più semplice da implementare.</li>
+<li>È però importante evidenziare le differenze tra i vari formati, perché ciascun formato ha vantaggi e svantaggi.</li>
 </ul>
 </section>
+<section id="differenze-tra-formati" class="slide level1">
+<h1>Differenze tra formati</h1>
+<dl>
+<dt>Versatilità</dt>
+<dd>Alcuni formati supportano solo colori codificati come terne (R, G, B) di 8×3 bytes, altri ammettono più possibilità Metadati
+</dd>
+<dd>Alcuni formati consentono di associare più metadati all’immagine, altri sono più rigidi. Facilità di lettura/scrittura
+</dd>
+<dd>Ci sono formati molto semplici da scrivere (come PNM), altri notevolmente più complessi (JPEG). Compressione
+</dd>
+<dd>Formati diversi implementano metodi per comprimere i dati e ridurre lo spazio su disco.
+</dd>
+</dl>
+</section>
 <section id="compressione-dati" class="slide level1">
+<h1>Compressione dati</h1>
+<ul>
+<li><p>Uno schermo di computer ha solitamente una risoluzione di 1920×1080 pixel.</p></li>
+<li><p>Se vengono usati 8+8+8=24 bit per il colore sRGB di ogni pixel (3 byte per pixel), il numero totale di byte necessari è <span class="math display">
+3 \times 1920 \times 1080 = 6\,220\,800
+</span> che equivale a circa 6 MB.</p></li>
+<li><p>Nelle immagini c’è solitamente molta informazione ridondante che può essere eliminata.</p></li>
+</ul>
+</section>
+<section id="compressione-dati-1" class="slide level1">
 <h1>Compressione dati</h1>
 <ul>
 <li><p>La compressione dei dati è un argomento molto importante in fisica computazionale.</p></li>
@@ -168,18 +204,8 @@ R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
 <li>Nel periodo 2001–2010, l’esperimento WMAP ha registrato 200 GB di dati;</li>
 <li>Nel periodo 2009–2013, l’esperimento Planck ha registrato 30 TB (30,000 GB) di dati.</li>
 </ul>
-<p>Grandi moli di dati sono comuni anche in altri domini della fisica (particelle, climatologia, etc.).</p></li>
-<li><p>Apprendere i principi della compressione dati è estremamente utile!</p></li>
-</ul>
-</section>
-<section id="compressione-di-immagini" class="slide level1">
-<h1>Compressione di immagini</h1>
-<ul>
-<li><p>Uno schermo di computer ha solitamente una risoluzione di 1920×1080 pixel.</p></li>
-<li><p>Se vengono usati 8+8+8=24 bit per il colore sRGB di ogni pixel (3 byte per pixel), il numero totale di byte necessari è <span class="math display">
-3 \times 1920 \times 1080 = 6\,220\,800
-</span> che equivale a circa 6 MB.</p></li>
-<li><p>Nelle immagini c’è solitamente molta informazione ridondante che può essere eliminata.</p></li>
+<p>Grandi moli di dati sono comuni anche in altri domini della fisica (particelle, climatologia, etc.): apprendere i principi della compressione dati è estremamente utile!</p></li>
+<li><p>Vediamo quindi nel dettaglio alcuni algoritmi di compressione usati nei file grafici.</p></li>
 </ul>
 </section>
 <section class="slide level1">

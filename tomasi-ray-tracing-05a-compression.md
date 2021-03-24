@@ -1,5 +1,5 @@
 ---
-title: "Lezione 4"
+title: "Lezione 5"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
@@ -111,12 +111,59 @@ set ylabel "Output"
 plot [0:10] [] x/(1 + x)
 ```
 
-# Compressione
+---
 
-# Compressione dei dati
+<center>
+![](./media/kitchen-gamma-settings.png)
+</center>
 
--   Formati diversi implementano compressioni diverse;
--   Non sarà obbligatorio implementare la compressione delle immagini nei nostri codici, ma è comunque indispensabile conoscerne i fondamenti.
+# Uso del tone mapping
+
+```{.graphviz}
+digraph "" {
+    read [label="read input file" shape=box];
+    solve [label="solve the rendering equation" shape=box];
+    savepfm [label="save a PFM file" shape=box];
+    tonemapping [label="apply tone mapping" shape=box];
+    savepng [label="save a PNG file" shape=box];
+    read -> solve;
+    solve -> savepfm;
+    savepfm -> tonemapping;
+    tonemapping -> savepng;
+    savepng -> tonemapping;
+}
+```
+
+
+# Formati grafici e compressione
+
+# Formati LDR
+
+-   Non ci sarà un formato obbligatorio da implementare nel codice (PNG, JPEG, BMP, GIF, etc.): scegliete quello che vi intriga di più, o il più semplice da implementare.
+-   È però importante evidenziare le differenze tra i vari formati, perché ciascun formato ha vantaggi e svantaggi.
+
+# Differenze tra formati
+
+Versatilità
+: Alcuni formati supportano solo colori codificati come terne (R, G, B) di 8×3 bytes, altri ammettono più possibilità
+Metadati
+: Alcuni formati consentono di associare più metadati all'immagine, altri sono più rigidi.
+Facilità di lettura/scrittura
+: Ci sono formati molto semplici da scrivere (come PNM), altri notevolmente più complessi (JPEG).
+Compressione
+: Formati diversi implementano metodi per comprimere i dati e ridurre lo spazio su disco.
+
+# Compressione dati
+
+-   Uno schermo di computer ha solitamente una risoluzione di 1920×1080 pixel.
+
+-   Se vengono usati 8+8+8=24 bit per il colore sRGB di ogni pixel (3 byte per pixel), il numero totale di byte necessari è
+    $$
+    3 \times 1920 \times 1080 = 6\,220\,800
+    $$
+    che equivale a circa 6 MB.
+
+-   Nelle immagini c'è solitamente molta informazione ridondante che può essere eliminata.
 
 # Compressione dati
 
@@ -128,21 +175,9 @@ plot [0:10] [] x/(1 + x)
     -   Nel periodo 2001–2010, l'esperimento WMAP ha registrato 200 GB di dati;
     -   Nel periodo 2009–2013, l'esperimento Planck ha registrato 30 TB (30,000 GB) di dati.
     
-    Grandi moli di dati sono comuni anche in altri domini della fisica (particelle, climatologia, etc.).
-
--   Apprendere i principi della compressione dati è estremamente utile!
-
-# Compressione di immagini
-
--   Uno schermo di computer ha solitamente una risoluzione di 1920×1080 pixel.
-
--   Se vengono usati 8+8+8=24 bit per il colore sRGB di ogni pixel (3 byte per pixel), il numero totale di byte necessari è
-    $$
-    3 \times 1920 \times 1080 = 6\,220\,800
-    $$
-    che equivale a circa 6 MB.
-
--   Nelle immagini c'è solitamente molta informazione ridondante che può essere eliminata.
+    Grandi moli di dati sono comuni anche in altri domini della fisica (particelle, climatologia, etc.): apprendere i principi della compressione dati è estremamente utile!
+    
+-   Vediamo quindi nel dettaglio alcuni algoritmi di compressione usati nei file grafici.
 
 ---
 
