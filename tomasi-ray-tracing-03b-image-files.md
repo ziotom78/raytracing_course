@@ -506,7 +506,7 @@ Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing]
 
     enum class Endianness { little_endian, big_endian };
 
-    void write_float(std::ofstream &stream, float value, Endianness endianness) {
+    void write_float(std::ostream &stream, float value, Endianness endianness) {
       // Convert "value" in a sequence of 32 bit
       uint32_t double_word{*((uint32_t *)&value)};
 
