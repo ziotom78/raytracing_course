@@ -1,4 +1,6 @@
 PANDOC = /usr/bin/pandoc
+JS_FILES = \
+	./js/quantization.js
 
 .phony: all
 
@@ -16,8 +18,11 @@ all: \
 	tomasi-ray-tracing-01a-rendering-equation.html \
 	index.html
 
-index.html: index.md
+index.html: index.md ${JS_FILES}
 	$(PANDOC) --standalone -o $@ $<
+
+%.js: %.nim
+	nim js -o:$@ $<
 
 %.html: %.md
 	$(PANDOC) \
@@ -26,6 +31,7 @@ index.html: index.md
 		--css ./css/custom.css \
 		--css ./css/asciinema-player.css \
 		-A asciinema-include.html \
+		-A nim-include.html \
 		--katex \
 		-V theme=white \
 		-V progress=true \
@@ -33,6 +39,6 @@ index.html: index.md
 		-V background-image=./media/background.png \
 		-V width=1440 \
 		-V height=810 \
-		-f markdown+tex_math_single_backslash \
+		-f markdown+tex_math_single_backslash+subscript+superscript \
 		-t revealjs \
 		-o $@ $<

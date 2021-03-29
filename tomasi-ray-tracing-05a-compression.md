@@ -4,153 +4,15 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-# Quantization { data-state="quantization-shannon" }
-
-<center>
-<canvas id="quantization-canvas" width="300px" height="300px"></canvas>
-<div class="slidecontainer">
-<input type="range" min="0.1" max="10.0" value="0.1" step="0.1" class="slider" id="quantization-slider">
-<p id="quantization-value"></p>
-</div>
-</center>
-    
-<script>
-var quantization_slider = document.getElementById("quantization-slider");
-var quantization_value = document.getElementById("quantization-value");
-quantization_value.innerHTML = quantization_slider.value;
-
-function redraw_quantized_signal() {
-}
-
-function refresh_quantization_value() {
-    var quant = quantization_slider.value * 1.0;
-    quantization_value.innerHTML = `Step: quant.toFixed(1)`;
-    redraw_quantized_signal();
-}
-
-quantization_slider.oninput = function() {
-    refresh_quantization_value();
-}
-
-document.addEventListener('quantization-shannon', function() {
-    var canvas = document.getElementById("quantization-canvas");
-    
-    refresh_quantization_value();
-});
-</script>
-
 # Tone mapping
 
----
+-   Nelle precedenti lezioni abbiamo implementato un tipo `HdrImage`, che gestisce matrici di colori di tipo `Color`
 
-<center>
-![](./media/tone-mapping-problem.png)
-</center>
+-   Il tipo `Color` è una terna di valori floating-point (R, G, B) che codifica un colore.
 
-# Tone mapping
+-   Il nostro tipo `HdrImage` è in grado di salvare l'immagine in un file PFM, che è in formato HDR e quindi non direttamente visualizzabile.
 
--   Una conversione da RGB a sRGB dovrebbe preservare la «tinta» complessiva di un'immagine.
--   Ecco perché non si parla di *tone mapping* per un singolo colore RGB, ma per una matrice di colori (ossia un'immagine).
--   Noi useremo il *tone mapping* descritto da Shirley (2003): è fisicamente meno preciso di altri metodi (es., la normalizzazione dello standard CIE usando D65), ma più intuitivo e più semplice da implementare.
-
-# Algoritmo di tone mapping
-
-1.  Stabilire un valore «medio» per l'irradianza misurata in corrispondenza di ogni pixel dell'immagine;
-2.  Normalizzare il colore di ogni pixel a questo valore medio;
-3.  Applicare una correzione ai punti di maggiore luminosità.
-
-# Valore medio
-
--   Il valore «neutro» per la radianza è definito dalla media logaritmica della luminosità $l_i$ dei pixel (con $i = 1\ldots N$):
-    $$
-    \left<l\right> = \exp\left(\frac{\sum_i \log(\delta + l_i)}N\right),
-    $$
-    dove $\delta \ll 1$ evita la singolarità di $\log x$ in $x = 0$.
-
--   A ciascun pixel sono però associati tre valori scalari (R, G, B). Quale valore usare per la luminosità $l_i$?
-
-# Luminosità
-
-Media aritmetica
-: $l_i = \frac{R_i + G_i + B_i}3$;
-
-Media pesata
-: $l_i = \frac{w_R R_i + w_G G_i + w_B B_i}{w_R + w_G + w_B}$, data una terna di valori positivi $(w_R, w_G, w_B)$;
-
-Distanza dall'origine
-: $l_i = \sqrt{R_i^2 + G_i^2 + B_i^2}$;
-
-Funzione di luminosità
-: $l_i = \frac{\max(R_i, G_i, B_i) + \min(R_i, G_i, B_i)}2$
-
-Shirley usa l'ultima definizione perché sostiene che, nonostante non sia fisicamente significativa, produca risultati visivamente migliori.
-
-# Perché la media logaritmica?
-
--   Non abbiamo ancora giustificato la formula
-    $$
-    \left<l\right> = \exp\left(\frac{\sum_i \log(\delta + l_i)}N\right),
-    $$
-
--   Essa è plausibile perché la risposta dell'occhio a uno stimolo $S$ è logaritmica (*leggi di Weber-Fechner*):
-    $$
-    p = k \log \frac{S}{S_0}
-    $$
-    dove $p$ è il valore percepito, e $S$ è l'intensità dello stimolo.
-
-# Proprietà della media logaritmica
-
--   La media logaritmica è una media sugli *esponenti*, mentre la media aritmetica è una media sui valori;
-
--   Nel caso i valori siano $10^2$, $10^4$ e $10^6$, la media logaritmica è
-    $$
-    10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
-    $$
-    mentre la media aritmetica è $(10^2 + 10^4 + 10^6)/3 \approx 10^6/3$.
-
-
-# Normalizzazione
-
-Una volta stimato il valore medio, i valori R, G, B dell'immagine sono aggiornati tramite la trasformazione
-$$
-R_i \rightarrow a \times \frac{R_i}{\left<l\right>},
-$$
-dove $a$ è un valore impostabile dall'utente (Shirley suggerisce $a = 0.18$, ma in realtà si dovrebbe ottimizzare a seconda dell'immagine).
-
-
-# Punti luminosi
-
-![](./media/bright-light-in-room.jpg){height=520}
-
-Sono notoriamente difficili da trattare!
-
-# Punti luminosi
-
-Shirley suggerisce di applicare ai valori R, G, B di ogni punto dell'immagine la trasformazione
-$$
-R_i \rightarrow \frac{R_i}{1 + R_i},
-$$
-che ha le seguenti caratteristiche:
-$$
-\begin{aligned}
-R_i \ll 1 &\Rightarrow R_i \rightarrow R_i,\\
-R_i \gg 1 &\Rightarrow R_i \rightarrow 1.
-\end{aligned}
-$$
-
-# Punti luminosi
-
-```{.gnuplot format=svg dpi=600}
-set xlabel "Input"
-set ylabel "Output"
-plot [0:10] [] x/(1 + x)
-```
-
----
-
-<center>
-![](./media/kitchen-gamma-settings.png)
-</center>
+-   Il *tone mapping* è la tecnica che converte un'immagine HDR in un'immagine LDR, questa sì visualizzabile sui monitor.
 
 # Uso del tone mapping
 
@@ -168,6 +30,18 @@ digraph "" {
     saveldr -> tonemapping;
 }
 ```
+
+# Formati LDR
+
+-   Ci sono molti formati LDR a disposizione.
+
+-   Alcuni di questi sono perfetti per il nostro corso, altri richiedono alcuni accorgimenti per essere usati bene.
+
+-   L'aspetto che più differenzia un formato dall'altro ha a che fare con la **compressione**.
+
+-   Vedremo oggi alcuni algoritmi di compressione dati molto usati nel salvataggio delle immagini.
+
+-   Nell'esercitazione di questa settimana implementeremo il salvataggio di file LDR impiegando una delle tante librerie disponibili per i linguaggi che state utilizzando.
 
 
 # Formati grafici e compressione
@@ -371,7 +245,7 @@ Usare una *palette* è un primo passo per comprimere, ma oggi si può fare **mol
 
     dove la somma è sul numero totale di simboli (3 nel nostro caso: $a$, $b$ e $c$), e $p_i$ è la probabilità dell'$i$-esimo simbolo.
     
--   Per convenzione, se $p_i = 0$ si pone $p_i\,\log_2 p_i = 0$).
+-   Per convenzione, se $p_i = 0$ si pone $p_i\,\log_2 p_i = 0$.
 
 # Esempi di entropia (1/3)
 
@@ -434,7 +308,7 @@ $$
 
 -   Si distingue per *tendere asintoticamente al limite di Shannon*, in qualsiasi caso! («Asintoticamente» nel senso che lo fa se la sequenza di simboli ha lunghezza infinita).
 
--   Invece di codificare ogni simbolo separatamente, li codifica tutti insieme in un unico numero binario: in questo modo è come se impiegasse per ogni simbolo un numero possibilmente frazionario di bit, che è pari a $S$ se $N \rightarrow \infty$.
+-   Invece di codificare ogni simbolo separatamente, li codifica tutti insieme in un unico numero binario (sempre compreso tra 0 e 1): in questo modo è come se impiegasse per ogni simbolo un numero possibilmente frazionario di bit, che è pari a $S$ se $N \rightarrow \infty$.
 
 # Algoritmo
 
@@ -470,12 +344,80 @@ $$
 -   Trasmettere il numero $\xi$ equivale a trasmettere quindi l'intero messaggio, ma la codifica è ottimale.
 -   Oggi alla codifica aritmetica si preferiscono metodi basati sugli [asymmetric numeral systems](https://en.wikipedia.org/wiki/Asymmetric_numeral_systems) (Duda, 2014), che hanno le stesse capacità di compressione ma garantiscono esecuzioni più veloci (v. [Zstandard](https://en.wikipedia.org/wiki/Zstandard)).
 
+
+# JPEG
+
+-   È un algoritmo pensato per la compressione delle **immagini**.
+
+-   Codifica i colori con 24 bit, ma internamente lavora nello spazio di colore Y C~B~ C~R~ anziché sRGB.
+
+-   Decompone l'immagine in blocchi di 8×8 pixel, che «linearizza» in tre vettori monodimensionali (Y, C~B~, C~R~) di 64 elementi a cui applica la Discrete Cosine Transform (DCT), un tipo di trasformata di Fourier.
+
+-   Ai coefficienti DCT è applicata una trasformazione del tipo $s \rightarrow \bigl[[s / q] \times q\bigr]$ che fa perdere informazione (algoritmo **lossy**); il livello di quantizzazione è detto *quality*, ed è compreso tra 0 e 100.
+
+-   I coefficienti quantizzati sono compressi con Huffman o l'aritmetic coding.
+
+# Quantizzazione { data-state="quantization-shannon" }
+
+<center>
+<div id="quantization-canvas" style="width:620px;height:480px;">
+</div>
+<div class="slidecontainer">
+<input type="range" min="1" max="30" value="1" step="1" class="slider" id="quantization-slider">
+<p id="quantization-value"></p>
+</div>
+</center>
+    
+<script type="text/javascript" src="./js/quantization.js"></script>
+    
+<script>
+var quantization_slider = document.getElementById("quantization-slider");
+var quantization_value = document.getElementById("quantization-value");
+
+function redraw_quantized_signal() {
+  var data = getQuantizationExampleData();
+  var quant = quantization_slider.value * 1.0;
+  var quant_data = quantize(data, quant);
+
+  Plotly.newPlot('quantization-canvas', [{
+    name: 'Original',
+    y: data
+  }, {
+    name: 'Quantized',
+    y: quant_data
+  }], {
+    xaxis: {range: [0, data.length]},
+    yaxis: {range: [-35, 65]}
+  });
+
+  var entropy = shannon(quantize(getQuantizationExampleData(), quant));
+  quantization_value.innerHTML = `Step: ${quant.toFixed(1)}, entropy: ${entropy.toFixed(2)} bit`;
+}
+
+quantization_slider.oninput = function() {
+    redraw_quantized_signal();
+}
+
+document.addEventListener('quantization-shannon', function() {
+    redraw_quantized_signal();
+});
+</script>
+
+
+---
+
+<center>
+![](./media/jpeg-compression.png)
+</center>
+
+[Van Gogh, *Campo di grano con volo di corvi* (1890)]{style="float:right"}
+
 # *Dictionary compressors*
 
 -   Il teorema di Shannon fornisce un limite inferiore alla lunghezza di una serie compressa.
--   Esso però vale nel caso di una successione *casuale* di simboli. I compressori per cui il teorema di Shannon sono detti **compressori entropici**, o **statistici**.
+-   Esso però vale nel caso di una successione *casuale* di simboli: l'ordine in cui i simboli compaiono non conta! I compressori per cui il teorema di Shannon sono detti **compressori entropici**, o **statistici**.
 -   I cosiddetti *dictionary compressors* cercano sequenze ripetute nella successione di simboli da comprimere.
--   I *dictionary compressors* sono da sempre molto usati nei formati grafici (es. GIF, PNG).
+-   I *dictionary compressors* sono da sempre molto usati nei formati grafici.
 
 # Lempel-Ziv (1977)
 
@@ -517,15 +459,17 @@ $$
 
 -   Il formato originale non prevedeva la compressione dei dati, ma con gli anni Microsoft ha aggiunto il supporto per RLE e Huffman coding.
 
--   Permette di salvare file con *palette*, se si desidera comprimere ulteriormente il file.
+-   Non supportando algoritmi di compressione avanzati, i suoi file sono generalmente molto grandi. ☹️
 
--   Non è troppo difficile da scrivere, soprattutto se evitate di comprimere i dati.
+-   Permette di salvare file con *palette*, se si desidera comprimere ulteriormente il file. 😀
+
+-   Non è troppo difficile da scrivere, soprattutto se evitate di comprimere i dati. 😀
 
 # Il formato [GIF](https://en.wikipedia.org/wiki/GIF)
 
 -   Usa la compressione LZW, che è una variante di LZ78: storicamente, è stato il primo formato di una certa diffusione a mostrare buoni livelli di compressione (1987).
 
--   Permette solo di codificare immagini con *palette*, quindi è limitato a 256 colori.
+-   Supporta solo immagini con *palette*, quindi è limitato a 256 colori. ☹️
 
 -   A causa di problemi di brevetti legati alla compressione LZW (ora scaduti), nel 1995 è stato rilasciato il formato PNG, che usa un algoritmo di compressione (DEFLATE) basato su LZ77, all'epoca non gravato da brevetti.
 
@@ -533,60 +477,52 @@ $$
 
 # Il formato [PNG](https://en.wikipedia.org/wiki/Portable_Network_Graphics)
 
--   Supporta immagini con *palette* (come il GIF) ma anche immagini a 24 bit.
+-   Supporta immagini con *palette* (come il GIF), ma anche immagini a 24 bit e addirittura a 48 bit. 😀
 
--   Implementa una compressione più efficiente di GIF, ispirata all'algoritmo LZ77.
+-   Implementa una compressione più efficiente di GIF, ispirata all'algoritmo LZ77. 😀
 
 -   Oggi è lo standard per le immagini su web, insieme al JPEG (v. in seguito).
 
-# Il formato JPEG
+# Il formato [JFIF](https://en.wikipedia.org/wiki/JPEG_File_Interchange_Format)
 
--   È il formato più complesso tra quelli che vediamo oggi. Codifica i colori con 24 bit, ma internamente lavora nello spazio di colore Y C~B~ C~R~ anziché sRGB.
+-   L'acronimo JFIF significa *JPEG File Interchange Format*.
 
--   Decompone l'immagine in blocchi di 8×8 pixel, che «linearizza» in un vettore monodimensionale di 64 elementi.
+-   È il formato ogirinale usato per salvare dati compressi usando l'algoritmo JPEG, anche se oggi altri formati supportano la compressione JPEG.
 
--   Ad ogni componente di colore del vettore di 64 elementi è applicata la Discrete Cosine Transform (DCT)
+-   I file in formato JFIF hanno di solito estensione `.jpg` o `.jpeg`, anche se si possono trovare le estensioni `.jfif`, `.jfi` o `.jif`.
 
--   I coefficienti DCT sono quantizzati a un livello variabile; questa quantizzazione fa perdere informazione (algoritmo **lossy**), ed è il parametro *quality* (da 0 a 100).
+-   Il formato prevede anche un [metodo di compressione **lossless**](https://en.wikipedia.org/wiki/Lossless_JPEG), che è però poco usato.
 
--   I coefficienti quantizzati sono compressi con Huffman o l'aritmetic coding.
-
----
-
-<center>
-![](./media/jpeg-compression.png)
-</center>
-
-[Van Gogh, *Campo di grano con volo di corvi* (1890)]{style="float:right"}
-
-# Il formato TIFF
+# Il formato [TIFF](https://en.wikipedia.org/wiki/TIFF)
 
 -   Creato dalla Aldus Corporation per gestire le immagini salvate da scanner (1986), in seguito acquisito dalla Adobe.
 
 -   Il più versatile dei formati visti qui:
 
-    -   Immagini multiple in uno stesso file;
-    -   Diversi schemi di compressione, sia **lossless** che **lossy** (RLE, LZW, JPEG, etc.);
-    -   Supporta sia immagini a 24 bit che immagini con *palette*;
-    -   I colori possono essere memorizzati in vari spazi di colore, non solo sRGB.
+    -   Immagini multiple in uno stesso file 😀;
+    -   Diversi schemi di compressione, sia **lossless** che **lossy** (RLE, LZW, JPEG, etc.) 😀;
+    -   Supporta sia immagini a 24/48 bit che immagini con *palette* 😀;
+    -   I colori possono essere memorizzati in vari spazi di colore, non solo sRGB 😀.
 
 -   Molto diffuso nelle applicazioni (GIMP, Photoshop, etc.), non usato sul web.
 
-# Il formato WebP
+# Il formato [WebP](https://en.wikipedia.org/wiki/WebP)
 
 -   Creato da Google nel 2010.
 
 -   Usa più algoritmi di compressione (LZW, JPEG, Huffman, …); l'effetto complessivo è un algoritmo **lossy**.
 
--   È il formato più efficiente tra quelli visti oggi.
+-   È il formato più efficiente tra quelli visti oggi: i suoi livelli di compressione sono eccellenti 😀.
 
 -   Supportato su tutti i browser tranne sotto il Mac OS X (il supporto è stato aggiunto solo nel 2020 con Big Sur).
 
----
+# Confronto dei formati
 
 <center>
 ![](./media/crows-in-wheat-field-size.svg)
 </center>
+
+Dimensioni dei file contenenti l'immagine di «*Campo di grano con volo di corvi*».
 
 # Approfondimento: manipolare i bit
 

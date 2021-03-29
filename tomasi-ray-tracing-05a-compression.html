@@ -110,147 +110,14 @@
   <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="quantization" class="slide level1" data-state="quantization-shannon">
-<h1 data-state="quantization-shannon">Quantization</h1>
-<center>
-<canvas id="quantization-canvas" width="300px" height="300px">
-</canvas>
-<div class="slidecontainer">
-<input type="range" min="0.1" max="10.0" value="0.1" step="0.1" class="slider" id="quantization-slider">
-<p id="quantization-value">
-</p>
-</div>
-</center>
-<script>
-var quantization_slider = document.getElementById("quantization-slider");
-var quantization_value = document.getElementById("quantization-value");
-quantization_value.innerHTML = quantization_slider.value;
-
-function redraw_quantized_signal() {
-}
-
-function refresh_quantization_value() {
-    var quant = quantization_slider.value * 1.0;
-    quantization_value.innerHTML = `Step: quant.toFixed(1)`;
-    redraw_quantized_signal();
-}
-
-quantization_slider.oninput = function() {
-    refresh_quantization_value();
-}
-
-document.addEventListener('quantization-shannon', function() {
-    var canvas = document.getElementById("quantization-canvas");
-    
-    refresh_quantization_value();
-});
-</script>
-</section>
 <section id="tone-mapping" class="slide level1">
 <h1>Tone mapping</h1>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/tone-mapping-problem.png" />
-</center>
-</section>
-<section id="tone-mapping-1" class="slide level1">
-<h1>Tone mapping</h1>
 <ul>
-<li>Una conversione da RGB a sRGB dovrebbe preservare la «tinta» complessiva di un’immagine.</li>
-<li>Ecco perché non si parla di <em>tone mapping</em> per un singolo colore RGB, ma per una matrice di colori (ossia un’immagine).</li>
-<li>Noi useremo il <em>tone mapping</em> descritto da Shirley (2003): è fisicamente meno preciso di altri metodi (es., la normalizzazione dello standard CIE usando D65), ma più intuitivo e più semplice da implementare.</li>
+<li><p>Nelle precedenti lezioni abbiamo implementato un tipo <code>HdrImage</code>, che gestisce matrici di colori di tipo <code>Color</code></p></li>
+<li><p>Il tipo <code>Color</code> è una terna di valori floating-point (R, G, B) che codifica un colore.</p></li>
+<li><p>Il nostro tipo <code>HdrImage</code> è in grado di salvare l’immagine in un file PFM, che è in formato HDR e quindi non direttamente visualizzabile.</p></li>
+<li><p>Il <em>tone mapping</em> è la tecnica che converte un’immagine HDR in un’immagine LDR, questa sì visualizzabile sui monitor.</p></li>
 </ul>
-</section>
-<section id="algoritmo-di-tone-mapping" class="slide level1">
-<h1>Algoritmo di tone mapping</h1>
-<ol type="1">
-<li>Stabilire un valore «medio» per l’irradianza misurata in corrispondenza di ogni pixel dell’immagine;</li>
-<li>Normalizzare il colore di ogni pixel a questo valore medio;</li>
-<li>Applicare una correzione ai punti di maggiore luminosità.</li>
-</ol>
-</section>
-<section id="valore-medio" class="slide level1">
-<h1>Valore medio</h1>
-<ul>
-<li><p>Il valore «neutro» per la radianza è definito dalla media logaritmica della luminosità <span class="math inline">l_i</span> dei pixel (con <span class="math inline">i = 1\ldots N</span>): <span class="math display">
-\left&lt;l\right&gt; = \exp\left(\frac{\sum_i \log(\delta + l_i)}N\right),
-</span> dove <span class="math inline">\delta \ll 1</span> evita la singolarità di <span class="math inline">\log x</span> in <span class="math inline">x = 0</span>.</p></li>
-<li><p>A ciascun pixel sono però associati tre valori scalari (R, G, B). Quale valore usare per la luminosità <span class="math inline">l_i</span>?</p></li>
-</ul>
-</section>
-<section id="luminosità" class="slide level1">
-<h1>Luminosità</h1>
-<dl>
-<dt>Media aritmetica</dt>
-<dd><span class="math inline">l_i = \frac{R_i + G_i + B_i}3</span>;
-</dd>
-<dt>Media pesata</dt>
-<dd><span class="math inline">l_i = \frac{w_R R_i + w_G G_i + w_B B_i}{w_R + w_G + w_B}</span>, data una terna di valori positivi <span class="math inline">(w_R, w_G, w_B)</span>;
-</dd>
-<dt>Distanza dall’origine</dt>
-<dd><span class="math inline">l_i = \sqrt{R_i^2 + G_i^2 + B_i^2}</span>;
-</dd>
-<dt>Funzione di luminosità</dt>
-<dd><span class="math inline">l_i = \frac{\max(R_i, G_i, B_i) + \min(R_i, G_i, B_i)}2</span>
-</dd>
-</dl>
-<p>Shirley usa l’ultima definizione perché sostiene che, nonostante non sia fisicamente significativa, produca risultati visivamente migliori.</p>
-</section>
-<section id="perché-la-media-logaritmica" class="slide level1">
-<h1>Perché la media logaritmica?</h1>
-<ul>
-<li><p>Non abbiamo ancora giustificato la formula <span class="math display">
-\left&lt;l\right&gt; = \exp\left(\frac{\sum_i \log(\delta + l_i)}N\right),
-</span></p></li>
-<li><p>Essa è plausibile perché la risposta dell’occhio a uno stimolo <span class="math inline">S</span> è logaritmica (<em>leggi di Weber-Fechner</em>): <span class="math display">
-p = k \log \frac{S}{S_0}
-</span> dove <span class="math inline">p</span> è il valore percepito, e <span class="math inline">S</span> è l’intensità dello stimolo.</p></li>
-</ul>
-</section>
-<section id="proprietà-della-media-logaritmica" class="slide level1">
-<h1>Proprietà della media logaritmica</h1>
-<ul>
-<li><p>La media logaritmica è una media sugli <em>esponenti</em>, mentre la media aritmetica è una media sui valori;</p></li>
-<li><p>Nel caso i valori siano <span class="math inline">10^2</span>, <span class="math inline">10^4</span> e <span class="math inline">10^6</span>, la media logaritmica è <span class="math display">
-10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
-</span> mentre la media aritmetica è <span class="math inline">(10^2 + 10^4 + 10^6)/3 \approx 10^6/3</span>.</p></li>
-</ul>
-</section>
-<section id="normalizzazione" class="slide level1">
-<h1>Normalizzazione</h1>
-<p>Una volta stimato il valore medio, i valori R, G, B dell’immagine sono aggiornati tramite la trasformazione <span class="math display">
-R_i \rightarrow a \times \frac{R_i}{\left&lt;l\right&gt;},
-</span> dove <span class="math inline">a</span> è un valore impostabile dall’utente (Shirley suggerisce <span class="math inline">a = 0.18</span>, ma in realtà si dovrebbe ottimizzare a seconda dell’immagine).</p>
-</section>
-<section id="punti-luminosi" class="slide level1">
-<h1>Punti luminosi</h1>
-<p><img data-src="./media/bright-light-in-room.jpg" height="520" /></p>
-<p>Sono notoriamente difficili da trattare!</p>
-</section>
-<section id="punti-luminosi-1" class="slide level1">
-<h1>Punti luminosi</h1>
-<p>Shirley suggerisce di applicare ai valori R, G, B di ogni punto dell’immagine la trasformazione <span class="math display">
-R_i \rightarrow \frac{R_i}{1 + R_i},
-</span> che ha le seguenti caratteristiche: <span class="math display">
-\begin{aligned}
-R_i \ll 1 &amp;\Rightarrow R_i \rightarrow R_i,\\
-R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
-\end{aligned}
-</span></p>
-</section>
-<section id="punti-luminosi-2" class="slide level1">
-<h1>Punti luminosi</h1>
-<figure>
-<img data-src="plots/14225091037007721294.svg" />
-</figure>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/kitchen-gamma-settings.png" />
-</center>
 </section>
 <section id="uso-del-tone-mapping" class="slide level1">
 <h1>Uso del tone mapping</h1>
@@ -258,10 +125,20 @@ R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
 <img data-src="plots/1585430488454273577.png" />
 </figure>
 </section>
+<section id="formati-ldr" class="slide level1">
+<h1>Formati LDR</h1>
+<ul>
+<li><p>Ci sono molti formati LDR a disposizione.</p></li>
+<li><p>Alcuni di questi sono perfetti per il nostro corso, altri richiedono alcuni accorgimenti per essere usati bene.</p></li>
+<li><p>L’aspetto che più differenzia un formato dall’altro ha a che fare con la <strong>compressione</strong>.</p></li>
+<li><p>Vedremo oggi alcuni algoritmi di compressione dati molto usati nel salvataggio delle immagini.</p></li>
+<li><p>Nell’esercitazione di questa settimana implementeremo il salvataggio di file LDR impiegando una delle tante librerie disponibili per i linguaggi che state utilizzando.</p></li>
+</ul>
+</section>
 <section id="formati-grafici-e-compressione" class="slide level1">
 <h1>Formati grafici e compressione</h1>
 </section>
-<section id="formati-ldr" class="slide level1">
+<section id="formati-ldr-1" class="slide level1">
 <h1>Formati LDR</h1>
 <ul>
 <li>Non ci sarà un formato obbligatorio da implementare nel codice (PNG, JPEG, BMP, GIF, etc.): scegliete quello che vi intriga di più, o il più semplice da implementare.</li>
@@ -478,7 +355,7 @@ R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
 S(\left\{x_i\right\}) = -\sum_i p_i\,\log_2 p_i,
 </span></p>
 <p>dove la somma è sul numero totale di simboli (3 nel nostro caso: <span class="math inline">a</span>, <span class="math inline">b</span> e <span class="math inline">c</span>), e <span class="math inline">p_i</span> è la probabilità dell’<span class="math inline">i</span>-esimo simbolo.</p></li>
-<li><p>Per convenzione, se <span class="math inline">p_i = 0</span> si pone <span class="math inline">p_i\,\log_2 p_i = 0</span>).</p></li>
+<li><p>Per convenzione, se <span class="math inline">p_i = 0</span> si pone <span class="math inline">p_i\,\log_2 p_i = 0</span>.</p></li>
 </ul>
 </section>
 <section id="esempi-di-entropia-13" class="slide level1">
@@ -531,7 +408,7 @@ S(\left\{x_i\right\}) \times N.
 <ul>
 <li><p>La codifica aritmetica è un approccio alternativo a quello di Huffman.</p></li>
 <li><p>Si distingue per <em>tendere asintoticamente al limite di Shannon</em>, in qualsiasi caso! («Asintoticamente» nel senso che lo fa se la sequenza di simboli ha lunghezza infinita).</p></li>
-<li><p>Invece di codificare ogni simbolo separatamente, li codifica tutti insieme in un unico numero binario: in questo modo è come se impiegasse per ogni simbolo un numero possibilmente frazionario di bit, che è pari a <span class="math inline">S</span> se <span class="math inline">N \rightarrow \infty</span>.</p></li>
+<li><p>Invece di codificare ogni simbolo separatamente, li codifica tutti insieme in un unico numero binario (sempre compreso tra 0 e 1): in questo modo è come se impiegasse per ogni simbolo un numero possibilmente frazionario di bit, che è pari a <span class="math inline">S</span> se <span class="math inline">N \rightarrow \infty</span>.</p></li>
 </ul>
 </section>
 <section id="algoritmo" class="slide level1">
@@ -568,13 +445,76 @@ S(\left\{x_i\right\}) \times N.
 <li>Oggi alla codifica aritmetica si preferiscono metodi basati sugli <a href="https://en.wikipedia.org/wiki/Asymmetric_numeral_systems">asymmetric numeral systems</a> (Duda, 2014), che hanno le stesse capacità di compressione ma garantiscono esecuzioni più veloci (v. <a href="https://en.wikipedia.org/wiki/Zstandard">Zstandard</a>).</li>
 </ul>
 </section>
+<section id="jpeg" class="slide level1">
+<h1>JPEG</h1>
+<ul>
+<li><p>È un algoritmo pensato per la compressione delle <strong>immagini</strong>.</p></li>
+<li><p>Codifica i colori con 24 bit, ma internamente lavora nello spazio di colore Y C<sub>B</sub> C<sub>R</sub> anziché sRGB.</p></li>
+<li><p>Decompone l’immagine in blocchi di 8×8 pixel, che «linearizza» in tre vettori monodimensionali (Y, C<sub>B</sub>, C<sub>R</sub>) di 64 elementi a cui applica la Discrete Cosine Transform (DCT), un tipo di trasformata di Fourier.</p></li>
+<li><p>Ai coefficienti DCT è applicata una trasformazione del tipo <span class="math inline">s \rightarrow \bigl[[s / q] \times q\bigr]</span> che fa perdere informazione (algoritmo <strong>lossy</strong>); il livello di quantizzazione è detto <em>quality</em>, ed è compreso tra 0 e 100.</p></li>
+<li><p>I coefficienti quantizzati sono compressi con Huffman o l’aritmetic coding.</p></li>
+</ul>
+</section>
+<section id="quantizzazione" class="slide level1" data-state="quantization-shannon">
+<h1 data-state="quantization-shannon">Quantizzazione</h1>
+<center>
+<div id="quantization-canvas" style="width:620px;height:480px;">
+
+</div>
+<div class="slidecontainer">
+<input type="range" min="1" max="30" value="1" step="1" class="slider" id="quantization-slider">
+<p id="quantization-value">
+</p>
+</div>
+</center>
+<script type="text/javascript" src="./js/quantization.js"></script>
+<script>
+var quantization_slider = document.getElementById("quantization-slider");
+var quantization_value = document.getElementById("quantization-value");
+
+function redraw_quantized_signal() {
+  var data = getQuantizationExampleData();
+  var quant = quantization_slider.value * 1.0;
+  var quant_data = quantize(data, quant);
+
+  Plotly.newPlot('quantization-canvas', [{
+    name: 'Original',
+    y: data
+  }, {
+    name: 'Quantized',
+    y: quant_data
+  }], {
+    xaxis: {range: [0, data.length]},
+    yaxis: {range: [-35, 65]}
+  });
+
+  var entropy = shannon(quantize(getQuantizationExampleData(), quant));
+  quantization_value.innerHTML = `Step: ${quant.toFixed(1)}, entropy: ${entropy.toFixed(2)} bit`;
+}
+
+quantization_slider.oninput = function() {
+    redraw_quantized_signal();
+}
+
+document.addEventListener('quantization-shannon', function() {
+    redraw_quantized_signal();
+});
+</script>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/jpeg-compression.png" />
+</center>
+<p><span style="float:right">Van Gogh, <em>Campo di grano con volo di corvi</em> (1890)</span></p>
+</section>
 <section id="dictionary-compressors" class="slide level1">
 <h1><em>Dictionary compressors</em></h1>
 <ul>
 <li>Il teorema di Shannon fornisce un limite inferiore alla lunghezza di una serie compressa.</li>
-<li>Esso però vale nel caso di una successione <em>casuale</em> di simboli. I compressori per cui il teorema di Shannon sono detti <strong>compressori entropici</strong>, o <strong>statistici</strong>.</li>
+<li>Esso però vale nel caso di una successione <em>casuale</em> di simboli: l’ordine in cui i simboli compaiono non conta! I compressori per cui il teorema di Shannon sono detti <strong>compressori entropici</strong>, o <strong>statistici</strong>.</li>
 <li>I cosiddetti <em>dictionary compressors</em> cercano sequenze ripetute nella successione di simboli da comprimere.</li>
-<li>I <em>dictionary compressors</em> sono da sempre molto usati nei formati grafici (es. GIF, PNG).</li>
+<li>I <em>dictionary compressors</em> sono da sempre molto usati nei formati grafici.</li>
 </ul>
 </section>
 <section id="lempel-ziv-1977" class="slide level1">
@@ -615,15 +555,16 @@ S(\left\{x_i\right\}) \times N.
 <ul>
 <li><p>È un formato ideato da Microsoft per Windows e OS/2.</p></li>
 <li><p>Il formato originale non prevedeva la compressione dei dati, ma con gli anni Microsoft ha aggiunto il supporto per RLE e Huffman coding.</p></li>
-<li><p>Permette di salvare file con <em>palette</em>, se si desidera comprimere ulteriormente il file.</p></li>
-<li><p>Non è troppo difficile da scrivere, soprattutto se evitate di comprimere i dati.</p></li>
+<li><p>Non supportando algoritmi di compressione avanzati, i suoi file sono generalmente molto grandi. ☹️</p></li>
+<li><p>Permette di salvare file con <em>palette</em>, se si desidera comprimere ulteriormente il file. 😀</p></li>
+<li><p>Non è troppo difficile da scrivere, soprattutto se evitate di comprimere i dati. 😀</p></li>
 </ul>
 </section>
 <section id="il-formato-gif" class="slide level1">
 <h1>Il formato <a href="https://en.wikipedia.org/wiki/GIF">GIF</a></h1>
 <ul>
 <li><p>Usa la compressione LZW, che è una variante di LZ78: storicamente, è stato il primo formato di una certa diffusione a mostrare buoni livelli di compressione (1987).</p></li>
-<li><p>Permette solo di codificare immagini con <em>palette</em>, quindi è limitato a 256 colori.</p></li>
+<li><p>Supporta solo immagini con <em>palette</em>, quindi è limitato a 256 colori. ☹️</p></li>
 <li><p>A causa di problemi di brevetti legati alla compressione LZW (ora scaduti), nel 1995 è stato rilasciato il formato PNG, che usa un algoritmo di compressione (DEFLATE) basato su LZ77, all’epoca non gravato da brevetti.</p></li>
 <li><p>Oggi è usato esclusivamente per la sua capacità di salvare semplici animazioni.</p></li>
 </ul>
@@ -631,56 +572,49 @@ S(\left\{x_i\right\}) \times N.
 <section id="il-formato-png" class="slide level1">
 <h1>Il formato <a href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a></h1>
 <ul>
-<li><p>Supporta immagini con <em>palette</em> (come il GIF) ma anche immagini a 24 bit.</p></li>
-<li><p>Implementa una compressione più efficiente di GIF, ispirata all’algoritmo LZ77.</p></li>
+<li><p>Supporta immagini con <em>palette</em> (come il GIF), ma anche immagini a 24 bit e addirittura a 48 bit. 😀</p></li>
+<li><p>Implementa una compressione più efficiente di GIF, ispirata all’algoritmo LZ77. 😀</p></li>
 <li><p>Oggi è lo standard per le immagini su web, insieme al JPEG (v. in seguito).</p></li>
 </ul>
 </section>
-<section id="il-formato-jpeg" class="slide level1">
-<h1>Il formato JPEG</h1>
+<section id="il-formato-jfif" class="slide level1">
+<h1>Il formato <a href="https://en.wikipedia.org/wiki/JPEG_File_Interchange_Format">JFIF</a></h1>
 <ul>
-<li><p>È il formato più complesso tra quelli che vediamo oggi. Codifica i colori con 24 bit, ma internamente lavora nello spazio di colore Y C<sub>B</sub> C<sub>R</sub> anziché sRGB.</p></li>
-<li><p>Decompone l’immagine in blocchi di 8×8 pixel, che «linearizza» in un vettore monodimensionale di 64 elementi.</p></li>
-<li><p>Ad ogni componente di colore del vettore di 64 elementi è applicata la Discrete Cosine Transform (DCT)</p></li>
-<li><p>I coefficienti DCT sono quantizzati a un livello variabile; questa quantizzazione fa perdere informazione (algoritmo <strong>lossy</strong>), ed è il parametro <em>quality</em> (da 0 a 100).</p></li>
-<li><p>I coefficienti quantizzati sono compressi con Huffman o l’aritmetic coding.</p></li>
+<li><p>L’acronimo JFIF significa <em>JPEG File Interchange Format</em>.</p></li>
+<li><p>È il formato ogirinale usato per salvare dati compressi usando l’algoritmo JPEG, anche se oggi altri formati supportano la compressione JPEG.</p></li>
+<li><p>I file in formato JFIF hanno di solito estensione <code>.jpg</code> o <code>.jpeg</code>, anche se si possono trovare le estensioni <code>.jfif</code>, <code>.jfi</code> o <code>.jif</code>.</p></li>
+<li><p>Il formato prevede anche un <a href="https://en.wikipedia.org/wiki/Lossless_JPEG">metodo di compressione <strong>lossless</strong></a>, che è però poco usato.</p></li>
 </ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/jpeg-compression.png" />
-</center>
-<p><span style="float:right">Van Gogh, <em>Campo di grano con volo di corvi</em> (1890)</span></p>
-</section>
 <section id="il-formato-tiff" class="slide level1">
-<h1>Il formato TIFF</h1>
+<h1>Il formato <a href="https://en.wikipedia.org/wiki/TIFF">TIFF</a></h1>
 <ul>
 <li><p>Creato dalla Aldus Corporation per gestire le immagini salvate da scanner (1986), in seguito acquisito dalla Adobe.</p></li>
 <li><p>Il più versatile dei formati visti qui:</p>
 <ul>
-<li>Immagini multiple in uno stesso file;</li>
-<li>Diversi schemi di compressione, sia <strong>lossless</strong> che <strong>lossy</strong> (RLE, LZW, JPEG, etc.);</li>
-<li>Supporta sia immagini a 24 bit che immagini con <em>palette</em>;</li>
-<li>I colori possono essere memorizzati in vari spazi di colore, non solo sRGB.</li>
+<li>Immagini multiple in uno stesso file 😀;</li>
+<li>Diversi schemi di compressione, sia <strong>lossless</strong> che <strong>lossy</strong> (RLE, LZW, JPEG, etc.) 😀;</li>
+<li>Supporta sia immagini a 24/48 bit che immagini con <em>palette</em> 😀;</li>
+<li>I colori possono essere memorizzati in vari spazi di colore, non solo sRGB 😀.</li>
 </ul></li>
 <li><p>Molto diffuso nelle applicazioni (GIMP, Photoshop, etc.), non usato sul web.</p></li>
 </ul>
 </section>
 <section id="il-formato-webp" class="slide level1">
-<h1>Il formato WebP</h1>
+<h1>Il formato <a href="https://en.wikipedia.org/wiki/WebP">WebP</a></h1>
 <ul>
 <li><p>Creato da Google nel 2010.</p></li>
 <li><p>Usa più algoritmi di compressione (LZW, JPEG, Huffman, …); l’effetto complessivo è un algoritmo <strong>lossy</strong>.</p></li>
-<li><p>È il formato più efficiente tra quelli visti oggi.</p></li>
+<li><p>È il formato più efficiente tra quelli visti oggi: i suoi livelli di compressione sono eccellenti 😀.</p></li>
 <li><p>Supportato su tutti i browser tranne sotto il Mac OS X (il supporto è stato aggiunto solo nel 2020 con Big Sur).</p></li>
 </ul>
 </section>
-<section class="slide level1">
-
+<section id="confronto-dei-formati" class="slide level1">
+<h1>Confronto dei formati</h1>
 <center>
 <img data-src="./media/crows-in-wheat-field-size.svg" />
 </center>
+<p>Dimensioni dei file contenenti l’immagine di «<em>Campo di grano con volo di corvi</em>».</p>
 </section>
 <section id="approfondimento-manipolare-i-bit" class="slide level1">
 <h1>Approfondimento: manipolare i bit</h1>
@@ -919,6 +853,7 @@ Result for &#39;aacacaabacbaaac&#39;: [0.3099554, 0.3099563]</code></pre></li>
       });
     </script>
     <script src="js/asciinema-player.js"></script>
-    <script src="js/quantization.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
     </body>
 </html>
