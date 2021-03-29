@@ -17,6 +17,68 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
@@ -48,6 +110,42 @@
   <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
+<section id="quantization" class="slide level1" data-state="quantization-shannon">
+<h1 data-state="quantization-shannon">Quantization</h1>
+<center>
+<canvas id="quantization-canvas" width="300px" height="300px">
+</canvas>
+<div class="slidecontainer">
+<input type="range" min="0.1" max="10.0" value="0.1" step="0.1" class="slider" id="quantization-slider">
+<p id="quantization-value">
+</p>
+</div>
+</center>
+<script>
+var quantization_slider = document.getElementById("quantization-slider");
+var quantization_value = document.getElementById("quantization-value");
+quantization_value.innerHTML = quantization_slider.value;
+
+function redraw_quantized_signal() {
+}
+
+function refresh_quantization_value() {
+    var quant = quantization_slider.value * 1.0;
+    quantization_value.innerHTML = `Step: quant.toFixed(1)`;
+    redraw_quantized_signal();
+}
+
+quantization_slider.oninput = function() {
+    refresh_quantization_value();
+}
+
+document.addEventListener('quantization-shannon', function() {
+    var canvas = document.getElementById("quantization-canvas");
+    
+    refresh_quantization_value();
+});
+</script>
+</section>
 <section id="tone-mapping" class="slide level1">
 <h1>Tone mapping</h1>
 </section>
@@ -157,7 +255,7 @@ R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
 <section id="uso-del-tone-mapping" class="slide level1">
 <h1>Uso del tone mapping</h1>
 <figure>
-<img data-src="plots/1097935430848946603.png" />
+<img data-src="plots/1585430488454273577.png" />
 </figure>
 </section>
 <section id="formati-grafici-e-compressione" class="slide level1">
@@ -174,17 +272,33 @@ R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
 <h1>Differenze tra formati</h1>
 <dl>
 <dt>Versatilità</dt>
-<dd>Alcuni formati supportano solo colori codificati come terne (R, G, B) di 8×3 bytes, altri ammettono più possibilità Metadati
+<dd>Alcuni formati supportano solo colori codificati come terne (R, G, B) di 8×3=24 bit, altri ammettono più possibilità (es. 16×3=48 bit).
 </dd>
-<dd>Alcuni formati consentono di associare più metadati all’immagine, altri sono più rigidi. Facilità di lettura/scrittura
+<dt>Metadati</dt>
+<dd>Alcuni formati consentono di memorizzare metadati a piacere.
 </dd>
-<dd>Ci sono formati molto semplici da scrivere (come PNM), altri notevolmente più complessi (JPEG). Compressione
+<dt>Facilità di lettura/scrittura</dt>
+<dd>Alcuni sono semplici da scrivere (<a href="https://en.wikipedia.org/wiki/Netpbm">PNM</a>), altri molto più complessi (JPEG).
 </dd>
-<dd>Formati diversi implementano metodi per comprimere i dati e ridurre lo spazio su disco.
+<dt>Compressione</dt>
+<dd>Molti formati comprimono i dati per ridurre lo spazio su disco. Se la compressione preserva l’informazione è detta <strong>lossless</strong>, altrimenti <strong>lossy</strong>.
 </dd>
 </dl>
 </section>
 <section id="compressione-dati" class="slide level1">
+<h1>Compressione dati</h1>
+<ul>
+<li><p>La compressione dei dati è un argomento molto importante non solo nel campo della grafica, ma anche in fisica computazionale.</p></li>
+<li><p>Le simulazioni e gli esperimenti del XXI secolo richiedono di registrare quantità di dati sempre più grandi. Esempio nell’ambito della CMB:</p>
+<ul>
+<li>Nel periodo 1989–1993, l’esperimento COBE/DMR ha acquisito &lt;8 GB;</li>
+<li>Nel periodo 2001–2010, l’esperimento WMAP ha acquisito 200 GB;</li>
+<li>Nel periodo 2009–2013, l’esperimento Planck ha acquisito 30 TB.</li>
+</ul>
+<p>Grandi moli di dati sono comuni anche in altri domini della fisica (particelle, climatologia, etc.): apprendere i principi della compressione dati è estremamente utile!</p></li>
+</ul>
+</section>
+<section id="compressione-dati-1" class="slide level1">
 <h1>Compressione dati</h1>
 <ul>
 <li><p>Uno schermo di computer ha solitamente una risoluzione di 1920×1080 pixel.</p></li>
@@ -194,121 +308,578 @@ R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
 <li><p>Nelle immagini c’è solitamente molta informazione ridondante che può essere eliminata.</p></li>
 </ul>
 </section>
-<section id="compressione-dati-1" class="slide level1">
-<h1>Compressione dati</h1>
+<section id="palette-di-colori" class="slide level1">
+<h1><em>Palette</em> di colori</h1>
 <ul>
-<li><p>La compressione dei dati è un argomento molto importante in fisica computazionale.</p></li>
-<li><p>Le simulazioni e gli esperimenti del XXI secolo richiedono di registrare quantità di dati sempre più grandi. Nell’ambito della cosmologia della CMB, bastano questi dati:</p>
-<ul>
-<li>Nel periodo 1989–1993, l’esperimento spaziale COBE/DMR ha registrato meno di 8 GB di dati;</li>
-<li>Nel periodo 2001–2010, l’esperimento WMAP ha registrato 200 GB di dati;</li>
-<li>Nel periodo 2009–2013, l’esperimento Planck ha registrato 30 TB (30,000 GB) di dati.</li>
-</ul>
-<p>Grandi moli di dati sono comuni anche in altri domini della fisica (particelle, climatologia, etc.): apprendere i principi della compressione dati è estremamente utile!</p></li>
-<li><p>Vediamo quindi nel dettaglio alcuni algoritmi di compressione usati nei file grafici.</p></li>
+<li><p>Alcuni formati «storici» comprimono l’informazione limitando il numero di colori disponibili in un’immagine. Questo era giustificato dal limitato numero di colori supportato da certe vecchie schede grafiche.</p></li>
+<li><p>Un esempio è il formato GIF: esso richiede che all’inizio del file vengano elencati i colori usati dall’immagine come terne sRGB in una lista di 256 elementi.</p></li>
+<li><p>La matrice che rappresenta l’immagine contiene <strong>un solo byte</strong> per pixel: è il valore che «punta» al colore sRGB della <em>palette</em>. In questo modo si comprime di un fattore <span class="math inline">\lesssim 3</span>.</p></li>
+<li><p>Salvare un file usando una <em>palette</em> è un metodo <strong>lossy</strong>.</p></li>
 </ul>
 </section>
+<section id="esempio-di-palette" class="slide level1">
+<h1>Esempio di palette</h1>
+<center>
+<img data-src="./media/palette.svg" />
+</center>
+<p>Usare una <em>palette</em> è un primo passo per comprimere, ma oggi si può fare <strong>molto</strong> meglio senza necessariamente restringersi a 256 colori!</p>
+</section>
+<section id="il-problema-della-compressione" class="slide level1">
+<h1>Il problema della compressione</h1>
+<ul>
+<li><p>Usiamo come esempio la seguente sequenza:</p>
+<center>
+<p><img data-src="./media/sequence-to-compress.svg" /></p>
+</center></li>
+<li><p>Potete pensarla come una sequenza di caratteri ASCII, oppure dei valori numerici indicati da lettere (<span class="math inline">a, b, c, \ldots</span>) che rappresentano componenti sRGB.</p></li>
+<li><p>In gergo, <span class="math inline">a</span>, <span class="math inline">b</span> e <span class="math inline">c</span> sono detti <em>simboli</em>.</p></li>
+</ul>
+</section>
+<section id="run-length-encoding" class="slide level1">
+<h1>Run-Length Encoding</h1>
+<ul>
+<li><p>Un tipo di compressione molto usato in passato è la <em>Run-Length Encoding</em>.</p></li>
+<li><p>Invece di trasmettere la sequenza di valori, si trasmette un valore seguito dal numero di volte per cui deve essere ripetuto</p>
+<center>
+<p><img data-src="./media/rle.svg" /></p>
+</center></li>
+<li><p>È una compressione <strong>lossless</strong>: non si perde informazione.</p></li>
+<li><p>Per questa sequenza, non c’è però guadagno: la versione compressa è lunga 22 byte (11 coppie valore/conteggio) anziché 15!</p></li>
+</ul>
+</section>
+<section id="ottimizzazione-dei-bit" class="slide level1">
+<h1>Ottimizzazione dei bit</h1>
+<ul>
+<li><p>Potremmo ottenere un risultato migliore se usassimo meno di 8 bit per il numero di ripetizioni.</p></li>
+<li><p>Ovviamente, usando <span class="math inline">n</span> bit non potremmo codificare più di <span class="math inline">2^n</span> ripetizioni (suggerimento: il valore <code>0b000</code> può codificare 1 anziché 0…).</p></li>
+<li><p>Il codice si complicherebbe, perché nel salvare i dati in uno stream di bytes dovremo «decompattare» e «ricompattare» bit; però non è impossibile (vedi le slide opzionali alla fine).</p></li>
+</ul>
+</section>
+<section id="ottimizzazione-dei-bit-1" class="slide level1">
+<h1>Ottimizzazione dei bit</h1>
+<ul>
+<li><p>Nel nostro esempio di prima, usando <span class="math inline">n = 2</span> avremmo ancora 11 coppie (il numero massimo di ripetizioni è <span class="math inline">3 &lt; 2^2 = 4</span>), ma i bit richiesti sarebbero <span class="math inline">(8 + 2) \times 11 = 110</span>, corrispondenti a 14 byte:</p>
+<center>
+<p><img data-src="./media/rle-optimized.svg" /></p>
+</center></li>
+<li><p>Anche con questo accorgimento, la compressione resta <strong>lossless</strong>.</p></li>
+</ul>
+</section>
+<section id="maniac-mansion-pc-1989" class="slide level1">
+<h1>Maniac mansion PC (1989)</h1>
+<center>
+<img data-src="./media/maniac-mansion.png" height="560" />
+</center>
+</section>
+<section id="ottimizzare-i-simboli" class="slide level1">
+<h1>Ottimizzare i simboli</h1>
+<ul>
+<li><p>Potremmo ottimizzare anche i bit usati per i <em>simboli</em>.</p></li>
+<li><p>Nel nostro esempio, i simboli che ricorrono sono appena 3: <span class="math inline">a</span>, <span class="math inline">b</span> e <span class="math inline">c</span>. Il numero di bit necessario a codificare <span class="math inline">N = 3</span> simboli è <span class="math inline">\lceil\log_2 N\rceil = 2</span>.</p></li>
+<li><p>Potremmo associare una sequenza di bit univoca a ciascuno dei tre simboli:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Simbolo</th>
+<th>Sequenza</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">a</span></td>
+<td>00</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">b</span></td>
+<td>01</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">c</span></td>
+<td>10</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+</section>
+<section id="ottimizzare-i-simboli-1" class="slide level1">
+<h1>Ottimizzare i simboli</h1>
+<ul>
+<li><p>La sequenza da cui siamo partiti</p>
+<center>
+<p><img data-src="./media/sequence-to-compress.svg" /></p>
+</center>
+<p>verrebbe quindi compressa nella sequenza di bit</p>
+<pre class="text"><code>a  a  c  a  c  a  a  b  a  c  b  a  a  a  c
+00 00 10 00 10 00 00 01 00 10 01 00 00 00 10
+
+0b00001000 0b10000001 0b00100100 0b000010xx     (4 byte)</code></pre></li>
+<li><p>Siccome ogni simbolo occupa 2 bit, il numero totale di bit è <span class="math inline">2 \times 15 = 30</span>, che richiede 4 byte per essere memorizzato: niente male!</p></li>
+</ul>
+</section>
+<section id="metadati" class="slide level1">
+<h1>Metadati</h1>
+<ul>
+<li><p>Abbiamo un po’ barato: nell’esempio precedente non sono sufficienti i 30 bit che abbiamo prodotto, se non sappiamo le corrispondenze con <span class="math inline">a</span>, <span class="math inline">b</span> e <span class="math inline">c</span>.</p></li>
+<li><p>Perché la sequenza si possa decomprimere, dobbiamo codificare anche la tabella delle corrispondenze. È sufficiente trasmettere il numero di simboli e la loro lista per ricostruire la tabella:</p>
+<pre><code>3 &#39;a&#39; &#39;b&#39; &#39;c&#39; 0b00001000 0b10000001 0b00100100 0b000010xx</code></pre>
+<p>per un totale di 8 byte, comunque ancora vantaggioso.</p></li>
+<li><p>Ovviamente la compressione resta <strong>lossless</strong>.</p></li>
+</ul>
+</section>
+<section id="codifica-di-huffman" class="slide level1">
+<h1>Codifica di Huffman</h1>
+<ul>
+<li><p>Esiste un algoritmo, la <em>codifica di Huffman</em>, che permette di ridurre ulteriormente il numero di bit richieste rispetto al caso precedente.</p></li>
+<li><p>Si basa sull’idea che i simboli dovrebbero essere codificati da un numero <em>variabile</em> di bit, e che i simboli più frequenti dovrebbero usare meno bit.</p></li>
+</ul>
+<center>
+<img data-src="./media/sequence-to-compress-with-counts.svg" />
+</center>
+</section>
+<section id="codifica-di-huffman-1" class="slide level1">
+<h1>Codifica di Huffman</h1>
+<ul>
+<li><p>Usando l’idea di Huffman, potremmo costruire questa tabella:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Simbolo</th>
+<th>Sequenza</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">a</span></td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">b</span></td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">c</span></td>
+<td>11</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>Questo ci consente di risparmiare un byte!</p>
+<pre class="text"><code>a a c  a c  a a b  a c  b  a a a c
+0 0 11 0 11 0 0 10 0 11 10 0 0 0 11
+
+0b00110110 0b01001110 0b00011xxx     (3 byte)</code></pre></li>
+</ul>
+</section>
+<section id="entropia-di-shannon" class="slide level1">
+<h1>Entropia di Shannon</h1>
+<ul>
+<li><p>Il teorema di <a href="https://en.wikipedia.org/wiki/Claude_Shannon">Shannon</a> (1916–2001) ci permette di chiarire meglio il risultato.</p></li>
+<li><p>Per enunciare il teorema dobbiamo prima introdurre l’<em>entropia di Shannon</em>, che è uno scalare <span class="math inline">S</span> associato a una sequenza di <span class="math inline">N</span> simboli <span class="math inline">\left\{x_i\right\}</span>:</p>
+<p><span class="math display">
+S(\left\{x_i\right\}) = -\sum_i p_i\,\log_2 p_i,
+</span></p>
+<p>dove la somma è sul numero totale di simboli (3 nel nostro caso: <span class="math inline">a</span>, <span class="math inline">b</span> e <span class="math inline">c</span>), e <span class="math inline">p_i</span> è la probabilità dell’<span class="math inline">i</span>-esimo simbolo.</p></li>
+<li><p>Per convenzione, se <span class="math inline">p_i = 0</span> si pone <span class="math inline">p_i\,\log_2 p_i = 0</span>).</p></li>
+</ul>
+</section>
+<section id="esempi-di-entropia-13" class="slide level1">
+<h1>Esempi di entropia (1/3)</h1>
+<p>Partiamo da una sequenza dove <span class="math inline">a</span> e <span class="math inline">b</span> compaiono un numero uguale di volte:</p>
+<p><span class="math display">
+a, b, a, b, a, b, a, b, \ldots
+</span></p>
+<p>Allora <span class="math inline">p_a = p_b = \frac12</span> e</p>
+<p><span class="math display">
+S = -\left(\frac12\log_2\frac12\right) - \left(\frac12\log_2\frac12\right) = 1.
+</span></p>
+</section>
+<section id="esempi-di-entropia-23" class="slide level1">
+<h1>Esempi di entropia (2/3)</h1>
+<p>Se abbiamo una sequenza con tre simboli <span class="math inline">a</span>, <span class="math inline">b</span> e <span class="math inline">c</span> con probabilità <span class="math inline">1/2, 1/4, 1/4</span>:</p>
+<p><span class="math display">
+a, a, b, c, a, a, b, c, a, a, b, c, \ldots
+</span></p>
+<p>allora</p>
+<p><span class="math display">
+S = -\left(\frac12\log_2\frac12\right)
+- \left(\frac14\log_2\frac14\right)
+- \left(\frac14\log_2\frac14\right) = \frac32.
+</span></p>
+</section>
+<section id="esempi-di-entropia-33" class="slide level1">
+<h1>Esempi di entropia (3/3)</h1>
+<p>Per la nostra sequenza <code>aacac…</code> si ha che</p>
+<p><span class="math display">
+S = -\left(\frac9{15}\,\log_2\frac9{15}\right)
+- \left(\frac2{15}\,\log_2\frac2{15}\right)
+- \left(\frac4{15}\,\log_4\frac2{15}\right) \approx 1.34.
+</span></p>
+</section>
+<section id="teorema-di-shannon" class="slide level1">
+<h1>Teorema di Shannon</h1>
+<ul>
+<li><p>Il teorema di Shannon fissa il limite inferiore al livello di compressione ottenibile per una sequenza di valori <strong>casuali</strong> con probabilità nota.</p></li>
+<li><p>Esso dice che il numero minimo di bit necessari alla codifica di una sequenza di <span class="math inline">N</span> simboli <span class="math inline">x_n</span> è uguale a</p>
+<p><span class="math display">
+S(\left\{x_i\right\}) \times N.
+</span></p>
+<p>In altre parole, un compressore deve sempre usare almeno <span class="math inline">S</span> bit per simbolo.</p></li>
+<li><p>Nella nostra sequenza <code>aacac…</code>, il numero minimo <em>teorico</em> di bit necessario è <span class="math inline">1.34 \times 15 \approx 20</span> (un po’ meno di 3 byte): Huffman quindi in questo caso non riesce a raggiungere il limite teorico.</p></li>
+</ul>
+</section>
+<section id="codifica-aritmetica" class="slide level1">
+<h1>Codifica aritmetica</h1>
+<ul>
+<li><p>La codifica aritmetica è un approccio alternativo a quello di Huffman.</p></li>
+<li><p>Si distingue per <em>tendere asintoticamente al limite di Shannon</em>, in qualsiasi caso! («Asintoticamente» nel senso che lo fa se la sequenza di simboli ha lunghezza infinita).</p></li>
+<li><p>Invece di codificare ogni simbolo separatamente, li codifica tutti insieme in un unico numero binario: in questo modo è come se impiegasse per ogni simbolo un numero possibilmente frazionario di bit, che è pari a <span class="math inline">S</span> se <span class="math inline">N \rightarrow \infty</span>.</p></li>
+</ul>
+</section>
+<section id="algoritmo" class="slide level1">
+<h1>Algoritmo</h1>
+<ul>
+<li><p>Si divide l’intervallo <span class="math inline">[0, 1]</span> in tanti intervalli quanti sono i simboli.</p></li>
+<li><p>Ogni intervallo deve essere lungo tanto quanto la probabilità del simbolo:</p>
+<center>
+<p><img data-src="./media/arithmetic-coding-intervals.svg" /></p>
+</center></li>
+<li><p>Considerando la sequenza <span class="math inline">\{x_n\}</span> dei simboli da codificare, ad ogni simbolo da codificare si fa corrispondere l’intervallo corrispondente, che viene a sua volta suddiviso in sotto-intervalli come sopra.</p></li>
+<li><p>All’intera sequenza si associa quindi un intervallo <span class="math inline">[\alpha, \beta]</span>, con <span class="math inline">0 &lt; \alpha &lt; \beta &lt; 1</span>.</p></li>
+</ul>
+</section>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/astro_maurizio_1_PkZIP-13.png" />
+<img data-src="./media/arithmetic-coding-animation.gif" />
 </center>
 </section>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/astro_maurizio_1_PkZIP-14.png" />
+<img data-src="./media/arithmetic-coding.svg" />
 </center>
+</section>
+<section id="uso-della-codifica-aritmetica" class="slide level1">
+<h1>Uso della codifica aritmetica</h1>
+<ul>
+<li>Una volta codificata la sequenza in un intervallo <span class="math inline">[\alpha, \beta]</span>, questo intervallo è identificato <em>univocamente</em> da qualsiasi numero <span class="math inline">\xi \in [\alpha, \beta]</span>.</li>
+<li>Quindi una sequenza di lunghezza nota è associabile a un numero reale <span class="math inline">\xi</span>.</li>
+<li>Si dimostra che il numero di bit necessario per codificare questo numero <span class="math inline">\xi</span>, se opportunamente scelto, tende a <span class="math inline">S \times N</span> quando <span class="math inline">N \rightarrow \infty</span>.</li>
+<li>Trasmettere il numero <span class="math inline">\xi</span> equivale a trasmettere quindi l’intero messaggio, ma la codifica è ottimale.</li>
+<li>Oggi alla codifica aritmetica si preferiscono metodi basati sugli <a href="https://en.wikipedia.org/wiki/Asymmetric_numeral_systems">asymmetric numeral systems</a> (Duda, 2014), che hanno le stesse capacità di compressione ma garantiscono esecuzioni più veloci (v. <a href="https://en.wikipedia.org/wiki/Zstandard">Zstandard</a>).</li>
+</ul>
+</section>
+<section id="dictionary-compressors" class="slide level1">
+<h1><em>Dictionary compressors</em></h1>
+<ul>
+<li>Il teorema di Shannon fornisce un limite inferiore alla lunghezza di una serie compressa.</li>
+<li>Esso però vale nel caso di una successione <em>casuale</em> di simboli. I compressori per cui il teorema di Shannon sono detti <strong>compressori entropici</strong>, o <strong>statistici</strong>.</li>
+<li>I cosiddetti <em>dictionary compressors</em> cercano sequenze ripetute nella successione di simboli da comprimere.</li>
+<li>I <em>dictionary compressors</em> sono da sempre molto usati nei formati grafici (es. GIF, PNG).</li>
+</ul>
+</section>
+<section id="lempel-ziv-1977" class="slide level1">
+<h1>Lempel-Ziv (1977)</h1>
+<ul>
+<li><p>Nel 1977, Abraham Lempel and Jacob Ziv proposero un algoritmo di compressione che è stato poi impiegato in molti formati grafici, da allora chiamato LZ77.</p></li>
+<li><p>Esso sostituisce sequenze di dati con riferimenti a parti precedenti.</p></li>
+<li><p>La sequenza di simboli è codificata in una sequenza di terne (<em>δ</em>, <em>L</em>, <em>s</em>), dove <em>δ</em> è un indice che dice di quanti simboli retrocedere, <em>L</em> è il numero di simboli da considerare, e <em>s</em> è il nuovo simbolo da aggiungere in coda.</p></li>
+<li><p>L’algoritmo fissa un limite al numero di simboli da cercare a ritroso (che vanno tenuti in memoria): questo segmento è detto <em>window</em>.</p></li>
+</ul>
 </section>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/astro_maurizio_1_PkZIP-15.png" />
+<img data-src="./media/LZ77.svg" />
 </center>
+</section>
+<section id="lempel-ziv-1978" class="slide level1">
+<h1>Lempel-Ziv (1978)</h1>
+<ul>
+<li><p>LZ77 ha lo svantaggio di richiedere di fissare una lunghezza della <em>window</em>: dimensioni diverse possono portare a performance differenti.</p></li>
+<li><p>L’anno successivo (1978), Lempel &amp; Ziv pubblicarono un nuovo articolo in cui descrivevano un nuovo algoritmo che non aveva questo grado di libertà.</p></li>
+<li><p>Il nuovo algoritmo, chiamato LZ78, si basa su un «dizionario» di sequenze già codificate, che possono essere richiamate quando si trovano loro ripetizioni.</p></li>
+<li><p>La sequenza compressa è formata da una lista di coppie (<em>k</em>, <em>s</em>), dove <em>k</em> fa riferimento a un elemento del dizionario oppure è 0 se non esistono corrispondenze, e <em>s</em> è il nuovo simbolo da mettere in coda.</p></li>
+</ul>
 </section>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/astro_maurizio_1_PkZIP-16.png" />
+<img data-src="./media/LZ78.svg" />
 </center>
+</section>
+<section id="i-formati-grafici-più-diffusi" class="slide level1">
+<h1>I formati grafici più diffusi</h1>
+</section>
+<section id="il-formato-bmp" class="slide level1">
+<h1>Il formato <a href="https://en.wikipedia.org/wiki/BMP_file_format#:~:text=The%20BMP%20file%20format%2C%20also,and%20OS%2F2%20operating%20systems.">BMP</a></h1>
+<ul>
+<li><p>È un formato ideato da Microsoft per Windows e OS/2.</p></li>
+<li><p>Il formato originale non prevedeva la compressione dei dati, ma con gli anni Microsoft ha aggiunto il supporto per RLE e Huffman coding.</p></li>
+<li><p>Permette di salvare file con <em>palette</em>, se si desidera comprimere ulteriormente il file.</p></li>
+<li><p>Non è troppo difficile da scrivere, soprattutto se evitate di comprimere i dati.</p></li>
+</ul>
+</section>
+<section id="il-formato-gif" class="slide level1">
+<h1>Il formato <a href="https://en.wikipedia.org/wiki/GIF">GIF</a></h1>
+<ul>
+<li><p>Usa la compressione LZW, che è una variante di LZ78: storicamente, è stato il primo formato di una certa diffusione a mostrare buoni livelli di compressione (1987).</p></li>
+<li><p>Permette solo di codificare immagini con <em>palette</em>, quindi è limitato a 256 colori.</p></li>
+<li><p>A causa di problemi di brevetti legati alla compressione LZW (ora scaduti), nel 1995 è stato rilasciato il formato PNG, che usa un algoritmo di compressione (DEFLATE) basato su LZ77, all’epoca non gravato da brevetti.</p></li>
+<li><p>Oggi è usato esclusivamente per la sua capacità di salvare semplici animazioni.</p></li>
+</ul>
+</section>
+<section id="il-formato-png" class="slide level1">
+<h1>Il formato <a href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG</a></h1>
+<ul>
+<li><p>Supporta immagini con <em>palette</em> (come il GIF) ma anche immagini a 24 bit.</p></li>
+<li><p>Implementa una compressione più efficiente di GIF, ispirata all’algoritmo LZ77.</p></li>
+<li><p>Oggi è lo standard per le immagini su web, insieme al JPEG (v. in seguito).</p></li>
+</ul>
+</section>
+<section id="il-formato-jpeg" class="slide level1">
+<h1>Il formato JPEG</h1>
+<ul>
+<li><p>È il formato più complesso tra quelli che vediamo oggi. Codifica i colori con 24 bit, ma internamente lavora nello spazio di colore Y C<sub>B</sub> C<sub>R</sub> anziché sRGB.</p></li>
+<li><p>Decompone l’immagine in blocchi di 8×8 pixel, che «linearizza» in un vettore monodimensionale di 64 elementi.</p></li>
+<li><p>Ad ogni componente di colore del vettore di 64 elementi è applicata la Discrete Cosine Transform (DCT)</p></li>
+<li><p>I coefficienti DCT sono quantizzati a un livello variabile; questa quantizzazione fa perdere informazione (algoritmo <strong>lossy</strong>), ed è il parametro <em>quality</em> (da 0 a 100).</p></li>
+<li><p>I coefficienti quantizzati sono compressi con Huffman o l’aritmetic coding.</p></li>
+</ul>
 </section>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/astro_maurizio_1_PkZIP-17.png" />
+<img data-src="./media/jpeg-compression.png" />
 </center>
+<p><span style="float:right">Van Gogh, <em>Campo di grano con volo di corvi</em> (1890)</span></p>
+</section>
+<section id="il-formato-tiff" class="slide level1">
+<h1>Il formato TIFF</h1>
+<ul>
+<li><p>Creato dalla Aldus Corporation per gestire le immagini salvate da scanner (1986), in seguito acquisito dalla Adobe.</p></li>
+<li><p>Il più versatile dei formati visti qui:</p>
+<ul>
+<li>Immagini multiple in uno stesso file;</li>
+<li>Diversi schemi di compressione, sia <strong>lossless</strong> che <strong>lossy</strong> (RLE, LZW, JPEG, etc.);</li>
+<li>Supporta sia immagini a 24 bit che immagini con <em>palette</em>;</li>
+<li>I colori possono essere memorizzati in vari spazi di colore, non solo sRGB.</li>
+</ul></li>
+<li><p>Molto diffuso nelle applicazioni (GIMP, Photoshop, etc.), non usato sul web.</p></li>
+</ul>
+</section>
+<section id="il-formato-webp" class="slide level1">
+<h1>Il formato WebP</h1>
+<ul>
+<li><p>Creato da Google nel 2010.</p></li>
+<li><p>Usa più algoritmi di compressione (LZW, JPEG, Huffman, …); l’effetto complessivo è un algoritmo <strong>lossy</strong>.</p></li>
+<li><p>È il formato più efficiente tra quelli visti oggi.</p></li>
+<li><p>Supportato su tutti i browser tranne sotto il Mac OS X (il supporto è stato aggiunto solo nel 2020 con Big Sur).</p></li>
+</ul>
 </section>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/astro_maurizio_1_PkZIP-18.png" />
+<img data-src="./media/crows-in-wheat-field-size.svg" />
 </center>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-19.png" />
-</center>
+<section id="approfondimento-manipolare-i-bit" class="slide level1">
+<h1>Approfondimento: manipolare i bit</h1>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-20.png" />
-</center>
+<section id="dai-byte-ai-bit" class="slide level1">
+<h1>Dai <em>byte</em> ai <em>bit</em></h1>
+<ul>
+<li><p>Gli algoritmi di compressione solitamente si basano sulla rappresentazione in bit dei numeri interi (in tipi come quelli del C++: <code>int</code>, <code>uint8_t</code>, <code>uint32_t</code>, etc.)</p></li>
+<li><p>Abbiamo già visto di sfuggita l’importanza di esplorare i bit all’interno dei byte quando abbiamo descritto il formato <a href="./tomasi-ray-tracing-03a-images.html#/codifica-utf-8">UTF-8</a>.</p></li>
+<li><p>Vi lascio come riferimento una serie di slide che mostrano come manipolare i singoli bit all’interno di un byte; non ci serviranno però durante le esercitazioni.</p></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-21.png" />
-</center>
+<section id="operazioni-sui-bit-in-c-12" class="slide level1">
+<h1>Operazioni sui bit in C++ (1/2)</h1>
+<ul>
+<li><p>Le due operazioni <code>&lt;&lt;</code> e <code>&gt;&gt;</code> sono dette <em>bit shift operators</em>, e traslano i bit verso destra o sinistra (sono infatti indicate con (<code>shl</code> e <code>shr</code> in Pascal), eliminando quelli alle estremità:</p>
+<pre><code>0b00101110 &gt;&gt; 1 = 0b00010111         0b00101110 &lt;&lt; 1 = 0b01011100
+0b00101110 &gt;&gt; 2 = 0b00001011         0b00101110 &lt;&lt; 2 = 0b10111000
+0b00101110 &gt;&gt; 3 = 0b00000101         0b00101110 &lt;&lt; 3 = 0b01110000
+0b00101110 &gt;&gt; 4 = 0b00000010         0b00101110 &lt;&lt; 4 = 0b11100000</code></pre></li>
+<li><p>L’operazione <code>x &lt;&lt; 1</code> equivale a un prodotto per due, proprio come l’aggiunta di uno zero in fondo a un numero decimale equivale al prodotto per dieci (13 → 130).</p></li>
+<li><p>In generale, <code>x &lt;&lt; n</code> è matematicamente uguale a <span class="math inline">2^n \times x</span>, e <code>x &gt;&gt; n</code> è uguale a <span class="math inline">\lfloor 2^{-n} \times x\rfloor</span>.</p></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-22.png" />
-</center>
+<section id="operazioni-sui-bit-in-c-22" class="slide level1">
+<h1>Operazioni sui bit in C++ (2/2)</h1>
+<ul>
+<li><p>Il C++ implementa gli operatori <em>logici</em> <code>&amp;&amp;</code> (<em>and</em>), <code>||</code> (<em>or</em>) e <code>^^</code> (<em>xor</em>):</p>
+<pre><code>true  &amp;&amp; true  == true     true  || true  == true     true  ^^ true  == false
+true  &amp;&amp; false == false    true  || false == true     true  ^^ false == true
+false &amp;&amp; true  == false    false || true  == true     false ^^ true  == true
+false &amp;&amp; false == false    false || false == false    false ^^ false == false</code></pre></li>
+<li><p>Le operazioni <code>&amp;</code>, <code>|</code> e <code>^</code> corrispondono all’<em>and</em>, <em>or</em> e <em>xor</em> logici <code>&amp;&amp;</code>, <code>||</code>, <code>^^</code>, ma sono fatte sui bit:</p>
+<pre><code>0b00011001 &amp;               0b00011001 |               0b00011001 ^
+0b10010101 =               0b10010101 =               0b10010101 =
+----------                 ----------                 ----------
+0b00010001                 0b10011101                 0b10001100</code></pre></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-23.png" />
-</center>
+<section id="write_float" class="slide level1">
+<h1><code>write_float</code></h1>
+<p>Due settimane fa avevo fornito questo codice C++ per estrarre i quattro byte di cui è composta la variabile <code>uint32_t double_word</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// To interpret this code, you must remember that:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">// -   uint32_t double_word is made by 8×4 = 32 bit</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">// -   0xFF is the uint32_t number</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">//</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">//     0b0000_0000_0000_0000_0000_0000_1111_1111</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Extract the four bytes in &quot;double_word&quot; using bit-level operators</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> bytes[] = {</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">static_cast</span>&lt;<span class="dt">uint8_t</span>&gt;(double_word &amp; <span class="bn">0xFF</span>),         <span class="co">// Least significant byte</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">static_cast</span>&lt;<span class="dt">uint8_t</span>&gt;((double_word &gt;&gt; <span class="dv">8</span>) &amp; <span class="bn">0xFF</span>),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">static_cast</span>&lt;<span class="dt">uint8_t</span>&gt;((double_word &gt;&gt; <span class="dv">16</span>) &amp; <span class="bn">0xFF</span>),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">static_cast</span>&lt;<span class="dt">uint8_t</span>&gt;((double_word &gt;&gt; <span class="dv">24</span>) &amp; <span class="bn">0xFF</span>), <span class="co">// Most significant byte</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>};</span></code></pre></div>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-24.png" />
-</center>
+<section id="applicazione-bitwriter" class="slide level1">
+<h1>Applicazione: <code>BitWriter</code></h1>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BitWriter:</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;Write a sequence of bits into several 8-bit bytes&quot;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.seq_of_bytes <span class="op">=</span> []</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bits_written <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.cur_byte <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> push(<span class="va">self</span>, value):</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.cur_byte <span class="op">=</span> (<span class="va">self</span>.cur_byte <span class="op">&lt;&lt;</span> <span class="dv">1</span>) <span class="op">+</span> value</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bits_written <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.bits_written <span class="op">==</span> <span class="dv">8</span>:</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.seq_of_bytes.append(<span class="va">self</span>.cur_byte)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.bits_written <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.cur_byte <span class="op">=</span> <span class="dv">0</span></span></code></pre></div>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-25.png" />
-</center>
+<section id="esempio-di-bitwriter" class="slide level1">
+<h1>Esempio di <code>BitWriter</code></h1>
+<ul>
+<li><p>Questo codice usa <code>BitWriter</code> per scrivere una sequenza di 16 cifre binarie (0/1) in <code>output_stream</code>, e poi stampa i due byte che le contengono.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>output_stream <span class="op">=</span> BitWriter()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> <span class="st">&quot;1100 1001 0100 1101&quot;</span>.replace(<span class="st">&quot; &quot;</span>, <span class="st">&quot;&quot;</span>):</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    output_stream.push(<span class="bu">int</span>(value))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Sequence of bytes produced by BitWriter:&quot;</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, value <span class="kw">in</span> <span class="bu">enumerate</span>(output_stream.seq_of_bytes):</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Byte #</span><span class="sc">{0}</span><span class="st">: </span><span class="sc">{1:3d}</span><span class="st"> (0b</span><span class="sc">{1:08b}</span><span class="st">, 0x</span><span class="sc">{1:02x}</span><span class="st">)&quot;</span>.<span class="bu">format</span>(idx, value))</span></code></pre></div></li>
+<li><p>Output:</p>
+<pre class="text"><code>Sequence of bytes produced by BitWriter:
+Byte #0: 201 (0b11001001, 0xc9)
+Byte #1:  77 (0b01001101, 0x4d)</code></pre></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-26.png" />
-</center>
+<section id="bitreader" class="slide level1">
+<h1><code>BitReader</code></h1>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BitReader:</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;Decompose a sequence of bytes into binary digits&quot;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, seq_of_bytes):</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.seq_of_bytes <span class="op">=</span> seq_of_bytes</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.cur_bit <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> pop(<span class="va">self</span>):</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> (<span class="va">self</span>.seq_of_bytes[<span class="dv">0</span>] <span class="op">&amp;</span> <span class="bn">0b10000000</span>) <span class="op">&gt;&gt;</span> <span class="dv">7</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.seq_of_bytes[<span class="dv">0</span>] <span class="op">=</span> <span class="va">self</span>.seq_of_bytes[<span class="dv">0</span>] <span class="op">&lt;&lt;</span> <span class="dv">1</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.cur_bit <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.cur_bit <span class="op">==</span> <span class="dv">8</span>:</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.cur_bit <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.seq_of_bytes <span class="op">=</span> <span class="va">self</span>.seq_of_bytes[<span class="dv">1</span>:]</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> result</span></code></pre></div>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-27.png" />
-</center>
+<section id="esempio-bitreader" class="slide level1">
+<h1>Esempio <code>BitReader</code></h1>
+<ul>
+<li><p>Possiamo usare <code>BitReader</code> passandogli come input i due byte prodotti da <code>BitWriter</code> nell’esempio precedente:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>input_stream <span class="op">=</span> BitReader(output_stream.seq_of_bytes)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Sequence of bits as decoded by BitReader:&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">16</span>):</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(input_stream.pop(), end<span class="op">=</span><span class="st">&quot; &quot;</span>)</span></code></pre></div></li>
+<li><p>Output:</p>
+<pre class="text"><code>Sequence of bits as decoded by BitReader:
+1 1 0 0 1 0 0 1 0 1 0 0 1 1 0 1</code></pre></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-28.png" />
-</center>
+<section id="codifica-aritmetica-15" class="slide level1">
+<h1>Codifica aritmetica (1/5)</h1>
+<ul>
+<li><p>Vediamo ora come implementare l’algoritmo della codifica aritmetica per associare un intervallo <span class="math inline">[\alpha, \beta]</span> a una sequenza di byte.</p></li>
+<li><p>L’algoritmo usa il concetto di «intervallo», quindi definiamo un tipo <code>Interval</code> che codifica una coppia di numeri reali:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Interval:</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    start: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    end: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__repr__</span>(<span class="va">self</span>):</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f&quot;[</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>start<span class="sc">:.7f}</span><span class="ss">, </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>end<span class="sc">:.7f}</span><span class="ss">]&quot;</span></span></code></pre></div></li>
+</ul>
 </section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/astro_maurizio_1_PkZIP-29.png" />
-</center>
+<section id="codifica-aritmetica-25" class="slide level1">
+<h1>Codifica aritmetica (2/5)</h1>
+<ul>
+<li><p>La codifica aritmetica ha bisogno di conoscere la probabilità con cui ogni byte compare nella sequenza.</p></li>
+<li><p>Usiamo i <code>set</code> di Python per costruire una lista di tutti i simboli che compaiono nella sequenza, e poi usiamo <code>count</code> per contare ciascuna corrispondenza:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> probabilities(seq):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    symbols <span class="op">=</span> <span class="bu">set</span>(seq)  <span class="co"># In our example, symbols == set(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    length <span class="op">=</span> <span class="bu">len</span>(seq)   <span class="co"># Length of the sequence to compress</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {x: seq.count(x) <span class="op">/</span> length <span class="cf">for</span> x <span class="kw">in</span> symbols}</span></code></pre></div></li>
+</ul>
+</section>
+<section id="codifica-aritmetica-35" class="slide level1">
+<h1>Codifica aritmetica (3/5)</h1>
+<ul>
+<li><p>Una volta note le probabilità di ogni elemento, bisogna suddividere l’intervallo <span class="math inline">[0, 1]</span> secondo le probabilità di ciascun simbolo.</p></li>
+<li><p>La funzione <code>intervals</code> invoca <code>probabilities</code> e costruisce un dizionario che associa ad ogni simbolo il proprio intervallo <code>Interval</code>:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> intervals(seq):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> probabilities(seq)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    intervals <span class="op">=</span> {}</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    curpos <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> s <span class="kw">in</span> <span class="bu">sorted</span>(probs.keys()):</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        intervals[s] <span class="op">=</span> Interval(start<span class="op">=</span>curpos, end<span class="op">=</span>curpos <span class="op">+</span> probs[s])</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        curpos <span class="op">+=</span> probs[s]</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> intervals</span></code></pre></div></li>
+</ul>
+</section>
+<section id="codifica-aritmetica-45" class="slide level1">
+<h1>Codifica aritmetica (4/5)</h1>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> arithmetic_compression(seq):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    spans <span class="op">=</span> intervals(seq)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    cur_span <span class="op">=</span> Interval()</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> s <span class="kw">in</span> seq:</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Current interval: </span><span class="sc">{</span>cur_span<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        subspan <span class="op">=</span> spans[s]</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        curlen <span class="op">=</span> cur_span.end <span class="op">-</span> cur_span.start</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        new_span <span class="op">=</span> Interval(</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>            start<span class="op">=</span>cur_span.start <span class="op">+</span> curlen <span class="op">*</span> subspan.start,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>            end<span class="op">=</span>cur_span.start <span class="op">+</span> curlen <span class="op">*</span> subspan.end,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        cur_span <span class="op">=</span> new_span</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> cur_span</span></code></pre></div>
+</section>
+<section id="codifica-aritmetica-55" class="slide level1">
+<h1>Codifica aritmetica (5/5)</h1>
+<ul>
+<li><p>Verifichiamo il funzionamento del codice sulla nostra sequenza:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>sequence <span class="op">=</span> <span class="st">&quot;aacacaabacbaaac&quot;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>final_span <span class="op">=</span> arithmetic_compression(sequence)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Result for &#39;</span><span class="sc">{</span>sequence<span class="sc">}</span><span class="ss">&#39;: </span><span class="sc">{</span>final_span<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div></li>
+<li><p>L’output è il seguente:</p>
+<pre class="text"><code>Current interval: [0.0000000, 1.0000000]
+Current interval: [0.0000000, 0.6000000]
+Current interval: [0.0000000, 0.3600000]
+…
+Current interval: [0.3099529, 0.3099586]
+Current interval: [0.3099529, 0.3099563]
+Result for &#39;aacacaabacbaaac&#39;: [0.3099554, 0.3099563]</code></pre></li>
+</ul>
 </section>
     </div>
   </div>
@@ -348,5 +919,6 @@ R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
       });
     </script>
     <script src="js/asciinema-player.js"></script>
+    <script src="js/quantization.js"></script>
     </body>
 </html>
