@@ -158,7 +158,7 @@ plot [0:10] [] x/(1 + x)
     $
     ```
 
--   Lo scopo è quello di convertire un file PFM in un file PNG (o nel formato LDR che preferite). I valori `0.3` e `1.0` fanno riferimento al [fattore di scala](./tomasi-ray-tracing-05b-ci-builds.html#/normalizzazione) $a$ e a $\gamma$, rispettivamente.
+-   Lo scopo è quello di convertire un file PFM in un file PNG (o nel formato LDR che preferite). I valori `0.3` e `1.0` fanno riferimento al [fattore di scala](./tomasi-ray-tracing-05b-external-libraries.html#/normalizzazione) $a$ e a $\gamma$, rispettivamente.
 
 # Implementazione
 
@@ -234,7 +234,7 @@ def test_average_luminosity():
 
 # Normalizzazione (1/3)
 
--   La funzione `normalize_image` calcola la luminosità media di un'immagine secondo l'[equazione corrispondente](tomasi-ray-tracing-05b-ci-builds.html#/normalizzazione).
+-   La funzione `normalize_image` calcola la luminosità media di un'immagine secondo l'[equazione corrispondente](tomasi-ray-tracing-05b-external-libraries.html#/normalizzazione).
 
 -   La funzione dovrebbe accettare il valore di $a$ come parametro di input:
 
@@ -536,7 +536,7 @@ using (Stream fileStream = File.OpenWrite("output.png")) {
 
 # Salvare file PNG
 
--   Usando `Pkg.add`, installate nel vostro package sia `Image` che `ImageIO`.
+-   Usando `Pkg.add`, installate nel vostro package sia `Images` che `ImageIO`.
 
 -   A questo punto basta creare matrici di valori `RGB` e salvarle col comando `save`; l'estensione del file ne determina il formato:
 
@@ -569,7 +569,7 @@ using (Stream fileStream = File.OpenWrite("output.png")) {
 
     dove `r` sono i bit del rosso, `g` quelli del verde e `b` quelli del blu. Di solito i colori si indicano usando la notazione esadecimale, perché in questo modo sono sempre a sei cifre, ad es. `0x12FA51`.
 
--   Se `r`, `g` e `b` sono byte nell'intervallo [0, 255], potete usare la formula `r * 65536 + g * 256 + b` oppure `(r shl 24) + (g shl 8) + b`.
+-   Se `r`, `g` e `b` sono byte nell'intervallo [0, 255], potete usare la formula `r * 65536 + g * 256 + b` oppure `(r shl 16) + (g shl 8) + b`.
 
 # Esempio di codice Kotlin
 

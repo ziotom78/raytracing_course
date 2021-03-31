@@ -250,7 +250,7 @@ b = \left[2^8\times B^{1/\gamma}\right],
 File &#39;input_file.pfm&#39; has been read from disk
 File &#39;output_file.png&#39; has been written to disk
 $</code></pre></li>
-<li><p>Lo scopo è quello di convertire un file PFM in un file PNG (o nel formato LDR che preferite). I valori <code>0.3</code> e <code>1.0</code> fanno riferimento al <a href="./tomasi-ray-tracing-05b-ci-builds.html#/normalizzazione">fattore di scala</a> <span class="math inline">a</span> e a <span class="math inline">\gamma</span>, rispettivamente.</p></li>
+<li><p>Lo scopo è quello di convertire un file PFM in un file PNG (o nel formato LDR che preferite). I valori <code>0.3</code> e <code>1.0</code> fanno riferimento al <a href="./tomasi-ray-tracing-05b-external-libraries.html#/normalizzazione">fattore di scala</a> <span class="math inline">a</span> e a <span class="math inline">\gamma</span>, rispettivamente.</p></li>
 </ul>
 </section>
 <section id="implementazione" class="slide level1">
@@ -321,7 +321,7 @@ $</code></pre></li>
 <section id="normalizzazione-13" class="slide level1">
 <h1>Normalizzazione (1/3)</h1>
 <ul>
-<li><p>La funzione <code>normalize_image</code> calcola la luminosità media di un’immagine secondo l’<a href="tomasi-ray-tracing-05b-ci-builds.html#/normalizzazione">equazione corrispondente</a>.</p></li>
+<li><p>La funzione <code>normalize_image</code> calcola la luminosità media di un’immagine secondo l’<a href="tomasi-ray-tracing-05b-external-libraries.html#/normalizzazione">equazione corrispondente</a>.</p></li>
 <li><p>La funzione dovrebbe accettare il valore di <span class="math inline">a</span> come parametro di input:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_image(<span class="va">self</span>, factor, luminosity<span class="op">=</span><span class="va">None</span>):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> luminosity:</span>
@@ -626,7 +626,7 @@ $</code></pre></li>
 <section id="salvare-file-png-1" class="slide level1">
 <h1>Salvare file PNG</h1>
 <ul>
-<li><p>Usando <code>Pkg.add</code>, installate nel vostro package sia <code>Image</code> che <code>ImageIO</code>.</p></li>
+<li><p>Usando <code>Pkg.add</code>, installate nel vostro package sia <code>Images</code> che <code>ImageIO</code>.</p></li>
 <li><p>A questo punto basta creare matrici di valori <code>RGB</code> e salvarle col comando <code>save</code>; l’estensione del file ne determina il formato:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Images</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -652,7 +652,7 @@ $</code></pre></li>
 <li><p>I 32 bit del numero che codifica un colore seguono questo formato:</p>
 <pre><code>00000000 rrrrrrrr gggggggg bbbbbbbb</code></pre>
 <p>dove <code>r</code> sono i bit del rosso, <code>g</code> quelli del verde e <code>b</code> quelli del blu. Di solito i colori si indicano usando la notazione esadecimale, perché in questo modo sono sempre a sei cifre, ad es. <code>0x12FA51</code>.</p></li>
-<li><p>Se <code>r</code>, <code>g</code> e <code>b</code> sono byte nell’intervallo [0, 255], potete usare la formula <code>r * 65536 + g * 256 + b</code> oppure <code>(r shl 24) + (g shl 8) + b</code>.</p></li>
+<li><p>Se <code>r</code>, <code>g</code> e <code>b</code> sono byte nell’intervallo [0, 255], potete usare la formula <code>r * 65536 + g * 256 + b</code> oppure <code>(r shl 16) + (g shl 8) + b</code>.</p></li>
 </ul>
 </section>
 <section id="esempio-di-codice-kotlin" class="slide level1">
