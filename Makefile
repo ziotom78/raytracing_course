@@ -6,7 +6,7 @@ JS_FILES = \
 
 all: \
 	tomasi-ray-tracing-06a-geometry.html \
-	tomasi-ray-tracing-05b-ci-builds.html \
+	tomasi-ray-tracing-05b-external-libraries.html \
 	tomasi-ray-tracing-05a-compression.html \
 	tomasi-ray-tracing-04b-reading-images.html \
 	tomasi-ray-tracing-04a-documentation.html \

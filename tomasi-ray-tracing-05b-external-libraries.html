@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Esercitazione 5</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Esercitazione 5</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="tone-mapping" class="slide level1">
+<h1>Tone mapping</h1>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/tone-mapping-problem.png" />
+</center>
+</section>
+<section id="tone-mapping-1" class="slide level1">
+<h1>Tone mapping</h1>
+<ul>
+<li>Una conversione da RGB a sRGB dovrebbe preservare la «tinta» complessiva di un’immagine.</li>
+<li>Ecco perché non si parla di <em>tone mapping</em> per un singolo colore RGB, ma per una matrice di colori (ossia un’immagine).</li>
+<li>Noi useremo il <em>tone mapping</em> descritto da <a href="https://books.google.it/books/about/Realistic_Ray_Tracing_Second_Edition.html?id=ywOtPMpCcY8C&amp;redir_esc=y">Shirley &amp; Morley (2003)</a>: è fisicamente meno preciso di altri metodi (es., la normalizzazione dello standard CIE usando D65), ma più intuitivo e più semplice da implementare.</li>
+</ul>
+</section>
+<section id="algoritmo-di-tone-mapping" class="slide level1">
+<h1>Algoritmo di tone mapping</h1>
+<ol type="1">
+<li>Stabilire un valore «medio» per l’irradianza misurata in corrispondenza di ogni pixel dell’immagine;</li>
+<li>Normalizzare il colore di ogni pixel a questo valore medio;</li>
+<li>Applicare una correzione ai punti di maggiore luminosità.</li>
+</ol>
+</section>
+<section id="valore-medio" class="slide level1">
+<h1>Valore medio</h1>
+<ul>
+<li><p>Il valore «neutro» per la radianza è definito dalla media logaritmica della luminosità <span class="math inline">l_i</span> dei pixel (con <span class="math inline">i = 1\ldots N</span>): <span class="math display">
+\left&lt;l\right&gt; = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
+</span> dove <span class="math inline">\delta \ll 1</span> evita la singolarità di <span class="math inline">\log_{10} x</span> in <span class="math inline">x = 0</span>.</p></li>
+<li><p>A ciascun pixel sono però associati tre valori scalari (R, G, B). Quale valore usare per la luminosità <span class="math inline">l_i</span>?</p></li>
+</ul>
+</section>
+<section id="luminosità" class="slide level1">
+<h1>Luminosità</h1>
+<dl>
+<dt>Media aritmetica</dt>
+<dd><span class="math inline">l_i = \frac{R_i + G_i + B_i}3</span>;
+</dd>
+<dt>Media pesata</dt>
+<dd><span class="math inline">l_i = \frac{w_R R_i + w_G G_i + w_B B_i}{w_R + w_G + w_B}</span>, data una terna di valori positivi <span class="math inline">(w_R, w_G, w_B)</span>;
+</dd>
+<dt>Distanza dall’origine</dt>
+<dd><span class="math inline">l_i = \sqrt{R_i^2 + G_i^2 + B_i^2}</span>;
+</dd>
+<dt>Funzione di luminosità</dt>
+<dd><span class="math inline">l_i = \frac{\max(R_i, G_i, B_i) + \min(R_i, G_i, B_i)}2</span>
+</dd>
+</dl>
+<p>Shirley &amp; Morley usano l’ultima definizione perché sostengono che, nonostante non sia fisicamente significativa, produca risultati visivamente migliori.</p>
+</section>
+<section id="perché-la-media-logaritmica" class="slide level1">
+<h1>Perché la media logaritmica?</h1>
+<ul>
+<li><p>Non abbiamo ancora giustificato la formula <span class="math display">
+\left&lt;l\right&gt; = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
+</span></p></li>
+<li><p>Essa è plausibile perché la risposta dell’occhio a uno stimolo <span class="math inline">S</span> è logaritmica (<em>leggi di Weber-Fechner</em>): <span class="math display">
+p = k \log_{10} \frac{S}{S_0}
+</span> dove <span class="math inline">p</span> è il valore percepito, e <span class="math inline">S</span> è l’intensità dello stimolo.</p></li>
+</ul>
+</section>
+<section id="proprietà-della-media-logaritmica" class="slide level1">
+<h1>Proprietà della media logaritmica</h1>
+<ul>
+<li><p>La media logaritmica è una media sugli <em>esponenti</em>, mentre la media aritmetica è una media sui valori;</p></li>
+<li><p>Nel caso i valori siano <span class="math inline">10^2</span>, <span class="math inline">10^4</span> e <span class="math inline">10^6</span>, la media logaritmica è <span class="math display">
+10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
+</span> mentre la media aritmetica è <span class="math inline">(10^2 + 10^4 + 10^6)/3 \approx 10^6/3</span>.</p></li>
+</ul>
+</section>
+<section id="normalizzazione" class="slide level1">
+<h1>Normalizzazione</h1>
+<ul>
+<li><p>Una volta stimato il valore medio, i valori R, G, B dell’immagine sono aggiornati tramite la trasformazione</p>
+<p><span class="math display">
+R_i \rightarrow a \times \frac{R_i}{\left&lt;l\right&gt;},
+</span></p>
+<p>dove <span class="math inline">a</span> è un valore impostabile dall’utente.</p></li>
+<li><p>Curiosamente, nel loro libro Shirley &amp; Morley suggeriscono <span class="math inline">a = 0.18</span>; in realtà non esiste un valore «giusto», e <span class="math inline">a</span> si deve scegliere a seconda dell’immagine.</p></li>
+</ul>
+</section>
+<section id="punti-luminosi" class="slide level1">
+<h1>Punti luminosi</h1>
+<p><img data-src="./media/bright-light-in-room.jpg" height="520" /></p>
+<p>Sono notoriamente difficili da trattare!</p>
+</section>
+<section id="punti-luminosi-1" class="slide level1">
+<h1>Punti luminosi</h1>
+<p>Shirley &amp; Morley suggeriscono di applicare ai valori R, G, B di ogni punto dell’immagine la trasformazione <span class="math display">
+R_i \rightarrow \frac{R_i}{1 + R_i},
+</span> che ha le seguenti caratteristiche: <span class="math display">
+\begin{aligned}
+R_i \ll 1 &amp;\Rightarrow R_i \rightarrow R_i,\\
+R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
+\end{aligned}
+</span></p>
+</section>
+<section id="punti-luminosi-2" class="slide level1">
+<h1>Punti luminosi</h1>
+<figure>
+<img data-src="plots/14225091037007721294.svg" />
+</figure>
+</section>
+<section id="correzione-γ" class="slide level1">
+<h1>Correzione γ</h1>
+<ul>
+<li><p>Potremmo voler applicare una correzione γ ai valori dell’immagine.</p></li>
+<li><p>Se in corrispondenza di un segnale <span class="math inline">x</span> il monitor emette un flusso</p>
+<p><span class="math display">
+\Phi \propto x^\gamma,
+</span></p>
+<p>allora i valori RGB da salvare nell’immagine LDR devono essere</p>
+<p><span class="math display">
+r = \left[2^8\times R^{1/\gamma}\right],\quad
+g = \left[2^8\times G^{1/\gamma}\right],\quad
+b = \left[2^8\times B^{1/\gamma}\right],
+</span></p>
+<p>assumendo che il formato codifichi i colori usando 8×3 = 24 bit.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/kitchen-gamma-settings.png" />
+</center>
+</section>
+<section id="scrittura-di-immagini-ldr" class="slide level1">
+<h1>Scrittura di immagini LDR</h1>
+</section>
+<section id="interfaccia-del-programma" class="slide level1">
+<h1>Interfaccia del programma</h1>
+<ul>
+<li><p>Oggi implementeremo il codice del nostro programma (<code>main.py</code> nella versione Python).</p></li>
+<li><p>Il funzionamento del programma in questa versione sarà il seguente:</p>
+<pre class="text"><code>$ ./main.py input_file.pfm 0.3 1.0 output_file.png
+File &#39;input_file.pfm&#39; has been read from disk
+File &#39;output_file.png&#39; has been written to disk
+$</code></pre></li>
+<li><p>Lo scopo è quello di convertire un file PFM in un file PNG (o nel formato LDR che preferite). I valori <code>0.3</code> e <code>1.0</code> fanno riferimento al <a href="./tomasi-ray-tracing-05b-ci-builds.html#/normalizzazione">fattore di scala</a> <span class="math inline">a</span> e a <span class="math inline">\gamma</span>, rispettivamente.</p></li>
+</ul>
+</section>
+<section id="implementazione" class="slide level1">
+<h1>Implementazione</h1>
+<ul>
+<li><p>Le attività da compiere sul codice sono le seguenti:</p>
+<ol>
+<li>Definire una funzione che calcoli la luminosità di un oggetto <code>Color</code>;</li>
+<li>Definire una funzione che calcoli la luminosità media di un <code>HdrImage</code>;</li>
+<li>Definire una funzione che normalizzi i valori di un <code>HdrImage</code> usando una certa luminosità media, opzionalmente passata come argomento;</li>
+<li>Definire una funzione che applichi la correzione per le sorgenti luminose;</li>
+<li>Implementare il <code>main</code> nel codice dell’applicazione.</li>
+</ol></li>
+<li><p>Come al solito, fornisco un’implementazione di riferimento in Python nel repository <a href="https://github.com/ziotom78/pytracer">pytracer</a>.</p></li>
+</ul>
+</section>
+<section id="luminosità-12" class="slide level1">
+<h1>Luminosità (1/2)</h1>
+<ul>
+<li><p>Aggiungiamo un semplice metodo <code>luminosity</code> alla classe <code>Color</code>, che restituisce il valore della luminosità suggerito da Shirley &amp; Morley:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Color:</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> luminosity(<span class="va">self</span>):</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="bu">max</span>(<span class="va">self</span>.r, <span class="va">self</span>.g, <span class="va">self</span>.b) <span class="op">+</span> <span class="bu">min</span>(<span class="va">self</span>.r, <span class="va">self</span>.g, <span class="va">self</span>.b)) <span class="op">/</span> <span class="dv">2</span></span></code></pre></div></li>
+<li><p>Se nel vostro linguaggio l’equivalente di <code>max</code> e <code>min</code> accetta solo due parametri (es., <code>minOf</code> e <code>maxOf</code> in Kotlin), potete usare l’equivalenza</p>
+<p><span class="math display">
+\max\left\{a, b, c\right\} \equiv \max\bigl\{\max\left\{a, b\right\}, c\bigr\}.
+</span></p></li>
+</ul>
+</section>
+<section id="luminosità-22" class="slide level1">
+<h1>Luminosità (2/2)</h1>
+<ul>
+<li><p>Occorrono anche alcuni test per <code>Color.luminosity</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_luminosity():</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    col1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    col2 <span class="op">=</span> Color(<span class="fl">9.0</span>, <span class="fl">5.0</span>, <span class="fl">7.0</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">2.0</span>) <span class="op">==</span> col1.luminosity()</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">7.0</span>) <span class="op">==</span> col2.luminosity()</span></code></pre></div></li>
+<li><p>Il metodo <code>pytest.approx()</code> fa parte della libreria <code>pytest</code>, e corrisponde alla funzione <code>is_close</code> che avete implementato tempo fa.</p></li>
+</ul>
+</section>
+<section id="luminosità-media-12" class="slide level1">
+<h1>Luminosità media (1/2)</h1>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage:</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> average_luminosity(<span class="va">self</span>, delta<span class="op">=</span><span class="fl">1e-10</span>):</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        cumsum <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> pix <span class="kw">in</span> <span class="va">self</span>.pixels:</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>            cumsum <span class="op">+=</span> math.log10(delta <span class="op">+</span> pix.luminosity())</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> math.<span class="bu">pow</span>(<span class="dv">10</span>, cumsum <span class="op">/</span> <span class="bu">len</span>(<span class="va">self</span>.pixels))</span></code></pre></div>
+</section>
+<section id="luminosità-media-22" class="slide level1">
+<h1>Luminosità media (2/2)</h1>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_average_luminosity():</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">0</span>, <span class="dv">0</span>, Color(  <span class="fl">5.0</span>,   <span class="fl">10.0</span>,   <span class="fl">15.0</span>))  <span class="co"># Luminosity: 10.0</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">1</span>, <span class="dv">0</span>, Color(<span class="fl">500.0</span>, <span class="fl">1000.0</span>, <span class="fl">1500.0</span>))  <span class="co"># Luminosity: 1000.0</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(img.average_luminosity(delta<span class="op">=</span><span class="fl">0.0</span>))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">100.0</span>) <span class="op">==</span> img.average_luminosity(delta<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div>
+</section>
+<section id="normalizzazione-13" class="slide level1">
+<h1>Normalizzazione (1/3)</h1>
+<ul>
+<li><p>La funzione <code>normalize_image</code> calcola la luminosità media di un’immagine secondo l’<a href="tomasi-ray-tracing-05b-ci-builds.html#/normalizzazione">equazione corrispondente</a>.</p></li>
+<li><p>La funzione dovrebbe accettare il valore di <span class="math inline">a</span> come parametro di input:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_image(<span class="va">self</span>, factor, luminosity<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> luminosity:</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        luminosity <span class="op">=</span> <span class="va">self</span>.average_luminosity()</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(<span class="va">self</span>.pixels)):</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.pixels[i] <span class="op">=</span> <span class="va">self</span>.pixels[i] <span class="op">*</span> (factor <span class="op">/</span> luminosity)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="normalizzazione-23" class="slide level1">
+<h1>Normalizzazione (2/3)</h1>
+<ul>
+<li><p>È bene accettare la luminosità come parametro anziché calcolarla:</p>
+<ul>
+<li>Nei test, ci può fare comodo passare diversi valori per la luminosità;</li>
+<li>L’utente potrebbe avere già calcolato il valore medio della luminosità.</li>
+</ul></li>
+<li><p>Se il vostro linguaggio supporta i tipi opzionali, potete chiamare la funzione <code>average_luminosity</code> se il parametro luminosità è nullo:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This is C#; in Kotlin it&#39;s almost the same.</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">NormalizeImage</span>(<span class="dt">float</span> factor, <span class="dt">float</span>? luminosity = <span class="kw">null</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// In Kotlin use &quot;?:&quot; instead of &quot;??&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">var</span> lum = luminosity ?? <span class="fu">AverageLuminosity</span>();</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; pixels.<span class="fu">Length</span>; ++i) { <span class="co">/* ... */</span> }</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+</ul>
+</section>
+<section id="normalizzazione-33" class="slide level1">
+<h1>Normalizzazione (3/3)</h1>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_normalize_image():</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">0</span>, <span class="dv">0</span>, Color(  <span class="fl">5.0</span>,   <span class="fl">10.0</span>,   <span class="fl">15.0</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">1</span>, <span class="dv">0</span>, Color(<span class="fl">500.0</span>, <span class="fl">1000.0</span>, <span class="fl">1500.0</span>))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    img.normalize_image(factor<span class="op">=</span><span class="fl">1000.0</span>, luminosity<span class="op">=</span><span class="fl">100.0</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.get_pixel(<span class="dv">0</span>, <span class="dv">0</span>).is_close(Color(<span class="fl">0.5e2</span>, <span class="fl">1.0e2</span>, <span class="fl">1.5e2</span>))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.get_pixel(<span class="dv">1</span>, <span class="dv">0</span>).is_close(Color(<span class="fl">0.5e4</span>, <span class="fl">1.0e4</span>, <span class="fl">1.5e4</span>))</span></code></pre></div>
+</section>
+<section id="punti-luminosi-12" class="slide level1">
+<h1>Punti luminosi (1/2)</h1>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _clamp(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> x)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage:</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> clamp_image(<span class="va">self</span>):</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(<span class="va">self</span>.pixels)):</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.pixels[i].r <span class="op">=</span> _clamp(<span class="va">self</span>.pixels[i].r)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.pixels[i].g <span class="op">=</span> _clamp(<span class="va">self</span>.pixels[i].g)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.pixels[i].b <span class="op">=</span> _clamp(<span class="va">self</span>.pixels[i].b)</span></code></pre></div>
+</section>
+<section id="punti-luminosi-22" class="slide level1">
+<h1>Punti luminosi (2/2)</h1>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_clamp_image():</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">0</span>, <span class="dv">0</span>, Color(<span class="fl">0.5e1</span>, <span class="fl">1.0e1</span>, <span class="fl">1.5e1</span>))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">1</span>, <span class="dv">0</span>, Color(<span class="fl">0.5e3</span>, <span class="fl">1.0e3</span>, <span class="fl">1.5e3</span>))</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    img.clamp_image()</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Just check that the R/G/B values are within the expected boundaries</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> cur_pixel <span class="kw">in</span> img.pixels:</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> (cur_pixel.r <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (cur_pixel.r <span class="op">&lt;=</span> <span class="dv">1</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> (cur_pixel.g <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (cur_pixel.g <span class="op">&lt;=</span> <span class="dv">1</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> (cur_pixel.b <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (cur_pixel.b <span class="op">&lt;=</span> <span class="dv">1</span>)</span></code></pre></div>
+</section>
+<section id="conversione-a-ldr-13" class="slide level1">
+<h1>Conversione a LDR (1/3)</h1>
+<ul>
+<li>Una volta applicata <code>normalize_image</code> e <code>clamp_image</code>, tutte le componenti RGB dei colori nella matrice saranno nell’intervallo [0, 1].</li>
+<li>A questo punto la conversione nello spazio sRGB avviene tramite la <a href="tomasi-ray-tracing-05b-ci-builds.html#/correzione-%CE%B3">solita formula con γ</a>.</li>
+<li>Il risultato della conversione è una matrice che va salvata in uno dei formati grafici visti a lezione.</li>
+<li>Per il salvataggio dovete scegliere una libreria appropriata.</li>
+</ul>
+</section>
+<section id="conversione-a-ldr-23" class="slide level1">
+<h1>Conversione a LDR (2/3)</h1>
+<table>
+<thead>
+<tr class="header">
+<th>Linguaggio</th>
+<th>Librerie</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C++</td>
+<td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a>, <a href="http://libjpeg.sourceforge.net/">libjpeg</a>, <a href="https://github.com/libjpeg-turbo/libjpeg-turbo">libjpeg-turbo</a> <a href="http://www.libtiff.org/">libtiff</a>, <a href="https://developers.google.com/speed/webp/docs/api">webp</a>, <a href="https://libgd.github.io/">libgd</a></td>
+</tr>
+<tr class="even">
+<td>Kotlin</td>
+<td><a href="https://docs.oracle.com/javase/8/docs/api/javax/imageio/ImageIO.html">javax.imageio</a> (già installato)</td>
+</tr>
+<tr class="odd">
+<td>Julia</td>
+<td><a href="https://github.com/JuliaImages/Images.jl">Images.jl</a> + <a href="https://github.com/JuliaIO/ImageIO.jl">ImageIO.jl</a></td>
+</tr>
+<tr class="even">
+<td>C#</td>
+<td><a href="https://docs.sixlabors.com/articles/imagesharp/?tabs=tabid-1">ImageSharp</a></td>
+</tr>
+<tr class="odd">
+<td>Python</td>
+<td><a href="https://pillow.readthedocs.io/en/stable/">Pillow</a></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="conversione-a-ldr-33" class="slide level1">
+<h1>Conversione a LDR (3/3)</h1>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage:</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> write_ldr_image(<span class="va">self</span>, stream, <span class="bu">format</span>, gamma<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> Image.new(<span class="st">&quot;RGB&quot;</span>, (<span class="va">self</span>.width, <span class="va">self</span>.height))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.height):</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width):</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>                cur_color <span class="op">=</span> <span class="va">self</span>.get_pixel(x, y)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                img.putpixel(xy<span class="op">=</span>(x, y), value<span class="op">=</span>(</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">int</span>(<span class="dv">255</span> <span class="op">*</span> math.<span class="bu">pow</span>(cur_color.r, <span class="dv">1</span> <span class="op">/</span> gamma)),</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">int</span>(<span class="dv">255</span> <span class="op">*</span> math.<span class="bu">pow</span>(cur_color.g, <span class="dv">1</span> <span class="op">/</span> gamma)),</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">int</span>(<span class="dv">255</span> <span class="op">*</span> math.<span class="bu">pow</span>(cur_color.b, <span class="dv">1</span> <span class="op">/</span> gamma)),</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>                ))</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        img.save(stream, <span class="bu">format</span><span class="op">=</span><span class="bu">format</span>)</span></code></pre></div>
+</section>
+<section id="funzione-main-12" class="slide level1">
+<h1>Funzione <code>main</code> (1/2)</h1>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Parameters:</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    input_pfm_file_name: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    factor:<span class="bu">float</span> <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    gamma:<span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    output_png_file_name: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> parse_command_line(<span class="va">self</span>, argv):</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(sys.argv) <span class="op">!=</span> <span class="dv">5</span>:</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="st">&quot;Usage: main.py INPUT_PFM_FILE FACTOR GAMMA OUTPUT_PNG_FILE&quot;</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.input_pfm_file_name <span class="op">=</span> sys.argv[<span class="dv">1</span>]</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.factor <span class="op">=</span> <span class="bu">float</span>(sys.argv[<span class="dv">2</span>])</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="ss">f&quot;Invalid factor (&#39;</span><span class="sc">{</span>sys<span class="sc">.</span>argv[<span class="dv">2</span>]<span class="sc">}</span><span class="ss">&#39;), it must be a floating-point number.&quot;</span>)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.gamma <span class="op">=</span> <span class="bu">float</span>(sys.argv[<span class="dv">3</span>])</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="ss">f&quot;Invalid gamma (&#39;</span><span class="sc">{</span>sys<span class="sc">.</span>argv[<span class="dv">3</span>]<span class="sc">}</span><span class="ss">&#39;), it must be a floating-point number.&quot;</span>)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.output_png_file_name <span class="op">=</span> sys.argv[<span class="dv">4</span>]</span></code></pre></div>
+</section>
+<section id="funzione-main-22" class="slide level1">
+<h1>Funzione <code>main</code> (2/2)</h1>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main(argv):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    parameters <span class="op">=</span> Parameters()</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        parameters.parse_command_line(argv)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">RuntimeError</span> <span class="im">as</span> err:</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error: &quot;</span>, err)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(parameters.input_pfm_file_name, <span class="st">&quot;rb&quot;</span>) <span class="im">as</span> inpf:</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> hdrimages.read_pfm_image(inpf)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;File </span><span class="sc">{</span>parameters<span class="sc">.</span>input_pfm_file_name<span class="sc">}</span><span class="ss"> has been read from disk.&quot;</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    img.normalize_image(factor<span class="op">=</span>parameters.factor)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    img.clamp_image()</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(parameters.output_png_file_name, <span class="st">&quot;wb&quot;</span>) <span class="im">as</span> outf:</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        img.write_ldr_image(stream<span class="op">=</span>outf, <span class="bu">format</span><span class="op">=</span><span class="st">&quot;PNG&quot;</span>, gamma<span class="op">=</span>parameters.gamma)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;File </span><span class="sc">{</span>parameters<span class="sc">.</span>output_png_file_name<span class="sc">}</span><span class="ss"> has been written to disk.&quot;</span>)</span></code></pre></div>
+</section>
+<section id="link-a-gather" class="slide level1">
+<h1>Link a Gather</h1>
+<p>Useremo il solito link: <a href="https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing">gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing</a></p>
+</section>
+<section id="guida-per-lesercitazione" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+</section>
+<section id="guida-per-lesercitazione-1" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+<ol>
+<li>Definire una funzione che calcoli la luminosità di un oggetto <code>Color</code>;</li>
+<li>Definire una funzione che calcoli la luminosità media di un <code>HdrImage</code>;</li>
+<li>Definire una funzione che normalizzi i valori di un <code>HdrImage</code> usando una certa luminosità media, opzionalmente passata come argomento;</li>
+<li>Definire una funzione che applichi la correzione per le sorgenti luminose;</li>
+<li>Implementare il <code>main</code> nel codice dell’applicazione, in modo che accetti 4 argomenti: il file PFM da leggere, il valore di <span class="math inline">a</span>, il valore di γ, e il nome del file PNG/JPEG/etc. da creare.</li>
+</ol>
+<p>Se vi serve un’immagine PFM realistica, potete usare <a href="http://www.pauldebevec.com/Research/HDR/memorial.pfm">memorial.pfm</a>.</p>
+</section>
+<section id="indicazioni-per-il-c" class="slide level1">
+<h1>Indicazioni per il C++</h1>
+</section>
+<section id="libgd" class="slide level1">
+<h1><code>libgd</code></h1>
+<ul>
+<li><p>Tra tutte le librerie C/C++ consigliate (<a href="http://www.libpng.org/pub/png/libpng.html">libpng</a>, <a href="http://libjpeg.sourceforge.net/">libjpeg</a>, <a href="https://github.com/libjpeg-turbo/libjpeg-turbo">libjpeg-turbo</a>, <a href="http://www.libtiff.org/">libtiff</a>, <a href="https://developers.google.com/speed/webp/docs/api">webp</a>, <a href="https://libgd.github.io/">libgd</a>), libgd è la più semplice e versatile.</p></li>
+<li><p>Su sistemi Ubuntu si può installare con</p>
+<pre><code>sudo apt install libgd-dev</code></pre>
+<p>Potrebbe non essere semplice installarla sotto Windows…</p></li>
+<li><p>Supporta il salvataggio di immagini sia in formato PNG che JPEG.</p></li>
+<li><p>Supporta <code>pkg-config</code>:</p>
+<pre><code>gcc -o main main.c $(pkg-config --cflags --libs gdlib)</code></pre></li>
+</ul>
+</section>
+<section id="creare-immagini-con-libgd" class="slide level1">
+<h1>Creare immagini con <code>libgd</code></h1>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;gd.h&quot;</span><span class="pp">     </span><span class="co">/* The library&#39;s header file */</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">int</span> width = <span class="dv">256</span>, height = <span class="dv">256</span>;</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  gdImagePtr im;</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">FILE</span> *f;</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> row, col;</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// &quot;True color&quot; is the old name for 24-bit RGB images</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  im = gdImageCreateTrueColor(width, height);</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(row = <span class="dv">0</span>; row &lt; height; ++row) {</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(col = <span class="dv">0</span>; col &lt; width; ++col) {</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>      <span class="dt">int</span> red, green, blue = <span class="dv">128</span>;</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>      red = (<span class="dt">int</span>) (col * <span class="fl">255.0</span> / width);</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>      green = (<span class="dt">int</span>) ((<span class="fl">1.0</span> - row * <span class="fl">1.0</span> / height) * <span class="fl">255.0</span>);</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>      gdImageSetPixel(im, col, row, gdImageColorExact(im, red, green, blue));</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  f = fopen(<span class="st">&quot;image.png&quot;</span>, <span class="st">&quot;wb&quot;</span>);</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* Output the image to the disk file in PNG format. */</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  gdImagePng(im, f);  <span class="co">/* gdImageJpeg(im, jpegout, -1); */</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>  fclose(f);</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  gdImageDestroy(im);</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</section>
+<section id="altre-librerie" class="slide level1">
+<h1>Altre librerie</h1>
+<ul>
+<li><p>Se non riuscite ad usare <code>libgd</code>, potete tentare con qualcuna delle altre librerie.</p></li>
+<li><p>Il sito <a href="https://github.com/fffaraz/awesome-cpp#image-processing">Awesome C++</a> ha una sezione dedicata alle librerie grafiche per C++ che elenca molte possibilità.</p></li>
+</ul>
+</section>
+<section id="indicazioni-per-c" class="slide level1">
+<h1>Indicazioni per C#</h1>
+</section>
+<section id="importare-librerie" class="slide level1">
+<h1>Importare librerie</h1>
+<ul>
+<li><p>La libreria ImageSharp supporta molti formati: JPEG, PNG, BMP, GIF, e TGA (un vecchio formato che non abbiamo trattato nella lezione di teoria).</p></li>
+<li><p>In C# si possono scaricare e installare automaticamente librerie, e specificare che vanno impiegate nei propri progetti senza bisogno di modificare Makefile e di usare <code>root-config</code>, <code>pkg-config</code> e cose simili.</p></li>
+<li><p>Aggiungete il package <a href="https://docs.sixlabors.com/index.html">SixLabors.ImageSharp</a> alla libreria di classi (che forse avete chiamato <code>Tracer</code>):</p>
+<pre class="text"><code>$ dotnet add package SixLabors.ImageSharp</code></pre></li>
+</ul>
+</section>
+<section id="salvare-file-png" class="slide level1">
+<h1>Salvare file PNG</h1>
+<div class="sourceCode" id="cb18"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Create a sRGB bitmap</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> bitmap = <span class="kw">new</span> Image&lt;Rgb24&gt;(Configuration.<span class="fu">Default</span>, width, height);</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">// The bitmap can be used as a matrix. To draw the pixels in the bitmap</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">// just use the syntax &quot;bitmap[x, y]&quot; like the following:</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>bitmap[SOMEX, SOMEY] = <span class="kw">new</span> <span class="fu">Rgb24</span>(<span class="dv">255</span>, <span class="dv">255</span>, <span class="dv">128</span>); <span class="co">// Three &quot;Byte&quot; values!</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Save the bitmap as a PNG file</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> (Stream fileStream = File.<span class="fu">OpenWrite</span>(<span class="st">&quot;output.png&quot;</span>)) {</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    bitmap.<span class="fu">Save</span>(fileStream, <span class="kw">new</span> <span class="fu">PngEncoder</span>());</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</section>
+<section id="indicazioni-per-julia" class="slide level1">
+<h1>Indicazioni per Julia</h1>
+</section>
+<section id="il-pacchetto-images.jl" class="slide level1">
+<h1>Il pacchetto <a href="https://github.com/JuliaImages/Images.jl">Images.jl</a></h1>
+<ul>
+<li>La community di Julia ha sviluppato una soluzione completa per la gestione delle immagini.</li>
+<li>Il pacchetto principale è Images.jl, che definisce il tipo <code>Image</code>.</li>
+<li>A Images.jl fanno riferimento molti altri sotto-pacchetti specialistici. A noi interessa installare <a href="https://github.com/JuliaIO/ImageIO.jl">ImageIO.jl</a>, che consente di leggere/scrivere formati grafici.</li>
+</ul>
+</section>
+<section id="salvare-file-png-1" class="slide level1">
+<h1>Salvare file PNG</h1>
+<ul>
+<li><p>Usando <code>Pkg.add</code>, installate nel vostro package sia <code>Image</code> che <code>ImageIO</code>.</p></li>
+<li><p>A questo punto basta creare matrici di valori <code>RGB</code> e salvarle col comando <code>save</code>; l’estensione del file ne determina il formato:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Images</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Values must be expressed in the range [0, 1]</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> [RGB(<span class="fl">0.0</span><span class="op">,</span> <span class="fl">0.0</span><span class="op">,</span> <span class="fl">1.0</span>) RGB(<span class="fl">1.0</span><span class="op">,</span> <span class="fl">0.0</span><span class="op">,</span> <span class="fl">0.0</span>)<span class="op">;</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>         RGB(<span class="fl">0.0</span><span class="op">,</span> <span class="fl">1.0</span><span class="op">,</span> <span class="fl">0.0</span>) RGB(<span class="fl">1.0</span><span class="op">,</span> <span class="fl">1.0</span><span class="op">,</span> <span class="fl">1.0</span>)]</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># It&#39;s all too easy!</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>save(<span class="st">&quot;test.png&quot;</span><span class="op">,</span> image)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="indicazioni-per-kotlin" class="slide level1">
+<h1>Indicazioni per Kotlin</h1>
+<ul>
+<li><p>A differenza di Python, C++, C# e Julia, il linguaggio Kotlin fornisce supporto per immagini PNG, JPEG, BMP e GIF tramite le librerie standard Java.</p></li>
+<li><p>A voi servono le classi <code>java.awt.image.BufferedImage</code> (immagine LDR) e <code>javax.imageio.ImageIO</code> (la classe che implementa i metodi per leggere/scrivere immagini LDR su file).</p></li>
+</ul>
+</section>
+<section id="codificare-il-colore" class="slide level1">
+<h1>Codificare il colore</h1>
+<ul>
+<li><p>La classe <code>BufferedImage</code> permette di codificare il colore in tanti modi diversi. Se usate <code>TYPE_INT_RGB</code>, il colore è un numero intero a 32 bit anziché una terna RGB.</p></li>
+<li><p>I 32 bit del numero che codifica un colore seguono questo formato:</p>
+<pre><code>00000000 rrrrrrrr gggggggg bbbbbbbb</code></pre>
+<p>dove <code>r</code> sono i bit del rosso, <code>g</code> quelli del verde e <code>b</code> quelli del blu. Di solito i colori si indicano usando la notazione esadecimale, perché in questo modo sono sempre a sei cifre, ad es. <code>0x12FA51</code>.</p></li>
+<li><p>Se <code>r</code>, <code>g</code> e <code>b</code> sono byte nell’intervallo [0, 255], potete usare la formula <code>r * 65536 + g * 256 + b</code> oppure <code>(r shl 24) + (g shl 8) + b</code>.</p></li>
+</ul>
+</section>
+<section id="esempio-di-codice-kotlin" class="slide level1">
+<h1>Esempio di codice Kotlin</h1>
+<div class="sourceCode" id="cb21"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span>(<span class="va">args</span>: <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span> = <span class="dv">800</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span> = <span class="dv">600</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">ldrImage</span> = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (y <span class="kw">in</span> <span class="dv">0</span> until height) {</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (x <span class="kw">in</span> <span class="dv">0</span> until width) {</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 0xFF0000 corresponds to sRGB(255, 0, 0): the image will be</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>            <span class="co">// painted uniformly with a bright red shade</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>            ldrImage.setRGB(x, y, <span class="dv">0xFF0000</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Save the image to the file specified on the command line</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    ImageIO.write(args[<span class="dv">0</span>], <span class="st">&quot;PNG&quot;</span>, stream)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</section>
+<section id="linea-di-comando" class="slide level1">
+<h1>Linea di comando</h1>
+<ul>
+<li><p>Kotlin deriva da Java, ed ha ereditato il suo modo un po’ «barocco» di gestire i parametri da linea di comando.</p></li>
+<li><p>Il vostro eseguibile Kotlin <strong>non può</strong> essere eseguito come un normale eseguibile Python/C++/C#:</p>
+<pre class="text"><code>$ ./main.py input_file.pfm 0.3 1.0 output_file.png</code></pre>
+<p>perché bisogna passare da <code>gradlew</code>, che richiede che i parametri siano passati attraverso <code>--args</code>:</p>
+<pre class="text"><code>./gradlew run --args=&quot;input_file.pfm 0.3 1.0 output_file.png&quot;</code></pre></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
+    </body>
+</html>

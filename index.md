@@ -14,3 +14,4 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 - Lezione 4 (2021-03-22): [documentazione](./tomasi-ray-tracing-04a-documentation.html)
 - Esercitazione 4 (2021-03-24): [lettura file PFM](./tomasi-ray-tracing-04b-reading-images.html)
 - Lezione 5 (2021-03-29): [compressione dati](./tomasi-ray-tracing-05a-compression.html)
+- Esercitazione 5 (2021-03-31): [librerie esterne](./tomasi-ray-tracing-05b-external-libraries.html)
