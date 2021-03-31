@@ -82,9 +82,9 @@ Shirley & Morley usano l'ultima definizione perché sostengono che, nonostante n
     $$
     R_i \rightarrow a \times \frac{R_i}{\left<l\right>},
     $$
-    
+
     dove $a$ è un valore impostabile dall'utente.
-    
+
 -   Curiosamente, nel loro libro Shirley & Morley suggeriscono $a = 0.18$; in realtà non esiste un valore «giusto», e $a$ si deve scegliere a seconda dell'immagine.
 
 
@@ -125,15 +125,15 @@ plot [0:10] [] x/(1 + x)
     $$
     \Phi \propto x^\gamma,
     $$
-    
+
     allora i valori RGB da salvare nell'immagine LDR devono essere
-    
+
     $$
     r = \left[2^8\times R^{1/\gamma}\right],\quad
     g = \left[2^8\times G^{1/\gamma}\right],\quad
     b = \left[2^8\times B^{1/\gamma}\right],
     $$
-    
+
     assumendo che il formato codifichi i colori usando 8×3 = 24 bit.
 
 
@@ -157,7 +157,7 @@ plot [0:10] [] x/(1 + x)
     File 'output_file.png' has been written to disk
     $
     ```
-    
+
 -   Lo scopo è quello di convertire un file PFM in un file PNG (o nel formato LDR che preferite). I valori `0.3` e `1.0` fanno riferimento al [fattore di scala](./tomasi-ray-tracing-05b-ci-builds.html#/normalizzazione) $a$ e a $\gamma$, rispettivamente.
 
 # Implementazione
@@ -202,7 +202,7 @@ plot [0:10] [] x/(1 + x)
         assert pytest.approx(2.0) == col1.luminosity()
         assert pytest.approx(7.0) == col2.luminosity()
     ```
-    
+
 -   Il metodo `pytest.approx()` fa parte della libreria `pytest`, e corrisponde alla funzione `is_close` che avete implementato tempo fa.
 
 # Luminosità media (1/2)
@@ -246,7 +246,7 @@ def test_average_luminosity():
         for i in range(len(self.pixels)):
             self.pixels[i] = self.pixels[i] * (factor / luminosity)
     ```
-    
+
 # Normalizzazione (2/3)
 
 -   È bene accettare la luminosità come parametro anziché calcolarla:
@@ -288,7 +288,7 @@ def _clamp(x: float) -> float:
 
 class HdrImage:
     # ...
-    
+
     def clamp_image(self):
         for i in range(len(self.pixels)):
             self.pixels[i].r = _clamp(self.pixels[i].r)
@@ -336,7 +336,7 @@ def test_clamp_image():
 ```python
 class HdrImage:
     # ...
-    
+
     def write_ldr_image(self, stream, format, gamma=1.0):
         from PIL import Image
         img = Image.new("RGB", (self.width, self.height))
@@ -423,7 +423,7 @@ Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing]
 #.   Definire una funzione che applichi la correzione per le sorgenti luminose;
 #.   Implementare il `main` nel codice dell'applicazione, in modo che accetti 4 argomenti: il file PFM da leggere, il valore di $a$, il valore di γ, e il nome del file PNG/JPEG/etc. da creare.
 
-Se vi serve un'immagine PFM realistica, potete usare  [memorial.pfm](http://www.pauldebevec.com/Research/HDR/memorial.pfm).
+Se vi serve un'immagine PFM realistica, potete usare  [memorial.pfm](http://www.pauldebevec.com/Research/HDR/memorial.pfm). C'è anche il sito [Scenes for pbrt-v3](https://www.pbrt.org/scenes-v3.html).
 
 # Indicazioni per il C++
 
@@ -436,7 +436,7 @@ Se vi serve un'immagine PFM realistica, potete usare  [memorial.pfm](http://www.
     ```
     sudo apt install libgd-dev
     ```
-    
+
     Potrebbe non essere semplice installarla sotto Windows…
 
 -   Supporta il salvataggio di immagini sia in formato PNG che JPEG.
@@ -488,8 +488,16 @@ int main() {
 
 -   Il sito [Awesome C++](https://github.com/fffaraz/awesome-cpp#image-processing) ha una sezione dedicata alle librerie grafiche per C++ che elenca molte possibilità.
 
-# Indicazioni per C\#
+# Librerie e CMake
+
+-   Se la libreria supporta `pkg-config`, dovreste poter usarla nel vostro progetto usando `pkg_check_modules` (vedi [Use pkg_search_module and pkg_check_modules](https://riptutorial.com/cmake/example/22951/use-pkg-search-module-and-pkg-check-modules), [Converting from GCC to CMake](https://stackoverflow.com/questions/57961687/converting-from-gcc-to-cmake) e [What is the proper way to use pkg-config from cmake?](https://stackoverflow.com/questions/29191855/what-is-the-proper-way-to-use-pkg-config-from-cmake).
+
+-   Se usate Windows, potreste aver più successo usando `find_package`.
     
+-   Purtroppo non esiste una ricetta unica, ancora nel 2021 la gestione di dipendenze in C++ è un disastro!
+
+# Indicazioni per C\#
+
 # Importare librerie
 
 -   La libreria ImageSharp supporta molti formati: JPEG, PNG, BMP, GIF, e TGA (un vecchio formato che non abbiamo trattato nella lezione di teoria).
@@ -501,9 +509,9 @@ int main() {
     ```text
     $ dotnet add package SixLabors.ImageSharp
     ```
-    
+
 # Salvare file PNG
-    
+
 ```csharp
 // Create a sRGB bitmap
 var bitmap = new Image<Rgb24>(Configuration.Default, width, height);
@@ -558,9 +566,9 @@ using (Stream fileStream = File.OpenWrite("output.png")) {
     ```
     00000000 rrrrrrrr gggggggg bbbbbbbb
     ```
-    
+
     dove `r` sono i bit del rosso, `g` quelli del verde e `b` quelli del blu. Di solito i colori si indicano usando la notazione esadecimale, perché in questo modo sono sempre a sei cifre, ad es. `0x12FA51`.
-    
+
 -   Se `r`, `g` e `b` sono byte nell'intervallo [0, 255], potete usare la formula `r * 65536 + g * 256 + b` oppure `(r shl 24) + (g shl 8) + b`.
 
 # Esempio di codice Kotlin
@@ -591,9 +599,9 @@ fun main(args: Array<String>) {
     ```text
     $ ./main.py input_file.pfm 0.3 1.0 output_file.png
     ```
-    
+
     perché bisogna passare da `gradlew`, che richiede che i parametri siano passati attraverso `--args`:
-    
+
     ```text
     ./gradlew run --args="input_file.pfm 0.3 1.0 output_file.png"
     ```

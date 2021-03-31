@@ -368,7 +368,7 @@ $</code></pre></li>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage:</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> clamp_image(<span class="va">self</span>):</span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(<span class="va">self</span>.pixels)):</span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.pixels[i].r <span class="op">=</span> _clamp(<span class="va">self</span>.pixels[i].r)</span>
@@ -437,7 +437,7 @@ $</code></pre></li>
 <h1>Conversione a LDR (3/3)</h1>
 <div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> write_ldr_image(<span class="va">self</span>, stream, <span class="bu">format</span>, gamma<span class="op">=</span><span class="fl">1.0</span>):</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="im">from</span> PIL <span class="im">import</span> Image</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> Image.new(<span class="st">&quot;RGB&quot;</span>, (<span class="va">self</span>.width, <span class="va">self</span>.height))</span>
@@ -521,7 +521,7 @@ $</code></pre></li>
 <li>Definire una funzione che applichi la correzione per le sorgenti luminose;</li>
 <li>Implementare il <code>main</code> nel codice dell’applicazione, in modo che accetti 4 argomenti: il file PFM da leggere, il valore di <span class="math inline">a</span>, il valore di γ, e il nome del file PNG/JPEG/etc. da creare.</li>
 </ol>
-<p>Se vi serve un’immagine PFM realistica, potete usare <a href="http://www.pauldebevec.com/Research/HDR/memorial.pfm">memorial.pfm</a>.</p>
+<p>Se vi serve un’immagine PFM realistica, potete usare <a href="http://www.pauldebevec.com/Research/HDR/memorial.pfm">memorial.pfm</a>. C’è anche il sito <a href="https://www.pbrt.org/scenes-v3.html">Scenes for pbrt-v3</a>.</p>
 </section>
 <section id="indicazioni-per-il-c" class="slide level1">
 <h1>Indicazioni per il C++</h1>
@@ -576,6 +576,14 @@ $</code></pre></li>
 <ul>
 <li><p>Se non riuscite ad usare <code>libgd</code>, potete tentare con qualcuna delle altre librerie.</p></li>
 <li><p>Il sito <a href="https://github.com/fffaraz/awesome-cpp#image-processing">Awesome C++</a> ha una sezione dedicata alle librerie grafiche per C++ che elenca molte possibilità.</p></li>
+</ul>
+</section>
+<section id="librerie-e-cmake" class="slide level1">
+<h1>Librerie e CMake</h1>
+<ul>
+<li><p>Se la libreria supporta <code>pkg-config</code>, dovreste poter usarla nel vostro progetto usando <code>pkg_check_modules</code> (vedi <a href="https://riptutorial.com/cmake/example/22951/use-pkg-search-module-and-pkg-check-modules">Use pkg_search_module and pkg_check_modules</a>, <a href="https://stackoverflow.com/questions/57961687/converting-from-gcc-to-cmake">Converting from GCC to CMake</a> e <a href="https://stackoverflow.com/questions/29191855/what-is-the-proper-way-to-use-pkg-config-from-cmake">What is the proper way to use pkg-config from cmake?</a>.</p></li>
+<li><p>Se usate Windows, potreste aver più successo usando <code>find_package</code>.</p></li>
+<li><p>Purtroppo non esiste una ricetta unica, ancora nel 2021 la gestione di dipendenze in C++ è un disastro!</p></li>
 </ul>
 </section>
 <section id="indicazioni-per-c" class="slide level1">
