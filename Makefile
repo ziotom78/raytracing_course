@@ -1,4 +1,5 @@
 PANDOC = /usr/bin/pandoc
+SED = /bin/sed
 JS_FILES = \
 	./js/quantization.js
 
@@ -27,7 +28,7 @@ index.html: index.md ${JS_FILES}
 %.html: %.md
 	$(PANDOC) \
 	    	--standalone \
-		--filter pandoc-plot \
+		--filter pandoc-imagine \
 		--css ./css/custom.css \
 		--css ./css/asciinema-player.css \
 		-A asciinema-include.html \
@@ -42,3 +43,5 @@ index.html: index.md ${JS_FILES}
 		-f markdown+tex_math_single_backslash+subscript+superscript \
 		-t revealjs \
 		-o $@ $<
+	# This is necessary to make Asymptote WebGL figures work
+	$(SED) -i 's/embed data-src/embed height="420px" src/g' $@

@@ -20,7 +20,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 # Obbiettivo del corso
 
 
-```{.graphviz}
+```{.graphviz im_fmt="svg" im_out="img"}
 digraph "" {
     read [label="read input file" shape=box];
     solve [label="solve the rendering equation" shape=box];

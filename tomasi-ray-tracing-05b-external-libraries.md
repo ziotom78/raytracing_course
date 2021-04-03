@@ -110,7 +110,8 @@ $$
 
 # Punti luminosi
 
-```{.gnuplot format=svg dpi=600}
+```{.gnuplot im_fmt="svg" im_out="img"}
+set terminal svg
 set xlabel "Input"
 set ylabel "Output"
 plot [0:10] [] x/(1 + x)

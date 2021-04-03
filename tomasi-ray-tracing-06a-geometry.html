@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Lezione 4</title>
+  <title>Lezione 6</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -43,145 +43,332 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Lezione 4</h1>
+  <h1 class="title">Lezione 6</h1>
   <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
   <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="equazione-del-rendering" class="slide level1">
-<h1>Equazione del rendering</h1>
-</section>
-<section id="formulazione-dellequazione" class="slide level1">
-<h1>Formulazione dell’equazione</h1>
-<p>L’equazione che studieremo durante il corso è la seguente: <span class="math display">
-\begin{aligned}
-L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
-&amp;\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
-\end{aligned}
-</span> dove <span class="math inline">L_e</span> è la radianza emessa dalla superficie nel punto <span class="math inline">x</span> lungo la direzione <span class="math inline">\Theta</span>.</p>
-</section>
-<section id="esempi-banali" class="slide level1">
-<h1>Esempi banali</h1>
-<ul>
-<li><p>Assenza di radiazione: in questo caso <span class="math inline">L_e = 0</span> e <span class="math inline">\forall\Psi: L(x \leftarrow \Psi) = 0</span>, quindi</p>
-<p><span class="math display">
-L = 0.
-</span></p>
-<p>È una scena perfettamente buia: molto poco interessante!</p></li>
-<li><p>Se un punto emette radiazione isotropa con radianza <span class="math inline">L_e</span> in <span class="math inline">x_0</span>, allora in ogni altro punto <span class="math inline">x</span> dello spazio vale che</p>
-<p><span class="math display">
-L(x_0 \rightarrow \Theta) = L_e
-</span></p>
-<p>Tutto lo spazio è riempito dalla medesima radianza: poco interessante!</p></li>
-</ul>
-</section>
-<section id="esempio-più-complesso" class="slide level1">
-<h1>Esempio più complesso</h1>
-<p>Piano infinito diffusivo ideale e non emettente (<span class="math inline">L_e = 0</span>) e una sferetta di raggio <span class="math inline">r</span> a una distanza <span class="math inline">d \gg r</span> dal piano che emette isotropicamente con radianza <span class="math inline">L_d</span>.</p>
-<p><img data-src="./media/plane.png" height="360" /></p>
-</section>
-<section id="esempio-più-complesso-1" class="slide level1">
-<h1>Esempio più complesso</h1>
-<p>Dato un punto <span class="math inline">x</span> sul piano, vale che:</p>
-<p><span class="math display">
-L(x \rightarrow \Theta) = \int_{2\pi} \frac{\rho_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
-</span> Già qui le cose si complicano! Qual è il valore di <span class="math inline">L(x \leftarrow \Psi)</span>? (No, <em>non</em> è <span class="math inline">L_d</span>!)</p>
-</section>
-<section id="radianza-entrante" class="slide level1">
-<h1>Radianza entrante</h1>
-<p>Il valore di <span class="math inline">L(x \leftarrow \Psi)</span> è <strong>nullo</strong>, tranne quando <span class="math inline">\Psi</span> punta verso la sorgente luminosa. Dividiamo il dominio dell’integrale: <span class="math display">
-\int_{2\pi} = \int_{\Omega(d)} + \int_{2\pi - \Omega{d}},
-</span> dove <span class="math inline">\Omega(d)</span> è l’angolo solido della sfera alla distanza <span class="math inline">d</span>. Il secondo integrale è nullo, perché su quell’angolo solido <span class="math inline">L(x \leftarrow \Psi) = 0</span>.</p>
-</section>
-<section id="radianza-entrante-1" class="slide level1">
-<h1>Radianza entrante</h1>
-<p>L’integrale sull’angolo solido <span class="math inline">\Omega(d)</span> è semplice se supponiamo che nel dominio sia <span class="math inline">d</span> che l’angolo <span class="math inline">\theta</span> tra <span class="math inline">N_x</span> e <span class="math inline">\Psi</span> siano costanti (la sfera è piccola): <span class="math display">
-L(x \rightarrow \Theta) = \int_{\Omega(d)} \frac{\rho_d}\pi\,L_d\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi \approx \frac{\rho_d}\pi\,L_d\,\cos\theta \times \pi\left(\frac{r}d\right)^2,
-</span> dove <span class="math inline">\theta</span> è l’angolo tra la normale e la direzione della sferetta.</p>
-</section>
-<section id="proprietà-della-soluzione" class="slide level1">
-<h1>Proprietà della soluzione</h1>
-<ul>
-<li><span class="math inline">L(x \rightarrow \Theta) \approx \rho_d\,L_d\,\cos\theta\,\left(\frac{r}d\right)^2.</span></li>
-<li>Anche se il punto emette isotropicamente e la superficie è diffusiva ideale, c’è comunque una dipendenza dal coseno di <span class="math inline">\theta</span>.</li>
-<li>La radianza riflessa è proporzionale alla superficie della sfera (<span class="math inline">\propto r^2</span>).</li>
-<li>All’aumentare di <span class="math inline">d</span>, la radiazione emessa dal piano diminuisce come <span class="math inline">d^{-2}</span>.</li>
-</ul>
-</section>
-<section id="doppio-piano" class="slide level1">
-<h1>Doppio piano</h1>
-<p>Supponiamo ora di avere <em>due</em> piani diffusivi ideali:</p>
-<p><img data-src="./media/double-plane.png" height="360" /></p>
-<p>Come si tratta questo caso?</p>
-</section>
-<section id="doppio-piano-1" class="slide level1">
-<h1>Doppio piano</h1>
-<p>Consideriamo ancora il piano sottostante. Vale che:</p>
-<p><span class="math display">
-L_\text{down}(x \rightarrow \Theta) = \int_{\Omega_x} \frac{\rho_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
-</span> Ma ora l’integrale non è più una semplice delta di Dirac: oltre alla sferetta c’è il piano superiore. Qual è il valore di <span class="math inline">L_\text{up}(x \leftarrow \Psi)</span> prodotto dal piano superiore?</p>
-</section>
-<section id="doppio-piano-2" class="slide level1">
-<h1>Doppio piano</h1>
-<p>Il valore di <span class="math inline">L(x \leftarrow \Psi)</span> causato da una direzioneper il piano superiore si calcola con la stessa formula della slide precedente:</p>
-<p><span class="math display">
-L_\text{up}(x \rightarrow \Theta) = \int_{\Omega_x} \frac{\rho_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
-</span></p>
-<p>Ma così ci invischiamo in un problema ricorsivo!</p>
-</section>
-<section id="il-problema-generale" class="slide level1">
-<h1>Il problema generale</h1>
-<p>Nel caso generale avviene che l’integrale da calcolare è <em>multiplo</em>:</p>
-<p><span class="math display">
-L(x \rightarrow \Theta) = \int_{\Omega^{(1)}_x} \int_{\Omega^{(2)}_x} \int_{\Omega^{(3)}_x} \ldots
-</span></p>
-<p>È un integrale a molte dimensioni (i termini successivi al primo sono sempre meno importanti e tendono a zero, quindi le dimensioni non sono <em>infinite</em>).</p>
-</section>
-<section id="il-problema-generale-1" class="slide level1">
-<h1>Il problema generale</h1>
-<ul>
-<li>L’equazione del rendering è impossibile da risolvere analiticamente nel caso generale.</li>
-<li>Ecco quindi la necessità di usare il calcolo numerico</li>
-<li>Il nostro codice dovrà implementare una serie di tipi geometrici</li>
-</ul>
-</section>
 <section id="modellizzazione-di-oggetti" class="slide level1">
 <h1>Modellizzazione di oggetti</h1>
 </section>
+<section id="cornell-box" class="slide level1">
+<h1>«Cornell box»</h1>
+<p><img data-src="./media/cornell_box_physical_model_image11.jpg" height="560" /></p>
+</section>
+<section id="cornell-box-1" class="slide level1">
+<h1>«Cornell box»</h1>
+<p><img data-src="./media/cornell-box-schema.svg" height="560" /></p>
+</section>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/night-stand-photo.jpg" />
+<img data-src="./media/night-stand-photo.jpg" height="620" />
 </center>
 </section>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/night-stand-sketch.png" />
+<img data-src="./media/night-stand-sketch.png" height="620" />
 </center>
 </section>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/night-stand-lines.png" />
+<img data-src="./media/night-stand-lines.png" height="620" />
 </center>
 </section>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/night-stand-vertexes.png" />
+<img data-src="./media/night-stand-vertexes.png" height="620" />
 </center>
 </section>
-<section id="lezioni-imparate-oggi" class="slide level1">
-<h1>Lezioni imparate oggi</h1>
-</section>
-<section class="slide level1">
-
+<section id="posizioni-e-trasformazioni" class="slide level1">
+<h1>Posizioni e trasformazioni</h1>
 <ul>
-<li>Sempre definire in modo accurato le quantità misurabili (energia, flusso, radianza, etc.).</li>
-<li>Assicurarsi di studiare un modello fisico in casi semplici (spazio vuoto, sferetta e piano, sferetta e due piani, etc.), per <em>capire</em> il modello prima di usarlo.</li>
-<li>Il mondo è <em>complicato</em>! night-stand-lines.png night-stand-photo.jpg night-stand-sketch.png night-stand-vertexes.png</li>
+<li><p>La descrizione geometrica di un oggetto nello spazio fa solitamente uso di trasformazioni;</p></li>
+<li><p>Queste trasformazioni sono necessarie per collocare gli oggetti che compongono la scena in modo che la loro posizione, il loro orientamento e le loro dimensioni siano quelle desiderate.</p></li>
+<li><p>Anche la posizione della telecamera viene specificata tramite trasformazioni che ne identificano la posizione (dove sta l’osservatore?) e l’orientamento (in che direzione sta guardando?).</p></li>
 </ul>
+</section>
+<section id="interazione-con-superfici" class="slide level1">
+<h1>Interazione con superfici</h1>
+<center>
+<img data-src="./media/surface-normals-wikipedia.svg" />
+</center>
+<p>Il modo in cui un raggio di luce interagisce con una superficie dipende dalla BRDF, che <a href="tomasi-ray-tracing-01a-rendering-equation.html#/la-brdf">è espressa in termini dell’angolo</a> <span class="math inline">\theta = N_x \cdot \Psi</span> tra la direzione di incidenza <span class="math inline">\Psi</span> e la normale <span class="math inline">N_x</span> alla superficie nel punto <span class="math inline">x</span>.</p>
+</section>
+<section id="codifica-della-geometria" class="slide level1">
+<h1>Codifica della geometria</h1>
+<p>Per risolvere l’equazione del rendering numericamente, il nostro codice deve trattare correttamente una serie di quantità:</p>
+<ul>
+<li>Punti nello spazio tridimensionale (posizioni dei vertici del comodino);</li>
+<li>Vettori 3D (direzioni di propagazione della luce);</li>
+<li>Normali (che rappresentano l’inclinazione della superficie in un punto);</li>
+<li>Matrici (per rappresentare le trasformazioni).</li>
+</ul>
+<p>Ripassiamo quindi le proprietà di questi oggetti geometrici.</p>
+</section>
+<section id="ripasso-di-algebra-lineare" class="slide level1">
+<h1>Ripasso di algebra lineare</h1>
+</section>
+<section id="spazi-vettoriali" class="slide level1">
+<h1>Spazi vettoriali</h1>
+<p>Uno spazio vettoriale <span class="math inline">V</span> su un campo <span class="math inline">F</span> è un insieme non vuoto <span class="math inline">V</span> di elementi, detti <em>vettori</em>, associato a due operatori <span class="math inline">+: V \times V \rightarrow V</span> e <span class="math inline">\cdot: F \times V \rightarrow V</span> che soddisfano queste proprietà <span class="math inline">\forall u, v, w \in V, \forall \alpha, \beta \in F</span>:</p>
+<ol>
+<li><span class="math inline">+</span> è commutativo e associativo;</li>
+<li>Esiste un vettore <span class="math inline">0</span> che è elemento neutro per <span class="math inline">+</span>;</li>
+<li><span class="math inline">\forall u \in V,\ \exist -u \in V: u + (-u) = 0</span>;</li>
+<li><span class="math inline">\alpha(\beta v) = (\alpha\beta) v,\quad (\alpha + \beta) v = \alpha v + \beta v,\quad \alpha(v + u) = \alpha v + \alpha u</span>;</li>
+<li>Se <span class="math inline">1 \in F</span> è l’elemento neutro del prodotto su <span class="math inline">F</span>, allora <span class="math inline">1u = u</span>.</li>
+</ol>
+</section>
+<section id="prodotto-interno" class="slide level1">
+<h1>Prodotto interno</h1>
+<p>Dato uno spazio vettoriale <span class="math inline">V</span> su <span class="math inline">F</span>, il prodotto interno è un’operazione <span class="math inline">\left&lt;\cdot, \cdot\right&gt;: V \times V \rightarrow F</span> che gode delle seguenti proprietà <span class="math inline">\forall u, v, w \in V, \forall \alpha \in F</span>:</p>
+<ol>
+<li><span class="math inline">\left&lt;\alpha u, v\right&gt; = \alpha \left&lt;u, v\right&gt;</span>;</li>
+<li><span class="math inline">\left&lt;u + v, w\right&gt; = \left&lt;u, w\right&gt; + \left&lt;v, w\right&gt;</span>;</li>
+<li><span class="math inline">\left&lt;u, v\right&gt; = \overline{\left&lt;v, u\right&gt;}</span>;</li>
+<li><span class="math inline">\left&lt;u, u\right&gt; &gt; 0</span> se <span class="math inline">u \not= 0</span>.</li>
+</ol>
+<p>Un esempio è il classico prodotto scalare <span class="math inline">\vec u \cdot \vec v = \left\|\vec u\right\|\,\left\|v\right\|\,\cos\theta</span> su <span class="math inline">\mathbb{R}^n</span>.</p>
+</section>
+<section id="norma-e-ortogonalità" class="slide level1">
+<h1>Norma e ortogonalità</h1>
+<ul>
+<li><p>Dato un prodotto interno, si può definire la <em>norma</em> <span class="math inline">\left\|\cdot\right\|: V \rightarrow F</span> in questo modo:</p>
+<p><span class="math display">
+\left\|u\right\| = \sqrt{\left&lt;u, u\right&gt;},
+</span></p>
+<p>che è positiva definita, e si annulla solo se <span class="math inline">u = 0</span>.</p></li>
+<li><p>Si definiscono <em>ortogonali</em> due vettori <span class="math inline">u</span> e <span class="math inline">v</span> se vale che <span class="math inline">\left&lt;u, v\right&gt; = 0</span>.</p></li>
+<li><p>Un vettore <span class="math inline">u</span> tale che <span class="math inline">\left\|u\right\| = 1</span> si dice <em>normalizzato</em>.</p></li>
+</ul>
+</section>
+<section id="generatori" class="slide level1">
+<h1>Generatori</h1>
+<ul>
+<li><p>Lo spazio generato da un insieme di vettori <span class="math inline">\{v_i\}_{i=1}^N</span> è l’insieme</p>
+<p><span class="math display">
+\mathrm{Span}\left(\{v_i\}_{i=1}^N\right) = \left\{\sum_{i=1}^N \alpha_i v_i \forall \alpha_i \in F\right\}.
+</span></p></li>
+<li><p>Nel caso di <span class="math inline">\mathbb{R}^3</span>:</p>
+<ol>
+<li>Lo spazio generato da <span class="math inline">\vec v</span> è la retta passante per 0 e allineata con <span class="math inline">\vec v</span>.</li>
+<li>Lo spazio generato da due vettori <span class="math inline">\vec v</span> e <span class="math inline">\vec w</span> non paralleli è il piano passante per l’origine su cui giacciono <span class="math inline">\vec v</span> e <span class="math inline">\vec w</span>.</li>
+</ol></li>
+</ul>
+</section>
+<section id="basi-12" class="slide level1">
+<h1>Basi (1/2)</h1>
+<ul>
+<li><p>I vettori <span class="math inline">\{v_i\}_{i=1}^N</span> si dicono <em>linearmente indipendenti</em> se l’uguaglianza</p>
+<p><span class="math display">
+\sum_{i=1}^N \alpha_i v_i = 0
+</span></p>
+<p>vale solo se <span class="math inline">\alpha_i = 0\ \forall i=1\ldots N</span>.</p></li>
+<li><p>Un insieme di vettori <span class="math inline">\left\{v_i\right\}_{i=1}^N</span> è detto <em>base</em> di <span class="math inline">B</span> se sono linearmente indipendenti e generano <span class="math inline">V</span>, ossia</p>
+<p><span class="math display">
+\mathrm{Span}\left(\{v_i\}_{i=1}^N\right) = V.
+</span></p></li>
+</ul>
+</section>
+<section id="basi-22" class="slide level1">
+<h1>Basi (2/2)</h1>
+<ul>
+<li><p>Se <span class="math inline">V</span> ammette due basi <span class="math inline">\left\{e_i\right\}_{i=1}^N</span> ed <span class="math inline">\left\{f_i\right\}_{i=1}^M</span>, il numero di elementi in entrambe è identico (<span class="math inline">N = M</span>) ed è detto <em>dimensione</em> di <span class="math inline">V</span>. (Ignoriamo in questo corso gli spazi infinito-dimensionali.)</p></li>
+<li><p>Si definisce <em>base ortonormale</em> di uno spazio vettoriale <span class="math inline">V</span> dotato di prodotto interno l’insieme di vettori <span class="math inline">\left\{e_i\right\}_{i=1}^N</span> tali che</p>
+<p><span class="math display">
+\left&lt;e_i, e_j\right&gt; = \delta_{ij}\quad\forall i, j = 1 \ldots N.
+</span></p></li>
+</ul>
+</section>
+<section id="rappresentazione-di-vettori" class="slide level1">
+<h1>Rappresentazione di vettori</h1>
+<ul>
+<li><p>Data una base <span class="math inline">\{e_i\}_{i=1}^N</span>, è sempre possibile scrivere <span class="math inline">v \in V</span> come</p>
+<p><span class="math display">
+v = \sum_{i=1}^N \alpha_i e_i,
+</span></p>
+<p>dove <span class="math inline">\alpha_i \in F</span>. (Conseguenza del fatto che la base genera lo spazio <span class="math inline">V</span>).</p></li>
+<li><p>Tale rappresentazione è sempre unica; se la base è ortonormale, allora vale anche che</p>
+<p><span class="math display">\alpha_i = \left&lt;v, e_i\right&gt;.</span></p></li>
+</ul>
+</section>
+<section id="rappresentazione-di-vettori-1" class="slide level1">
+<h1>Rappresentazione di vettori</h1>
+<ul>
+<li><p>Il fatto che <span class="math inline">\alpha_i = \left&lt;v, e_i\right&gt;</span> vale <strong>solo</strong> se la base è ortonormale!</p></li>
+<li><p>Ad esempio, consideriamo sul piano <span class="math inline">\mathbb{R}^2</span> la base <span class="math inline">e_1 = (1, 0), e_2 = (1, 1)</span>. Il vettore <span class="math inline">v = (4, 3)</span> si scompone come</p>
+<p><span class="math display">
+v = e_1 + 3 e_2 = \begin{pmatrix}1\\0\end{pmatrix} + 3 \begin{pmatrix}1\\1\end{pmatrix} = \begin{pmatrix}4\\3\end{pmatrix},
+</span></p>
+<p>ma <span class="math inline">\left&lt;v, e_1\right&gt; = 4</span> e <span class="math inline">\left&lt;v, e_2\right&gt; = 7</span>.</p></li>
+<li><p>Il nostro codice userà sempre basi ortonormali.</p></li>
+</ul>
+</section>
+<section id="trasformazioni-lineari" class="slide level1">
+<h1>Trasformazioni lineari</h1>
+<ul>
+<li><p>Una trasformazione lineare da uno spazio vettoriale <span class="math inline">V</span> a uno spazio <span class="math inline">W</span> è una funzione lineare <span class="math inline">f: V \rightarrow W</span>:</p>
+<p><span class="math display">
+f(\alpha u + \beta v) = \alpha f(u) + \beta f(v).
+</span></p></li>
+<li><p>Dalla linearità ne segue che <span class="math inline">f(0) = 0</span>, perché</p>
+<p><span class="math display">
+f(0) = f(v - v) = f(v) - f(v) = 0\quad\forall v \in V.
+</span></p></li>
+</ul>
+</section>
+<section id="matrici-12" class="slide level1">
+<h1>Matrici (1/2)</h1>
+<ul>
+<li><p>Una matrice <span class="math inline">M</span> è un insieme di valori scalari <span class="math inline">\left\{m_{ij}\right\} \in F</span> che rappresenta una trasformazione lineare <span class="math inline">f: V \rightarrow W</span> secondo una coppia di basi per <span class="math inline">V</span> e per <span class="math inline">W</span>.</p></li>
+<li><p>La matrice <span class="math inline">M</span> che rappresenta <span class="math inline">f: V \rightarrow W</span> deve avere <span class="math inline">n = N</span> colonne e <span class="math inline">m = M</span> righe, dove <span class="math inline">N</span> è la dimensione di <span class="math inline">V</span> e <span class="math inline">M</span> è la dimensione di <span class="math inline">W</span>.</p></li>
+</ul>
+</section>
+<section id="matrici-22" class="slide level1">
+<h1>Matrici (2/2)</h1>
+<ul>
+<li><p>Se si conosce il valore di <span class="math inline">f(e_i)\ \forall e_i</span>, si può calcolare <span class="math inline">f</span> su qualsiasi vettore:</p>
+<p><span class="math display">
+f(v) = f\left(\sum_{i=1}^N \alpha_i e_i\right) =
+\sum_{i=1}^N \alpha_i f(e_i).
+</span></p></li>
+<li><p>Il punto precedente si lega al fatto che la colonna <span class="math inline">i</span>-esima della matrice <span class="math inline">M</span> contiene la rappresentazione di <span class="math inline">f(e_i)</span> (con <span class="math inline">e_i</span> elemento <span class="math inline">i</span>-esimo della base di <span class="math inline">V</span>) nella base di <span class="math inline">W</span>.</p></li>
+</ul>
+</section>
+<section id="primo-esempio" class="slide level1">
+<h1>Primo esempio</h1>
+<ul>
+<li><p>Consideriamo la matrice in <span class="math inline">\mathbb{R}^2</span></p>
+<p><span class="math display">
+M = \begin{pmatrix}3&amp;4\\2&amp;-1\end{pmatrix}
+</span></p>
+<p>e la base <span class="math inline">e_1 = (1, 0), e_2 = (0, 1)</span>.</p></li>
+<li><p>È facile vedere che la prima colonna di <span class="math inline">M</span> è uguale a <span class="math inline">M e_1</span> e la seconda a <span class="math inline">M e_2</span>:</p>
+<p><span class="math display">
+M e_1 = \begin{pmatrix}3&amp;4\\2&amp;-1\end{pmatrix} \begin{pmatrix}1\\0\end{pmatrix} = \begin{pmatrix}3\\2\end{pmatrix},\quad
+M e_2 = \begin{pmatrix}3&amp;4\\2&amp;-1\end{pmatrix} \begin{pmatrix}0\\1\end{pmatrix} = \begin{pmatrix}4\\-1\end{pmatrix}.
+</span></p></li>
+</ul>
+</section>
+<section id="secondo-esempio" class="slide level1">
+<h1>Secondo esempio</h1>
+<ul>
+<li><p>Scriviamo la matrice <span class="math inline">R(\theta)</span> che rappresenta una rotazione di <span class="math inline">\theta</span> intorno all’origine del piano cartesiano <span class="math inline">xy</span>.</p></li>
+<li><p>Per quanto detto, è sufficiente calcolare <span class="math inline">R(\theta) e_1</span> e <span class="math inline">R(\theta) e_2</span>:</p>
+<p><span class="math display">
+R(\theta) e_1 = \begin{pmatrix}\cos\theta\\\sin\theta\end{pmatrix}, \quad
+R(\theta) e_2 = \begin{pmatrix}\cos(\theta + 90^\circ)\\\sin(\theta + 90^\circ)\end{pmatrix} = \begin{pmatrix}-\sin\theta\\\cos\theta\end{pmatrix},
+</span></p>
+<p>perché essi sono le colonne della matrice <span class="math inline">R(\theta)</span>:</p>
+<p><span class="math display">
+R(\theta) = \begin{pmatrix}\cos\theta&amp;-\sin\theta\\\sin\theta&amp;\cos\theta\end{pmatrix}.
+</span></p></li>
+</ul>
+</section>
+<section id="riflessioni" class="slide level1">
+<h1>Riflessioni</h1>
+<ul>
+<li><p>Consideriamo ora un tipo particolare di trasformazione, detta <em>riflessione</em>.</p></li>
+<li><p>Punti, vettori ed angoli si trasformano in maniera intuitiva rispetto alle riflessioni:</p>
+<center>
+<p><img data-src="./media/mirror.svg" height="380" /></p>
+</center></li>
+</ul>
+</section>
+<section id="pseudovettori" class="slide level1">
+<h1>Pseudovettori</h1>
+<ul>
+<li><p>Consideriamo ora un’automobile che si allontana da noi, e la sua copia riflessa.</p></li>
+<li><p>Il momento angolare delle ruote <span class="math inline">\vec\omega</span> <strong>non</strong> si trasforma come un normale vettore nella riflessione: è uno <em>pseudovettore</em>.</p>
+<center>
+<p><img data-src="./media/auto-angular-momentum.svg" height="380" /></p>
+</center></li>
+</ul>
+</section>
+<section id="pseudovettori-1" class="slide level1">
+<h1>Pseudovettori</h1>
+<ul>
+<li><p>Il problema di <span class="math inline">\vec\omega</span> è che è definito tramite il prodotto vettoriale: <span class="math inline">\vec \omega = \vec r \times \vec p</span>, e il risultato di un prodotto vettoriale è <em>sempre</em> uno pseudovettore.</p></li>
+<li><p>Questo si vede anche nel caso della legge di Ampère:</p>
+<center>
+<p><img data-src="./media/B-pseudovector.svg" height="380" /></p>
+</center></li>
+</ul>
+</section>
+<section id="trasformazioni" class="slide level1">
+<h1>Trasformazioni</h1>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/raytracing-example.webp" />
+</center>
+</section>
+<section id="tipi-di-trasformazioni" class="slide level1">
+<h1>Tipi di trasformazioni</h1>
+<ul>
+<li><p>Ci interesseremo solo di trasformazioni <strong>invertibili</strong>.</p></li>
+<li><p>Le trasformazioni che implementeremo saranno le seguenti:</p>
+<ol>
+<li>Trasformazione di scala (ingrandimento/rimpicciolimento);</li>
+<li>Rotazione attorno ad un asse;</li>
+<li>Traslazione (spostamento).</li>
+</ol>
+<center>
+<p><img data-src="./media/transformations.svg" /></p>
+</center></li>
+</ul>
+</section>
+<section id="trasformazioni-di-scala" class="slide level1">
+<h1>Trasformazioni di scala</h1>
+</section>
+<section id="proprietà-generali" class="slide level1">
+<h1>Proprietà generali</h1>
+<ul>
+<li><p>Una trasformazione di scala è rappresentata da una matrice diagonale <span class="math inline">M = \mathrm{diag}(s_1, s_2, \ldots)</span> con <span class="math inline">s_i \not= 0\ \forall i</span>:</p>
+<p><span class="math display">
+M = \begin{pmatrix}s_1&amp; 0&amp; \vdots\\0&amp; s_2&amp; \vdots\\\ldots&amp; \ldots&amp;\end{pmatrix}.
+</span></p></li>
+<li><p>Trasformazioni di scala in cui <span class="math inline">s_i &lt; 0</span> sono anche dette <em>speculari</em> rispetto all’asse <span class="math inline">i</span>-esimo (riflessione rispetto a uno specchio).</p></li>
+</ul>
+</section>
+<section id="esempio" class="slide level1">
+<h1>Esempio</h1>
+<ul>
+<li><p>Un cerchio sul piano può essere trasformato in un ellisse tramite una trasformazione di scala; nell’esempio qui sotto, <span class="math inline">M = \mathrm{diag}(1/2, 1)</span>:</p>
+<center>
+<p><img data-src="pd-images/48796fa9116f765d975a1d5a47e9fca4ff47a4b1.svg" /></p>
+</center></li>
+<li><p>Una riflessione rispetto all’asse <span class="math inline">y</span> è rappresentata da <span class="math inline">M = \mathrm{diag}(1, -1)</span>.</p>
+<center>
+<p><img data-src="pd-images/9af51d0680ed4d27aba38bc980d57d4a1fa5233f.svg" /></p>
+</center></li>
+</ul>
+</section>
+<section id="rotazioni" class="slide level1">
+<h1>Rotazioni</h1>
+</section>
+<section id="formalismo" class="slide level1">
+<h1>Formalismo</h1>
+<ul>
+<li><p>Per definire una rotazione sul piano attorno all’origine è sufficiente <strong>un</strong> grado di libertà.</p></li>
+<li><p>Però per definire una rotazione in tre dimensioni intorno all’origine sono necessari <strong>tre</strong> gradi di libertà: l’asse di rotazione e l’angolo. (L’asse di rotazione è un vettore di lunghezza unitaria, quindi ha due gradi di libertà).</p></li>
+<li><p>Ci sono vari modi per rappresentare una rotazione, alcuni più efficaci di altri a seconda del contesto. Noi considereremo il formalismo matriciale, ma daremo anche una panoramica sui <strong>quaternioni</strong>.</p></li>
+</ul>
+</section>
+<section id="traslazioni" class="slide level1">
+<h1>Traslazioni</h1>
+</section>
+<section id="il-problema-delle-traslazioni" class="slide level1">
+<h1>Il problema delle traslazioni</h1>
+<ul>
+<li>Il vettore <span class="math inline">\vec \omega</span></li>
+</ul>
+<p><embed height="420px" src="pd-images/47186d4cc128ac648d8e691624272a29503cc5d1.html" /></p>
 </section>
     </div>
   </div>
@@ -221,5 +408,7 @@ L(x \rightarrow \Theta) = \int_{\Omega^{(1)}_x} \int_{\Omega^{(2)}_x} \int_{\Ome
       });
     </script>
     <script src="js/asciinema-player.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
     </body>
 </html>
