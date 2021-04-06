@@ -60,7 +60,7 @@ Metadati
 : Alcuni formati consentono di memorizzare metadati a piacere.
 
 Facilità di lettura/scrittura
-: Alcuni sono semplici da scrivere ([PNM](https://en.wikipedia.org/wiki/Netpbm)), altri molto più complessi (JPEG).
+: Alcuni sono semplici da scrivere ([PNM](https://en.wikipedia.org/wiki/Netpbm)), altri molto più complessi (JPEG, [PSD](https://github.com/zepouet/Xee-xCode-4.5/blob/master/XeePhotoshopLoader.m#L108)!).
 
 Compressione
 : Molti formati comprimono i dati per ridurre lo spazio su disco. Se la compressione preserva l'informazione è detta **lossless**, altrimenti **lossy**.
