@@ -42,9 +42,9 @@ union {
     pigment { color Red }
 
 #if (clock < 1.0)
-    rotate 45 * clock * y
+    rotate 90 * clock * y
 #else
-    rotate 45 * y
+    rotate 90 * y
     translate -(clock - 1) * 1.5 * x
 #end
   }
@@ -65,7 +65,7 @@ union {
     translate -clock * 1.5 * x
 #else
     translate -1.5 * x
-    rotate 45 * (clock - 1) * y
+    rotate 90 * (clock - 1) * y
 #end
   }
   
