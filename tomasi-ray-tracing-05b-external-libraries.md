@@ -110,7 +110,7 @@ $$
 
 # Punti luminosi
 
-```{.gnuplot im_fmt="svg" im_out="img"}
+```{.gnuplot im_fmt="svg" im_out="img" im_fname="bright-point-transformation"}
 set terminal svg
 set xlabel "Input"
 set ylabel "Output"

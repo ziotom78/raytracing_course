@@ -271,7 +271,7 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 
 # Grafico delle dipendenze
 
-```{.graphviz im_fmt="svg" im_out="img"}
+```{.graphviz im_fmt="svg" im_out="img" im_fname="project-structure"}
 graph "" {
     lib [label="library" shape=ellipse];
     exec [label="executable" shape=box];
@@ -572,7 +572,7 @@ target_compile_features(raytracer PUBLIC cxx_std_17)
 
 # Soluzioni e progetti
 
-```{.graphviz im_fmt="svg" im_out="img"}
+```{.graphviz im_fmt="svg" im_out="img" im_fname="project-structure-csharp"}
 graph "" {
     lib [label="library (project)" shape=ellipse];
     exec [label="executable (project)" shape=box];

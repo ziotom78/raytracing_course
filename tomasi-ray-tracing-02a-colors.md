@@ -147,7 +147,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Curve X, Y, Z
 
-```{.gnuplot im_fmt="svg" im_out="img"}
+```{.gnuplot im_fmt="svg" im_out="img" im_fname="cie-data"}
 set terminal svg
 set xlabel "Wavelength [nm]"
 set ylabel "Pure number"
@@ -482,7 +482,7 @@ document.addEventListener('rgb-colors', function() {
 
 # Andamento di $\gamma$
 
-```{.gnuplot im_fmt="svg" im_out="img"}
+```{.gnuplot im_fmt="svg" im_out="img" im_fname="gamma-curve"}
 set terminal svg
 set xlabel "Normalized input"
 set ylabel "Normalized output"

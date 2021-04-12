@@ -16,7 +16,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Uso del tone mapping
 
-```{.graphviz}
+```{.graphviz  im_fname="tone-mapping-workflow"}
 digraph "" {
     read [label="read input file" shape=box];
     solve [label="solve the rendering equation" shape=box];
