@@ -38,9 +38,15 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ![](./media/night-stand-vertexes.png){height=620}
 </center>
 
+# Il problema geometrico
+
+-   Collocazione degli oggetti nello spazio?
+-   Dove sta l'osservatore, e verso cosa sta guardando?
+-   Superficie degli oggetti?
+
 # Posizioni e trasformazioni
 
--   La descrizione geometrica di un oggetto nello spazio fa solitamente uso di trasformazioni;
+-   La descrizione geometrica di un oggetto nello spazio fa solitamente uso di trasformazioni.
 
 -   Queste trasformazioni sono necessarie per collocare gli oggetti che compongono la scena in modo che la loro posizione, il loro orientamento e le loro dimensioni siano quelle desiderate.
 
@@ -58,10 +64,10 @@ Il modo in cui un raggio di luce interagisce con una superficie dipende dalla BR
 
 Per risolvere l'equazione del rendering numericamente, il nostro codice deve trattare correttamente una serie di quantità:
 
--   Punti nello spazio tridimensionale (posizioni dei vertici del comodino);
--   Vettori 3D (direzioni di propagazione della luce);
--   Normali (che rappresentano l'inclinazione della superficie in un punto);
--   Matrici (per rappresentare le trasformazioni).
+-   **Punti** nello spazio tridimensionale (posizioni dei vertici del comodino);
+-   **Vettori** 3D (direzioni di propagazione della luce);
+-   **Normali** (rappresentano l'inclinazione della superficie in un punto);
+-   **Matrici** (codificano le trasformazioni).
 
 Ripassiamo quindi le proprietà di questi oggetti geometrici.
 
@@ -112,8 +118,28 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
 
 -   Nel caso di $\mathbb{R}^3$:
     #.  Lo spazio generato da $\vec v$ è la retta passante per 0 e allineata con $\vec v$.
-    #.  Lo spazio generato da due vettori $\vec v$ e $\vec w$ non paralleli è il piano passante per l'origine su cui giacciono $\vec v$ e $\vec w$.
-    
+    #.  Lo spazio generato da due vettori $\vec v$ e $\vec w$ non paralleli è il piano passante per l'origine su cui giacciono $\vec v$ e $\vec w$. (V. slide seguente).
+
+# Esempio: piano generato
+
+```{.asy im_fmt="html" im_opt="-f html" im_out="img,stdout,stderr" im_fname="vector_generators"}
+size(0,100);
+import three;
+currentlight=Viewport;
+
+draw(O--2X, gray); //x-axis
+draw(O--2Y, gray); //y-axis
+draw(O--2Z, gray); //z-axis
+
+real[][] rot = rotate(15, X) * rotate(30, Y);
+path3 pl = ((2, -2, 0) -- (-2, -2, 0) -- (-2, 2, 0) -- (2, 2, 0) -- cycle);
+draw(surface(rot * pl), green + opacity(0.2));
+draw(rot * pl, black);
+draw(rot * ((0, 0, 0) -- X), blue, Arrow3);
+draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
+```
+
+
 # Basi (1/2)
 
 -   I vettori $\{v_i\}_{i=1}^N$ si dicono *linearmente indipendenti* se l'uguaglianza
@@ -150,15 +176,17 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
     
     dove $\alpha_i \in F$. (Conseguenza del fatto che la base genera lo spazio $V$).
     
--   Tale rappresentazione è sempre unica; se la base è ortonormale, allora vale anche che
+-   Tale rappresentazione è sempre unica; se la base è ortonormale, allora
 
     $$\alpha_i = \left<v, e_i\right>.$$
+    
+-   I vettori si rappresentano come matrici a una colonna: $v = (\alpha_1\ \alpha_2\ \ldots)^t$.
 
 # Rappresentazione di vettori
 
 -   Il fatto che $\alpha_i = \left<v, e_i\right>$ vale **solo** se la base è ortonormale!
 
--   Ad esempio, consideriamo sul piano $\mathbb{R}^2$ la base $e_1 = (1, 0), e_2 = (1, 1)$. Il vettore $v = (4, 3)$ si scompone come
+-   Ad esempio, consideriamo sul piano $\mathbb{R}^2$ la base $e_1 = (1, 0), e_2 = (1, 1)$. Il vettore $v = (4, 3)$ si scompone risolvendo un sistema lineare, e la soluzione è
 
     $$
     v = e_1 + 3 e_2 = \begin{pmatrix}1\\0\end{pmatrix} + 3 \begin{pmatrix}1\\1\end{pmatrix} = \begin{pmatrix}4\\3\end{pmatrix},
@@ -197,7 +225,7 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
     \sum_{i=1}^N \alpha_i f(e_i).
     $$
 
--   Il punto precedente si lega al fatto che la colonna $i$-esima della matrice $M$ contiene la rappresentazione di $f(e_i)$ (con $e_i$ elemento $i$-esimo della base di $V$) nella base di $W$.
+-   Il punto precedente si lega al fatto che la colonna $i$-esima della matrice $M$ contiene la rappresentazione di $f(e_i)$, con $e_i$ elemento $i$-esimo della c.d. **base canonica** di $V$: $e_1 = (1\ 0\ 0\ldots)^t, e_2 = (0\ 1\ 0\ldots)^t$, etc.
 
 # Primo esempio
 
@@ -207,7 +235,7 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
     M = \begin{pmatrix}3&4\\2&-1\end{pmatrix}
     $$
     
-    e la base $e_1 = (1, 0), e_2 = (0, 1)$.
+    e la base canonica $e_1 = (1\ 0)^t, e_2 = (0\ 1)^t$.
     
 -   È facile vedere che la prima colonna di $M$ è uguale a $M e_1$ e la seconda a $M e_2$:
 
@@ -263,6 +291,7 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
     ![](./media/B-pseudovector.svg){height=380px}
     </center>
 
+
 # Trasformazioni
 
 ---
@@ -273,7 +302,7 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
 
 # Tipi di trasformazioni
 
--   Ci interesseremo solo di trasformazioni **invertibili**.
+-   Con l'eccezione delle trasformazioni 3D→2D, implementeremo t. **invertibili**.
 
 -   Le trasformazioni che implementeremo saranno le seguenti:
     #.  Trasformazione di scala (ingrandimento/rimpicciolimento);
@@ -301,7 +330,7 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
 -   Un cerchio sul piano può essere trasformato in un ellisse tramite una trasformazione di scala; nell'esempio qui sotto, $M = \mathrm{diag}(1/2, 1)$:
 
     <center>
-    ```{.gle im_fmt="svg" im_opt="-cairo -device svg" im_out="img"}
+    ```{.gle im_fmt="svg" im_opt="-cairo -device svg" im_out="img" im_fname="scale-demo"}
     size 10 4
 
     amove 2 2
@@ -317,7 +346,7 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
 -   Una riflessione rispetto all'asse $y$ è rappresentata da $M = \mathrm{diag}(1, -1)$.
 
     <center>
-    ```{.gle im_fmt="svg" im_opt="-cairo -device svg" im_out="img"}
+    ```{.gle im_fmt="svg" im_opt="-cairo -device svg" im_out="img" im_fname="reflect-demo"}
     size 10 4
 
     begin path fill grey50 stroke
@@ -336,6 +365,56 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
     ```
     </center>
 
+# Trasformazioni e normali
+
+-   Già con questo tipo di trasformazioni abbiamo un problema!
+
+-   Le normali agli oggetti non si trasformano come dovrebbero:
+
+    <center>
+    ![](./media/normal-transformation.svg)
+    </center>
+
+-   Qual è la legge di trasformazione per le normali?
+
+# Trasformazioni e normali
+
+-   Una normale $\hat n$ è definita in termini del vettore tangente $\hat v$:
+
+    $$
+    \hat n^t \hat v = 0.
+    $$
+    
+-   Supponiamo di voler applicare la trasformazione $N$ (invertibile) al vettore $\hat v$. Al vettore $\hat n$ dovremo applicare una trasformazione $M$, che sappiamo già essere diversa da $N$, tale che
+
+    $$
+    \left(M \hat n\right)^t \left(N \hat v\right) = 0.
+    $$
+    
+# Trasformazioni e normali
+
+-   Sapendo che $\left(A B\right)^t = B^t A^t$, si ottiene che
+    
+    $$
+    \left(M \hat n\right)^t \left(N \hat v\right) = 0\quad\Rightarrow\quad\hat n^t \left(M^t N\right) \hat v = 0.
+    $$
+    
+-   Sapendo già che $\hat n^t \hat v = 0$, ne segue che l'equazione è vera se
+
+    $$
+    M^t N = \mathbb{1}\quad\Rightarrow\quad M = \left(N^{-1}\right)^t,
+    $$
+    
+    dove abbiamo usato l'assunzione che la trasformazione $N$ ammette un'inversa.
+
+# Trattamento delle normali
+
+-   Abbiamo visto che le normali si comportano in maniera diversa dai vettori nel caso specifico delle trasformazioni di scala.
+
+-   Il risultato che abbiamo ottenuto è però *generale*: non vale solo per trasformazioni di scala, ma per qualsiasi trasformazione invertibile $N$.
+
+-   In codici numerici è conveniente memorizzare in un tipo (`struct`, `class`, `record`, etc.) che rappresenta una trasformazione invertibile sia la matrice $N$ corrispondente a una trasformazione che la trasposta della sua inversa $\left(N^{-1}\right)^t$: si impiega più memoria, ma i calcoli sono più rapidi.
+
 # Rotazioni
 
 ---
@@ -344,22 +423,173 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
 
 -   Per definire una rotazione sul piano attorno all'origine è sufficiente **un** grado di libertà.
 
--   Però per definire una rotazione in tre dimensioni intorno all'origine sono necessari **tre** gradi di libertà: l'asse di rotazione e l'angolo. (L'asse di rotazione è un vettore di lunghezza unitaria, quindi ha due gradi di libertà).
+-   Però per definire una rotazione in tre dimensioni intorno all'origine sono necessari **tre** gradi di libertà: l'asse di rotazione e l'angolo. (L'asse di rotazione è un vettore di lunghezza unitaria, quindi ha solo due gradi di libertà).
 
--   Ci sono vari modi per rappresentare una rotazione, alcuni più efficaci di altri a seconda del contesto. Noi considereremo il formalismo matriciale, ma daremo anche una panoramica sui **quaternioni**.
+-   Ci sono vari modi per rappresentare una rotazione, alcuni più efficaci di altri a seconda del contesto: angoli di Eulero, angolo/asse, matrici di rotazione, quaternioni. Noi ci concentreremo sulle matrici di rotazione.
+
+
+# Rotazioni e matrici
+
+-   In 2D, abbiamo già scritto la [matrice di rotazione attorno all'origine](./tomasi-ray-tracing-06a-geometry.html#/secondo-esempio). La sua applicazione porta allo stesso risultato ottenuto con i numeri complessi:
+
+    $$
+    R(\theta) v = \begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix} \begin{pmatrix}v_1\\v_2\end{pmatrix} = 
+    \begin{pmatrix}v_1\cos\theta - v_2\sin\theta\\v_1\sin\theta + v_2\cos\theta\end{pmatrix}.
+    $$
+
+    <center>
+    ```{.gle im_fmt="svg" im_opt="-cairo -device svg" im_out="img" im_fname="rotation-demo"}
+    size 6 4
+    set hei 0.6
+    set lwidth 0.04
+
+    amove 0 1
+    rline 6 0 arrow end
+
+    amove 3 0
+    rline 0 4 arrow end
+
+    amove 3 1
+    begin rotate 30
+        rline 2 0
+        ellipse 0.1 0.1 fill black
+    end rotate
+    
+    amove 3 1
+    begin rotate 50
+        rline 2 1
+        ellipse 0.1 0.1 fill gray50
+    end rotate
+
+    arc 1 30 80
+    
+    amove 3.75 2
+    text θ
+    
+    amove 5 2
+    text v
+    
+    amove 3.9 3.2
+    text r(θ)v
+    ```
+    </center>
+
+-   In 2 dimensioni, vale che $R(\alpha) R(\beta) = R(\beta) R(\alpha) = R(\alpha + \beta)$.
+    
+# Rotazioni in 3D
+    
+-   In 3 dimensioni, le rotazioni possono essere notevolmente più complesse, perché ci sono infiniti assi usabili per la rotazione intorno all'origine!
+    
+    <center>
+        <video src="./media/rotating-cubes.mp4" width="960" height="360" controls loop autoplay/>
+    </center>
+
+-   In generale, una matrice $R$ in $\mathbb{R^n}$ rappresenta una rotazione se e solo se $\det R = 1$ e $R R^t = \mathbb{1}$, ossia se la trasposta coincide con l'inversa.
+
+# Composizione di rotazioni
+
+-   In 3D, la composizione di rotazioni **non commuta** (a differenza del caso 2D).
+
+-   I due dadi qui sotto subiscono due rotazioni $R_1$ ed $R_2$: per il rosso la rotazione è $R_1 R_2$, per il verde è $R_2 R_1$. Si vede che le posizioni finali sono diverse:
+
+    <center>
+        <video src="./media/rotation-commutativity.mp4" width="640" height="360" controls/>
+    </center>
+
+# Rotazioni elementari
+
+-   Si possono scrivere semplicemente le rotazioni attorno ai tre assi $\hat e_x$, $\hat e_y$ ed $\hat e_z$. Ad esempio, la rotazione attorno a $\hat e_z$ è
+
+    $$
+    R_z(\theta) v = \begin{pmatrix}\cos\theta&-\sin\theta&0\\\sin\theta&\cos\theta&0\\0&0&1\end{pmatrix}.
+    $$
+    
+-   È possibile scrivere una matrice $R_{\hat v}(\theta)$ che descriva una rotazione di un angolo θ attorno a un asse $\hat v$ arbitrario; vedi la [pagina Wikipedia](https://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations) per i dettagli.
+
+# Angoli di Eulero
+
+-   Una rotazione generica $R_{\hat v}(\theta)$ è sempre esprimibile come prodotto delle rotazioni elementari $R_x(\theta_x)$, $R_y(\theta_y)$ e $R_z(\theta_z)$ per adeguati valori di $\theta_x, \theta_y, \theta_z$.
+
+-   Questa proprietà è alla base del formalismo delle rotazioni con gli [angoli di Eulero](https://en.wikipedia.org/wiki/Euler_angles), che però noi non useremo nel nostro codice.
 
 # Traslazioni
 
 # Il problema delle traslazioni
 
--   Il vettore $\vec \omega$ 
+-   Una traslazione $T_{\vec{k}}$ è una operazione che sposta un punto $P$ di $\vec{k}$:
 
-```{.asy im_fmt="html" im_opt="-f html" im_out="img"}
-size(0,100);
-import solids;
-currentlight=Viewport;
+    $$
+    T_{\vec{k}} (P) = P + \vec{k}.
+    $$
 
-draw(O--2X, blue); //x-axis
-draw(O--2Y, green); //y-axis
-draw(O--2Z, red); //z-axis
-```
+-   Finora abbiamo utilizzato matrici per rappresentare trasformazioni di scala e rotazioni. Purtroppo le matrici 3×3 **non possono** rappresentare traslazioni nello spazio tridimensionale: una traslazione $T$ non è un operatore lineare! Se lo fosse, allora varrebbe che
+
+    $$
+    T_{\vec{k}}(0) = 0\quad\forall\ \vec{k}.
+    $$
+
+# Coordinate omogenee
+
+-   Fortunatamente è possibile un trucco, molto usato nella *computer graphics*, che consiste nell'usare **coordinate omogenee**.
+
+-   Nelle coordinate omogenee si considera lo spazio $\mathbb{R}^4$ anziché $\mathbb{R}^3$, e si scrivono i punti $P$ e i vettori $\vec{v}$ in modo diverso:
+
+    $$
+    P = \begin{pmatrix}p_x\\p_y\\p_z\\1\end{pmatrix}, \quad
+    \vec{v} = \begin{pmatrix}v_x\\v_y\\v_z\\0\end{pmatrix}.
+    $$
+
+# Trasformazioni omogenee
+
+-   Una matrice $M$ si trasforma in coordinate omogenee aggiungendo una riga e una colonna:
+
+    $$
+    M =
+    \begin{pmatrix}
+    m_{11}&m_{12}&m_{13}\\
+    m_{21}&m_{22}&m_{23}\\
+    m_{31}&m_{32}&m_{33}
+    \end{pmatrix}\ \rightarrow%
+    \ M_h =
+    \begin{pmatrix}
+    m_{11}&m_{12}&m_{13}&0\\
+    m_{21}&m_{22}&m_{23}&0\\
+    m_{31}&m_{32}&m_{33}&0\\
+    0&0&0&1
+    \end{pmatrix}
+    $$
+
+-   È immediato verificare che l'applicazione di $M_h$ a $P$ e a $\vec{v}$ porta allo stesso risultato del caso non-omogeneo in ℝ³.
+
+# Traslazioni
+
+-   Nelle coordinate omogenee, l'operazione di traslazione lungo un vettore $\vec{k}$ è lineare, e si rappresenta così:
+
+    $$
+    T_{\vec{k}} =
+    \begin{pmatrix}
+    1&0&0&k_x\\
+    0&1&0&k_y\\
+    0&0&1&k_z\\
+    0&0&0&1
+    \end{pmatrix}
+    $$
+
+-   L'operatore è ovviamente lineare, perché è in forma matriciale.
+
+# Proprietà
+
+-   $T_{\vec{k}}^{-1} = T_{-\vec{k}}$: la trasformazione inversa della traslazione lungo $\vec{k}$ è la traslazione lungo $-\vec{k}$;
+-   $T_{\vec{u}} T_{\vec{w}} = T_{\vec{u} + \vec{w}}$: la composizione di due traslazioni è uguale alla traslazione lungo la somma dei due vettori;
+-   $T_{\vec{u}} T_{\vec{w}} = T_{\vec{w}} T_{\vec{u}}$: le traslazioni sono operatori commutativi;
+-   $T_{\vec{k}} \vec{v} = \vec{v}$: a differenza dei punti, i vettori non vengono traslati.
+
+# Rototraslazioni
+
+-   Comporre una traslazione $T_{\vec{k}}$ e una rotazione $R(\theta)$ dipende dall'ordine: il risultato di $T_{\vec{k}}\,R(\theta)$ è diverso da quello di $R(\theta)\,T_{\vec{k}}$:
+
+    <center>
+        <video width="640" height="360" src="./media/rototranslation.mp4" controls/>
+    </center>
+
+-   Si può verificare che le matrici omogenee implementano correttamente questo comportamento.

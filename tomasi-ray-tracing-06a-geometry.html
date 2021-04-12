@@ -83,10 +83,18 @@
 <img data-src="./media/night-stand-vertexes.png" height="620" />
 </center>
 </section>
+<section id="il-problema-geometrico" class="slide level1">
+<h1>Il problema geometrico</h1>
+<ul>
+<li>Collocazione degli oggetti nello spazio?</li>
+<li>Dove sta l’osservatore, e verso cosa sta guardando?</li>
+<li>Superficie degli oggetti?</li>
+</ul>
+</section>
 <section id="posizioni-e-trasformazioni" class="slide level1">
 <h1>Posizioni e trasformazioni</h1>
 <ul>
-<li><p>La descrizione geometrica di un oggetto nello spazio fa solitamente uso di trasformazioni;</p></li>
+<li><p>La descrizione geometrica di un oggetto nello spazio fa solitamente uso di trasformazioni.</p></li>
 <li><p>Queste trasformazioni sono necessarie per collocare gli oggetti che compongono la scena in modo che la loro posizione, il loro orientamento e le loro dimensioni siano quelle desiderate.</p></li>
 <li><p>Anche la posizione della telecamera viene specificata tramite trasformazioni che ne identificano la posizione (dove sta l’osservatore?) e l’orientamento (in che direzione sta guardando?).</p></li>
 </ul>
@@ -102,10 +110,10 @@
 <h1>Codifica della geometria</h1>
 <p>Per risolvere l’equazione del rendering numericamente, il nostro codice deve trattare correttamente una serie di quantità:</p>
 <ul>
-<li>Punti nello spazio tridimensionale (posizioni dei vertici del comodino);</li>
-<li>Vettori 3D (direzioni di propagazione della luce);</li>
-<li>Normali (che rappresentano l’inclinazione della superficie in un punto);</li>
-<li>Matrici (per rappresentare le trasformazioni).</li>
+<li><strong>Punti</strong> nello spazio tridimensionale (posizioni dei vertici del comodino);</li>
+<li><strong>Vettori</strong> 3D (direzioni di propagazione della luce);</li>
+<li><strong>Normali</strong> (rappresentano l’inclinazione della superficie in un punto);</li>
+<li><strong>Matrici</strong> (codificano le trasformazioni).</li>
 </ul>
 <p>Ripassiamo quindi le proprietà di questi oggetti geometrici.</p>
 </section>
@@ -156,9 +164,13 @@
 <li><p>Nel caso di <span class="math inline">\mathbb{R}^3</span>:</p>
 <ol>
 <li>Lo spazio generato da <span class="math inline">\vec v</span> è la retta passante per 0 e allineata con <span class="math inline">\vec v</span>.</li>
-<li>Lo spazio generato da due vettori <span class="math inline">\vec v</span> e <span class="math inline">\vec w</span> non paralleli è il piano passante per l’origine su cui giacciono <span class="math inline">\vec v</span> e <span class="math inline">\vec w</span>.</li>
+<li>Lo spazio generato da due vettori <span class="math inline">\vec v</span> e <span class="math inline">\vec w</span> non paralleli è il piano passante per l’origine su cui giacciono <span class="math inline">\vec v</span> e <span class="math inline">\vec w</span>. (V. slide seguente).</li>
 </ol></li>
 </ul>
+</section>
+<section id="esempio-piano-generato" class="slide level1">
+<h1>Esempio: piano generato</h1>
+<p><embed width="680px" height="680px" src="pd-images/vector_generators.html" /></p>
 </section>
 <section id="basi-12" class="slide level1">
 <h1>Basi (1/2)</h1>
@@ -192,15 +204,16 @@
 v = \sum_{i=1}^N \alpha_i e_i,
 </span></p>
 <p>dove <span class="math inline">\alpha_i \in F</span>. (Conseguenza del fatto che la base genera lo spazio <span class="math inline">V</span>).</p></li>
-<li><p>Tale rappresentazione è sempre unica; se la base è ortonormale, allora vale anche che</p>
+<li><p>Tale rappresentazione è sempre unica; se la base è ortonormale, allora</p>
 <p><span class="math display">\alpha_i = \left&lt;v, e_i\right&gt;.</span></p></li>
+<li><p>I vettori si rappresentano come matrici a una colonna: <span class="math inline">v = (\alpha_1\ \alpha_2\ \ldots)^t</span>.</p></li>
 </ul>
 </section>
 <section id="rappresentazione-di-vettori-1" class="slide level1">
 <h1>Rappresentazione di vettori</h1>
 <ul>
 <li><p>Il fatto che <span class="math inline">\alpha_i = \left&lt;v, e_i\right&gt;</span> vale <strong>solo</strong> se la base è ortonormale!</p></li>
-<li><p>Ad esempio, consideriamo sul piano <span class="math inline">\mathbb{R}^2</span> la base <span class="math inline">e_1 = (1, 0), e_2 = (1, 1)</span>. Il vettore <span class="math inline">v = (4, 3)</span> si scompone come</p>
+<li><p>Ad esempio, consideriamo sul piano <span class="math inline">\mathbb{R}^2</span> la base <span class="math inline">e_1 = (1, 0), e_2 = (1, 1)</span>. Il vettore <span class="math inline">v = (4, 3)</span> si scompone risolvendo un sistema lineare, e la soluzione è</p>
 <p><span class="math display">
 v = e_1 + 3 e_2 = \begin{pmatrix}1\\0\end{pmatrix} + 3 \begin{pmatrix}1\\1\end{pmatrix} = \begin{pmatrix}4\\3\end{pmatrix},
 </span></p>
@@ -236,7 +249,7 @@ f(0) = f(v - v) = f(v) - f(v) = 0\quad\forall v \in V.
 f(v) = f\left(\sum_{i=1}^N \alpha_i e_i\right) =
 \sum_{i=1}^N \alpha_i f(e_i).
 </span></p></li>
-<li><p>Il punto precedente si lega al fatto che la colonna <span class="math inline">i</span>-esima della matrice <span class="math inline">M</span> contiene la rappresentazione di <span class="math inline">f(e_i)</span> (con <span class="math inline">e_i</span> elemento <span class="math inline">i</span>-esimo della base di <span class="math inline">V</span>) nella base di <span class="math inline">W</span>.</p></li>
+<li><p>Il punto precedente si lega al fatto che la colonna <span class="math inline">i</span>-esima della matrice <span class="math inline">M</span> contiene la rappresentazione di <span class="math inline">f(e_i)</span>, con <span class="math inline">e_i</span> elemento <span class="math inline">i</span>-esimo della c.d. <strong>base canonica</strong> di <span class="math inline">V</span>: <span class="math inline">e_1 = (1\ 0\ 0\ldots)^t, e_2 = (0\ 1\ 0\ldots)^t</span>, etc.</p></li>
 </ul>
 </section>
 <section id="primo-esempio" class="slide level1">
@@ -246,7 +259,7 @@ f(v) = f\left(\sum_{i=1}^N \alpha_i e_i\right) =
 <p><span class="math display">
 M = \begin{pmatrix}3&amp;4\\2&amp;-1\end{pmatrix}
 </span></p>
-<p>e la base <span class="math inline">e_1 = (1, 0), e_2 = (0, 1)</span>.</p></li>
+<p>e la base canonica <span class="math inline">e_1 = (1\ 0)^t, e_2 = (0\ 1)^t</span>.</p></li>
 <li><p>È facile vedere che la prima colonna di <span class="math inline">M</span> è uguale a <span class="math inline">M e_1</span> e la seconda a <span class="math inline">M e_2</span>:</p>
 <p><span class="math display">
 M e_1 = \begin{pmatrix}3&amp;4\\2&amp;-1\end{pmatrix} \begin{pmatrix}1\\0\end{pmatrix} = \begin{pmatrix}3\\2\end{pmatrix},\quad
@@ -311,7 +324,7 @@ R(\theta) = \begin{pmatrix}\cos\theta&amp;-\sin\theta\\\sin\theta&amp;\cos\theta
 <section id="tipi-di-trasformazioni" class="slide level1">
 <h1>Tipi di trasformazioni</h1>
 <ul>
-<li><p>Ci interesseremo solo di trasformazioni <strong>invertibili</strong>.</p></li>
+<li><p>Con l’eccezione delle trasformazioni 3D→2D, implementeremo t. <strong>invertibili</strong>.</p></li>
 <li><p>Le trasformazioni che implementeremo saranno le seguenti:</p>
 <ol>
 <li>Trasformazione di scala (ingrandimento/rimpicciolimento);</li>
@@ -341,12 +354,58 @@ M = \begin{pmatrix}s_1&amp; 0&amp; \vdots\\0&amp; s_2&amp; \vdots\\\ldots&amp; \
 <ul>
 <li><p>Un cerchio sul piano può essere trasformato in un ellisse tramite una trasformazione di scala; nell’esempio qui sotto, <span class="math inline">M = \mathrm{diag}(1/2, 1)</span>:</p>
 <center>
-<p><img data-src="pd-images/48796fa9116f765d975a1d5a47e9fca4ff47a4b1.svg" /></p>
+<p><img data-src="pd-images/scale-demo.svg" /></p>
 </center></li>
 <li><p>Una riflessione rispetto all’asse <span class="math inline">y</span> è rappresentata da <span class="math inline">M = \mathrm{diag}(1, -1)</span>.</p>
 <center>
-<p><img data-src="pd-images/9af51d0680ed4d27aba38bc980d57d4a1fa5233f.svg" /></p>
+<p><img data-src="pd-images/reflect-demo.svg" /></p>
 </center></li>
+</ul>
+</section>
+<section id="trasformazioni-e-normali" class="slide level1">
+<h1>Trasformazioni e normali</h1>
+<ul>
+<li><p>Già con questo tipo di trasformazioni abbiamo un problema!</p></li>
+<li><p>Le normali agli oggetti non si trasformano come dovrebbero:</p>
+<center>
+<p><img data-src="./media/normal-transformation.svg" /></p>
+</center></li>
+<li><p>Qual è la legge di trasformazione per le normali?</p></li>
+</ul>
+</section>
+<section id="trasformazioni-e-normali-1" class="slide level1">
+<h1>Trasformazioni e normali</h1>
+<ul>
+<li><p>Una normale <span class="math inline">\hat n</span> è definita in termini del vettore tangente <span class="math inline">\hat v</span>:</p>
+<p><span class="math display">
+\hat n^t \hat v = 0.
+</span></p></li>
+<li><p>Supponiamo di voler applicare la trasformazione <span class="math inline">N</span> (invertibile) al vettore <span class="math inline">\hat v</span>. Al vettore <span class="math inline">\hat n</span> dovremo applicare una trasformazione <span class="math inline">M</span>, che sappiamo già essere diversa da <span class="math inline">N</span>, tale che</p>
+<p><span class="math display">
+\left(M \hat n\right)^t \left(N \hat v\right) = 0.
+</span></p></li>
+</ul>
+</section>
+<section id="trasformazioni-e-normali-2" class="slide level1">
+<h1>Trasformazioni e normali</h1>
+<ul>
+<li><p>Sapendo che <span class="math inline">\left(A B\right)^t = B^t A^t</span>, si ottiene che</p>
+<p><span class="math display">
+\left(M \hat n\right)^t \left(N \hat v\right) = 0\quad\Rightarrow\quad\hat n^t \left(M^t N\right) \hat v = 0.
+</span></p></li>
+<li><p>Sapendo già che <span class="math inline">\hat n^t \hat v = 0</span>, ne segue che l’equazione è vera se</p>
+<p><span class="math display">
+M^t N = \mathbb{1}\quad\Rightarrow\quad M = \left(N^{-1}\right)^t,
+</span></p>
+<p>dove abbiamo usato l’assunzione che la trasformazione <span class="math inline">N</span> ammette un’inversa.</p></li>
+</ul>
+</section>
+<section id="trattamento-delle-normali" class="slide level1">
+<h1>Trattamento delle normali</h1>
+<ul>
+<li><p>Abbiamo visto che le normali si comportano in maniera diversa dai vettori nel caso specifico delle trasformazioni di scala.</p></li>
+<li><p>Il risultato che abbiamo ottenuto è però <em>generale</em>: non vale solo per trasformazioni di scala, ma per qualsiasi trasformazione invertibile <span class="math inline">N</span>.</p></li>
+<li><p>In codici numerici è conveniente memorizzare in un tipo (<code>struct</code>, <code>class</code>, <code>record</code>, etc.) che rappresenta una trasformazione invertibile sia la matrice <span class="math inline">N</span> corrispondente a una trasformazione che la trasposta della sua inversa <span class="math inline">\left(N^{-1}\right)^t</span>: si impiega più memoria, ma i calcoli sono più rapidi.</p></li>
 </ul>
 </section>
 <section id="rotazioni" class="slide level1">
@@ -356,8 +415,59 @@ M = \begin{pmatrix}s_1&amp; 0&amp; \vdots\\0&amp; s_2&amp; \vdots\\\ldots&amp; \
 <h1>Formalismo</h1>
 <ul>
 <li><p>Per definire una rotazione sul piano attorno all’origine è sufficiente <strong>un</strong> grado di libertà.</p></li>
-<li><p>Però per definire una rotazione in tre dimensioni intorno all’origine sono necessari <strong>tre</strong> gradi di libertà: l’asse di rotazione e l’angolo. (L’asse di rotazione è un vettore di lunghezza unitaria, quindi ha due gradi di libertà).</p></li>
-<li><p>Ci sono vari modi per rappresentare una rotazione, alcuni più efficaci di altri a seconda del contesto. Noi considereremo il formalismo matriciale, ma daremo anche una panoramica sui <strong>quaternioni</strong>.</p></li>
+<li><p>Però per definire una rotazione in tre dimensioni intorno all’origine sono necessari <strong>tre</strong> gradi di libertà: l’asse di rotazione e l’angolo. (L’asse di rotazione è un vettore di lunghezza unitaria, quindi ha solo due gradi di libertà).</p></li>
+<li><p>Ci sono vari modi per rappresentare una rotazione, alcuni più efficaci di altri a seconda del contesto: angoli di Eulero, angolo/asse, matrici di rotazione, quaternioni. Noi ci concentreremo sulle matrici di rotazione.</p></li>
+</ul>
+</section>
+<section id="rotazioni-e-matrici" class="slide level1">
+<h1>Rotazioni e matrici</h1>
+<ul>
+<li><p>In 2D, abbiamo già scritto la <a href="./tomasi-ray-tracing-06a-geometry.html#/secondo-esempio">matrice di rotazione attorno all’origine</a>. La sua applicazione porta allo stesso risultato ottenuto con i numeri complessi:</p>
+<p><span class="math display">
+R(\theta) v = \begin{pmatrix}\cos\theta&amp;-\sin\theta\\\sin\theta&amp;\cos\theta\end{pmatrix} \begin{pmatrix}v_1\\v_2\end{pmatrix} = 
+\begin{pmatrix}v_1\cos\theta - v_2\sin\theta\\v_1\sin\theta + v_2\cos\theta\end{pmatrix}.
+</span></p>
+<center>
+<p><img data-src="pd-images/rotation-demo.svg" /></p>
+</center></li>
+<li><p>In 2 dimensioni, vale che <span class="math inline">R(\alpha) R(\beta) = R(\beta) R(\alpha) = R(\alpha + \beta)</span>.</p></li>
+</ul>
+</section>
+<section id="rotazioni-in-3d" class="slide level1">
+<h1>Rotazioni in 3D</h1>
+<ul>
+<li><p>In 3 dimensioni, le rotazioni possono essere notevolmente più complesse, perché ci sono infiniti assi usabili per la rotazione intorno all’origine!</p>
+<center>
+<video src="./media/rotating-cubes.mp4" width="960" height="360" controls loop autoplay/>
+</center></li>
+<li><p>In generale, una matrice <span class="math inline">R</span> in <span class="math inline">\mathbb{R^n}</span> rappresenta una rotazione se e solo se <span class="math inline">\det R = 1</span> e <span class="math inline">R R^t = \mathbb{1}</span>, ossia se la trasposta coincide con l’inversa.</p></li>
+</ul>
+</section>
+<section id="composizione-di-rotazioni" class="slide level1">
+<h1>Composizione di rotazioni</h1>
+<ul>
+<li><p>In 3D, la composizione di rotazioni <strong>non commuta</strong> (a differenza del caso 2D).</p></li>
+<li><p>I due dadi qui sotto subiscono due rotazioni <span class="math inline">R_1</span> ed <span class="math inline">R_2</span>: per il rosso la rotazione è <span class="math inline">R_1 R_2</span>, per il verde è <span class="math inline">R_2 R_1</span>. Si vede che le posizioni finali sono diverse:</p>
+<center>
+<video src="./media/rotation-commutativity.mp4" width="640" height="360" controls/>
+</center></li>
+</ul>
+</section>
+<section id="rotazioni-elementari" class="slide level1">
+<h1>Rotazioni elementari</h1>
+<ul>
+<li><p>Si possono scrivere semplicemente le rotazioni attorno ai tre assi <span class="math inline">\hat e_x</span>, <span class="math inline">\hat e_y</span> ed <span class="math inline">\hat e_z</span>. Ad esempio, la rotazione attorno a <span class="math inline">\hat e_z</span> è</p>
+<p><span class="math display">
+R_z(\theta) v = \begin{pmatrix}\cos\theta&amp;-\sin\theta&amp;0\\\sin\theta&amp;\cos\theta&amp;0\\0&amp;0&amp;1\end{pmatrix}.
+</span></p></li>
+<li><p>È possibile scrivere una matrice <span class="math inline">R_{\hat v}(\theta)</span> che descriva una rotazione di un angolo θ attorno a un asse <span class="math inline">\hat v</span> arbitrario; vedi la <a href="https://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations">pagina Wikipedia</a> per i dettagli.</p></li>
+</ul>
+</section>
+<section id="angoli-di-eulero" class="slide level1">
+<h1>Angoli di Eulero</h1>
+<ul>
+<li><p>Una rotazione generica <span class="math inline">R_{\hat v}(\theta)</span> è sempre esprimibile come prodotto delle rotazioni elementari <span class="math inline">R_x(\theta_x)</span>, <span class="math inline">R_y(\theta_y)</span> e <span class="math inline">R_z(\theta_z)</span> per adeguati valori di <span class="math inline">\theta_x, \theta_y, \theta_z</span>.</p></li>
+<li><p>Questa proprietà è alla base del formalismo delle rotazioni con gli <a href="https://en.wikipedia.org/wiki/Euler_angles">angoli di Eulero</a>, che però noi non useremo nel nostro codice.</p></li>
 </ul>
 </section>
 <section id="traslazioni" class="slide level1">
@@ -366,9 +476,83 @@ M = \begin{pmatrix}s_1&amp; 0&amp; \vdots\\0&amp; s_2&amp; \vdots\\\ldots&amp; \
 <section id="il-problema-delle-traslazioni" class="slide level1">
 <h1>Il problema delle traslazioni</h1>
 <ul>
-<li>Il vettore <span class="math inline">\vec \omega</span></li>
+<li><p>Una traslazione <span class="math inline">T_{\vec{k}}</span> è una operazione che sposta un punto <span class="math inline">P</span> di <span class="math inline">\vec{k}</span>:</p>
+<p><span class="math display">
+T_{\vec{k}} (P) = P + \vec{k}.
+</span></p></li>
+<li><p>Finora abbiamo utilizzato matrici per rappresentare trasformazioni di scala e rotazioni. Purtroppo le matrici 3×3 <strong>non possono</strong> rappresentare traslazioni nello spazio tridimensionale: una traslazione <span class="math inline">T</span> non è un operatore lineare! Se lo fosse, allora varrebbe che</p>
+<p><span class="math display">
+T_{\vec{k}}(0) = 0\quad\forall\ \vec{k}.
+</span></p></li>
 </ul>
-<p><embed height="420px" src="pd-images/47186d4cc128ac648d8e691624272a29503cc5d1.html" /></p>
+</section>
+<section id="coordinate-omogenee" class="slide level1">
+<h1>Coordinate omogenee</h1>
+<ul>
+<li><p>Fortunatamente è possibile un trucco, molto usato nella <em>computer graphics</em>, che consiste nell’usare <strong>coordinate omogenee</strong>.</p></li>
+<li><p>Nelle coordinate omogenee si considera lo spazio <span class="math inline">\mathbb{R}^4</span> anziché <span class="math inline">\mathbb{R}^3</span>, e si scrivono i punti <span class="math inline">P</span> e i vettori <span class="math inline">\vec{v}</span> in modo diverso:</p>
+<p><span class="math display">
+P = \begin{pmatrix}p_x\\p_y\\p_z\\1\end{pmatrix}, \quad
+\vec{v} = \begin{pmatrix}v_x\\v_y\\v_z\\0\end{pmatrix}.
+</span></p></li>
+</ul>
+</section>
+<section id="trasformazioni-omogenee" class="slide level1">
+<h1>Trasformazioni omogenee</h1>
+<ul>
+<li><p>Una matrice <span class="math inline">M</span> si trasforma in coordinate omogenee aggiungendo una riga e una colonna:</p>
+<p><span class="math display">
+M =
+\begin{pmatrix}
+m_{11}&amp;m_{12}&amp;m_{13}\\
+m_{21}&amp;m_{22}&amp;m_{23}\\
+m_{31}&amp;m_{32}&amp;m_{33}
+\end{pmatrix}\ \rightarrow%
+\ M_h =
+\begin{pmatrix}
+m_{11}&amp;m_{12}&amp;m_{13}&amp;0\\
+m_{21}&amp;m_{22}&amp;m_{23}&amp;0\\
+m_{31}&amp;m_{32}&amp;m_{33}&amp;0\\
+0&amp;0&amp;0&amp;1
+\end{pmatrix}
+</span></p></li>
+<li><p>È immediato verificare che l’applicazione di <span class="math inline">M_h</span> a <span class="math inline">P</span> e a <span class="math inline">\vec{v}</span> porta allo stesso risultato del caso non-omogeneo in ℝ³.</p></li>
+</ul>
+</section>
+<section id="traslazioni-1" class="slide level1">
+<h1>Traslazioni</h1>
+<ul>
+<li><p>Nelle coordinate omogenee, l’operazione di traslazione lungo un vettore <span class="math inline">\vec{k}</span> è lineare, e si rappresenta così:</p>
+<p><span class="math display">
+T_{\vec{k}} =
+\begin{pmatrix}
+1&amp;0&amp;0&amp;k_x\\
+0&amp;1&amp;0&amp;k_y\\
+0&amp;0&amp;1&amp;k_z\\
+0&amp;0&amp;0&amp;1
+\end{pmatrix}
+</span></p></li>
+<li><p>L’operatore è ovviamente lineare, perché è in forma matriciale.</p></li>
+</ul>
+</section>
+<section id="proprietà" class="slide level1">
+<h1>Proprietà</h1>
+<ul>
+<li><span class="math inline">T_{\vec{k}}^{-1} = T_{-\vec{k}}</span>: la trasformazione inversa della traslazione lungo <span class="math inline">\vec{k}</span> è la traslazione lungo <span class="math inline">-\vec{k}</span>;</li>
+<li><span class="math inline">T_{\vec{u}} T_{\vec{w}} = T_{\vec{u} + \vec{w}}</span>: la composizione di due traslazioni è uguale alla traslazione lungo la somma dei due vettori;</li>
+<li><span class="math inline">T_{\vec{u}} T_{\vec{w}} = T_{\vec{w}} T_{\vec{u}}</span>: le traslazioni sono operatori commutativi;</li>
+<li><span class="math inline">T_{\vec{k}} \vec{v} = \vec{v}</span>: a differenza dei punti, i vettori non vengono traslati.</li>
+</ul>
+</section>
+<section id="rototraslazioni" class="slide level1">
+<h1>Rototraslazioni</h1>
+<ul>
+<li><p>Comporre una traslazione <span class="math inline">T_{\vec{k}}</span> e una rotazione <span class="math inline">R(\theta)</span> dipende dall’ordine: il risultato di <span class="math inline">T_{\vec{k}}\,R(\theta)</span> è diverso da quello di <span class="math inline">R(\theta)\,T_{\vec{k}}</span>:</p>
+<center>
+<video width="640" height="360" src="./media/rototranslation.mp4" controls/>
+</center></li>
+<li><p>Si può verificare che le matrici omogenee implementano correttamente questo comportamento.</p></li>
+</ul>
 </section>
     </div>
   </div>

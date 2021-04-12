@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Esercitazione 6</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Esercitazione 6</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="numeri-di-versione" class="slide level1">
+<h1>Numeri di versione</h1>
+</section>
+<section id="scopo-dei-numeri-di-versione" class="slide level1">
+<h1>Scopo dei numeri di versione</h1>
+<ul>
+<li>Ogni programma dovrebbe avere un <strong>numero di versione</strong> associato, che dice quanto sia aggiornato un programma.</li>
+<li>Un utente può confrontare un numero di versione sul sito ufficiale del programma con quello del programma installato sul proprio computer.</li>
+<li>Molti diversi approcci ai numeri di versione.</li>
+</ul>
+</section>
+<section id="esempio-i-data-di-rilascio" class="slide level1">
+<h1>Esempio I: data di rilascio</h1>
+<ul>
+<li>Ubuntu Linux: distribuzione Linux.</li>
+<li>Il numero di versione è la data di rilascio nella forma <code>anno.mese</code>, a cui si associa un soprannome come «Focal fossa» (20.04).</li>
+<li>Associato a un rigido calendario di rilascio (ogni 6 mesi).</li>
+<li>Gli standard ISO del C++ seguono uno schema simile, usando solo l’anno: C++11, C++14, C++17, C++20, …</li>
+<li>Utile soprattutto se si segue un calendario rigido e regolare.</li>
+</ul>
+</section>
+<section id="esempio-ii-numero-irrazionale" class="slide level1">
+<h1>Esempio II: numero irrazionale</h1>
+<ul>
+<li><p>TeX: programma di tipografia digitale creato da Donald Knuth (per digitare <em>The art of computer programming</em>, 1962–2019).</p></li>
+<li><p>La versione è l’arrotondamento del valore di <span class="math inline">\pi</span>, dove ogni versione successiva aggiunge una cifra:</p>
+<ul>
+<li>3</li>
+<li>3.1</li>
+<li>3.14</li>
+<li>3.141…</li>
+</ul></li>
+<li><p>METAFONT, il programma che gestisce i font di TeX, usa <span class="math inline">e = 2.71828\ldots</span></p></li>
+<li><p>Matematicamente affascinante, ma poco pratico!</p></li>
+</ul>
+</section>
+<section id="esempio-iii-versioni-paridispari" class="slide level1">
+<h1>Esempio III: versioni pari/dispari</h1>
+<ul>
+<li>Versioni indicate con <code>X.Y</code>, dove <code>X</code> è la «major version» e <code>Y</code> la «minor version».</li>
+<li>Se <code>Y</code> è pari, la versione è <strong>stabile</strong> (es., <code>2.0</code>, <code>2.2</code>, <code>2.4</code>, …); altrimenti è una versione di <strong>sviluppo</strong> (es., <code>2.1</code>, <code>2.3</code>, <code>2.5</code> …), non pronta per essere usata dal pubblico generico ma solo dagli utenti più smaliziati.</li>
+<li><a href="https://nim-lang.org/">Nim</a>, <a href="https://www.gtk.org/">Gtk+</a>, <a href="https://www.gnome.org/">GNOME</a>, <a href="http://lilypond.org/">Lilypond</a> seguono questo approccio.</li>
+<li>Molto usato in passato, ora tende ad essere abbandonato.</li>
+</ul>
+</section>
+<section id="esempio-iv-semantic-versioning" class="slide level1">
+<h1>Esempio IV: <em>semantic versioning</em></h1>
+<ul>
+<li>Lo schema che useremo nel corso è il cosiddetto <a href="https://semver.org/"><em>semantic versioning</em></a>, usato ad esempio da Julia e Python, che usa lo schema <code>X.Y.Z</code>:
+<ul>
+<li><code>X</code> è la «major version»</li>
+<li><code>Y</code> è la «minor version»</li>
+<li><code>Z</code> è la «patch version»</li>
+</ul></li>
+<li>Le regole per assegnare valori a <code>X</code>, <code>Y</code> e <code>Z</code> sono rigide, e consentono agli utenti di decidere se valga la pena aggiornare un software o no.</li>
+</ul>
+</section>
+<section id="semantic-versioning-12" class="slide level1">
+<h1>Semantic versioning (1/2)</h1>
+<ul>
+<li>Si parte dalla versione <code>0.1.0</code>.</li>
+<li>Ad ogni rilascio di una nuova versione, si segue una di queste regole:
+<ul>
+<li>Si incrementa <code>Z</code> («patch number») se si sono solo corretti dei bug;</li>
+<li>Si incrementa <code>Y</code> («minor number») e si resetta <code>Z</code> se si sono aggiunte funzionalità nuove;</li>
+<li>Si incrementa <code>X</code> («major number») e si resettano <code>Y</code> e <code>Z</code> se si sono aggiunte funzionalità che rendono il programma <strong>incompatibile</strong> con l’ultima versione rilasciata.</li>
+</ul></li>
+</ul>
+</section>
+<section id="semantic-versioning-22" class="slide level1">
+<h1>Semantic versioning (2/2)</h1>
+<ul>
+<li>Nelle prime fasi di vita di un progetto, si rilasciano rapidamente nuove versioni che sono usate da «beta testers»; non è importante indicare quando si introducono incompatibilità, perché queste sono frequenti ma gli utenti sono ancora pochi.</li>
+<li>La versione <code>1.0.0</code> va rilasciata quando il programma è pronto per essere usato da utenti generici.</li>
+<li>Di conseguenza, le versioni precedenti alla <code>1.0.0</code> seguono regole diverse:
+<ul>
+<li>Si incrementa <code>Z</code> se si correggono bug;</li>
+<li>Si incrementa <code>Y</code> e si resetta <code>Z</code> in tutti gli altri casi.</li>
+</ul></li>
+</ul>
+</section>
+<section id="esempio-12" class="slide level1">
+<h1>Esempio (1/2)</h1>
+<ul>
+<li><p>Abbiamo scritto un programma che stampa <code>Hello, world!</code>:</p>
+<pre><code>$ ./hello
+Hello, wold!</code></pre></li>
+<li><p>La prima versione che rilasciamo è la <code>0.1.0</code></p></li>
+<li><p>Ci accorgiamo che il programma stampa <code>Hello, wold!</code>, così correggiamo il problema e rilasciamo la versione <code>0.1.1</code> (correzione di un bug).</p></li>
+</ul>
+</section>
+<section id="esempio-22" class="slide level1">
+<h1>Esempio (2/2)</h1>
+<ul>
+<li><p>Aggiungiamo una nuova funzionalità: se si passa un nome come <code>Paperino</code> da riga di comando, il programma stampa <code>Hello, Paperino!</code>. Senza argomenti, il programma scrive ancora <code>Hello, world!</code>:</p>
+<pre><code>$ ./hello Paperino
+Hello, Paperino!
+
+$ ./hello
+Hello, world!</code></pre></li>
+<li><p>Abbiamo aggiunto una funzionalità ma abbiamo preservato la compatibilità (senza argomenti, il programma funziona ugualmente come la versione <code>0.1.1</code>), quindi la nuova versione sarà la <code>0.2.0</code>.</p></li>
+</ul>
+</section>
+<section id="punto-di-vista-di-un-utente" class="slide level1">
+<h1>Punto di vista di un utente</h1>
+<ol type="1">
+<li>Se viene rilasciata una nuova «patch release» della versione che si sta usando (es., <code>1.3.4</code> → <code>1.3.5</code>), l’utente dovrebbe <strong>sempre</strong> aggiornare</li>
+<li>Se viene rilasciata una nuova «minor release» della versione che si sta usando (es., <code>1.3.4</code> → <code>1.4.0</code>), l’utente dovrebbe aggiornare solo se ritiene utili le nuove caratteristiche</li>
+<li>Una nuova «major release» (es., <code>1.3.4</code> → <code>2.0.0</code>) dovrebbe essere installata solo da nuovi utenti, o da chi è intenzionato ad aggiornare il modo in cui si usa il programma</li>
+</ol>
+</section>
+<section id="il-nostro-programma" class="slide level1">
+<h1>Il nostro programma</h1>
+<ul>
+<li><p>Con l’aggiunta delle funzionalità di settimana scorsa, siamo pronti per rilasciare la prima versione del nostro programma!</p></li>
+<li><p>Al momento il programma converte un file PFM in un file LDR (PNG, JPEG, etc.)</p></li>
+<li><p>Rilasceremo quindi la versione 0.1.0.</p></li>
+<li><p>GitHub permette di rilasciare versioni tramite una specifica funzionalità.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/github-release-1.png" height="720" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/github-release-2.png" height="720" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/github-release-3.png" height="720" />
+</center>
+</section>
+<section id="pull-requests" class="slide level1">
+<h1>Pull requests</h1>
+</section>
+<section id="come-funziona-git" class="slide level1">
+<h1>Come funziona Git</h1>
+<ul>
+<li><p>Stiamo usando Git da alcune settimane, e dovremmo aver imparato come funziona.</p></li>
+<li><p>Abbiamo visto in particolare che Git salva ogni modifica del codice (il <em>commit</em>) legandola alla modifica precedente:</p>
+<center>
+<p><img data-src="./media/git-commit.svg" /></p>
+</center></li>
+<li><p>Oggi vedremo che questa struttura lineare può in realtà essere più complicata.</p></li>
+</ul>
+</section>
+<section id="modifiche-complesse" class="slide level1">
+<h1>Modifiche complesse</h1>
+<ul>
+<li><p>Nelle scorse lezioni abbiamo implementato il codice per leggere e scrivere file PFM.</p></li>
+<li><p>Ciascuno dei gruppi ha implementato questa funzionalità tramite una serie di commit.</p></li>
+<li><p>Questi commit erano <em>logicamente</em> legati tra loro, ma ciò non appare quando si apre la pagina dei commit di uno qualsiasi dei vostri repository (v. slide seguente).</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/pfm-commits.png" />
+</center>
+</section>
+<section id="branch" class="slide level1">
+<h1>Branch</h1>
+<ul>
+<li><p>Git implementa il concetto di <em>branch</em> («ramo»), che è un modo di separare una sequenza di commit dal «tronco» principale del <em>master</em>:</p>
+<center>
+<p><img data-src="./media/git-branch.svg" /></p>
+</center></li>
+<li><p>Tramite il comando <code>git branch NOME</code> si cambia il branch attivo; <code>git commit</code> aggiunge sempre in coda a questo branch.</p></li>
+<li><p><code>HEAD</code> punta sempre all’ultimo commit del branch attivo.</p></li>
+</ul>
+</section>
+<section id="esempio-di-branch" class="slide level1">
+<h1>Esempio di branch</h1>
+<p><asciinema-player src="cast/git-branch-84x25.cast" cols="84" rows="25" font-size="medium"></asciinema-player></p>
+</section>
+<section id="comandi-per-branch" class="slide level1">
+<h1>Comandi per branch</h1>
+<ul>
+<li><p><code>git branch</code> elenca i branch (di default, all’inizio c’è solo <code>master</code>).</p></li>
+<li><p><code>git checkout -b NOME</code> crea un nuovo branch e lo rende attivo.</p></li>
+<li><p><code>git merge NOME1 NOME2</code> incorpora le modifiche al branch <code>NOME1</code> dentro il branch <code>NOME2</code>; di solito <code>NOME2</code> è <code>master</code>.</p></li>
+<li><p><code>git branch -d NOME</code> cancella un branch.</p></li>
+<li><p>Quando eseguite <code>git fetch</code> o <code>git pull</code> per scaricare nuovi commit da GitHub, vengono importati tutti i branch.</p></li>
+</ul>
+</section>
+<section id="branch-in-github" class="slide level1">
+<h1>Branch in GitHub</h1>
+<ul>
+<li><p>GitHub permette di navigare all’interno dei branch tramite un bottone dedicato:</p>
+<center>
+<p><img data-src="./media/github-branches-list.png" height="440" /></p>
+</center></li>
+<li><p>La vera potenza dei branch sta però nei <em>pull request</em>.</p></li>
+</ul>
+</section>
+<section id="pull-request-in-github" class="slide level1">
+<h1>Pull request in GitHub</h1>
+<ul>
+<li><p>Un <em>pull request</em> è una richiesta di eseguire un comando <code>git merge</code> all’interno di <code>master</code>.</p></li>
+<li><p>GitHub attiva un forum per ogni pull request, in modo che gli sviluppatori possano commentare l’opportunità o meno di eseguire <code>git merge</code>.</p></li>
+<li><p>Nel momento in cui si fa il <em>merging</em>, è possibile (e consigliato) applicare lo <em>squashing</em>, che consiste nel fondere insieme tutti i commit in uno solo.</p></li>
+<li><p>Lo <em>squashing</em> è utilissimo per levare di mezzo i tanti commit con messaggi «<em>Small fixes</em>», «<em>Oops I forgot to add this</em>», etc.</p></li>
+</ul>
+</section>
+<section id="esempio-di-pull-request" class="slide level1">
+<h1>Esempio di Pull request</h1>
+<iframe src="https://player.vimeo.com/video/535144283?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1440" height="622" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="How to create pull requests in GitHub">
+</iframe>
+</section>
+<section id="altro-esempio" class="slide level1">
+<h1>Altro esempio</h1>
+<center>
+<img data-src="./media/github-pull-request-healpix.png" />
+</center>
+</section>
+<section id="come-usarli-in-pratica" class="slide level1">
+<h1>Come usarli in pratica</h1>
+<ul>
+<li><p>Se uno di voi crea un pull request su GitHub, gli altri possono aggiungere commit a quel pull request con i comandi</p>
+<pre class="text"><code>git fetch
+git checkout NOME_PULL_REQUEST</code></pre>
+<p>come se fosse un branch creato da loro stessi (<code>git fetch</code> scarica da GitHub tutti i nuovi branch, inclusi i pull request).</p></li>
+<li><p>I pull request sono una delle caratteristiche fondamentali di GitHub!</p></li>
+<li><p>Abituatevi ad usarli per ogni modifica «seria» del vostro codice (no, correggere un errore grammaticale nel <code>README.md</code> non rientra nella casistica).</p></li>
+</ul>
+</section>
+<section id="guida-per-lesercitazione" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+</section>
+<section id="guida-per-lesercitazione-1" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+<ul>
+<li><p>Uno di voi crei un nuovo pull request chiamato <code>geometry</code>, e gli altri invochino <code>git fetch</code> seguito da <code>git checkout geometry</code>.</p></li>
+<li><p>Fate tutto il lavoro previsto per oggi e per la settimana prossima nel branch <code>geometry</code>.</p></li>
+<li><p>Implementate questi tipi:</p>
+<ol>
+<li><code>Vec</code> (un vettore tridimensionale), che rappresenterà anche le normali.</li>
+<li><code>Point</code> (un punto tridimensionale).</li>
+</ol></li>
+</ul>
+</section>
+<section id="metodi-per-vec" class="slide level1">
+<h1>Metodi per <code>Vec</code></h1>
+<ol>
+<li>Conversione a stringa, es., <code>Vec(x=0.4, y=1.3, z=0.7)</code>;</li>
+<li>Confronto tra vettori (per i test), usando funzioni come <code>are_close</code>;</li>
+<li>Somma tra vettori;</li>
+<li>Differenza di vettori;</li>
+<li>Prodotto per uno scalare;</li>
+<li>Prodotto scalare tra due vettori;</li>
+<li>Prodotto vettoriale;</li>
+<li>Calcolo di <span class="math inline">\left\|v\right\|^2</span> (<code>squared_norm</code>) e di <span class="math inline">\left\|v\right\|</span> (<code>norm</code>);</li>
+<li>Funzione che normalizza il vettore: <span class="math inline">v \rightarrow v / \left\|v\right\|</span>.</li>
+</ol>
+</section>
+<section id="metodi-per-point" class="slide level1">
+<h1>Metodi per <code>Point</code></h1>
+<ol>
+<li>Conversione a stringa, es., <code>Point(x=0.4, y=1.3, z=0.7)</code>;</li>
+<li>Confronto tra punti (per i test);</li>
+<li>Somma tra <code>Point</code> e <code>Vector</code>, restituendo un <code>Point</code>;</li>
+<li>Differenza tra due <code>Point</code>, restituendo un <code>Vector</code>;</li>
+<li>Differenza tra <code>Point</code> e <code>Vector</code>, restituendo un <code>Point</code>;</li>
+</ol>
+</section>
+<section id="implementazione-python" class="slide level1">
+<h1>Implementazione Python</h1>
+<ul>
+<li><p>L’implementazione Python nel repository <a href="https://github.com/ziotom78/pytracer">pytracer</a> mostra come implementare <code>Point</code> e <code>Vec</code>.</p></li>
+<li><p>Attenzione però: Python è un linguaggio <em>dinamico</em>, e permette di fare cose che non sono direttamente traducibili in altri linguaggi.</p></li>
+<li><p>Questo è evidente nell’implementazione di metodi che sono molto simili tra <code>Point</code> e <code>Vec</code>, come la somma di due elementi:</p>
+<ol>
+<li><code>Point</code> + <code>Vec</code> → <code>Point</code>;</li>
+<li><code>Vec</code> + <code>Vec</code> → <code>Vec</code>.</li>
+</ol></li>
+</ul>
+</section>
+<section id="implementazione-python-1" class="slide level1">
+<h1>Implementazione Python</h1>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _are_xyz_close(a, b):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This works thanks to Python&#39;s duck typing. In C++ and other languages</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># you should probably rely on function templates or something like</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> are_close(a.x, b.x) <span class="kw">and</span> are_close(a.y, b.y) <span class="kw">and</span> are_close(a.z, b.z)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _add_xyz(a, b, return_type):</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ditto</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> return_type(a.x <span class="op">+</span> b.x, a.y <span class="op">+</span> b.y, a.z <span class="op">+</span> b.z)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _sub_xyz(a, b, return_type):</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ditto</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> return_type(a.x <span class="op">-</span> b.x, a.y <span class="op">-</span> b.y, a.z <span class="op">-</span> b.z)</span></code></pre></div>
+</section>
+<section id="implementazione-python-2" class="slide level1">
+<h1>Implementazione Python</h1>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Vec:</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    x: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    y: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    z: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> is_close(<span class="va">self</span>, other):</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="bu">isinstance</span>(other, Vec)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> _are_xyz_close(<span class="va">self</span>, other)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__add__</span>(<span class="va">self</span>, other):</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> _add_xyz(<span class="va">self</span>, other, Vec)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__sub__</span>(<span class="va">self</span>, other):</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> _sub_xyz(<span class="va">self</span>, other, Vec)</span></code></pre></div>
+</section>
+<section id="altre-operazioni-su-vec" class="slide level1">
+<h1>Altre operazioni su <code>Vec</code></h1>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dot(<span class="va">self</span>, other):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.x <span class="op">*</span> other.x <span class="op">+</span> <span class="va">self</span>.y <span class="op">*</span> other.y <span class="op">+</span> <span class="va">self</span>.z <span class="op">*</span> other.z</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> squared_norm(<span class="va">self</span>):</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.x <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> <span class="va">self</span>.y <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> <span class="va">self</span>.z <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> norm(<span class="va">self</span>):</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> math.sqrt(<span class="va">self</span>.squared_norm())</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cross(<span class="va">self</span>, other):</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Vec(x<span class="op">=</span><span class="va">self</span>.y <span class="op">*</span> other.z <span class="op">-</span> <span class="va">self</span>.z <span class="op">*</span> other.y,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>               y<span class="op">=</span><span class="va">self</span>.z <span class="op">*</span> other.x <span class="op">-</span> <span class="va">self</span>.x <span class="op">*</span> other.z,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>               z<span class="op">=</span><span class="va">self</span>.x <span class="op">*</span> other.y <span class="op">-</span> <span class="va">self</span>.y <span class="op">*</span> other.x)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize(<span class="va">self</span>):</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    norm <span class="op">=</span> <span class="va">self</span>.norm()</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    x <span class="op">/=</span> norm</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    y <span class="op">/=</span> norm</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    z <span class="op">/=</span> norm</span></code></pre></div>
+</section>
+<section id="test" class="slide level1">
+<h1>Test</h1>
+<ul>
+<li><p>Il set completo di test si trova nel repository <a href="https://github.com/ziotom78/pytracer">pytracer</a>, nel file <a href="https://github.com/ziotom78/pytracer/blob/41878248890338e62aa38c928c17561490c901b6/test_all.py#L202-L232">test_all.py</a>.</p></li>
+<li><p>Implementate gli stessi test presenti in quel file.</p></li>
+</ul>
+</section>
+<section id="lavoro-di-gruppo" class="slide level1">
+<h1>Lavoro di gruppo</h1>
+<ol>
+<li>Uno di voi crea un branch <code>geometry</code> e fa un <em>pull request</em>, che gli altri scaricano;</li>
+<li>Uno di voi implementa il tipo <code>Vec</code> (senza metodi o operatori!);</li>
+<li>Uno di voi implementa il tipo <code>Point</code> (idem);</li>
+<li>Sincronizzatevi tra voi facendo un <em>merge</em>;</li>
+<li>Dividetevi l’implementazione dei vari metodi ed operatori.</li>
+</ol>
+</section>
+<section id="indicazioni-per-c" class="slide level1">
+<h1>Indicazioni per C++</h1>
+</section>
+<section id="definizione-dei-tipi" class="slide level1">
+<h1>Definizione dei tipi</h1>
+<ul>
+<li>È importante che <code>Vec</code> e <code>Point</code> siano efficientissimi!</li>
+<li>Non preoccupatevi di definire classi con metodi <code>GetX</code>/<code>SetX</code> e compagnia: definite i tipi <code>Vec</code> e <code>Point</code> come delle semplici <code>struct</code>, oppure <code>class</code> con membri <code>x</code>, <code>y</code>, <code>z</code> pubblici.</li>
+<li>Preoccupatevi di implementare sia costruttori di copia che <em>move constructor</em>.</li>
+<li>Definite la maggior parte delle funzioni come <code>inline</code> (ossia, dichiarandole all’interno della classe nel file <code>.h</code>).</li>
+</ul>
+</section>
+<section id="evitare-ripetizioni" class="slide level1">
+<h1>Evitare ripetizioni</h1>
+<ul>
+<li><p>Potete usare i template C++ per evitare di ridefinire più volte alcune funzionalità comuni tra <code>Point</code> e <code>Vec</code>.</p></li>
+<li><p>Questo è l’esempio della somma tra due elementi:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span> &lt;<span class="kw">typename</span> In1, <span class="kw">typename</span> In2, <span class="kw">typename</span> Out&gt;</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>Out _sum(<span class="at">const</span> In1 &amp;a, <span class="at">const</span> In2 &amp;b) {</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Out{a.x + b.x, a.y + b.y, a.z + b.z};</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>Point <span class="kw">operator</span>+(<span class="at">const</span> Point &amp;a, <span class="at">const</span> Vec &amp;b) {</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> _sum&lt;Point, Vec, Point&gt;(a, b);</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>Vec <span class="kw">operator</span>+(<span class="at">const</span> Vec &amp;a, <span class="at">const</span> Vec &amp;b) {</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> _sum&lt;Vec, Vec, Vec&gt;(a, b);</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+</ul>
+</section>
+<section id="indicazioni-per-c-1" class="slide level1">
+<h1>Indicazioni per C#</h1>
+</section>
+<section id="definizione-dei-tipi-1" class="slide level1">
+<h1>Definizione dei tipi</h1>
+<ul>
+<li>Siccome <code>Vec</code> e <code>Point</code> saranno molto utilizzati nei calcoli, è importante che siano classi estremamente efficienti.</li>
+<li>Questo è quindi un caso in cui è meglio definire i tipi come <em>value types</em> usando <code>struct</code> anziché <code>class</code>.</li>
+<li>Purtroppo C# non implementa un meccanismo simile a quello dei <code>template</code> del C++, quindi dovrete definire due volte le operazioni comuni tra <code>Point</code> e <code>Vec</code>, come la somma.</li>
+</ul>
+</section>
+<section id="indicazioni-per-julia" class="slide level1">
+<h1>Indicazioni per Julia</h1>
+</section>
+<section id="definizione-dei-tipi-2" class="slide level1">
+<h1>Definizione dei tipi</h1>
+<ul>
+<li>Per definire i tipi <code>Vec</code> e <code>Point</code> potreste usare la libreria <a href="https://github.com/JuliaArrays/StaticArrays.jl">StaticArrays.jl</a>, che implementa array di dimensione fissata molto efficienti. È una libreria molto efficiente, ma <strong>non vi consiglio di usarla in questo caso</strong>.</li>
+<li>Il problema di StaticArrays.jl è che non permette di implementare il multiple dispatch: <code>Vec</code> e <code>Point</code> sarebbero visti da Julia come lo stesso tipo <code>SVector{3, Float32}</code>.</li>
+<li>Meglio definire due nuovi tipi con <code>struct</code> (omettete <code>mutable</code>: incoraggerete Julia a usarli come <em>value types</em> anziché <em>reference types</em>).</li>
+</ul>
+</section>
+<section id="indicazioni-per-kotlin" class="slide level1">
+<h1>Indicazioni per Kotlin</h1>
+<ul>
+<li>Nessuna indicazione in particolare: l’implementazione di <code>Point</code> e <code>Vec</code> dovrebbe essere abbastanza semplice.</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
+    </body>
+</html>
