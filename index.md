@@ -15,3 +15,4 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 - Esercitazione 4 (2021-03-24): [lettura file PFM](./tomasi-ray-tracing-04b-reading-images.html)
 - Lezione 5 (2021-03-29): [compressione dati](./tomasi-ray-tracing-05a-compression.html)
 - Esercitazione 5 (2021-03-31): [librerie esterne](./tomasi-ray-tracing-05b-external-libraries.html)
+- Lezione 6 (2021-04-12): [geometria Euclidea](./tomasi-ray-tracing-06a-geometry.html)
