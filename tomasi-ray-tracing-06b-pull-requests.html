@@ -216,9 +216,9 @@ Hello, world!</code></pre></li>
 <section id="punto-di-vista-di-un-utente" class="slide level1">
 <h1>Punto di vista di un utente</h1>
 <ol type="1">
-<li>Se viene rilasciata una nuova «patch release» della versione che si sta usando (es., <code>1.3.4</code> → <code>1.3.5</code>), l’utente dovrebbe <strong>sempre</strong> aggiornare</li>
-<li>Se viene rilasciata una nuova «minor release» della versione che si sta usando (es., <code>1.3.4</code> → <code>1.4.0</code>), l’utente dovrebbe aggiornare solo se ritiene utili le nuove caratteristiche</li>
-<li>Una nuova «major release» (es., <code>1.3.4</code> → <code>2.0.0</code>) dovrebbe essere installata solo da nuovi utenti, o da chi è intenzionato ad aggiornare il modo in cui si usa il programma</li>
+<li>Se viene rilasciata una nuova «patch release» della versione che si sta usando (es., <code>1.3.4</code> → <code>1.3.5</code>), l’utente dovrebbe <strong>sempre</strong> aggiornare.</li>
+<li>Se viene rilasciata una nuova «minor release» della versione che si sta usando (es., <code>1.3.4</code> → <code>1.4.0</code>), l’utente dovrebbe aggiornare solo se ritiene utili le nuove caratteristiche.</li>
+<li>Una nuova «major release» (es., <code>1.3.4</code> → <code>2.0.0</code>) dovrebbe essere installata solo da nuovi utenti, o da chi è intenzionato ad aggiornare il modo in cui si usa il programma.</li>
 </ol>
 </section>
 <section id="il-nostro-programma" class="slide level1">
@@ -296,6 +296,7 @@ Hello, world!</code></pre></li>
 <ul>
 <li><p><code>git branch</code> elenca i branch (di default, all’inizio c’è solo <code>master</code>).</p></li>
 <li><p><code>git checkout -b NOME</code> crea un nuovo branch e lo rende attivo.</p></li>
+<li><p><code>git checkout -b NOME</code> rende attivo un branch già esistente.</p></li>
 <li><p><code>git merge NOME1 NOME2</code> incorpora le modifiche al branch <code>NOME1</code> dentro il branch <code>NOME2</code>; di solito <code>NOME2</code> è <code>master</code>.</p></li>
 <li><p><code>git branch -d NOME</code> cancella un branch.</p></li>
 <li><p>Quando eseguite <code>git fetch</code> o <code>git pull</code> per scaricare nuovi commit da GitHub, vengono importati tutti i branch.</p></li>
@@ -348,6 +349,7 @@ git checkout NOME_PULL_REQUEST</code></pre>
 <section id="guida-per-lesercitazione-1" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
 <ul>
+<li><p>Iniziate col «rilasciare» la <em>release</em> 0.1.0 di quanto avete scritto sinora.</p></li>
 <li><p>Uno di voi crei un nuovo pull request chiamato <code>geometry</code>, e gli altri invochino <code>git fetch</code> seguito da <code>git checkout geometry</code>.</p></li>
 <li><p>Fate tutto il lavoro previsto per oggi e per la settimana prossima nel branch <code>geometry</code>.</p></li>
 <li><p>Implementate questi tipi:</p>
@@ -458,6 +460,7 @@ git checkout NOME_PULL_REQUEST</code></pre>
 <section id="lavoro-di-gruppo" class="slide level1">
 <h1>Lavoro di gruppo</h1>
 <ol>
+<li>Uno di voi crea la <em>release</em> 0.1.0;</li>
 <li>Uno di voi crea un branch <code>geometry</code> e fa un <em>pull request</em>, che gli altri scaricano;</li>
 <li>Uno di voi implementa il tipo <code>Vec</code> (senza metodi o operatori!);</li>
 <li>Uno di voi implementa il tipo <code>Point</code> (idem);</li>
@@ -477,23 +480,51 @@ git checkout NOME_PULL_REQUEST</code></pre>
 <li>Definite la maggior parte delle funzioni come <code>inline</code> (ossia, dichiarandole all’interno della classe nel file <code>.h</code>).</li>
 </ul>
 </section>
+<section id="modo-sconsigliato" class="slide level1">
+<h1>Modo sconsigliato</h1>
+<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Vec {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// These are &quot;private&quot; members (the default visibility in &quot;class&quot;)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> x, y, z;  <span class="co">// You can use &quot;double&quot;, if you wish</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span>:</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    Vec(<span class="dt">float</span> _x = <span class="dv">0</span>, <span class="dt">float</span> _y = <span class="dv">0</span>, <span class="dt">float</span> _z = <span class="dv">0</span>) : x{_x}, y{_y}, z{_z} {}</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    Vec(<span class="at">const</span> Vec &amp;); <span class="co">// Copy constructor</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    Vec(<span class="at">const</span> Vec &amp;&amp;); <span class="co">// Move constructor</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> getx() <span class="at">const</span> { <span class="cf">return</span> x; }</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> setx(<span class="dt">float</span> _x) { x = _x; }</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Etc.</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>};</span></code></pre></div>
+</section>
+<section id="modo-consigliato" class="slide level1">
+<h1>Modo consigliato</h1>
+<div class="sourceCode" id="cb8"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Vec {  <span class="co">// With &quot;struct&quot;, everything is &quot;public&quot; by default</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> x, y, z;  <span class="co">// You can use &quot;double&quot;, if you wish</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    Vec(<span class="dt">float</span> _x = <span class="dv">0</span>, <span class="dt">float</span> _y = <span class="dv">0</span>, <span class="dt">float</span> _z = <span class="dv">0</span>) : x{_x}, y{_y}, z{_z} {}</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    Vec(<span class="at">const</span> Vec &amp;); <span class="co">// Copy constructor</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    Vec(<span class="at">const</span> Vec &amp;&amp;); <span class="co">// Move constructor</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// No need to define &quot;getx&quot;, &quot;setx&quot;, etc.</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>};</span></code></pre></div>
+</section>
 <section id="evitare-ripetizioni" class="slide level1">
 <h1>Evitare ripetizioni</h1>
 <ul>
 <li><p>Potete usare i template C++ per evitare di ridefinire più volte alcune funzionalità comuni tra <code>Point</code> e <code>Vec</code>.</p></li>
 <li><p>Questo è l’esempio della somma tra due elementi:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span> &lt;<span class="kw">typename</span> In1, <span class="kw">typename</span> In2, <span class="kw">typename</span> Out&gt;</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>Out _sum(<span class="at">const</span> In1 &amp;a, <span class="at">const</span> In2 &amp;b) {</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Out{a.x + b.x, a.y + b.y, a.z + b.z};</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>Point <span class="kw">operator</span>+(<span class="at">const</span> Point &amp;a, <span class="at">const</span> Vec &amp;b) {</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> _sum&lt;Point, Vec, Point&gt;(a, b);</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>Vec <span class="kw">operator</span>+(<span class="at">const</span> Vec &amp;a, <span class="at">const</span> Vec &amp;b) {</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> _sum&lt;Vec, Vec, Vec&gt;(a, b);</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<div class="sourceCode" id="cb9"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span> &lt;<span class="kw">typename</span> In1, <span class="kw">typename</span> In2, <span class="kw">typename</span> Out&gt;</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>Out _sum(<span class="at">const</span> In1 &amp;a, <span class="at">const</span> In2 &amp;b) {</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Out{a.x + b.x, a.y + b.y, a.z + b.z};</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>Point <span class="kw">operator</span>+(<span class="at">const</span> Point &amp;a, <span class="at">const</span> Vec &amp;b) {</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> _sum&lt;Point, Vec, Point&gt;(a, b);</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>Vec <span class="kw">operator</span>+(<span class="at">const</span> Vec &amp;a, <span class="at">const</span> Vec &amp;b) {</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> _sum&lt;Vec, Vec, Vec&gt;(a, b);</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
 </ul>
 </section>
 <section id="indicazioni-per-c-1" class="slide level1">
@@ -515,13 +546,15 @@ git checkout NOME_PULL_REQUEST</code></pre>
 <ul>
 <li>Per definire i tipi <code>Vec</code> e <code>Point</code> potreste usare la libreria <a href="https://github.com/JuliaArrays/StaticArrays.jl">StaticArrays.jl</a>, che implementa array di dimensione fissata molto efficienti. È una libreria molto efficiente, ma <strong>non vi consiglio di usarla in questo caso</strong>.</li>
 <li>Il problema di StaticArrays.jl è che non permette di implementare il multiple dispatch: <code>Vec</code> e <code>Point</code> sarebbero visti da Julia come lo stesso tipo <code>SVector{3, Float32}</code>.</li>
-<li>Meglio definire due nuovi tipi con <code>struct</code> (omettete <code>mutable</code>: incoraggerete Julia a usarli come <em>value types</em> anziché <em>reference types</em>).</li>
+<li>Meglio definire due nuovi tipi con <code>struct</code></li>
+<li>Vi consiglio di omettere <code>mutable</code>: incoraggerete Julia a usarli come <em>value types</em> anziché <em>reference types</em>.</li>
 </ul>
 </section>
 <section id="indicazioni-per-kotlin" class="slide level1">
 <h1>Indicazioni per Kotlin</h1>
 <ul>
 <li>Nessuna indicazione in particolare: l’implementazione di <code>Point</code> e <code>Vec</code> dovrebbe essere abbastanza semplice.</li>
+<li>Come il C#, neppure Kotlin supporta la metaprogrammazione (il caso di <code>template</code> in C++), quindi dovrete duplicare un po’ di funzioni, come quelle che calcolano <code>Point + Vec</code> e <code>Vec + Vec</code>.</li>
 </ul>
 </section>
     </div>

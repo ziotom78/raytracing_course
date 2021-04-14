@@ -100,13 +100,13 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 1.  Se viene rilasciata una nuova «patch release» della versione che
     si sta usando (es., `1.3.4` → `1.3.5`), l'utente dovrebbe **sempre**
-    aggiornare
+    aggiornare.
 2.  Se viene rilasciata una nuova «minor release» della versione che
     si sta usando (es., `1.3.4` → `1.4.0`), l'utente dovrebbe aggiornare
-    solo se ritiene utili le nuove caratteristiche
+    solo se ritiene utili le nuove caratteristiche.
 3.  Una nuova «major release» (es., `1.3.4` → `2.0.0`) dovrebbe essere
     installata solo da nuovi utenti, o da chi è intenzionato ad
-    aggiornare il modo in cui si usa il programma
+    aggiornare il modo in cui si usa il programma.
 
 # Il nostro programma
 
@@ -186,6 +186,8 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   `git checkout -b NOME` crea un nuovo branch e lo rende attivo.
 
+-   `git checkout -b NOME` rende attivo un branch già esistente.
+
 -   `git merge NOME1 NOME2` incorpora le modifiche al branch `NOME1` dentro il branch `NOME2`; di solito `NOME2` è `master`.
 
 -   `git branch -d NOME` cancella un branch.
@@ -240,6 +242,8 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 # Guida per l'esercitazione
 
 # Guida per l'esercitazione
+
+-   Iniziate col «rilasciare» la *release* 0.1.0 di quanto avete scritto sinora.
 
 -   Uno di voi crei un nuovo pull request chiamato `geometry`, e gli altri invochino `git fetch` seguito da `git checkout geometry`.
 
@@ -350,6 +354,7 @@ def normalize(self):
 
 # Lavoro di gruppo
 
+#. Uno di voi crea la *release* 0.1.0;
 #. Uno di voi crea un branch `geometry` e fa un *pull request*, che gli altri scaricano;
 #. Uno di voi implementa il tipo `Vec` (senza metodi o operatori!);
 #. Uno di voi implementa il tipo `Point` (idem);
@@ -364,6 +369,38 @@ def normalize(self):
 -   Non preoccupatevi di definire classi con metodi `GetX`/`SetX` e compagnia: definite i tipi `Vec` e `Point` come delle semplici `struct`, oppure `class` con membri `x`, `y`, `z` pubblici.
 -   Preoccupatevi di implementare sia costruttori di copia che *move constructor*.
 -   Definite la maggior parte delle funzioni come `inline` (ossia, dichiarandole all'interno della classe nel file `.h`).
+
+# Modo sconsigliato
+
+```c++
+class Vec {
+    // These are "private" members (the default visibility in "class")
+    float x, y, z;  // You can use "double", if you wish
+    
+public:
+    Vec(float _x = 0, float _y = 0, float _z = 0) : x{_x}, y{_y}, z{_z} {}
+    Vec(const Vec &); // Copy constructor
+    Vec(const Vec &&); // Move constructor
+    
+    float getx() const { return x; }
+    void setx(float _x) { x = _x; }
+    // Etc.
+};
+```
+
+# Modo consigliato
+
+```c++
+struct Vec {  // With "struct", everything is "public" by default
+    float x, y, z;  // You can use "double", if you wish
+    
+    Vec(float _x = 0, float _y = 0, float _z = 0) : x{_x}, y{_y}, z{_z} {}
+    Vec(const Vec &); // Copy constructor
+    Vec(const Vec &&); // Move constructor
+
+    // No need to define "getx", "setx", etc.
+};
+```
 
 # Evitare ripetizioni
 
@@ -400,8 +437,10 @@ def normalize(self):
 
 -   Per definire i tipi `Vec` e `Point` potreste usare la libreria [StaticArrays.jl](https://github.com/JuliaArrays/StaticArrays.jl), che implementa array di dimensione fissata molto efficienti. È una libreria molto efficiente, ma **non vi consiglio di usarla in questo caso**.
 -   Il problema di StaticArrays.jl è che non permette di implementare il multiple dispatch: `Vec` e `Point` sarebbero visti da Julia come lo stesso tipo `SVector{3, Float32}`.
--   Meglio definire due nuovi tipi con `struct` (omettete `mutable`: incoraggerete Julia a usarli come *value types* anziché *reference types*).
+-   Meglio definire due nuovi tipi con `struct`
+-   Vi consiglio di omettere `mutable`: incoraggerete Julia a usarli come *value types* anziché *reference types*.
 
 # Indicazioni per Kotlin
 
 -   Nessuna indicazione in particolare: l'implementazione di `Point` e `Vec` dovrebbe essere abbastanza semplice.
+-   Come il C\#, neppure Kotlin supporta la metaprogrammazione (il caso di `template` in C++), quindi dovrete duplicare un po' di funzioni, come quelle che calcolano `Point + Vec` e `Vec + Vec`.
