@@ -274,9 +274,9 @@ Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing]
 
 #. Conversione a stringa, es., `Point(x=0.4, y=1.3, z=0.7)`;
 #. Confronto tra punti (per i test);
-#. Somma tra `Point` e `Vector`, restituendo un `Point`;
-#. Differenza tra due `Point`, restituendo un `Vector`;
-#. Differenza tra `Point` e `Vector`, restituendo un `Point`;
+#. Somma tra `Point` e `Vec`, restituendo un `Point`;
+#. Differenza tra due `Point`, restituendo un `Vec`;
+#. Differenza tra `Point` e `Vec`, restituendo un `Point`;
 
 # Implementazione Python
 
