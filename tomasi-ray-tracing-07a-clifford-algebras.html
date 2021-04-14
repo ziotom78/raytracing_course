@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Lezione 6</title>
+  <title>Lezione 7</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -21,20 +21,364 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Lezione 6</h1>
+  <h1 class="title">Lezione 7</h1>
   <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
   <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="algebre-di-clifford-argomento-opzionale" class="title-slide slide level1">
+<section id="quaternioni-argomento-opzionale" class="slide level1">
+<h1>Quaternioni (argomento opzionale)</h1>
+</section>
+<section id="numeri-complessi-e-quaternioni" class="slide level1">
+<h1>Numeri complessi e quaternioni</h1>
+<ul>
+<li><p>Nella lezione della settimana scorsa abbiamo studiato le trasformazioni di rotazione, che abbiamo scritto come <strong>matrici</strong>.</p></li>
+<li><p>È possibile usare un formalismo alternativo, che usa i numeri complessi per le rotazioni 2D e i quaternioni per le rotazioni 3D.</p></li>
+<li><p>I quaternioni hanno dei vantaggi significativi rispetto alle matrici di rotazione 3D, e sono usati in robotica, nel controllo dell’assetto delle missioni spaziali e nei videogiochi.</p></li>
+<li><p>Noi <strong>non</strong> useremo quaternioni nel corso, quindi questo argomento non sarà richiesto all’esame. Se volete approfondire l’argomento, due ottimi testi sono <em>Visualizing quaternions</em> (Hanson) e <em>Quaternions for computer graphics</em> (Vince).</p></li>
+</ul>
+</section>
+<section id="numeri-complessi" class="slide level1">
+<h1>Numeri complessi</h1>
+<ul>
+<li><p>Facciamo un breve ripasso dei numeri complessi.</p></li>
+<li><p>L’algebra ℂ dei numeri complessi contiene elementi <span class="math inline">z = (\Re z, \Im z) = (x, y)</span>.</p></li>
+<li><p>Il prodotto si definisce come</p>
+<p><span class="math display">
+z_1 \times z_2 = (\Re z_1\,\Re z_2 - \Im z_1\,\Im z_2, \Re z_1\,\Im z_2 + \Im z_1\,\Re z_2).
+</span></p></li>
+<li><p>Introducendo <span class="math inline">i</span> tale che <span class="math inline">i^2 = -1</span> e scrivendo i numeri complessi nella forma <span class="math inline">z = x + i y</span>, la formula del prodotto è più semplice da ricordare:</p>
+<p><span class="math display">
+(x_1 + i y_1) \times (x_2 + i y_2) = x_1 x_2 - y_1 y_2 + i \bigl(x_1 y_2 + x_2 y_1\bigr).
+</span></p></li>
+</ul>
+</section>
+<section id="rotazioni-e-numeri-complessi" class="slide level1">
+<h1>Rotazioni e numeri complessi</h1>
+<ul>
+<li><p>È possibile codificare una rotazione <span class="math inline">R(\theta)</span> attorno all’origine sul piano tramite il numero complesso</p>
+<p><span class="math display">
+r(\theta) = e^{i \theta} = \cos\theta + i\sin\theta
+</span></p>
+<p>se si associa al vettore da ruotare <span class="math inline">\vec{v} = x \hat e_x + y \hat e_z</span> il numero complesso</p>
+<p><span class="math display">
+z = x + iy.
+</span></p>
+<p>Sotto queste ipotesi, l’espressione <span class="math inline">r(\theta) \cdot z</span> è equivalente a <span class="math inline">R(\theta)\vec{v}</span>.</p></li>
+<li><p>Anziché i 4 coefficienti della matrice <span class="math inline">R(\theta)</span>, servono solo <span class="math inline">\Re z</span> e <span class="math inline">\Im z</span>.</p></li>
+</ul>
+</section>
+<section id="da-2d-a-3d" class="slide level1">
+<h1>Da 2D a 3D</h1>
+<ul>
+<li><p>I <strong>quaternioni</strong> generalizzano al caso tridimensionale la capacità dei numeri complessi di codificare rotazioni bidimensionali. Sono stati inventati (o «scoperti»?) da W. R. Hamilton nel 1843, e la loro algebra si indica con ℍ.</p></li>
+<li><p>Se un numero complesso <span class="math inline">z</span> è formato da due coefficienti (la parte reale <span class="math inline">\Re z</span> e la parte immaginaria <span class="math inline">\Im z</span>), un quaternione <span class="math inline">q \in \mathbb{H}</span> è composto da <strong>quattro</strong> coefficienti:</p>
+<p><span class="math display">
+q = (q_0, q_1, q_2, q_3) = \bigl(q_0, \vec{q}\bigr),
+</span></p>
+<p>Il termine <span class="math inline">q_0</span> è detto <em>parte scalare</em>, mentre <span class="math inline">\vec{q} = (q_1\ q_2\ q_3)</span> è la <em>parte vettoriale</em>. (Su alcuni testi la parte scalare viene per ultima).</p></li>
+</ul>
+</section>
+<section id="prodotto-di-quaternioni" class="slide level1">
+<h1>Prodotto di quaternioni</h1>
+<ul>
+<li><p>I numeri complessi rappresentano una rotazione tramite il prodotto tra complessi; il prodotto su ℂ soddisfa le proprietà di un’algebra associativa.</p></li>
+<li><p>Il prodotto <span class="math inline">p \times q</span> tra due quaternioni è definito così:</p>
+<p><span class="math display">
+p \times q = \begin{pmatrix}
+p_0 q_0 - p_1 q_1 - p_2 q_2 - p_3 q_3\\
+p_1 q_0 + p_0 q_1 + p_2 q_3 - p_3 q_2\\
+p_2 q_0 + p_0 q_2 + p_3 q_1 − p_1 q_3\\
+p_3 q_0 + p_0 q_3 + p_1 q_2 − p_2 q_1
+\end{pmatrix}.
+</span></p></li>
+<li><p>Questo prodotto soddisfa tutte le proprietà di un’algebra associativa, ma <strong>non è commutativo</strong>: <span class="math inline">p \times q \not= q \times p</span>.</p></li>
+</ul>
+</section>
+<section id="notazione" class="slide level1">
+<h1>Notazione</h1>
+<ul>
+<li><p>Hamilton inventò una notazione molto comoda per i quaternioni: <span class="math display">
+q = q_0 + q_1 \mathbf{i} + q_2 \mathbf{j} + q_3 \mathbf{k}.
+</span></p></li>
+<li><p>Se si definiscono le seguenti regole, il prodotto tra quaternioni della slide precedente deriva conseguentemente:</p>
+<p><span class="math display">
+\begin{aligned}
+\mathbf{i} \mathbf{i} &amp;= -1, &amp;\mathbf{i} \mathbf{j} &amp;=  \mathbf{k}, &amp;\quad\mathbf{j} \mathbf{i} = -\mathbf{k},\\
+\mathbf{j} \mathbf{j} &amp;= -1, &amp;\mathbf{j} \mathbf{k} &amp;=  \mathbf{i}, &amp;\quad\mathbf{k} \mathbf{j} = -\mathbf{i},\\
+\mathbf{k} \mathbf{k} &amp;= -1, &amp;\mathbf{k} \mathbf{i} &amp;=  \mathbf{j}, &amp;\quad\mathbf{i} \mathbf{k} = -\mathbf{j}.
+\end{aligned}
+</span></p></li>
+</ul>
+</section>
+<section id="prodotto-interno" class="slide level1">
+<h1>Prodotto interno</h1>
+<ul>
+<li><p>È possibile definire un prodotto interno tra quaternioni:</p>
+<p><span class="math display">
+p \cdot q = p_0 q_0 + p_1 q_1 + p_2 q_2 + p_3 q_3 = p_0 q_0 + \vec{p} \cdot \vec{q},
+</span></p>
+<p>a cui è naturale associare una norma:</p>
+<p><span class="math display">
+\left\|q\right\| = \sqrt{q \cdot q} = \sqrt{q_0^2 + q_1^2 + q_2^2 + q_3^2} = \sqrt{q_0^2 + \left\|\vec{q}\right\|}.
+</span></p></li>
+<li><p>È definita anche l’operazione di coniugazione:</p>
+<p><span class="math display">
+q^* = (q_0, -q_1, -q_2, -q_3) = (q_0, -\vec{q}).
+</span></p></li>
+</ul>
+</section>
+<section id="quaternioni-e-rotazioni" class="slide level1">
+<h1>Quaternioni e rotazioni</h1>
+<ul>
+<li><p>Noterete che i quaternioni hanno <strong>quattro</strong> gradi di libertà, ma le rotazioni hanno <strong>tre</strong> gradi di libertà (angolo e direzione θ, φ dell’asse di rotazione).</p></li>
+<li><p>Ma anche i numeri complessi hanno questo apparente problema: ci sono <strong>due</strong> gradi di libertà (parte reale e parte immaginaria), mentre le rotazioni 2D attorno all’origine hanno solo un grado di libertà (angolo).</p></li>
+<li><p>Ricorderete che le rotazioni sul piano usavano il numero complesso <span class="math inline">r(\theta) = e^{i \theta}</span>, che aveva il vincolo <span class="math inline">\left\|r(\theta)\right\| = 1</span>.</p></li>
+<li><p>La stessa cosa vale per i quaternioni: perché <span class="math inline">q \in \mathbb{H}</span> rappresenti una rotazione deve valere che <span class="math inline">\left\|q\right\| = 1</span>.</p></li>
+</ul>
+</section>
+<section id="rotazioni-3d-con-quaternioni" class="slide level1">
+<h1>Rotazioni 3D con quaternioni</h1>
+<ul>
+<li><p>Dato un vettore normalizzato <span class="math inline">\hat n</span> e un angolo <span class="math inline">\theta</span>, ad esso si associa il quaternione</p>
+<p><span class="math display">
+r(\theta, \hat n) = \left(\cos\frac\theta2, \sin\frac\theta2\,\hat n\right),
+</span></p>
+<p>che rappresenta la rotazione di un angolo <span class="math inline">\theta</span> intorno a <span class="math inline">\hat n</span>.</p></li>
+<li><p>Se <span class="math inline">\left\|\hat n\right\| = 1</span>, vale ovviamente che <span class="math inline">\left\|r(\theta, \hat n)\right\| = 1</span>.</p></li>
+<li><p>Notate che una rotazione attorno a un asse arbitrario <span class="math inline">\hat n</span> è espressa in modo molto compatto ed elegante, a differenza della notazione matriciale.</p></li>
+</ul>
+</section>
+<section id="applicazione-della-rotazione." class="slide level1">
+<h1>Applicazione della rotazione.</h1>
+<ul>
+<li><p>Un generico vettore <span class="math inline">\vec v</span> viene ruotato in <span class="math inline">\vec v&#39;</span> tramite la formula</p>
+<p><span class="math display">
+\vec v&#39; = r(\theta, \hat n) \cdot (0, \vec v) \cdot r^{-1}(\theta, \hat n),
+</span> dove <span class="math inline">(0, \vec v)</span> rappresenta il quaternione associato a <span class="math inline">\vec v</span>. (Questa formula è un «trucco» mnemonico, la derivazione corretta passerebbe dalla matrice di rotazione scritta esplicitamente).</p></li>
+<li><p>Intuitivamente, la rotazione <span class="math inline">r(\theta, \hat n)</span> compare <strong>due</strong> volte nella formula perché in essa compare l’angolo <span class="math inline">\theta/2</span>.</p></li>
+<li><p>Sia <span class="math inline">r(\theta, \hat n)</span> che <span class="math inline">-r(\theta, \hat n)</span> rappresentano la medesima rotazione.</p></li>
+</ul>
+</section>
+<section id="i-quaternioni-sono-efficienti" class="slide level1">
+<h1>I quaternioni sono efficienti?</h1>
+<ul>
+<li><p>Una matrice di rotazione deve essere memorizzata salvando in memoria 9 coefficienti, mentre un quaternione ne richiede appena 4.</p></li>
+<li><p>Dovremmo quindi usare quaternioni per rappresentare le rotazioni nel nostro codice?</p></li>
+<li><p>In generale <strong>no</strong>! Se si scrive esplicitamente la sequenza di operazioni necessaria per ruotare un vettore, si può dimostrare che la rappresentazione matriciale richiede meno calcoli.</p></li>
+<li><p>A cosa sono utili allora i quaternioni?</p></li>
+</ul>
+</section>
+<section id="movimenti-di-robot" class="slide level1">
+<h1>Movimenti di robot</h1>
+<ul>
+<li><p>Supponete che il braccio artificiale di un robot si trovi in una certa configurazione al tempo <span class="math inline">t_1 = 0</span>, e volete fare in modo che sia in una nuova posizione al tempo <span class="math inline">t_2 = 1</span>.</p></li>
+<li><p>Il braccio è dotato di un asse orientabile a piacere attorno a cui può ruotare.</p></li>
+<li><p>Il vostro compito è di determinare l’evoluzione della rotazione <span class="math inline">R(t)</span> per ogni tempo <span class="math inline">t \in [0, 1]</span>, in modo da poter comandare al robot di spostare il braccio dove desiderate.</p></li>
+<li><p>Ovviamente, dato che il braccio può solo ruotare, per ogni istante temporale deve valere che <span class="math inline">R(t)</span> sia una rotazione, ossia <span class="math inline">R^{-1}(t) = R^t(t)</span>.</p></li>
+</ul>
+</section>
+<section id="interpolazione" class="slide level1">
+<h1>Interpolazione</h1>
+<ul>
+<li><p>Non pensate che basti interpolare tra loro i coefficienti delle due matrici <span class="math display">
+R(0) = \begin{pmatrix}
+m_{11}&amp;m_{12}&amp;m_{13}\\
+m_{21}&amp;m_{22}&amp;m_{23}\\
+m_{31}&amp;m_{32}&amp;m_{33}
+\end{pmatrix},\ %
+R(1) = \begin{pmatrix}
+m_{11}&amp;m_{12}&amp;m_{13}\\
+m_{21}&amp;m_{22}&amp;m_{23}\\
+m_{31}&amp;m_{32}&amp;m_{33}
+\end{pmatrix},\quad
+</span> in modo da ottenere <span class="math inline">R(t)</span>, perché non è garantito che per <span class="math inline">0 &lt; t &lt; 1</span> le matrici siano ortogonali!</p></li>
+<li><p>Non è possibile fare questa operazione in modo semplice tramite le matrici di rotazione…</p></li>
+<li><p>…ma è banale se si usano i quaternioni!</p></li>
+</ul>
+</section>
+<section id="slerp" class="slide level1">
+<h1><em>Slerp</em></h1>
+<ul>
+<li><p>Col termine <em>slerp</em> si intende l’interpolazione <span class="math inline">r(t)</span> tra due rotazioni <span class="math inline">r_1</span> e <span class="math inline">r_2</span>.</p></li>
+<li><p>La formula di <span class="math inline">r(t) \in \mathbb{H}</span> per <span class="math inline">t \in [0, 1]</span> è banalmente</p>
+<p><span class="math display">
+r(t) = \frac{\sin(1 - t)\theta}{\sin\theta}r_1 + \frac{\sin t\theta}{\sin\theta}r_2,
+</span></p>
+<p>dove <span class="math inline">\theta</span> è l’angolo tra i due quaternioni <span class="math inline">r_1</span> e <span class="math inline">r_2</span>:</p>
+<p><span class="math display">
+\theta = \frac{r_1 \cdot r_2}{\left\|r_1\right\|\,\left\|r_2\right\|}.
+</span></p></li>
+<li><p>È facile dimostrare che <span class="math inline">r(t)</span> rappresenta una rotazione <span class="math inline">\forall t\in [0, 1]</span>.</p></li>
+</ul>
+</section>
+<section id="applicazioni" class="slide level1">
+<h1>Applicazioni</h1>
+<ul>
+<li><p>Il satellite <em>Planck</em> aveva a bordo uno <em>star tracker</em> che identificava l’orientamento del satellite rispetto alle stelle fisse.</p></li>
+<li><p>L’orientamento veniva misurato ogni ~0.1 secondi (i dati scientifici venivano campionati con frequenza almeno 10 volte superiore) e trasmesso alla stazione di terra.</p></li>
+<li><p>Per capire in che posizione era orientato il satellite Planck a ogni istante, l’orientamento era convertito in quaternioni che venivano poi interpolati.</p></li>
+<li><p>(Sono comunque state necessarie correzioni, perché l’interpolazione non era fedele al 100%).</p></li>
+</ul>
+</section>
+<section id="algebre-di-clifford-argomento-opzionale" class="slide level1">
 <h1>Algebre di Clifford (argomento opzionale)</h1>
+</section>
+<section id="algebra-geometrica" class="slide level1">
+<h1>Algebra geometrica</h1>
+<ul>
+<li><p>Concludiamo questo approfondimento parlando delle algebre di Clifford e del caso particolare dell’<em>algebra geometrica</em>.</p></li>
+<li><p>Si tratta di una branca della matematica che rifonda l’algebra lineare classica, e fornisce un’interpretazione più intuitiva e coerente di una serie di proprietà geometriche.</p></li>
+<li><p>L’algebra geometrica è l’applicazione delle algebre di Clifford al caso di <span class="math inline">\mathbb{R}^n</span>, ed è ciò che solitamente interessa ai fisici. Noi ci limiteremo a queste.</p></li>
+</ul>
+</section>
+<section id="limiti-della-geometria-classica" class="slide level1">
+<h1>Limiti della geometria classica</h1>
+<ul>
+<li><p>Esistono vettori e pseudovettori, che seguono regole di trasformazione diverse.</p></li>
+<li><p>Per descrivere le rotazioni su un piano 2D è necessario spostarsi nello spazio 3D: <span class="math inline">\vec{L} = \vec{r} \times \vec{p}</span> (momento angolare).</p></li>
+<li><p>Il prodotto vettoriale è definibile solo per <span class="math inline">\mathbb{R}^3</span>.</p></li>
+<li><p>Le rotazioni possono essere rappresentate da numeri complessi (2D), quaternioni (3D) oppure ottonioni (4D), ma non si può andare oltre senza perdere importanti proprietà (associatività, etc.).</p></li>
+<li><p>Non è possibile invertire i prodotti tra vettori: se <span class="math inline">\vec a \times \vec x = \vec b</span> con <span class="math inline">\vec a</span> e <span class="math inline">\vec b</span> vettori noti e <span class="math inline">x</span> vettore incognito, non c’è modo di ricostruire <span class="math inline">\vec x</span>. (Idem per il prodotto scalare).</p></li>
+</ul>
+</section>
+<section id="nascita-dellalgebra-geometrica" class="slide level1">
+<h1>Nascita dell’algebra geometrica</h1>
+<ul>
+<li><p>L’algebra geometrica parte dalla definizione di un <strong>prodotto tra vettori</strong>, scoperto da <a href="https://en.wikipedia.org/wiki/Hermann_Grassmann">Hermann Günter Grassmann</a> (1809–1877), che rende lo spazio vettoriale <span class="math inline">\mathbb{R}^n</span> un’algebra.</p></li>
+<li><p>Il punto di partenza è la constatazione che prodotto scalare e vettoriale sono legati tra loro, perché</p>
+<p><span class="math display">
+\vec{v} \cdot \vec{w} \propto \cos\theta, \quad \vec{v} \times \vec{w} \propto \sin\theta,
+</span></p>
+<p>ed ovviamente <span class="math inline">\sin^2\theta + \cos^2\theta = 1</span>.</p></li>
+</ul>
+</section>
+<section id="tabelle-di-moltiplicazione" class="slide level1">
+<h1>Tabelle di moltiplicazione</h1>
+<ul>
+<li><p>La relazione si vede anche confrontando il modo in cui si combinano gli elementi della base canonica di ℝ³:</p>
+<p><span class="math display">
+\begin{matrix}
+\cdot&amp; e_1&amp; e_2&amp; e_3\\
+e_1&amp; 1&amp; 0&amp; 0\\
+e_2&amp; 0&amp; 1&amp; 0\\
+e_3&amp; 0&amp; 0&amp; 1
+\end{matrix}
+\qquad\qquad
+\begin{matrix}
+\times&amp; e_1&amp; e_2&amp; e_3\\
+e_1&amp; 0&amp; e_3&amp; -e_2\\
+e_2&amp; -e_3&amp; 0&amp; e_1\\
+e_3&amp; e_2&amp; -e_1&amp; 0
+\end{matrix}
+</span></p></li>
+<li><p>È tentante l’idea di sommarli insieme, anche perché ciò ricorda la formula</p>
+<p><span class="math display">
+z = \left|z\right|\bigl(\cos\theta + i\sin\theta\bigr).
+</span></p></li>
+</ul>
+</section>
+<section id="prodotto-tra-vettori" class="slide level1">
+<h1>Prodotto tra vettori</h1>
+<ul>
+<li><p>Il problema del prodotto vettoriale <span class="math inline">\times</span> è che è definito solo su ℝ³, mentre noi desideriamo un’algebra generale!</p></li>
+<li><p>Grassmann definì il prodotto esterno <span class="math inline">\vec v_1 \wedge \vec v_2</span> tra due vettori <span class="math inline">v_1</span> e <span class="math inline">v_2</span> come l’area orientata di superficie</p>
+<p><span class="math display">
+\left\|\vec{v}_1\right\|\,\left\|\vec{v}_2\right\|\,\sin\theta.
+</span></p></li>
+<li><p>I bivettori sono <strong>orientati</strong>, proprio come i comuni vettori.</p>
+<center>
+<p><img data-src="pd-images/vector-bivector.png" /></p>
+</center></li>
+</ul>
+</section>
+<section id="proprietà-del-prodotto-esterno" class="slide level1">
+<h1>Proprietà del prodotto esterno</h1>
+<ul>
+<li><p>Il prodotto esterno <span class="math inline">\vec v \wedge \vec w</span> si distingue da <span class="math inline">\vec w \wedge \vec v</span> per l’orientamento:</p>
+<center>
+<p><img data-src="pd-images/bivector-anticommutativity.png" /></p>
+</center></li>
+<li><p>Il prodotto esterno è quindi anticommutativo:</p>
+<p><span class="math display">
+\vec v \wedge \vec w = - \vec w \wedge \vec v.
+</span></p></li>
+<li><p>Il prodotto esterno può essere rappresentato anche come una circonferenza/ellisse/pentagono/… orientato, purché l’area sia la stessa.</p></li>
+</ul>
+</section>
+<section id="forma-del-prodotto-esterno" class="slide level1">
+<h1>«Forma» del prodotto esterno</h1>
+<center>
+<img data-src="./media/bivectors-meaning.svg" />
+</center>
+</section>
+<section id="cosa-codifica-il-prodotto-esterno" class="slide level1">
+<h1>Cosa codifica il prodotto esterno?</h1>
+<ol>
+<li>Estensione della superficie (es., 15 m²);</li>
+<li>Inclinazione del piano su cui si trova la superficie;</li>
+<li>Orientamento della superficie (ossia: in che senso si potrebbe percorrerne il perimetro).</li>
+</ol>
+</section>
+<section id="prodotto-geometrico" class="slide level1">
+<h1>Prodotto geometrico</h1>
+<ul>
+<li><p>Il <strong>prodotto geometrico</strong> è la somma del prodotto interno e del prodotto esterno:</p>
+<p><span class="math display">
+\vec v\,\vec w = \vec v \cdot \vec w + \vec v \wedge \vec w.
+</span></p></li>
+<li><p>La «somma» tra uno scalare e un’area orientata si deve intendere in un senso non letterale, proprio come la somma della parte reale e immaginaria di un numero (<span class="math inline">z = x + iy</span>).</p></li>
+<li><p>È importante sottolineare che questo prodotto è definito su <span class="math inline">\mathbb{R}^n</span>, per qualsiasi valore di <span class="math inline">n \geq 1</span> (ma il caso <span class="math inline">n = 1</span> è banale): questo perché lo stesso prodotto esterno <span class="math inline">\vec v \wedge \vec w</span> è facilmente generalizzabile a <span class="math inline">n</span> dimensioni.</p></li>
+</ul>
+</section>
+<section id="algebra-di-clifford" class="slide level1">
+<h1>Algebra di Clifford</h1>
+<ul>
+<li><p>La dimostrazione che il prodotto di Grassmann rende lo spazio vettoriale <span class="math inline">\mathbb{R}^n</span> un’algebra si deve a <a href="https://en.wikipedia.org/wiki/William_Kingdon_Clifford">William Kingdon Clifford</a> (1845–1879), che sistematizzò le idee di Grassmann.</p></li>
+<li><p>Perché sia un’algebra è necessario definire una serie di operazioni sui bivettori, come il prodotto per uno scalare e la somma.</p></li>
+<li><p>In questa veloce introduzione <strong>non</strong> dimostreremo ciò: ci limiteremo a mostrare come effettuare operativamente i calcoli.</p></li>
+<li><p>Il prodotto per uno scalare è banale: se lo scalare è positivo, aumenta l’area, mentre se è negativo si inverte anche il verso di percorrenza.</p></li>
+</ul>
+</section>
+<section id="somma-di-bivettori" class="slide level1">
+<h1>Somma di bivettori</h1>
+<ul>
+<li><p>Vediamo come calcolare la somma di due bivettori <span class="math inline">B_1</span> e <span class="math inline">B_2</span>.</p></li>
+<li><p>Se i due bivettori sono coplanari, il risultato è un bivettore sul medesimo piano con superficie pari alla somma con segno delle due (dove il segno è determinato dal verso).</p></li>
+<li><p>Se non sono coplanari, si considera un vettore <span class="math inline">\vec w</span> allineato lungo la retta intersezione dei due piani e si individuano <span class="math inline">\vec u</span> e <span class="math inline">\vec v</span> tali che</p>
+<p><span class="math display">
+B_1 = \vec u \wedge \vec w,\quad B_2 = \vec v \wedge \vec w.
+</span></p>
+<p>Dalle proprietà di <span class="math inline">\wedge</span> segue che <span class="math inline">B_1 + B_2 = (\vec u + \vec v) \wedge \vec w</span>.</p></li>
+</ul>
+</section>
+<section class="slide level1">
 
+<center>
+<img data-src="./media/bivector-sum.svg" height="720" />
+</center>
 </section>
     </div>
   </div>
