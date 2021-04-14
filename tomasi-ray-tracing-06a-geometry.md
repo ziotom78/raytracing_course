@@ -430,7 +430,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 
 # Rotazioni e matrici
 
--   In 2D, abbiamo già scritto la [matrice di rotazione attorno all'origine](./tomasi-ray-tracing-06a-geometry.html#/secondo-esempio). La sua applicazione porta allo stesso risultato ottenuto con i numeri complessi:
+-   In 2D, abbiamo già scritto la [matrice di rotazione attorno all'origine](./tomasi-ray-tracing-06a-geometry.html#/secondo-esempio):
 
     $$
     R(\theta) v = \begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix} \begin{pmatrix}v_1\\v_2\end{pmatrix} = 
