@@ -239,6 +239,10 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Abituatevi ad usarli per ogni modifica «seria» del vostro codice (no, correggere un errore grammaticale nel `README.md` non rientra nella casistica).
 
+# Link a Gather
+
+Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing](https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing)
+
 # Guida per l'esercitazione
 
 # Guida per l'esercitazione
