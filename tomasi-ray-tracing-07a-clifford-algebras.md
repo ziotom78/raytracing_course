@@ -594,7 +594,7 @@ $$
 
     #.   Se $\beta_1 = \beta_2 = \gamma = 0$, allora l'insieme dei $q = \alpha$ è isomorfo a ℝ.
     #.   Se $\alpha = \gamma = 0$, allora l'insieme dei $q$ è isomorfo allo spazio vettoriale $\mathbb{R}^2$.
-    #.   Se $\alpha = \beta_1 = \beta_2 = 0$, l'insieme dei $q = \gamma \hat e_1 \hat e_2$ è ancora isomorfo a ℝ; questi multivettori si dicono *pseudoscalari*.
+    #.   Se $\alpha = \beta_1 = \beta_2 = 0$, l'insieme dei $q = \gamma \hat e_1 \hat e_2$ sembra ancora isomorfo a ℝ; questi multivettori si dicono *pseudoscalari*.
     
 -   A parte questi casi banali, esistono altre sottoalgebre interessanti?
 
