@@ -272,6 +272,19 @@ v_z\\
 <li><p>Dal punto di vista del codice, è meglio implementare <em>due</em> funzioni distinte per il prodotto: quella relativa ai vettori può risparmiare di iterare sull’ultima colonna delle matrici <span class="math inline">M</span> e <span class="math inline">M^{-1}</span>.</p></li>
 </ul>
 </section>
+<section id="trasformazione-di-un-punto" class="slide level1">
+<h1>Trasformazione di un punto</h1>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>row0, row1, row2, _ <span class="op">=</span> <span class="va">self</span>.invm</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>newp <span class="op">=</span> Point(x<span class="op">=</span>p.x <span class="op">*</span> row0[<span class="dv">0</span>] <span class="op">+</span> p.y <span class="op">*</span> row0[<span class="dv">1</span>] <span class="op">+</span> p.z <span class="op">*</span> row0[<span class="dv">2</span>] <span class="op">+</span> row0[<span class="dv">3</span>],</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>             y<span class="op">=</span>p.x <span class="op">*</span> row1[<span class="dv">0</span>] <span class="op">+</span> p.y <span class="op">*</span> row1[<span class="dv">1</span>] <span class="op">+</span> p.z <span class="op">*</span> row1[<span class="dv">2</span>] <span class="op">+</span> row1[<span class="dv">3</span>],</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>             z<span class="op">=</span>p.x <span class="op">*</span> row2[<span class="dv">0</span>] <span class="op">+</span> p.y <span class="op">*</span> row2[<span class="dv">1</span>] <span class="op">+</span> p.z <span class="op">*</span> row2[<span class="dv">2</span>] <span class="op">+</span> row2[<span class="dv">3</span>])</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> p.x <span class="op">*</span> row3[<span class="dv">0</span>] <span class="op">+</span> p.y <span class="op">*</span> row3[<span class="dv">1</span>] <span class="op">+</span> p.z <span class="op">*</span> row3[<span class="dv">2</span>] <span class="op">+</span> row3[<span class="dv">3</span>]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> w <span class="op">==</span> <span class="fl">1.0</span>:</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> newp   <span class="co"># Avoid three (potentially costly) divisions if not needed</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Point(newp.x <span class="op">/</span> w, newp.y <span class="op">/</span> w, newp.z <span class="op">/</span> w)</span></code></pre></div>
+</section>
 <section id="normalizzazione" class="slide level1">
 <h1>Normalizzazione</h1>
 <ul>
@@ -297,11 +310,11 @@ p_z / \lambda\\
 <h1>Normali</h1>
 <ul>
 <li><p>Implementiamo anche un semplice tipo <code>Normal</code>, che ha struttura identica a <code>Vec</code> ma che per il momento non richiede tutti i metodi (somma, prodotto scalare, etc.):</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Normal:</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    x: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    y: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    z: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Normal:</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    x: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    y: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    z: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span></code></pre></div></li>
 <li><p>Una trasformazione applicata a una normale è identica all’applicazione di un vettore, ma bisogna usare la <em>trasposta</em> dell’<em>inversa</em>. Vediamo come si fa il calcolo.</p></li>
 </ul>
 </section>
@@ -339,16 +352,10 @@ M^t = \begin{pmatrix}
 <h1>Implementazione</h1>
 <ul>
 <li><p>Il codice di <a href="https://github.com/ziotom78/pytracer">pytracer</a> implementa il prodotto tra matrice e normale nel modo più diretto possibile:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>row0, row1, row2, _ <span class="op">=</span> <span class="va">self</span>.invm</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> Point(x<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">0</span>] <span class="op">+</span> n.y <span class="op">*</span> row0[<span class="dv">1</span>] <span class="op">+</span> n.z <span class="op">*</span> row0[<span class="dv">2</span>] <span class="op">+</span> row0[<span class="dv">3</span>],</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>          y<span class="op">=</span>n.x <span class="op">*</span> row1[<span class="dv">0</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">1</span>] <span class="op">+</span> n.z <span class="op">*</span> row1[<span class="dv">2</span>] <span class="op">+</span> row1[<span class="dv">3</span>],</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>          z<span class="op">=</span>n.x <span class="op">*</span> row2[<span class="dv">0</span>] <span class="op">+</span> n.y <span class="op">*</span> row2[<span class="dv">1</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">2</span>] <span class="op">+</span> row2[<span class="dv">3</span>])</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> n.x <span class="op">*</span> row3[<span class="dv">0</span>] <span class="op">+</span> n.y <span class="op">*</span> row3[<span class="dv">1</span>] <span class="op">+</span> n.z <span class="op">*</span> row3[<span class="dv">2</span>] <span class="op">+</span> row3[<span class="dv">3</span>]</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> w <span class="op">==</span> <span class="fl">1.0</span>:</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> p   <span class="co"># Avoid three (potentially costly) divisions if not needed</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Point(p.x <span class="op">/</span> w, p.y <span class="op">/</span> w, p.z <span class="op">/</span> w)</span></code></pre></div></li>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>row0, row1, row2, _ <span class="op">=</span> <span class="va">self</span>.invm</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> Normal(x<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">0</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">0</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">0</span>],</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>              y<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">1</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">1</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">1</span>],</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>              z<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">2</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">2</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">2</span>])</span></code></pre></div></li>
 <li><p>È inutile infatti costruire la matrice trasposta di <code>self.invm</code> e calcolare il prodotto di questa con la normale.</p></li>
 </ul>
 </section>
@@ -469,52 +476,52 @@ M^t = \begin{pmatrix}
 </section>
 <section id="file-unittests.yml" class="slide level1">
 <h1>File <code>UnitTests.yml</code></h1>
-<div class="sourceCode" id="cb7"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Unit tests</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> master</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">test</span><span class="kw">:</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.arch }}</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ${{ matrix.os }}</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">strategy</span><span class="kw">:</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">matrix</span><span class="kw">:</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">julia-version</span><span class="kw">:</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="st">&#39;1.5&#39;</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">os</span><span class="kw">:</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> ubuntu-latest</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">arch</span><span class="kw">:</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> x64</span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v2</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Set up Julia&quot;</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/setup-julia@v1</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">version</span><span class="kw">:</span><span class="at"> ${{ matrix.julia-version }}</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">arch</span><span class="kw">:</span><span class="at"> ${{ matrix.arch }}</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Cache artifacts&quot;</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/cache@v1</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">env</span><span class="kw">:</span></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache-name</span><span class="kw">:</span><span class="at"> cache-artifacts</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">path</span><span class="kw">:</span><span class="at"> ~/.julia/artifacts</span></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">key</span><span class="kw">:</span><span class="at"> ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles(&#39;**/Project.toml&#39;) }}</span></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="fu">          restore-keys</span><span class="kw">: </span><span class="ch">|</span></span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-test-${{ env.cache-name }}-</span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-test-</span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-</span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Build package&quot;</span></span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/julia-buildpkg@latest</span></span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Run unit tests&quot;</span></span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/julia-runtest@latest</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Unit tests</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> master</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">test</span><span class="kw">:</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.arch }}</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ${{ matrix.os }}</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">strategy</span><span class="kw">:</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">matrix</span><span class="kw">:</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">julia-version</span><span class="kw">:</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="st">&#39;1.5&#39;</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">os</span><span class="kw">:</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">arch</span><span class="kw">:</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> x64</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v2</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Set up Julia&quot;</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/setup-julia@v1</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">version</span><span class="kw">:</span><span class="at"> ${{ matrix.julia-version }}</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">arch</span><span class="kw">:</span><span class="at"> ${{ matrix.arch }}</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Cache artifacts&quot;</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/cache@v1</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache-name</span><span class="kw">:</span><span class="at"> cache-artifacts</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">path</span><span class="kw">:</span><span class="at"> ~/.julia/artifacts</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">key</span><span class="kw">:</span><span class="at"> ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles(&#39;**/Project.toml&#39;) }}</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="fu">          restore-keys</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-test-${{ env.cache-name }}-</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-test-</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Build package&quot;</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/julia-buildpkg@latest</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Run unit tests&quot;</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/julia-runtest@latest</span></span></code></pre></div>
 </section>
 <section id="indicazioni-per-kotlin" class="slide level1">
 <h1>Indicazioni per Kotlin</h1>
@@ -535,7 +542,7 @@ M^t = \begin{pmatrix}
 <ul>
 <li><p>Ricordatevi di aggiungere al commit i file in <code>gradle/wrapper/</code></p></li>
 <li><p>Se avete problemi a causa della versione di Gradle, rigenerate <code>gradlew</code> da linea di comando così:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> wrapper --gradle-version 5.3</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> wrapper --gradle-version 5.3</span></code></pre></div>
 <p>(Gradle supporta Kotlin a partire dalla versione 5.3).</p></li>
 </ul>
 </section>

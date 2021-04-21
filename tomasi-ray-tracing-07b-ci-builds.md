@@ -172,6 +172,21 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Dal punto di vista del codice, è meglio implementare *due* funzioni distinte per il prodotto: quella relativa ai vettori può risparmiare di iterare sull'ultima colonna delle matrici $M$ e $M^{-1}$.
 
+# Trasformazione di un punto
+
+```python
+row0, row1, row2, _ = self.invm
+newp = Point(x=p.x * row0[0] + p.y * row0[1] + p.z * row0[2] + row0[3],
+             y=p.x * row1[0] + p.y * row1[1] + p.z * row1[2] + row1[3],
+             z=p.x * row2[0] + p.y * row2[1] + p.z * row2[2] + row2[3])
+w = p.x * row3[0] + p.y * row3[1] + p.z * row3[2] + row3[3]
+
+if w == 1.0:
+    return newp   # Avoid three (potentially costly) divisions if not needed
+else:
+    return Point(newp.x / w, newp.y / w, newp.z / w)
+```
+
 # Normalizzazione
 
 -   Nel caso in cui l'ultimo coefficiente del risultato non sia uguale a 1, è necessario normalizzare gli altri termini:
@@ -245,15 +260,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
     ```python
     row0, row1, row2, _ = self.invm
-    p = Point(x=n.x * row0[0] + n.y * row0[1] + n.z * row0[2] + row0[3],
-              y=n.x * row1[0] + n.y * row1[1] + n.z * row1[2] + row1[3],
-              z=n.x * row2[0] + n.y * row2[1] + n.z * row2[2] + row2[3])
-    w = n.x * row3[0] + n.y * row3[1] + n.z * row3[2] + row3[3]
-
-    if w == 1.0:
-        return p   # Avoid three (potentially costly) divisions if not needed
-    else:
-        return Point(p.x / w, p.y / w, p.z / w)
+    return Normal(x=n.x * row0[0] + n.y * row1[0] + n.z * row2[0],
+                  y=n.x * row0[1] + n.y * row1[1] + n.z * row2[1],
+                  z=n.x * row0[2] + n.y * row1[2] + n.z * row2[2])
     ```
 
 -   È inutile infatti costruire la matrice trasposta di `self.invm` e calcolare il prodotto di questa con la normale.
