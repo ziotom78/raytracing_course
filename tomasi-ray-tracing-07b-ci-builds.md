@@ -175,7 +175,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 # Trasformazione di un punto
 
 ```python
-row0, row1, row2, _ = self.invm
+row0, row1, row2, row3 = self.m
 newp = Point(x=p.x * row0[0] + p.y * row0[1] + p.z * row0[2] + row0[3],
              y=p.x * row1[0] + p.y * row1[1] + p.z * row1[2] + row1[3],
              z=p.x * row2[0] + p.y * row2[1] + p.z * row2[2] + row2[3])
