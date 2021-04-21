@@ -206,7 +206,7 @@ else:
     \end{pmatrix}
     $$
 
--   Non spiegheremo il motivo di tale normalizzazione; ci limitiamo ad assumere che sia giusta.
+-   (Nessuna delle trasformazioni che implementiamo porta a $\lambda \not= 1$, ma trasformazioni più generali possono farlo: implementare questa normalizzazione nel nostro codice lo rende *future-proof*).
 
 # Normali
 
