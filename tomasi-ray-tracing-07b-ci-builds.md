@@ -279,7 +279,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Test
 
--   Fate riferimento a [pytracer](https://github.com/ziotom78/pytracer/blob/76fe0bbdd0e25990926b051f95eadbf6b4a43c39/test_all.py) per vedere come sono implementati i test.
+-   Fate riferimento al [file test_all.py di pytracer](https://github.com/ziotom78/pytracer/blob/351213037ecf14e380530194b89b4190d984aa87/test_all.py#L241-L368) per vedere come sono implementati i test.
 
 -   Preoccupatevi di verificare che **tutti** i test passino: le operazioni in `Transformation` sono fondamentali per il codice che scriveremo le prossime volte, e non devono esserci errori.
 
