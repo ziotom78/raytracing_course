@@ -191,7 +191,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     \end{pmatrix}
     $$
 
--   La correttezza di questa operazione è semplice da dimostrare nel contesto dell'algebra geometrica; noi ci limitiamo ad assumere che sia giusta.
+-   Non spiegheremo il motivo di tale normalizzazione; ci limitiamo ad assumere che sia giusta.
 
 # Normali
 
