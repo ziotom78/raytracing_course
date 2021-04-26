@@ -275,18 +275,17 @@ La presenza di $\cos\theta$ permette di rimuovere la dipendenza dall'orientament
 
 # Notazione per la radianza
 
-Useremo spesso la notazione
-$$
-L(\mathbf{x} \rightarrow \Theta)
-$$
-per indicare la radianza che abbandona una superficie nel punto
-$\mathbf{x}$ verso la direzione $\Theta$, a cui è associato un angolo
-solido $\mathrm{d}\Omega$. Analogamente,
-$$
-L(\mathbf{x} \leftarrow \Theta)
-$$
-è la radianza proveniente dalla direzione $\Theta$ che incide sulla
-superficie in $\mathbf{x}$.
+-   Useremo spesso la notazione
+    $$
+    L(\mathbf{x} \rightarrow \Theta)
+    $$
+    per indicare la radianza che abbandona una superficie nel punto $\mathbf{x}$ verso la direzione $\Theta$, a cui è associato un angolo solido $\mathrm{d}\Omega$.
+    
+-   Analogamente,
+    $$
+    L(\mathbf{x} \leftarrow \Theta)
+    $$
+    è la radianza proveniente dalla direzione $\Theta$ che incide sulla superficie in $\mathbf{x}$.
 
 # Spettri di emissione
 
@@ -382,7 +381,7 @@ $$
 
 # La BRDF
 
-La Bidirectional Reflectance Distribution Function (BRDF), indicata con $f_r(x, \Psi \rightarrow \Theta)$, è il rapporto tra la *radianza* che abbandona una superficie lungo $\Theta$ rispetto all'*emittanza* ricevuta da una direzione $\Psi$:
+La Bidirectional Reflectance Distribution Function (BRDF), indicata con $f_r(x, \Psi \rightarrow \Theta)$, è il rapporto tra la *radianza* che abbandona una superficie lungo $\Theta$ rispetto all'*irradianza* ricevuta da una direzione $\Psi$:
 
 $$
 \begin{aligned}
