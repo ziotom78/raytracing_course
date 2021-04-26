@@ -19,3 +19,4 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 - Esercitazione 6 (2021-04-14): [pull requests](./tomasi-ray-tracing-06b-pull-requests.html)
 - Lezione 7 (2021-04-19): [quaternioni e algebre di Clifford](./tomasi-ray-tracing-07a-clifford-algebras.html) (opzionale)
 - Esercitazione 7 (2021-04-21): [CI build](./tomasi-ray-tracing-07b-ci-builds.html)
+- Lezione 8 (2021-04-26): [proiezioni](./tomasi-ray-tracing-08a-projections.html)

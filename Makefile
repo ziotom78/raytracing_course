@@ -6,6 +6,7 @@ JS_FILES = \
 .phony: all
 
 all: \
+	tomasi-ray-tracing-08a-projections.html \
 	tomasi-ray-tracing-07b-ci-builds.html \
 	tomasi-ray-tracing-07a-clifford-algebras.html \
 	tomasi-ray-tracing-06b-pull-requests.html \
