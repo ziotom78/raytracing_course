@@ -106,7 +106,7 @@
 
 <section id="title-slide">
   <h1 class="title">Esercitazione 8</h1>
-  <p class="subtitle">Documentare funzioni</p>
+  <p class="subtitle">Documentazione delle API</p>
   <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
@@ -213,13 +213,13 @@
 <section id="documentazione-utile" class="slide level1">
 <h1>Documentazione utile</h1>
 <ul>
-<li><p>Esempi di domande a cui può rispondere della buona documentazione:</p>
+<li><p>Esempi di problemi risolubili con della buona documentazione:</p>
 <ul>
 <li><p>Non ricordate più come si invoca la funzione che scrive un tipo <code>HdrImage</code> in un file PFM.</p></li>
 <li><p>Non ricordate più se i campi del tipo <code>Color</code> si chiamino <code>r</code>/<code>g</code>/<code>b</code> o <code>red</code>/<code>green</code>/<code>blue</code>.</p></li>
 <li><p>Non ricordate più se in un’immagine <code>HdrImage</code> il punto <code>(0, 0)</code> sia quello in basso a sinistra o quello in alto a sinistra.</p></li>
 </ul></li>
-<li><p>Queste sono alcune delle tipiche domande che possono venire a voi stessi quando scrivete nuovo codice.</p></li>
+<li><p>Questi sono alcuni degli inciampi tipici in cui può imbattersi lo sviluppatore stesso!</p></li>
 </ul>
 </section>
 <section id="documentazione-inutile" class="slide level1">
@@ -240,7 +240,7 @@
 <p>Queste sono alcune delle informazioni che di solito servono di più:</p>
 <ul>
 <li><p>Nomi dei campi di una classe/struttura (<code>r</code>/<code>g</code>/<code>b</code> o <code>red</code>/<code>green</code>/<code>blue</code>?);</p></li>
-<li><p>Unità di misura dei parametri e del tipo di ritorno di una funzione (<code>angle</code> è in gradi o radianti?);</p></li>
+<li><p>Unità di misura dei parametri e del tipo di ritorno di una funzione (<code>angle</code> è in gradi o radianti? qui può aiutare il nome del parametro, es. <code>angle_deg</code>);</p></li>
 <li><p>Assunzioni sui parametri di input (<code>x</code> è positivo, <code>y</code> è un numero minore di 4, etc.);</p></li>
 <li><p>Casi in cui è meglio invocare un’altra funzione (<code>Vec.squaredNorm</code> anziché <code>Vec.norm</code>).</p></li>
 </ul>
@@ -257,8 +257,9 @@
 <li>Il tipo <code>Camera</code> rappresenta l’osservatore/telecamera;</li>
 <li>Il tipo <code>ImageTracer</code> invia raggi dall’osservatore allo schermo.</li>
 </ol></li>
-<li><p>Il tipo <code>Ray</code> deve essere molto efficiente, quindi è meglio che sia un <em>value type</em> (quindi: <code>struct</code> in C# e Julia).</p></li>
+<li><p>Il tipo <code>Ray</code> deve essere molto efficiente, quindi è meglio che sia un <em>value type</em> (quindi: <code>struct</code> in C# e Julia), come spiegato nella <a href="./tomasi-ray-tracing-02b-tests.html#uso-della-memoria">lezione 02b</a>.</p></li>
 <li><p>I tipi <code>Camera</code> e <code>ImageTracer</code> non sono critici, e non serve che siano particolarmente ottimizzati.</p></li>
+<li><p>Come al solito, è tutto implementato in Python nel repository <a href="https://github.com/ziotom78/pytracer/tree/d6cbb6604d5427cec62fe1610ff7b66e99ea1018">pytracer</a>.</p></li>
 </ul>
 </section>
 <section id="la-classe-ray" class="slide level1">
@@ -278,20 +279,22 @@
 </section>
 <section id="implementazione-di-ray" class="slide level1">
 <h1>Implementazione di <code>Ray</code></h1>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Ray:</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    origin: Point <span class="op">=</span> Point()</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">dir</span>: Vec <span class="op">=</span> Vec()</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    tmin: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1e-5</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    tmax: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1e+10</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    depth: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> is_close(<span class="va">self</span>, other: Ray, epsilon<span class="op">=</span><span class="fl">1e-5</span>):</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="va">self</span>.origin.is_close(other.origin, epsilon<span class="op">=</span>epsilon) <span class="kw">and</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.<span class="bu">dir</span>.is_close(other.<span class="bu">dir</span>, epsilon<span class="op">=</span>epsilon))</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> at(<span class="va">self</span>, t):</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.origin <span class="op">+</span> <span class="va">self</span>.<span class="bu">dir</span> <span class="op">*</span> t</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> inf</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Ray:</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    origin: Point <span class="op">=</span> Point()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">dir</span>: Vec <span class="op">=</span> Vec()</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    tmin: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1e-5</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    tmax: <span class="bu">float</span> <span class="op">=</span> inf</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    depth: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> is_close(<span class="va">self</span>, other: Ray, epsilon<span class="op">=</span><span class="fl">1e-5</span>):</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="va">self</span>.origin.is_close(other.origin, epsilon<span class="op">=</span>epsilon) <span class="kw">and</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.<span class="bu">dir</span>.is_close(other.<span class="bu">dir</span>, epsilon<span class="op">=</span>epsilon))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> at(<span class="va">self</span>, t):</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.origin <span class="op">+</span> <span class="va">self</span>.<span class="bu">dir</span> <span class="op">*</span> t</span></code></pre></div>
 </section>
 <section id="test-per-ray" class="slide level1">
 <h1>Test per <code>Ray</code></h1>

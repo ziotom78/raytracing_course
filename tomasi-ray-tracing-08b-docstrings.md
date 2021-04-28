@@ -1,6 +1,6 @@
 ---
 title: "Esercitazione 8"
-subtitle: "Documentare funzioni"
+subtitle: "Documentazione delle API"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
@@ -85,7 +85,7 @@ API documentation
 
 # Documentazione utile
 
--   Esempi di domande a cui può rispondere della buona documentazione:
+-   Esempi di problemi risolubili con della buona documentazione:
 
     -   Non ricordate più come si invoca la funzione che scrive un tipo `HdrImage` in un file PFM.
 
@@ -93,7 +93,7 @@ API documentation
 
     -   Non ricordate più se in un'immagine `HdrImage` il punto `(0, 0)` sia quello in basso a sinistra o quello in alto a sinistra.
 
--   Queste sono alcune delle tipiche domande che possono venire a voi stessi quando scrivete nuovo codice.
+-   Questi sono alcuni degli inciampi tipici in cui può imbattersi lo sviluppatore stesso!
 
 
 # Documentazione inutile
@@ -122,7 +122,7 @@ Queste sono alcune delle informazioni che di solito servono di più:
 
 -   Nomi dei campi di una classe/struttura (`r`/`g`/`b` o `red`/`green`/`blue`?);
 
--   Unità di misura dei parametri e del tipo di ritorno di una funzione (`angle` è in gradi o radianti?);
+-   Unità di misura dei parametri e del tipo di ritorno di una funzione (`angle` è in gradi o radianti? qui può aiutare il nome del parametro, es. `angle_deg`);
 
 -   Assunzioni sui parametri di input (`x` è positivo, `y` è un numero minore di 4, etc.);
 
@@ -139,9 +139,11 @@ Queste sono alcune delle informazioni che di solito servono di più:
     #.  Il tipo `Camera` rappresenta l'osservatore/telecamera;
     #.  Il tipo `ImageTracer` invia raggi dall'osservatore allo schermo.
     
--   Il tipo `Ray` deve essere molto efficiente, quindi è meglio che sia un *value type* (quindi: `struct` in C\# e Julia).
+-   Il tipo `Ray` deve essere molto efficiente, quindi è meglio che sia un *value type* (quindi: `struct` in C\# e Julia), come spiegato nella [lezione 02b](./tomasi-ray-tracing-02b-tests.html#uso-della-memoria).
 
 -   I tipi `Camera` e `ImageTracer` non sono critici, e non serve che siano particolarmente ottimizzati.
+
+-   Come al solito, è tutto implementato in Python nel repository [pytracer](https://github.com/ziotom78/pytracer/tree/d6cbb6604d5427cec62fe1610ff7b66e99ea1018).
 
 # La classe `Ray`
 
@@ -160,12 +162,14 @@ Queste sono alcune delle informazioni che di solito servono di più:
 # Implementazione di `Ray`
 
 ```python
+from math import inf
+
 @dataclass
 class Ray:
     origin: Point = Point()
     dir: Vec = Vec()
     tmin: float = 1e-5
-    tmax: float = 1e+10
+    tmax: float = inf
     depth: int = 0
 
     def is_close(self, other: Ray, epsilon=1e-5):
