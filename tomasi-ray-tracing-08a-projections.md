@@ -106,22 +106,26 @@ path3 xy = ((2, 2, -0.01) -- (-2, 2, -0.01) -- (-2, -2, -0.01) -- (2, -2, -0.01)
 
 draw(surface(xy), green, nolight);
 draw(shift(0, 1, 2) * scale3(0.1) * unitsphere, white);
-draw((0, 0, 0) -- (0, 1, 2) * 0.75, black, Arrow3);
+draw((0, 1, 2) -- (0, 0, 0), black, Arrow3);
 draw(unithemisphere, gray + opacity(0.7));
 ```
 
 
 # Radianza entrante
 
-Il valore di $L(x \leftarrow \Psi)$ è **nullo**, tranne quando $\Psi$ punta verso la sorgente luminosa. Dividiamo il dominio dell'integrale:
-$$
-\int_{2\pi} = \int_{\Omega(d)} + \int_{2\pi - \Omega{d}},
-$$
-dove $\Omega(d)$ è l'angolo solido della sfera alla distanza $d$. Il secondo integrale è nullo, perché su quell'angolo solido $L(x \leftarrow \Psi) = 0$.
+-   Il valore di $L(x \leftarrow \Psi)$ è **nullo**, tranne quando $\Psi$ punta verso la sorgente luminosa.
+
+-   Dividiamo il dominio dell'integrale:
+    $$
+    \int_{2\pi} = \int_{\Omega(d)} + \int_{2\pi - \Omega(d)},
+    $$
+    dove $\Omega(d)$ è l'angolo solido della sfera alla distanza $d$.
+    
+-   Il secondo integrale, su $2\pi - \Omega(d)$, è nullo, perché entro quell'angolo solido $L(x \leftarrow \Psi) = 0$.
 
 # Radianza entrante
 
-L'integrale sull'angolo solido $\Omega(d)$ è semplice se supponiamo che nel dominio sia $d$ che l'angolo $\theta$ tra $N_x$ e $\Psi$ siano costanti (la sfera è piccola):
+L'integrale sull'angolo solido $\Omega(d)$ è semplice se supponiamo che nel dominio siano costanti sia $d$ (distanza tra la sorgente e il punto $x$) che l'angolo $\theta$ tra $N_x$ e $\Psi$ (la sfera è piccola):
 $$
 L(x \rightarrow \Theta) = \int_{\Omega(d)} \frac{\rho_d}\pi\,L_d\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi \approx \frac{\rho_d}\pi\,L_d\,\cos\theta \times \pi\left(\frac{r}d\right)^2,
 $$
@@ -147,7 +151,7 @@ Come si tratta questo caso?
 -   Consideriamo ancora il piano sottostante. Vale che:
 
     $$
-    L_\text{down}(x \rightarrow \Theta) = \int_{\Omega_x} \frac{\rho^\text{down}_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
+    L_\text{down}(x \rightarrow \Theta) = \int_{2\pi} \frac{\rho^\text{down}_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
     $$
 
 -   Ma ora il valore dell'integrale non è più dovuto al solo contributo della sferetta luminosa, perché c'è anche il piano superiore.
@@ -159,7 +163,7 @@ Come si tratta questo caso?
 -   Il valore di $L(x \leftarrow \Psi)$ per il piano superiore si calcola con la stessa formula della slide precedente:
 
     $$
-    L_\text{up}(x \rightarrow \Theta) = \int_{\Omega_x} \frac{\rho^\text{up}_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
+    L_\text{up}(x \rightarrow \Theta) = \int_{2\pi} \frac{\rho^\text{up}_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
     $$
 
 -   Ma così ci invischiamo in un problema ricorsivo!
