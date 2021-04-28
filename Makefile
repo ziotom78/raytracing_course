@@ -6,6 +6,7 @@ JS_FILES = \
 .phony: all
 
 all: \
+	tomasi-ray-tracing-08b-docstrings.html \
 	tomasi-ray-tracing-08a-projections.html \
 	tomasi-ray-tracing-07b-ci-builds.html \
 	tomasi-ray-tracing-07a-clifford-algebras.html \
@@ -48,4 +49,4 @@ index.html: index.md ${JS_FILES}
 		-t revealjs \
 		-o $@ $<
 	# This is necessary to make Asymptote WebGL figures work
-	$(SED) -i 's/embed data-src/embed width="680px" height="680px" src/g' $@
+	$(SED) -i 's/embed data-src/embed width="640px" height="640px" src/g' $@
