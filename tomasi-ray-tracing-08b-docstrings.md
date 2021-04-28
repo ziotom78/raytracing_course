@@ -201,7 +201,7 @@ class TestRays(unittest.TestCase):
 
 # Le classi `*Camera`
 
--   In linguaggi che implementano l'ereditarietà, `Camera` sarà il tipo da cui sono derivati i nuovi tipi `OrthographicCamera` e `PerspectiveCamera`.
+-   In linguaggi che implementano l'ereditarietà, `Camera` sarà il tipo da cui sono derivati i nuovi tipi `OrthogonalCamera` e `PerspectiveCamera`.
 
 -   Dovremo implementare la seguente gerarchia di tipi:
 
@@ -209,7 +209,7 @@ class TestRays(unittest.TestCase):
     ```{.graphviz im_fmt="svg" im_out="img" im_fname="camera-hierarchy"}
     graph "" {
         camera [label="Camera" shape=box];
-        ortho [label="OrthographicCamera" shape=box];
+        ortho [label="OrthogonalCamera" shape=box];
         persp [label="PerspectiveCamera" shape=box];
         camera -- ortho;
         camera -- persp;
@@ -250,7 +250,7 @@ label("$\vec u$", (0.1, 0, 0.6));
 ```
 
 $$
-P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (-a, 0, 0).
+P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 $$
 
 # Orientare `Camera`
