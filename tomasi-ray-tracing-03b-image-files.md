@@ -289,9 +289,8 @@ def write_pfm(self, stream):
 
 -   Ho creato due file PFM con queste caratteristiche:
 
-    -   Dimensioni: 3 pixel × 2 pixel;
     -   Uno è codificato come *little endian*, l'altro come *big endian*;
-    -   Matrice dei colori (RGB):
+    -   Matrice dei colori (RGB) di dimensione 3×2 pixel:
 
         |    | #1              | #2              | #3              |
         |----|-----------------|-----------------|-----------------|
