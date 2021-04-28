@@ -14,5 +14,5 @@ path3 xy = ((2, 2, -0.01) -- (-2, 2, -0.01) -- (-2, -2, -0.01) -- (2, -2, -0.01)
 
 draw(surface(xy), green, nolight);
 draw(shift(0, 1, 2) * scale3(0.1) * unitsphere, white);
-draw((0, 0, 0) -- (0, 1, 2) * 0.75, black, Arrow3);
+draw((0, 1, 2) -- (0, 0, 0), black, Arrow3);
 draw(unithemisphere, gray + opacity(0.7));
