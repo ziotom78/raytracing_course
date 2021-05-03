@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Lezione 9</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Lezione 9</h1>
+  <p class="subtitle">Forme geometriche</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="forme-geometriche" class="slide level1">
+<h1>Forme geometriche</h1>
+</section>
+<section id="cornell-box" class="slide level1">
+<h1>«Cornell box»</h1>
+<p><img data-src="./media/cornell-box-schema.svg" height="560" /></p>
+</section>
+<section id="equazione-del-rendering" class="slide level1">
+<h1>Equazione del rendering</h1>
+<ul>
+<li><p>Per risolvere l’equazione del rendering dobbiamo tracciare il percorso di raggi luminosi nello spazio tridimensionale e risolvere l’equazione del rendering:</p>
+<p><span class="math display">
+\begin{aligned}
+L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
+&amp;\int_{4\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
+\end{aligned}
+</span></p></li>
+<li><p>L’integrale è calcolato sull’angolo solido, e non è molto agevole per la risoluzione numerica del problema.</p></li>
+<li><p>Cerchiamo dunque una formulazione alternativa che renda le cose più semplici.</p></li>
+</ul>
+</section>
+<section id="forma-alternativa" class="slide level1">
+<h1>Forma alternativa</h1>
+<ul>
+<li><p>Concentriamoci sul termine più complesso dell’equazione, ossia l’integrale:</p>
+<p><span class="math display">
+\int_{4\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
+</span></p></li>
+<li><p>L’integrale è calcolato sull’intero angolo solido 4π, e il suo significato fisico è di tenere conto della radiazione che cade sul punto <span class="math inline">x</span> di una superficie.</p></li>
+<li><p>Questa radiazione deve essere stata emessa da qualche elemento di superficie <span class="math inline">\mathrm{d}\sigma&#39;</span> sulla scena, corrispondente a un punto <span class="math inline">x&#39;</span> nello spazio (v. figura seguente).</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/rendering-equation-alternative-form.svg" height="560" />
+</center>
+</section>
+<section id="forma-alternativa-1" class="slide level1">
+<h1>Forma alternativa</h1>
+<ul>
+<li><p>Per definizione di angolo solido quindi, <span class="math inline">\mathrm{d}\omega_\Psi</span> si scrive così:</p>
+<p><span class="math display">
+\mathrm{d}\omega_\Psi = \frac{\mathrm{d}\sigma&#39;\,\cos\theta_i&#39;}{\left\|x - x&#39;\right\|^2}.
+</span></p></li>
+<li><p>Il termine integrale dell’equazione del rendering si riscrive quindi così:</p>
+<p><span class="math display">
+\int_{\sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x, x - x&#39;)\,\frac{\cos\theta_i\,\cos\theta&#39;}{\left\|x - x&#39;\right\|^2}\mathrm{d}\sigma&#39;,
+</span></p>
+<p>dove il dominio di integrazione <span class="math inline">\sum S</span> richiede una certa attenzione.</p></li>
+</ul>
+</section>
+<section id="dominio-di-integrazione" class="slide level1">
+<h1>Dominio di integrazione</h1>
+<ul>
+<li><p>Abbiamo riscritto l’integrale sull’angolo solido come un’integrale sulle superfici <span class="math inline">\sum S</span>.</p></li>
+<li><p>Ingenuamente, potremmo credere che <span class="math inline">\sum S</span> rappresenti <em>tutte</em> le superfici del nostro «mondo virtuale».</p></li>
+<li><p>Non è purtroppo così! Il problema è che non tutte le superfici di un ambiente sono visibili dal generico punto <span class="math inline">x</span>.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/rendering-equation-visibility.svg" height="560" />
+</center>
+</section>
+<section id="funzione-di-visibilità" class="slide level1">
+<h1>Funzione di visibilità</h1>
+<ul>
+<li><p>Per risolvere questa ambiguità, si introduce solitamente una funzione di visibilità (<em>visibility function</em>) <span class="math inline">v(x, x&#39;)</span> definita in questo modo:</p>
+<p><span class="math display">
+v(x, x&#39;) = \begin{cases}
+1\ &amp;\text{ se $x&#39;$ è visibile da $x$,}\\
+0\ &amp;\text{ se $x&#39;$ non è visibile da $x$.}
+\end{cases}
+</span></p></li>
+<li><p>In questo modo si riscrive l’integrale sull’intero insieme dei punti <span class="math inline">x&#39;</span>:</p>
+<p><span class="math display">
+\int_{\forall x&#39; \in \sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x, x - x&#39;)\,\frac{\cos\theta_i\,\cos\theta&#39;}{\left\|x - x&#39;\right\|^2}\,v(x, x&#39;)\,\mathrm{d}\sigma&#39;.
+</span></p></li>
+</ul>
+</section>
+<section id="raggi-e-forme-geometriche" class="slide level1">
+<h1>Raggi e forme geometriche</h1>
+<ul>
+<li><p>Vediamo quindi che in un codice di ray-tracing è necessario avere la possibilità di effettuare questi calcoli:</p>
+<ol>
+<li>Intersezione tra un raggio e una superficie;</li>
+<li>Determinazione della funzione di visibilità <span class="math inline">v(x, x&#39;)</span> tra due punti.</li>
+</ol></li>
+<li><p>Questi due problemi possono essere risolti in modo molto simile, ed è quello che vedremo nella lezione di oggi.</p></li>
+</ul>
+</section>
+<section id="intersezioni-tra-raggi-e-forme-geometriche" class="slide level1">
+<h1>Intersezioni tra raggi e forme geometriche</h1>
+</section>
+<section id="rappresentazione-di-forme" class="slide level1">
+<h1>Rappresentazione di forme</h1>
+<ul>
+<li><p>In un ray-tracer si rappresentano superfici tramite equazioni analitiche.</p></li>
+<li><p>L’intersezione tra raggi luminosi e forme è calcolata usando le regole della geometria analitica:</p>
+<ol>
+<li>Si rappresentano raggi e forme come equazioni in cui l’incognita è il punto <span class="math inline">(x, y, z)</span> dello spazio.</li>
+<li>Si risolve il sistema delle equazioni per il raggio e per la forma, in modo da trovare i punti <span class="math inline">(x, y, z)</span> in comune tra le due equazioni.</li>
+</ol></li>
+<li><p>Grazie alla nostra implementazione delle trasformazioni affini, possiamo implementare solo le forme più semplici, che potranno poi essere modificate tramite concatenazioni di trasformazioni.</p></li>
+</ul>
+</section>
+<section id="trasformazioni" class="slide level1">
+<h1>Trasformazioni</h1>
+<ul>
+<li><p>Alcune forme geometriche hanno forme piuttosto complicate.</p></li>
+<li><p>Diventa difficile applicare trasformazioni a forme nel caso generale.</p></li>
+<li><p>È più conveniente applicare ai raggi luminosi la trasformazione <strong>inversa</strong>.</p></li>
+</ul>
+</section>
+<section id="trasformare-raggi" class="slide level1">
+<h1>Trasformare raggi</h1>
+<ul>
+<li><p>Supponiamo che <span class="math inline">T</span> sia la trasformazione da applicare alla superficie <span class="math inline">S</span>. La superficie trasformata <span class="math inline">T\cdot S</span> è allora l’insieme di punti</p>
+<p><span class="math display">
+T\cdot S = \left\{T x: x \in S\right\},
+</span></p></li>
+<li><p>Se il raggio <span class="math inline">O + t \vec d</span> interseca <span class="math inline">T\cdot S</span> quando <span class="math inline">t = \tilde t</span>, allora</p>
+<p><span class="math display">
+O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde t\,T^{-1} \vec d = \tilde x,
+</span></p>
+<p>ossia l’intersezione tra raggio e superficie <em>trasformata</em> <span class="math inline">T\cdot S</span> è lo stesso punto intersezione del raggio <em>antitrasformato</em> con la superficie <span class="math inline">S</span>, e <span class="math inline">\tilde t</span> non cambia.</p></li>
+</ul>
+</section>
+<section id="tipi-di-forme" class="slide level1">
+<h1>Tipi di forme</h1>
+<ul>
+<li><p>Ci sono alcune forme geometriche particolarmente semplici da implementare eppure versatili; in questo corso discuteremo le seguenti:</p>
+<ol>
+<li>Sfere;</li>
+<li>Piani;</li>
+<li><em>Constructive Solid Geometry</em> (CSG);</li>
+<li>Cubi;</li>
+<li>Triangoli.</li>
+</ol></li>
+<li><p>Tratteremo cubi e triangoli più avanti, dal momento che sono solitamente associati ad argomenti più avanzati (<em>bounding boxes</em> e <em>triangle meshes</em>).</p></li>
+</ul>
+</section>
+<section id="sfere" class="slide level1">
+<h1>Sfere</h1>
+</section>
+<section id="sfera-unitaria" class="slide level1">
+<h1>Sfera unitaria</h1>
+<ul>
+<li><p>L’equazione della sfera tridimensionale con centro <span class="math inline">C</span> e raggio <span class="math inline">R</span> è</p>
+<p><span class="math display">
+(x - c_x)^2 + (y - c_y)^2 + (z - c_z)^2 = R^2,
+</span></p>
+<p>e deriva dalla definizione geometrica di sfera. Ma la presenza di <span class="math inline">C</span> ed <span class="math inline">R</span> è inutile, perché implementeremo le trasformazioni.</p></li>
+<li><p>Ci limitiamo quindi a considerare la sfera unitaria centrata nell’origine:</p>
+<p><span class="math display">
+x^2 + y^2 + z^2 = 1\ \rightarrow\ \left\|P - 0\right\|^2 = (P - 0) \cdot (P - 0) = 1,
+</span></p>
+<p>dove <span class="math inline">0</span> è l’origine degli assi e <span class="math inline">P</span> è il generico punto della sfera.</p></li>
+</ul>
+</section>
+<section id="intersezione-raggio-sfera" class="slide level1">
+<h1>Intersezione raggio-sfera</h1>
+<ul>
+<li><p>Determinare l’intersezione tra un raggio ed una sfera richiede di risolvere contemporaneamente le equazioni</p>
+<p><span class="math display">
+\begin{cases}
+(P - 0) \cdot (P - 0) = 1,\\
+P = O + t \vec d,
+\end{cases}
+</span></p></li>
+<li><p>L’incognita è il valore <span class="math inline">t</span> che dice a che distanza dall’origine del raggio avviene l’intersezione con la sfera.</p></li>
+</ul>
+</section>
+<section id="soluzione-dellequazione" class="slide level1">
+<h1>Soluzione dell’equazione</h1>
+<ul>
+<li><p>Si tratta quindi di sostituire banalmente la seconda equazione nella prima:</p>
+<p><span class="math display">
+(O + t\vec d - 0) \cdot (O + t\vec d - 0) - 1 = 0.
+</span></p></li>
+<li><p>La scrittura <span class="math inline">O - 0</span> indica semplicemente che <span class="math inline">O</span> va considerato un <em>vettore</em> anziché un punto. Noi semplifichiamo la notazione così:</p>
+<p><span class="math display">
+O - 0 = \vec O,
+</span></p>
+<p>che suggerisce che dovremo aggiungere al tipo <code>Point</code> un metodo <code>toVec</code>.</p></li>
+</ul>
+</section>
+<section id="soluzione-dellequazione-1" class="slide level1">
+<h1>Soluzione dell’equazione</h1>
+<ul>
+<li><p>Espandendo la definizione di prodotto scalare otteniamo</p>
+<p><span class="math display">
+t^2 \left\|\vec d\right\|^2 + 2 t\,\vec O \cdot \vec d + \left\|\vec O\right\|^2 - 1 = 0,
+</span></p></li>
+<li><p>È una equazione di secondo grado, e ammette quindi zero, una o due soluzioni:</p>
+<ol>
+<li>Zero soluzioni: il raggio non colpisce la sfera;</li>
+<li>Una soluzione: il raggio è tangente alla sfera;</li>
+<li>Due soluzioni: il raggio colpisce la sfera, la attraversa e ne colpisce la superficie nella parte opposta.</li>
+</ol></li>
+</ul>
+</section>
+<section id="intersezioni-raggio-sfera" class="slide level1">
+<h1>Intersezioni raggio-sfera</h1>
+<ul>
+<li><p>Per distinguere i tre casi occorre il discriminante:</p>
+<p><span class="math display">
+\frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
+</span></p></li>
+<li><p>Nel caso in cui <span class="math inline">\Delta &gt; 0</span>, le due intersezioni sono</p>
+<p><span class="math display">
+t = \begin{cases}
+t_1 &amp;= -\frac{\vec O \cdot d - \Delta / 4}{\left\|\vec d\right\|^2},\\
+t_2 &amp;= -\frac{\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
+\end{cases}
+</span></p></li>
+</ul>
+</section>
+<section id="intersezioni-invalide" class="slide level1">
+<h1>Intersezioni invalide</h1>
+<ul>
+<li><p>Non tutte le intersezioni tra raggio e sfera sono valide: dipende anche dal punto di partenza del raggio.</p></li>
+<li><p>Inoltre non ha molto senso considerare le intersezioni tangenti, quindi noi le ignoreremo.</p>
+<center>
+<p><img data-src="./media/ray-sphere-intersection.svg" /></p>
+</center></li>
+</ul>
+</section>
+<section id="intersezioni-valide" class="slide level1">
+<h1>Intersezioni valide</h1>
+<ul>
+<li><p>Il criterio per decidere se un’intersezione è valida dipende anche dai valori <span class="math inline">t_\text{min}</span> e <span class="math inline">t_\text{max}</span> del raggio <span class="math inline">O + t \vec d</span>.</p></li>
+<li><p>Mettendo insieme tutto ciò che abbiamo detto sinora, una intersezione per <span class="math inline">t = \tilde t</span> è valida solo se</p>
+<p><span class="math display">
+t_\text{min} \leq \tilde t \leq t_\text{max}
+</span></p>
+<p>(usare &lt; anziché ≤ non cambia nulla).</p></li>
+<li><p>Se le due intersezioni <span class="math inline">t_1</span> e <span class="math inline">t_2</span> soddisfano entrambe questo criterio, allora si considera il valore minore delle due, ossia <span class="math inline">t_1</span> (<em>criterio di visibilità</em>).</p></li>
+</ul>
+</section>
+<section id="oltre-le-intersezioni" class="slide level1">
+<h1>Oltre le intersezioni</h1>
+<ul>
+<li><p>Una volta individuato <span class="math inline">t</span> e di conseguenza il punto <span class="math inline">P</span>, il lavoro però non è finito.</p></li>
+<li><p>Per applicare la BRDF <span class="math inline">f_r</span> al punto è necessario conoscere anche la normale <span class="math inline">\hat n</span> alla superficie.</p></li>
+<li><p>Inoltre in generale la BRDF di una superficie dipende dal punto esatto di intersezione, che per una superficie è solitamente indicato come un punto <strong>bidimensionale</strong> <span class="math inline">(u, v)</span>.</p></li>
+</ul>
+</section>
+<section id="normale-di-una-sfera" class="slide level1">
+<h1>Normale di una sfera</h1>
+<ul>
+<li><p>Fortunatamente la sfera è una forma geometrica regolare. Dato un punto <span class="math inline">P</span>, la normale alla superficie è il raggio:</p>
+<p><span class="math display">
+\hat n_P = P - O,
+</span></p>
+<p>dove <span class="math inline">O</span> è il centro della sfera.</p></li>
+<li><p>C’è però una ambiguità: la normale dovrebbe essere <em>entrante</em> o <em>uscente</em>?</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/sphere-normals.svg" height="560" />
+</center>
+</section>
+<section id="normale-di-una-sfera-1" class="slide level1">
+<h1>Normale di una sfera</h1>
+<ul>
+<li><p>La scelta della normale dipende dalla concavità/convessità della superficie <em>dal punto di vista del raggio</em>.</p></li>
+<li><p>Dovremmo quindi scegliere la normale in funzione della direzione di arrivo <span class="math inline">\vec d</span> del raggio.</p></li>
+<li><p>Possiamo quindi verificare il segno di</p>
+<p><span class="math display">
+\hat n \cdot \vec d = \left\|\hat n\right\|\cdot\left\|\vec d\right\|\,\cos\theta,
+</span></p>
+<p>e se è positivo consideriamo <span class="math inline">-\hat n</span> anziché <span class="math inline">\hat n</span>.</p></li>
+</ul>
+</section>
+<section id="punto-di-intersezione" class="slide level1">
+<h1>Punto di intersezione</h1>
+<ul>
+<li><p>Una volta determinato il punto di intersezione <span class="math inline">P</span> tra la sfera e il raggio, bisogna solitamente stimare la BRDF in <span class="math inline">P</span>.</p></li>
+<li><p>Ma è scomodo farlo se <span class="math inline">P</span> è un punto nello spazio tridimensionale, occorre piuttosto conoscerne la posizione in termini della superficie della sfera.</p></li>
+<li><p>Nel caso specifico della sfera si può usare la coppia latitudine-longitudine; nel caso generico di una superficie <span class="math inline">S</span> si cerca comunque una parametrizzazione bidimensionale <span class="math inline">(u, v)</span>.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/earth-from-space.webp" height="680" />
+</center>
+</section>
+<section id="superficie-della-sfera" class="slide level1">
+<h1>Superficie della sfera</h1>
+<ul>
+<li><p>Dato un punto <span class="math inline">P</span> sulla superficie della sfera, possiamo ricavare la colatitudine <span class="math inline">\theta</span> e la longitudine <span class="math inline">\phi</span> tramite la trigonometria:</p>
+<p><span class="math display">
+\theta = \arccos p_z, \quad \phi = \arctan \frac{p_y}{p_x}.
+</span></p></li>
+<li><p>L’intervallo di valori <span class="math inline">\theta \in [0, \pi], \phi \in [0, 2\pi]</span> è troppo specifico per la sfera, quindi di solito si usa la parametrizzazione</p>
+<p><span class="math display">
+u = \frac\theta\pi = \frac{\arccos p_z}\pi, \quad v = \frac\phi{2\pi} = \frac{\arctan p_y / p_x}{2\pi}.
+</span></p></li>
+</ul>
+</section>
+<section id="piani" class="slide level1">
+<h1>Piani</h1>
+</section>
+<section id="piano-infinito" class="slide level1">
+<h1>Piano infinito</h1>
+<ul>
+<li><p>In geometria affine, un piano è definito tramite il suo vettore normale <span class="math inline">\hat n</span> e un punto <span class="math inline">O</span> attraverso cui passa il piano:</p>
+<p><span class="math display">
+(P - O) \cdot \hat n = 0,
+</span></p>
+<p>dove <span class="math inline">P</span> è il generico punto sul piano.</p></li>
+<li><p>(Come potete intuire, in geometria algebrica invece i piani sono rappresentati mediante bivettori, e la loro equazione è identica a quella della retta: una meraviglia se si fanno calcoli a mano!)</p></li>
+</ul>
+</section>
+<section id="piano-standard" class="slide level1">
+<h1>Piano standard</h1>
+<ul>
+<li><p>Visto che possiamo sfruttare le trasformazioni, studiamo quindi il piano particolare che passa per l’origine ed è generato dagli assi <span class="math inline">x</span> e <span class="math inline">y</span> (ossia è perpendicolare all’asse <span class="math inline">z</span>).</p></li>
+<li><p>In tal caso</p>
+<p><span class="math display">
+(P - O) \cdot \hat n = 0\ \Rightarrow\ \vec P \cdot \hat e_z = 0,
+</span></p>
+<p>che equivale a chiedere che</p>
+<p><span class="math display">
+P_z = 0.
+</span></p></li>
+</ul>
+</section>
+<section id="intersezione-raggio-piano" class="slide level1">
+<h1>Intersezione raggio-piano</h1>
+<ul>
+<li><p>L’intersezione tra il piano e il raggio <span class="math inline">O + t \vec d</span> è quindi banalissima: basta richiedere che la componente <span class="math inline">z</span> del punto lungo il raggio si annulli per qualche valore di <span class="math inline">t</span>.</p></li>
+<li><p>La soluzione analitica è</p>
+<p><span class="math display">
+O_z + t d_z = 0\ \Rightarrow\ t = -\frac{O_z}{d_z},
+</span></p>
+<p>che vale ovviamente solo se <span class="math inline">d_z \not= 0</span>, ossia se la direzione <span class="math inline">\vec d</span> del raggio non è parallela al piano <span class="math inline">xy</span>.</p></li>
+</ul>
+</section>
+<section id="normali" class="slide level1">
+<h1>Normali</h1>
+<ul>
+<li><p>La normale del piano è ovviamente <span class="math inline">\pm \hat e_z</span>, dove il segno si determina con la medesima regola usata per la sfera.</p></li>
+<li><p>Ma nel caso del piano la formula è ancora più semplice: se <span class="math inline">\vec d</span> è la direzione del raggio, allora la condizione per cambiare segno diventa</p>
+<p><span class="math display">
+\vec d \cdot \hat n &lt; 0\ \Rightarrow\ d_z &lt; 0.
+</span></p></li>
+</ul>
+</section>
+<section id="parametrizzazione-del-piano" class="slide level1">
+<h1>Parametrizzazione del piano</h1>
+<ul>
+<li><p>A differenza della sfera, un piano è una superficie infinita.</p></li>
+<li><p>In questo caso si parametrizza il piano con condizioni periodiche:</p>
+<p><span class="math display">
+u = p_x - \lfloor p_x \rfloor,\quad v = p_y - \lfloor p_y \rfloor,
+</span></p>
+<p>dove <span class="math inline">\lfloor \cdot \rfloor</span> indica l’arrotondamento per difetto, in modo che <span class="math inline">u, v \in [0, 1)</span> come nel caso della sfera.</p></li>
+<li><p>L’intera superficie del piano è quindi la ripetizione periodica della regione <span class="math inline">[0, 1] \times [0, 1]</span> (<em>tile pattern</em>).</p></li>
+</ul>
+</section>
+<section id="parametrizzazione-del-piano-1" class="slide level1">
+<h1>Parametrizzazione del piano</h1>
+<center>
+<img data-src="./media/textured-plane.png" />
+</center>
+</section>
+<section id="constructive-solid-geometry" class="slide level1">
+<h1><em>Constructive Solid Geometry</em></h1>
+</section>
+<section id="constructive-solid-geometry-1" class="slide level1">
+<h1><em>Constructive Solid Geometry</em></h1>
+<ul>
+<li><p>Le forme viste finora sono semplicissime: sfere e piani.</p></li>
+<li><p>Vedremo in futuro che forme arbitrariamente complesse si possono approssimare con insiemi di triangoli.</p></li>
+<li><p>Oggi però affrontiamo brevemente un’altra tecnica per costruire forme geometriche complesse a partire da forme semplici: la <em>Constructive Solid Geometry</em> (CSG).</p></li>
+</ul>
+</section>
+<section id="operazioni-booleane" class="slide level1">
+<h1>Operazioni Booleane</h1>
+<center>
+<img data-src="./media/boolean-operations.png" />
+</center>
+<ul>
+<li>Unione</li>
+<li>Differenza</li>
+<li>Intersezione</li>
+</ul>
+</section>
+<section id="unione" class="slide level1">
+<h1>Unione</h1>
+<center>
+<img data-src="./media/boolean-operations-2d.svg" />
+</center>
+<ul>
+<li>Si determinano le intersezioni con <em>tutte</em> le forme;</li>
+<li>Si sceglie l’intersezione più prossima, assegnandole la BRDF della forma corrispondente.</li>
+</ul>
+</section>
+<section id="differenza" class="slide level1">
+<h1>Differenza</h1>
+<center>
+<img data-src="./media/boolean-operations-2d.svg" />
+</center>
+<ul>
+<li>Si determinano le intersezioni con le forme;</li>
+<li>Si omettono le intersezioni interne alla forma #2 (C) e quelle sulla superficie di #2 che non sono interne a #1 (D).</li>
+</ul>
+</section>
+<section id="intersezione" class="slide level1">
+<h1>Intersezione</h1>
+<center>
+<img data-src="./media/boolean-operations-2d.svg" />
+</center>
+<ul>
+<li>Si determinano le intersezioni con le forme;</li>
+<li>Si considerano solo le intersezioni in una delle due forme che sono interne all’altra forma (il punto B interseca #2 ed è interno a #1, C interseca #1 ed è interno a #2).</li>
+</ul>
+</section>
+<section id="fusione" class="slide level1">
+<h1>Fusione</h1>
+<center>
+<img data-src="./media/boolean-operations-2d.svg" />
+</center>
+<ul>
+<li>Funziona come un’unione, ma i punti interni B e C non vengono considerati.</li>
+<li>È utile solo per materiali semitrasparenti.</li>
+</ul>
+</section>
+<section id="gerarchie" class="slide level1">
+<h1>Gerarchie</h1>
+<center>
+<img data-src="./media/csg-tree.png" height="560" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/villarceau-circles.webp" />
+</center>
+<p><span style="float:right"><a href="http://hof.povray.org/Villarceau_Circles-CSG.html"><em>Villarceau Circles</em></a>, by Tor Olav Kristensen (2004)</span></p>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
+    </body>
+</html>

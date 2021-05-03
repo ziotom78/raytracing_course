@@ -21,3 +21,4 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 - Esercitazione 7 (2021-04-21): [CI build](./tomasi-ray-tracing-07b-ci-builds.html)
 - Lezione 8 (2021-04-26): [proiezioni](./tomasi-ray-tracing-08a-projections.html)
 - Esercitazione 8 (2021-04-28): [docstrings](./tomasi-ray-tracing-08b-docstrings.html)
+- Lezione 9 (2021-05-03): [forme geometriche](./tomasi-ray-tracing-09a-shapes.html)
