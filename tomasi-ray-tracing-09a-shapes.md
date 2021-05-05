@@ -224,8 +224,8 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
     $$
     t = \begin{cases}
-    t_1 &= -\frac{\vec O \cdot d - \Delta / 4}{\left\|\vec d\right\|^2},\\
-    t_2 &= -\frac{\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
+    t_1 &= \frac{-\vec O \cdot d - \Delta / 4}{\left\|\vec d\right\|^2},\\
+    t_2 &= \frac{-\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
     \end{cases}
     $$
 
