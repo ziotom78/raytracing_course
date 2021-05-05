@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Esercitazione 9</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Esercitazione 9</h1>
+  <p class="subtitle">Bug e issue</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="issues" class="slide level1">
+<h1>Issues</h1>
+</section>
+<section id="un-bug-nel-codice" class="slide level1">
+<h1>Un bug nel codice!</h1>
+<ul>
+<li><p>Il codice Python di settimana scorsa conteneva un errore nell’implementazione del metodo <code>ImageTracer.fire_ray</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> (<span class="va">self</span>.image.width <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> (<span class="va">self</span>.image.height <span class="op">-</span> <span class="dv">1</span>)</span></code></pre></div></li>
+<li><p>L’errore sta nel fatto che le righe in <code>HdrImage</code> sono numerate dall’<em>alto</em>, non dal <em>basso</em> (come avevo erroneamente detto). Nella seconda riga invece, <code>v</code> cresce quando cresce <code>row</code>.</p></li>
+</ul>
+</section>
+<section id="cosa-fare-con-i-bug" class="slide level1">
+<h1>Cosa fare con i bug</h1>
+<ul>
+<li><p>L’esistenza di questo bug provoca un ribaltamento verticale delle immagini: l’alto e il basso sono scambiati!</p></li>
+<li><p>Curiosamente, nella presentazione del corso che avevo fatto a Dicembre avevo mostrato esattamente questa possibilità… 😀</p></li>
+<li><p>Eppure abbiamo implementato dei test! Perché non ce ne siamo accorti?</p></li>
+</ul>
+</section>
+<section id="test-della-scorsa-lezione" class="slide level1">
+<h1>Test della scorsa lezione</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># These were the tests we implemented last week</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> HdrImage(width<span class="op">=</span><span class="dv">4</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>camera <span class="op">=</span> PerspectiveCamera(aspect_ratio<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tracer <span class="op">=</span> ImageTracer(image<span class="op">=</span>image, camera<span class="op">=</span>camera)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we check that &quot;u_pixel&quot; and &quot;v_pixel&quot; do what they&#39;re supposed to do</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>ray1 <span class="op">=</span> tracer.fire_ray(<span class="dv">0</span>, <span class="dv">0</span>, u_pixel<span class="op">=</span><span class="fl">2.5</span>, v_pixel<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>ray2 <span class="op">=</span> tracer.fire_ray(<span class="dv">2</span>, <span class="dv">1</span>, u_pixel<span class="op">=</span><span class="fl">0.5</span>, v_pixel<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> ray1.is_close(ray2)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we check that all pixels have been visited</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>tracer.fire_all_rays(<span class="kw">lambda</span> ray: Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(image.height):</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(image.width):</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> image.get_pixel(col, row) <span class="op">==</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span></code></pre></div>
+</section>
+<section id="test-incompleti" class="slide level1">
+<h1>Test incompleti</h1>
+<ul>
+<li><p>Ci rendiamo conto che i nostri test non verificavano il corretto orientamento dell’immagine!</p></li>
+<li><p>Questo genere di problemi è <strong>molto</strong> comune, anche in progetti professionali: c’è una potenziale condizione di errore che i test non coprono, e che non viene quindi scoperta durante l’implementazione.</p></li>
+<li><p>Vediamo ora qual è il modo giusto di correggere l’errore.</p></li>
+</ul>
+</section>
+<section id="correggere-un-bug" class="slide level1">
+<h1>Correggere un bug</h1>
+<p>Correzioni in un repository pubblico come GitHub richiedono questi passaggi:</p>
+<ol>
+<li><p>Segnalare il problema su GitHub, aprendo una <em>issue</em> (sinonimi: <em>bug report</em> o <em>ticket</em>). Alla issue sarà assegnato un numero unico, ad es. #156.</p></li>
+<li><p>Creare una branch nel repository, chiamandola <code>fix156</code>.</p></li>
+<li><p>Modificare i test in modo che evidenzino l’errore: una volta implementati, questi nuovi test devono ovviamente fallire.</p></li>
+<li><p>Solo una volta che i nuovi test sono implementati si può correggere il bug.</p></li>
+<li><p>Quando i nuovi test passano, aprire una PR legata al branch, e se tutto funziona (inclusi i <em>CI builds</em>) si fa il <em>merge</em> e si chiude la <em>issue</em>.</p></li>
+</ol>
+</section>
+<section id="aprire-una-issue" class="slide level1">
+<h1>Aprire una <em>issue</em></h1>
+<iframe src="https://player.vimeo.com/video/544935196?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="672" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="How to open a new issue in GitHub">
+</iframe>
+</section>
+<section id="creare-un-nuovo-test" class="slide level1">
+<h1>Creare un nuovo test</h1>
+<ul>
+<li><p>Il test che avevamo scritto per <code>ImageTracer</code> non era esaustivo…</p></li>
+<li><p>…ma era comunque già abbastanza complesso, perché verificava due cose distinte:</p>
+<ol>
+<li><p>La correttezza della gestione di <code>u_pixel</code> e <code>v_pixel</code></p></li>
+<li><p>Il fatto che <code>ImageTracer.fire_all_rays</code> fosse in grado di «visitare» tutti i pixel dell’immagine.</p></li>
+</ol></li>
+<li><p>Non conviene che aggiungiamo materiale a questo test, altrimenti in caso in futuro fallisse sarebbe meno immediato capire <em>dove</em> si trovi il problema.</p></li>
+</ul>
+</section>
+<section id="lavoro-da-fare" class="slide level1">
+<h1>Lavoro da fare</h1>
+<ul>
+<li><p>Quello che faremo ora è dividere il test in tre sotto-test:</p>
+<ol>
+<li>Le due verifiche già esistenti, che vanno però divise in due test distinti;</li>
+<li>Un nuovo test che fallisca a causa del bug che abbiamo evidenziato.</li>
+</ol></li>
+<li><p>Nell’implementare questo test in Python, ho usato una caratteristica del framework di test (<code>unittest</code>) che probabilmente esiste anche nei vostri framework.</p></li>
+</ul>
+</section>
+<section id="ripetizioni-ineleganti" class="slide level1">
+<h1>Ripetizioni ineleganti</h1>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_uv_sub_mapping():</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create the objects to test</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> HdrImage(width<span class="op">=</span><span class="dv">4</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    camera <span class="op">=</span> PerspectiveCamera(aspect_ratio<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    tracer <span class="op">=</span> ImageTracer(image<span class="op">=</span>image, camera<span class="op">=</span>camera)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ray1 <span class="op">=</span> tracer.fire_ray(<span class="dv">0</span>, <span class="dv">0</span>, u_pixel<span class="op">=</span><span class="fl">2.5</span>, v_pixel<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    ray2 <span class="op">=</span> tracer.fire_ray(<span class="dv">2</span>, <span class="dv">1</span>, u_pixel<span class="op">=</span><span class="fl">0.5</span>, v_pixel<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.is_close(ray2)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_image_coverage():</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create the objects to test (same as above)</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> HdrImage(width<span class="op">=</span><span class="dv">4</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    camera <span class="op">=</span> PerspectiveCamera(aspect_ratio<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    tracer <span class="op">=</span> ImageTracer(image<span class="op">=</span>image, camera<span class="op">=</span>camera)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    tracer.fire_all_rays(<span class="kw">lambda</span> ray: Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(image.height):</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(image.width):</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> image.get_pixel(col, row) <span class="op">==</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span></code></pre></div>
+</section>
+<section id="set-up-e-tear-down" class="slide level1">
+<h1><em>Set-up</em> e <em>tear-down</em></h1>
+<ul>
+<li><p>L’ineleganza sta nel fatto che dobbiamo creare in ogni test gli oggetti <code>image</code>, <code>camera</code> e <code>tracer</code>.</p></li>
+<li><p>I framework di test (non tutti) forniscono di solito la possibilità di invocare procedure di <em>set-up</em> per creare gli oggetti su cui si eseguono poi i test.</p></li>
+<li><p>(Analogamente, questi framework implementano anche la possibilità di invocare procedure di <em>tear-down</em> alla fine dei test, con lo scopo ad esempio di cancellare file temporanei creati durante i test stessi).</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TestImageTracer(unittest.TestCase):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is invoked automatically whenever you run `pytest`</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> setUp(<span class="va">self</span>):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.image <span class="op">=</span> HdrImage(width<span class="op">=</span><span class="dv">4</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.camera <span class="op">=</span> PerspectiveCamera(aspect_ratio<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.tracer <span class="op">=</span> ImageTracer(image<span class="op">=</span><span class="va">self</span>.image, camera<span class="op">=</span><span class="va">self</span>.camera)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> test_orientation(<span class="va">self</span>):</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Fire a ray against top-left corner of the screen</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        top_left_ray <span class="op">=</span> <span class="va">self</span>.tracer.fire_ray(<span class="dv">0</span>, <span class="dv">0</span>, u_pixel<span class="op">=</span><span class="fl">0.0</span>, v_pixel<span class="op">=</span><span class="fl">0.0</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> Point(<span class="fl">0.0</span>, <span class="fl">2.0</span>, <span class="fl">1.0</span>).is_close(top_left_ray.at(<span class="fl">1.0</span>))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Fire a ray against bottom-right corner of the screen</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        bottom_right_ray <span class="op">=</span> <span class="va">self</span>.tracer.fire_ray(<span class="dv">3</span>, <span class="dv">1</span>, u_pixel<span class="op">=</span><span class="fl">1.0</span>, v_pixel<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="op">-</span><span class="fl">1.0</span>).is_close(bottom_right_ray.at(<span class="fl">1.0</span>))</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> test_uv_sub_mapping(<span class="va">self</span>):</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        ray1 <span class="op">=</span> <span class="va">self</span>.tracer.fire_ray(<span class="dv">0</span>, <span class="dv">0</span>, u_pixel<span class="op">=</span><span class="fl">2.5</span>, v_pixel<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        ray2 <span class="op">=</span> <span class="va">self</span>.tracer.fire_ray(<span class="dv">2</span>, <span class="dv">1</span>, u_pixel<span class="op">=</span><span class="fl">0.5</span>, v_pixel<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> ray1.is_close(ray2)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> test_image_coverage(<span class="va">self</span>):</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.tracer.fire_all_rays(<span class="kw">lambda</span> ray: Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.height):</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.width):</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                <span class="cf">assert</span> <span class="va">self</span>.image.get_pixel(col, row) <span class="op">==</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span></code></pre></div>
+</section>
+<section id="fallimento-dei-test" class="slide level1">
+<h1>Fallimento dei test</h1>
+<p><asciinema-player src="cast/github-issue-failed-tests-86x22.cast" cols="86" rows="22" font-size="medium"></asciinema-player></p>
+</section>
+<section id="creazione-di-un-pr" class="slide level1">
+<h1>Creazione di un PR</h1>
+<center>
+<img data-src="./media/github-fix-issue.png" height="560" />
+</center>
+</section>
+<section id="correzione-del-bug" class="slide level1">
+<h1>Correzione del bug</h1>
+<ul>
+<li><p>Questa è la correzione per il metodo <code>ImageTracer.fire_ray</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> <span class="va">self</span>.image.width</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> <span class="fl">1.0</span> <span class="op">-</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> <span class="va">self</span>.image.height</span></code></pre></div></li>
+<li><p>Facendo il commit, si vede che ora il test passa:</p>
+<center>
+<p><img data-src="./media/github-issue-bugfix.png" height="280" /></p>
+</center></li>
+</ul>
+</section>
+<section id="chiusura-del-bug" class="slide level1">
+<h1>Chiusura del bug</h1>
+<iframe src="https://player.vimeo.com/video/544950712?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="672" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="How to close an issue in GitHub">
+</iframe>
+</section>
+<section id="traccia-dei-bug" class="slide level1">
+<h1>Traccia dei bug</h1>
+<ul>
+<li><p>GitHub tiene traccia dei bug di un repository nella pagina dedicata: è possibile consultare quindi quali bug siano aperti e quali siano stati già chiusi.</p></li>
+<li><p>Ma, come nel caso dei <em>commit</em>, una lista di bug è ben povera, e non racconta una «storia».</p></li>
+<li><p>Vediamo ora lo scopo del file CHANGELOG.md, che è una forma di documentazione.</p></li>
+</ul>
+</section>
+<section id="changelog" class="slide level1">
+<h1>CHANGELOG</h1>
+<ul>
+<li><p>Tutti i repository pubblici dovrebbero avere un file <code>CHANGELOG</code>/<code>NEWS</code>/<code>HISTORY</code>/…, che elenca i bug corretti e le nuove caratteristiche del codice elencati in funzione del numero di versione.</p></li>
+<li><p>Questo è il file <code>HISTORY.md</code> di Julia:</p>
+<center>
+<p><img data-src="./media/julia-release-notes.png" height="320" /></p>
+</center></li>
+</ul>
+</section>
+<section id="changelog-1" class="slide level1">
+<h1>CHANGELOG</h1>
+<ul>
+<li><p>In un file <code>CHANGELOG</code> occorre indicare tutte le correzioni e modifiche fatte al codice.</p></li>
+<li><p>Non serve essere verbosi, una volta che si inserisce il link alla <em>issue</em> o alla <em>pull request</em>: in genere basta una riga o due.</p></li>
+<li><p>Va scritto in ordine <strong>cronologico inverso</strong>: ossia, le modifiche più recenti vanno riportate in cima. In questo modo è più semplice per chi legge vedere quali sono le novità.</p></li>
+<li><p>Di solito si divide in sezioni, una per ogni versione del codice. La prima sezione si chiama di solito <code>HEAD</code>, e contiene le correzioni e le modifiche che finiranno nella prossima futura versione del codice.</p></li>
+</ul>
+</section>
+<section id="changelog-di-healpix.jl" class="slide level1">
+<h1>CHANGELOG di <a href="https://github.com/ziotom78/Healpix.jl">Healpix.jl</a></h1>
+<center>
+<img data-src="./media/healpixjl-changelog.png" />
+</center>
+</section>
+<section id="changelog-di-pytracer" class="slide level1">
+<h1>CHANGELOG di <a href="https://github.com/ziotom78/pytracer">pytracer</a></h1>
+<ul>
+<li><p>Ho aggiunto nel repository di <a href="https://github.com/ziotom78/pytracer">pytracer</a> questo file <code>CHANGELOG.md</code>, scritto in Markdown, che potete usare come ispirazione:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># HEAD</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Fix an issue with the vertical order of the images <span class="co">[</span><span class="ot">#4</span><span class="co">](https://github.com/ziotom78/pytracer/pull/4)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Version 0.1.0</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>First release of the code</span></code></pre></div></li>
+<li><p>Ricordatevi d’ora in poi che <strong>ogni volta</strong> che farete il <em>merge</em> di un <em>pull request</em> dovrete aggiornare <code>CHANGELOG.md</code> subito dopo!</p></li>
+</ul>
+</section>
+<section id="cose-da-fare-oggi" class="slide level1">
+<h1>Cose da fare oggi</h1>
+</section>
+<section id="la-prima-immagine" class="slide level1">
+<h1>La prima immagine!</h1>
+<center>
+<img data-src="./media/pytracer-first-image.png" />
+</center>
+</section>
+<section id="geometria" class="slide level1">
+<h1>Geometria</h1>
+<p><embed width="640px" height="640px" src="pd-images/first-image-geometry.html" /></p>
+</section>
+<section id="forme" class="slide level1">
+<h1>Forme</h1>
+<ul>
+<li><p>Dobbiamo implementare delle forme nel nostro codice.</p></li>
+<li><p>Per oggi basta implementare un tipo <code>Sphere</code>; se volete, aggiungete anche un <code>Plane</code> (è molto veloce da aggiungere).</p></li>
+<li><p>Create un tipo astratto <code>Shape</code>, che implementi il metodo (astratto) <code>ray_intersection</code>. Questo accetta come parametro un parametro <code>Ray</code> e restituisce un tipo <code>HitRecord</code>. Se il vostro linguaggio lo supporta, il tipo di ritorno dovrebbe essere <em>nullable</em>.</p></li>
+</ul>
+</section>
+<section id="shape-in-python" class="slide level1">
+<h1><code>Shape</code> in Python</h1>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Shape:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, transformation<span class="op">=</span>Transformation()):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Union[HitRecord, <span class="va">None</span>]:</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="pp">NotImplementedError</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Shape.ray_intersection is an abstract method and cannot be called directly&quot;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        )</span></code></pre></div>
+</section>
+<section id="hitrecord" class="slide level1">
+<h1><code>HitRecord</code></h1>
+<ul>
+<li><p>Per restituire le informazioni su una intersezione, è buona norma usare un tipo dedicato: <code>HitRecord</code>.</p></li>
+<li><p>Il tipo deve contenere queste informazioni:</p>
+<ol>
+<li><code>world_point</code>: punto 3D in cui è avvenuta l’intersezione (<code>Point</code>);</li>
+<li><code>normal</code>: normale della superficie all’intersezione (<code>Normal</code>);</li>
+<li><code>surface_point</code>: coordinate <span class="math inline">(u, v)</span> dell’intersezione (nuovo tipo <code>Vec2d</code>);</li>
+<li><code>t</code>: parametro del raggio associato all’intersezione;</li>
+<li><code>ray</code>: raggio di luce che ha causato l’intersezione.</li>
+</ol></li>
+<li><p>Per i test è utile che implementi un metodo <code>is_close</code>/<code>are_close</code>.</p></li>
+</ul>
+</section>
+<section id="sphere-in-python" class="slide level1">
+<h1><code>Sphere</code> in Python</h1>
+<ul>
+<li><p>Ricordiamo che il numero di intersezioni tra il raggio <span class="math inline">O + t \vec d</span> e la sfera unitaria dipende dal discriminante:</p>
+<p><span class="math display">
+\frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
+</span></p></li>
+<li><p>Nel caso in cui <span class="math inline">\Delta &gt; 0</span>, le due intersezioni sono</p>
+<p><span class="math display">
+t = \begin{cases}
+t_1 &amp;= \frac{-\vec O \cdot d - \Delta / 4}{\left\|\vec d\right\|^2},\\
+t_2 &amp;= \frac{-\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
+\end{cases}
+</span></p></li>
+</ul>
+</section>
+<section id="sphere-in-python-1" class="slide level1">
+<h1><code>Sphere</code> in Python</h1>
+<ul>
+<li><p>Dovete <strong>antitrasformare</strong> il raggio prima di calcolare l’intersezione:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Union[HitRecord, <span class="va">None</span>]:</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    inv_ray <span class="op">=</span> ray.transform(<span class="va">self</span>.transformation.inverse())</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span></code></pre></div></li>
+<li><p>Quando avete calcolato <code>t1</code> e <code>t2</code>, dovete determinare quale delle due intersezioni è la più vicina all’origine del raggio:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (tmin <span class="op">&gt;</span> inv_ray.tmin) <span class="kw">and</span> (tmin <span class="op">&lt;</span> inv_ray.tmax):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    first_hit_t <span class="op">=</span> tmin</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> (tmax <span class="op">&gt;</span> inv_ray.tmin) <span class="kw">and</span> (tmax <span class="op">&lt;</span> inv_ray.tmax):</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    first_hit_t <span class="op">=</span> tmax</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="normali-e-coordinate-uv" class="slide level1">
+<h1>Normali e coordinate UV</h1>
+<ul>
+<li><p>Dovete implementare il calcolo della normale al punto di intersezione; nel codice di <a href="https://github.com/ziotom78/pytracer/blob/d12284d0c60965e48b004a305d6ba8e28c13f757/shapes.py#L42-L51">pytracer</a> ciò è fatto all’interno di <code>_sphere_normal</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _sphere_normal(point: Point, ray_dir: Vec) <span class="op">-&gt;</span> Normal:</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> Normal(point.x, point.y, point.z)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result <span class="cf">if</span> (point.to_vec().dot(ray_dir) <span class="op">&lt;</span> <span class="fl">0.0</span>) <span class="cf">else</span> <span class="op">-</span>result</span></code></pre></div></li>
+<li><p>Serve anche il codice che calcola il punto di intersezione sulla superficie della sfera, in coordinate <span class="math inline">(u, v)</span> (<code>Vec2d</code> è un nuovo semplice tipo per queste coordinate):</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _sphere_point_to_uv(point: Point) <span class="op">-&gt;</span> Vec2d:</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Vec2d(u<span class="op">=</span>atan2(point.y, point.x) <span class="op">/</span> (<span class="fl">2.0</span> <span class="op">*</span> pi), v<span class="op">=</span>acos(point.z) <span class="op">/</span> pi)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="creazione-di-hitrecord" class="slide level1">
+<h1>Creazione di <code>HitRecord</code></h1>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>hit_point <span class="op">=</span> inv_ray.at(first_hit_t)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> HitRecord(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    world_point<span class="op">=</span><span class="va">self</span>.transformation <span class="op">*</span> hit_point,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">self</span>.transformation <span class="op">*</span> _sphere_normal(hit_point, ray.<span class="bu">dir</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    surface_point<span class="op">=</span>_sphere_point_to_uv(hit_point),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    t<span class="op">=</span>first_hit_t,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    ray<span class="op">=</span>ray,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+</section>
+<section id="test-per-sphere-12" class="slide level1">
+<h1>Test per <code>Sphere</code> (1/2)</h1>
+<ul>
+<li>Il raggio con <span class="math inline">O = (0, 0, 2)</span> e <span class="math inline">\vec d = -\hat e_z</span> deve intersecare la sfera unitaria nel punto <span class="math inline">P = (0, 0, 1)</span> con normale <span class="math inline">\hat n = \hat e_z</span>.</li>
+<li>Il raggio con <span class="math inline">O = (3, 0, 0)</span> e <span class="math inline">\vec d = -\hat e_x</span> deve intersecare la sfera unitaria nel punto <span class="math inline">P = (1, 0, 0)</span> con normale <span class="math inline">\hat n = \hat e_x</span>.</li>
+<li>Il raggio con <span class="math inline">O = (0, 0, 0)</span> e <span class="math inline">\vec d = \hat e_x</span> deve intersecare la sfera unitaria in <span class="math inline">P = (1, 0, 0)</span> con normale <span class="math inline">\hat n = -\hat e_x</span>.</li>
+</ul>
+<p>In tutti questi casi verificate anche le coordinate <span class="math inline">(u, v)</span> e il valore di <span class="math inline">t</span>.</p>
+</section>
+<section id="test-per-sphere-22" class="slide level1">
+<h1>Test per <code>Sphere</code> (2/2)</h1>
+<ul>
+<li>Applicate una traslazione <span class="math inline">\vec t = (10, 0, 0)</span> alla sfera e intersecatela con il raggio con <span class="math inline">O = (10, 0, 2)</span> e <span class="math inline">\vec d = -\hat e_z</span>.</li>
+<li>Intersecate la stessa sfera traslata con il raggio con <span class="math inline">O = (13, 0, 2)</span> e <span class="math inline">\vec d = -\hat e_x</span>. L’intersezione dovrebbe essere <span class="math inline">P = (11, 0, 0)</span> con normale <span class="math inline">\hat n = \hat e_x</span>.</li>
+<li>Verificate che non vi siano potenziali intersezioni con la sfera <strong>non</strong> traslata, usando questi raggi:
+<ol>
+<li>Raggio con <span class="math inline">O = (0, 0, 2)</span> e <span class="math inline">\vec d = -\hat e_z</span>;</li>
+<li>Raggio con <span class="math inline">O = (-10, 0, 0)</span> e <span class="math inline">\vec d = -\hat e_z</span>;</li>
+</ol></li>
+</ul>
+<p>In tutti questi casi verificate anche le coordinate <span class="math inline">(u, v)</span> e il valore di <span class="math inline">t</span>.</p>
+</section>
+<section id="il-tipo-world" class="slide level1">
+<h1>Il tipo <code>World</code></h1>
+<ul>
+<li>Una scena è composta da tante forme.</li>
+<li>Ci occorre un tipo che contenga questa lista di forme: il tipo <code>World</code>.</li>
+<li>Esso deve mantenere al suo interno una lista di oggetti <code>Shape</code>: abbiate cura a dichiarare correttamente questa lista, perché alcuni linguaggi potrebbero richiedere cautele particolari per liste di oggetti astratti.</li>
+<li>Deve implementare un metodo <code>ray_intersection</code> che iteri sulle forme, cerchi le intersezioni, e restituisca quella più vicina all’origine del raggio.</li>
+</ul>
+</section>
+<section id="world-in-python" class="slide level1">
+<h1><code>World</code> in Python</h1>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> World:</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.shapes <span class="op">=</span> []</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add(<span class="va">self</span>, shape: Shape):</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.shapes.append(shape)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> HitRecord:</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        closest <span class="op">=</span> <span class="va">None</span>  <span class="co"># &quot;closest&quot; should be a nullable type!</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> shape <span class="kw">in</span> <span class="va">self</span>.shapes:</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>            intersection <span class="op">=</span> shape.ray_intersection(ray)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> intersection:</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (<span class="kw">not</span> closest) <span class="kw">or</span> (intersection.t <span class="op">&lt;</span> closest.t):</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>                closest <span class="op">=</span> intersection</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> closest</span></code></pre></div>
+</section>
+<section id="il-nostro-demo" class="slide level1">
+<h1>Il nostro demo</h1>
+<center>
+<img data-src="./media/pytracer-first-image.png" />
+</center>
+</section>
+<section id="la-scena" class="slide level1">
+<h1>La scena</h1>
+<ul>
+<li>Posizionate le sfere ai vertici del cubo con spigoli <span class="math inline">(\pm 0.5, \pm 0.5, \pm 0.5)</span>.</li>
+<li>Ciascuna sfera deve avere raggio 1/10.</li>
+<li>L’osservatore deve essere spostato di <span class="math inline">-\hat e_x</span>, ossia la sua posizione deve essere <span class="math inline">(-2, 0, 0)</span> e il centro dello schermo <span class="math inline">(-1, 0, 0)</span>.</li>
+<li>Scegliete voi se usare <code>OrthogonalCamera</code> o <code>PerspectiveCamera</code>.</li>
+</ul>
+</section>
+<section id="il-main" class="slide level1">
+<h1>Il <code>main</code></h1>
+<ul>
+<li>Il nostro <code>main</code> è stato sinora in grado di convertire un’immagine PFM in un altro formato (PNG, JPEG, WebP, etc.)</li>
+<li>Dobbiamo ora cambiare l’interfaccia del programma in modo che permetta di usare due modalità:
+<ol>
+<li>Conversione da PFM ad altri formati (la vecchia modalità);</li>
+<li>Una nuova modalità <code>demo</code>, dove genera l’immagine descritta poco fa.</li>
+</ol></li>
+</ul>
+</section>
+<section id="esempio-in-python" class="slide level1">
+<h1>Esempio in Python</h1>
+<ul>
+<li><p>In Python ho usato la libreria Click, che permette di costruire interfacce utente da linea di comando che supportano le cosiddette <em>actions</em> (altre librerie li chiamano <em>verbs</em>).</p></li>
+<li><p>Dopo il nome dell’eseguibile va riportato un comando, seguito opzionalmente da parametri:</p>
+<pre class="text"><code>./main.py pfm2png input.pfm output.png
+./main.py demo --width=480 --height=480
+./main.py --help
+...</code></pre></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p><asciinema-player src="cast/python-click-cli-example-88x27.cast" cols="88" rows="27" font-size="medium"></asciinema-player></p>
+</section>
+<section id="possibili-interfacce" class="slide level1">
+<h1>Possibili interfacce</h1>
+<ul>
+<li><p><em>Actions</em> esattamente come Click (se la vostra libreria li supporta);</p></li>
+<li><p>Due eseguibili separati: <code>demo</code> e <code>pfm2png</code></p></li>
+<li><p>Richiesta di input da terminale:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;What do you want to do? (demo/pfm2png)&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>choice <span class="op">=</span> <span class="bu">input</span>(choice)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> choice <span class="op">==</span> <span class="st">&quot;demo&quot;</span>:</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># …</span></span></code></pre></div></li>
+<li><p>Eccetera…</p></li>
+</ul>
+</section>
+<section id="comando-demo" class="slide level1">
+<h1>Comando <code>demo</code></h1>
+<ol>
+<li>Inizializzare un oggetto <code>World</code> con le 10 sfere nelle posizioni indicate;</li>
+<li>Creare un oggetto <code>OrthogonalCamera</code> o <code>PerspectiveCamera</code> (<a href="https://github.com/ziotom78/pytracer/blob/d12284d0c60965e48b004a305d6ba8e28c13f757/main.py#L125-L130">pytracer</a> consente all’utente di scegliere);</li>
+<li>(Opzionale) Potete provare a ruotare l’osservatore per ottenere angolazioni più interessanti (v. seguito);</li>
+<li>Create un oggetto <code>ImageTracer</code>;</li>
+<li>Fare un tracing dell’immagine, usando un criterio «on/off» (v. slide seguente);</li>
+<li>Salvare l’immagine PFM;</li>
+<li>(Opzionale) Convertite immediatamente l’immagine in PNG usando valori di default per il tone-mapping.</li>
+</ol>
+</section>
+<section id="on-off-tracing" class="slide level1">
+<h1>On-off tracing</h1>
+<ul>
+<li><p>Un ray-tracer on/off controlla se il raggio ha colpito una superficie, e in caso positivo colora il pixel con un colore arbitrario (bianco), altrimenti lo colora col colore di sfondo (nero).</p></li>
+<li><p>Nel nostro caso è sufficiente invocare <code>fire_all_rays</code> passando come argomento una funzione di una riga:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>tracer.fire_all_rays(<span class="kw">lambda</span> ray: WHITE <span class="cf">if</span> world.ray_intersection(ray) <span class="cf">else</span> BLACK)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="animazioni" class="slide level1">
+<h1>Animazioni</h1>
+<ul>
+<li><p>Nella modalità <code>demo</code>, il codice Python permette di modificare l’orientazione dell’osservatore rispetto agli assi tramite il flag <code>--angle-deg</code>.</p></li>
+<li><p>Questo può essere usato per generare delle animazioni tramite semplici script Bash:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">for</span> <span class="ex">angle</span> in <span class="va">$(</span><span class="fu">seq</span> 0 359<span class="va">)</span><span class="kw">;</span> <span class="kw">do</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">angleNNN=$(</span><span class="bu">printf</span> <span class="st">&quot;%03d&quot;</span> <span class="va">$angle)</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">./main.py</span> demo --width=640 --height=480 --angle-deg --output=<span class="st">&quot;image</span><span class="va">${angleNNN}</span><span class="st">.png&quot;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">done</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># -r 25: Number of frames per second</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> -r 25 -f image2 -s 640x480 -i image%03d.png <span class="kw">\</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">-vcodec</span> libx264 -pix_fmt yuv420p <span class="kw">\</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="ex">spheres-perspective.mp4</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="proiezione-prospettica" class="slide level1">
+<h1>Proiezione prospettica</h1>
+<video src="./media/spheres-perspective.mp4" width="640px" height="480px" controls loop autoplay/>
+</section>
+<section id="proiezione-ortogonale" class="slide level1">
+<h1>Proiezione ortogonale</h1>
+<video src="./media/spheres-orthogonal.mp4" width="640px" height="480px" controls loop autoplay/>
+</section>
+<section id="link-a-gather" class="slide level1">
+<h1>Link a Gather</h1>
+<p>Useremo il solito link: <a href="https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing">gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing</a></p>
+</section>
+<section id="guida-per-lesercitazione" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+</section>
+<section id="cose-da-fare" class="slide level1">
+<h1>Cose da fare</h1>
+<ol>
+<li>Correggere il bug della scorsa volta aprendo una <em>issue</em>;</li>
+<li>Creare un file <code>CHANGELOG.md</code>;</li>
+<li>Lavorare su un nuovo branch <code>demo</code>;</li>
+<li>Creare i tipi <code>Shape</code>, <code>Sphere</code>, <code>World</code>, <code>Vec2d</code>;</li>
+<li>Implementare il comando <code>demo</code>, nel modo in cui preferite;</li>
+<li>Aprire una PR e aggiornare il file <code>CHANGELOG.md</code>.</li>
+</ol>
+</section>
+<section id="indicazioni-per-c" class="slide level1">
+<h1>Indicazioni per C++</h1>
+</section>
+<section id="indicazioni-per-c-1" class="slide level1">
+<h1>Indicazioni per C++</h1>
+<ul>
+<li><p>Se vi piace l’interfaccia a linea di comando di pytracer, potete usare librerie come <a href="https://github.com/Taywee/args">args</a> o <a href="https://github.com/CLIUtils/CLI11#other-parsers">CLI11</a>, che supportano le <em>azioni</em> (chiamate rispettivamente <em>commands</em> e <em>subcommands</em>).</p></li>
+<li><p>Per implementare il tipo <code>World</code>, usate <a href="https://www.cplusplus.com/reference/memory/make_shared/"><code>make_shared</code></a> e <a href="https://www.cplusplus.com/reference/memory/shared_ptr/"><code>shared_ptr</code></a>.</p>
+<p>In questo modo evitate di dover chiamare <code>new</code> e <code>delete</code> per creare distruggere gli oggetti derivati da <code>Shape</code>.</p></li>
+</ul>
+</section>
+<section id="esempio-di-shared_ptr" class="slide level1">
+<h1>Esempio di <code>shared_ptr</code></h1>
+<div class="sourceCode" id="cb18"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;memory&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> std;</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Shape {};</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Sphere : <span class="kw">public</span> Shape {};</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Plane : <span class="kw">public</span> Shape {};</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// This would work even if &quot;Shape&quot; were an abstract type</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>vector&lt;<span class="bu">std::</span>shared_ptr&lt;Shape&gt;&gt; list_of_shapes;</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">// This calls &quot;new&quot; automatically, and it will call &quot;delete&quot; at the end</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  list_of_shapes.push_back(make_shared&lt;Sphere&gt;());</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  list_of_shapes.push_back(make_shared&lt;Sphere&gt;());</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  list_of_shapes.push_back(make_shared&lt;Plane&gt;());</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</section>
+<section id="indicazioni-per-julia" class="slide level1">
+<h1>Indicazioni per Julia</h1>
+</section>
+<section id="indicazioni-per-julia-1" class="slide level1">
+<h1>Indicazioni per Julia</h1>
+<ul>
+<li><p>Non preoccupatevi troppo dell’interfaccia da linea di comando: i programmi Julia non sono pensati per essere efficienti da linea di comando. Potete limitarvi a fornire uno script <code>demo.jl</code> accanto a uno script <code>pfm2png.jl</code>.</p></li>
+<li><p>Definite un <code>abstract struct</code> per <code>Shape</code>, e poi derivate il tipo <code>Sphere</code>.</p></li>
+<li><p>In questa lezione vedrete veramente quanto può essere chiaro il codice matematico in Julia! (intersezione raggio-sfera).</p></li>
+</ul>
+</section>
+<section id="indicazioni-per-c-2" class="slide level1">
+<h1>Indicazioni per C#</h1>
+</section>
+<section id="indicazioni-per-c-3" class="slide level1">
+<h1>Indicazioni per C#</h1>
+<ul>
+<li><p>La lezione di oggi dovrebbe essere molto semplice da implementare.</p></li>
+<li><p>Sfruttate a fondo le caratteristiche OOP del C#: definite una classe astratta <code>Shape</code> da cui derivare <code>Sphere</code>.</p></li>
+<li><p>Se volete implementare una buona interfaccia utente, potete usare la libreria <a href="https://github.com/rushfive/RunInfoBuilder">RunInfoBuilder</a> oppure <a href="https://github.com/Nick-Lucas/EntryPoint">EntryPoint</a>.</p></li>
+</ul>
+</section>
+<section id="indicazioni-per-kotlin" class="slide level1">
+<h1>Indicazioni per Kotlin</h1>
+</section>
+<section id="indicazioni-per-kotlin-1" class="slide level1">
+<h1>Indicazioni per Kotlin</h1>
+<ul>
+<li><p>Come per il C#, anche per Kotlin le cose da implementare oggi dovrebbero essere molto banali.</p></li>
+<li><p>Per creare una interfaccia utente da linea di comando potete usare <a href="https://github.com/ajalt/clikt">Clikt</a>.</p></li>
+<li><p>Se aggiungete questa dipendenza seguendo le istruzioni sul sito di Clikt, dovete poi scaricarla prima di poterla usare. È sufficiente usare l’icona <em>Refresh</em> nella finestra <em>Gradle</em> (v. slide successiva).</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/intellij-idea-update-dependencies.png" height="640" />
+</center>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
+    </body>
+</html>
