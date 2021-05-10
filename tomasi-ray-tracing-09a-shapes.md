@@ -224,8 +224,8 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
     $$
     t = \begin{cases}
-    t_1 &= \frac{-\vec O \cdot d - \Delta / 4}{\left\|\vec d\right\|^2},\\
-    t_2 &= \frac{-\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
+    t_1 &= \frac{-\vec O \cdot d - \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2},\\
+    t_2 &= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
     \end{cases}
     $$
 
@@ -323,7 +323,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   L'intervallo di valori $\theta \in [0, \pi], \phi \in [0, 2\pi]$ è troppo specifico per la sfera, quindi di solito si usa la parametrizzazione
 
     $$
-    u = \frac\theta\pi = \frac{\arccos p_z}\pi, \quad v = \frac\phi{2\pi} = \frac{\arctan p_y / p_x}{2\pi}.
+    u = \frac\phi{2\pi} = \frac{\arctan p_y / p_x}{2\pi}, \quad v = \frac\theta\pi = \frac{\arccos p_z}\pi.
     $$
 
 # Piani

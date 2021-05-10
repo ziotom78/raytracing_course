@@ -386,8 +386,8 @@
 <li><p>Nel caso in cui <span class="math inline">\Delta &gt; 0</span>, le due intersezioni sono</p>
 <p><span class="math display">
 t = \begin{cases}
-t_1 &amp;= \frac{-\vec O \cdot d - \Delta / 4}{\left\|\vec d\right\|^2},\\
-t_2 &amp;= \frac{-\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
+t_1 &amp;= \frac{-\vec O \cdot d - \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2},\\
+t_2 &amp;= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
 \end{cases}
 </span></p></li>
 </ul>
@@ -436,7 +436,7 @@ t_2 &amp;= \frac{-\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
 <ul>
 <li>Il raggio con <span class="math inline">O = (0, 0, 2)</span> e <span class="math inline">\vec d = -\hat e_z</span> deve intersecare la sfera unitaria nel punto <span class="math inline">P = (0, 0, 1)</span> con normale <span class="math inline">\hat n = \hat e_z</span>.</li>
 <li>Il raggio con <span class="math inline">O = (3, 0, 0)</span> e <span class="math inline">\vec d = -\hat e_x</span> deve intersecare la sfera unitaria nel punto <span class="math inline">P = (1, 0, 0)</span> con normale <span class="math inline">\hat n = \hat e_x</span>.</li>
-<li>Il raggio con <span class="math inline">O = (0, 0, 0)</span> e <span class="math inline">\vec d = \hat e_x</span> deve intersecare la sfera unitaria in <span class="math inline">P = (1, 0, 0)</span> con normale <span class="math inline">\hat n = -\hat e_x</span>.</li>
+<li>Il raggio con <span class="math inline">O = (0, 0, 0)</span> e <span class="math inline">\vec d = \hat e_x</span> deve intersecare la sfera unitaria in <span class="math inline">P = (1, 0, 0)</span> con normale <span class="math inline">\hat n = -\hat e_x</span> (il raggio è <em>interno</em> alla sfera).</li>
 </ul>
 <p>In tutti questi casi verificate anche le coordinate <span class="math inline">(u, v)</span> e il valore di <span class="math inline">t</span>.</p>
 </section>
@@ -471,7 +471,7 @@ t_2 &amp;= \frac{-\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add(<span class="va">self</span>, shape: Shape):</span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.shapes.append(shape)</span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> HitRecord:</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Union[HitRecord, <span class="va">None</span>]:</span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        closest <span class="op">=</span> <span class="va">None</span>  <span class="co"># &quot;closest&quot; should be a nullable type!</span></span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> shape <span class="kw">in</span> <span class="va">self</span>.shapes:</span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>            intersection <span class="op">=</span> shape.ray_intersection(ray)</span>
@@ -489,6 +489,7 @@ t_2 &amp;= \frac{-\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
 <center>
 <img data-src="./media/pytracer-first-image.png" />
 </center>
+<p>L’asimmetria nella disposizione delle sfere consente di individuare errori nell’ordinamento delle righe/colonne dell’immagine.</p>
 </section>
 <section id="la-scena" class="slide level1">
 <h1>La scena</h1>
@@ -564,14 +565,15 @@ t_2 &amp;= \frac{-\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
 <li><p>Nella modalità <code>demo</code>, il codice Python permette di modificare l’orientazione dell’osservatore rispetto agli assi tramite il flag <code>--angle-deg</code>.</p></li>
 <li><p>Questo può essere usato per generare delle animazioni tramite semplici script Bash:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">for</span> <span class="ex">angle</span> in <span class="va">$(</span><span class="fu">seq</span> 0 359<span class="va">)</span><span class="kw">;</span> <span class="kw">do</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">angleNNN=$(</span><span class="bu">printf</span> <span class="st">&quot;%03d&quot;</span> <span class="va">$angle)</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">./main.py</span> demo --width=640 --height=480 --angle-deg --output=<span class="st">&quot;image</span><span class="va">${angleNNN}</span><span class="st">.png&quot;</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">done</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># -r 25: Number of frames per second</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> -r 25 -f image2 -s 640x480 -i image%03d.png <span class="kw">\</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">-vcodec</span> libx264 -pix_fmt yuv420p <span class="kw">\</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="ex">spheres-perspective.mp4</span></span></code></pre></div></li>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Angle with three digits, e.g. angle=&quot;1&quot; → angleNNN=&quot;001&quot;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">angleNNN=$(</span><span class="bu">printf</span> <span class="st">&quot;%03d&quot;</span> <span class="va">$angle)</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">./main.py</span> demo --width=640 --height=480 --angle-deg <span class="va">$angle</span> --output=img<span class="va">$angleNNN</span>.png</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">done</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># -r 25: Number of frames per second</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> -r 25 -f image2 -s 640x480 -i img%03d.png <span class="kw">\</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="ex">-vcodec</span> libx264 -pix_fmt yuv420p <span class="kw">\</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="ex">spheres-perspective.mp4</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="proiezione-prospettica" class="slide level1">
@@ -626,7 +628,7 @@ t_2 &amp;= \frac{-\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
 <span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main() {</span>
 <span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// This would work even if &quot;Shape&quot; were an abstract type</span></span>
 <span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>vector&lt;<span class="bu">std::</span>shared_ptr&lt;Shape&gt;&gt; list_of_shapes;</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">// This calls &quot;new&quot; automatically, and it will call &quot;delete&quot; at the end</span></span>
 <span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  list_of_shapes.push_back(make_shared&lt;Sphere&gt;());</span>
 <span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  list_of_shapes.push_back(make_shared&lt;Sphere&gt;());</span>

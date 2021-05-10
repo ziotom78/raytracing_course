@@ -14,7 +14,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     u = (col + u_pixel) / (self.image.width - 1)
     v = (row + v_pixel) / (self.image.height - 1)
     ```
-    
+
 -   L'errore sta nel fatto che le righe in `HdrImage` sono numerate dall'*alto*, non dal *basso* (come avevo erroneamente detto). Nella seconda riga invece, `v` cresce quando cresce `row`.
 
 # Cosa fare con i bug
@@ -81,7 +81,7 @@ Correzioni in un repository pubblico come GitHub richiedono questi passaggi:
 -   …ma era comunque già abbastanza complesso, perché verificava due cose distinte:
 
     #.   La correttezza della gestione di `u_pixel` e `v_pixel`
-    
+
     #.   Il fatto che `ImageTracer.fire_all_rays` fosse in grado di «visitare» tutti i pixel dell'immagine.
 
 -   Non conviene che aggiungiamo materiale a questo test, altrimenti in caso in futuro fallisse sarebbe meno immediato capire *dove* si trovi il problema.
@@ -340,16 +340,16 @@ class Shape:
     $$
     \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
     $$
-    
+
 -   Nel caso in cui $\Delta > 0$, le due intersezioni sono
 
     $$
     t = \begin{cases}
-    t_1 &= \frac{-\vec O \cdot d - \Delta / 4}{\left\|\vec d\right\|^2},\\
-    t_2 &= \frac{-\vec O \cdot d + \Delta / 4}{\left\|\vec d\right\|^2}.
+    t_1 &= \frac{-\vec O \cdot d - \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2},\\
+    t_2 &= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
     \end{cases}
     $$
-    
+
 # `Sphere` in Python
 
 -   Dovete **antitrasformare** il raggio prima di calcolare l'intersezione:
@@ -370,7 +370,7 @@ class Shape:
     else:
         return None
     ```
-    
+
 #   Normali e coordinate UV
 
 -   Dovete implementare il calcolo della normale al punto di intersezione; nel codice di [pytracer](https://github.com/ziotom78/pytracer/blob/d12284d0c60965e48b004a305d6ba8e28c13f757/shapes.py#L42-L51) ciò è fatto all'interno di `_sphere_normal`:
@@ -380,14 +380,14 @@ class Shape:
         result = Normal(point.x, point.y, point.z)
         return result if (point.to_vec().dot(ray_dir) < 0.0) else -result
     ```
-    
+
 -   Serve anche il codice che calcola il punto di intersezione sulla superficie della sfera, in coordinate $(u, v)$ (`Vec2d` è un nuovo semplice tipo per queste coordinate):
 
     ```python
     def _sphere_point_to_uv(point: Point) -> Vec2d:
         return Vec2d(u=atan2(point.y, point.x) / (2.0 * pi), v=acos(point.z) / pi)
     ```
-    
+
 # Creazione di `HitRecord`
 
 ```python
@@ -405,7 +405,7 @@ return HitRecord(
 
 -   Il raggio con $O = (0, 0, 2)$ e $\vec d = -\hat e_z$ deve intersecare la sfera unitaria nel punto $P = (0, 0, 1)$ con normale $\hat n = \hat e_z$.
 -   Il raggio con $O = (3, 0, 0)$ e $\vec d = -\hat e_x$ deve intersecare la sfera unitaria nel punto $P = (1, 0, 0)$ con normale $\hat n = \hat e_x$.
--   Il raggio con $O = (0, 0, 0)$ e $\vec d = \hat e_x$ deve intersecare la sfera unitaria in $P = (1, 0, 0)$ con normale $\hat n = -\hat e_x$.
+-   Il raggio con $O = (0, 0, 0)$ e $\vec d = \hat e_x$ deve intersecare la sfera unitaria in $P = (1, 0, 0)$ con normale $\hat n = -\hat e_x$ (il raggio è *interno* alla sfera).
 
 In tutti questi casi verificate anche le coordinate $(u, v)$ e il valore di $t$.
 
@@ -436,7 +436,7 @@ class World:
     def add(self, shape: Shape):
         self.shapes.append(shape)
 
-    def ray_intersection(self, ray: Ray) -> HitRecord:
+    def ray_intersection(self, ray: Ray) -> Union[HitRecord, None]:
         closest = None  # "closest" should be a nullable type!
         for shape in self.shapes:
             intersection = shape.ray_intersection(ray)
@@ -454,6 +454,8 @@ class World:
 
 <center>![](./media/pytracer-first-image.png)</center>
 
+L'asimmetria nella disposizione delle sfere consente di individuare errori nell'ordinamento delle righe/colonne dell'immagine.
+
 # La scena
 
 -   Posizionate le sfere ai vertici del cubo con spigoli $(\pm 0.5, \pm 0.5, \pm 0.5)$.
@@ -467,7 +469,7 @@ class World:
 -   Dobbiamo ora cambiare l'interfaccia del programma in modo che permetta di usare due modalità:
     #.  Conversione da PFM ad altri formati (la vecchia modalità);
     #.  Una nuova modalità `demo`, dove genera l'immagine descritta poco fa.
-    
+
 # Esempio in Python
 
 -   In Python ho usato la libreria Click, che permette di costruire interfacce utente da linea di comando che supportano le cosiddette *actions* (altre librerie li chiamano *verbs*).
@@ -527,12 +529,13 @@ class World:
 
     ```sh
     for angle in $(seq 0 359); do
+        # Angle with three digits, e.g. angle="1" → angleNNN="001"
         angleNNN=$(printf "%03d" $angle)
-        ./main.py demo --width=640 --height=480 --angle-deg --output="image${angleNNN}.png"
+        ./main.py demo --width=640 --height=480 --angle-deg $angle --output=img$angleNNN.png
     done
-    
+
     # -r 25: Number of frames per second
-    ffmpeg -r 25 -f image2 -s 640x480 -i image%03d.png \
+    ffmpeg -r 25 -f image2 -s 640x480 -i img%03d.png \
         -vcodec libx264 -pix_fmt yuv420p \
         spheres-perspective.mp4
     ```
@@ -570,7 +573,7 @@ Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing]
 -   Se vi piace l'interfaccia a linea di comando di pytracer, potete usare librerie come [args](https://github.com/Taywee/args) o [CLI11](https://github.com/CLIUtils/CLI11#other-parsers), che supportano le *azioni* (chiamate rispettivamente *commands* e *subcommands*).
 
 -   Per implementare il tipo `World`, usate [`make_shared`](https://www.cplusplus.com/reference/memory/make_shared/) e [`shared_ptr`](https://www.cplusplus.com/reference/memory/shared_ptr/).
-    
+
     In questo modo evitate di dover chiamare `new` e `delete` per creare distruggere gli oggetti derivati da `Shape`.
 
 # Esempio di `shared_ptr`
@@ -589,7 +592,7 @@ struct Plane : public Shape {};
 int main() {
   // This would work even if "Shape" were an abstract type
   std::vector<std::shared_ptr<Shape>> list_of_shapes;
-  
+
   // This calls "new" automatically, and it will call "delete" at the end
   list_of_shapes.push_back(make_shared<Sphere>());
   list_of_shapes.push_back(make_shared<Sphere>());
