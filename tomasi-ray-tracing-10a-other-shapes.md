@@ -17,8 +17,6 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     
 -   Queste assunzioni sono indicate in letteratura col termine *axis-aligned box* (AAB).
 
--   A questi oggetti **non** si possono applicare trasformazioni generiche.
-
 # Rappresentazione in memoria
 
 -   Un parallelepipedo con gli spigoli allineati lungo gli assi $xyz$ può essere definito dalle seguenti quantità:
@@ -148,7 +146,7 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
 #. Sono la superficie piana con il minor numero di vertici (→ efficienti da memorizzare).
 #. La loro rappresentazione nello spazio è univoca (per tre punti passa uno e un solo triangolo planare).
 #. La loro superficie è parametrizzabile in coordinate $(u, v)$ in forma molto semplice.
-#. Superfici complesse possono essere rappresentate come unione di più triangoli coplanari.
+#. Superfici complesse possono essere rappresentate come unione di più triangoli.
 
 
 # Coordinate baricentriche
