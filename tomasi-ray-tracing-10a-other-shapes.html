@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Lezione 10</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Lezione 10</h1>
+  <p class="subtitle">Ottimizzazione delle forme</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="axis-aligned-boxes" class="slide level1">
+<h1><em>Axis-aligned boxes</em></h1>
+</section>
+<section id="axis-aligned-boxes-1" class="slide level1">
+<h1><em>Axis-aligned boxes</em></h1>
+<ul>
+<li><p>La forma cubica non è molto interessante di per sè, ma si presta ad alcune ottimizzazioni molto semplici.</p></li>
+<li><p>A causa del suo scopo particolare, tratteremo il caso dei cubi usando convenzioni diverse da quelle fatte per le sfere ed i piani:</p>
+<ol>
+<li>Non ci limiteremo al cubo di lato unitario con vertice nell’origine…</li>
+<li>…ma assumeremo che le facce siano parallele ai piani coordinati.</li>
+</ol></li>
+<li><p>Queste assunzioni sono indicate in letteratura col termine <em>axis-aligned box</em> (AAB).</p></li>
+<li><p>A questi oggetti <strong>non</strong> si possono applicare trasformazioni generiche.</p></li>
+</ul>
+</section>
+<section id="rappresentazione-in-memoria" class="slide level1">
+<h1>Rappresentazione in memoria</h1>
+<ul>
+<li><p>Un parallelepipedo con gli spigoli allineati lungo gli assi <span class="math inline">xyz</span> può essere definito dalle seguenti quantità:</p>
+<ol>
+<li>Il valore minimo e massimo delle <span class="math inline">x</span>;</li>
+<li>Il valore minimo e massimo delle <span class="math inline">y</span>;</li>
+<li>Il valore minimo e massimo delle <span class="math inline">z</span>.</li>
+</ol></li>
+<li><p>Equivalentemente, si possono memorizzare due vertici opposti del parallelepipedo, <span class="math inline">P_m</span> (valori minimi di <span class="math inline">x</span>, <span class="math inline">y</span> e <span class="math inline">z</span>) e <span class="math inline">P_M</span> (valori massimi).</p></li>
+</ul>
+</section>
+<section id="intersezione-raggio-aab" class="slide level1">
+<h1>Intersezione raggio-AAB</h1>
+<ul>
+<li><p>Scriviamo il raggio come <span class="math inline">r: O + t \vec d</span>.</p></li>
+<li><p>Il calcolo è molto simile a quello fatto per il piano, se si considera una dimensione alla volta:</p>
+<center>
+<p><img data-src="./media/aab-ray-intersection.svg" /></p>
+</center></li>
+</ul>
+</section>
+<section id="intersezione-raggio-aab-1" class="slide level1">
+<h1>Intersezione raggio-AAB</h1>
+<ul>
+<li><p>Scriviamo con <span class="math inline">F_i</span> il generico punto del piano perpendicolare alla direzione <span class="math inline">i</span>-esima (<span class="math inline">i = 0: x</span>, <span class="math inline">i = 1: y</span>, <span class="math inline">i = 2: z</span>), che avrà coordinate</p>
+<p><span class="math display">
+F_0 = (f, 0, 0), \quad F_1 = (0, f, 0), \quad F_2 = (0, 0, f).
+</span></p></li>
+<li><p>Lungo la coordinata <span class="math inline">i</span>-esima si avranno <em>due</em> intersezioni (una per ciascuno dei due piani del parallelepipedo):</p>
+<p><span class="math display">
+O + t_i \vec d = F^{\text{min}/\text{max}}_i\quad\Rightarrow\quad t_i = \frac{f^{\text{min}/\text{max}} - O_i}{d_i}.
+</span></p></li>
+</ul>
+</section>
+<section id="intersezione-raggio-aab-2" class="slide level1">
+<h1>Intersezione raggio-AAB</h1>
+<ul>
+<li><p>Ogni direzione produce due intersezioni, quindi in totale si hanno sei potenziali intersezioni (una per ogni faccia del cubo).</p></li>
+<li><p>Ma non tutte le intersezioni sono corrette: esse sono calcolate per l’intero piano infinito su cui giace la faccia del cubo.</p></li>
+<li><p>Occorre quindi verificare per ciascuna che il punto <span class="math inline">P</span> corrispondente abbia le coordinate interne ai vertici <span class="math inline">P_m</span> e <span class="math inline">P_M</span>.</p></li>
+</ul>
+</section>
+<section id="intersezione-raggio-aab-3" class="slide level1">
+<h1>Intersezione raggio-AAB</h1>
+<ul>
+<li>Nel caso dell’immagine precedente, in cui il raggio interseca il parallelepipedo, gli intervalli <span class="math inline">[t^{(1)}_i, t^{(2)}_i]</span> posseggono un tratto in comune tra loro:</li>
+</ul>
+<center>
+<img data-src="./media/aab-ray-good-intersection.svg" />
+</center>
+<ul>
+<li>L’intersezione tra gli intervalli è un intervallo i cui estremi corrispondono ai punti di intersezione del raggio con l’AAB.</li>
+</ul>
+</section>
+<section id="intersezione-raggio-aab-4" class="slide level1">
+<h1>Intersezione raggio-AAB</h1>
+<ul>
+<li>Nel caso in cui il raggio manchi il parallelepipedo, gli intervalli <span class="math inline">[t^{(1)}_i, t^{(2)}_i]</span> sono disgiunti tra loro:</li>
+</ul>
+<center>
+<img data-src="./media/aab-ray-missed-intersection.svg" />
+</center>
+<ul>
+<li>Se quindi l’intersezione degli intervalli per i tre assi dà l’insieme vuoto, il raggio non colpisce l’AAB.</li>
+</ul>
+</section>
+<section id="axis-aligned-bounding-box" class="slide level1">
+<h1><em>Axis-aligned bounding box</em></h1>
+<ul>
+<li><p>Gli <em>axis-aligned bounding box</em> (AABB) sono degli AAB che delimitano il volume occupato da oggetti.</p></li>
+<li><p>Sono molto usati nella <em>computer graphics</em> come meccanismo di ottimizzazione.</p></li>
+<li><p>Il principio è il seguente:</p>
+<ol>
+<li>Per ogni forma nello spazio si calcola il suo AABB;</li>
+<li>Quando si deve determinare l’intersezione tra un raggio e una forma, si verifica prima se il raggio interseca l’AABB;</li>
+<li>Se non lo interseca, si passa alla forma successiva, altrimenti si procede al calcolo dell’intersezione.</li>
+</ol></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/bounding-volume.webp" height="540" />
+</center>
+</section>
+<section id="utilità-degli-aabb" class="slide level1">
+<h1>Utilità degli AABB</h1>
+<ul>
+<li><p>Gli AABB sono utili solo per scene complesse, formate da molti oggetti non banali. Per scene semplici possono al contrario <strong>rallentare</strong> il rendering.</p></li>
+<li><p>Sono però molto utili con le <em>mesh</em> di triangoli e con oggetti CSG complessi.</p></li>
+<li><p>Se voleste supportare gli AABB nel vostro ray-tracer, dovreste aggiungere al tipo <code>Shape</code> un membro <code>aabb</code> da usare all’interno di <code>Shape.rayIntersection</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyComplexShape:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> rayIntersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Union[HitRecord, <span class="va">None</span>]:</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        inv_ray <span class="op">=</span> ray.transform(<span class="va">self</span>.transformation.inverse())</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.aabb.quickRayIntersection(inv_ray):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># etc.</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="triangoli-e-mesh-di-triangoli" class="slide level1">
+<h1>Triangoli e <em>mesh</em> di triangoli</h1>
+</section>
+<section id="modellizzazione-3d" class="slide level1">
+<h1>Modellizzazione 3D</h1>
+<center>
+<img data-src="./media/blender-mesh-modeling.webp" />
+</center>
+</section>
+<section id="scanner-3d" class="slide level1">
+<h1>Scanner 3D</h1>
+<center>
+<img data-src="./media/3d-scanners.webp" />
+</center>
+</section>
+<section id="scanner-3d-1" class="slide level1">
+<h1>Scanner 3D</h1>
+<center>
+<img data-src="./media/difficult-shapes-for-scanners.webp" />
+</center>
+</section>
+<section id="scanner-3d-a-liquidi" class="slide level1">
+<h1><a href="https://doi.org/10.1145/3072959.3073693">Scanner 3D a liquidi</a></h1>
+<center>
+<img data-src="./media/dip-scanner.webp" />
+</center>
+</section>
+<section id="scanner-3d-a-liquidi-1" class="slide level1">
+<h1><a href="https://doi.org/10.1145/3072959.3073693">Scanner 3D a liquidi</a></h1>
+<center>
+<img data-src="./media/elephant-sinogram.webp" height="560" />
+</center>
+</section>
+<section id="stanford-bunny-1994" class="slide level1">
+<h1>Stanford bunny (1994)</h1>
+<center>
+<img data-src="./media/stanford-bunny-triangles.png" />
+</center>
+<p>(Modello ottenuto dalla scansione di una statuetta di ceramica)</p>
+</section>
+<section id="triangoli" class="slide level1">
+<h1>Triangoli</h1>
+<p>I triangoli sono la forma geometrica più usata nei programmi di modellizzazione e rendering 3D, per le molte loro proprietà:</p>
+<ol>
+<li>Sono la superficie piana con il minor numero di vertici (→ efficienti da memorizzare).</li>
+<li>La loro rappresentazione nello spazio è univoca (per tre punti passa uno e un solo triangolo planare).</li>
+<li>La loro superficie è parametrizzabile in coordinate <span class="math inline">(u, v)</span> in forma molto semplice.</li>
+<li>Superfici complesse possono essere rappresentate come unione di più triangoli coplanari.</li>
+</ol>
+</section>
+<section id="coordinate-baricentriche" class="slide level1">
+<h1>Coordinate baricentriche</h1>
+<ul>
+<li><p>Le coordinate baricentriche sono state proposte da Möbius nel 1827, ed esprimono i punti di un piano passante per i punti <span class="math inline">A, B, C</span> mediante l’espressione</p>
+<p><span class="math display">
+P(\alpha, \beta, \gamma) = \alpha A + \beta B + \gamma C,
+</span></p>
+<p>dove <span class="math inline">\alpha, \beta, \gamma \in \mathbb{R}</span> sono le <em>coordinate baricentriche</em>.</p></li>
+<li><p>Le coordinate baricentriche risultano molto utili per caratterizzare il triangolo di vertici <span class="math inline">A, B, C</span>: il punto <span class="math inline">P</span> è interno al triangolo se e solo se</p>
+<p><span class="math display">
+0 \le \alpha \le 1,\quad 0 \le \beta \le 1,\quad 0 \le \gamma \le 1, \quad \alpha + \beta + \gamma = 1.
+</span></p></li>
+</ul>
+</section>
+<section id="coordinate-nei-triangoli" class="slide level1">
+<h1>Coordinate nei triangoli</h1>
+<ul>
+<li><p>La condizione <span class="math inline">\alpha + \beta + \gamma = 1</span> fa sì che i punti di un triangolo siano caratterizzati da due gradi di libertà, come dev’essere per una superficie bidimensionale.</p></li>
+<li><p>L’uguaglianza nelle prime tre disequazioni vale per i punti lungo il bordo del triangolo.</p></li>
+<li><p>Usando l’ultima uguaglianza, si ottiene una forma più significativa:</p>
+<p><span class="math display">
+P(\beta, \gamma) = A + \beta(B - A) + \gamma(C - A).
+</span></p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/triangle-coordinates.svg" height="640" />
+</center>
+</section>
+<section id="coordinate-nei-triangoli-1" class="slide level1">
+<h1>Coordinate nei triangoli</h1>
+<ul>
+<li><p>Si può dimostrare che le coordinate baricentriche di un punto <span class="math inline">P</span> sono legate all’area <span class="math inline">A</span> del triangolo e alle aree dei tre sotto-triangoli aventi come vertice il punto <span class="math inline">P</span> e due dei vertici:</p>
+<p><span class="math display">
+\alpha = \frac{\sigma_1}\sigma = 1 - \frac{\sigma_2 + \sigma_3}\sigma, \quad \beta = \frac{\sigma_2}\sigma, \quad \gamma = \frac{\sigma_3}\sigma.
+</span></p></li>
+<li><p>Se si assegna segno negativo alle aree che sono fuori dal triangolo, queste equazioni valgono per qualsiasi punto sul piano in cui giace il triangolo.</p></li>
+</ul>
+</section>
+<section id="esempio-interattivo" class="slide level1" data-state="barycentric-coordinates-demo">
+<h1 data-state="barycentric-coordinates-demo">Esempio interattivo</h1>
+<center>
+<canvas
+        id="barycentric-coordinates-canvas"
+        width="620px"
+        height="480px"
+        style="left:0px;top:0px;cursor:crosshair;border:1px solid black;"/>
+</center>
+<script type="text/javascript" src="./js/barycentric-coordinates.js"></script>
+</section>
+<section id="intersezione-con-raggi" class="slide level1">
+<h1>Intersezione con raggi</h1>
+<ul>
+<li><p>Vediamo ora come usare le coordinate baricentriche per calcolare efficientemente l’intersezione tra un triangolo e un raggio.</p></li>
+<li><p>A differenza di quanto fatto con le sfere e i piani, in questo caso non adotteremo un sistema di riferimento semplificato. Il motivo sarà chiaro quando spiegheremo le <em>mesh</em> di triangoli.</p></li>
+<li><p>Identificheremo quindi un triangolo tramite le coordinate dei tre punti <span class="math inline">A, B, C</span> (nove valori floating-point).</p></li>
+</ul>
+</section>
+<section id="il-problema-analitico" class="slide level1">
+<h1>Il problema analitico</h1>
+<ul>
+<li><p>Consideriamo il raggio <span class="math inline">r(t): O + t \vec d</span> e il punto generico <span class="math inline">P(\beta, \gamma)</span> del triangolo. L’intersezione è data da</p>
+<p><span class="math display">
+A + \beta (B - A) + \gamma (C - A) = O + t \vec d,
+</span></p>
+<p>con il vincolo <span class="math inline">0 \leq \beta, \gamma \leq 1</span>.</p></li>
+<li><p>Riordiniamo l’equazione in modo da spostare le tre incognite <span class="math inline">\beta</span>, <span class="math inline">\gamma</span> e <span class="math inline">t</span> sulla sinistra:</p>
+<p><span class="math display">
+\beta (B - A) + \gamma (C - A) - t \vec d = O - A.
+</span></p></li>
+</ul>
+</section>
+<section id="forma-matriciale" class="slide level1">
+<h1>Forma matriciale</h1>
+<ul>
+<li><p>L’equazione che abbiamo ottenuto è</p>
+<p><span class="math display">
+\beta (B - A) + \gamma (C - A) - t \vec d = O - A,
+</span></p>
+<p>che è un’equazione vettoriale nelle tre componenti <span class="math inline">x, y, z</span>.</p></li>
+<li><p>In forma matriciale, il sistema si riscrive così:</p>
+<p><span class="math display">
+\begin{pmatrix}
+b_x - a_x&amp; c_x - a_x&amp; d_x\\
+b_y - a_y&amp; c_y - a_y&amp; d_y\\
+b_z - a_z&amp; c_z - a_z&amp; d_z\\
+\end{pmatrix}
+\begin{pmatrix}
+\beta\\\gamma\\t
+\end{pmatrix}
+=
+\begin{pmatrix}
+o_x - a_x\\o_y - a_y\\o_z - a_z
+\end{pmatrix}.
+</span></p></li>
+</ul>
+</section>
+<section id="soluzione-analitica" class="slide level1">
+<h1>Soluzione analitica</h1>
+<ul>
+<li><p>La soluzione dipende dal determinante della matrice M:</p>
+<p><span class="math display">
+\det M = \det
+\begin{pmatrix}
+b_x - a_x&amp; c_x - a_x&amp; d_x\\
+b_y - a_y&amp; c_y - a_y&amp; d_y\\
+b_z - a_z&amp; c_z - a_z&amp; d_z\\
+\end{pmatrix},
+</span></p>
+<p>che deve essere diverso da zero, altrimenti il raggio è parallelo al piano del triangolo.</p></li>
+<li><p>La soluzione si ottiene facilmente con la <a href="https://en.wikipedia.org/wiki/Cramer%27s_rule">regola di Cramer</a>, che è inefficiente nel caso generale ma adeguata per matrici 3×3 come è il caso qui.</p></li>
+</ul>
+</section>
+<section id="soluzione-analitica-1" class="slide level1">
+<h1>Soluzione analitica</h1>
+<ul>
+<li><p>Ovviamente, una volta ottenuta la soluzione è necessario verificare che</p>
+<p><span class="math display">
+t_\text{min} &lt; t &lt; t_\text{max}, \quad 0 \leq \beta \leq 1, \quad 0 \leq \gamma \leq 1.
+</span></p></li>
+<li><p>La normale del triangolo si può ottenere facilmente dal prodotto vettoriale tra i due vettori allineati con i lati:</p>
+<p><span class="math display">
+\hat n = \pm (B - A) \times (C - A),
+</span></p>
+<p>dove il segno è determinato dalla direzione del raggio.</p></li>
+<li><p>Le coordinate <span class="math inline">(u, v)</span> possono essere poste uguali a <span class="math inline">(\beta, \gamma)</span>.</p></li>
+</ul>
+</section>
+<section id="mesh-di-triangoli" class="slide level1">
+<h1><em>Mesh</em> di triangoli</h1>
+</section>
+<section class="slide level1">
+
+<iframe src="https://player.vimeo.com/video/517979969?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1934" height="810" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Moana (Clements, Musker, Hall, Williams) Beach scene (no sound)">
+</iframe>
+</section>
+<section id="moana-island-scene" class="slide level1">
+<h1><a href="https://www.disneyanimation.com/resources/moana-island-scene/"><em>Moana island scene</em></a></h1>
+<center>
+<img data-src="./media/moana-island-scene.webp" />
+</center>
+</section>
+<section id="moana-island-scene-1" class="slide level1">
+<h1><a href="https://www.disneyanimation.com/resources/moana-island-scene/"><em>Moana island scene</em></a></h1>
+<center>
+<img data-src="./media/moana-island-scene-website.png" />
+</center>
+</section>
+<section id="tamstorf-pritchett-egsr-2019" class="slide level1">
+<h1><a href="https://disneyanimation.com/publications/the-challenges-of-releasing-the-moana-island-scene/"><em>Tamstorf &amp; Pritchett (EGSR 2019)</em></a></h1>
+<center>
+<img data-src="./media/moana-ironwood-tree.png" height="640" />
+</center>
+</section>
+<section id="mesh-di-triangoli-1" class="slide level1">
+<h1><em>Mesh</em> di triangoli</h1>
+<ul>
+<li><p>Le scene viste nelle slide precedenti sono formate dalla combinazione di molte forme semplici.</p></li>
+<li><p>Mantenere in memoria una lista di forme semplici richiede una serie di accorgimenti non banali.</p></li>
+<li><p>Oggi discuteremo delle <em>mesh</em> di triangoli, in cui la forma elementare è appunto un triangolo planare.</p></li>
+</ul>
+</section>
+<section id="memorizzare-triangoli" class="slide level1">
+<h1>Memorizzare triangoli</h1>
+<ul>
+<li><p>Abbiamo visto come implementare il codice per calcolare l’intersezione tra raggio e triangolo nel caso generale in cui il triangolo sia codificato tramite i suoi tre vertici <span class="math inline">A</span>, <span class="math inline">B</span> e <span class="math inline">C</span>.</p></li>
+<li><p>Non abbiamo seguito l’approccio usato per sfere e piani di scegliere una forma «standard» (es., un triangolo sul piano <span class="math inline">xy</span>), perché questo avrebbe richiesto di memorizzare una trasformazione 4×4 e la sua inversa, per un totale di 32 numeri floating-point (128 bytes a precisione singola).</p></li>
+<li><p>Memorizzare le tre coordinate di un triangolo richiede solo 3×3×4 = 36 byte…</p></li>
+<li><p>…ma si può fare di meglio!</p></li>
+</ul>
+</section>
+<section id="memorizzazione-di-mesh" class="slide level1">
+<h1>Memorizzazione di <em>mesh</em></h1>
+<ul>
+<li><p>In una <em>mesh</em> di triangoli si memorizzano i vertici in una lista ordinata <span class="math inline">P_k</span>, con <span class="math inline">k = 1\ldots N</span>.</p></li>
+<li><p>I triangoli sono rappresentati da una terna di indici interi <span class="math inline">i_1, i_2, i_3</span> che rappresenta la posizione dei vertici <span class="math inline">P_{i_1}, P_{i_2}, P_{i_3}</span> nella lista ordinata.</p></li>
+<li><p>Se si usano numeri interi a 32 bit per memorizzare gli indici, ogni triangolo richiede 3×4 = 12 bytes.</p></li>
+<li><p>Questo è vantaggioso se un vertice è condiviso da più triangoli, che è il caso generale.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/stanford-bunny-triangles.png" />
+</center>
+</section>
+<section class="slide level1">
+
+<iframe src="https://player.vimeo.com/video/546494716?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1102" height="620" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Wireframe models in Blender">
+</iframe>
+<p>Modello: 44.000 vertici, 80.000 triangoli.</p>
+</section>
+<section id="normali" class="slide level1">
+<h1>Normali</h1>
+<ul>
+<li><p>Un triangolo è una superficie piana, ed ogni punto della sua superficie possiede quindi la medesima normale <span class="math inline">\hat n</span>.</p></li>
+<li><p>Nel caso di <em>mesh</em> di triangoli, si possono usare le coordinate baricentriche del triangolo per simulare una superficie liscia.</p></li>
+<li><p>Ricordiamo che le tre coordinate baricentriche sono definite in modo che la loro somma sia normalizzata:</p>
+<p><span class="math display">
+\alpha + \beta + \gamma = 1.
+</span></p></li>
+</ul>
+</section>
+<section id="smooth-shading" class="slide level1">
+<h1>Smooth shading</h1>
+<ul>
+<li><p>Se una <em>mesh</em> di triangoli è il risultato dell’approssimazione di una superficie liscia, nel momento in cui si approssima la superficie occorre quindi calcolare sia i vertici dei triangoli che le normali.</p></li>
+<li><p>Ogni normale è associata a un punto, e viene mantenuta in una lista separata.</p></li>
+<li><p>In corrispondenza di un punto <span class="math inline">P</span> definito da <span class="math inline">\alpha, \beta, \gamma</span> si può assegnare la normale</p>
+<p><span class="math display">
+\hat n_P = \alpha \hat n_1 + \beta \hat n_2 + \gamma \hat n_3.
+</span></p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<iframe src="https://player.vimeo.com/video/546515481?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1138" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Flat and smooth shading in Blender">
+</iframe>
+</section>
+<section id="coordinate-u-v" class="slide level1">
+<h1>Coordinate <span class="math inline">(u, v)</span></h1>
+<ul>
+<li><p>Nel caso di una mesh ci sono infiniti modi possibili per creare una mappatura <span class="math inline">(u, v)</span> sulla superficie.</p></li>
+<li><p>Nelle <em>mesh</em> si fa in modo che ogni triangolo copra una porzione specifica dell’intero spazio <span class="math inline">[0, 1] \times [0, 1]</span>.</p></li>
+<li><p>Programmi di modellizzazione 3D come Blender permettono di modificare la mappatura <span class="math inline">(u, v)</span> di ogni triangolo.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/blender-uv-mapping.webp" />
+</center>
+</section>
+<section id="wavefront-obj" class="slide level1">
+<h1><a href="https://en.wikipedia.org/wiki/Wavefront_.obj_file">Wavefront OBJ</a></h1>
+<ul>
+<li><p>È un formato molto semplice da caricare e utilizzato per memorizzare mesh (non solo di triangoli).</p></li>
+<li><p>Esempio (inizio del modello <code>minicooper.obj</code>):</p>
+<pre class="text"><code># Vertexes
+v  20.851225 -39.649834 32.571609
+v  20.720263 -39.659435 32.675613
+v  20.589304 -39.649834 32.571609
+…
+# Normals
+vn  -0.000006 38.811405 3.583478
+vn  -0.000006 38.811405 3.583478
+vn  -0.000006 38.811405 3.583478
+…
+# Triangles («faces»)
+f 3//3 2//2 1//1
+f 4//4 3//3 1//1
+f 5//5 4//4 1//1</code></pre></li>
+</ul>
+</section>
+<section id="file-obj" class="slide level1">
+<h1>File OBJ</h1>
+<ul>
+<li><p>Sotto Linux potete installare <code>openctm-tools</code>.</p></li>
+<li><p>Il comando <code>ctmviewer NOMEFILE</code> visualizza un file OBJ in una finestra interattiva.</p></li>
+<li><p>Il sito di <a href="https://people.sc.fsu.edu/~jburkardt/data/obj/obj.html">J. Burkardt</a> contiene molti file OBJ scaricabili liberamente (il modello della Mini Cooper è preso da lì).</p></li>
+</ul>
+</section>
+<section id="intersezione-con-raggi-1" class="slide level1">
+<h1>Intersezione con raggi</h1>
+<ul>
+<li><p>Il calcolo dell’intersezione tra una <em>mesh</em> e un raggio non è semplice da implementare.</p></li>
+<li><p>Il problema è che gran parte del tempo richiesto per calcolare la soluzione dell’equazione del rendering viene speso per l’intersezione tra raggi e forme.</p></li>
+<li><p>All’aumentare delle forme aumenta necessariamente anche il tempo di calcolo.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/pathtracer100.webp" />
+</center>
+<p>Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è stata calcolata in ~156 secondi.</p>
+</section>
+<section id="intersezione-con-mesh" class="slide level1">
+<h1>Intersezione con <em>mesh</em></h1>
+<ul>
+<li><p>Il tempo necessario per il calcolo di un’immagine è all’incirca proporzionale al numero di intersezioni tra raggi e forme.</p></li>
+<li><p>Se nell’immagine precedente ci fosse uno degli alberi di <em>Oceania</em> (18 milioni di triangoli), il tempo scalerebbe di conseguenza, e sarebbe dell’ordine di 93 anni anziché 156 secondi.</p></li>
+<li><p>Ovviamente ciò non è accettabile, ma esistono tecniche di ottimizzazione che consentono di ridurre molto il numero di intersezioni da calcolare.</p></li>
+</ul>
+</section>
+<section id="aabb-e-mesh" class="slide level1">
+<h1>AABB e <em>mesh</em></h1>
+<ul>
+<li><p>Gli AABB sono perfetti per essere applicati a <em>mesh</em> di triangoli. (In questo caso non si applicano ovviamente ai <strong>singoli</strong> triangoli, ma alla <em>mesh</em> nel suo complesso).</p></li>
+<li><p>Al momento del caricamento di una <em>mesh</em>, si può calcolare il suo AABB calcolando il valore minimo e il valore massimo delle coordinate di tutti i vertici.</p></li>
+<li><p>Nel caso dell’albero di <em>Oceania</em>, l’intersezione tra un raggio e i 18 milioni di triangoli avverebbe solo per quei raggi effettivamente orientati verso quell’albero.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/bounding-volume.webp" height="540" />
+</center>
+</section>
+<section id="oltre-le-aabb" class="slide level1">
+<h1>Oltre le AABB</h1>
+<ul>
+<li><p>Non è però sempre sufficiente usare gli AABB per le <em>mesh</em> di triangoli.</p></li>
+<li><p>Sovente le scene sono occupate quasi completamente da un oggetto complesso, e in questo caso gli AABB non portano alcun vantaggio (è il caso dell’immagine precedente).</p></li>
+<li><p>È però possibile basarsi sull’idea degli AABB per implementare ottimizzazioni più sofisticate.</p></li>
+<li><p>Vedremo ora i KD-tree, una tecnica particolarmente efficiente.</p></li>
+</ul>
+</section>
+<section id="kd-tree" class="slide level1">
+<h1>KD-tree</h1>
+<ul>
+<li><p>I KD-tree sono un’applicazione particolare di una famiglia più ampia di algoritmi, chiamati <em>Binary Space Partitions</em> (BSP).</p></li>
+<li><p>Gli algoritmo BSP sono usati per effettuare ricerche su domini spaziali; nel nostro caso, il problema è quello di ricercare l’eventuale triangolo nella <em>mesh</em> che intersechi un raggio dato.</p></li>
+<li><p>I metodi BSP sono iterativi, e a ogni iterazione dimezzano il volume dello spazio da ricercare.</p></li>
+</ul>
+</section>
+<section id="metodo-di-bisezione" class="slide level1">
+<h1>Metodo di bisezione</h1>
+<ul>
+<li><p>Richiamiamo il metodo di bisezione con cui si ricercano gli zeri di una funzione, che si spiega nel corso di TNDS (II anno della triennale).</p></li>
+<li><p>Data una funzione continua <span class="math inline">f: [a, b] \rightarrow \mathbb{R}</span> tale che <span class="math inline">f(a) \cdot f(b) \leq 0</span>, il teorema degli zeri garantisce che <span class="math inline">\exists x \in [a, b]: f(x) = 0</span>.</p></li>
+<li><p>Il metodo di bisezione consiste nel dividere l’intervallo <span class="math inline">[a, b]</span> in due parti <span class="math inline">[a, c]</span> e <span class="math inline">[c, b]</span>, con <span class="math inline">c = (a + b)/2</span>, e applicare il metodo al sottointervallo in cui il teorema degli zeri vale ancora.</p></li>
+<li><p>Si può dimostrare che per ottenere una precisione <span class="math inline">\epsilon</span> nella stima dello zero servono <span class="math inline">N = \log_2 (b - a)/\epsilon</span> passaggi, ossia <span class="math inline">O(\log N)</span>: è molto efficiente!</p></li>
+</ul>
+</section>
+<section id="metodi-bsp" class="slide level1">
+<h1>Metodi BSP</h1>
+<ul>
+<li><p>I metodi BSP racchiudono tutte le forme di un mondo in un bounding box, quindi lo dividono in due regioni, partizionando le forme nell’una o nell’altra metà (o in entrambe, se sono lungo la suddivisione).</p></li>
+<li><p>Questa suddivisione viene ripetuta ricorsivamente fino a una certa profondità: idealmente, finché le bounding box non contengono un certo numero (piccolo) di oggetti.</p></li>
+<li><p>I KD-tree sono un tipo di BSP in cui i bounding box sono i ben noti AABB.</p></li>
+<li><p>I KD-tree sono spiegati (e implementati!) nella <a href="https://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Kd-Tree_Accelerator">sezione 4.4 di <em>Physically based rendering</em></a> (Pharr, Jakob, Humphreys, terza ed.)</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/kd-tree.svg" height="640" />
+</center>
+<p><span style="float:right">Figura 4.14 da <em>Physically based rendering</em> (Pharr, Jakob, Humphreys, terza ed.)</span></p>
+</section>
+<section id="kd-tree-e-mesh" class="slide level1">
+<h1>KD-tree e <em>mesh</em></h1>
+<ul>
+<li><p>Questa è la procedura per costruire in memoria un KD-tree:</p>
+<ol>
+<li><p>Si calcola l’AABB della <em>mesh</em>;</p></li>
+<li><p>Si decide lungo quale direzione (x/y/z) effettuare la divisione;</p></li>
+<li><p>Si partizionano i triangoli tra le due metà dell’AABB; quei triangoli che cadono lungo la linea di divisione vengono riportati in <strong>entrambe</strong> le metà;</p></li>
+<li><p>Si ripete la procedura per ciascuna delle due metà finché il numero di triangoli in ogni comparto è inferiore a una certa soglia (per es., tra 1 e 10).</p></li>
+</ol></li>
+<li><p>Tale procedura va fatta <strong>una volta sola</strong>, prima di risolvere l’equazione del rendering.</p></li>
+</ul>
+</section>
+<section id="kd-tree-in-memoria" class="slide level1">
+<h1>KD-tree in memoria</h1>
+<ul>
+<li><p>Un KD-tree può essere memorizzato in modo efficiente usando una struttura ad albero, che viene costruita in fase di caricamento della <em>mesh</em>.</p></li>
+<li><p>Per rappresentare le suddivisioni si può definire un tipo <code>KdTreeSplit</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> KdTreeSplit:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    axis: <span class="bu">int</span>     <span class="co"># Index of the axis; 0: x, 1: y, 2: z</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    split: <span class="bu">float</span>  <span class="co"># Location of the split along the axis</span></span></code></pre></div></li>
+<li><p>Il nodo generico dell’albero si rappresenta così:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> KdTreeNode:</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    entry: Union[KdTreeSplit, List[<span class="bu">int</span>]]  <span class="co"># List[int]: List of indexes to triangles</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    left: Union[KdTreeNode, <span class="va">None</span>]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    right: Union[KdTreeNode, <span class="va">None</span>]</span></code></pre></div></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/kd-tree-structure.svg" height="640" />
+</center>
+</section>
+<section id="intersezione-con-raggi-2" class="slide level1">
+<h1>Intersezione con raggi</h1>
+<ul>
+<li><p>Per determinare se un raggio interseca una <em>mesh</em> ottimizzata con un KD-tree, basta seguire questa procedura:</p>
+<ol>
+<li>Si verifica se il raggio interseca l’AABB; se non lo fa, il ciclo termina.</li>
+<li>Si determina quale delle due metà viene attraversata per prima dal raggio:
+<ol>
+<li>Se solo una metà viene attraversata, si analizza solo quella;</li>
+<li>Se entrambe, si analizza prima quella intersecata per valori minori di <span class="math inline">t</span>.</li>
+</ol></li>
+<li>Il processo continua finché non si arriva in un nodo terminale: a quel punto si analizzano tutti i triangoli nel nodo usando l’algoritmo lineare.</li>
+</ol></li>
+<li><p>Si può dimostrare che questo processo richiede un tempo <span class="math inline">O(\log N)</span>, dove <span class="math inline">N</span> è il numero di triangoli della <em>mesh</em>: è quindi un procedimento estremamente efficiente!</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/kd-tree-traversal.svg" height="640" />
+</center>
+<p><span style="float:right">Figura 4.17 da <em>Physically based rendering</em> (Pharr, Jakob, Humphreys, terza ed.)</span></p>
+</section>
+<section id="dettagli" class="slide level1">
+<h1>Dettagli</h1>
+<ul>
+<li><p>Per costruire un KD-tree occorre rispondere ad alcuni quesiti:</p>
+<ol>
+<li>A ogni suddivisione, lungo quale asse è meglio effettuare la suddivisione? (L’asse lungo cui AABB è più esteso?)</li>
+<li>In quale punto dell’asse conviene suddividere? (Il punto medio?)</li>
+<li>Quando è meglio fermarsi? (Quando un nodo ha meno di <em>N</em> forme?)</li>
+</ol></li>
+<li><p>Rispondere a queste domande non è banale, ma è importante trovare una soluzione <em>efficiente</em>!</p></li>
+<li><p>Una soluzione ottimizzata può essere anche 1÷2 ordini di grandezza più veloce della soluzione banale suggerita qui sopra.</p></li>
+</ul>
+</section>
+<section id="irregolarità-delle-mesh" class="slide level1">
+<h1>Irregolarità delle <em>mesh</em></h1>
+<center>
+<img data-src="./media/toy-story-woody-mesh.webp" />
+</center>
+</section>
+<section id="costo-di-un-kd-tree" class="slide level1">
+<h1>«Costo» di un KD-tree</h1>
+<ul>
+<li><p>Per costruire un KD-tree efficiente occorre valutare il <em>costo computazionale</em> dell’albero, che è dato da</p>
+<p><span class="math display">
+C(t) = C_\text{trav} + P_L \cdot C(L) + P_R \cdot C(R),
+</span></p>
+<p>dove</p>
+<ol>
+<li><span class="math inline">C_\text{trav}</span> è il <em>costo di attraversamento</em>: quanto tempo serve per scendere di un livello nell’albero (costante);</li>
+<li><span class="math inline">P_L, P_R</span> sono le probabilità che il raggio colpisca un triangolo dentro il ramo;</li>
+<li><span class="math inline">C(L), C(R)</span> è il costo del sottonodo, ossia il tempo necessario per analizzare il lato sinistro/destro.</li>
+</ol></li>
+</ul>
+</section>
+<section id="costruzione-ottimizzata" class="slide level1">
+<h1>Costruzione ottimizzata</h1>
+<ul>
+<li><p>Si possono fare queste assunzioni:</p>
+<ul>
+<li>Assumere che <span class="math inline">P_L</span> e <span class="math inline">P_R</span> (probabilità che il raggio colpisca una forma) siano proporzionali alla superficie totale dei triangoli nella sottocella;</li>
+<li>Calcolare <span class="math inline">C(L)</span> e <span class="math inline">C(R)</span> ricorsivamente, assumendo che per nodi terminali sia proporzionale al numero di triangoli.</li>
+</ul></li>
+<li><p>Un algoritmo robusto tenta varie suddivisioni dell’albero, calcolando il costo di ciascuna, e sceglie la suddivisione che porta al costo minore.</p></li>
+<li><p>I benefici in termini di velocità possono andare da un fattore 10 a un fattore 100 rispetto a un KD-tree costruito con assunzioni semplici.</p></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
+    </body>
+</html>

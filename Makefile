@@ -6,8 +6,7 @@ JS_FILES = \
 .phony: all
 
 all: \
-	tomasi-ray-tracing-10b-path-tracing.html \
-	tomasi-ray-tracing-10a-path-tracing.html \
+	tomasi-ray-tracing-10a-other-shapes.html \
 	tomasi-ray-tracing-09b-issues.html \
 	tomasi-ray-tracing-09a-shapes.html \
 	tomasi-ray-tracing-08b-docstrings.html \
