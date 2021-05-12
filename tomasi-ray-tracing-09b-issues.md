@@ -634,3 +634,54 @@ int main() {
 ---
 
 <center>![](./media/intellij-idea-update-dependencies.png){height=640px}</center>
+
+# File JAR
+
+-   È abbastanza noioso dover invocare `gradlew` per eseguire un programma Kotlin da linea di comando. Esiste però un plugin che consente di creare file JAR autonomi, l'equivalente degli «eseguibili» nel mondo Java.
+
+-   Assicuratevi innanzitutto di avere una versione recente di Gradle e dello script `gradlew`:
+
+    ```text
+    gradle wrapper --gradle-version 7.0
+    ```
+    
+# Gradlefile
+
+Dovete modificare il file `build.gradle.kts` in modo che abbia le righe evidenziate col commento `// ←`:
+
+```kotlin
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar  // ←
+
+plugins {
+    kotlin("jvm") version "1.5.0"
+    id("com.github.johnrengelman.shadow") version "5.1.0"          // ←
+    application
+}
+
+tasks.withType<ShadowJar>() {                                      // ←
+    manifest {                                                     // ←
+        attributes["Main-Class"] = "MainKt"                        // ←
+    }                                                              // ←
+}                                                                  // ←
+
+// Etc.
+```
+
+# Creare ed eseguire JAR
+
+-   Per creare un file JAR è sufficiente eseguire il comando
+
+    ```text
+    ./gradlew shadowJar
+    ```
+
+-   Il risultato sarà salvato nella directory `./build/libs` e avrà nome `*-all.jar`.
+
+-   Potete eseguire da linea di comando un file JAR col comando
+
+    ```text
+    java jar NOMEFILE.jar
+    ```
+    
+    eventualmente passando gli argomenti (senza bisogno di `--args` come avveniva per `gradlew`).
