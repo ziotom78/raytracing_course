@@ -24,3 +24,5 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 - Lezione 9 (2021-05-03): [forme geometriche](./tomasi-ray-tracing-09a-shapes.html)
 - Esercitazione 9 (2021-05-05): [issues](./tomasi-ray-tracing-09b-issues.html)
 - Lezione 10 (2021-05-10): [ottimizzazione di forme geometriche](./tomasi-ray-tracing-10a-other-shapes.html)
+- Esercitazione 10 (2021-05-06): vedi l'[esercitazione 9](./tomasi-ray-tracing-09b-issues.html)
+- Lezione 11 (2021-05-17): [rendering](tomasi-ray-tracing-11a-path-tracing.html)
