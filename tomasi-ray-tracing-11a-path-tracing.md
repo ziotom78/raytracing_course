@@ -58,6 +58,12 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   L'algoritmo consente di ottenere una soluzione esatta per l'equazione del rendering, sebbene al prezzo di un grande tempo di calcolo.
 
+---
+
+<iframe width="840" height="472" src="https://www.youtube.com/embed/eo_MTI-d28s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[An explanation of the rendering equation (Eric Arnebäck)](https://www.youtube.com/watch?v=eo_MTI-d28s)
+
 
 # Probabilità e Monte Carlo
 
