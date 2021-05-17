@@ -798,4 +798,4 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
 
 <center>![](media/brdf-examples.webp)</center>
 
-Nella scena tutte le superfici sono diffusive ideali, tranne la sfera rossa che implementa una BRDF riflettente. L'ambiente è una sfera di raggio molto grande il cui materiale è basato su un file HDR (tramite un pigmento *textured*).
+Nella scena tutte le superfici sono diffusive ideali, tranne la sfera rossa che implementa una BRDF riflettente. L'ambiente è una sfera di raggio molto grande il cui materiale è basato su un [file HDR](https://blog.gregzaal.com/2017/01/17/blender-institute-hdri/) (tramite un pigmento *textured*).
