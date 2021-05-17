@@ -419,7 +419,7 @@ plt.ylabel("Estimated value for the integral")
 -   In questo caso
 
     $$
-    P_Y(y) = P\bigl(X \leq f^{-1}(y)\bigr) = P_X\bigl(f^{-1}(y)\bigr).
+    P_Y(y) = \text{Pr}\bigl(X \leq f^{-1}(y)\bigr) = P_X\bigl(f^{-1}(y)\bigr).
     $$
     
 -   Dalla CDF $P_Y(y)$ possiamo passare alla PDF applicando la formula per la derivata di una funzione composta:
@@ -433,7 +433,7 @@ plt.ylabel("Estimated value for the integral")
 -   Se $f^{-1}$ è una funzione decrescente, allora vale che
 
     $$
-    P_Y(y) = P\bigl(X \geq f^{-1}(y)\bigr) = 1 - P\bigl(X \leq f^{-1}(y)\bigr) = 1 - P_X\bigl(f^{-1}(y)\bigr).
+    P_Y(y) = \text{Pr}\bigl(X \geq f^{-1}(y)\bigr) = 1 - \text{Pr}\bigl(X \leq f^{-1}(y)\bigr) = 1 - P_X\bigl(f^{-1}(y)\bigr).
     $$
     
 -   Applicando di nuovo la derivata come nel caso precedente, otteniamo che
