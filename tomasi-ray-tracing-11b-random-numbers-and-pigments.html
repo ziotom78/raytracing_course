@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Esercitazione 11</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Esercitazione 11</h1>
+  <p class="subtitle">BRDFs e numeri casuali</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="brdfs" class="slide level1">
+<h1>BRDFs</h1>
+</section>
+<section id="tipi-di-dati" class="slide level1">
+<h1>Tipi di dati</h1>
+<ul>
+<li><p>Oggi inizieremo ad implementare il nostro path-tracer, e inizieremo da materiali, BRDFs e pigmenti. Ci serviranno questi tipi di dati primitivi:</p>
+<ol>
+<li><code>Pigment</code> è il colore associato ad un punto particolare di una superficie <span class="math inline">(u, v)</span>;</li>
+<li><code>BRDF</code> sarà la BRDF di un materiale, che conterrà al suo interno un <code>Pigment</code>;</li>
+<li><code>Material</code> rappresenterà l’unione della parte emissiva di un materiale (il termine <span class="math inline">L_e</span>, che rappresenteremo ancora come un <code>Pigment</code>) e la sua BRDF.</li>
+</ol></li>
+<li><p>Da questi tipi astratti dovrete derivare una serie di tipi concreti a piacimento.</p></li>
+</ul>
+</section>
+<section id="pigment" class="slide level1">
+<h1><code>Pigment</code></h1>
+<ul>
+<li><p>Il tipo base <code>Pigment</code> serve per calcolare un colore (tipo <code>Color</code>) associato con una coordinata <span class="math inline">(u, v)</span>.</p></li>
+<li><p>Dovreste quanto meno definire questi due tipi:</p>
+<ul>
+<li><code>UniformPigment</code> (colore uniforme, il pigmento più semplice!);</li>
+<li><code>CheckeredPigment</code> (scacchiera, utile per il debugging).</li>
+</ul></li>
+<li><p>Potreste definire anche un <code>ImagePigment</code> che si costruisca a partire da una <code>HdrImage</code>: questo consente di creare effetti molto interessanti se applicate a sfere delle immagini contenenti <a href="https://en.wikipedia.org/wiki/Equirectangular_projection">proiezioni equirettangolari</a>, dal momento che queste proiezioni sono facili da convertire nello spazio <span class="math inline">(u, v)</span>.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/checkered-pigment.svg" height="520" />
+</center>
+<p>Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono entrambi pari o dispari, il colore 2 negli altri casi.</p>
+</section>
+<section id="brdf" class="slide level1">
+<h1><code>BRDF</code></h1>
+<ul>
+<li><p>Il tipo <code>BRDF</code> deve codificare la BRDF dell’equazione del rendering, ossia</p>
+<p><span class="math display">
+f_r = f_r(x, \Psi \rightarrow \Theta).
+</span></p></li>
+<li><p>La BRDF è per definizione uno scalare, ma per rappresentare la dipendenza dalla lunghezza d’onda <span class="math inline">\lambda</span>, il codice Python restituisce un <code>Color</code> anziché un <code>float</code>: ogni componente (R/G/B) è la BRDF integrata su quella banda.</p></li>
+<li><p>Questo è il prototipo di <code>BRDF.Eval</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BRDF:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="bu">eval</span>(<span class="va">self</span>, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) <span class="op">-&gt;</span> Color:</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># …</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="brdf-e-pigment" class="slide level1">
+<h1>BRDF e <code>Pigment</code></h1>
+<ul>
+<li><p>Il tipo <code>BRDF</code> dovrebbe contenere un tipo <code>Pigment</code> (o un puntatore: in C++ è bene usare <code>std::shared_ptr&lt;Pigment&gt;</code>).</p></li>
+<li><p>Usate le componenti R/G/B restituite dal pigmento per un dato punto <span class="math inline">(u, v)</span> della superficie per «pesare» il contributo di <span class="math inline">f_r</span> alle varie frequenze (se una delle componenti RGB è nulla, tutti i fotoni in quella banda vengono assorbiti).</p></li>
+<li><p>Questa è ad esempio l’implementazione della BRDF diffusa (<span class="math inline">f_r = \rho_d / \pi</span>) in Python, che di fatto assume <span class="math inline">\rho_d = \rho_d(\lambda)</span>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DiffuseBRDF(BRDF):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="bu">eval</span>(<span class="va">self</span>, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) <span class="op">-&gt;</span> Color:</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.pigment.get_color(uv) <span class="op">*</span> (<span class="va">self</span>.reflectance <span class="op">/</span> pi)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="material" class="slide level1">
+<h1><code>Material</code></h1>
+<ul>
+<li><p>Il tipo <code>Material</code> deve racchiudere tutte le informazioni legate all’aspetto di un oggetto che non siano già codificate nella sua forma, ossia:</p>
+<ol>
+<li>La radianza emessa in funzione del punto sulla superficie: <span class="math inline">L_e = L_e(u, v)</span>;</li>
+<li>La BRDF <span class="math inline">f_r = f_r(x, \Psi \rightarrow \Theta)</span>.</li>
+</ol></li>
+<li><p>In Python è definito così:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Material:</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A material&quot;&quot;&quot;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    brdf: BRDF <span class="op">=</span> DiffuseBRDF()</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    emitted_radiance: Pigment <span class="op">=</span> UniformPigment(BLACK)  <span class="co"># A *pigment*!</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="versatilità" class="slide level1">
+<h1>Versatilità</h1>
+<ul>
+<li><p>Il tipo <code>Pigment</code> non deve fare altro che restituire un colore data una coordinata <span class="math inline">(u, v)</span>; se sapete cosa sono gli <a href="https://en.wikipedia.org/wiki/Function_object"><em>oggetti funzione</em></a> e come si usano nel vostro linguaggio, <code>Pigment</code> è il candidato ideale.</p></li>
+<li><p>Il tipo <code>BRDF</code> dovrà diventare più complesso di come l’abbiamo implementato oggi (in un path tracer <strong>non serve valutare</strong> <span class="math inline">f_r</span>, e quindi useremo <code>BRDF.eval</code> per altri scopi!).</p></li>
+<li><p>Il tipo <code>Material</code> è semplicemente l’unione di una BRDF e di un pigmento (il termine <span class="math inline">L_e</span>), e non andrà esteso.</p></li>
+</ul>
+</section>
+<section id="modifiche-a-shape" class="slide level1">
+<h1>Modifiche a <code>Shape</code></h1>
+<ul>
+<li><p>Dovete anche modificare la definizione di <code>Shape</code> in modo che contenga al suo interno una istanza del tipo <code>Material</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Shape:</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                 transformation: Transformation <span class="op">=</span> Transformation(), </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                 material: Material <span class="op">=</span> Material()):</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.material <span class="op">=</span> material</span></code></pre></div></li>
+<li><p>Il tipo <code>HitRecord</code> dovrebbe essere modificato in modo da contenere anche un puntatore all’oggetto <code>Shape</code> che è stato «colpito» dal raggio: in questo modo si potrà risalire al <code>Material</code> da usare durante la risoluzione dell’equazione del rendering.</p></li>
+</ul>
+</section>
+<section id="flat-renderer" class="slide level1">
+<h1>Flat-renderer</h1>
+<ul>
+<li><p>Ora che abbiamo attribuito un <code>Material</code> a ogni <code>Shape</code>, è possibile creare un renderer un po’ più interessante del tipo on/off usato nel nostro demo.</p></li>
+<li><p>Nello specifico, potremmo voler implementare un semplice renderer che, invece di usare i colori bianco e nero, assegna a un pixel il colore del <code>Pigment</code> calcolato nel punto dove il raggio colpisce l’oggetto.</p></li>
+<li><p>Il codice di pytracer implementa una classe base, <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L24-L35"><code>Renderer</code></a>, da cui derivano due classi <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L38-L49"><code>OnOffRenderer</code></a> e <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L52-L69"><code>FlatRenderer</code></a>: la scelta dell’una o dell’altra classe avviene da linea di comando col flag <code>--algorithm</code>.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<video src="media/flat-renderer.mp4" width="640" height="480" controls loop autoplay/>
+</center>
+<p>(A causa del fatto che l’immagine è quasi completamente nera, il <em>tone mapping</em> fa saturare i colori se si usa il valore standard di luminosità; convertite l’immagine fissando una luminosità media di ~0.5).</p>
+</section>
+<section id="generazione-di-numeri-pseudocasuali" class="slide level1">
+<h1>Generazione di numeri pseudocasuali</h1>
+</section>
+<section class="slide level1">
+
+<center>
+<a href="https://xkcd.com/221/"><img data-src="https://imgs.xkcd.com/comics/random_number.png" /></a>
+</center>
+<p><a href="https://xkcd.com/221/">xkcd.com/221/</a></p>
+</section>
+<section id="numeri-pseudo-casuali" class="slide level1">
+<h1>Numeri pseudo-casuali</h1>
+<ul>
+<li><p>Avete sicuramente già avuto a che fare con numeri casuali, probabilmente per eseguire simulazioni Monte Carlo (vedi ad es. il corso di TNDS).</p></li>
+<li><p>In questo corso non affronteremo in dettaglio il problema della generazione dei numeri casuali, ma useremo una serie di risultati senza dimostrarli.</p></li>
+<li><p>Il contesto delle immagini fotorealistiche è interessante per verificare il funzionamento di un generatore di numeri casuali: se la qualità del generatore non è ottima, si vede subito!</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/bad-random-generator.webp" />
+</center>
+</section>
+<section id="come-funziona-un-generatore" class="slide level1">
+<h1>Come funziona un generatore</h1>
+<ul>
+<li><p>Un generatore di numeri pseudo-casuali è solitamente implementato come una <em>state machine</em>, ossia un algoritmo che mantiene in memoria una informazione sul proprio stato[^*], che viene aggiornata ogni volta che produce un nuovo numero.</p></li>
+<li><p>I generatori usati oggi di solito producono numeri <em>interi</em> in un dato intervallo.</p></li>
+<li><p>Essendo soltanto pseudo-casuali, se si conosce l’ultimo numero estratto e lo stato di un generatore, si può predire quale sarà il numero successivo (<em>determinismo</em>). Questo può essere un vantaggio!</p></li>
+</ul>
+</section>
+<section id="qualità-di-un-generatore" class="slide level1">
+<h1>Qualità di un generatore</h1>
+<ol>
+<li><p>I numeri che produce dovrebbero essere «casuali»…</p></li>
+<li><p>…ma anche predicibili!</p></li>
+<li><p>I numeri presi a coppie/terne/quaterne/etc. dovrebbero continuare ad essere «casuali».</p></li>
+<li><p>Dovrebbe essere veloce da eseguire.</p></li>
+<li><p>Dovrebbe essere possibile far avanzare velocemente il suo stato interno: questa proprietà viene detta «ricercabilità» (<em>seekability</em>).</p></li>
+</ol>
+</section>
+<section id="casualità" class="slide level1">
+<h1>1. «Casualità»</h1>
+<ul>
+<li>Un generatore di numeri <em>pseudo</em>-casuali deterministico deve avere un certo periodo <span class="math inline">N</span>: una volta estratti <span class="math inline">N</span> valori, è condannato a ripetere nuovamente la sequenza (oppure, in rari casi, a fermarsi).</li>
+<li>È importante che i primi <span class="math inline">N</span> valori siano distribuiti il più uniformemente possibile.</li>
+<li>È anche importante che il periodo sia sufficientemente lungo! Nello studio del satellite PICO avevamo riscontrato strani risultati, dovuti al fatto che il periodo del generatore era «solo» <span class="math inline">2^{32}</span> e quindi dopo un certo tempo il codice rivedeva da capo gli stessi numeri.</li>
+</ul>
+</section>
+<section id="predicibilità" class="slide level1">
+<h1>2. Predicibilità</h1>
+<ul>
+<li><p>Siccome i numeri pseudo-casuali vengono impiegati per simulazioni al calcolatore, è importante poter fare il debugging del codice.</p></li>
+<li><p>Se i numeri del generatore fossero <em>veramente</em> casuali e riscontrassimo un problema che emerge solo di tanto in tanto, il debugging sarebbe molto difficile!</p></li>
+<li><p>Di solito i generatori richiedono di essere inizializzati con un «seme» (<em>seed</em>): se si fornisce due volte lo stesso seme, la sequenza di numeri è la stessa. Questo è <em>estremamente</em> utile!</p></li>
+</ul>
+</section>
+<section id="dimensionalità" class="slide level1">
+<h1>3. Dimensionalità</h1>
+<ul>
+<li><p>I numeri casuali vengono spesso usati per produrre vettori casuali, ossia campioni <span class="math inline">x \in \mathbb{R}^n</span>, per qualche valore di <span class="math inline">n</span> (ad esempio, punti sul piano con <span class="math inline">n = 2</span>, punti nello spazio con <span class="math inline">n = 3</span>, etc.).</p></li>
+<li><p>Un cattivo generatore di numeri casuali può mostrare strane correlazioni quando usato per generare punti 2D, ma non mostrare alcun problema se usato per punti 1D.</p></li>
+<li><p>Un generatore che mantiene le proprietà di «casualità» ad ogni dimensione si dice che soddisfa l’<em>equidistribuzione <span class="math inline">k</span>-dimensionale</em>.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/2d-randomness.png" />
+</center>
+</section>
+<section id="velocità" class="slide level1">
+<h1>4. Velocità</h1>
+<ul>
+<li><p>Le applicazioni alla fisica dei metodi Monte Carlo richiedono di eseguire molte volte delle simulazioni, in modo da ridurre gli effetti del campionamento.</p></li>
+<li><p>I generatori di numeri casuali più diffusi sai basano su operazioni a livello di bit, che sono le più veloci realizzabili con le comuni CPU.</p></li>
+<li><p>Un generatore dovrebbe mantenere il proprio stato in una struttura di memoria il più piccola possibile: in questo modo è più facile per la CPU ottimizzarne l’esecuzione.</p></li>
+</ul>
+</section>
+<section id="ricercabilità" class="slide level1">
+<h1>5. Ricercabilità</h1>
+<ul>
+<li><p>In un generatore ogni numero casuale viene ricavato dallo stato del generatore, e lo stato cambia per ogni nuovo numero generato. Di conseguenza, il valore casuale <span class="math inline">x_{k + 1}</span> dipende dalla conoscenza del valore <span class="math inline">x_k</span>.</p></li>
+<li><p>Se io volessi produrre <span class="math inline">2\times 10^9</span> numeri casuali avendo a disposizione due computer, potrei voler generare 10⁹ campioni sulla prima macchina e 10⁹ sulla seconda.</p></li>
+<li><p>Se però non si imposta correttamente il problema, c’è il rischio che le due sequenze di campioni siano correlate.</p></li>
+</ul>
+</section>
+<section id="esempio" class="slide level1">
+<h1>Esempio</h1>
+<ul>
+<li><p>Supponiamo che io inizi dal <em>seed</em> 5 sul primo computer, e assegno al secondo computer il <em>seed</em> 36.</p></li>
+<li><p>Per colmo di sfortuna però, il generatore è tale per cui dopo il numero 5 estrae il numero 36…</p></li>
+<li><p>…così che la sequenza di numeri generati è la seguente:</p>
+<pre class="text"><code>computer #1:  5  36  17  29  45  …
+computer #2: 36  17  29  45   3  …</code></pre></li>
+<li><p>Non basta dare un <em>seed</em> diverso ai due computer per essere sicuri!</p></li>
+</ul>
+</section>
+<section id="soluzioni-al-problema" class="slide level1">
+<h1>Soluzioni al problema</h1>
+<ul>
+<li><p>Una possibile soluzione è quella di avere un criterio per cui due stati del generatore siano <em>ortogonali</em>: ossia, non possono generare la stessa sequenza di campioni, neppure sfasata. Questi generatore tipicamente richiedono di essere inizializzati con <em>due</em> numeri iniziali: il <em>seed</em> e un identificativo della sequenza. Se si usano due identificativi diversi, le sequenze generate sono scorrelate.</p></li>
+<li><p>Un’altra soluzione è quella di poter avanzare lo stato del generatore di <span class="math inline">k</span> passaggi in maniera rapida, <em>senza</em> effettivamente generare <span class="math inline">k - 1</span> numeri casuali e richiedendo un numero di operazioni ben minore di <span class="math inline">\propto k</span> (tipicamente vale che <span class="math inline">\propto \log k</span>).</p></li>
+</ul>
+</section>
+<section id="generazione-parallela" class="slide level1">
+<h1>Generazione parallela</h1>
+<p>Per generare una lunga sequenza di <span class="math inline">N</span> numeri casuali distribuendola su <span class="math inline">k</span> computer si può usare questa procedura:</p>
+<ol>
+<li>Parto da un <em>seed</em> fissato, oppure casuale (ricavato dalla data e ora in cui è stato eseguito il programma), e creo lo stato iniziale del generatore;</li>
+<li>Assegno a ognuno dei <span class="math inline">k</span> computer il compito di generare solo <span class="math inline">N/k</span> campioni, e copio lo <em>stesso</em> stato iniziale del generatore su ciascuno di essi;</li>
+<li>Sul computer <span class="math inline">i</span>-esimo avanzo lo stato del generatore di <span class="math inline">i \times N / k</span>, usando l’algoritmo «veloce»;</li>
+<li>Ogni generatore procede a generare i <span class="math inline">N/k</span> campioni.</li>
+</ol>
+</section>
+<section id="algoritmi" class="slide level1">
+<h1>Algoritmi</h1>
+<ul>
+<li><p>Le librerie standard dei compilatori offrono funzionalità per la generazione dei numeri casuali, ma la qualità di questi generatori è molto diseguale!</p></li>
+<li><p>Nel 2014 Melissa O’Neill ha pubblicato <a href="https://www.pcg-random.org/paper.html">uno splendido articolo</a> su una nuova famiglia di generatori di numeri casuali che soddisfa <em>tutte</em> le caratteristiche elencate prima, ed è rilasciato come libreria open-source sul sito <a href="https://www.pcg-random.org/">www.pcg-random.org</a>.</p></li>
+<li><p>In questo corso useremo quindi l’algoritmo PCG, che ha tutte le belle proprietà elencate prima.</p></li>
+</ul>
+</section>
+<section id="lalgoritmo-pcg" class="slide level1">
+<h1>L’algoritmo PCG</h1>
+<ul>
+<li><p>L’algoritmo che implementeremo per generare numeri pseudo-casuali è descritto nello stesso articolo <a href="https://www.pcg-random.org/paper.html">O’Neill (2014)</a>.</p></li>
+<li><p>Anche se potrebbero esistere implementazioni del PCG nel vostro linguaggio, è richiesto che lo implementiate da soli.</p></li>
+<li><p>Ci sono infatti numerose varianti dell’algoritmo, che si distinguono per le dimensioni in bit delle quantità usate durante la generazione.</p></li>
+<li><p>Faciliterà il lavoro dei vari gruppi se ciascuno userà il medesimo generatore col medesimo seed.</p></li>
+</ul>
+</section>
+<section id="implementazione-in-python" class="slide level1">
+<h1>Implementazione in Python</h1>
+<ul>
+<li><p>L’implementazione Python dell’algoritmo richiede delle operazioni che permettano di controllare il modo in cui Python esegue operazioni su interi.</p></li>
+<li><p>A differenza dei linguaggi che usate voi (C++, Julia, etc.), in Python esiste solo un tipo <code>int</code>, le cui dimensioni si adattano a seconda del numero che va memorizzato.</p></li>
+<li><p>In Python non è possibile avere un overflow, perché l’interprete Python alloca sempre più spazio per non perdere cifre.</p></li>
+<li><p>I linguaggi che usate ottimizzano invece le prestazioni, e possono subire overflow. Questi overflow sono non solo accettati, ma addirittura <em>richiesti</em> nell’algoritmo PCG.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p><asciinema-player src="cast/overflow-python-julia-74x26.cast" cols="74" rows="26" font-size="medium"></asciinema-player></p>
+</section>
+<section id="gestione-degli-interi" class="slide level1">
+<h1>Gestione degli interi</h1>
+<ul>
+<li><p>Per rendere Python più simile a Julia, si può implementare una funzione che mascheri i bit meno significativi, simulando i numeri a 64 e a 32 bit.</p></li>
+<li><p>Un esempio di implementazione è il seguente:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_uint64(x: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mask &quot;x&quot; with 2^64 - 1</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">&amp;</span> <span class="bn">0xffffffffffffffff</span></span></code></pre></div></li>
+<li><p>Ovviamente questo non è necessario se si usa un linguaggio che implementa tipi interi di dimensione fissata. Questo è il caso di tutti i linguaggi che state usando 😀.</p></li>
+</ul>
+</section>
+<section id="interi-usati-dal-pcg" class="slide level1">
+<h1>Interi usati dal PCG</h1>
+<ul>
+<li><p>L’algoritmo PCG che implementeremo è quello che genera numeri a 32 bit nell’intervallo <span class="math inline">[0, 2^{32} - 1]</span> (<code>uint32_t</code> in C++).</p></li>
+<li><p>La struttura dati usati dall’algoritmo PCG ha bisogno di memorizzare al suo interno due numeri interi <code>unsigned</code> a 64 bit.</p></li>
+<li><p>Familiarizzatevi con i tipi di interi senza segno forniti dal vostro linguaggio.</p></li>
+</ul>
+</section>
+<section id="pcg-in-python" class="slide level1">
+<h1>PCG in Python</h1>
+<ul>
+<li><p>Ecco l’implementazione del tipo <code>PCG</code> e del costruttore:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PCG:</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    state: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    inc: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, init_state<span class="op">=</span><span class="dv">42</span>, init_seq<span class="op">=</span><span class="dv">54</span>):</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.state <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.inc <span class="op">=</span> (init_seq <span class="op">&lt;&lt;</span> <span class="dv">1</span>) <span class="op">|</span> <span class="dv">1</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.random()   <span class="co"># Throw a random number and discard it</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.state <span class="op">+=</span> init_state</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.random()   <span class="co"># Throw a random number and discard it</span></span></code></pre></div></li>
+<li><p>In Python non possiamo specificare i bit che ci occorrono, ma nelle vostre implementazioni dovrete dichiarare <code>state</code> e <code>inc</code> come <code>unsigned</code> a 64 bit.</p></li>
+</ul>
+</section>
+<section id="il-metodo-pcg.random" class="slide level1">
+<h1>Il metodo <code>PCG.random</code></h1>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random(<span class="va">self</span>):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 64-bit variable</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    oldstate <span class="op">=</span> <span class="va">self</span>.state</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.state <span class="op">=</span> to_uint64((oldstate <span class="op">*</span> <span class="dv">6364136223846793005</span> <span class="op">+</span> <span class="va">self</span>.inc))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># &quot;^&quot; is the xor operation</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    xorshifted <span class="op">=</span> to_uint32((((oldstate <span class="op">&gt;&gt;</span> <span class="dv">18</span>) <span class="op">^</span> oldstate) <span class="op">&gt;&gt;</span> <span class="dv">27</span>))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 32-bit variable</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    rot <span class="op">=</span> oldstate <span class="op">&gt;&gt;</span> <span class="dv">59</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> to_uint32((xorshifted <span class="op">&gt;&gt;</span> rot) <span class="op">|</span> (xorshifted <span class="op">&lt;&lt;</span> ((<span class="op">-</span>rot) <span class="op">&amp;</span> <span class="dv">31</span>)))</span></code></pre></div>
+</section>
+<section id="test-per-pcg" class="slide level1">
+<h1>Test per <code>PCG</code></h1>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_random():</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    pcg <span class="op">=</span> PCG()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># You can check these members in a test only if you</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># did not declare &quot;state&quot; and &quot;inc&quot; as private members</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># of the PCG type</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pcg.state <span class="op">==</span> <span class="dv">1753877967969059832</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pcg.inc <span class="op">==</span> <span class="dv">109</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> expected <span class="kw">in</span> [<span class="dv">2707161783</span>, <span class="dv">2068313097</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">3122475824</span>, <span class="dv">2211639955</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">3215226955</span>, <span class="dv">3421331566</span>]:</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> expected <span class="op">==</span> pcg.random()</span></code></pre></div>
+</section>
+<section id="numeri-floating-point" class="slide level1">
+<h1>Numeri floating-point</h1>
+<ul>
+<li><p>Ovviamente il metodo <code>PCG.random</code> restituisce un numero <em>intero</em>.</p></li>
+<li><p>Nella lezione di teoria però abbiamo sempre usato numeri pseudo-casuali <span class="math inline">X_i</span> distribuiti uniformemente su <span class="math inline">[0, 1]</span>.</p></li>
+<li><p>Dal momento che l’implementazione PCG che stiamo usando è a 32 bit e ha periodo <span class="math inline">2^{32} -1</span>, è sufficiente normalizzare i numeri interi restituiti dall’algoritmo per avere la distribuzione uniforme:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_float(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.random() <span class="op">/</span> <span class="bn">0xffffffff</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="seed" class="slide level1">
+<h1><em>Seed</em></h1>
+<ul>
+<li><p>Fate in modo che il costruttore del tipo <code>PCG</code> accetti come parametri di default i seguenti:</p>
+<pre class="text"><code>init_state = 42
+init_seq = 54</code></pre></li>
+<li><p>In questo modo nei test basterà creare una variabile <code>PCG</code> col costruttore di default e il test sarà ripetibile (e confrontabile tra gruppi diversi!).</p></li>
+</ul>
+</section>
+<section id="guida-per-lesercitazione" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+</section>
+<section id="cose-da-fare" class="slide level1">
+<h1>Cose da fare</h1>
+<ol>
+<li>Create un nuovo branch di nome <code>pathtracing</code>;</li>
+<li>Create i tipi <code>Pigment</code> (se serve), <code>UniformPigment</code>, <code>CheckeredPigment</code> (se vi va, implementate anche <code>ImagePigment</code>);</li>
+<li>Create i tipi <code>BRDF</code> e <code>DiffuseBRDF</code>;</li>
+<li>Creare il tipo <code>Material</code>;</li>
+<li>Modificate <code>Shape</code> perché contenga una istanza di <code>Material</code>;</li>
+<li>Modificate <code>HitRecord</code> perché contenga un puntatore alla <code>Shape</code> colpita da un raggio;</li>
+<li>Se vi va, implementate un flat-renderer (ma modificate anche il demo).</li>
+<li>Implementate gli stessi test di <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/test_all.py#L729-L841">pytracer</a>.</li>
+</ol>
+</section>
+<section id="indicazioni-per-c" class="slide level1">
+<h1>Indicazioni per C++</h1>
+</section>
+<section id="indicazioni-per-c-1" class="slide level1">
+<h1>Indicazioni per C++</h1>
+<ul>
+<li>È necessario includere spesso un oggetto in un altro (un <code>Pigment</code> dentro un <code>BRDF</code>, un <code>Pigment</code> dentro un <code>Material</code>, etc.).</li>
+<li>Il modo più efficiente di farlo è tramite <code>std::shared_ptr&lt;T&gt;</code>: abituatevi ad usarlo!</li>
+<li>In questo modo è possibile creare un oggetto <code>Material</code> che viene usato da più forme (<code>Shape</code>) senza doverlo duplicare in memoria, e una <code>Shape</code> non deve essere copiata ogni volta in un <code>HitRecord</code> .</li>
+</ul>
+</section>
+<section id="generatore-pcg" class="slide level1">
+<h1>Generatore PCG</h1>
+<ul>
+<li><p>Per usare i tipi interi con numero di bit fissato, dovete #includere <code>&lt;cstdint&gt;</code>.</p></li>
+<li><p>I tipi che vi interessano sono <code>uint32_t</code> e <code>uint64_t</code>.</p></li>
+<li><p>Siccome lo stato del generatore va modificato ogni volta che si genera un numero casuale, quando una funzione lo richiede come parametro bisogna specificare il tipo come <code>PCG &amp;</code> e non <code>const PCG &amp;</code>.</p></li>
+</ul>
+</section>
+<section id="indicazioni-per-c-2" class="slide level1">
+<h1>Indicazioni per C#</h1>
+</section>
+<section id="indicazioni-per-c-3" class="slide level1">
+<h1>Indicazioni per C#</h1>
+<ul>
+<li><p>I tipi interi a 32 e a 64 bit si indicano con <code>uint</code> e <code>ulong</code>.</p></li>
+<li><p>Per obbligare un numero ad essere rappresentato come <code>uint</code> aggiungete una <code>U</code> (es. <code>10U</code>); per renderlo un <code>ulong</code> aggiungete <code>UL</code> (es. <code>10UL</code>).</p></li>
+</ul>
+</section>
+<section id="indicazioni-per-julia" class="slide level1">
+<h1>Indicazioni per Julia</h1>
+</section>
+<section id="indicazioni-per-julia-1" class="slide level1">
+<h1>Indicazioni per Julia</h1>
+<ul>
+<li><p>I tipi interi a 32 e a 64 bit si indicano con <code>UInt32</code> e <code>UInt64</code>.</p></li>
+<li><p>Per forzare un numero ad essere rappresentato come <em>unsigned</em>, scrivetelo in notazione esadecimale (es., <code>0xa</code> anziché <code>10</code>) oppure usate il costruttore del tipo: <code>UInt64(10)</code>.</p></li>
+<li><p>L’operatore <em>xor</em> logico in Julia si indica con <code>⊻</code> (<code>\xor</code>).</p></li>
+</ul>
+</section>
+<section id="indicazioni-per-kotlin" class="slide level1">
+<h1>Indicazioni per Kotlin</h1>
+</section>
+<section id="numeri-unsigned" class="slide level1">
+<h1>Numeri unsigned</h1>
+<ul>
+<li><p>Kotlin supporta tipi <code>unsigned</code> dalla versione 1.3, ma sono classificati come «sperimentali» fino alla versione 1.5, rilasciata pochi giorni fa. (<a href="https://www.infoworld.com/article/3615548/kotlin-150-stabilizes-unsigned-integer-types.html">Qui l’annuncio</a>).</p></li>
+<li><p>Per poter usare i tipi <code>unsigned</code> in una classe/funzione, potete fare l’upgrade alla versione 1.5 modificando <code>build.gradle.kts</code>. Altrimenti dovete indicare le classi e le funzioni che usano questi tipi (anche indirettamente) scrivendo <code>@ExperimentalUnsignedTypes</code>. Ad esempio:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Any class referring to PCG will need &quot;@ExperimentalUnsignedTypes&quot;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="at">@ExperimentalUnsignedTypes</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PCG(<span class="va">initState</span>: <span class="dt">ULong</span> = 42UL, <span class="va">initSeq</span>: <span class="dt">ULong</span> = 54UL) {</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">state</span>: ULong</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">inc</span>: ULong</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    init { <span class="co">/* … */</span> }</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+</ul>
+</section>
+<section id="operazioni-su-bit" class="slide level1">
+<h1>Operazioni su bit</h1>
+<ul>
+<li><p>In Kotlin le operazioni binarie usano nomi mnemonici anziché simboli.</p></li>
+<li><p>Lo shift di bit a destra (<code>&gt;&gt;</code> in Python) e a sinistra (<code>&lt;&lt;</code>) si indica con <code>shr</code> (<em>SHift Right</em>) e <code>shl</code> (<em>SHift Left</em>).</p></li>
+<li><p>L’operazione di <em>xor</em> tra bit si indica banalmente con <code>xor</code>.</p></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
+    </body>
+</html>
