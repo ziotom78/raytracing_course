@@ -10,9 +10,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Oggi inizieremo ad implementare il nostro path-tracer, e inizieremo da materiali, BRDFs e pigmenti. Ci serviranno questi tipi di dati primitivi:
 
-    #.  `Pigment` è il colore associato ad un punto particolare di una superficie $(u, v)$;
-    #.  `BRDF` sarà la BRDF di un materiale, che conterrà al suo interno un `Pigment`;
-    #.  `Material` rappresenterà l'unione della parte emissiva di un materiale (il termine $L_e$, che rappresenteremo ancora come un `Pigment`) e la sua BRDF.
+    #.  Il tipo `Pigment` è il colore associato ad un punto particolare di una superficie $(u, v)$;
+    #.  Il tipo `BRDF` rappresenta la BRDF di un materiale, che deve contenere al suo interno un membro `Pigment`;
+    #.  Il tipo `Material` rappresenta l'unione della parte emissiva di un materiale (il termine $L_e$, che rappresentiamo ancora come un `Pigment`) e della sua BRDF.
     
 -   Da questi tipi astratti dovrete derivare una serie di tipi concreti a piacimento.
 
@@ -27,11 +27,11 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     
 -   Potreste definire anche un `ImagePigment` che si costruisca a partire da una `HdrImage`: questo consente di creare effetti molto interessanti se applicate a sfere delle immagini contenenti [proiezioni equirettangolari](https://en.wikipedia.org/wiki/Equirectangular_projection), dal momento che queste proiezioni sono facili da convertire nello spazio $(u, v)$.
 
----
+# Pigmento a scacchiera
 
-<center>![](media/checkered-pigment.svg){height=520px}</center>
+<center>![](media/checkered-pigment.svg){height=420px}</center>
 
-Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono entrambi pari o dispari, il colore 2 negli altri casi.
+Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono entrambi pari o dispari, il colore 2 negli altri casi. Il numero di divisioni è impostabile nel costruttore.
 
 # `BRDF`
 
@@ -43,7 +43,7 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
     
 -   La BRDF è per definizione uno scalare, ma per rappresentare la dipendenza dalla lunghezza d'onda $\lambda$, il codice Python restituisce un `Color` anziché un `float`: ogni componente (R/G/B) è la BRDF integrata su quella banda.
 
--   Questo è il prototipo di `BRDF.Eval`:
+-   Questo è il prototipo di `BRDF.Eval` com'è implementato in [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L92-L98):
     
     ```python
     class BRDF:
@@ -57,7 +57,7 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
 
 -   Usate le componenti R/G/B restituite dal pigmento per un dato punto $(u, v)$ della superficie per «pesare» il contributo di $f_r$ alle varie frequenze (se una delle componenti RGB è nulla, tutti i fotoni in quella banda vengono assorbiti).
 
--   Questa è ad esempio l'implementazione della BRDF diffusa ($f_r = \rho_d / \pi$) in Python, che di fatto assume $\rho_d = \rho_d(\lambda)$:
+-   Questa è ad esempio l'implementazione della BRDF diffusa ($f_r = \rho_d / \pi$) in [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L101-L108), che di fatto assume $\rho_d = \rho_d(\lambda)$:
 
     ```python
     class DiffuseBRDF(BRDF):
@@ -67,12 +67,12 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
 
 # `Material`
 
--   Il tipo `Material` deve racchiudere tutte le informazioni legate all'aspetto di un oggetto che non siano già codificate nella sua forma, ossia:
+-   Il tipo `Material` deve racchiudere le informazioni sull'interazione tra punti della superficie e fotoni:
 
-    #.  La radianza emessa in funzione del punto sulla superficie: $L_e = L_e(u, v)$;
-    #.  La BRDF $f_r = f_r(x, \Psi \rightarrow \Theta)$.
+    #.  La BRDF $f_r = f_r(x, \Psi \rightarrow \Theta)$;
+    #.  La radianza emessa in funzione del punto sulla superficie: $L_e = L_e(u, v)$.
     
--   In Python è definito così:
+-   In [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L111-L115) è definito così:
 
     ```python
     @dataclass
@@ -86,7 +86,7 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
 
 -   Il tipo `Pigment` non deve fare altro che restituire un colore data una coordinata $(u, v)$; se sapete cosa sono gli [*oggetti funzione*](https://en.wikipedia.org/wiki/Function_object) e come si usano nel vostro linguaggio, `Pigment` è il candidato ideale.
 
--   Il tipo `BRDF` dovrà diventare più complesso di come l'abbiamo implementato oggi (in un path tracer **non serve valutare** $f_r$, e quindi useremo `BRDF.eval` per altri scopi!).
+-   Il tipo `BRDF` dovrà diventare più complesso di come l'abbiamo implementato oggi (in un path tracer **non serve valutare** $f_r$, e quindi useremo `BRDF.eval` per altri scopi!), quindi è meglio non usare scorciatoie.
 
 -   Il tipo `Material` è semplicemente l'unione di una BRDF e di un pigmento (il termine $L_e$), e non andrà esteso.
 
@@ -103,16 +103,16 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
             self.material = material
     ```
 
--   Il tipo `HitRecord` dovrebbe essere modificato in modo da contenere anche un puntatore all'oggetto `Shape` che è stato «colpito» dal raggio: in questo modo si potrà risalire al `Material` da usare durante la risoluzione dell'equazione del rendering.
+-   Il tipo `HitRecord` dovrebbe essere modificato in modo da contenere anche un puntatore all'oggetto `Shape` che è stato «colpito» dal raggio: in questo modo si potrà risalire al `Material` da usare durante la risoluzione dell'equazione del rendering (un'alternativa è salvare `Material` anziché `Shape`).
 
 
 # Flat-renderer
 
 -   Ora che abbiamo attribuito un `Material` a ogni `Shape`, è possibile creare un renderer un po' più interessante del tipo on/off usato nel nostro demo.
 
--   Nello specifico, potremmo voler implementare un semplice renderer che, invece di usare i colori bianco e nero, assegna a un pixel il colore del `Pigment` calcolato nel punto dove il raggio colpisce l'oggetto.
+-   Nello specifico, potremmo implementare un semplice renderer che, invece di usare i colori bianco e nero, assegna a un pixel il colore del `Pigment` calcolato nel punto dove il raggio colpisce l'oggetto.
 
--   Il codice di pytracer implementa una classe base, [`Renderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L24-L35), da cui derivano due classi [`OnOffRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L38-L49) e [`FlatRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L52-L69): la scelta dell'una o dell'altra classe avviene da linea di comando col flag `--algorithm`.
+-   Il codice di pytracer implementa una classe base, [`Renderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L24-L35), da cui derivano due classi [`OnOffRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L38-L49) e [`FlatRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L52-L69): quando si esegue il comando `demo` si può scegliere quale usare mediante il flag `--algorithm`.
 
 ---
 
@@ -121,6 +121,38 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
 </center>
 
 (A causa del fatto che l'immagine è quasi completamente nera, il *tone mapping* fa saturare i colori se si usa il valore standard di luminosità; convertite l'immagine fissando una luminosità media di ~0.5).
+
+# Generare animazioni
+
+-   Generare un'animazione lunga può essere molto tedioso.
+
+-   Se la CPU del vostro computer supporta più *core* (molto probabile), potete usare [GNU Parallel](https://www.gnu.org/software/parallel/) (`sudo apt install parallel` sotto Debian/Ubuntu/Mint) per usare tutti i core e produrre tanti frame contemporaneamente: il vantaggio in termini di tempo è impressionante!
+
+-   Scrivete uno script `generate-image.sh` che produca una immagine dato un parametro numerico e rendetelo eseguibile con `chmod +x NOMEFILE`, poi eseguite il comando `parallel` in un modo simile a questo:
+
+    ```text
+    parallel -j NUM_OF_CORES ./generate-image.sh '{}' ::: $(seq 0 359)
+    ```
+
+# `generate-image.sh`
+
+```sh
+#!/bin/bash
+
+if [ "$1" == "" ]; then
+    echo "Usage: $(basename $0) ANGLE"
+    exit 1
+fi
+
+readonly angle="$1"
+readonly angleNNN=$(printf "%03d" $angle)
+readonly pfmfile=image$angleNNN.pfm
+readonly pngfile=image$angleNNN.png
+
+time ./main.py demo --algorithm flat --angle-deg $angle \
+    --width 640 --height 480 --pfm-output $pfmfile \
+    && ./main.py pfm2png --luminosity 0.5 $pfmfile $pngfile
+```
 
 
 # Generazione di numeri pseudocasuali

@@ -118,9 +118,9 @@
 <ul>
 <li><p>Oggi inizieremo ad implementare il nostro path-tracer, e inizieremo da materiali, BRDFs e pigmenti. Ci serviranno questi tipi di dati primitivi:</p>
 <ol>
-<li><code>Pigment</code> è il colore associato ad un punto particolare di una superficie <span class="math inline">(u, v)</span>;</li>
-<li><code>BRDF</code> sarà la BRDF di un materiale, che conterrà al suo interno un <code>Pigment</code>;</li>
-<li><code>Material</code> rappresenterà l’unione della parte emissiva di un materiale (il termine <span class="math inline">L_e</span>, che rappresenteremo ancora come un <code>Pigment</code>) e la sua BRDF.</li>
+<li>Il tipo <code>Pigment</code> è il colore associato ad un punto particolare di una superficie <span class="math inline">(u, v)</span>;</li>
+<li>Il tipo <code>BRDF</code> rappresenta la BRDF di un materiale, che deve contenere al suo interno un membro <code>Pigment</code>;</li>
+<li>Il tipo <code>Material</code> rappresenta l’unione della parte emissiva di un materiale (il termine <span class="math inline">L_e</span>, che rappresentiamo ancora come un <code>Pigment</code>) e della sua BRDF.</li>
 </ol></li>
 <li><p>Da questi tipi astratti dovrete derivare una serie di tipi concreti a piacimento.</p></li>
 </ul>
@@ -137,12 +137,12 @@
 <li><p>Potreste definire anche un <code>ImagePigment</code> che si costruisca a partire da una <code>HdrImage</code>: questo consente di creare effetti molto interessanti se applicate a sfere delle immagini contenenti <a href="https://en.wikipedia.org/wiki/Equirectangular_projection">proiezioni equirettangolari</a>, dal momento che queste proiezioni sono facili da convertire nello spazio <span class="math inline">(u, v)</span>.</p></li>
 </ul>
 </section>
-<section class="slide level1">
-
+<section id="pigmento-a-scacchiera" class="slide level1">
+<h1>Pigmento a scacchiera</h1>
 <center>
-<img data-src="media/checkered-pigment.svg" height="520" />
+<img data-src="media/checkered-pigment.svg" height="420" />
 </center>
-<p>Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono entrambi pari o dispari, il colore 2 negli altri casi.</p>
+<p>Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono entrambi pari o dispari, il colore 2 negli altri casi. Il numero di divisioni è impostabile nel costruttore.</p>
 </section>
 <section id="brdf" class="slide level1">
 <h1><code>BRDF</code></h1>
@@ -152,7 +152,7 @@
 f_r = f_r(x, \Psi \rightarrow \Theta).
 </span></p></li>
 <li><p>La BRDF è per definizione uno scalare, ma per rappresentare la dipendenza dalla lunghezza d’onda <span class="math inline">\lambda</span>, il codice Python restituisce un <code>Color</code> anziché un <code>float</code>: ogni componente (R/G/B) è la BRDF integrata su quella banda.</p></li>
-<li><p>Questo è il prototipo di <code>BRDF.Eval</code>:</p>
+<li><p>Questo è il prototipo di <code>BRDF.Eval</code> com’è implementato in <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L92-L98">pytracer</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BRDF:</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="bu">eval</span>(<span class="va">self</span>, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) <span class="op">-&gt;</span> Color:</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># …</span></span></code></pre></div></li>
@@ -163,7 +163,7 @@ f_r = f_r(x, \Psi \rightarrow \Theta).
 <ul>
 <li><p>Il tipo <code>BRDF</code> dovrebbe contenere un tipo <code>Pigment</code> (o un puntatore: in C++ è bene usare <code>std::shared_ptr&lt;Pigment&gt;</code>).</p></li>
 <li><p>Usate le componenti R/G/B restituite dal pigmento per un dato punto <span class="math inline">(u, v)</span> della superficie per «pesare» il contributo di <span class="math inline">f_r</span> alle varie frequenze (se una delle componenti RGB è nulla, tutti i fotoni in quella banda vengono assorbiti).</p></li>
-<li><p>Questa è ad esempio l’implementazione della BRDF diffusa (<span class="math inline">f_r = \rho_d / \pi</span>) in Python, che di fatto assume <span class="math inline">\rho_d = \rho_d(\lambda)</span>:</p>
+<li><p>Questa è ad esempio l’implementazione della BRDF diffusa (<span class="math inline">f_r = \rho_d / \pi</span>) in <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L101-L108">pytracer</a>, che di fatto assume <span class="math inline">\rho_d = \rho_d(\lambda)</span>:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DiffuseBRDF(BRDF):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="bu">eval</span>(<span class="va">self</span>, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) <span class="op">-&gt;</span> Color:</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.pigment.get_color(uv) <span class="op">*</span> (<span class="va">self</span>.reflectance <span class="op">/</span> pi)</span></code></pre></div></li>
@@ -172,12 +172,12 @@ f_r = f_r(x, \Psi \rightarrow \Theta).
 <section id="material" class="slide level1">
 <h1><code>Material</code></h1>
 <ul>
-<li><p>Il tipo <code>Material</code> deve racchiudere tutte le informazioni legate all’aspetto di un oggetto che non siano già codificate nella sua forma, ossia:</p>
+<li><p>Il tipo <code>Material</code> deve racchiudere le informazioni sull’interazione tra punti della superficie e fotoni:</p>
 <ol>
-<li>La radianza emessa in funzione del punto sulla superficie: <span class="math inline">L_e = L_e(u, v)</span>;</li>
-<li>La BRDF <span class="math inline">f_r = f_r(x, \Psi \rightarrow \Theta)</span>.</li>
+<li>La BRDF <span class="math inline">f_r = f_r(x, \Psi \rightarrow \Theta)</span>;</li>
+<li>La radianza emessa in funzione del punto sulla superficie: <span class="math inline">L_e = L_e(u, v)</span>.</li>
 </ol></li>
-<li><p>In Python è definito così:</p>
+<li><p>In <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L111-L115">pytracer</a> è definito così:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Material:</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A material&quot;&quot;&quot;</span></span>
@@ -189,7 +189,7 @@ f_r = f_r(x, \Psi \rightarrow \Theta).
 <h1>Versatilità</h1>
 <ul>
 <li><p>Il tipo <code>Pigment</code> non deve fare altro che restituire un colore data una coordinata <span class="math inline">(u, v)</span>; se sapete cosa sono gli <a href="https://en.wikipedia.org/wiki/Function_object"><em>oggetti funzione</em></a> e come si usano nel vostro linguaggio, <code>Pigment</code> è il candidato ideale.</p></li>
-<li><p>Il tipo <code>BRDF</code> dovrà diventare più complesso di come l’abbiamo implementato oggi (in un path tracer <strong>non serve valutare</strong> <span class="math inline">f_r</span>, e quindi useremo <code>BRDF.eval</code> per altri scopi!).</p></li>
+<li><p>Il tipo <code>BRDF</code> dovrà diventare più complesso di come l’abbiamo implementato oggi (in un path tracer <strong>non serve valutare</strong> <span class="math inline">f_r</span>, e quindi useremo <code>BRDF.eval</code> per altri scopi!), quindi è meglio non usare scorciatoie.</p></li>
 <li><p>Il tipo <code>Material</code> è semplicemente l’unione di una BRDF e di un pigmento (il termine <span class="math inline">L_e</span>), e non andrà esteso.</p></li>
 </ul>
 </section>
@@ -203,15 +203,15 @@ f_r = f_r(x, \Psi \rightarrow \Theta).
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                 material: Material <span class="op">=</span> Material()):</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.material <span class="op">=</span> material</span></code></pre></div></li>
-<li><p>Il tipo <code>HitRecord</code> dovrebbe essere modificato in modo da contenere anche un puntatore all’oggetto <code>Shape</code> che è stato «colpito» dal raggio: in questo modo si potrà risalire al <code>Material</code> da usare durante la risoluzione dell’equazione del rendering.</p></li>
+<li><p>Il tipo <code>HitRecord</code> dovrebbe essere modificato in modo da contenere anche un puntatore all’oggetto <code>Shape</code> che è stato «colpito» dal raggio: in questo modo si potrà risalire al <code>Material</code> da usare durante la risoluzione dell’equazione del rendering (un’alternativa è salvare <code>Material</code> anziché <code>Shape</code>).</p></li>
 </ul>
 </section>
 <section id="flat-renderer" class="slide level1">
 <h1>Flat-renderer</h1>
 <ul>
 <li><p>Ora che abbiamo attribuito un <code>Material</code> a ogni <code>Shape</code>, è possibile creare un renderer un po’ più interessante del tipo on/off usato nel nostro demo.</p></li>
-<li><p>Nello specifico, potremmo voler implementare un semplice renderer che, invece di usare i colori bianco e nero, assegna a un pixel il colore del <code>Pigment</code> calcolato nel punto dove il raggio colpisce l’oggetto.</p></li>
-<li><p>Il codice di pytracer implementa una classe base, <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L24-L35"><code>Renderer</code></a>, da cui derivano due classi <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L38-L49"><code>OnOffRenderer</code></a> e <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L52-L69"><code>FlatRenderer</code></a>: la scelta dell’una o dell’altra classe avviene da linea di comando col flag <code>--algorithm</code>.</p></li>
+<li><p>Nello specifico, potremmo implementare un semplice renderer che, invece di usare i colori bianco e nero, assegna a un pixel il colore del <code>Pigment</code> calcolato nel punto dove il raggio colpisce l’oggetto.</p></li>
+<li><p>Il codice di pytracer implementa una classe base, <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L24-L35"><code>Renderer</code></a>, da cui derivano due classi <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L38-L49"><code>OnOffRenderer</code></a> e <a href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L52-L69"><code>FlatRenderer</code></a>: quando si esegue il comando <code>demo</code> si può scegliere quale usare mediante il flag <code>--algorithm</code>.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -220,6 +220,33 @@ f_r = f_r(x, \Psi \rightarrow \Theta).
 <video src="media/flat-renderer.mp4" width="640" height="480" controls loop autoplay/>
 </center>
 <p>(A causa del fatto che l’immagine è quasi completamente nera, il <em>tone mapping</em> fa saturare i colori se si usa il valore standard di luminosità; convertite l’immagine fissando una luminosità media di ~0.5).</p>
+</section>
+<section id="generare-animazioni" class="slide level1">
+<h1>Generare animazioni</h1>
+<ul>
+<li><p>Generare un’animazione lunga può essere molto tedioso.</p></li>
+<li><p>Se la CPU del vostro computer supporta più <em>core</em> (molto probabile), potete usare <a href="https://www.gnu.org/software/parallel/">GNU Parallel</a> (<code>sudo apt install parallel</code> sotto Debian/Ubuntu/Mint) per usare tutti i core e produrre tanti frame contemporaneamente: il vantaggio in termini di tempo è impressionante!</p></li>
+<li><p>Scrivete uno script <code>generate-image.sh</code> che produca una immagine dato un parametro numerico e rendetelo eseguibile con <code>chmod +x NOMEFILE</code>, poi eseguite il comando <code>parallel</code> in un modo simile a questo:</p>
+<pre class="text"><code>parallel -j NUM_OF_CORES ./generate-image.sh &#39;{}&#39; ::: $(seq 0 359)</code></pre></li>
+</ul>
+</section>
+<section id="generate-image.sh" class="slide level1">
+<h1><code>generate-image.sh</code></h1>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span><span class="bu"> [</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;&quot;</span><span class="bu"> ]</span>; <span class="kw">then</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Usage: </span><span class="va">$(</span><span class="fu">basename</span> <span class="va">$0)</span><span class="st"> ANGLE&quot;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">exit</span> 1</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">fi</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">angle=</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">angleNNN=$(</span><span class="bu">printf</span> <span class="st">&quot;%03d&quot;</span> <span class="va">$angle)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">pfmfile=</span>image<span class="va">$angleNNN</span>.pfm</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">pngfile=</span>image<span class="va">$angleNNN</span>.png</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="bu">time</span> ./main.py demo --algorithm flat --angle-deg <span class="va">$angle</span> <span class="kw">\</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="ex">--width</span> 640 --height 480 --pfm-output <span class="va">$pfmfile</span> <span class="kw">\</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="ex">./main.py</span> pfm2png --luminosity 0.5 <span class="va">$pfmfile</span> <span class="va">$pngfile</span></span></code></pre></div>
 </section>
 <section id="generazione-di-numeri-pseudocasuali" class="slide level1">
 <h1>Generazione di numeri pseudocasuali</h1>
@@ -372,9 +399,9 @@ computer #2: 36  17  29  45   3  …</code></pre></li>
 <ul>
 <li><p>Per rendere Python più simile a Julia, si può implementare una funzione che mascheri i bit meno significativi, simulando i numeri a 64 e a 32 bit.</p></li>
 <li><p>Un esempio di implementazione è il seguente:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_uint64(x: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mask &quot;x&quot; with 2^64 - 1</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">&amp;</span> <span class="bn">0xffffffffffffffff</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_uint64(x: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mask &quot;x&quot; with 2^64 - 1</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">&amp;</span> <span class="bn">0xffffffffffffffff</span></span></code></pre></div></li>
 <li><p>Ovviamente questo non è necessario se si usa un linguaggio che implementa tipi interi di dimensione fissata. Questo è il caso di tutti i linguaggi che state usando 😀.</p></li>
 </ul>
 </section>
@@ -390,51 +417,51 @@ computer #2: 36  17  29  45   3  …</code></pre></li>
 <h1>PCG in Python</h1>
 <ul>
 <li><p>Ecco l’implementazione del tipo <code>PCG</code> e del costruttore:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PCG:</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    state: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    inc: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, init_state<span class="op">=</span><span class="dv">42</span>, init_seq<span class="op">=</span><span class="dv">54</span>):</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.state <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.inc <span class="op">=</span> (init_seq <span class="op">&lt;&lt;</span> <span class="dv">1</span>) <span class="op">|</span> <span class="dv">1</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.random()   <span class="co"># Throw a random number and discard it</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.state <span class="op">+=</span> init_state</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.random()   <span class="co"># Throw a random number and discard it</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PCG:</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    state: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    inc: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, init_state<span class="op">=</span><span class="dv">42</span>, init_seq<span class="op">=</span><span class="dv">54</span>):</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.state <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.inc <span class="op">=</span> (init_seq <span class="op">&lt;&lt;</span> <span class="dv">1</span>) <span class="op">|</span> <span class="dv">1</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.random()   <span class="co"># Throw a random number and discard it</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.state <span class="op">+=</span> init_state</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.random()   <span class="co"># Throw a random number and discard it</span></span></code></pre></div></li>
 <li><p>In Python non possiamo specificare i bit che ci occorrono, ma nelle vostre implementazioni dovrete dichiarare <code>state</code> e <code>inc</code> come <code>unsigned</code> a 64 bit.</p></li>
 </ul>
 </section>
 <section id="il-metodo-pcg.random" class="slide level1">
 <h1>Il metodo <code>PCG.random</code></h1>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random(<span class="va">self</span>):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 64-bit variable</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    oldstate <span class="op">=</span> <span class="va">self</span>.state</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.state <span class="op">=</span> to_uint64((oldstate <span class="op">*</span> <span class="dv">6364136223846793005</span> <span class="op">+</span> <span class="va">self</span>.inc))</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># &quot;^&quot; is the xor operation</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    xorshifted <span class="op">=</span> to_uint32((((oldstate <span class="op">&gt;&gt;</span> <span class="dv">18</span>) <span class="op">^</span> oldstate) <span class="op">&gt;&gt;</span> <span class="dv">27</span>))</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 32-bit variable</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    rot <span class="op">=</span> oldstate <span class="op">&gt;&gt;</span> <span class="dv">59</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> to_uint32((xorshifted <span class="op">&gt;&gt;</span> rot) <span class="op">|</span> (xorshifted <span class="op">&lt;&lt;</span> ((<span class="op">-</span>rot) <span class="op">&amp;</span> <span class="dv">31</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random(<span class="va">self</span>):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 64-bit variable</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    oldstate <span class="op">=</span> <span class="va">self</span>.state</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.state <span class="op">=</span> to_uint64((oldstate <span class="op">*</span> <span class="dv">6364136223846793005</span> <span class="op">+</span> <span class="va">self</span>.inc))</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># &quot;^&quot; is the xor operation</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    xorshifted <span class="op">=</span> to_uint32((((oldstate <span class="op">&gt;&gt;</span> <span class="dv">18</span>) <span class="op">^</span> oldstate) <span class="op">&gt;&gt;</span> <span class="dv">27</span>))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 32-bit variable</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    rot <span class="op">=</span> oldstate <span class="op">&gt;&gt;</span> <span class="dv">59</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> to_uint32((xorshifted <span class="op">&gt;&gt;</span> rot) <span class="op">|</span> (xorshifted <span class="op">&lt;&lt;</span> ((<span class="op">-</span>rot) <span class="op">&amp;</span> <span class="dv">31</span>)))</span></code></pre></div>
 </section>
 <section id="test-per-pcg" class="slide level1">
 <h1>Test per <code>PCG</code></h1>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_random():</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    pcg <span class="op">=</span> PCG()</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># You can check these members in a test only if you</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># did not declare &quot;state&quot; and &quot;inc&quot; as private members</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># of the PCG type</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pcg.state <span class="op">==</span> <span class="dv">1753877967969059832</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pcg.inc <span class="op">==</span> <span class="dv">109</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> expected <span class="kw">in</span> [<span class="dv">2707161783</span>, <span class="dv">2068313097</span>,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">3122475824</span>, <span class="dv">2211639955</span>,</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">3215226955</span>, <span class="dv">3421331566</span>]:</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> expected <span class="op">==</span> pcg.random()</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_random():</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    pcg <span class="op">=</span> PCG()</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># You can check these members in a test only if you</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># did not declare &quot;state&quot; and &quot;inc&quot; as private members</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># of the PCG type</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pcg.state <span class="op">==</span> <span class="dv">1753877967969059832</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pcg.inc <span class="op">==</span> <span class="dv">109</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> expected <span class="kw">in</span> [<span class="dv">2707161783</span>, <span class="dv">2068313097</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">3122475824</span>, <span class="dv">2211639955</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">3215226955</span>, <span class="dv">3421331566</span>]:</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> expected <span class="op">==</span> pcg.random()</span></code></pre></div>
 </section>
 <section id="numeri-floating-point" class="slide level1">
 <h1>Numeri floating-point</h1>
@@ -442,8 +469,8 @@ computer #2: 36  17  29  45   3  …</code></pre></li>
 <li><p>Ovviamente il metodo <code>PCG.random</code> restituisce un numero <em>intero</em>.</p></li>
 <li><p>Nella lezione di teoria però abbiamo sempre usato numeri pseudo-casuali <span class="math inline">X_i</span> distribuiti uniformemente su <span class="math inline">[0, 1]</span>.</p></li>
 <li><p>Dal momento che l’implementazione PCG che stiamo usando è a 32 bit e ha periodo <span class="math inline">2^{32} -1</span>, è sufficiente normalizzare i numeri interi restituiti dall’algoritmo per avere la distribuzione uniforme:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_float(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.random() <span class="op">/</span> <span class="bn">0xffffffff</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_float(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.random() <span class="op">/</span> <span class="bn">0xffffffff</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="seed" class="slide level1">
@@ -519,13 +546,13 @@ init_seq = 54</code></pre></li>
 <ul>
 <li><p>Kotlin supporta tipi <code>unsigned</code> dalla versione 1.3, ma sono classificati come «sperimentali» fino alla versione 1.5, rilasciata pochi giorni fa. (<a href="https://www.infoworld.com/article/3615548/kotlin-150-stabilizes-unsigned-integer-types.html">Qui l’annuncio</a>).</p></li>
 <li><p>Per poter usare i tipi <code>unsigned</code> in una classe/funzione, potete fare l’upgrade alla versione 1.5 modificando <code>build.gradle.kts</code>. Altrimenti dovete indicare le classi e le funzioni che usano questi tipi (anche indirettamente) scrivendo <code>@ExperimentalUnsignedTypes</code>. Ad esempio:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Any class referring to PCG will need &quot;@ExperimentalUnsignedTypes&quot;</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="at">@ExperimentalUnsignedTypes</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PCG(<span class="va">initState</span>: <span class="dt">ULong</span> = 42UL, <span class="va">initSeq</span>: <span class="dt">ULong</span> = 54UL) {</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">state</span>: ULong</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">inc</span>: ULong</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    init { <span class="co">/* … */</span> }</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Any class referring to PCG will need &quot;@ExperimentalUnsignedTypes&quot;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="at">@ExperimentalUnsignedTypes</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PCG(<span class="va">initState</span>: <span class="dt">ULong</span> = 42UL, <span class="va">initSeq</span>: <span class="dt">ULong</span> = 54UL) {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">state</span>: ULong</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">inc</span>: ULong</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    init { <span class="co">/* … */</span> }</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
 </ul>
 </section>
 <section id="operazioni-su-bit" class="slide level1">
