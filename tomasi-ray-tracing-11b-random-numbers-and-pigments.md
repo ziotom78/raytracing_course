@@ -414,7 +414,7 @@ def test_random():
 # Cose da fare
 
 #.  Create un nuovo branch di nome `pathtracing`;
-#.  Create i tipi `Pigment` (se serve), `UniformPigment`, `CheckeredPigment` (se vi va, implementate anche `ImagePigment`);
+#.  Create i tipi `Pigment`, `UniformPigment`, `CheckeredPigment` (se vi va, implementate anche `ImagePigment`);
 #.  Create i tipi `BRDF` e `DiffuseBRDF`;
 #.  Creare il tipo `Material`;
 #.  Modificate `Shape` perché contenga una istanza di `Material`;
