@@ -6,6 +6,7 @@ JS_FILES = \
 .phony: all
 
 all: \
+	tomasi-ray-tracing-12a-path-tracing2.html \
 	tomasi-ray-tracing-11b-random-numbers-and-pigments.html \
 	tomasi-ray-tracing-11a-path-tracing.html \
 	tomasi-ray-tracing-10a-other-shapes.html \
