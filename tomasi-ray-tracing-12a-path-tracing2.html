@@ -156,7 +156,7 @@ p(\omega) = \frac1{2\pi}.
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    cum_radiance <span class="op">=</span> Color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_of_samples):</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Start a new (secondary) ray and compute the radiance along it</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        mc_ray <span class="op">=</span> scatter_ray(...)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        mc_ray <span class="op">=</span> scatter_ray(..., depth<span class="op">=</span>ray.depth <span class="op">+</span> <span class="dv">1</span>)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Recursive call! Will it ever stop?</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        mc_radiance <span class="op">=</span> radiance(mc_ray, num_of_samples<span class="op">=</span>num_of_samples)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        cum_radiance <span class="op">+=</span> material.brdf(...) <span class="op">*</span> mc_radiance</span>
@@ -185,7 +185,7 @@ p(\omega) = \frac1{2\pi}.
 <section id="fermare-la-ricorsione-1" class="slide level1">
 <h1>Fermare la ricorsione</h1>
 <ul>
-<li><p>Anche se è un metodo molto usato, attribuire alla radianza un valore nullo se <code>ray.depth</code> supera una soglia <em>non</em> è matematicamente corretto!</p></li>
+<li><p>Anche se è un metodo molto usato, attribuire alla radianza un valore nullo se <code>ray.depth</code> supera una soglia <em>non</em> è fisicamente corretto!</p></li>
 <li><p>Dal momento che <span class="math inline">L(x \leftarrow \Psi) \geq 0</span> infatti, «troncare» il contributo dell’integrale dopo un certo numero di iterazioni vuol dire <strong>sottostimare</strong> il valore dell’integrale: se si sottostima la radianza, si introduce un <em>bias</em> nella soluzione.</p></li>
 <li><p>La situazione è uguale a quella in cui si stima il valore di <span class="math inline">\sum_{n=0}^\infty \frac1{n!} = e</span> sommando solo i primi <span class="math inline">N</span> termini: ovviamente la stima sarà per difetto, e l’errore sarà tanto più grave quanto è piccolo <span class="math inline">N</span>.</p></li>
 <li><p>È importante? Dipende!</p></li>
@@ -218,7 +218,7 @@ p(\omega) = \frac1{2\pi}.
 <li><p>Un algoritmo molto usato nel path-tracing è la <em>roulette russa</em>, che rimuove completamente il <em>bias</em>, ossia la sottostima della radianza, al prezzo però di aumentare il rumore scorrelato (bianco).</p></li>
 <li><p>Il procedimento richiede di fissare una probabilità <span class="math inline">0 \leq q \leq 1</span> e una costante <span class="math inline">c</span> (solitamente <span class="math inline">c = 0</span>), e procede nel modo seguente:</p>
 <ol>
-<li>Quando si effettua una chiamata ricorsiva, si estrae un numero casuale <span class="math inline">0 \leq x \leq 1</span>;</li>
+<li>Si estrae un numero casuale <span class="math inline">0 \leq x \leq 1</span>;</li>
 <li>Se <span class="math inline">x &gt; q</span>, si procede a calcolare la radianza <span class="math inline">L</span> e si restituisce <span class="math inline">(L - q c) / (1 - q)</span>;</li>
 <li>Se <span class="math inline">x \leq q</span>, si ferma il calcolo e si restituisce <span class="math inline">c</span>.</li>
 </ol></li>
@@ -282,14 +282,43 @@ L&#39; = \begin{cases}
 <ul>
 <li><p>Abbiamo a disposizione tutta la teoria per implementare l’algoritmo di path-tracing!</p></li>
 <li><p>Il numero <span class="math inline">N</span> di campioni (direzioni) usati per stimare ciascun integrale è un parametro libero, e va scelto a seconda della scena e di quanto è efficiente il path tracer.</p></li>
-<li><p>Supponendo di fissare una soglia a <code>ray.depth</code> uguale a <span class="math inline">m</span> riflessioni, il numero totale <span class="math inline">N_\text{tot}</span> di raggi che il codice deve simulare è <span class="math inline">N^m</span>. Se si sceglie <span class="math inline">N = 100</span> e <span class="math inline">m = 9</span> si ottiene <span class="math inline">N_\text{tot} = 10^{18}</span>: è importante non esagerare col valore di <span class="math inline">N</span>!</p></li>
+<li><p>Supponendo di fissare una soglia a <code>ray.depth</code> uguale a <span class="math inline">m</span> riflessioni, il numero totale <span class="math inline">N_\text{tot}</span> di raggi che il codice deve simulare è <span class="math inline">\leq N^m</span>. Se si sceglie <span class="math inline">N = 100</span> e <span class="math inline">m = 9</span> si ottiene <span class="math inline">N_\text{tot} = 10^{18}</span>: è importante non esagerare col valore di <span class="math inline">N</span>!</p></li>
 </ul>
 </section>
-<section id="n-3" class="slide level1">
-<h1><span class="math inline">N = 3</span></h1>
+<section id="n-3" class="slide level1" data-transition="none">
+<h1 data-transition="none"><span class="math inline">N = 3</span></h1>
 <center>
-<img data-src="media/rough-path-tracing.webp" />
+<img data-src="media/pathtracing-003rays.webp" />
 </center>
+<p><span style="float:right">726,939 raggi</span></p>
+</section>
+<section id="n-10" class="slide level1" data-transition="none">
+<h1 data-transition="none"><span class="math inline">N = 10</span></h1>
+<center>
+<img data-src="media/pathtracing-010rays.webp" />
+</center>
+<p><span style="float:right">5,010,840 raggi</span></p>
+</section>
+<section id="n-25" class="slide level1" data-transition="none">
+<h1 data-transition="none"><span class="math inline">N = 25</span></h1>
+<center>
+<img data-src="media/pathtracing-025rays.webp" />
+</center>
+<p><span style="float:right">26,343,150 raggi</span></p>
+</section>
+<section id="n-50" class="slide level1" data-transition="none">
+<h1 data-transition="none"><span class="math inline">N = 50</span></h1>
+<center>
+<img data-src="media/pathtracing-050rays.webp" />
+</center>
+<p><span style="float:right">98,875,400 raggi</span></p>
+</section>
+<section id="n-100" class="slide level1" data-transition="none">
+<h1 data-transition="none"><span class="math inline">N = 100</span></h1>
+<center>
+<img data-src="media/pathtracing-100rays.webp" />
+</center>
+<p><span style="float:right">382,384,500 raggi</span></p>
 </section>
 <section id="importance-sampling" class="slide level1">
 <h1><em>Importance sampling</em></h1>
@@ -395,7 +424,7 @@ p(\omega) \propto \frac{\rho_d}\pi\,\cos\theta \propto \cos\theta.
 f_r(x, \Psi \rightarrow \Theta) \propto \frac{\delta(\sin^2\theta_r - \sin^2\theta)\,\delta(\psi_r \pm \pi - \psi)}{\cos\theta},
 </span></p>
 <p>dove <span class="math inline">(\theta, \phi)</span> è ovviamente la direzione <span class="math inline">\Psi</span> di arrivo del raggio, e <span class="math inline">(\theta_r, \psi_r)</span> è la direzione riflessa.</p></li>
-<li><p>La presenza di <span class="math inline">\cos\theta</span> al denominatore fa sì che nell’<em>importance sampling</em> si abbia <span class="math inline">p(\omega) = \text{costante}</span>.</p></li>
+<li><p>La presenza di <span class="math inline">\cos\theta</span> al denominatore fa sì che nell’<em>importance sampling</em> <span class="math inline">p(\omega)</span> non dipenda da <span class="math inline">\cos\theta</span>.</p></li>
 </ul>
 </section>
 <section id="brdf-riflettente-2" class="slide level1">
@@ -460,7 +489,7 @@ f_r(x, \Psi \rightarrow \Theta) \propto \frac{\delta(\sin^2\theta_r - \sin^2\the
 <section id="onb-arbitrarie-1" class="slide level1">
 <h1>ONB arbitrarie</h1>
 <ul>
-<li><p>Il modo più semplice per creare una nuova ONB è basarsi sul fatto che vale in generale che</p>
+<li><p>Il modo più semplice per creare una nuova ONB è basarsi sul fatto che da due elementi della base si può sempre ricavare il terzo tramite il prodotto vettoriale:</p>
 <p><span class="math display">
 \hat e_x \times \hat e_y = \hat e_z,\quad
 \hat e_y \times \hat e_z = \hat e_x,\quad
@@ -517,7 +546,7 @@ f_r(x, \Psi \rightarrow \Theta) \propto \frac{\delta(\sin^2\theta_r - \sin^2\the
 <p><span class="math display">
 p(\omega) \propto \cos\theta \times f_r.
 </span></p></li>
-<li><p>Questo trucco può migliorare molto la qualità del rendering nel caso di BRDF molto dipendenti dall’orientamento, ma non aiuta se il termine</p>
+<li><p>Questo trucco può migliorare molto la qualità del rendering nel caso di BRDF molto dipendenti da <span class="math inline">\theta</span>, ma non aiuta se il termine</p>
 <p><span class="math display">
 L(x \leftarrow \Psi)
 </span></p>
@@ -560,7 +589,7 @@ L(x \leftarrow \Psi)
 <ul>
 <li><p>L’integrale relativo all’angolo solido <span class="math inline">\Omega_\text{lum}</span> viene calcolato in un modo speciale.</p></li>
 <li><p>Occorre che ogni <code>Shape</code> abbia la possibilità di calcolare il proprio angolo solido (facile per piani, sfere e triangoli, difficile per oggetti CSG!).</p></li>
-<li><p>Inoltre, è necessario un metodo che restituisca una direzione casuale verso l’oggetto emissivo distribuita uniformemente entro il suo angolo solido (facile per piani, sfere e triangoli, difficile per oggetti CSG!).</p></li>
+<li><p>Inoltre, è necessario un metodo che restituisca una direzione casuale verso l’oggetto emissivo distribuita uniformemente entro il suo angolo solido (facile per sfere e triangoli, difficile per piani e oggetti CSG!).</p></li>
 <li><p>L’implementazione è complicata dal fatto che si devono tenere in conto le costanti di normalizzazione per le varie <span class="math inline">p(\omega)</span> usate, e le sovrapposizioni di diversi angoli solidi.</p></li>
 </ul>
 </section>
@@ -645,14 +674,17 @@ L(x \leftarrow \Psi)
 <ul>
 <li><p>Per <em>antialiasing</em> si intende un algoritmo che riduca gli artefatti di un’immagine che sono causati da variazioni di colore su scale inferiori del pixel.</p></li>
 <li><p>Un modo semplice per implementare l’<em>antialiasing</em> è dotare il nostro tipo <code>ImageTracer</code> dell’abilità di campionare un pixel usando più raggi, e calcolando poi la media della radianza associata a ciascuno.</p></li>
-<li><p>Non è forse immediato da comprendere, ma i raggi che inviamo all’interno dello stesso pixel <strong>non devono essere equispaziati</strong>, altrimenti il problema delle frange di Moiré si ripresenterebbe ugualmente (sebbene in misura minore). Meglio usare un metodo Monte Carlo.</p></li>
 </ul>
 </section>
-<section class="slide level1">
-
+<section id="antialiasing-e-mc" class="slide level1">
+<h1>Antialiasing e MC</h1>
+<ul>
+<li><p>Non è forse immediato da comprendere, ma i raggi che inviamo all’interno dello stesso pixel <strong>non devono essere equispaziati</strong>, altrimenti il problema delle frange di Moiré si ripresenterebbe ugualmente (sebbene in misura minore):</p>
 <center>
-<img data-src="media/projection-pixel-montecarlo.svg" />
-</center>
+<p><img data-src="media/equispaced-ray-samples-in-pixel.svg" height="240" /></p>
+</center></li>
+<li><p>Meglio usare un metodo Monte Carlo per campionare l’interno di un pixel.</p></li>
+</ul>
 </section>
 <section id="stratified-sampling" class="slide level1">
 <h1><em>Stratified sampling</em></h1>
@@ -718,7 +750,7 @@ L(x \leftarrow \Psi)
 <section id="point-light-tracing-1" class="slide level1">
 <h1>Point-light tracing</h1>
 <ul>
-<li><p>Un algoritmo storicamente molto usato è quello che chiameremo <em>point-light tracing</em>. (In realtà l’algoritmo è denominato solitamente <em>ray tracing</em> o <em>ray casting</em>; entrambi i termini sono però molto generici, e a volte indicano algoritmi differenti).</p></li>
+<li><p>Un algoritmo molto usato per generare immagini 3D è quello che chiameremo <em>point-light tracing</em>. (Di solito è chiamato <em>ray tracing</em> o <em>ray casting</em>; entrambi i termini sono però molto generici, e a volte indicano algoritmi differenti).</p></li>
 <li><p>Si basa sulla considerazione che in certe scene la maggior parte dell’energia luminosa si origina da pochi oggetti con un diametro apparente piccolo: una lampada, il sole, etc.</p></li>
 <li><p>Se si dividono tutti gli oggetti della scena in «luminosi» e non, si può valutare l’integrale dell’equazione su un dominio ridotto.</p></li>
 </ul>
@@ -726,13 +758,13 @@ L(x \leftarrow \Psi)
 <section id="sorgenti-luminose" class="slide level1">
 <h1>Sorgenti luminose</h1>
 <ul>
-<li><p>L’algoritmo di <em>point-light tracing</em> classico fa due assunzioni molto forti:</p>
+<li><p>L’algoritmo di <em>point-light tracing</em> classico fa queste assunzioni:</p>
 <ol>
-<li>Le sorgenti luminose sono puntiformi e si riducono quindi a delta di Dirac.</li>
+<li>Le sorgenti luminose sono puntiformi e si riducono a delta di Dirac.</li>
 <li>Se una sorgente non è luminosa, non contribuisce alla luminosità complessiva dell’immagine.</li>
 <li>Per ovviare alla mancanza di radiazione che illumini le parti non illuminate direttamente, alcuni ray-tracers aggiungono arbitrariamente un termine «ambient light» (un colore vicino al nero ma non esattamente nullo).</li>
 </ol></li>
-<li><p>Non è possibile modellare superfici diffuse, ma il tempo necessario al calcolo della soluzione è molto minore.</p></li>
+<li><p>Non è possibile modellare l’illuminazione diffusa, ma il tempo necessario al calcolo della soluzione è molto minore.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -753,6 +785,15 @@ L(x \leftarrow \Psi)
 <section class="slide level1">
 
 <video src="media/raycaster-demo.mp4" width="640px" height="360px" controls loop autoplay/>
+</section>
+<section id="accorgimenti" class="slide level1">
+<h1>Accorgimenti</h1>
+<ul>
+<li><p>Nel caso generale, più una sorgente luminosa è lontana, meno è brillante; la sua radianza è costante, ma l’angolo solido <span class="math inline">\mathrm{d}\omega</span> nell’integrale dell’equazione del rendering scala come <span class="math inline">r^{-2}</span>.</p></li>
+<li><p>Se una sorgente luminosa è una delta di Dirac, non ha però angolo solido, e quindi in un point-light tracer bisognerebbe compensare per questo effetto.</p></li>
+<li><p>Non è sufficiente però dividere per <span class="math inline">r^2</span> il contributo di una sorgente luminosa, perché non corrisponderebbero le unità di misura!</p></li>
+<li><p>Di solito nei point-light tracers si ignora questo effetto (v. il caso di <a href="https://www.povray.org/documentation/view/3.6.1/317/">POV-Ray</a>). In alternativa si può attribuire una distanza <span class="math inline">d</span> di riferimento per ogni sorgente luminosa, e scalare per <span class="math inline">(d / r)^2</span>.</p></li>
+</ul>
 </section>
     </div>
   </div>

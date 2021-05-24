@@ -27,3 +27,4 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 - Esercitazione 10 (2021-05-06): vedi l'[esercitazione 9](./tomasi-ray-tracing-09b-issues.html)
 - Lezione 11 (2021-05-17): [rendering](tomasi-ray-tracing-11a-path-tracing.html)
 - Esercitazione 11 (2021-05-19): [BRDFs e numeri casuali](tomasi-ray-tracing-11b-random-numbers-and-pigments.html)
+- Lezione 12 (2021-05-24): [rendering (parte 2)](tomasi-ray-tracing-12a-path-tracing2.html)

@@ -51,7 +51,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
     cum_radiance = Color(0.0, 0.0, 0.0)
     for i in range(num_of_samples):
         # Start a new (secondary) ray and compute the radiance along it
-        mc_ray = scatter_ray(...)
+        mc_ray = scatter_ray(..., depth=ray.depth + 1)
         # Recursive call! Will it ever stop?
         mc_radiance = radiance(mc_ray, num_of_samples=num_of_samples)
         cum_radiance += material.brdf(...) * mc_radiance
@@ -82,7 +82,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 # Fermare la ricorsione
 
--   Anche se è un metodo molto usato, attribuire alla radianza un valore nullo se `ray.depth` supera una soglia *non* è matematicamente corretto!
+-   Anche se è un metodo molto usato, attribuire alla radianza un valore nullo se `ray.depth` supera una soglia *non* è fisicamente corretto!
 
 -   Dal momento che $L(x \leftarrow \Psi) \geq 0$ infatti, «troncare» il contributo dell'integrale dopo un certo numero di iterazioni vuol dire **sottostimare** il valore dell'integrale: se si sottostima la radianza, si introduce un *bias* nella soluzione.
 
@@ -114,7 +114,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 -   Il procedimento richiede di fissare una probabilità $0 \leq q \leq 1$ e una costante $c$ (solitamente $c = 0$), e procede nel modo seguente:
 
-    #.  Quando si effettua una chiamata ricorsiva, si estrae un numero casuale $0 \leq x \leq 1$;
+    #.  Si estrae un numero casuale $0 \leq x \leq 1$;
     #.  Se $x > q$, si procede a calcolare la radianza $L$ e si restituisce $(L - q c) / (1 - q)$;
     #.  Se $x \leq q$, si ferma il calcolo e si restituisce $c$.
 
@@ -183,12 +183,32 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 -   Il numero $N$ di campioni (direzioni) usati per stimare ciascun integrale è un parametro libero, e va scelto a seconda della scena e di quanto è efficiente il path tracer.
 
--   Supponendo di fissare una soglia a `ray.depth` uguale a $m$ riflessioni, il numero totale $N_\text{tot}$ di raggi che il codice deve simulare è $N^m$. Se si sceglie $N = 100$ e $m = 9$ si ottiene $N_\text{tot} = 10^{18}$: è importante non esagerare col valore di $N$!
+-   Supponendo di fissare una soglia a `ray.depth` uguale a $m$ riflessioni, il numero totale $N_\text{tot}$ di raggi che il codice deve simulare è $\leq N^m$. Se si sceglie $N = 100$ e $m = 9$ si ottiene $N_\text{tot} = 10^{18}$: è importante non esagerare col valore di $N$!
 
-# $N = 3$
+# $N = 3$ {data-transition="none"}
 
-<center>![](media/rough-path-tracing.webp)</center>
+<center>![](media/pathtracing-003rays.webp)</center>
+[726,939 raggi]{style="float:right"}
 
+# $N = 10$ {data-transition="none"}
+
+<center>![](media/pathtracing-010rays.webp)</center>
+[5,010,840 raggi]{style="float:right"}
+
+# $N = 25$ {data-transition="none"}
+
+<center>![](media/pathtracing-025rays.webp)</center>
+[26,343,150 raggi]{style="float:right"}
+
+# $N = 50$ {data-transition="none"}
+
+<center>![](media/pathtracing-050rays.webp)</center>
+[98,875,400 raggi]{style="float:right"}
+
+# $N = 100$ {data-transition="none"}
+
+<center>![](media/pathtracing-100rays.webp)</center>
+[382,384,500 raggi]{style="float:right"}
 
 # *Importance sampling*
 
@@ -300,7 +320,7 @@ dove ovviamente è necessario che le $\Psi_i$ siano distribuite secondo $p(\omeg
     
     dove $(\theta, \phi)$ è ovviamente la direzione $\Psi$ di arrivo del raggio, e $(\theta_r, \psi_r)$ è la direzione riflessa.
     
--   La presenza di $\cos\theta$ al denominatore fa sì che nell'*importance sampling* si abbia $p(\omega) = \text{costante}$.
+-   La presenza di $\cos\theta$ al denominatore fa sì che nell'*importance sampling* $p(\omega)$ non dipenda da $\cos\theta$.
 
 # BRDF riflettente
 
@@ -365,7 +385,7 @@ dove ovviamente è necessario che le $\Psi_i$ siano distribuite secondo $p(\omeg
 
 # ONB arbitrarie
 
--   Il modo più semplice per creare una nuova ONB è basarsi sul fatto che vale in generale che
+-   Il modo più semplice per creare una nuova ONB è basarsi sul fatto che da due elementi della base si può sempre ricavare il terzo tramite il prodotto vettoriale:
 
     $$
     \hat e_x \times \hat e_y = \hat e_z,\quad
@@ -422,7 +442,7 @@ dove ovviamente è necessario che le $\Psi_i$ siano distribuite secondo $p(\omeg
     p(\omega) \propto \cos\theta \times f_r.
     $$
 
--   Questo trucco può migliorare molto la qualità del rendering nel caso di BRDF molto dipendenti dall'orientamento, ma non aiuta se il termine
+-   Questo trucco può migliorare molto la qualità del rendering nel caso di BRDF molto dipendenti da $\theta$, ma non aiuta se il termine
 
     $$
     L(x \leftarrow \Psi)
@@ -461,7 +481,7 @@ Se la $p(\omega)$ usata nell'*importance sampling* potesse «pesare» la presenz
 
 -   Occorre che ogni `Shape` abbia la possibilità di calcolare il proprio angolo solido (facile per piani, sfere e triangoli, difficile per oggetti CSG!).
 
--   Inoltre, è necessario un metodo che restituisca una direzione casuale verso l'oggetto emissivo distribuita uniformemente entro il suo angolo solido (facile per piani, sfere e triangoli, difficile per oggetti CSG!).
+-   Inoltre, è necessario un metodo che restituisca una direzione casuale verso l'oggetto emissivo distribuita uniformemente entro il suo angolo solido (facile per sfere e triangoli, difficile per piani e oggetti CSG!).
 
 -   L'implementazione è complicata dal fatto che si devono tenere in conto le costanti di normalizzazione per le varie $p(\omega)$ usate, e le sovrapposizioni di diversi angoli solidi.
 
@@ -542,11 +562,13 @@ Il problema dell'*aliasing* è che certi pixel coprono aree dello schermo che co
 
 -   Un modo semplice per implementare l'*antialiasing* è dotare il nostro tipo `ImageTracer` dell'abilità di campionare un pixel usando più raggi, e calcolando poi la media della radianza associata a ciascuno.
 
--   Non è forse immediato da comprendere, ma i raggi che inviamo all'interno dello stesso pixel **non devono essere equispaziati**, altrimenti il problema delle frange di Moiré si ripresenterebbe ugualmente (sebbene in misura minore). Meglio usare un metodo Monte Carlo.
+# Antialiasing e MC
 
----
+-   Non è forse immediato da comprendere, ma i raggi che inviamo all'interno dello stesso pixel **non devono essere equispaziati**, altrimenti il problema delle frange di Moiré si ripresenterebbe ugualmente (sebbene in misura minore):
 
-<center>![](media/projection-pixel-montecarlo.svg)</center>
+    <center>![](media/equispaced-ray-samples-in-pixel.svg){height=240px}</center>
+
+-   Meglio usare un metodo Monte Carlo per campionare l'interno di un pixel.
 
 # *Stratified sampling*
 
@@ -605,7 +627,7 @@ Il problema dell'*aliasing* è che certi pixel coprono aree dello schermo che co
 
 # Point-light tracing
 
--   Un algoritmo storicamente molto usato è quello che chiameremo *point-light tracing*. (In realtà l'algoritmo è denominato solitamente *ray tracing* o *ray casting*; entrambi i termini sono però molto generici, e a volte indicano algoritmi differenti).
+-   Un algoritmo molto usato per generare immagini 3D è quello che chiameremo *point-light tracing*. (Di solito è chiamato *ray tracing* o *ray casting*; entrambi i termini sono però molto generici, e a volte indicano algoritmi differenti).
 
 -   Si basa sulla considerazione che in certe scene la maggior parte dell'energia luminosa si origina da pochi oggetti con un diametro apparente piccolo: una lampada, il sole, etc.
 
@@ -613,13 +635,13 @@ Il problema dell'*aliasing* è che certi pixel coprono aree dello schermo che co
 
 # Sorgenti luminose
 
--   L'algoritmo di *point-light tracing* classico fa due assunzioni molto forti:
+-   L'algoritmo di *point-light tracing* classico fa queste assunzioni:
 
-    #.  Le sorgenti luminose sono puntiformi e si riducono quindi a delta di Dirac.
+    #.  Le sorgenti luminose sono puntiformi e si riducono a delta di Dirac.
     #.  Se una sorgente non è luminosa, non contribuisce alla luminosità complessiva dell'immagine.
     #.  Per ovviare alla mancanza di radiazione che illumini le parti non illuminate direttamente, alcuni ray-tracers aggiungono arbitrariamente un termine «ambient light» (un colore vicino al nero ma non esattamente nullo).
 
--   Non è possibile modellare superfici diffuse, ma il tempo necessario al calcolo della soluzione è molto minore.
+-   Non è possibile modellare l'illuminazione diffusa, ma il tempo necessario al calcolo della soluzione è molto minore.
 
 ---
 
@@ -638,3 +660,13 @@ Il problema dell'*aliasing* è che certi pixel coprono aree dello schermo che co
 ---
 
 <video src="media/raycaster-demo.mp4" width="640px" height="360px" controls loop autoplay/>
+
+# Accorgimenti
+
+-   Nel caso generale, più una sorgente luminosa è lontana, meno è brillante; la sua radianza è costante, ma l'angolo solido $\mathrm{d}\omega$ nell'integrale dell'equazione del rendering scala come $r^{-2}$.
+
+-   Se una sorgente luminosa è una delta di Dirac, non ha però angolo solido, e quindi in un point-light tracer bisognerebbe compensare per questo effetto.
+
+-   Non è sufficiente però dividere per $r^2$ il contributo di una sorgente luminosa, perché non corrisponderebbero le unità di misura!
+
+-   Di solito nei point-light tracers si ignora questo effetto (v. il caso di [POV-Ray](https://www.povray.org/documentation/view/3.6.1/317/)). In alternativa si può attribuire una distanza $d$ di riferimento per ogni sorgente luminosa, e scalare per $(d / r)^2$.
