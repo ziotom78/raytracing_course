@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Esercitazione 12</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Esercitazione 12</h1>
+  <p class="subtitle">Path tracing (continua)</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="basi-ortonormali-onb" class="slide level1">
+<h1>Basi ortonormali (ONB)</h1>
+</section>
+<section id="creazioni-di-onb" class="slide level1">
+<h1>Creazioni di ONB</h1>
+<ul>
+<li><p>È conveniente usare l’algoritmo di Duff et al. (2017):</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_onb_from_z(normal: Union[Vec, Normal]) <span class="op">-&gt;</span> Tuple[Vec, Vec, Vec]:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    sign <span class="op">=</span> <span class="fl">1.0</span> <span class="cf">if</span> (normal.z <span class="op">&gt;</span> <span class="fl">0.0</span>) <span class="cf">else</span> <span class="op">-</span><span class="fl">1.0</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span> <span class="op">/</span> (sign <span class="op">+</span> normal.z)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> normal.x <span class="op">*</span> normal.y <span class="op">*</span> a</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    e1 <span class="op">=</span> Vec(<span class="fl">1.0</span> <span class="op">+</span> sign <span class="op">*</span> normal.x <span class="op">*</span> normal.x <span class="op">*</span> a, sign <span class="op">*</span> b, <span class="op">-</span>sign <span class="op">*</span> normal.x)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    e2 <span class="op">=</span> Vec(b, sign <span class="op">+</span> normal.y <span class="op">*</span> normal.y <span class="op">*</span> a, <span class="op">-</span>normal.y)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> e1, e2, Vec(normal.x, normal.y, normal.z)</span></code></pre></div></li>
+<li><p>Quando invocate questa funzione, fate molta attenzione al fatto che il parametro <code>normal</code> deve essere già normalizzato!</p></li>
+</ul>
+</section>
+<section id="test" class="slide level1">
+<h1>Test</h1>
+<ul>
+<li><p>Per verificare il funzionamento di <code>create_onb_from_z</code>, possiamo usare il <em>random testing</em> (un’idea apparentemente nata nel mondo del linguaggio <a href="https://www.haskell.org/">Haskell</a>, vedi <a href="https://hackage.haskell.org/package/QuickCheck">quickcheck</a>).</p></li>
+<li><p>L’idea è quella di generare un gran numero di vettori casuali, passarli come parametri a <code>create_onb_from_z</code>, e verificare che il tipo di ritorno sia effettivamente una ONB.</p></li>
+<li><p>L’approccio generale del <em>random testing</em> è quello di generare input casuali, e verificare che gli output soddisfino certe proprietà. È conveniente soprattutto per funzioni matematiche, ma non è sempre la soluzione migliore.</p></li>
+</ul>
+</section>
+<section id="random-testing-in-pytracer" class="slide level1">
+<h1><em>Random testing</em> in <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/test_all.py#L914-L934">pytracer</a></h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pcg <span class="op">=</span> PCG()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>expected_zero <span class="op">=</span> pytest.approx(<span class="fl">0.0</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>expected_one <span class="op">=</span> pytest.approx(<span class="fl">1.0</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># As Python is slow, we just test 100 times the function. You can use</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># larger numbers, as far as the time required to run the test is kept short</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    normal <span class="op">=</span> Vec(pcg.random_float(), pcg.random_float(), pcg.random_float())</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    normal.normalize()</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    e1, e2, e3 <span class="op">=</span> create_onb_from_z(normal)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the z axis is aligned with the normal</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> e3.is_close(normal)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the base is orthogonal</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_zero <span class="op">==</span> e1.dot(e2)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_zero <span class="op">==</span> e2.dot(e3)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_zero <span class="op">==</span> e3.dot(e1)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that each component is normalized</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_one <span class="op">==</span> e1.squared_norm()</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_one <span class="op">==</span> e2.squared_norm()</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_one <span class="op">==</span> e3.squared_norm()</span></code></pre></div>
+</section>
+<section id="importance-sampling" class="slide level1">
+<h1><em>Importance sampling</em></h1>
+</section>
+<section id="implementazione" class="slide level1">
+<h1>Implementazione</h1>
+<ul>
+<li><p>Nella lezione di teoria abbiamo anticipato che il nostro <em>path tracer</em> userà il metodo Monte Carlo per stimare l’integrale dell’equazione del rendering:</p>
+<p><span class="math display">
+\int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos\theta\,\mathrm{d}\omega_\Psi.
+</span></p></li>
+<li><p>Per migliorare la varianza useremo l’<em>importance sampling</em>, impiegando la PDF</p>
+<p><span class="math display">
+p(\omega) \propto f_r \times \cos\theta.
+</span></p></li>
+</ul>
+</section>
+<section id="il-tipo-brdf" class="slide level1">
+<h1>Il tipo <code>BRDF</code></h1>
+<ul>
+<li><p>Dobbiamo quindi aggiungere un metodo che si applichi ai tipi derivati da <code>BRDF</code> e che abbia <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L103">questa segnatura</a>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pcg: PCG,                    <span class="co"># Used to generate random numbers</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    incoming_dir: Vec,           <span class="co"># Direction of the incoming ray</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    interaction_point: Point,    <span class="co"># Where the ray hit the surface</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    normal: Normal,              <span class="co"># Normal on interaction_point</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    depth: <span class="bu">int</span>,                  <span class="co"># Depth value for the new ray</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div></li>
+<li><p>Ogni tipo derivato da <code>BRDF</code> (es., <code>DiffuseBRDF</code>, <code>SpecularBRDF</code>, etc.) dovrà ridefinire <code>scatter_ray</code>.</p></li>
+</ul>
+</section>
+<section id="diffusebrdf" class="slide level1">
+<h1><code>DiffuseBRDF</code></h1>
+<ul>
+<li><p>Per la BRDF diffusa, abbiamo dimostrato che <span class="math inline">p(\omega) \propto \cos\theta</span>.</p></li>
+<li><p>L’implementazione di <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L117-L130"><code>DiffuseBRDF.scatter_ray</code></a> deve quindi usare l’<a href="tomasi-ray-tracing-11a-path-tracing.html#risultato-di-phong">algoritmo che abbiamo ricavato</a> per la distribuzione di Phong con <span class="math inline">n = 1</span>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec, interaction_point: Point, normal: Normal, depth: <span class="bu">int</span>):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    e1, e2, e3 <span class="op">=</span> create_onb_from_z(normal)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    cos_theta_sq <span class="op">=</span> pcg.random_float()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    cos_theta, sin_theta <span class="op">=</span> sqrt(cos_theta_sq), sqrt(<span class="fl">1.0</span> <span class="op">-</span> cos_theta_sq)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    phi <span class="op">=</span> <span class="fl">2.0</span> <span class="op">*</span> pi <span class="op">*</span> pcg.random_float()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Ray(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        origin<span class="op">=</span>interaction_point,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">dir</span><span class="op">=</span>e1 <span class="op">*</span> cos(phi) <span class="op">*</span> cos_theta <span class="op">+</span> e2 <span class="op">*</span> sin(phi) <span class="op">*</span> cos_theta <span class="op">+</span> e3 <span class="op">*</span> sin_theta,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        tmin<span class="op">=</span><span class="fl">1.0e-3</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        tmax<span class="op">=</span>inf,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        depth<span class="op">=</span>depth,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div></li>
+</ul>
+</section>
+<section id="specularbrdf" class="slide level1">
+<h1><code>SpecularBRDF</code></h1>
+<ul>
+<li><p>La generazione di raggi per la BRDF speculare è perfettamente deterministica, e non c’è un termine <span class="math inline">\cos\theta</span> con cui pesare il contributo del raggio.</p></li>
+<li><p>L’implementazione di <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L151-L164"><code>SpecularBRDF.scatter_ray</code></a> è quindi particolarmente semplice:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec, interaction_point: Point, normal: Normal, depth: <span class="bu">int</span>):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    ray_dir <span class="op">=</span> Vec(incoming_dir.x, incoming_dir.y, incoming_dir.z).normalize()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    normal <span class="op">=</span> normal.to_vec().normalize()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Ray(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        origin<span class="op">=</span>interaction_point,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">dir</span><span class="op">=</span>ray_dir <span class="op">-</span> normal <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> normal.dot(ray_dir),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        tmin<span class="op">=</span><span class="fl">1e-5</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        tmax<span class="op">=</span>inf,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        depth<span class="op">=</span>depth,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div></li>
+</ul>
+</section>
+<section id="path-tracing" class="slide level1">
+<h1><em>Path tracing</em></h1>
+</section>
+<section id="il-tipo-pathtracer" class="slide level1">
+<h1>Il tipo <code>PathTracer</code></h1>
+<ul>
+<li><p>Abbiamo finora definito due renderer: <code>OnOffRenderer</code> e <code>FlatRenderer</code>. Oggi implementiamo <code>PathTracer</code>.</p></li>
+<li><p>I parametri legati a questo tipo sono i seguenti, da specificare nel suo costruttore:</p>
+<ol>
+<li>L’oggetto <code>World</code> per cui fare il render;</li>
+<li>Il colore di background, usato per quelle direzioni lungo cui non ci sono intersezioni;</li>
+<li>Il generatore di numeri casuali da usare (tipo <code>PCG</code>);</li>
+<li>Numero di raggi da generare per il calcolo dell’integrale;</li>
+<li>Profondità massima dei raggi;</li>
+<li>Limite per la profondità oltre il quale usare la Roulette russa.</li>
+</ol></li>
+</ul>
+</section>
+<section id="implementazione-1" class="slide level1">
+<h1><a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126">Implementazione</a></h1>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Color:</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ray.depth <span class="op">&gt;</span> <span class="va">self</span>.max_depth:</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    hit_record <span class="op">=</span> <span class="va">self</span>.world.ray_intersection(ray)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> hit_record:</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.background_color</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    hit_material <span class="op">=</span> hit_record.material</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    hit_color <span class="op">=</span> hit_material.brdf.pigment.get_color(hit_record.surface_point)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    emitted_radiance <span class="op">=</span> hit_material.emitted_radiance.get_color(hit_record.surface_point)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    hit_color_lum <span class="op">=</span> <span class="bu">max</span>(hit_color.r, hit_color.g, hit_color.b)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Russian roulette</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ray.depth <span class="op">&gt;=</span> <span class="va">self</span>.russian_roulette_limit:</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.pcg.random_float() <span class="op">&gt;</span> hit_color_lum:</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Keep the recursion going, but compensate for other potentially discarded rays</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            hit_color <span class="op">*=</span> <span class="fl">1.0</span> <span class="op">/</span> (<span class="fl">1.0</span> <span class="op">-</span> hit_color_lum)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Terminate prematurely</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> emitted_radiance</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Monte Carlo integration</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    cum_radiance <span class="op">=</span> Color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Only do costly recursions if it&#39;s worth it</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> hit_color_lum <span class="op">&gt;</span> <span class="fl">0.0</span>:</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> ray_index <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.num_of_rays):</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>            new_ray <span class="op">=</span> hit_material.brdf.scatter_ray(</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>                pcg<span class="op">=</span><span class="va">self</span>.pcg,</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>                incoming_dir<span class="op">=</span>hit_record.ray.<span class="bu">dir</span>,</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>                interaction_point<span class="op">=</span>hit_record.world_point,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>                normal<span class="op">=</span>hit_record.normal,</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>                depth<span class="op">=</span>ray.depth <span class="op">+</span> <span class="dv">1</span>,</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Recursive call</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>            new_radiance <span class="op">=</span> <span class="va">self</span>(new_ray)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>            cum_radiance <span class="op">+=</span> hit_color <span class="op">*</span> new_radiance</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> emitted_radiance <span class="op">+</span> cum_radiance <span class="op">*</span> (<span class="fl">1.0</span> <span class="op">/</span> <span class="va">self</span>.num_of_rays)</span></code></pre></div>
+</section>
+<section id="test-1" class="slide level1">
+<h1>Test</h1>
+<ul>
+<li><p>Un metodo molto semplice per verificare il funzionamento di un <em>path tracer</em> è il cosiddetto <em>test della fornace</em>.</p></li>
+<li><p>Si tratta di lanciare un raggio all’interno di un oggetto di forma arbitraria e BRDF diffusa con luminosità <span class="math inline">L_e</span> e riflettanza <span class="math inline">\rho_d</span> costanti.</p></li>
+<li><p>Il generico raggio percorrerà un cammino intrappolato nell’oggetto, e la radianza totale sarà uguale a</p>
+<p><span class="math display">
+L = L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\Bigr).
+</span></p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/furnace-test.svg" />
+</center>
+</section>
+<section class="slide level1">
+
+<p><span class="math display">
+\begin{aligned}
+L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\Bigr) =\\
+  &amp;= L_e + \rho_d L_e + \rho_d^2 L_e + \rho_d^3 L_e + \ldots =\\
+  &amp;= L_e \bigl(1 + \rho_d + \rho_d^2 + \rho_d^3 + \ldots \bigr) =\\
+  &amp;= L_e \sum_{n=0}^\infty \rho_d^n =\\
+  &amp;= \frac{L_e}{1 - \rho_d}.
+\end{aligned}
+</span></p>
+</section>
+<section id="test-in-pytracer" class="slide level1">
+<h1>Test in pytracer</h1>
+<ul>
+<li><p>Il codice di pytracer implementa il test <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/test_all.py#L938-L962"><code>testFurnace</code></a> che usa queste assunzioni:</p>
+<ol>
+<li>Crea una sfera centrata nell’origine;</li>
+<li>Lancia un raggio che parta dal centro della sfera;</li>
+<li>Invoca <code>PathTracer</code> fissando <code>max_depth=100</code> e assicurandosi che <em>non</em> venga usato l’algoritmo della roulette russa;</li>
+<li>Verifica che la radianza restituita corrisponda a <span class="math inline">L_e / (1 - \rho_d)</span>.</li>
+</ol></li>
+<li><p>Il test viene ripetuto un certo numero di volte usando valori casuali di <span class="math inline">L_e</span> e di <span class="math inline">\rho_d</span>. (Rischioso se si esegue molte volte, perché <span class="math inline">\rho_d</span> potrebbe diventare arbitrariamente vicino a 1, e <code>max_depth=100</code> potrebbe non bastare più!).</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pcg <span class="op">=</span> PCG()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the furnace test several times using random values for</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># the emitted radiance and reflectance</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    emitted_radiance <span class="op">=</span> pcg.random_float()</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    reflectance <span class="op">=</span> pcg.random_float()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    world <span class="op">=</span> World()</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    enclosure_material <span class="op">=</span> Material(</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        brdf<span class="op">=</span>DiffuseBRDF(pigment<span class="op">=</span>UniformPigment(Color(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>) <span class="op">*</span> reflectance)),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        emitted_radiance<span class="op">=</span>UniformPigment(Color(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>) <span class="op">*</span> emitted_radiance),</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    world.add(Sphere(material<span class="op">=</span>enclosure_material))</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    path_tracer <span class="op">=</span> PathTracer(</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        pcg<span class="op">=</span>pcg, </span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        num_of_rays<span class="op">=</span><span class="dv">1</span>, </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        world<span class="op">=</span>world, </span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        max_depth<span class="op">=</span><span class="dv">100</span>, </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        russian_roulette_limit<span class="op">=</span><span class="dv">101</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    ray <span class="op">=</span> Ray(origin<span class="op">=</span>Point(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="bu">dir</span><span class="op">=</span>Vec(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> path_tracer(ray)</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    expected <span class="op">=</span> emitted_radiance <span class="op">/</span> (<span class="fl">1.0</span> <span class="op">-</span> reflectance)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(expected, <span class="fl">1e-3</span>) <span class="op">==</span> color.r</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(expected, <span class="fl">1e-3</span>) <span class="op">==</span> color.g</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(expected, <span class="fl">1e-3</span>) <span class="op">==</span> color.b</span></code></pre></div>
+</section>
+<section id="il-metodo-main" class="slide level1">
+<h1>Il metodo <code>main</code></h1>
+<ul>
+<li><p>Ora che abbiamo un <em>path tracer</em>, è bene modificare il nostro comando <code>demo</code> in modo che crei un’immagine che metta meglio in luce il funzionamento dell’algoritmo.</p></li>
+<li><p>Potete sbizzarrirvi a definire la scena che preferite, usando le forme che avete implementato nel vostro codice (sfere, piani, triangoli, CSG, etc.).</p></li>
+<li><p>La cosa importante è che definiate una grande superficie diffusiva (un piano o una sfera di raggio grande), che funga da sorgente luminosa e che abbia quindi una componente <span class="math inline">L_e</span> non trascurabile.</p></li>
+<li><p>In <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/main.py#L116-L150">pytracer</a> ho definito un piano per il suolo, una sfera per il cielo, e due sfere in primo piano: la prima ha una BRDF diffusiva, la seconda una BRDF riflessiva.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/pytracer-demo-pathtracing.webp" />
+</center>
+</section>
+<section id="link-a-gather" class="slide level1">
+<h1>Link a Gather</h1>
+<p>Useremo il solito link: <a href="https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing">gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing</a></p>
+</section>
+<section id="guida-per-lesercitazione" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+</section>
+<section id="cose-da-fare" class="slide level1">
+<h1>Cose da fare</h1>
+<ol>
+<li>Continuate il lavoro nel branch <code>pathtracing</code>;</li>
+<li>Implementate una funzione per creare una base ortonormale partendo da un vettore normale (se nel vostro linguaggio non è semplice restituire tre valori di ritorno, implementate un nuovo tipo <code>ONB</code>);</li>
+<li>Implementate il metodo <code>scatter_ray</code> che funzioni sui tipi BRDF, e implementate la BRDF speculare;</li>
+<li>Implementate l’algoritmo di path tracing;</li>
+<li>Modificate il demo in modo che abbia un cielo diffusivo in grado di illuminare la scena.</li>
+<li>Fatto il <em>merging</em>, incrementate il numero di versione a <code>0.3.0</code> e aggiornate il file <code>CHANGELOG.md</code>.</li>
+</ol>
+</section>
+<section id="aggiunte-opzionali" class="slide level1">
+<h1>Aggiunte opzionali</h1>
+<ul>
+<li><a href="tomasi-ray-tracing-12a-path-tracing2.html#aliasing">Antialiasing</a> (vedi la <a href="https://github.com/ziotom78/pytracer/pull/13">PR#13 di pytracer</a>);</li>
+<li><a href="tomasi-ray-tracing-12a-path-tracing2.html#point-light-tracing">Point-light tracing</a> (vedi la <a href="https://github.com/ziotom78/pytracer/pull/14">PR#14 di pytracer</a>).</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
+    </body>
+</html>
