@@ -420,6 +420,7 @@ def test_random():
 #.  Modificate `Shape` perché contenga una istanza di `Material`;
 #.  Modificate `HitRecord` perché contenga un puntatore alla `Shape` colpita da un raggio;
 #.  Se vi va, implementate un flat-renderer (ma modificate anche il demo).
+#.  Implementate il generatore PCG.
 #.  Implementate gli stessi test di [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/test_all.py#L729-L841).
 
 
