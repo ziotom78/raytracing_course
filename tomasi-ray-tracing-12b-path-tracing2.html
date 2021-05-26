@@ -333,7 +333,7 @@ L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\B
 <li>Invoca <code>PathTracer</code> fissando <code>max_depth=100</code> e assicurandosi che <em>non</em> venga usato l’algoritmo della roulette russa;</li>
 <li>Verifica che la radianza restituita corrisponda a <span class="math inline">L_e / (1 - \rho_d)</span>.</li>
 </ol></li>
-<li><p>Il test viene ripetuto un certo numero di volte usando valori casuali di <span class="math inline">L_e</span> e di <span class="math inline">\rho_d</span>. (Rischioso se si esegue molte volte, perché <span class="math inline">\rho_d</span> potrebbe diventare arbitrariamente vicino a 1, e <code>max_depth=100</code> potrebbe non bastare più!).</p></li>
+<li><p>Il test viene ripetuto un certo numero di volte usando valori casuali di <span class="math inline">L_e</span> e di <span class="math inline">\rho_d</span> (evitando di scegliere <span class="math inline">\rho_d \approx 1</span>!).</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -344,7 +344,7 @@ L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\B
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># the emitted radiance and reflectance</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>):</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    emitted_radiance <span class="op">=</span> pcg.random_float()</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    reflectance <span class="op">=</span> pcg.random_float()</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    reflectance <span class="op">=</span> pcg.random_float() <span class="op">*</span> <span class="fl">0.9</span>  <span class="co"># Avoid numbers that are too close to 1</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    world <span class="op">=</span> World()</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>

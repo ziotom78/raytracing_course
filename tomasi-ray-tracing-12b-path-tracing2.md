@@ -238,7 +238,7 @@ $$
     #.  Invoca `PathTracer` fissando `max_depth=100` e assicurandosi che *non* venga usato l'algoritmo della roulette russa;
     #.  Verifica che la radianza restituita corrisponda a $L_e / (1 - \rho_d)$.
     
--   Il test viene ripetuto un certo numero di volte usando valori casuali di $L_e$ e di $\rho_d$. (Rischioso se si esegue molte volte, perché $\rho_d$ potrebbe diventare arbitrariamente vicino a 1, e `max_depth=100` potrebbe non bastare più!).
+-   Il test viene ripetuto un certo numero di volte usando valori casuali di $L_e$ e di $\rho_d$ (evitando di scegliere $\rho_d \approx 1$!).
 
 ---
 
@@ -249,7 +249,7 @@ pcg = PCG()
 # the emitted radiance and reflectance
 for i in range(5):
     emitted_radiance = pcg.random_float()
-    reflectance = pcg.random_float()
+    reflectance = pcg.random_float() * 0.9  # Avoid numbers that are too close to 1
 
     world = World()
 
