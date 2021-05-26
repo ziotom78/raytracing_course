@@ -116,7 +116,7 @@
 <section id="creazioni-di-onb" class="slide level1">
 <h1>Creazioni di ONB</h1>
 <ul>
-<li><p>È conveniente usare l’algoritmo di Duff et al. (2017):</p>
+<li><p>È conveniente usare l’algoritmo di <a href="https://graphics.pixar.com/library/OrthonormalB/paper.pdf">Duff et al. 2017</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_onb_from_z(normal: Union[Vec, Normal]) <span class="op">-&gt;</span> Tuple[Vec, Vec, Vec]:</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    sign <span class="op">=</span> <span class="fl">1.0</span> <span class="cf">if</span> (normal.z <span class="op">&gt;</span> <span class="fl">0.0</span>) <span class="cf">else</span> <span class="op">-</span><span class="fl">1.0</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span> <span class="op">/</span> (sign <span class="op">+</span> normal.z)</span>
@@ -133,7 +133,7 @@
 <h1>Test</h1>
 <ul>
 <li><p>Per verificare il funzionamento di <code>create_onb_from_z</code>, possiamo usare il <em>random testing</em> (un’idea apparentemente nata nel mondo del linguaggio <a href="https://www.haskell.org/">Haskell</a>, vedi <a href="https://hackage.haskell.org/package/QuickCheck">quickcheck</a>).</p></li>
-<li><p>L’idea è quella di generare un gran numero di vettori casuali, passarli come parametri a <code>create_onb_from_z</code>, e verificare che il tipo di ritorno sia effettivamente una ONB.</p></li>
+<li><p>L’idea è quella di generare un gran numero di vettori casuali, passarli come parametri a <code>create_onb_from_z</code>, e verificare che il tipo di ritorno sia effettivamente una ONB. (Pare che Duff et al. abbiano scoperto così il bug nell’algoritmo di <a href="http://orbit.dtu.dk/files/%20126824972/onb_frisvad_jgt2012_v2.pdf">Frisvad, 2012</a>).</p></li>
 <li><p>L’approccio generale del <em>random testing</em> è quello di generare input casuali, e verificare che gli output soddisfino certe proprietà. È conveniente soprattutto per funzioni matematiche, ma non è sempre la soluzione migliore.</p></li>
 </ul>
 </section>
@@ -190,7 +190,7 @@ p(\omega) \propto f_r \times \cos\theta.
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    interaction_point: Point,    <span class="co"># Where the ray hit the surface</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    normal: Normal,              <span class="co"># Normal on interaction_point</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    depth: <span class="bu">int</span>,                  <span class="co"># Depth value for the new ray</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div></li>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> Ray</span></code></pre></div></li>
 <li><p>Ogni tipo derivato da <code>BRDF</code> (es., <code>DiffuseBRDF</code>, <code>SpecularBRDF</code>, etc.) dovrà ridefinire <code>scatter_ray</code>.</p></li>
 </ul>
 </section>
@@ -199,19 +199,18 @@ p(\omega) \propto f_r \times \cos\theta.
 <ul>
 <li><p>Per la BRDF diffusa, abbiamo dimostrato che <span class="math inline">p(\omega) \propto \cos\theta</span>.</p></li>
 <li><p>L’implementazione di <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L117-L130"><code>DiffuseBRDF.scatter_ray</code></a> deve quindi usare l’<a href="tomasi-ray-tracing-11a-path-tracing.html#risultato-di-phong">algoritmo che abbiamo ricavato</a> per la distribuzione di Phong con <span class="math inline">n = 1</span>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec, interaction_point: Point, normal: Normal, depth: <span class="bu">int</span>):</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    e1, e2, e3 <span class="op">=</span> create_onb_from_z(normal)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    cos_theta_sq <span class="op">=</span> pcg.random_float()</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    cos_theta, sin_theta <span class="op">=</span> sqrt(cos_theta_sq), sqrt(<span class="fl">1.0</span> <span class="op">-</span> cos_theta_sq)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    phi <span class="op">=</span> <span class="fl">2.0</span> <span class="op">*</span> pi <span class="op">*</span> pcg.random_float()</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Ray(</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        origin<span class="op">=</span>interaction_point,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">dir</span><span class="op">=</span>e1 <span class="op">*</span> cos(phi) <span class="op">*</span> cos_theta <span class="op">+</span> e2 <span class="op">*</span> sin(phi) <span class="op">*</span> cos_theta <span class="op">+</span> e3 <span class="op">*</span> sin_theta,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        tmin<span class="op">=</span><span class="fl">1.0e-3</span>,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        tmax<span class="op">=</span>inf,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        depth<span class="op">=</span>depth,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div></li>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                interaction_point: Point, normal: Normal, depth: <span class="bu">int</span>) <span class="op">-&gt;</span> Ray:</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    e1, e2, e3 <span class="op">=</span> create_onb_from_z(normal)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    cos_theta_sq <span class="op">=</span> pcg.random_float()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    cos_theta, sin_theta <span class="op">=</span> sqrt(cos_theta_sq), sqrt(<span class="fl">1.0</span> <span class="op">-</span> cos_theta_sq)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    phi <span class="op">=</span> <span class="fl">2.0</span> <span class="op">*</span> pi <span class="op">*</span> pcg.random_float()</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Ray(origin<span class="op">=</span>interaction_point,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>               <span class="bu">dir</span><span class="op">=</span>e1 <span class="op">*</span> cos(phi) <span class="op">*</span> cos_theta <span class="op">+</span> e2 <span class="op">*</span> sin(phi) <span class="op">*</span> cos_theta <span class="op">+</span> e3 <span class="op">*</span> sin_theta,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>               tmin<span class="op">=</span><span class="fl">1.0e-3</span>,   <span class="co"># Be generous here</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>               tmax<span class="op">=</span>inf,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>               depth<span class="op">=</span>depth)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="specularbrdf" class="slide level1">
@@ -219,17 +218,16 @@ p(\omega) \propto f_r \times \cos\theta.
 <ul>
 <li><p>La generazione di raggi per la BRDF speculare è perfettamente deterministica, e non c’è un termine <span class="math inline">\cos\theta</span> con cui pesare il contributo del raggio.</p></li>
 <li><p>L’implementazione di <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L151-L164"><code>SpecularBRDF.scatter_ray</code></a> è quindi particolarmente semplice:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec, interaction_point: Point, normal: Normal, depth: <span class="bu">int</span>):</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    ray_dir <span class="op">=</span> Vec(incoming_dir.x, incoming_dir.y, incoming_dir.z).normalize()</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    normal <span class="op">=</span> normal.to_vec().normalize()</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Ray(</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        origin<span class="op">=</span>interaction_point,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">dir</span><span class="op">=</span>ray_dir <span class="op">-</span> normal <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> normal.dot(ray_dir),</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        tmin<span class="op">=</span><span class="fl">1e-5</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        tmax<span class="op">=</span>inf,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        depth<span class="op">=</span>depth,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div></li>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                interaction_point: Point, normal: Normal, depth: <span class="bu">int</span>) <span class="op">-&gt;</span> Ray:</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    ray_dir <span class="op">=</span> Vec(incoming_dir.x, incoming_dir.y, incoming_dir.z).normalize()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    normal <span class="op">=</span> normal.to_vec().normalize()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Ray(origin<span class="op">=</span>interaction_point,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>               <span class="bu">dir</span><span class="op">=</span>ray_dir <span class="op">-</span> normal <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> normal.dot(ray_dir),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>               tmin<span class="op">=</span><span class="fl">1e-3</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>               tmax<span class="op">=</span>inf,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>               depth<span class="op">=</span>depth)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="path-tracing" class="slide level1">
@@ -239,7 +237,7 @@ p(\omega) \propto f_r \times \cos\theta.
 <h1>Il tipo <code>PathTracer</code></h1>
 <ul>
 <li><p>Abbiamo finora definito due renderer: <code>OnOffRenderer</code> e <code>FlatRenderer</code>. Oggi implementiamo <code>PathTracer</code>.</p></li>
-<li><p>I parametri legati a questo tipo sono i seguenti, da specificare nel suo costruttore:</p>
+<li><p>I parametri del costruttore sono i seguenti:</p>
 <ol>
 <li>L’oggetto <code>World</code> per cui fare il render;</li>
 <li>Il colore di background, usato per quelle direzioni lungo cui non ci sono intersezioni;</li>
@@ -387,6 +385,14 @@ L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\B
 <img data-src="media/pytracer-demo-pathtracing.webp" />
 </center>
 </section>
+<section id="numeri-casuali" class="slide level1">
+<h1>Numeri casuali</h1>
+<ul>
+<li><p>Fate in modo che si possano passare i due numeri che inizializzano il generatore <code>PCG</code> da linea di comando.</p></li>
+<li><p>Il numero che interessa di più è <code>init_seq</code>, perché identifica univocamente la sequenza di numeri generati dal <code>PCG</code>, e consente quindi di produrre immagini completamente decorrelate (che possono quindi essere mediate tra loro senza produrre <em>bias</em>).</p></li>
+<li><p>Mediare immagini diverse (prodotte contemporaneamente mediante <a href="https://www.gnu.org/software/parallel/">GNU Parallel</a>) è un buon modo per ridurre la varianza senza aumentare il tempo di calcolo effettivo (<em>wall-clock time</em>).</p></li>
+</ul>
+</section>
 <section id="link-a-gather" class="slide level1">
 <h1>Link a Gather</h1>
 <p>Useremo il solito link: <a href="https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing">gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing</a></p>
@@ -409,7 +415,7 @@ L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\B
 <h1>Aggiunte opzionali</h1>
 <ul>
 <li><a href="tomasi-ray-tracing-12a-path-tracing2.html#aliasing">Antialiasing</a> (vedi la <a href="https://github.com/ziotom78/pytracer/pull/13">PR#13 di pytracer</a>);</li>
-<li><a href="tomasi-ray-tracing-12a-path-tracing2.html#point-light-tracing">Point-light tracing</a> (vedi la <a href="https://github.com/ziotom78/pytracer/pull/14">PR#14 di pytracer</a>).</li>
+<li><a href="tomasi-ray-tracing-12a-path-tracing2.html#point-light-tracing-1">Point-light tracing</a> (vedi la <a href="https://github.com/ziotom78/pytracer/pull/14">PR#14 di pytracer</a>).</li>
 </ul>
 </section>
     </div>

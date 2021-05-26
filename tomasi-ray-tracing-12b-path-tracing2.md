@@ -8,7 +8,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Creazioni di ONB
 
--   È conveniente usare l'algoritmo di Duff et al. (2017):
+-   È conveniente usare l'algoritmo di [Duff et al. 2017](https://graphics.pixar.com/library/OrthonormalB/paper.pdf):
 
     ```python
     def create_onb_from_z(normal: Union[Vec, Normal]) -> Tuple[Vec, Vec, Vec]:
@@ -29,7 +29,8 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Per verificare il funzionamento di `create_onb_from_z`, possiamo usare il *random testing* (un'idea apparentemente nata nel mondo del linguaggio [Haskell](https://www.haskell.org/), vedi [quickcheck](https://hackage.haskell.org/package/QuickCheck)).
 
--   L'idea è quella di generare un gran numero di vettori casuali, passarli come parametri a `create_onb_from_z`, e verificare che il tipo di ritorno sia effettivamente una ONB.
+-   L'idea è quella di generare un gran numero di vettori casuali, passarli come parametri a `create_onb_from_z`, e verificare che il tipo di ritorno sia effettivamente una ONB. (Pare che Duff et al. abbiano scoperto così il bug nell'algoritmo di [Frisvad, 2012](http://orbit.dtu.dk/files/
+126824972/onb_frisvad_jgt2012_v2.pdf)).
 
 -   L'approccio generale del *random testing* è quello di generare input casuali, e verificare che gli output soddisfino certe proprietà. È conveniente soprattutto per funzioni matematiche, ma non è sempre la soluzione migliore.
 
@@ -91,7 +92,7 @@ for i in range(100):
         interaction_point: Point,    # Where the ray hit the surface
         normal: Normal,              # Normal on interaction_point
         depth: int,                  # Depth value for the new ray
-    )
+    ) -> Ray
     ```
 
 -   Ogni tipo derivato da `BRDF` (es., `DiffuseBRDF`, `SpecularBRDF`, etc.) dovrà ridefinire `scatter_ray`.
@@ -103,19 +104,18 @@ for i in range(100):
 -   L'implementazione di [`DiffuseBRDF.scatter_ray`](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L117-L130) deve quindi usare l'[algoritmo che abbiamo ricavato](tomasi-ray-tracing-11a-path-tracing.html#risultato-di-phong) per la distribuzione di Phong con $n = 1$:
 
     ```python
-    def scatter_ray(self, pcg: PCG, incoming_dir: Vec, interaction_point: Point, normal: Normal, depth: int):
+    def scatter_ray(self, pcg: PCG, incoming_dir: Vec,
+                    interaction_point: Point, normal: Normal, depth: int) -> Ray:
         e1, e2, e3 = create_onb_from_z(normal)
         cos_theta_sq = pcg.random_float()
         cos_theta, sin_theta = sqrt(cos_theta_sq), sqrt(1.0 - cos_theta_sq)
         phi = 2.0 * pi * pcg.random_float()
 
-        return Ray(
-            origin=interaction_point,
-            dir=e1 * cos(phi) * cos_theta + e2 * sin(phi) * cos_theta + e3 * sin_theta,
-            tmin=1.0e-3,
-            tmax=inf,
-            depth=depth,
-        )
+        return Ray(origin=interaction_point,
+                   dir=e1 * cos(phi) * cos_theta + e2 * sin(phi) * cos_theta + e3 * sin_theta,
+                   tmin=1.0e-3,   # Be generous here
+                   tmax=inf,
+                   depth=depth)
     ```
 
 # `SpecularBRDF`
@@ -125,17 +125,16 @@ for i in range(100):
 -   L'implementazione di [`SpecularBRDF.scatter_ray`](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L151-L164) è quindi particolarmente semplice:
 
     ```python
-    def scatter_ray(self, pcg: PCG, incoming_dir: Vec, interaction_point: Point, normal: Normal, depth: int):
+    def scatter_ray(self, pcg: PCG, incoming_dir: Vec,
+                    interaction_point: Point, normal: Normal, depth: int) -> Ray:
         ray_dir = Vec(incoming_dir.x, incoming_dir.y, incoming_dir.z).normalize()
         normal = normal.to_vec().normalize()
 
-        return Ray(
-            origin=interaction_point,
-            dir=ray_dir - normal * 2 * normal.dot(ray_dir),
-            tmin=1e-5,
-            tmax=inf,
-            depth=depth,
-        )
+        return Ray(origin=interaction_point,
+                   dir=ray_dir - normal * 2 * normal.dot(ray_dir),
+                   tmin=1e-3,
+                   tmax=inf,
+                   depth=depth)
     ```
 
 # *Path tracing*
@@ -144,7 +143,7 @@ for i in range(100):
 
 -   Abbiamo finora definito due renderer: `OnOffRenderer` e `FlatRenderer`. Oggi implementiamo `PathTracer`.
 
--   I parametri legati a questo tipo sono i seguenti, da specificare nel suo costruttore:
+-   I parametri del costruttore sono i seguenti:
 
     #.  L'oggetto `World` per cui fare il render;
     #.  Il colore di background, usato per quelle direzioni lungo cui non ci sono intersezioni;
@@ -290,6 +289,15 @@ for i in range(5):
 ---
 
 <center>![](media/pytracer-demo-pathtracing.webp)</center>
+
+
+# Numeri casuali
+
+-   Fate in modo che si possano passare i due numeri che inizializzano il generatore `PCG` da linea di comando.
+
+-   Il numero che interessa di più è `init_seq`, perché identifica univocamente la sequenza di numeri generati dal `PCG`, e consente quindi di produrre immagini completamente decorrelate (che possono quindi essere mediate tra loro senza produrre *bias*).
+
+-   Mediare immagini diverse (prodotte contemporaneamente mediante [GNU Parallel](https://www.gnu.org/software/parallel/)) è un buon modo per ridurre la varianza senza aumentare il tempo di calcolo effettivo (*wall-clock time*).
 
 
 # Link a Gather
