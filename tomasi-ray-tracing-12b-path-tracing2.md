@@ -171,9 +171,10 @@ def __call__(self, ray: Ray) -> Color:
 
     # Russian roulette
     if ray.depth >= self.russian_roulette_limit:
-        if self.pcg.random_float() > hit_color_lum:
+        q = max(0.05, 1 - hit_color_lum)
+        if self.pcg.random_float() > q:
             # Keep the recursion going, but compensate for other potentially discarded rays
-            hit_color *= 1.0 / (1.0 - hit_color_lum)
+            hit_color *= 1.0 / (1.0 - q)
         else:
             # Terminate prematurely
             return emitted_radiance
