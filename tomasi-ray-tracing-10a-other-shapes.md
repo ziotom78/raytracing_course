@@ -40,7 +40,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Scriviamo con $F_i$ il generico punto del piano perpendicolare alla direzione $i$-esima ($i = 0: x$, $i = 1: y$, $i = 2: z$), che avrà coordinate
     
     $$
-    F_0 = (f, 0, 0), \quad F_1 = (0, f, 0), \quad F_2 = (0, 0, f).
+    F_0 = (0, u, v), \quad F_1 = (u, 0, v), \quad F_2 = (u, v, 0).
     $$
     
 -   Lungo la coordinata $i$-esima si avranno *due* intersezioni (una per ciascuno dei due piani del parallelepipedo):
