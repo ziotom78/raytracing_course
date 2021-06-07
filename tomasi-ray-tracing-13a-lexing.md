@@ -18,41 +18,51 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     
 -   Questo approccio potrebbe non essere sostenibile: di fatto obblighiamo gli utenti a scrivere codice nel linguaggio di programmazione che abbiamo usato!
 
-# File di input
+# Obbiettivo
 
--   Perché il nostro programma sia davvero versatile (e possa meritare il rilascio di una versione `1.0.0`), deve smettere di produrre solo immagini dimostrative (il comando `demo`).
+-   Il nostro obbiettivo è di definire un *formato* per la descrizione delle scene, e di scrivere del codice per interpretarlo.
 
--   Dovrebbe invece prendere in input una descrizione di una scena e produrre in output l'immagine corrispondente.
+-   Una volta implementato, l'utente userà un comune editor come Emacs o Visual Studio Code per creare un file, chiamato ad es. `scene.txt`, ed eseguirà il programma così:
 
--   Ma come fa l'utente a fornire in input una descrizione della scena?
+    ```
+    ./myprogram render scene.txt
+    ```
+    
+    e gli oggetti `Shape` e `Material` saranno creati in memoria basandosi su quanto specificato in `scene.txt`. A differenza del comando `demo` però, è facile modificare `scene.txt`.
+    
+-   Quello che ci aspetta è di fatto l'implementazione di un *compilatore*!
 
 # Categorie di utenti
 
--   Nel caso in cui il linguaggio usato sia Julia o Python, che ammette un uso interattivo, non è affatto strano chiedere che l'utente definisca le scene direttamente dalla REPL (o da un notebook Jupyter/Pluto)!
+-   Nel caso in cui il linguaggio usato sia Julia o Python, che ammette un uso interattivo, la soluzione migliore sarebbe quella di definire le scene direttamente sulla REPL (o in un notebook Jupyter/Pluto)!
 
--   Ma nel caso di programmi scritti in C++, C\# o Kotlin, una soluzione del genere non è percorribile: non è affatto detto che l'utente abbia installato gli strumenti di sviluppo e le librerie necessarie per modificare e ricompilare il programma.
+-   Ma nel caso di programmi scritti in C++, C\# o Kotlin, una soluzione del genere non è ovviamente percorribile.
 
--   Quello che faremo oggi è implementare un nostro mini-linguaggio per la definizione delle scene. **Non è la soluzione migliore** per chi usa Julia, ma chiedo comunque a tutti di implementare quanto richiesto, perché il valore dell'esercizio è soprattutto didattico.
+-   L'implementazione di un mini-linguaggio **non è la soluzione migliore** per linguaggi che offrono una REPL come Julia; chiedo comunque a tutti di implementare quanto richiesto, perché l'esercizio offre tanti spunti didattici.
 
 # Valore didattico dell'esercizio
 
--   Per implementare questa *feature* dovremo apprendere i rudimenti della teoria dei compilatori, che non viene affrontata in altri corsi (che io sappia).
+#.  Per implementare questa *feature* dovremo apprendere i rudimenti della teoria dei compilatori, che non viene affrontata in altri corsi (che io sappia), ma che insegna a scrivere codice molto elegante.
 
--   Dovremo scrivere codice che gestisca le (tante) possibili condizioni di errore in modo robusto ed elegante, più di quanto abbiamo fatto sinora (un *path-tracer* non è il genere di programma indicato per questo!): ciò è molto educativo!
+#.  Avete usato in questo corso linguaggi diversi: ora capirete meglio perché i linguaggi richiedono di definire le cose in un modo anziché in un altro, e certi errori dei compilatori saranno più comprensibili.
 
--   Capirete meglio il funzionamento (e i messaggi di errore!) dei compilatori, e anche certe caratteristiche dei linguaggi di programmazione che avete usato.
+#.  Dovremo scrivere codice che gestisca le (tante) possibili condizioni di errore in modo robusto ed elegante, più di quanto abbiamo fatto sinora (un *path-tracer* non è il contesto migliore per imparare ciò): ciò è molto educativo!
 
--   È intellettualmente stimolante… e può essere anche molto divertente!
+#.  Creare nuovi linguaggi può essere molto divertente!
 
 # Tipi di linguaggi
 
 *General-purpose languages*
-: Questi sono i «linguaggi di programmazione» che avete usato sino ad oggi (C++, Python, etc.).  Sono chiamati *general-purpose* perché non sono pensati per un dominio specifico, potendo essere usati per creare videogiochi, sistemi operativi, librerie numeriche, applicazioni grafiche, etc.
+: Questi sono i «linguaggi di programmazione» che conoscete bene (C++, Python, etc.).  Sono chiamati *general-purpose* perché non sono pensati per un dominio specifico, potendo essere usati per creare videogiochi, sistemi operativi, librerie numeriche, applicazioni grafiche, etc.
 
 *Domain-specific languages* (DSL)
 : Si tratta di linguaggi che risolvono un problema molto specifico, e la cui sintassi è pensata per esprimere il problema nel modo più naturale possibile.
 
-# Esempio di DSL: SQL
+Nel nostro caso dovremo definire un DSL e implementare un compilatore per esso. Il nostro sarà un approccio con *molta* pratica e quel tanto che basta di teoria.
+
+# Esempi di DSL
+
+# SQL
 
 -   SQL (*Structured Query Language*) è un linguaggio usato per creare/modificare/consultare tabelle di dati salvate in database:
 
@@ -76,13 +86,13 @@ Immaginate come implementare questi comandi in linguaggi come C++ o Python. Ovvi
 
 # DSL in linguaggi *general-purpose*
 
--   Alcuni linguaggi *general-purpose* sono *metaprogrammabili*, ossia hanno la capacità di estendere la propria sintassi.
+-   Non dovreste stupirvi del fatto che oggi inventeremo un nuovo «linguaggio» per il nostro programma: è un'attività più comune di quanto si pensi (anche se i fisici non lo fanno quasi mai ☹).
 
--   Questa capacità consente di definire delle DSL all'interno del linguaggio stesso (es., [Common LISP](https://gigamonkeys.com/book/practical-a-simple-database.html), [Julia](https://docs.julialang.org/en/v1/manual/metaprogramming/), [Kotlin](https://www.raywenderlich.com/2780058-domain-specific-languages-in-kotlin-getting-started), [Nim](https://forum.nim-lang.org/t/2380)…).
+-   È talmente comune che alcuni linguaggi *general-purpose* prevedono la possibilità di definire DSL **al proprio interno**: sono i linguaggi cosiddetti «metaprogrammabili» (es., [Common LISP](https://gigamonkeys.com/book/practical-a-simple-database.html), [Julia](https://docs.julialang.org/en/v1/manual/metaprogramming/), [Kotlin](https://www.raywenderlich.com/2780058-domain-specific-languages-in-kotlin-getting-started), [Nim](https://forum.nim-lang.org/t/2380)…).
 
 -   Vediamo un paio di esempi.
 
-# Esempio di DSL: [ACME.jl](https://github.com/HSU-ANT/ACME.jl)
+# [ACME.jl](https://github.com/HSU-ANT/ACME.jl)
 
 ```julia
 using ACME
@@ -101,9 +111,9 @@ circ = @circuit begin
 end
 ```
 
-La libreria ACME definisce una serie di operatori come `⟷` e `[±]` che consentono di descrivere un circuito elettrico con una sintassi immediatamente comprensibile.
+La libreria ACME (Julia) definisce una serie di operatori come `⟷` e `[±]` per descrivere un circuito elettrico con una sintassi semplice da leggere.
 
-# Esempio di DSL: [Karax](https://github.com/karaxnim/karax)
+# [Karax](https://github.com/karaxnim/karax) (Nim)
 
 ```nim
 import karax / [karaxdsl, vdom]
@@ -131,6 +141,18 @@ echo render()
 La libreria [karax/karaxdsl](https://github.com/karaxnim/karax) estende il linguaggio [Nim](https://nim-lang.org/) con comandi come `h1` e `p`, in modo che si possano definire gli elementi che definiscono una pagina HTML.
 
 # Linguaggi per la definizione di scene 3D
+
+# Panoramica
+
+-   A noi non interessano database né circuiti elettrici né pagine HTML: siamo interessati alla definizione di scene 3D.
+
+-   Per definire il nostro linguaggio dovremmo innanzitutto farci un'idea di cosa faccia la «concorrenza».
+
+-   Vediamo quindi come quattro *renderer* permettono di specificare le scene che sono fornite come input: DBKTrace, POV-Ray, PolyRay e YafaRay. Ovviamente tutti questi programmi funzionano da linea di comando come farà il nostro:
+
+    ```
+    $ program input_file
+    ```
 
 # DKBTrace
 
@@ -186,10 +208,6 @@ END_OBJECT
 
 -   A partire dalla versione 3.0 implementa l'algoritmo [*radiosity*](https://en.wikipedia.org/wiki/Radiosity_(computer_graphics)) per simulare sorgenti diffuse in maniera simile al path-tracing.
 
----
-
-<center>![](media/mtpiano.webp){height=640px}</center>
-
 # File di input
 
 ```povray
@@ -213,6 +231,10 @@ sphere {
 
 light_source { <2, 4, -3> color White }
 ```
+
+---
+
+<center>![](media/mtpiano.webp){height=640px}</center>
 
 # PolyRay
 
@@ -263,10 +285,6 @@ object {
 -   Può essere usato in Blender come «motore» per il rendering.
 
 -   Il formato delle scene è XML.
-
----
-
-<center>![](media/yafray-example.webp)</center>
 
 # File di input
 
@@ -331,42 +349,34 @@ object {
 </scene>
 ```
 
+---
+
+<center>![](media/yafray-example.webp)</center>
+
 # Il «nostro» formato
-
-# Obbiettivo
-
--   Il nostro obbiettivo è di definire un *formato* per la descrizione delle scene, e di scrivere del codice per interpretarlo.
-
--   Una volta implementato, l'utente userà un comune editor come Emacs o Visual Studio Code per creare un file, chiamato ad es. `scene.txt`, ed eseguirà il programma così:
-
-    ```
-    ./myprogram render scene.txt
-    ```
-    
-    e gli oggetti `Shape` e `Material` saranno creati in memoria basandosi su quanto specificato in `scene.txt`. Il rendering poi procederà esattamente come il comando `demo`, con la differenza che ora l'utente potrà modificare facilmente `scene.txt`.
 
 # Definire il formato
 
--   Ci aspetta ora un compito molto eccitante: definire come strutturare il nostro formato!
+-   Ci aspetta ora un compito molto eccitante: definire il nostro formato!
 
--   Potremmo accontentarci di un formato molto semplice, come il Wavefront OBJ che avevamo descritto [tempo fa](./tomasi-ray-tracing-10a-other-shapes.html#wavefront-obj).
+-   Potremmo ispirarci a formati molto semplici, come ad esempio il Wavefront OBJ che avevamo descritto [tempo fa](./tomasi-ray-tracing-10a-other-shapes.html#wavefront-obj): ogni riga contiene una lettera (`v`, `f`, `n`, etc.) seguita da una sequenza di numeri.
 
--   Ad esempio, potremmo definire una BRDF diffusiva (`d`) con colore $(0.3, 0.7, 0.5)$ associata a una sfera (`s`) centrata in $(1, 3, 6)$ di raggio $r = 2$ così:
+-   Ad esempio, potremmo definire una BRDF diffusiva (`d`) con colore $(0.3, 0.7, 0.5)$ associata a una sfera (`s`) centrata in $(1, 3, 6)$ di raggio $r = 2$ con un codice del genere:
 
     ```text
     d 0.3 0.7 0.5
     s 1 3 6 2
     ```
     
-    Ma non sarebbe affatto leggibile! Proviamo a pensare a qualcosa di più strutturato.
+    Ma non sarebbe affatto leggibile! Proviamo a pensare a qualcosa di più elegante.
 
 # Come implementare il formato
 
--   Ovviamente il formato non deve essere ambiguo, e deve essere facile da ricordare.
+-   Un buon formato non deve essere ambiguo, e deve anche essere facile da imparare.
 
 -   Anziché usare lettere come `s` o `d` per indicare diverse entità (sfera o BRDF diffusiva), useremo stringhe di caratteri (`sphere` e `diffuse`)
 
--   La scrittura `s 1 3 6 2` non è chiara, perché non si distingue il raggio dalle coordinate. Ispirandoci alla sintassi POV-Ray, indicheremo punti e vettori con le parentesi angolari, ad es. `<1, 3, 6>`.
+-   La scrittura `s 1 3 6 2` non è chiara, perché non si distingue il raggio dalle coordinate. Ispirandoci alla sintassi di Python e Julia, indicheremo punti e vettori con le parentesi angolari, ad es. `[1, 3, 6]`.
 
 -   Implementeremo anche la possibilità di associare un nome agli oggetti: in questo modo potremo fare riferimento a BRDF create in precedenza (es., `green_matte`) quando definiamo nuove `Shape`.
 
@@ -386,13 +396,13 @@ Pensiamo a cosa deve essere specificabile nel nostro formato. Dobbiamo sicuramen
 
 # Scelte da compiere
 
--   Dobbiamo definire una sintassi per creare oggetti, e ovviamente ci sono varie possibilità. Ad esempio, per definire una sfera potremmo usare una qualsiasi di queste forme:
+-   Dobbiamo definire una sintassi per creare oggetti, e ovviamente ci sono varie possibilità. Ad esempio, per definire una sfera potremmo usare una qualsiasi di queste quattro sintassi:
 
     ```text
-    sphere: <1, 3, 6>, 2
-    sphere(<1, 3, 6>, 2)
-    sphere with center=<1, 3, 6>, radius=2
-    <1, 3, 6> 2 sphere
+    sphere: [1, 3, 6], 2
+    sphere([1, 3, 6], 2)
+    sphere with center=[1, 3, 6], radius=2
+    [1, 3, 6] 2 sphere
     ```
     
     (L'ultima sintassi è comune in linguaggi *stack-based* come il Postscript).
@@ -404,7 +414,7 @@ Pensiamo a cosa deve essere specificabile nel nostro formato. Dobbiamo sicuramen
 
 # Esempio di formato
 
-```sh
+```python
 # Declare a floating-point variable named "clock"
 float clock(150)
 
@@ -427,16 +437,16 @@ material sphere_material(
     uniform(<0, 0, 0>)
 )
 
-# Define a few shapes. Note that we can compose transformations through
-# the "*" operator
-
-# Here we use the "clock" variable! Note that vectors are notated using
-# square brackets ([]) instead of angular brackets (<>) like colors
-plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))
+# Define a few shapes
+sphere(sphere_material, translation([0, 0, 1]))
 
 # The language is flexible enough to permit spaces before "("
 plane (ground_material, identity)
-sphere(sphere_material, translation([0, 0, 1]))
+
+# Here we use the "clock" variable! Note that vectors are notated using
+# square brackets ([]) instead of angular brackets (<>) like colors, and
+# that we can compose transformations through the "*" operator
+plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))
 
 # Define a camera
 camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
@@ -448,7 +458,7 @@ camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 
 -   …con la differenza però che il file di input che consideriamo ora è molto più complesso e «duttile» del formato PFM!
 
--   Questa maggiore versatilità comporta molti più rischi di errore: è facile dimenticarsi una virgola, o confondere un `<` con un `[`. Dobbiamo quindi prestare grande cura alla segnalazione degli errori!
+-   Questa maggiore versatilità comporta molti più rischi di errore: è facile per l'utente che crea una scena dimenticarsi una virgola, o confondere la notazione `<>` (colori) con `[]` (vettori). Dobbiamo quindi prestare grande cura alla segnalazione degli errori all'utente!
 
 -   Per interpretare questo tipo di file occorre procedere per gradi.
 
@@ -504,11 +514,11 @@ graph "" {
 }
 ```
 
--   Il *lexer* scompone il sorgente passato come input in elementi semplici, chiamati *token*;
+-   Il *lexer* scompone il codice sorgente in elementi semplici, chiamati *token*;
 -   Il *parser* analizza la sequenza dei *token* per legarli tra loro e comprenderne la sintassi e la semantica;
 -   L'*AST builder* crea il cosiddetto *Abstract Syntax Tree* (non usato nel nostro caso);
 -   L'*optimizer* applica ottimizzazioni all'AST (non usato nel nostro caso);
--   Dall'AST viene generato l'eseguibile (non usato nel nostro caso).
+-   Dall'AST ottimizzato viene generato l'eseguibile (non usato nel nostro caso).
 
 # Esempio: analisi lessicale
 
@@ -519,19 +529,17 @@ graph "" {
     float clock(150)
     ```
 
--   Il risultato dell'analisi lessicale delle linee sopra è la produzione della sequenza
+-   Il risultato dell'analisi lessicale delle linee sopra è la produzione della sequenza di token seguente (da cui sono già rimossi spazi bianchi e commenti):
 
-    ```text
-    TOKEN_KEYWORD "float"
-    TOKEN_IDENTIFIER "clock"
-    TOKEN_SYMBOL "("
-    TOKEN_NUMBER 150.0
-    TOKEN_SYMBOL ")"
+    ```python
+    [
+        KeywordToken(TOKEN_FLOAT), # A "keyword", because "float" is a reserved word
+        IdentifierToken("clock"),  # An "identifier" is a variable name
+        SymbolToken("("),
+        LiteralNumberToken(150.0),
+        SymbolToken(")"),
+    ]
     ```
-    
--   Se l'utente avesse usato una `@` anziché dello zero nel numero `150` (scrivendo `15@`), l'errore sarebbe stato segnalato in questa fase (*errore lessicale*).
-
--   Il commento nella prima riga non compare nella lista dei token: commenti e spazi bianchi sono di solito rimossi già durante l'analisi lessicale.
 
 # Esempio: analisi sintattica
 
@@ -542,15 +550,14 @@ float clock(150)
 
 -   L'analisi sintattica parte dalla sequenza di token prodotta dall'analisi lessicale:
 
-    ```text
-    TOKEN_KEYWORD "float"
-    TOKEN_IDENTIFIER "clock"
-    TOKEN_SYMBOL "("
-    TOKEN_NUMBER 150.0
-    TOKEN_SYMBOL ")"
+    ```python
+    [
+        KeywordToken(TOKEN_FLOAT), IdentifierToken("clock"), SymbolToken("("),
+        LiteralNumberToken(150.0), SymbolToken(")"),
+    ]
     ```
 
--   L'analisi sintattica deve verificare che la sequenza di token sia corretta: se il primo token è la parola chiave (*keyword*) `float`, allora significa che stiamo definendo una variabile floating-point. È quindi necessario che il token successivo contenga il nome della variabile (deve essere un *identificatore*), seguito dal valore numerico racchiuso tra le parentesi.
+-   L'analisi sintattica deve verificare che la sequenza di token sia corretta: se il primo token è la parola chiave `float`, allora significa che stiamo definendo una variabile floating-point. È quindi necessario che il token successivo contenga il nome della variabile (deve essere un *identificatore*), seguito dal valore numerico racchiuso tra le parentesi.
 
 
 # Errori di sintassi
@@ -565,10 +572,10 @@ float clock(150)
     if (if % 2 == 0)
         std::cout << "The number is even\n";
     ```
-    
--   Questo codice è sbagliato, perché la sintassi del C++ richiede che il tipo della variabile (`int`) sia seguito da un *identificatore*, e non da una *keyword* (`if`).
 
--   Notate però che il codice sopra è comprensibile da un essere umano! (In LISP il codice sarebbe ok).
+-   Questo codice sopra è perfettamente comprensibile da un essere umano, ma il C++ lo vieta! (L'equivalente in Scheme sarebbe invece ok).
+
+-   L'errore è causato dal fatto che la sintassi del C++ richiede che il tipo della variabile (`int`) sia seguito da un *identificatore*, e non da una *keyword* (`if`).
 
 
 # Esempio: analisi semantica
@@ -606,13 +613,13 @@ float clock(150)
 
 # Output di un *lexer*
 
--   Un *lexer* deve restituire un *token* della tipologia «giusta».
+-   Un *lexer* deve saper classificare i *token* a seconda del loro tipo.
 
 -   A seconda del linguaggio esistono vari tipi di token; nel nostro caso abbiamo:
 
     #.  *Keyword*: una parola chiave del linguaggio, come `sphere` e `diffuse`;
     #.  *Identifier*: il nome di una variabile/tipo/funzione come `clock`;
-    #.  *Numeric literal*: un numero come `150`, possibilmente distinto tra *integer literal* e *floating-point literal*;
+    #.  *Numeric literal*: un numero come `150`, possibilmente distinto tra *integer literal* e *floating-point literal* (noi non faremo distinzione);
     #.  *String literal*: una stringa di caratteri, solitamente racchiusa tra `"` (doppi apici) o `'` (singoli apici);
     #.  *Symbol*: un carattere non alfanumerico, come `(`, `+`, `,`, etc.) Non considereremo simboli composti da più caratteri (es., `>=` in C++).
 
@@ -630,15 +637,13 @@ float clock(150)
 @dataclass
 class Token:
     """A lexical token, used when parsing a scene file"""
-    file_name: str = ""
-    line_num: int = 0
-    col_num: int = 0
+    pass
 
 
 class LiteralNumberToken(Token):
     """A token containing a literal number"""
-    def __init__(self, file_name: str, line_num: int, col_num: int, value: float):
-        super().__init__(file_name=file_name, line_num=line_num, col_num=col_num)
+    def __init__(self, value: float):
+        super().__init__()
         self.value = value
 
     def __str__(self) -> str:
@@ -646,9 +651,9 @@ class LiteralNumberToken(Token):
 
 
 class SymbolToken(Token):
-    """A token containing a symbol (i.e., a variable name)"""
-    def __init__(self, file_name: str, line_num: int, col_num: int, symbol: str):
-        super().__init__(file_name=file_name, line_num=line_num, col_num=col_num)
+    """A token containing a symbol (e.g., a comma or a parenthesis)"""
+    def __init__(self, symbol: str):
+        super().__init__()
         self.symbol = symbol
 
     def __str__(self) -> str:
@@ -677,12 +682,12 @@ class SymbolToken(Token):
 
     ```c++
     struct MyStruct {
-        int a;
-        char c;
+        int32_t a; // Can be any value in the set I of all 32-bit signed integers
+        uint8_t c; // Can be any value in the set B of all 8-bit unsigned bytes
     };
     ```
     
-    Se l'insieme di tutti i valori assumibili da un `int` e da un `char` è denominato rispettivamente con `I` e `C`, allora una variabile `MyStruct var` è tale per cui $\mathtt{var} \in I \times C$.
+    Se l'insieme di tutti i valori assumibili da un `int32_t` e da un `uint8_t` è denominato rispettivamente con $I$ e $B$, allora una variabile `MyStruct var` è tale per cui $\mathtt{var} \in I \times B$.
 
 
 # *Sum types*
@@ -692,14 +697,41 @@ class SymbolToken(Token):
 -   Nel nostro esempio C++, i *sum types* si definiscono tramite la parola chiave `union` (molto appropriata!):
 
     ```c++
-    union MyStruct {
-        int a;
-        char c;
+    union MyUnion {
+        int32_t a;
+        uint8_t c;
     };
     ```
     
--   In questo caso, la variabile `MyStruct var` è tale per cui $\mathtt{var} \in I \cup C$: puo essere un `int` **oppure** un `char`, ma non entrambi contemporaneamente.
+-   In questo caso, la variabile `MyUnion var` è tale per cui $\mathtt{var} \in I \cup B$: puo essere un `int32_t` **oppure** un `uint8_t`, ma non entrambi.
 
+# Uso di `union`
+
+```c++
+union MyUnion {
+    int32_t a;   // This takes 4 bytes
+    uint8_t c;   // This takes 1 byte
+};
+
+/* The size in memory of MyUnion is *not* 4+1 == 5, but it is max(4, 1) == 4
+ *
+ * <-------a------->
+ * +---+---+---+---+
+ * | 1 | 2 | 3 | 4 |
+ * +---+---+---+---+
+ * <-c->
+ */
+
+int main() {
+    MyUnion s;
+    
+    s.a = 10;   // Integer
+    std::cout << s.a << "\n";
+    
+    s.c = 24U;  // This replaces the value 10 (signed) with the value (24) unsigned
+    std::cout << s.c << "\n";
+}
+```
 
 # *Sum types* e *token*
 
@@ -707,8 +739,31 @@ class SymbolToken(Token):
 
     #.  *Literal number* (es., `150`), rappresentato in memoria come un `float`;
     #.  *Literal string* (es., `"filename.pfm"`), rappresentato da `std::string`;
+
+-   Consideriamo ora una funzione `read_token(stream)` che restituisce il token successivo letto da `stream`: può restituire un *literal number* oppure un *literal string*.
+
+-   Se i numeri appartengono all'insieme $N$ e le stringhe a $S$, allora è chiaro che il token `t` è tale per cui $\mathtt{t} \in N \cup S$: può essere uno dei due tipi, ma non più tipi contemporaneamente. È quindi logicamente un *sum type*!
+
+# *Sum types* vs gerarchie
+
+-   Una `union` racchiude all'interno di un'unica definizione tutti i tipi: 
+
+    ```c++
+    union MyUnion {
+        int32_t a;   // This takes 4 bytes
+        uint8_t c;   // This takes 1 byte
+    };
+    ```
+
+-   È più semplice da leggere e da capire di una gerarchia di classi:
+
+    ```c++
+    struct Value {};
     
--   Se i numeri appartengono all'insieme $N$ e le stringhe a $S$, allora è chiaro che il token `t` è tale per cui $\mathtt{t} \in N \cup S$: può essere uno dei due tipi, ma non più tipi contemporaneamente.
+    struct Int32Value : Value { int32_t a; };
+    
+    struct UInt8Value : Value { uint8_t c; };
+    ```
 
 
 # *Sum types* e *token*
@@ -725,29 +780,13 @@ class SymbolToken(Token):
 -   Una volta assegnato un valore però non c'è modo di capire a quale dei due insiemi $N$ o $S$ appartenga l'elemento (le `union` non sono *tagged*):
 
     ```c++
-    Token my_token; my_token.number = 150.0;  // This represents a "literal number"
-    …
+    Token my_token;
+    my_token = read_token(stream);  // Read the next token from the stream
     
-    if (my_token.???)   // How can I check here if it is a "literal number"?
+    if (my_token.???)   // How can I check if it is a "literal number" or a "string"?
     ```
 
 # *Tagged unions* in C/C++
-
--   La soluzione è di includere le `union` in `struct`, usando *tre* tipi:
-
-    #.  Il tipo `Token` è una `struct` che contiene al suo interno il cosiddetto *tag* (che indica se il token appartiene a $N$ o a $S$);
-    #.  Il tipo `TokenType` è il *tag*, ed è di solito un `enum class`;
-    #.  Il tipo `TokenValue` è la `union` vera e propria, che va corredata di un costruttore e un distruttore di default per poter essere usata in `Token`.
-
--   Una volta definiti questi tipi, è possibile scrivere
-
-    ```c++
-    Token my_token;
-    my_token.type = TokenType::LITERAL_NUMBER;
-    my_token.value.number = 150.0;
-    ```
-
----
 
 ```c++
 // Kinds of tokens. Here we just consider two types
@@ -774,30 +813,39 @@ struct Token {
   TokenValue value;  // The "union"
 
   Token() : type(TokenType::LITERAL_NUMBER) {}
+
+  void assign_number(float val) {
+      type = TokenType::LITERAL_NUMBER;
+      value.number = val;
+  }
+
+  void assign_string(const std::string & s) {
+      type = TokenType::LITERAL_STRING;
+      value.string = s;
+  }
 };
+
+int main() {
+  Token my_token;
+  token.assign_number(150.0);
+}
 ```
 
-# Problemi di `union`
+# *Tagged unions* in C/C++
 
--   Il codice non è molto pulito; anzi, è piuttosto farraginoso!
+-   L'esempio mostra che per implementare una *tagged union* occorrono *tre* tipi:
 
--   Non mette al riparo da una serie di problemi:
+    #.  Il tipo `Token` è una `struct` che contiene al suo interno il cosiddetto *tag* (che indica se il token appartiene a $N$ o a $S$);
+    #.  Il tipo `TokenType` è il *tag*, ed un `enum` (C) o `enum class` (C++);
+    #.  Il tipo `TokenValue` è la `union` vera e propria, che in C++ va corredata di un costruttore e un distruttore di default per poter essere usata in `Token`.
 
-    #.  Sono sempre possibili inconsistenze:
-    
-        ```c++
-        Token my_token;
-        my_token.type = TokenType::LITERAL_STRING;
-        my_token.value.number = 150.0;   // Argh! The tag and the union are inconsistent!
-        ```
-        
-    #.  Il compilatore non può verificare che degli `switch` sul tag siano esaustivi.
+-   Questo modo di fare è complicato, ma è necessario in quei linguaggi come il C++ che non supportano le *tagged union* (vedi [questo post](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/sum-types) per una panoramica dei linguaggi che hanno questa lacuna). (Julia supporta le *tagged unions* tramite il tipo `Union` e la funzione `isa`, C\# e Kotlin non supportano i *sum types*).
 
 
 # Esaustività dei controlli
 
 ```c++
-// Let's assume we have several token types
+// Let's assume we have four token types
 enum class TokenType {
   LITERAL_NUMBER,
   LITERAL_STRING,
@@ -810,7 +858,7 @@ void print_token(const Token & t) {
     case TokenType::LITERAL_NUMBER: std::cout << t.value.number; break;
     case TokenType::LITERAL_STRING: std::cout << t.value.string; break;
     case TokenType::LITERAL_SYMBOL: std::cout << t.value.symbol; break;
-    // Oops! I forgot TokenType::KEYWORD!
+    // Oops! I forgot TokenType::KEYWORD, but not every compiler will produce a warning!
     }
 }
 ```
@@ -818,9 +866,9 @@ void print_token(const Token & t) {
 
 # *Sum types* fatti bene
 
--   Linguaggi come Haskell, i derivati di ML (es., OCAML, F\#), Rust e Swift consentono di definire *sum types* in maniera molto più naturale.
+-   Linguaggi come [Haskell](https://wiki.haskell.org/Algebraic_data_type), i derivati di ML (es., [OCaml](https://ocaml.org/), F\#), [Pascal](https://www.freepascal.org/docs-html/ref/refsu15.html), [Nim](https://nim-lang.org/docs/tut2.html#object-oriented-programming-object-variants), etc., consentono di definire *sum types* in maniera molto più naturale.
 
--   Ad esempio, ecco come definire il tipo `Token` in OCAML:
+-   Ad esempio, ecco come definire il tipo `Token` in OCaml:
 
     ```ocaml
     type token = 
@@ -832,9 +880,9 @@ void print_token(const Token & t) {
  
     Non c'è bisogno di definire una lunga gerarchia di classi!
     
-# Esaustività in OCAML
+# Esaustività in OCaml
  
--   In linguaggi come OCAML i controlli sui *sum types* sono esaustivi:
+-   In linguaggi come [OCaml](https://ocaml.org/) e [F\#](https://fsharpforfunandprofit.com/posts/discriminated-unions/), i controlli sui *sum types* sono esaustivi:
 
     ```ocaml
     let tok = LiteralNumber 0.5;
@@ -843,16 +891,26 @@ void print_token(const Token & t) {
        | LiteralString s -> print_string s
        | Symbol c -> print_char c;
    
-    # Warning: this pattern-matching is not exhaustive.
-    # Here is an example of a case that is not matched:
-    # Keyword _
+    (* Warning: this pattern-matching is not exhaustive.
+     * Here is an example of a case that is not matched:
+     * Keyword _                                         *)
     ```
     
--   I *sum types* rappresentano gerarchie di classi «rigide», dove c'è un solo antenato (`token`) e le classi figlie sono note a priori: proprio il caso dei token! Linguaggi come OCAML sono infatti spesso usati per scrivere compilatori (es., [FFTW](http://www.fftw.org/fftw-paper-ieee.pdf),  [Rust](https://www.reddit.com/r/rust/comments/18b808/is_the_original_ocaml_compiler_still_available/)).
+-   I *sum types* rappresentano gerarchie di classi «rigide», dove c'è un solo antenato (`token`) e le classi figlie sono note a priori: proprio il caso dei token! Linguaggi come [OCaml](https://ocaml.org/) sono infatti spesso usati per scrivere compilatori (es., [FFTW](http://www.fftw.org/fftw-paper-ieee.pdf),  [Rust](https://www.reddit.com/r/rust/comments/18b808/is_the_original_ocaml_compiler_still_available/)).
+
+
+# *Sum types* vs gerarchie
+
+-   Un *sum type* come `union` in C/C++ è utile quando il numero di tipi (`LiteralToken`, `SymbolToken`, …) è limitato e non cambierà facilmente, mentre il numero di *metodi* da applicare a quel tipo (es., `print_token`) può crescere indefinitamente.
+
+-   Una gerarchia di classi è utile nel caso contrario: il numero di tipi può crescere in numero potenzialmente illimitato, ma il numero di metodi è in linea di principio limitato. Un buon esempio è `Shape`: si possono definire infinite forme (`Sphere`, `Plane`, `Cone`, `Cylinder`, `Parabola`, etc.), ma il numero di operazioni da fare è limitato (`ray_intersection`, `is_point_inside`, etc.).
+
 
 # Funzionamento di un *lexer*
 
--   Per risparmiare memoria, solitamente un *lexer* legge un carattere alla volta, e a seconda del carattere letto, «decide» che tipo di token creare.
+# Funzionamento di un *lexer*
+
+-   Il *lexer* legge i caratteri da uno stream, uno alla volta, e decide quali *token* creare a seconda dei caratteri in cui si imbatte.
 
 -   Ad esempio, la lettura del carattere `"` (doppio apice) in un codice C++ indica che si sta definendo una stringa di caratteri:
 
@@ -860,13 +918,13 @@ void print_token(const Token & t) {
     const char * message = "error, you must specify an input file";
     ```
     
-    In questo caso il lexer continua a leggere finché trova un nuovo carattere `"`, che segnala la fine della stringa, e restituisce un token *string literal*.
+    Quando i lexer usati nei compilatori C++ trovano un carattere `"`, essi  continuano a leggere caratteri fino al successivo `"`, che segnala la fine della stringa, e restituiscono un token *string literal*.
 
 # Ambiguità nei *lexer*
 
 -   Il caso di uno *string literal* è semplice da affrontare: tutte le volte che ci si imbatte in un carattere `"`, si ha a che fare con questo tipo di *token*.
 
--   Ma nella maggior parte dei casi un *lexer* deve affrontare ambiguità. Ad esempio, un carattere `a`…`z` indica che sta iniziando una *keyword*  come `for`, oppure un *identifier* come `number_of_steps`?
+-   Ma nella maggior parte dei casi un *lexer* deve affrontare ambiguità. Ad esempio, un carattere `a`…`z` indica che sta iniziando una *keyword*  come `int`, oppure un *identifier* come `iterations_per_minute`?
 
     In questo caso si leggono caratteri finché appartengono alla lista dei caratteri validi in un identificatore (solitamente lettere maiuscole/minuscole, cifre e il carattere `_`), poi si confronta la stringa letta con la lista di possibili *keyword* ammesse dal linguaggio.
     
@@ -894,7 +952,7 @@ void print_token(const Token & t) {
     
     che è composta dei *token* `15` (*numeric literal*), `+` (*symbol*), `4` (*numeric literal*).
     
--   Quando il *lexer* inizia il suo lavoro individua il carattere `1`, e capisce che deve creare un token *numeric literal*. A questo punto deve leggere i caratteri finché trova la prima non-cifra, che è `+`. Ma una volta letto `+`, deve rimetterla a posto perché fa parte del token successivo.
+-   Quando il *lexer* inizia il suo lavoro individua il carattere `1`, e capisce che deve creare un token *numeric literal*. A questo punto deve leggere i caratteri finché trova la prima non-cifra, che è `+`. La lettura di `+` segnala che l'intero è finito e va emesso un *literal number token*; ma `+` va rimesso a posto, perché farà parte del token successivo.
 
 
 # Lettura di un *numeric literal*
@@ -955,4 +1013,23 @@ if ch.isdigit():
     #.  Il numero della riga (un intero, numerato partendo da 1);
     #.  Il numero della colonna (idem).
     
--   Il tipo `Token` dovrebbe quindi contenere anche questi tre campi. Se usate una gerarchia di classi (come in pytracer) potete implementarle direttamente nel tipo, oppure definite un tipo `SourceLocation` (come fa Clang).
+-   Il tipo `Token` dovrebbe quindi contenere anche questi tre campi. Nel caso di pytracer ho definito un tipo `SourceLocation` che ho usato nella definizione.
+
+-   Ad esempio, in Julia potete definire un token in questo modo:
+
+    ```julia
+    struct Token  # Use "isa(token.value, …) to determine the token type
+        loc::SourceLocation
+        value::Union{LiteralNumber, LiteralString, Keyword, Identifier, Symbol}
+    end
+    ```
+
+# Segnalare errori
+
+-   Il modo più pratico per segnalare errori è quello di sollevare una eccezione.
+
+-   Questa eccezione deve avere associato un tipo `SourceLocation`, in modo che il codice possa scrivere un messaggio all'utente che riporti anche la posizione in cui è stato riscontrato l'errore.
+
+-   Usare le eccezioni implica che non appena si trova un errore la compilazione si ferma. Questo non è molto *user-frendly*: se la compilazione è un processo lento (es., C++, Rust), sarebbe meglio produrre una *lista* di errori.
+
+-   Noi non lo faremo: il nostro compilatore sarà molto veloce, e non è facile implementare un metodo per produrre una lista di errori, per il modo in cui si effettua l'analisi sintattica (v. la prossima lezione).
