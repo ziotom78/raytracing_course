@@ -938,9 +938,9 @@ void print_token(const Token & t) {
     c = read_char(file)   # Read the "X" again
     ```
     
-    Questo permette di scrivere il *lexer* in maniera più elegante.
+    Questo equivale a leggere un carattere in anticipo (operazione di *look ahead*), e permette di scrivere il *lexer* in maniera più elegante.
     
--   L'operazione `unread_char` non fa nulla sul file (che è aperto in sola lettura!): semplicemente memorizza il carattere `X` in una variabile all'interno di `file`, e la restituisce alla successiva chiamata a `read_char`.
+-   L'operazione `unread_char` non altera il file: memorizza soltanto il carattere `X` in una variabile, e la restituisce alla successiva chiamata a `read_char`.
 
 # Uso di `unread_char`
 
