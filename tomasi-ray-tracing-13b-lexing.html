@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Esercitazione 13</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Esercitazione 13</h1>
+  <p class="subtitle">Analisi lessicale</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="implementazione-di-un-lexer" class="slide level1">
+<h1>Implementazione di un <em>lexer</em></h1>
+</section>
+<section id="esempio-di-formato" class="slide level1">
+<h1>Esempio di formato</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Declare a floating-point variable named &quot;clock&quot;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span> clock(<span class="dv">150</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Declare a few new materials. Each of them includes a BRDF and a pigment</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># We can split a definition over multiple lines and indent them as we like</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>material sky_material(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    diffuse(image(<span class="st">&quot;sky-dome.pfm&quot;</span>)),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    uniform(<span class="op">&lt;</span><span class="fl">0.7</span>, <span class="fl">0.5</span>, <span class="dv">1</span><span class="op">&gt;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>material ground_material(</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    diffuse(checkered(<span class="op">&lt;</span><span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">&gt;</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                      <span class="op">&lt;</span><span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span><span class="op">&gt;</span>, <span class="dv">4</span>)),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    uniform(<span class="op">&lt;</span><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span><span class="op">&gt;</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>material sphere_material(</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    specular(uniform(<span class="op">&lt;</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">&gt;</span>)),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    uniform(<span class="op">&lt;</span><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span><span class="op">&gt;</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a few shapes</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>sphere(sphere_material, translation([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]))</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># The language is flexible enough to permit spaces before &quot;(&quot;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>plane (ground_material, identity)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we use the &quot;clock&quot; variable! Note that vectors are notated using</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># square brackets ([]) instead of angular brackets (&lt;&gt;) like colors, and</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># that we can compose transformations through the &quot;*&quot; operator</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>plane(sky_material, translation([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>]) <span class="op">*</span> rotation_y(clock))</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a camera</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>camera(perspective, rotation_z(<span class="dv">30</span>) <span class="op">*</span> translation([<span class="op">-</span><span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">1</span>]), <span class="fl">1.0</span>, <span class="fl">1.0</span>)</span></code></pre></div>
+<p>Questo è il tipo di file per cui il nostro <em>lexer</em> dovrà produrre una lista di <em>token</em>.</p>
+</section>
+<section id="gestione-di-errori" class="slide level1">
+<h1>Gestione di errori</h1>
+</section>
+<section id="condizioni-di-errore" class="slide level1">
+<h1>Condizioni di errore</h1>
+<ul>
+<li><p>Già nella scrittura del <em>lexer</em>, prima di occuparsi dell’aspetto sintattico e semantico, è possibile imbattersi in errori nel codice.</p></li>
+<li><p>Ad esempio, la presenza di un carattere come <code>@</code> non è ammessa nel nostro linguaggio, e già il <em>lexer</em> può individuare questo tipo di errore.</p></li>
+<li><p>Un altro esempio è la dimenticanza di chiudere il doppio apice <code>"</code> alla fine di una stringa.</p></li>
+</ul>
+</section>
+<section id="come-segnalare-errori" class="slide level1">
+<h1>Come segnalare errori</h1>
+<ul>
+<li><p>Nei compilatori moderni, il tipo <code>Token</code> contiene al suo interno informazioni sulla posizione del token nel file sorgente (vedi ad esempio il tipo <a href="https://github.com/llvm/llvm-project/blob/llvmorg-10.0.0/clang/include/clang/Lex/Token.h"><code>Token</code></a> nella versione 10.0.0 del compilatore Clang: non è un’implementazione molto elegante, ma è ottimizzata per essere efficiente!).</p></li>
+<li><p>Questa informazione serve al <em>lexer</em> e al <em>parser</em> per stampare messaggi d’errore come il seguente (prodotto da Clang 10):</p>
+<pre class="text"><code>test.cpp:31:15: error: no viable conversion from &#39;int&#39; to &#39;std::string&#39;
+      (aka &#39;basic_string&lt;char&gt;&#39;)
+  std::string message = 127;
+              ^         ~~~</code></pre>
+<p>dove viene indicato il nome del file (<code>test.cpp</code>), il numero della riga (<code>31</code>) e il numero della colonna (<code>15</code>) in cui è stato trovato l’errore.</p></li>
+</ul>
+</section>
+<section id="tracciare-posizioni" class="slide level1">
+<h1>Tracciare posizioni</h1>
+<ul>
+<li><p>La posizione di un token in un file è identificata da tre informazioni:</p>
+<ol>
+<li>Il nome del file sorgente (una stringa);</li>
+<li>Il numero della riga (un intero, numerato partendo da 1);</li>
+<li>Il numero della colonna (idem).</li>
+</ol></li>
+<li><p>Il tipo <code>Token</code> dovrebbe quindi contenere questi tre campi. Nel caso di pytracer ho definito un tipo <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L20-L32"><code>SourceLocation</code></a>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SourceLocation:</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    file_name: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    line_num: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    col_num: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="posizioni-e-token" class="slide level1">
+<h1>Posizioni e token</h1>
+<ul>
+<li><p>In Python, la classe base <code>Token</code> contiene un campo di tipo <code>SourceLocation</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Token:</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A lexical token, used when parsing a scene file&quot;&quot;&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    location: SourceLocation</span></code></pre></div></li>
+<li><p>Ovviamente, se usate una <em>tagged union</em> dovete associare ad essa un <code>SourceLocation</code>; in Julia ad esempio fate così:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Token  <span class="co"># Use &quot;isa(token.value, …) to determine the token type</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    loc<span class="op">::</span>SourceLocation</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">::</span><span class="dt">Union</span>{LiteralNumber<span class="op">,</span> LiteralString<span class="op">,</span> Keyword<span class="op">,</span> Identifier<span class="op">,</span> <span class="dt">Symbol</span>}</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="segnalare-errori" class="slide level1">
+<h1>Segnalare errori</h1>
+<ul>
+<li><p>Il modo più pratico per segnalare errori è quello di sollevare una eccezione: pytracer definisce <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L149-L161"><code>GrammarError</code></a>.</p></li>
+<li><p>Questa eccezione deve essere associata a un <code>SourceLocation</code> oltre che al messaggio d’errore: in questo modo si può indicare all’utente la posizione in cui è stato riscontrato l’errore.</p></li>
+<li><p>Usare le eccezioni implica che non appena si trova un errore la compilazione si ferma. Questo non è molto <em>user-frendly</em>: se la compilazione è un processo lento (es., C++, Rust), sarebbe meglio produrre una <em>lista</em> di errori.</p></li>
+<li><p>Noi non lo faremo: il nostro compilatore sarà molto veloce, e non è facile implementare un metodo per produrre una lista di errori, per il modo in cui si effettua l’analisi sintattica (v. la prossima lezione).</p></li>
+</ul>
+</section>
+<section id="definizione-di-inputstream" class="slide level1">
+<h1>Definizione di <code>InputStream</code></h1>
+</section>
+<section id="uso-di-stream-nel-lexing" class="slide level1">
+<h1>Uso di <em>stream</em> nel <em>lexing</em></h1>
+<ul>
+<li><p>Abbiamo visto nella lezione di teoria che è necessario leggere un carattere alla volta dal file sorgente.</p></li>
+<li><p>È quindi l’ideale usare uno <em>stream</em> per leggere da file, con l’accortezza di aprire il file in modalità testo (non è un file binario come nel formato PFM!):</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(file_name, <span class="st">&quot;rt&quot;</span>) <span class="im">as</span> f:  <span class="co"># &quot;rt&quot; stands for &quot;*R*ead *T*ext&quot;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    …</span></code></pre></div></li>
+<li><p>A noi serve anche la possibilità di <em>look ahead</em>, ossia di leggere un carattere e rimetterlo a posto, nonché la capacità di tenere traccia della posizione nello <em>stream</em> in cui siamo arrivati (per produrre messaggi d’errore).</p></li>
+</ul>
+</section>
+<section id="definizione-di-inputstream-1" class="slide level1">
+<h1>Definizione di <code>InputStream</code></h1>
+<ul>
+<li><p>Il tipo <code>InputStream</code> deve contenere questi campi:</p>
+<ol>
+<li>Un campo <code>stream</code>, il cui tipo dipende dal linguaggio che usate: ad esempio <code>std::istream</code> in C++;</li>
+<li>Un campo <code>location</code> di tipo <code>SourceLocation</code>.</li>
+</ol></li>
+<li><p>Oltre a questi campi ne servono altri per implementare il <em>look-ahead</em>.</p></li>
+</ul>
+</section>
+<section id="look-ahead-di-caratteri" class="slide level1">
+<h1><em>Look ahead</em> di caratteri</h1>
+<ul>
+<li><p>Ricordiamoci che <code>InputStream</code> deve offrire la possibilità di «rimettere a posto» un carattere tramite la funzione <code>unread_char</code>.</p></li>
+<li><p>Quando si rimette a posto un carattere, bisogna rimettere a posto anche la posizione nel file, ossia il campo <code>location</code>.</p></li>
+<li><p>Questo significa che <code>InputStream</code> deve contenere anche i seguenti membri:</p>
+<ol>
+<li><code>saved_char</code> (che conterrà il carattere «dis-letto», oppure zero se non è stata chiamata <code>unread_char</code>);</li>
+<li><code>saved_location</code>, che contiene il valore di <code>SourceLocation</code> associato a <code>saved_char</code>.</li>
+</ol></li>
+</ul>
+</section>
+<section id="costruttore-di-inputstream" class="slide level1">
+<h1>Costruttore di <code>InputStream</code></h1>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> InputStream:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, stream, file_name<span class="op">=</span><span class="st">&quot;&quot;</span>, tabulations<span class="op">=</span><span class="dv">8</span>):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.stream <span class="op">=</span> stream</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Note that we start counting lines/columns from 1, not from 0</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.location <span class="op">=</span> SourceLocation(file_name<span class="op">=</span>file_name, line_num<span class="op">=</span><span class="dv">1</span>, col_num<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.saved_char <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.saved_location <span class="op">=</span> <span class="va">self</span>.location</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.tabulations <span class="op">=</span> tabulations</span></code></pre></div>
+</section>
+<section id="tracciamento-della-posizione" class="slide level1">
+<h1>Tracciamento della posizione</h1>
+<ul>
+<li><p>È molto importante tracciare correttamente la posizione nel file, ossia aggiornare in modo appropriato il campo <code>location</code>.</p></li>
+<li><p>Queste le regole da seguire:</p>
+<ol>
+<li>In presenza di un ritorno a capo come <code>\n</code>, si incrementa <code>line_num</code> e si resetta <code>col_num</code> a 1;</li>
+<li>In presenza di <code>\t</code> (tabulazione) si incrementa <code>col_num</code> di un valore convenzionale (solitamente 4 oppure 8);</li>
+<li>In tutti gli altri casi si incrementa <code>col_num</code> e si lascia intatto <code>line_num</code>.</li>
+</ol></li>
+<li><p>Questo approccio richiederebbe accorgimenti aggiuntivi per i <a href="./tomasi-ray-tracing-03a-images.html#lo-standard-unicode">caratteri Unicode</a>, ma il nostro formato ammette solo caratteri ASCII (per fortuna!).</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> InputStream:</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    …</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _update_pos(<span class="va">self</span>, ch):</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Update `location` after having read `ch` from the stream&quot;&quot;&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;&quot;</span>:</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Nothing to do!</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> ch <span class="op">==</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>:</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.location.line_num <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.location.col_num <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> ch <span class="op">==</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>:</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.location.col_num <span class="op">+=</span> <span class="va">self</span>.tabulations</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.location.col_num <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> read_char(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Read a new character from the stream&quot;&quot;&quot;</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.saved_char <span class="op">!=</span> <span class="st">&quot;&quot;</span>:</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Recover the «unread» character and return it</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>            ch <span class="op">=</span> <span class="va">self</span>.saved_char</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.saved_char <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Read a new character from the stream</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>            ch <span class="op">=</span> <span class="va">self</span>.stream.read(<span class="dv">1</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.saved_location <span class="op">=</span> copy(<span class="va">self</span>.location)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._update_pos(ch)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ch</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> unread_char(<span class="va">self</span>, ch):</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Push a character back to the stream&quot;&quot;&quot;</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="va">self</span>.saved_char <span class="op">==</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.saved_char <span class="op">=</span> ch</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.location <span class="op">=</span> copy(<span class="va">self</span>.saved_location)</span></code></pre></div>
+</section>
+<section id="definizione-di-token" class="slide level1">
+<h1>Definizione di <code>Token</code></h1>
+</section>
+<section id="definizione-di-token-1" class="slide level1">
+<h1>Definizione di <code>Token</code></h1>
+<ul>
+<li><p>Se usate C++ o Julia, siete incoraggiati ad implementare una <em>tagged union</em>, mentre se usate C# o Kotlin implementate una gerarchia di classi come nel codice di <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L35-L146">pytracer</a>.</p></li>
+<li><p>I tipi di token da definire sono i seguenti:</p>
+<ol>
+<li><em>Keyword</em>: usate un tipo enumerativo (<code>enum class</code> in <a href="https://en.cppreference.com/w/cpp/language/enum">C++</a> e <a href="https://kotlinlang.org/docs/enum-classes.html">Kotlin</a>, <a href="https://docs.julialang.org/en/v1/base/base/#Base.Enums.@enum"><code>@enum</code></a> in Julia, <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum"><code>enum</code></a> in C#), perché renderà il <em>parser</em> più efficiente;</li>
+<li><em>Identificatore</em>: è una stringa;</li>
+<li><em>Literal string</em>: è nuovamente una stringa;</li>
+<li><em>Literal number</em>: un valore floating-point;</li>
+<li><em>Symbol</em>: un carattere;</li>
+<li><em>Stop token</em> (vedi slide seguente).</li>
+</ol></li>
+</ul>
+</section>
+<section id="fine-del-file" class="slide level1">
+<h1>Fine del file</h1>
+<ul>
+<li><p>È necessario che il <em>lexer</em> sappia segnalare quando un file è finito.</p></li>
+<li><p>Nel codice di pytracer ho implementato un nuovo <em>token</em> «speciale»: <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L41-L45"><code>StopToken</code></a>. Esso viene emesso quando si è raggiunta la fine del file.</p></li>
+<li><p>Il trucco di <code>StopToken</code> non è indispensabile: si potrebbe semplicemente verificare quando lo stream è arrivato alla fine…</p></li>
+<li><p>…ma mostra quanto possa essere duttile il concetto di <em>token</em>. Trucchi del genere sono molto diffusi nei compilatori (v. ad esempio come Python gestisce i cambi di indentazione a livello di <em>lexer</em>).</p></li>
+</ul>
+</section>
+<section id="spazi-bianchi-e-ritorni-a-capo" class="slide level1">
+<h1>Spazi bianchi e ritorni a capo</h1>
+<ul>
+<li><p>Il nostro formato ignora gli spazi e i ritorni a capo tra <em>token</em>.</p></li>
+<li><p>Per implementare la funzione <code>read_token</code> ci serve una funzione che salti questi caratteri:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>WHITESPACE <span class="op">=</span> <span class="st">&quot; </span><span class="ch">\t\n\r</span><span class="st">&quot;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> skip_whitespaces(<span class="va">self</span>):</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Keep reading characters until a non-whitespace character is found&quot;&quot;&quot;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> ch <span class="kw">in</span> WHITESPACE:</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;&quot;</span>:</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Put the non-whitespace character back</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.unread_char(ch)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="leggere-un-token" class="slide level1">
+<h1>Leggere un <em>token</em></h1>
+<ul>
+<li><p>Dividete il metodo <code>read_token</code> in funzioni semplici <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L226-L279">come ho fatto in pytracer</a>, in modo che sia più chiaro da leggere.</p></li>
+<li><p>Dopo aver saltato ogni spazio bianco e commento, <code>read_token</code> deve leggere il primo carattere <code>c</code> e decidere che token vada creato:</p>
+<ol>
+<li>Se è un simbolo (virgola, parentesi, etc.), restituisce un <code>SymbolToken</code>;</li>
+<li>Se è una cifra, restituisce un <code>LiteralNumberToken</code>;</li>
+<li>Se è <code>"</code>, restituisce un <code>LiteralStringToken</code>;</li>
+<li>Se è una sequenza di caratteri <code>a</code>…<code>z</code>, restituisce un <code>KeywordToken</code> se la sequenza è una parola chiave, <code>IdentifierToken</code> altrimenti;</li>
+<li>Se il file è finito, restituisce <code>StopToken</code>.</li>
+</ol></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>SYMBOLS <span class="op">=</span> <span class="st">&quot;()&lt;&gt;[],*&quot;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_token(<span class="va">self</span>) <span class="op">-&gt;</span> Token:</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.skip_whitespaces()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># At this point we&#39;re sure that ch does *not* contain a whitespace character</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;&quot;</span>:</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># No more characters in the file, so return a StopToken</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> StopToken(location<span class="op">=</span><span class="va">self</span>.location)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># However, if it signals the start of a comment, we need to treat this condition</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># as if it were a whitespace</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;#&quot;</span>:</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Keep reading until the end of the line (include the case &quot;&quot;, which means</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># end-of-file)</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">self</span>.read_char() <span class="kw">not</span> <span class="kw">in</span> [<span class="st">&quot;</span><span class="ch">\r</span><span class="st">&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="st">&quot;&quot;</span>]:</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">pass</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Now skip all the whitespaces (including the characters &#39;\r&#39; and &#39;\n&#39;)</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.skip_whitespaces()</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Note that self.skip_whitespaces() reads the first non-whitespace and then puts</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># it back using self.unread_char()</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.unread_char(ch)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># At this point we must check what kind of token begins with the &quot;ch&quot; character </span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (which has been put back in the stream with self.unread_char). First,</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we save the position in the stream</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    token_location <span class="op">=</span> copy(<span class="va">self</span>.location)</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Now we read again ch (which was put back using self.unread_char)</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ch <span class="kw">in</span> SYMBOLS:</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># One-character symbol, like &#39;(&#39; or &#39;,&#39;</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> SymbolToken(token_location, ch)</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch <span class="op">==</span> <span class="st">&#39;&quot;&#39;</span>:</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A literal string (used for file names)</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_string_token(token_location<span class="op">=</span>token_location)</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch.isdecimal() <span class="kw">or</span> ch <span class="kw">in</span> [<span class="st">&quot;+&quot;</span>, <span class="st">&quot;-&quot;</span>, <span class="st">&quot;.&quot;</span>]:</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A floating-point number</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_float_token(first_char<span class="op">=</span>ch, token_location<span class="op">=</span>token_location)</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch.isalpha() <span class="kw">or</span> ch <span class="op">==</span> <span class="st">&quot;_&quot;</span>:</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Since it begins with an alphabetic character, it must either be a keyword</span></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>        <span class="co"># or a identifier</span></span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_keyword_or_identifier_token(</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>            first_char<span class="op">=</span>ch, </span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>            token_location<span class="op">=</span>token_location,</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>        <span class="co"># We got some weird character, like &#39;@` or `&amp;`</span></span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> GrammarError(<span class="va">self</span>.location, <span class="ss">f&quot;Invalid character </span><span class="sc">{ch}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+</section>
+<section id="test" class="slide level1">
+<h1>Test</h1>
+<ul>
+<li><p>Implementate due famiglie di test:</p>
+<ol>
+<li>Un <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1037-L1081">test per <code>InputStream</code></a>, che verifichi che la posizione in un file sia tracciata correttamente anche in caso ci siano ritorni a capo o si invochi <code>unread_char</code>;</li>
+<li>Un <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1083-L1103">test per <code>read_token</code></a>, che verifichi che spazi e commenti vengano saltati e che la sequenza di token sia prodotta correttamente.</li>
+</ol></li>
+<li><p>La scrittura di questi test vi permetterà di familiarizzare con i tipi che avete definito (soprattutto se usate <em>sum types</em>!), in previsione della prossima lezione.</p></li>
+</ul>
+</section>
+<section id="guida-per-lesercitazione" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+</section>
+<section id="guida-per-lesercitazione-1" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+<ol>
+<li>Create un nuovo <em>branch</em> chiamato <code>scenefiles</code>;</li>
+<li>Implementate <code>SourceLocation</code>;</li>
+<li>Implementate <code>GrammarError</code>;</li>
+<li>Implementate <code>InputStream</code> e le funzioni/metodi associati (soprattutto <code>unread_char</code>!);</li>
+<li>Implementate il tipo <code>Token</code>, facendo attenzione che tutti i tipi di <em>token</em> presenti in pytracer (sono sei in tutto);</li>
+<li>Implementate la funzione/metodo <code>read_token</code>.</li>
+</ol>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
+    </body>
+</html>
