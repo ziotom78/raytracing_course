@@ -988,52 +988,6 @@ float clock(150)</code></pre>
 <span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
 <span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;invalid numeric literal </span><span class="sc">{</span>literal<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
 </section>
-<section id="condizioni-di-errore" class="slide level1">
-<h1>Condizioni di errore</h1>
-<ul>
-<li><p>Già nella scrittura del <em>lexer</em>, prima di occuparsi dell’aspetto sintattico e semantico, è possibile imbattersi in errori nel codice.</p></li>
-<li><p>Ad esempio, la presenza di un carattere come <code>@</code> non è ammessa nel nostro linguaggio, e già il <em>lexer</em> può individuare questo tipo di errore.</p></li>
-<li><p>Un altro esempio è la dimenticanza di chiudere il doppio apice <code>"</code> alla fine di una stringa.</p></li>
-</ul>
-</section>
-<section id="come-segnalare-errori" class="slide level1">
-<h1>Come segnalare errori</h1>
-<ul>
-<li><p>Nei compilatori moderni, il tipo <code>Token</code> contiene al suo interno anche informazioni sulla posizione del token nel file sorgente (vedi ad esempio il tipo <a href="https://github.com/llvm/llvm-project/blob/llvmorg-10.0.0/clang/include/clang/Lex/Token.h"><code>Token</code></a> nella versione 10.0.0 del compilatore Clang: non è un’implementazione molto elegante, ma è ottimizzata per essere efficiente!).</p></li>
-<li><p>Questa informazione serve al <em>lexer</em> e al <em>parser</em> per stampare messaggi d’errore come il seguente (prodotto da Clang 10):</p>
-<pre class="text"><code>test.cpp:31:15: error: no viable conversion from &#39;int&#39; to &#39;std::string&#39;
-      (aka &#39;basic_string&lt;char&gt;&#39;)
-  std::string message = 127;
-              ^         ~~~</code></pre>
-<p>dove viene indicato il nome del file (<code>test.cpp</code>), il numero della riga (<code>31</code>) e il numero della colonna (<code>15</code>) in cui è stato trovato l’errore.</p></li>
-</ul>
-</section>
-<section id="tracciare-posizioni" class="slide level1">
-<h1>Tracciare posizioni</h1>
-<ul>
-<li><p>La posizione di un token in un file è identificata da tre informazioni:</p>
-<ol>
-<li>Il nome del file sorgente (una stringa);</li>
-<li>Il numero della riga (un intero, numerato partendo da 1);</li>
-<li>Il numero della colonna (idem).</li>
-</ol></li>
-<li><p>Il tipo <code>Token</code> dovrebbe quindi contenere anche questi tre campi. Nel caso di pytracer ho definito un tipo <code>SourceLocation</code> che ho usato nella definizione.</p></li>
-<li><p>Ad esempio, in Julia potete definire un token in questo modo:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Token  <span class="co"># Use &quot;isa(token.value, …) to determine the token type</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    loc<span class="op">::</span>SourceLocation</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">::</span><span class="dt">Union</span>{LiteralNumber<span class="op">,</span> LiteralString<span class="op">,</span> Keyword<span class="op">,</span> Identifier<span class="op">,</span> <span class="dt">Symbol</span>}</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div></li>
-</ul>
-</section>
-<section id="segnalare-errori" class="slide level1">
-<h1>Segnalare errori</h1>
-<ul>
-<li><p>Il modo più pratico per segnalare errori è quello di sollevare una eccezione.</p></li>
-<li><p>Questa eccezione deve avere associato un tipo <code>SourceLocation</code>, in modo che il codice possa scrivere un messaggio all’utente che riporti anche la posizione in cui è stato riscontrato l’errore.</p></li>
-<li><p>Usare le eccezioni implica che non appena si trova un errore la compilazione si ferma. Questo non è molto <em>user-frendly</em>: se la compilazione è un processo lento (es., C++, Rust), sarebbe meglio produrre una <em>lista</em> di errori.</p></li>
-<li><p>Noi non lo faremo: il nostro compilatore sarà molto veloce, e non è facile implementare un metodo per produrre una lista di errori, per il modo in cui si effettua l’analisi sintattica (v. la prossima lezione).</p></li>
-</ul>
-</section>
     </div>
   </div>
 
