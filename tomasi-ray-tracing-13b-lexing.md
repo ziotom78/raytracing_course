@@ -255,17 +255,22 @@ class InputStream:
 
 # Spazi bianchi e ritorni a capo
 
--   Il nostro formato ignora gli spazi e i ritorni a capo tra *token*.
+-   Il nostro formato ignora, spazi, ritorni a capo tra *token* e commenti.
 
 -   Per implementare la funzione `read_token` ci serve una funzione che salti questi caratteri:
 
     ```python
     WHITESPACE = " \t\n\r"
 
-    def skip_whitespaces(self):
-        """Keep reading characters until a non-whitespace character is found"""
+    def skip_whitespaces_and_comments(self):
+        """Keep reading characters until a non-whitespace/non-comment character is found"""
         ch = self.read_char()
-        while ch in WHITESPACE:
+        while ch in WHITESPACE or ch == "#":
+            if ch == "#":
+                # It's a comment! Keep reading until the end of the line (include the case "", the end-of-file)
+                while self.read_char() not in ["\r", "\n", ""]:
+                    pass
+
             ch = self.read_char()
             if ch == "":
                 return
@@ -276,7 +281,7 @@ class InputStream:
 
 # Leggere un *token*
 
--   Dividete il metodo `read_token` in funzioni semplici [come ho fatto in pytracer](https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L226-L279), in modo che sia più chiaro da leggere.
+-   Dividete il metodo `read_token` in funzioni semplici [come ho fatto in pytracer](https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L231-L284), in modo che sia più chiaro da leggere.
 
 -   Dopo aver saltato ogni spazio bianco e commento, `read_token` deve leggere il primo carattere `c` e decidere che token vada creato:
 
@@ -292,7 +297,7 @@ class InputStream:
 SYMBOLS = "()<>[],*"
 
 def read_token(self) -> Token:
-    self.skip_whitespaces()
+    self.skip_whitespaces_and_comments()
 
     # At this point we're sure that ch does *not* contain a whitespace character
     ch = self.read_char()
@@ -300,29 +305,10 @@ def read_token(self) -> Token:
         # No more characters in the file, so return a StopToken
         return StopToken(location=self.location)
 
-    # However, if it signals the start of a comment, we need to treat this condition
-    # as if it were a whitespace
-    if ch == "#":
-        # Keep reading until the end of the line (include the case "", which means
-        # end-of-file)
-        while self.read_char() not in ["\r", "\n", ""]:
-            pass
-
-        # Now skip all the whitespaces (including the characters '\r' and '\n')
-        self.skip_whitespaces()
-
-        # Note that self.skip_whitespaces() reads the first non-whitespace and then puts
-        # it back using self.unread_char()
-    else:
-        self.unread_char(ch)
-
     # At this point we must check what kind of token begins with the "ch" character 
     # (which has been put back in the stream with self.unread_char). First,
     # we save the position in the stream
     token_location = copy(self.location)
-
-    # Now we read again ch (which was put back using self.unread_char)
-    ch = self.read_char()
 
     if ch in SYMBOLS:
         # One-character symbol, like '(' or ','
@@ -350,7 +336,7 @@ def read_token(self) -> Token:
 -   Implementate due famiglie di test:
 
     #.  Un [test per `InputStream`](https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1037-L1081), che verifichi che la posizione in un file sia tracciata correttamente anche in caso ci siano ritorni a capo o si invochi `unread_char`;
-    #.  Un [test per `read_token`](https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1083-L1103), che verifichi che spazi e commenti vengano saltati e che la sequenza di token sia prodotta correttamente.
+    #.  Un [test per `read_token`](https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1083-L1104), che verifichi che spazi e commenti vengano saltati e che la sequenza di token sia prodotta correttamente.
     
 -   La scrittura di questi test vi permetterà di familiarizzare con i tipi che avete definito (soprattutto se usate *sum types*!), in previsione della prossima lezione.
 

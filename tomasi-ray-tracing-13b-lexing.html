@@ -331,26 +331,31 @@
 <section id="spazi-bianchi-e-ritorni-a-capo" class="slide level1">
 <h1>Spazi bianchi e ritorni a capo</h1>
 <ul>
-<li><p>Il nostro formato ignora gli spazi e i ritorni a capo tra <em>token</em>.</p></li>
+<li><p>Il nostro formato ignora, spazi, ritorni a capo tra <em>token</em> e commenti.</p></li>
 <li><p>Per implementare la funzione <code>read_token</code> ci serve una funzione che salti questi caratteri:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>WHITESPACE <span class="op">=</span> <span class="st">&quot; </span><span class="ch">\t\n\r</span><span class="st">&quot;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> skip_whitespaces(<span class="va">self</span>):</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Keep reading characters until a non-whitespace character is found&quot;&quot;&quot;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> skip_whitespaces_and_comments(<span class="va">self</span>):</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Keep reading characters until a non-whitespace/non-comment character is found&quot;&quot;&quot;</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> ch <span class="kw">in</span> WHITESPACE:</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;&quot;</span>:</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Put the non-whitespace character back</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.unread_char(ch)</span></code></pre></div></li>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> ch <span class="kw">in</span> WHITESPACE <span class="kw">or</span> ch <span class="op">==</span> <span class="st">&quot;#&quot;</span>:</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;#&quot;</span>:</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>            <span class="co"># It&#39;s a comment! Keep reading until the end of the line (include the case &quot;&quot;, the end-of-file)</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="va">self</span>.read_char() <span class="kw">not</span> <span class="kw">in</span> [<span class="st">&quot;</span><span class="ch">\r</span><span class="st">&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="st">&quot;&quot;</span>]:</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                <span class="cf">pass</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;&quot;</span>:</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Put the non-whitespace character back</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.unread_char(ch)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="leggere-un-token" class="slide level1">
 <h1>Leggere un <em>token</em></h1>
 <ul>
-<li><p>Dividete il metodo <code>read_token</code> in funzioni semplici <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L226-L279">come ho fatto in pytracer</a>, in modo che sia più chiaro da leggere.</p></li>
+<li><p>Dividete il metodo <code>read_token</code> in funzioni semplici <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L231-L284">come ho fatto in pytracer</a>, in modo che sia più chiaro da leggere.</p></li>
 <li><p>Dopo aver saltato ogni spazio bianco e commento, <code>read_token</code> deve leggere il primo carattere <code>c</code> e decidere che token vada creato:</p>
 <ol>
 <li>Se è un simbolo (virgola, parentesi, etc.), restituisce un <code>SymbolToken</code>;</li>
@@ -366,7 +371,7 @@
 <div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>SYMBOLS <span class="op">=</span> <span class="st">&quot;()&lt;&gt;[],*&quot;</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> read_token(<span class="va">self</span>) <span class="op">-&gt;</span> Token:</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.skip_whitespaces()</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.skip_whitespaces_and_comments()</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># At this point we&#39;re sure that ch does *not* contain a whitespace character</span></span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
@@ -374,49 +379,30 @@
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># No more characters in the file, so return a StopToken</span></span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> StopToken(location<span class="op">=</span><span class="va">self</span>.location)</span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># However, if it signals the start of a comment, we need to treat this condition</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># as if it were a whitespace</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;#&quot;</span>:</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Keep reading until the end of the line (include the case &quot;&quot;, which means</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># end-of-file)</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">self</span>.read_char() <span class="kw">not</span> <span class="kw">in</span> [<span class="st">&quot;</span><span class="ch">\r</span><span class="st">&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="st">&quot;&quot;</span>]:</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">pass</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Now skip all the whitespaces (including the characters &#39;\r&#39; and &#39;\n&#39;)</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.skip_whitespaces()</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Note that self.skip_whitespaces() reads the first non-whitespace and then puts</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># it back using self.unread_char()</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.unread_char(ch)</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># At this point we must check what kind of token begins with the &quot;ch&quot; character </span></span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (which has been put back in the stream with self.unread_char). First,</span></span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we save the position in the stream</span></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    token_location <span class="op">=</span> copy(<span class="va">self</span>.location)</span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Now we read again ch (which was put back using self.unread_char)</span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ch <span class="kw">in</span> SYMBOLS:</span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># One-character symbol, like &#39;(&#39; or &#39;,&#39;</span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> SymbolToken(token_location, ch)</span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch <span class="op">==</span> <span class="st">&#39;&quot;&#39;</span>:</span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A literal string (used for file names)</span></span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_string_token(token_location<span class="op">=</span>token_location)</span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch.isdecimal() <span class="kw">or</span> ch <span class="kw">in</span> [<span class="st">&quot;+&quot;</span>, <span class="st">&quot;-&quot;</span>, <span class="st">&quot;.&quot;</span>]:</span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A floating-point number</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_float_token(first_char<span class="op">=</span>ch, token_location<span class="op">=</span>token_location)</span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch.isalpha() <span class="kw">or</span> ch <span class="op">==</span> <span class="st">&quot;_&quot;</span>:</span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Since it begins with an alphabetic character, it must either be a keyword</span></span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>        <span class="co"># or a identifier</span></span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_keyword_or_identifier_token(</span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>            first_char<span class="op">=</span>ch, </span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>            token_location<span class="op">=</span>token_location,</span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>        <span class="co"># We got some weird character, like &#39;@` or `&amp;`</span></span>
-<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> GrammarError(<span class="va">self</span>.location, <span class="ss">f&quot;Invalid character </span><span class="sc">{ch}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># At this point we must check what kind of token begins with the &quot;ch&quot; character </span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (which has been put back in the stream with self.unread_char). First,</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we save the position in the stream</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    token_location <span class="op">=</span> copy(<span class="va">self</span>.location)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ch <span class="kw">in</span> SYMBOLS:</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># One-character symbol, like &#39;(&#39; or &#39;,&#39;</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> SymbolToken(token_location, ch)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch <span class="op">==</span> <span class="st">&#39;&quot;&#39;</span>:</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A literal string (used for file names)</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_string_token(token_location<span class="op">=</span>token_location)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch.isdecimal() <span class="kw">or</span> ch <span class="kw">in</span> [<span class="st">&quot;+&quot;</span>, <span class="st">&quot;-&quot;</span>, <span class="st">&quot;.&quot;</span>]:</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A floating-point number</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_float_token(first_char<span class="op">=</span>ch, token_location<span class="op">=</span>token_location)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch.isalpha() <span class="kw">or</span> ch <span class="op">==</span> <span class="st">&quot;_&quot;</span>:</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Since it begins with an alphabetic character, it must either be a keyword</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># or a identifier</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_keyword_or_identifier_token(</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>            first_char<span class="op">=</span>ch, </span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>            token_location<span class="op">=</span>token_location,</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># We got some weird character, like &#39;@` or `&amp;`</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> GrammarError(<span class="va">self</span>.location, <span class="ss">f&quot;Invalid character </span><span class="sc">{ch}</span><span class="ss">&quot;</span>)</span></code></pre></div>
 </section>
 <section id="test" class="slide level1">
 <h1>Test</h1>
@@ -424,7 +410,7 @@
 <li><p>Implementate due famiglie di test:</p>
 <ol>
 <li>Un <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1037-L1081">test per <code>InputStream</code></a>, che verifichi che la posizione in un file sia tracciata correttamente anche in caso ci siano ritorni a capo o si invochi <code>unread_char</code>;</li>
-<li>Un <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1083-L1103">test per <code>read_token</code></a>, che verifichi che spazi e commenti vengano saltati e che la sequenza di token sia prodotta correttamente.</li>
+<li>Un <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1083-L1104">test per <code>read_token</code></a>, che verifichi che spazi e commenti vengano saltati e che la sequenza di token sia prodotta correttamente.</li>
 </ol></li>
 <li><p>La scrittura di questi test vi permetterà di familiarizzare con i tipi che avete definito (soprattutto se usate <em>sum types</em>!), in previsione della prossima lezione.</p></li>
 </ul>
