@@ -31,6 +31,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Esercitazione 12 (2021-05-26): [rendering (parte 2)](tomasi-ray-tracing-12b-path-tracing2.html)
 -   Lezione 13 (2021-06-07): [analisi lessicale](tomasi-ray-tracing-13a-lexing.html)
 -   Esercitazione 13 (2021-06-09): [implementazione di un analizzatore lessicale](tomasi-ray-tracing-13b-lexing.html)
+-   Lezione 14 (2021-06-14): [analisi sintattica e semantica](tomasi-ray-tracing-14a-parsing.html)
 
 
 # Indice dei contenuti
