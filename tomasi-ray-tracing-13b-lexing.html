@@ -168,7 +168,7 @@
 <li>Il numero della riga (un intero, numerato partendo da 1);</li>
 <li>Il numero della colonna (idem).</li>
 </ol></li>
-<li><p>Il tipo <code>Token</code> dovrebbe quindi contenere questi tre campi. Nel caso di pytracer ho definito un tipo <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L20-L32"><code>SourceLocation</code></a>:</p>
+<li><p>Il tipo <code>Token</code> dovrebbe quindi contenere questi tre campi. Nel caso di pytracer ho definito un tipo <a href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L20-L32"><code>SourceLocation</code></a>:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SourceLocation:</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    file_name: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
@@ -187,14 +187,14 @@
 <li><p>Ovviamente, se usate una <em>tagged union</em> dovete associare ad essa un <code>SourceLocation</code>; in Julia ad esempio fate così:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Token  <span class="co"># Use &quot;isa(token.value, …) to determine the token type</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    loc<span class="op">::</span>SourceLocation</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">::</span><span class="dt">Union</span>{LiteralNumber<span class="op">,</span> LiteralString<span class="op">,</span> Keyword<span class="op">,</span> Identifier<span class="op">,</span> <span class="dt">Symbol</span>}</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">::</span><span class="dt">Union</span>{LiteralNumber<span class="op">,</span> LiteralString<span class="op">,</span> Keyword<span class="op">,</span> Identifier<span class="op">,</span> <span class="dt">Symbol</span><span class="op">,</span> StopToken}</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="segnalare-errori" class="slide level1">
 <h1>Segnalare errori</h1>
 <ul>
-<li><p>Il modo più pratico per segnalare errori è quello di sollevare una eccezione: pytracer definisce <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L149-L161"><code>GrammarError</code></a>.</p></li>
+<li><p>Il modo più pratico per segnalare errori è quello di sollevare una eccezione: pytracer definisce <a href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L149-L161"><code>GrammarError</code></a>.</p></li>
 <li><p>Questa eccezione deve essere associata a un <code>SourceLocation</code> oltre che al messaggio d’errore: in questo modo si può indicare all’utente la posizione in cui è stato riscontrato l’errore.</p></li>
 <li><p>Usare le eccezioni implica che non appena si trova un errore la compilazione si ferma. Questo non è molto <em>user-frendly</em>: se la compilazione è un processo lento (es., C++, Rust), sarebbe meglio produrre una <em>lista</em> di errori.</p></li>
 <li><p>Noi non lo faremo: il nostro compilatore sarà molto veloce, e non è facile implementare un metodo per produrre una lista di errori, per il modo in cui si effettua l’analisi sintattica (v. la prossima lezione).</p></li>
@@ -307,7 +307,7 @@
 <section id="definizione-di-token-1" class="slide level1">
 <h1>Definizione di <code>Token</code></h1>
 <ul>
-<li><p>Se usate C++ o Julia, siete incoraggiati ad implementare una <em>tagged union</em>, mentre se usate C# o Kotlin implementate una gerarchia di classi come nel codice di <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L35-L146">pytracer</a>.</p></li>
+<li><p>Se usate C++ o Julia, siete incoraggiati ad implementare una <em>tagged union</em>, mentre se usate C# o Kotlin implementate una gerarchia di classi come nel codice di <a href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146">pytracer</a>.</p></li>
 <li><p>I tipi di token da definire sono i seguenti:</p>
 <ol>
 <li><em>Keyword</em>: usate un tipo enumerativo (<code>enum class</code> in <a href="https://en.cppreference.com/w/cpp/language/enum">C++</a> e <a href="https://kotlinlang.org/docs/enum-classes.html">Kotlin</a>, <a href="https://docs.julialang.org/en/v1/base/base/#Base.Enums.@enum"><code>@enum</code></a> in Julia, <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum"><code>enum</code></a> in C#), perché renderà il <em>parser</em> più efficiente;</li>
@@ -323,7 +323,7 @@
 <h1>Fine del file</h1>
 <ul>
 <li><p>È necessario che il <em>lexer</em> sappia segnalare quando un file è finito.</p></li>
-<li><p>Nel codice di pytracer ho implementato un nuovo <em>token</em> «speciale»: <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L41-L45"><code>StopToken</code></a>. Esso viene emesso quando si è raggiunta la fine del file.</p></li>
+<li><p>Nel codice di pytracer ho implementato un nuovo <em>token</em> «speciale»: <a href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L41-L45"><code>StopToken</code></a>. Esso viene emesso quando si è raggiunta la fine del file.</p></li>
 <li><p>Il trucco di <code>StopToken</code> non è indispensabile: si potrebbe semplicemente verificare quando lo stream è arrivato alla fine…</p></li>
 <li><p>…ma mostra quanto possa essere duttile il concetto di <em>token</em>. Trucchi del genere sono molto diffusi nei compilatori (v. ad esempio come Python gestisce i cambi di indentazione a livello di <em>lexer</em>).</p></li>
 </ul>
@@ -355,7 +355,7 @@
 <section id="leggere-un-token" class="slide level1">
 <h1>Leggere un <em>token</em></h1>
 <ul>
-<li><p>Dividete il metodo <code>read_token</code> in funzioni semplici <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L231-L284">come ho fatto in pytracer</a>, in modo che sia più chiaro da leggere.</p></li>
+<li><p>Dividete il metodo <code>read_token</code> in funzioni semplici <a href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L231-L284">come ho fatto in pytracer</a>, in modo che sia più chiaro da leggere.</p></li>
 <li><p>Dopo aver saltato ogni spazio bianco e commento, <code>read_token</code> deve leggere il primo carattere <code>c</code> e decidere che token vada creato:</p>
 <ol>
 <li>Se è un simbolo (virgola, parentesi, etc.), restituisce un <code>SymbolToken</code>;</li>
@@ -409,8 +409,8 @@
 <ul>
 <li><p>Implementate due famiglie di test:</p>
 <ol>
-<li>Un <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1037-L1081">test per <code>InputStream</code></a>, che verifichi che la posizione in un file sia tracciata correttamente anche in caso ci siano ritorni a capo o si invochi <code>unread_char</code>;</li>
-<li>Un <a href="https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1083-L1104">test per <code>read_token</code></a>, che verifichi che spazi e commenti vengano saltati e che la sequenza di token sia prodotta correttamente.</li>
+<li>Un <a href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1037-L1081">test per <code>InputStream</code></a>, che verifichi che la posizione in un file sia tracciata correttamente anche in caso ci siano ritorni a capo o si invochi <code>unread_char</code>;</li>
+<li>Un <a href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1083-L1104">test per <code>read_token</code></a>, che verifichi che spazi e commenti vengano saltati e che la sequenza di token sia prodotta correttamente.</li>
 </ol></li>
 <li><p>La scrittura di questi test vi permetterà di familiarizzare con i tipi che avete definito (soprattutto se usate <em>sum types</em>!), in previsione della prossima lezione.</p></li>
 </ul>

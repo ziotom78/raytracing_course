@@ -83,7 +83,7 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
     #.  Il numero della riga (un intero, numerato partendo da 1);
     #.  Il numero della colonna (idem).
     
--   Il tipo `Token` dovrebbe quindi contenere questi tre campi. Nel caso di pytracer ho definito un tipo [`SourceLocation`](https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L20-L32):
+-   Il tipo `Token` dovrebbe quindi contenere questi tre campi. Nel caso di pytracer ho definito un tipo [`SourceLocation`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L20-L32):
 
     ```python
     @dataclass
@@ -109,13 +109,13 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
     ```julia
     struct Token  # Use "isa(token.value, …) to determine the token type
         loc::SourceLocation
-        value::Union{LiteralNumber, LiteralString, Keyword, Identifier, Symbol}
+        value::Union{LiteralNumber, LiteralString, Keyword, Identifier, Symbol, StopToken}
     end
     ```
 
 # Segnalare errori
 
--   Il modo più pratico per segnalare errori è quello di sollevare una eccezione: pytracer definisce [`GrammarError`](https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L149-L161).
+-   Il modo più pratico per segnalare errori è quello di sollevare una eccezione: pytracer definisce [`GrammarError`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L149-L161).
 
 -   Questa eccezione deve essere associata a un `SourceLocation` oltre che al messaggio d'errore: in questo modo si può indicare all'utente la posizione in cui è stato riscontrato l'errore.
 
@@ -232,7 +232,7 @@ class InputStream:
 
 # Definizione di `Token`
 
--   Se usate C++ o Julia, siete incoraggiati ad implementare una *tagged union*, mentre se usate C\# o Kotlin implementate una gerarchia di classi come nel codice di [pytracer](https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L35-L146).
+-   Se usate C++ o Julia, siete incoraggiati ad implementare una *tagged union*, mentre se usate C\# o Kotlin implementate una gerarchia di classi come nel codice di [pytracer](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146).
 
 -   I tipi di token da definire sono i seguenti:
 
@@ -247,7 +247,7 @@ class InputStream:
 
 -   È necessario che il *lexer* sappia segnalare quando un file è finito.
 
--   Nel codice di pytracer ho implementato un nuovo *token* «speciale»: [`StopToken`](https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L41-L45). Esso viene emesso quando si è raggiunta la fine del file.
+-   Nel codice di pytracer ho implementato un nuovo *token* «speciale»: [`StopToken`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L41-L45). Esso viene emesso quando si è raggiunta la fine del file.
 
 -   Il trucco di `StopToken` non è indispensabile: si potrebbe semplicemente verificare quando lo stream è arrivato alla fine…
 
@@ -281,7 +281,7 @@ class InputStream:
 
 # Leggere un *token*
 
--   Dividete il metodo `read_token` in funzioni semplici [come ho fatto in pytracer](https://github.com/ziotom78/pytracer/blob/scenefiles/scene_file.py#L231-L284), in modo che sia più chiaro da leggere.
+-   Dividete il metodo `read_token` in funzioni semplici [come ho fatto in pytracer](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L231-L284), in modo che sia più chiaro da leggere.
 
 -   Dopo aver saltato ogni spazio bianco e commento, `read_token` deve leggere il primo carattere `c` e decidere che token vada creato:
 
@@ -335,8 +335,8 @@ def read_token(self) -> Token:
 
 -   Implementate due famiglie di test:
 
-    #.  Un [test per `InputStream`](https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1037-L1081), che verifichi che la posizione in un file sia tracciata correttamente anche in caso ci siano ritorni a capo o si invochi `unread_char`;
-    #.  Un [test per `read_token`](https://github.com/ziotom78/pytracer/blob/scenefiles/test_all.py#L1083-L1104), che verifichi che spazi e commenti vengano saltati e che la sequenza di token sia prodotta correttamente.
+    #.  Un [test per `InputStream`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1037-L1081), che verifichi che la posizione in un file sia tracciata correttamente anche in caso ci siano ritorni a capo o si invochi `unread_char`;
+    #.  Un [test per `read_token`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1083-L1104), che verifichi che spazi e commenti vengano saltati e che la sequenza di token sia prodotta correttamente.
     
 -   La scrittura di questi test vi permetterà di familiarizzare con i tipi che avete definito (soprattutto se usate *sum types*!), in previsione della prossima lezione.
 
