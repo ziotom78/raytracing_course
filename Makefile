@@ -7,6 +7,7 @@ JS_FILES = \
 
 all: \
 	tomasi-ray-tracing-14a-parsing.html \
+	tomasi-ray-tracing-13b-lexing.html \
 	tomasi-ray-tracing-13a-lexing.html \
 	tomasi-ray-tracing-12b-path-tracing2.html \
 	tomasi-ray-tracing-12a-path-tracing2.html \
