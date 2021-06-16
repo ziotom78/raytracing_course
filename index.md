@@ -85,7 +85,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Roulette russa](tomasi-ray-tracing-12a-path-tracing2.html#/roulette-russa)
 -   [*Antialiasing*](tomasi-ray-tracing-12a-path-tracing2.html#/aliasing-e-antialiasing)
 -   [Test della fornace](tomasi-ray-tracing-12b-path-tracing2.html#/test-1)
--   [Terminologia](tomasi-ray-tracing-13a-lexing.html#/terminologia): lessico, sintassi, semantica, *token*, [*look-ahead*](tomasi-ray-tracing-13a-lexing.html#/tornare-indietro)
+-   [Terminologia della teoria dei compilatori](tomasi-ray-tracing-13a-lexing.html#/terminologia): lessico, sintassi, semantica, *token*, [*look-ahead*](tomasi-ray-tracing-13a-lexing.html#/tornare-indietro)
 
 
 ## Parti non richieste per l'esame
