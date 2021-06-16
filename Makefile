@@ -6,6 +6,7 @@ JS_FILES = \
 .phony: all
 
 all: \
+	tomasi-ray-tracing-14b-parsing.html \
 	tomasi-ray-tracing-14a-parsing.html \
 	tomasi-ray-tracing-13b-lexing.html \
 	tomasi-ray-tracing-13a-lexing.html \

@@ -156,20 +156,20 @@
 </section>
 <section id="parse_color" class="slide level1">
 <h1><code>parse_color</code></h1>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expect_symbol(input_file: InputFile, symbol: <span class="bu">str</span>):</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Read a token from `input_file` and check that it matches `symbol`.&quot;&quot;&quot;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> input_file.read_token()</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expect_symbol(stream: InputStream, symbol: <span class="bu">str</span>):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Read a token from `stream` and check that it matches `symbol`.&quot;&quot;&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> stream.read_token()</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(token, SymbolToken) <span class="kw">or</span> token.symbol <span class="op">!=</span> symbol:</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> parser_error(token, <span class="ss">f&quot;got &#39;</span><span class="sc">{</span>token<span class="sc">}</span><span class="ss">&#39; instead of &#39;</span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        </span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Don&#39;t bother returning the character: we were already expecting it</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expect_number(input_file: InputFile) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Read a token from `input_file` and check that it is a literal number.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expect_number(stream: InputStream) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Read a token from `stream` and check that it is a literal number.</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">    Return the number as a ``float``.&quot;&quot;&quot;</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> input_file.read_token()</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> stream.read_token()</span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(token, LiteralNumberToken):</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> parser_error(token, <span class="ss">f&quot;got &#39;</span><span class="sc">{</span>token<span class="sc">}</span><span class="ss">&#39; instead of a number&quot;</span>)</span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        </span>
@@ -179,14 +179,14 @@
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># This parses a list of tokens like &quot;&lt;0.7, 0.5, 1&gt;&quot;. Note that functions</span></span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># with name &quot;expect_*&quot; only read *one* token, while functions named</span></span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co"># &quot;parse_*&quot; read more than one token.</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_color(input_file: InputFile) <span class="op">-&gt;</span> Color:</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    expect_symbol(input_file, <span class="st">&quot;&lt;&quot;</span>)</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    red <span class="op">=</span> expect_number(input_file)</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    expect_symbol(input_file, <span class="st">&quot;,&quot;</span>)</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    green <span class="op">=</span> expect_number(input_file)</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    expect_symbol(input_file, <span class="st">&quot;,&quot;</span>)</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    blue <span class="op">=</span> expect_number(input_file)</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    expect_symbol(input_file, <span class="st">&quot;&gt;&quot;</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_color(stream: InputStream) <span class="op">-&gt;</span> Color:</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    expect_symbol(stream, <span class="st">&quot;&lt;&quot;</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    red <span class="op">=</span> expect_number(stream)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    expect_symbol(stream, <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    green <span class="op">=</span> expect_number(stream)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    expect_symbol(stream, <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    blue <span class="op">=</span> expect_number(stream)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    expect_symbol(stream, <span class="st">&quot;&gt;&quot;</span>)</span>
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create the &quot;Color&quot; object *immediately* (not something a real-world</span></span>
 <span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># compiler will do, but our case is simpler than a real compiler)</span></span>
@@ -194,36 +194,36 @@
 </section>
 <section id="parse_pigment" class="slide level1">
 <h1><code>parse_pigment</code></h1>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_pigment(input_file: InputFile) <span class="op">-&gt;</span> Pigment:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    keyword <span class="op">=</span> expect_keywords(input_file, [</span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_pigment(stream: InputStream) <span class="op">-&gt;</span> Pigment:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    keyword <span class="op">=</span> expect_keywords(stream, [</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        KeywordEnum.UNIFORM, </span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        KeywordEnum.CHECKERED, </span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        KeywordEnum.IMAGE,</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    ])</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    expect_symbol(input_file, <span class="st">&quot;(&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    expect_symbol(stream, <span class="st">&quot;(&quot;</span>)</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> keyword <span class="op">==</span> KeywordEnum.UNIFORM:</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Example: &quot;uniform(&lt;0.7, 0.5, 1&gt;)&quot;</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> parse_color(input_file)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> parse_color(stream)</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        </span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> UniformPigment(color<span class="op">=</span>color)</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> keyword <span class="op">==</span> KeywordEnum.CHECKERED:</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Example: &quot;checkered(&lt;0.3, 0.5, 0.1&gt;, &lt;0.1, 0.2, 0.5&gt;, 4)&quot;</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        color1 <span class="op">=</span> parse_color(input_file)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        color1 <span class="op">=</span> parse_color(stream)</span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        expect_symbol(input_file, <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;,&quot;</span>)</span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        color2 <span class="op">=</span> parse_color(input_file)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        color2 <span class="op">=</span> parse_color(stream)</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        expect_symbol(input_file, <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;,&quot;</span>)</span>
 <span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        num_of_steps <span class="op">=</span> <span class="bu">int</span>(expect_number(input_file))</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        num_of_steps <span class="op">=</span> <span class="bu">int</span>(expect_number(stream))</span>
 <span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        </span>
 <span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> CheckeredPigment(color1<span class="op">=</span>color1, color2<span class="op">=</span>color2, num_of_steps<span class="op">=</span>num_of_steps)</span>
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> …: <span class="co"># Other pigments</span></span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        …</span>
 <span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    expect_symbol(input_file, <span class="st">&quot;)&quot;</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    expect_symbol(stream, <span class="st">&quot;)&quot;</span>)</span>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code></pre></div>
 </section>
 <section id="analisi-semantica-e-oltre" class="slide level1">
@@ -335,22 +335,22 @@
 <h1>Dichiarazione di un <code>float</code></h1>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the first token of the next statement. Only a handful of</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># keywords are allowed at the beginning of a statement.</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>what <span class="op">=</span> expect_keywords(input_file, [KeywordEnum.FLOAT, …])</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>what <span class="op">=</span> expect_keywords(stream, [KeywordEnum.FLOAT, …])</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> what <span class="op">==</span> KeywordEnum.FLOAT:</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We are going to declare a new &quot;float&quot; variable</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Read the name of the variable</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="op">=</span> expect_identifier(input_file)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="op">=</span> expect_identifier(stream)</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Now we must get a &quot;(&quot;</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    expect_symbol(input_file, <span class="st">&quot;(&quot;</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    expect_symbol(stream, <span class="st">&quot;(&quot;</span>)</span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Read the literal number to associate with the variable</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    variable_value <span class="op">=</span> expect_number(input_file, scene)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    variable_value <span class="op">=</span> expect_number(stream, scene)</span>
 <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check that the statement ends with &quot;)&quot;</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    expect_symbol(input_file, <span class="st">&quot;)&quot;</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    expect_symbol(stream, <span class="st">&quot;)&quot;</span>)</span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Done! Add the variable to the list</span></span>
 <span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    variable_table[variable_name] <span class="op">=</span> variable_value</span>
@@ -370,27 +370,27 @@
 
 <div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For simplicity, let&#39;s consider just two kinds of transformations</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    transformation_kw <span class="op">=</span> expect_keywords(input_file, [</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    transformation_kw <span class="op">=</span> expect_keywords(stream, [</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        KeywordEnum.TRANSLATION,</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        KeywordEnum.ROTATION_Y,</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    ])</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> transformation_kw <span class="op">==</span> KeywordEnum.TRANSLATION:</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        expect_symbol(input_file, <span class="st">&quot;(&quot;</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        result <span class="op">*=</span> translation(parse_vector(input_file, scene))</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        expect_symbol(input_file, <span class="st">&quot;)&quot;</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;(&quot;</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        result <span class="op">*=</span> translation(parse_vector(stream, scene))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;)&quot;</span>)</span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> transformation_kw <span class="op">==</span> KeywordEnum.ROTATION_Y:</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        expect_symbol(input_file, <span class="st">&quot;(&quot;</span>)</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        result <span class="op">*=</span> rotation_y(expect_number(input_file, scene))</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        expect_symbol(input_file, <span class="st">&quot;)&quot;</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;(&quot;</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        result <span class="op">*=</span> rotation_y(expect_number(stream, scene))</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;)&quot;</span>)</span>
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Peek the next token</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    next_kw <span class="op">=</span> input_file.read_token()</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    next_kw <span class="op">=</span> stream.read_token()</span>
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="kw">not</span> <span class="bu">isinstance</span>(next_kw, SymbolToken)) <span class="kw">or</span> (next_kw.symbol <span class="op">!=</span> <span class="st">&quot;*&quot;</span>):</span>
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Pretend you never read this token and put it back!</span></span>
 <span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># This requires to alter the definition of `InputStream`</span></span>
 <span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># so that it holds the unread tokens as well as unread characters</span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        input_file.unread_token(next_kw)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        stream.unread_token(next_kw)</span>
 <span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span></code></pre></div>
 </section>
 <section id="grammatiche-ebnf" class="slide level1">
@@ -776,8 +776,9 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <section class="slide level1">
 
 <center>
-<img data-src="media/blender-python.webp" height="680" />
+<img data-src="media/blender-python.webp" height="620" />
 </center>
+<p>In Blender è possibile aprire un terminale Python in cui lanciare comandi per creare oggetti, modificarli, etc.</p>
 </section>
 <section id="logica-di-funzionamento" class="slide level1">
 <h1>Logica di funzionamento</h1>
@@ -920,7 +921,7 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <li>Presenza o meno di <em>anti-aliasing</em>;</li>
 <li>Etc.</li>
 </ol></li>
-<li><p>Sarebbe molto utile che il codice salvasse queste informazioni all’interno di un’immagine PFM! In questo modo potete capire anche a distanza di alcune settimane come è stata generata una immagine.</p></li>
+<li><p>Sarebbe molto utile che il codice salvasse queste informazioni all’interno di un’immagine PFM! In questo modo potete capire anche a distanza di molto tempo come è stata generata una immagine.</p></li>
 </ul>
 </section>
 <section id="possibile-soluzione" class="slide level1">

@@ -51,20 +51,20 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 # `parse_color`
 
 ```python
-def expect_symbol(input_file: InputFile, symbol: str):
-    """Read a token from `input_file` and check that it matches `symbol`."""
-    token = input_file.read_token()
+def expect_symbol(stream: InputStream, symbol: str):
+    """Read a token from `stream` and check that it matches `symbol`."""
+    token = stream.read_token()
     if not isinstance(token, SymbolToken) or token.symbol != symbol:
         raise parser_error(token, f"got '{token}' instead of '{symbol}'")
         
     # Don't bother returning the character: we were already expecting it
 
 
-def expect_number(input_file: InputFile) -> float:
-    """Read a token from `input_file` and check that it is a literal number.
+def expect_number(stream: InputStream) -> float:
+    """Read a token from `stream` and check that it is a literal number.
 
     Return the number as a ``float``."""
-    token = input_file.read_token()
+    token = stream.read_token()
     if not isinstance(token, LiteralNumberToken):
         raise parser_error(token, f"got '{token}' instead of a number")
         
@@ -74,14 +74,14 @@ def expect_number(input_file: InputFile) -> float:
 # This parses a list of tokens like "<0.7, 0.5, 1>". Note that functions
 # with name "expect_*" only read *one* token, while functions named
 # "parse_*" read more than one token.
-def parse_color(input_file: InputFile) -> Color:
-    expect_symbol(input_file, "<")
-    red = expect_number(input_file)
-    expect_symbol(input_file, ",")
-    green = expect_number(input_file)
-    expect_symbol(input_file, ",")
-    blue = expect_number(input_file)
-    expect_symbol(input_file, ">")
+def parse_color(stream: InputStream) -> Color:
+    expect_symbol(stream, "<")
+    red = expect_number(stream)
+    expect_symbol(stream, ",")
+    green = expect_number(stream)
+    expect_symbol(stream, ",")
+    blue = expect_number(stream)
+    expect_symbol(stream, ">")
 
     # Create the "Color" object *immediately* (not something a real-world
     # compiler will do, but our case is simpler than a real compiler)
@@ -91,36 +91,36 @@ def parse_color(input_file: InputFile) -> Color:
 # `parse_pigment`
 
 ```python
-def parse_pigment(input_file: InputFile) -> Pigment:
-    keyword = expect_keywords(input_file, [
+def parse_pigment(stream: InputStream) -> Pigment:
+    keyword = expect_keywords(stream, [
         KeywordEnum.UNIFORM, 
         KeywordEnum.CHECKERED, 
         KeywordEnum.IMAGE,
     ])
 
-    expect_symbol(input_file, "(")
+    expect_symbol(stream, "(")
     if keyword == KeywordEnum.UNIFORM:
         # Example: "uniform(<0.7, 0.5, 1>)"
-        color = parse_color(input_file)
+        color = parse_color(stream)
         
         result = UniformPigment(color=color)
     elif keyword == KeywordEnum.CHECKERED:
         # Example: "checkered(<0.3, 0.5, 0.1>, <0.1, 0.2, 0.5>, 4)"
-        color1 = parse_color(input_file)
+        color1 = parse_color(stream)
         
-        expect_symbol(input_file, ",")
+        expect_symbol(stream, ",")
         
-        color2 = parse_color(input_file)
+        color2 = parse_color(stream)
         
-        expect_symbol(input_file, ",")
+        expect_symbol(stream, ",")
         
-        num_of_steps = int(expect_number(input_file))
+        num_of_steps = int(expect_number(stream))
         
         result = CheckeredPigment(color1=color1, color2=color2, num_of_steps=num_of_steps)
     elif …: # Other pigments
         …
         
-    expect_symbol(input_file, ")")
+    expect_symbol(stream, ")")
     return result
 ```
 
@@ -279,22 +279,22 @@ Le AST sono studiate come degli alberi, ma la loro struttura in memoria non deve
 ```python
 # Read the first token of the next statement. Only a handful of
 # keywords are allowed at the beginning of a statement.
-what = expect_keywords(input_file, [KeywordEnum.FLOAT, …])
+what = expect_keywords(stream, [KeywordEnum.FLOAT, …])
 
 if what == KeywordEnum.FLOAT:
     # We are going to declare a new "float" variable
     
     # Read the name of the variable
-    variable_name = expect_identifier(input_file)
+    variable_name = expect_identifier(stream)
     
     # Now we must get a "("
-    expect_symbol(input_file, "(")
+    expect_symbol(stream, "(")
     
     # Read the literal number to associate with the variable
-    variable_value = expect_number(input_file, scene)
+    variable_value = expect_number(stream, scene)
     
     # Check that the statement ends with ")"
-    expect_symbol(input_file, ")")
+    expect_symbol(stream, ")")
 
     # Done! Add the variable to the list
     variable_table[variable_name] = variable_value
@@ -319,27 +319,27 @@ elif …:  # Statements other than "float …" can be interpreted here
 ```python
 while True:
     # For simplicity, let's consider just two kinds of transformations
-    transformation_kw = expect_keywords(input_file, [
+    transformation_kw = expect_keywords(stream, [
         KeywordEnum.TRANSLATION,
         KeywordEnum.ROTATION_Y,
     ])
 
     if transformation_kw == KeywordEnum.TRANSLATION:
-        expect_symbol(input_file, "(")
-        result *= translation(parse_vector(input_file, scene))
-        expect_symbol(input_file, ")")
+        expect_symbol(stream, "(")
+        result *= translation(parse_vector(stream, scene))
+        expect_symbol(stream, ")")
     elif transformation_kw == KeywordEnum.ROTATION_Y:
-        expect_symbol(input_file, "(")
-        result *= rotation_y(expect_number(input_file, scene))
-        expect_symbol(input_file, ")")
+        expect_symbol(stream, "(")
+        result *= rotation_y(expect_number(stream, scene))
+        expect_symbol(stream, ")")
 
     # Peek the next token
-    next_kw = input_file.read_token()
+    next_kw = stream.read_token()
     if (not isinstance(next_kw, SymbolToken)) or (next_kw.symbol != "*"):
         # Pretend you never read this token and put it back!
         # This requires to alter the definition of `InputStream`
         # so that it holds the unread tokens as well as unread characters
-        input_file.unread_token(next_kw)
+        stream.unread_token(next_kw)
         break
 ```
 
@@ -780,7 +780,9 @@ Il vantaggio di usare un formato diffuso come JSON è che sono a disposizioni mo
 
 ---
 
-<center>![](media/blender-python.webp){height=680px}</center>
+<center>![](media/blender-python.webp){height=620px}</center>
+
+In Blender è possibile aprire un terminale Python in cui lanciare comandi per creare oggetti, modificarli, etc.
 
 # Logica di funzionamento
 
