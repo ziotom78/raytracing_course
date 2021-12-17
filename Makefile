@@ -33,10 +33,14 @@ all: \
 	tomasi-ray-tracing-02a-colors.html \
 	tomasi-ray-tracing-01b-github.html \
 	tomasi-ray-tracing-01a-rendering-equation.html \
+	language-comparison.html \
 	index.html
 
 index.html: index.md ${JS_FILES}
 	$(PANDOC) --standalone -o $@ $<
+
+language-comparison.html: language-comparison.md
+	$(PANDOC) --toc --standalone -o $@ $<
 
 %.js: %.nim
 	nim js -o:$@ $<
