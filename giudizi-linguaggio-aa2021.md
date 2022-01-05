@@ -463,7 +463,7 @@ molto semplici e avrete sicuramente il tempo di iniziare a
 familiarizzare con il vostro linguaggio.
 
 
-## Elisa Legnani (4/1/2022)
+## Elisa Legnani (2022-01-04)
 
 Ho scelto il C++ perché era un linguaggio che conoscevo già e volevo
 rispolverare. Non mi sembrava di aver imparato ad usarlo con
