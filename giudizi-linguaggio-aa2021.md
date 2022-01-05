@@ -461,3 +461,58 @@ corso non conoscendo il linguaggio che si userà può sembrare una
 complicazione in più, ma le esercitazioni delle prime settimane sono
 molto semplici e avrete sicuramente il tempo di iniziare a
 familiarizzare con il vostro linguaggio.
+
+
+## Elisa Legnani (4/1/2022)
+
+Ho scelto il C++ perché era un linguaggio che conoscevo già e volevo
+rispolverare. Non mi sembrava di aver imparato ad usarlo con
+scioltezza nei corsi precedenti, tanto che parte della sintassi di
+esempio mi era nuova e mi aveva incuriosito. Non l’ho scelto tanto per
+comodità, quanto per poterlo approfondire: nella descrizione dei
+linguaggi fornita dal professore a inizio corso era chiaramente
+indicato quanto potesse risultare complicato usarlo per questo
+progetto e quanto invece altri linguaggi più recenti come Julia e
+Kotlin fossero più maneggevoli. E questo è stato evidente fin dalle
+prime lezioni, durante le quali, mentre altri imparavano un nuovo
+linguaggio, noi abbiamo faticato a risolvere vari problemi, molti dei
+quali aventi a che fare con l’utilizzo di librerie esterne e sistemi
+operativi diversi (io ho lavorato con Linux e la mia compagna con
+MacOS), oppure ad implementare test automatici da zero o ad imparare
+nuovi strumenti per la compilazione. L’esperienza del professore e la
+vastità di risorse ed esempi online ci hanno però aiutato molto in
+questo senso.
+
+A posteriori posso dire che è grazie a questo corso che ho ottenuto
+una buona familiarità con il C++ e con i suoi standard più recenti. Mi
+sento solo ora in grado di scrivere autonomamente un programma
+complesso usando questo linguaggio, ed è per questo che sono
+soddisfatta della scelta che ho fatto. Avevo valutato come alternativa
+anche Julia, la cui semplicità e possibile utilizzo nel campo
+dell’astrofisica (il professore aveva presentato il linguaggio anche
+in una lezione di Astronomia 1) mi avevano interessato. Tornando
+indietro rifarei la stessa celta, sono dell’idea che scontrarsi contro
+i problemi ed imparare un metodo per risolverli sia importante
+nell’apprendimento di qualsiasi materia.
+ 
+A prescindere dal linguaggio scelto, il corso in generale è molto utile: 
+
+-   si impara a scrivere del codice per descrivere un fenomeno fisico
+    non banale in un unico grande progetto;
+-   è fondamentale usare sistemi di controllo delle versioni quando si
+    scrive codice complesso, e prima di questo corso non avevo avuto
+    modo di approfondire l’argomento e di apprezzarne l’utilità;
+-   non avevo mai scritto codice collaborando veramente con qualcun
+    altro;
+-   è importante scrivere codice fruibile da altri - ora che sto
+lavorando alla tesi mi accorgo che spesso il codice in ambito di
+ricerca è poco documentato e/o testato e per questo difficile da
+utilizzare.
+
+Esprimo anche un giudizio del tutto personale, ma credo anche
+condiviso dagli altri studenti che hanno frequentato il corso. Si
+tratta di un corso divertente. Oltre ad essere un utile strumento di
+debugging, poter ottenere risultati visivi dopo vari mesi di duro
+lavoro di programmazione dà una grande soddisfazione. Tanto che viene
+voglia di implementare anche le parti facoltative, con il rischio di
+non finire mai di continuare ad aggiustare e migliorare il programma.
