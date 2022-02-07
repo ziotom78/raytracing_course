@@ -516,3 +516,43 @@ debugging, poter ottenere risultati visivi dopo vari mesi di duro
 lavoro di programmazione dà una grande soddisfazione. Tanto che viene
 voglia di implementare anche le parti facoltative, con il rischio di
 non finire mai di continuare ad aggiustare e migliorare il programma.
+
+
+## Paolo Galli (5/2/2022)
+
+Ho scelto Julia perché ne avevo sentito parlare da un po' di persone
+tra professori e studenti e la cosa mi aveva incuriosito. Le cose che
+ho trovato maggiormente interessanti in fase di scelta sono state:
+
+-   il fatto che si ponga come un linguaggio pensato apposta per il
+    calcolo e l'ambiente scientifico;
+-   il fatto che sia un linguaggio sia compilato che interpretato,
+    cosa che unisce per esempio la semplicità di uso di Python per dei
+    conti e analisi veloci da linea di comando interattiva (la REPL di
+    Julia) e la velocità di esecuzione simile a un codice C++ (proprio
+    perché il codice viene precompilato);
+-   il fatto che sia un linguaggio nuovo.
+
+Avevo valutato anche C++ che già conoscevo in modo da approfondirlo,
+ma alla fine ho preferito approfittare dell'occasione per imparare un
+nuovo linguaggio in un modo che altrimenti mi sarebbe stato difficile,
+ovvero un in progetto complesso ma guidato. Secondo me una cosa da
+tenere presente (e che per me è stato uno dei principali impatti) è
+che Julia è un linguaggio funzionale, non esiste il concetto di
+classe, cosa che almeno nel mio caso mi ha costretto a ripensare a
+certi approcci al problema. Inoltre, essendo un linguaggio che sotto
+certi versi ricorda Python, se si conosce quest'ultimo viene spontaneo
+soprattutto all'inizio approcciarsi in modo "pythonistico", cosa da
+evitare poiché i due linguaggi sono in realtà profondamente
+differenti. Una delle difficoltà maggiori di Julia che ho trovato è
+che ci sono molti modi per risolvere uno stesso problema (ad esempio
+usando cicli for, broadcasting, map, …) e ognuno di questi può portare
+a performance estremamente diversificate a causa di come il linguaggio
+e il suo compilatore interpretano e ottimizzano ciò che c'è scritto:
+serve quindi porre una buona quantità di attenzione e tempo
+nell'analisi delle performance dei vari metodi e nell'ottimizzazione
+del codice. Ho trovato però molto belli altri aspetti: l'eleganza del
+codice, il metodo di typing, la potenzialità del multiple dispatch, il
+metaprogramming, … tutte cose che permettono di liberare molto la
+creatività. Rifarei questa scelta perché sviluppare con questo
+linguaggio è stato divertente; a tratti complesso, ma divertente.
