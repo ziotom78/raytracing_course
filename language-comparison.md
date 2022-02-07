@@ -344,18 +344,18 @@ improved their coding skills.
 
 # Nim
 
-Nim ([nim-lang.org](https://nim-lang.org/)) is a niche language, as it
-is not as widespread and used as C\#, Kotlin, etc. However, it is
-extremely well designed and performant. It was created by Andreas
-Rumpf in 2008, and it is deeply inspired by the Pascal language. (In
-fact, the very first Nim compiler was written in FreePascal.)
+Nim ([nim-lang.org](https://nim-lang.org/)) is not as widespread and
+used as C\#, Kotlin, etc. However, it is extremely well designed and
+performant. It was created by Andreas Rumpf in 2008, and it is deeply
+inspired by the Pascal language. (In fact, the very first Nim compiler
+was written in FreePascal.)
 
-Nim is the language I am currently using to prepare both the HTML
-version of the course slides and the course notes. I picked it because
-it can either produce a standalone executable or a Javascript code to
-be loaded in HTML pages. This means that Nim programs can be run
-either from the terminal or within a web browser; this is a feature
-that only a few languages offer. (See below for an example.)
+Nim is the language I used to prepare both the HTML version of the
+course slides and the course notes. I picked it because it can either
+produce a standalone executable or a Javascript code to be loaded in
+HTML pages. This means that Nim programs can be run either from the
+terminal or within a web browser; this is a feature that only a few
+languages offer. (See below for an example.)
 
 Nim's syntax looks like a mixture of Python and Pascal, as the
 following implementation of the `Vec` data type shows:
@@ -433,23 +433,26 @@ Nim introduces *three* ways to declare variables:
 
 -   Using `const`, the value of a variable (well, it is indeed a
     «constant» rather than a «variable») must be known at compilation
-    time
+    time;
 
 -   Using `let`, the value of a variable is assigned once and never
-    changed later.
+    changed later;
 
 -   Using `var`, a variable can be changed as many times as needed,
     but without changing its type.
 
-The difference between `const` and `let` is subtle; a typical case for
-`let` is when you read some input from the user, as the actual value
-of the input is typically not known before the program is executed,
-and one does not typically want to change the value. On the other
-hand, mathematical constants like $\pi$ are known in advance and
-should be declared as `const`. This distinction improves a lot the
-clarity of the code, as most of the situations where one declares a
-variable, they usually mean to use a `let` (i.e., the variable is
-assigned but then never changed.)
+The difference between `const` and `let` is subtle; typically the
+programmer does not know what the value used in a `let` will be, but
+once it is assigned it is not going to be changed. A typical case for
+`let` is for some input from the user (e.g., a file name containing
+some input data): the programmer cannot tell what is going to be the
+name of the file, but surely the variable `file_name` is not going to
+be changed once it is assigned. On the other hand, mathematical
+constants like $\pi$ are known in advance and should be declared as
+`const`. This distinction improves a lot the clarity of the code, as
+most of the situations where one declares a variable, they usually
+mean to use a `let`, i.e., the variable is assigned but then never
+changed.
 
 Nim has several advantages over other languages:
 
@@ -470,9 +473,11 @@ Nim has several advantages over other languages:
     codes I have written for this course.
 
 -   Internally, Nim produces a C program that is then compiled by
-    `gcc` or `clang`. Thanks to this way of compiling executables, it
-    is trivial to use C/C++ libraries[^root] within a Nim program, using the
-    two pragmas `{.importc.}` and `{.importcpp.}`.
+    `gcc` or `clang`. (A switch forces the Nim compiler to generate a
+    C++ program, which can be fed to `g++` or `clang++`.) Thanks to
+    this way of compiling executables, it is trivial to use C/C++
+    libraries[^root] within a Nim program, using the two pragmas
+    `{.importc.}` and `{.importcpp.}`.
 
 -   Similarly to C\#, Rust, and Julia, it has a standard package
     manager, `nimble`, which provides the ability to quickly create
@@ -493,9 +498,10 @@ Nim has several advantages over other languages:
     $ nimble run
     ```
 
--   It can produce standalone executables, but it is also able to
-    output Javascript programs. These can be loaded within a HTML page
-    and run in a browser
+-   Being able to convert Nim code to C/C++ code, the Nim compiler can
+    produce standalone executables by calling automatically a C/C++
+    compiler. But it is able to produce a Javascript program, which
+    can be loaded within a HTML page and run in a browser
     ([nim-lang.org/docs/backends.html](https://nim-lang.org/docs/backends.html#backends-the-javascript-target)).
 
     The following image shows the result of applying a 3D projection
@@ -506,16 +512,20 @@ Nim has several advantages over other languages:
     The two images look the same because they have been rendered using
     the same code, yet the two formats enable different applications:
 
-    1. The image on the left is within a live HTML page, and the
+    1. The image on the left is included in a live HTML page, and the
        controls at the bottom enable the user to customize the angle
-       of view: changing the numbers triggers a refresh of the drawing
-       in real time.
-    2. The image on the right is saved as a PDF file using the
-       Cairo[^cairo] image library
+       of view: changing the numbers triggers a call to the Javascript
+       code produced by the Nim compiler out of my Nim source code.
+    2. The image on the right is produced by the same Nim code that
+       has been compiled to C and then fed to `gcc`. The output
+       program invokes Cairo[^cairo], a C library that generates PDF
+       files
        ([www.cairographics.org](https://www.cairographics.org/)), and
        it is thus suitable to be included in a LaTeX file.
 
-[^root]: Yes, you can use ROOT in Nim if you want!
+[^root]: Yes, you can use ROOT in Nim if you want! You just need to
+    force the compiler to output C++ code instead of C and use the
+    `{.importcpp.}` pragma to create your own bindings.
 
 [^cairo]: Cairo is a C library to create graphics and save it in PNG,
     PDF, or SVG files. Nim bindings can be installed through the
@@ -524,15 +534,15 @@ Nim has several advantages over other languages:
 
 Disadvantages:
 
--   Although Nim is widely regarded as one of the best languages
-    available today, it does not have a wide user base. As a
+-   Unfortunately Nim does not have a wide user base. As a
     consequence, there are not many online resources to learn the
     language.
 
 -   The quality of the documentation is not as high as for other
     languages (e.g., C\#). This is partly mitigated by the existence
-    of two good books about Nim: *Nim in action*, by Dominik Picheta
-    (Manning, 2017), and [Computer programming with the Nim
+    of two good books about Nim: [*Nim in
+    action*](https://www.manning.com/books/nim-in-action), by Dominik
+    Picheta (Manning, 2017), and [Computer programming with the Nim
     programming language](http://ssalewski.de/nimprogramming.html), by
     Stefan Salewski, which is an e-book available for free.
 
@@ -1717,10 +1727,13 @@ A few good resources to learn Kotlin:
     probably the best video around that teaches (1) how to program in
     Kotlin and (2) how to use IntelliJ IDEA to write code in Kotlin.
 
--   A good book is *The Joy of Kotlin*, by Pierre-Yves Saumont (2019,
-    Manning). Another book by Manning is *Kotlin in action*, by Dmitry
-    Jemerov and Svetlana Isakova (2017, Manning), but this one assumes
-    you already know Java.
+-   A good book is [*The Joy of
+    Kotlin*](https://www.manning.com/books/the-joy-of-kotlin), by
+    Pierre-Yves Saumont (2019, Manning). Another book by Manning is
+    [*Kotlin in
+    action*](https://www.manning.com/books/kotlin-in-action), by
+    Dmitry Jemerov and Svetlana Isakova (2017, Manning), but this one
+    assumes you already know Java.
 
 
 # Rust
@@ -1912,9 +1925,11 @@ A few disadvantages of Rust are the following:
 
 A few good resources to learn Rust:
 
--   Two excellent books are *The Rust programming language* by Steve
-    Klabnik e Carol Nichols (no starch press, 2019), and *Rust in
-    action* by Timothy S. McNamara (Manning, 2021).
+-   Two excellent books are [*The Rust programming
+    language*](https://doc.rust-lang.org/book/) by Steve Klabnik e
+    Carol Nichols (no starch press, 2019), and [*Rust in
+    action*](https://www.manning.com/books/rust-in-action) by Timothy
+    S. McNamara (Manning, 2021).
 
 -   [Ryan Levick's YouTube
     Channel](https://www.youtube.com/channel/UCpeX4D-ArTrsqvhLapAHprQ)

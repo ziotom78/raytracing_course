@@ -267,8 +267,8 @@
 <p>The experience of the last year showed that people that picked C++ because they felt the course would have been «easier» to follow have had to tackle several problems that were non-existent in other languages. If you want to pick an easy language to use, you should avoid C++ and choose something else; good choices are Nim and C#.</p>
 <p>On the other hand, people that already had a strong interest in C++ were satisfied to have used it, as they felt they significantly improved their coding skills.</p>
 <h1 id="nim">Nim</h1>
-<p>Nim (<a href="https://nim-lang.org/">nim-lang.org</a>) is a niche language, as it is not as widespread and used as C#, Kotlin, etc. However, it is extremely well designed and performant. It was created by Andreas Rumpf in 2008, and it is deeply inspired by the Pascal language. (In fact, the very first Nim compiler was written in FreePascal.)</p>
-<p>Nim is the language I am currently using to prepare both the HTML version of the course slides and the course notes. I picked it because it can either produce a standalone executable or a Javascript code to be loaded in HTML pages. This means that Nim programs can be run either from the terminal or within a web browser; this is a feature that only a few languages offer. (See below for an example.)</p>
+<p>Nim (<a href="https://nim-lang.org/">nim-lang.org</a>) is not as widespread and used as C#, Kotlin, etc. However, it is extremely well designed and performant. It was created by Andreas Rumpf in 2008, and it is deeply inspired by the Pascal language. (In fact, the very first Nim compiler was written in FreePascal.)</p>
+<p>Nim is the language I used to prepare both the HTML version of the course slides and the course notes. I picked it because it can either produce a standalone executable or a Javascript code to be loaded in HTML pages. This means that Nim programs can be run either from the terminal or within a web browser; this is a feature that only a few languages offer. (See below for an example.)</p>
 <p>Nim’s syntax looks like a mixture of Python and Pascal, as the following implementation of the <code>Vec</code> data type shows:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode nim"><code class="sourceCode nim"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">Vec</span> <span class="co">=</span> <span class="kw">object</span></span>
@@ -320,11 +320,11 @@
 <span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">(</span>ray<span class="kw">.</span><span class="at">m_tmin</span> <span class="co">&lt;</span> tmax<span class="kw">)</span> <span class="co">and</span> <span class="kw">(</span>tmax <span class="co">&lt;</span> ray<span class="kw">.</span><span class="at">m_tmax</span><span class="kw">)</span></span></code></pre></div>
 <p>Nim introduces <em>three</em> ways to declare variables:</p>
 <ul>
-<li><p>Using <code>const</code>, the value of a variable (well, it is indeed a «constant» rather than a «variable») must be known at compilation time</p></li>
-<li><p>Using <code>let</code>, the value of a variable is assigned once and never changed later.</p></li>
+<li><p>Using <code>const</code>, the value of a variable (well, it is indeed a «constant» rather than a «variable») must be known at compilation time;</p></li>
+<li><p>Using <code>let</code>, the value of a variable is assigned once and never changed later;</p></li>
 <li><p>Using <code>var</code>, a variable can be changed as many times as needed, but without changing its type.</p></li>
 </ul>
-<p>The difference between <code>const</code> and <code>let</code> is subtle; a typical case for <code>let</code> is when you read some input from the user, as the actual value of the input is typically not known before the program is executed, and one does not typically want to change the value. On the other hand, mathematical constants like <span class="math inline"><em>π</em></span> are known in advance and should be declared as <code>const</code>. This distinction improves a lot the clarity of the code, as most of the situations where one declares a variable, they usually mean to use a <code>let</code> (i.e., the variable is assigned but then never changed.)</p>
+<p>The difference between <code>const</code> and <code>let</code> is subtle; typically the programmer does not know what the value used in a <code>let</code> will be, but once it is assigned it is not going to be changed. A typical case for <code>let</code> is for some input from the user (e.g., a file name containing some input data): the programmer cannot tell what is going to be the name of the file, but surely the variable <code>file_name</code> is not going to be changed once it is assigned. On the other hand, mathematical constants like <span class="math inline"><em>π</em></span> are known in advance and should be declared as <code>const</code>. This distinction improves a lot the clarity of the code, as most of the situations where one declares a variable, they usually mean to use a <code>let</code>, i.e., the variable is assigned but then never changed.</p>
 <p>Nim has several advantages over other languages:</p>
 <ul>
 <li><p>No need to write a <code>Makefile</code>, just type</p>
@@ -332,25 +332,25 @@
 <p>to compile and run <code>FILENAME.nim</code>; this triggers the compilation of any file used by <code>FILENAME.nim</code>. (The command <code>nim compile --run</code> can be shortened to <code>nim c -r</code>.)</p></li>
 <li><p>It has a clean syntax, with no <code>;</code> characters;</p></li>
 <li><p>The code runs very fast: in fact, together with FreeBASIC, it is the only language able to consistently reach C++ speeds in the codes I have written for this course.</p></li>
-<li><p>Internally, Nim produces a C program that is then compiled by <code>gcc</code> or <code>clang</code>. Thanks to this way of compiling executables, it is trivial to use C/C++ libraries<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> within a Nim program, using the two pragmas <code>{.importc.}</code> and <code>{.importcpp.}</code>.</p></li>
+<li><p>Internally, Nim produces a C program that is then compiled by <code>gcc</code> or <code>clang</code>. (A switch forces the Nim compiler to generate a C++ program, which can be fed to <code>g++</code> or <code>clang++</code>.) Thanks to this way of compiling executables, it is trivial to use C/C++ libraries<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> within a Nim program, using the two pragmas <code>{.importc.}</code> and <code>{.importcpp.}</code>.</p></li>
 <li><p>Similarly to C#, Rust, and Julia, it has a standard package manager, <code>nimble</code>, which provides the ability to quickly create and run empty «Hello world!» projects, as well as downloading and installing libraries from the web.</p>
 <p>The following command creates a new Nim program in the directory <code>myproj</code>:</p>
 <pre><code>$ nimble init newproj</code></pre>
 <p>Within the folder <code>myproj</code>, the following command compiles and run the program:</p>
 <pre><code>$ nimble run</code></pre></li>
-<li><p>It can produce standalone executables, but it is also able to output Javascript programs. These can be loaded within a HTML page and run in a browser (<a href="https://nim-lang.org/docs/backends.html#backends-the-javascript-target">nim-lang.org/docs/backends.html</a>).</p>
+<li><p>Being able to convert Nim code to C/C++ code, the Nim compiler can produce standalone executables by calling automatically a C/C++ compiler. But it is able to produce a Javascript program, which can be loaded within a HTML page and run in a browser (<a href="https://nim-lang.org/docs/backends.html#backends-the-javascript-target">nim-lang.org/docs/backends.html</a>).</p>
 <p>The following image shows the result of applying a 3D projection code to produce a HTML page (left) and a PDF image (right):</p>
 <p><img src="pd-images/nim-html-canvas.png" /></p>
 <p>The two images look the same because they have been rendered using the same code, yet the two formats enable different applications:</p>
 <ol type="1">
-<li>The image on the left is within a live HTML page, and the controls at the bottom enable the user to customize the angle of view: changing the numbers triggers a refresh of the drawing in real time.</li>
-<li>The image on the right is saved as a PDF file using the Cairo<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> image library (<a href="https://www.cairographics.org/">www.cairographics.org</a>), and it is thus suitable to be included in a LaTeX file.</li>
+<li>The image on the left is included in a live HTML page, and the controls at the bottom enable the user to customize the angle of view: changing the numbers triggers a call to the Javascript code produced by the Nim compiler out of my Nim source code.</li>
+<li>The image on the right is produced by the same Nim code that has been compiled to C and then fed to <code>gcc</code>. The output program invokes Cairo<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, a C library that generates PDF files (<a href="https://www.cairographics.org/">www.cairographics.org</a>), and it is thus suitable to be included in a LaTeX file.</li>
 </ol></li>
 </ul>
 <p>Disadvantages:</p>
 <ul>
-<li><p>Although Nim is widely regarded as one of the best languages available today, it does not have a wide user base. As a consequence, there are not many online resources to learn the language.</p></li>
-<li><p>The quality of the documentation is not as high as for other languages (e.g., C#). This is partly mitigated by the existence of two good books about Nim: <em>Nim in action</em>, by Dominik Picheta (Manning, 2017), and <a href="http://ssalewski.de/nimprogramming.html">Computer programming with the Nim programming language</a>, by Stefan Salewski, which is an e-book available for free.</p></li>
+<li><p>Unfortunately Nim does not have a wide user base. As a consequence, there are not many online resources to learn the language.</p></li>
+<li><p>The quality of the documentation is not as high as for other languages (e.g., C#). This is partly mitigated by the existence of two good books about Nim: <a href="https://www.manning.com/books/nim-in-action"><em>Nim in action</em></a>, by Dominik Picheta (Manning, 2017), and <a href="http://ssalewski.de/nimprogramming.html">Computer programming with the Nim programming language</a>, by Stefan Salewski, which is an e-book available for free.</p></li>
 </ul>
 <p>The opinion of the teacher is that Nim is one of the best language to use for this course: it is easy to learn, extremely performant, and it provides all the tools needed to implement the tasks required in the curse. Moreover, it is extremely elegant and well-designed.</p>
 <h1 id="c-1">C#</h1>
@@ -945,7 +945,7 @@
 <p>A few good resources to learn Kotlin:</p>
 <ul>
 <li><p>The YouTube video <a href="https://www.youtube.com/watch?v=F9UC9DY-vIU">Kotlin Course - Tutorial for Beginners</a> is probably the best video around that teaches (1) how to program in Kotlin and (2) how to use IntelliJ IDEA to write code in Kotlin.</p></li>
-<li><p>A good book is <em>The Joy of Kotlin</em>, by Pierre-Yves Saumont (2019, Manning). Another book by Manning is <em>Kotlin in action</em>, by Dmitry Jemerov and Svetlana Isakova (2017, Manning), but this one assumes you already know Java.</p></li>
+<li><p>A good book is <a href="https://www.manning.com/books/the-joy-of-kotlin"><em>The Joy of Kotlin</em></a>, by Pierre-Yves Saumont (2019, Manning). Another book by Manning is <a href="https://www.manning.com/books/kotlin-in-action"><em>Kotlin in action</em></a>, by Dmitry Jemerov and Svetlana Isakova (2017, Manning), but this one assumes you already know Java.</p></li>
 </ul>
 <h1 id="rust">Rust</h1>
 <p>The last language described in this document is Rust (<a href="https://www.rust-lang.org/">www.rust-lang.org</a>), which is probably the most complex language you can pick for this course.</p>
@@ -1048,7 +1048,7 @@
 </ul>
 <p>A few good resources to learn Rust:</p>
 <ul>
-<li><p>Two excellent books are <em>The Rust programming language</em> by Steve Klabnik e Carol Nichols (no starch press, 2019), and <em>Rust in action</em> by Timothy S. McNamara (Manning, 2021).</p></li>
+<li><p>Two excellent books are <a href="https://doc.rust-lang.org/book/"><em>The Rust programming language</em></a> by Steve Klabnik e Carol Nichols (no starch press, 2019), and <a href="https://www.manning.com/books/rust-in-action"><em>Rust in action</em></a> by Timothy S. McNamara (Manning, 2021).</p></li>
 <li><p><a href="https://www.youtube.com/channel/UCpeX4D-ArTrsqvhLapAHprQ">Ryan Levick’s YouTube Channel</a> has some very good videos about Rust. Alas, the editor used in the videos is Visual Studio Code and not CLion!</p></li>
 </ul>
 <section class="footnotes" role="doc-endnotes">
@@ -1056,7 +1056,7 @@
 <ol>
 <li id="fn1" role="doc-endnote"><p>A good choice is <a href="https://fmt.dev/latest/index.html"><code>fmt</code></a>, which is going to be included in the next C++ standard (C++20).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2" role="doc-endnote"><p>For example, if one changes an header file but fails to list the proper dependencies in the <code>Makefile</code>, some <code>.cpp</code> files depending on that header might fail to be recompiled in a <code>.o</code> file, leading to potential disasters.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>Yes, you can use ROOT in Nim if you want!<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>Yes, you can use ROOT in Nim if you want! You just need to force the compiler to output C++ code instead of C and use the <code>{.importcpp.}</code> pragma to create your own bindings.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4" role="doc-endnote"><p>Cairo is a C library to create graphics and save it in PNG, PDF, or SVG files. Nim bindings can be installed through the command <code>nimble install cairo</code>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5" role="doc-endnote"><p>For example, if an <code>else</code> branch of an <code>if</code> statement is executed very often, the CLR can rewrite the <code>if</code> statement to take advantage of this.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6" role="doc-endnote"><p>It is interesting to note that one of the lead developers of the Turbo Pascal compiler was Anders Hejlsberg, the creator of C#.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
