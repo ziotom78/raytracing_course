@@ -54,12 +54,6 @@ Assemblaggio della sonda nei laboratori ESA
 
 ![](./media/2010 Burigana - Forecast for Planck.png)
 
-# Utilità delle simulazioni
-
-![](./media/litebird-at-l2.jpg){height=520}
-
-LiteBIRD (in fase di progettazione)
-
 # Obbiettivi del corso
 
 1.  Come tradurre un modello fisico in un codice numerico?
@@ -136,35 +130,24 @@ Vivian Maier, Autoritratto (1926–2009)
 
 # Perché ci serve la radiometria?
 
-In questo corso dovremo trattare la *radiometria*, ossia la scienza
-che studia come la radiazione si propaga in un mezzo.
-
-Ciò che è importante è avere quantità che caratterizzano la
-*radiazione* in maniera il più possibile indipendente da strumenti che
-la misurano.
+-   In questo corso dovremo trattare la *radiometria*, ossia la scienza che studia come la radiazione si propaga in un mezzo.
+-   Ciò che è importante è avere quantità che caratterizzano la *radiazione* in maniera il più possibile indipendente da strumenti che la misurano.
 
 # Quantità radiometriche
 
-- Energia emessa
-- Potenza radiante, o *flusso*
-- Irradianza, emettenza radiante
-- **Radianza** (← il cuore del corso!)
-
-# Energia emessa
-
--   Si misura in Joule
--   È legata alla luminosità intrinseca di un oggetto, ad es. una
-    lampadina.
--   Ma una lampadina può emettere molta energia sia perché è «potente»
-    sia perché resta accesa a lungo: conoscere solo l'energia emessa
-    non consente quindi di stabilire come un emettitore appare.
-
-![](./media/light-bulbs.jpg){height=260}
+-   Energia emessa (Joule)
+-   Potenza radiante, o *flusso* (Energia che attraversa una
+    superficie nell'unità di tempo)
+-   Irradianza, emettenza radiante (flusso normalizzato sulla superficie)
+-   **Radianza** (← il cuore del corso!)
+-   Le definizioni che useremo saranno quelle usate nella *computer
+    graphics*, ma possono essere diverse in altri campi della fisica!
+    (Es., in astronomia l'irradianza è chiamata *flusso*).
 
 # Flusso
 
 -   Energia che attraversa una superficie $A$ nell'unità di tempo: $\Phi$
--   $[\Phi] = \mathrm{W}$.
+-   $[\Phi] = \mathrm{W}$ (in fisica, il flusso si misura invece come $\mathrm{W}/\mathrm{m}^2$!).
 -   Esempio: $A$ è la superficie di un rivelatore, come la
     pupilla umana o l'obbiettivo di una fotocamera.
 -   Più è grande la superficie $A$, maggiore è $\Phi$.
@@ -178,17 +161,11 @@ la misurano.
     I, E = \frac{\mathrm{d}\Phi}{\mathrm{d}A},
     \qquad [I] = \mathrm{W}/\mathrm{m}^2.
     $$
+    
 -   Irradianza $I$: ciò che *cade* su $\mathrm{d}A$; emettenza $E$:
     ciò che *abbandona* $\mathrm{d}A$
 
 ![](./media/flux.svg){height=260}
-
-# Flusso e irradianza
-
--   Le definizioni date sin qui sono quelle usate nella *computer graphics*
--   I fisici usano convenzioni un po' diverse: il *flusso* è
-    normalizzato sull'area, e coincide quindi con quello che qui
-    abbiamo chiamato *irradianza*.
 
 # Radianza
 
@@ -206,59 +183,6 @@ la misurano.
     L = L(\mathbf{x}).
     $$
 
-# Proprietà della radianza
-
--   Il rapporto sull'angolo solido rimuove la dipendenza dalla
-    distanza
--   La presenza di $\cos\theta$ rimuove la dipendenza
-    dall'orientamento di $\mathrm{d}A$.
-
-# Cos'è un angolo solido? (1/2)
-
--   Generalizzazione di un angolo piano:
-
-    <center>
-        ![](./media/radian.svg){height=360}
-    </center>
-    
--   Radiante: angolo per cui l'arco $AB$ è lungo $r$ (raggio).
-
-# Cos'è un angolo solido? (2/2)
-
--   Nel caso di una sfera, non abbiamo a che fare con *lunghezze* bensì *superfici*:
-    
-    <center>
-        ![](./media/steradian.svg){height=360}
-    </center>
-
--   Steradiante: angolo per cui la superficie $S$ è $r^2$.
-
-# Proprietà degli angoli solidi
-
--   Una sfera di raggio $r$ sottende un angolo solido di $4\pi$, perché $S = 4\pi r^2$.
--   Una semisfera sottende un angolo solido di $2\pi$.
--   Un angolo solido $\Omega$ sottende sulla sfera una superficie $\Omega r^2$.
-
-# Proprietà degli angoli solidi
-
--   Calcoliamo l'angolo solido $\Omega(r)$:
-
-    <center>
-        ![](./media/cap-solid-angle.png)
-    </center>
-    
--   $\mathrm{d}\Omega = \sin\theta\,\mathrm{d}\theta\,\mathrm{d}\phi$
--   $\Omega(r) = \int_0^\theta \int_0^{2\pi} \mathrm{d}\Omega = 2\pi(1 - \cos\theta)$.
-
-# Angoli solidi e distanza
-
-![](./media/solid_angle_distance.svg)
-
-$$
-\Omega(d) = 2\pi(1 - \cos\theta) =
-2\pi\left(1 - \frac{d}{\sqrt{r^2 + d^2}}\right) \approx \pi \left(\frac{r}d\right)^2 \text{se\ } r \ll d.
-$$
-
 # Angoli solidi e distanza
 
 ![](./media/radiance-distance.svg){height=320px}
@@ -271,7 +195,10 @@ $$
 
 ![](./media/radiance.svg)
 
-La presenza di $\cos\theta$ permette di rimuovere la dipendenza dall'orientamento della superficie $\mathrm{d}A$.
+-   Il rapporto sull'angolo solido rimuove la dipendenza dalla
+    distanza
+-   La presenza di $\cos\theta$ rimuove la dipendenza
+    dall'orientamento di $\mathrm{d}A$.
 
 # Notazione per la radianza
 
@@ -320,9 +247,12 @@ $$
     
 2.  In assenza di attenuazione vale che $L(\mathbf{x} \rightarrow
     \mathbf{y}) = L(\mathbf{x} \rightarrow \mathbf{z}),$ se
-    $\mathbf{x}$, $\mathbf{y}$, $\mathbf{z}$ sono sulla stessa retta; vale lo stesso per $L_\lambda$, ovviamente.
+    $\mathbf{x}$, $\mathbf{y}$, $\mathbf{z}$ sono sulla stessa retta;
+    vale lo stesso per $L_\lambda$, ovviamente.
     
-3.  Il fatto che $L$ e $L_\lambda$ non dipendano dalla distanza implica che il colore percepito di un oggetto alla distanza $d$ non cambia al variare di $d$.
+3.  Il fatto che $L$ e $L_\lambda$ non dipendano dalla distanza
+    implica che il colore percepito di un oggetto alla distanza $d$
+    non cambia al variare di $d$.
 
 # Utilità di $L$
 
@@ -381,7 +311,7 @@ $$
 
 # La BRDF
 
-La Bidirectional Reflectance Distribution Function (BRDF), indicata con $f_r(x, \Psi \rightarrow \Theta)$, è il rapporto tra la *radianza* che abbandona una superficie lungo $\Theta$ rispetto all'*irradianza* ricevuta da una direzione $\Psi$:
+La Bidirectional Reflectance Distribution Function (BRDF) è il rapporto $f_r(x, \Psi \rightarrow \Theta)$ tra la *radianza* che abbandona una superficie lungo $\Theta$ e l'*irradianza* (flusso normalizzato su $A$, $\mathrm{W}/\mathrm{m}^2$) ricevuta da una direzione $\Psi$:
 
 $$
 \begin{aligned}
@@ -391,7 +321,7 @@ f_r(x, \Psi \rightarrow \Theta) &= \frac{\mathrm{d}L (x \rightarrow \Theta)}{\ma
 },
 \end{aligned}
 $$
-dove $\cos(N_x, \Psi)$ è l'angolo tra la normale della superficie $\mathrm{d}A$ e la direzione incidente $\Psi$.
+dove $\cos(N_x, \Psi)$ è l'angolo tra la normale a $\mathrm{d}A$ e la direzione incidente $\Psi$.
 
 # La BRDF
 
@@ -403,7 +333,7 @@ dove $\cos(N_x, \Psi)$ è l'angolo tra la normale della superficie $\mathrm{d}A$
 -   $f_r \propto \cos^{-1}(N_x, \Psi)$: si tiene conto dell'inclinazione della sorgente luminosa rispetto a $\mathrm{d}A$.
 -   $f_r : \mathbb{R}^2 \times \mathbb{R}^2 \rightarrow \mathbb{R}$ (per codificare una direzione sono necessari due numeri), ma nel caso più generale dipende anche da $\lambda$ e dal tempo $t$;
 -   È una funzione positiva: $f_r \geq 0$, e la sua unità di misura è $1/\mathrm{sr}$;
--   È definita su tutto l'angolo solido $4\pi$, perché viene usata anche per modellare superfici (semi-)trasparenti.
+-   Si considera tutto l'angolo solido $4\pi$, perché la BRDF si usa anche per superfici (semi-)trasparenti.
 -   Assume che la luce abbandoni la superficie dallo stesso punto $x$ in cui l'ha incontrata (non vero per *subsurface scattering*!).
 
 # Reciprocità di Helmholtz
@@ -448,23 +378,13 @@ R = 2(N \cdot \Psi) N - \Psi,
 $$
 dove $N$ è il vettore normale (tangente) alla superficie.
 
-# Superficie rifrattiva
-
-È simile al caso precedente, ma è nulla in corrispondenza dell'angolo dato dalla legge di Snell
-$$
-\eta_1 \sin\theta_1 = \eta_2 \sin\theta_2,
-$$
-dove $\eta_1$ ed $\eta_2$ sono gli indici di rifrazione, e $\theta_1$ e $\theta_2$ gli angoli rispetto alla normale della superficie della direzione incidente e trasmessa.
-
-La BRDF in questo caso deve però tenere conto della possibile *riflessione totale*, che avviene se l'angolo di incidenza è maggiore di $\arcsin \eta_2/\eta_1$ (*angolo di Brewster*).
-
 # Altre BRDF
+
+-   Superficie rifrattiva: si tratta in modo simile alla superficie riflettente.
 
 -   Superficie di Fresnel: parte della luce viene riflessa e parte rifratta, secondo le *equazioni di Fresnel*.
 
 -   Superficie di Phong: cerca di modellare una superficie in maniera semi-empirica. Molto popolare in passato, non è molto usata oggi perché non plausibile fisicamente (non conserva l'energia).
-
--   Superficie di Ward: un modello semi-empirico più sofisticato di Phong.
 
 -   Esistono online librerie di BRDF, solitamente ricavate da misure in laboratorio.
 

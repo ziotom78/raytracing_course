@@ -61,6 +61,7 @@ giudizi-linguaggio-aa2021.html: giudizi-linguaggio-aa2021.md
 		-V theme=white \
 		-V progress=true \
 		-V slideNumber=true \
+		-V history=true \
 		-V background-image=./media/background.png \
 		-V width=1440 \
 		-V height=810 \
