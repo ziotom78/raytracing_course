@@ -20,6 +20,7 @@
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
     div.sourceCode { margin: 1em 0; }
     pre.sourceCode { margin: 0; }
@@ -133,10 +134,10 @@
 <h1>Come affrontare il problema</h1>
 <ul>
 <li><p>Consideriamo questa definizione:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">material</span> sky_material(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="ex">diffuse</span>(image(<span class="st">&quot;sky-dome.pfm&quot;</span>)),</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">uniform</span>(<span class="op">&lt;</span>0.7, 0.5, <span class="op">1&gt;</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div></li>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">material</span> sky_material<span class="er">(</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="ex">diffuse</span><span class="er">(</span><span class="ex">image</span><span class="er">(</span><span class="st">&quot;sky-dome.pfm&quot;</span><span class="kw">))</span><span class="ex">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">uniform</span><span class="er">(</span><span class="op">&lt;</span>0.7, <span class="ex">0.5,</span> <span class="dv">1</span><span class="op">&gt;</span><span class="kw">)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">)</span></span></code></pre></div></li>
 <li><p>È una definizione che include elementi più complessi di un <em>token</em>:</p>
 <ol>
 <li>Un materiale;</li>
@@ -241,12 +242,12 @@
 <div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="at">const</span> <span class="dt">char</span> *argv[]) {</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> a = <span class="fl">15.0</span>;</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> b = <span class="bu">std::</span>atof(argv[<span class="dv">1</span>]);</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="at">const</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> a <span class="op">=</span> <span class="fl">15.0</span><span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> b <span class="op">=</span> <span class="bu">std::</span>atof<span class="op">(</span>argv<span class="op">[</span><span class="dv">1</span><span class="op">]);</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout &lt;&lt; a &lt;&lt; <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span> &lt;&lt; b &lt;&lt; <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>;</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> a <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span> <span class="op">&lt;&lt;</span> b <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>A differenza del nostro parser, il compilatore C++ <strong>non può</strong> creare in memoria le variabili <code>a</code> e <code>b</code> mentre fa il <em>parsing</em>, perché quelle variabili «vivono» solo in fase di esecuzione.</p></li>
 </ul>
 </section>
@@ -264,7 +265,7 @@
 </section>
 <section id="esempio-di-ast" class="slide level1">
 <h1>Esempio di AST</h1>
-<p><img data-src="pd-images/ast-example.svg" /></p>
+<p><img data-src="pd-images/9b2516c848031269ac7b1f07b64f8f82fc83692c.svg" data-im_fname="ast-example" /></p>
 <p>Le AST sono studiate come degli alberi, ma la loro struttura in memoria non deve necessariamente essere implementata esattamente così.</p>
 </section>
 <section id="la-nostra-ast" class="slide level1">
@@ -489,10 +490,10 @@
 <h1><em>Termination tokens</em></h1>
 <ul>
 <li><p>Nel linguaggio C++, due <em>termination tokens</em> molto usati sono il <code>;</code> (usato per terminare uno <em>statement</em>) e <code>}</code> (usato per terminare un blocco di codice. Ad esempio:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (x &lt; <span class="dv">0</span>) {</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    x *= -<span class="fl">1.0</span>  <span class="co">// Error: missing &#39;;&#39;</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>x /= <span class="dv">1</span><span class="er">O</span>;       <span class="co">// Uh-oh, I wrote a capital &quot;o&quot; instead of &quot;0&quot;</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb14"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>x <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">*=</span> <span class="op">-</span><span class="fl">1.0</span>  <span class="co">// Error: missing &#39;;&#39;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">/=</span> <span class="dv">1</span><span class="er">O</span><span class="op">;</span>       <span class="co">// Uh-oh, I wrote a capital &quot;o&quot; instead of &quot;0&quot;</span></span></code></pre></div></li>
 <li><p>In un linguaggio come il nostro non è semplice individuare un <em>termination token</em>; la cosa migliore sarebbe richiedere la presenza di <code>;</code> alla fine di ogni <em>statement</em>, come nel C++, oppure obbligare a concludere le definizioni con un ritorno a capo (che sia codificato come un token <code>TOKEN_NEWLINE</code>).</p></li>
 </ul>
 </section>
@@ -509,8 +510,8 @@
 <ul>
 <li><p>La grande complessità del C++ è legata soprattutto ai <code>template</code> e all’uso degli <em>header file</em>; rendiamoci conto di questa difficoltà già guardando alcuni semplici esempi.</p></li>
 <li><p>Considerate questa definizione, che mostra la difficoltà di interpretare <code>&gt;&gt;</code>:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>vector&lt;<span class="bu">std::</span>vector&lt;<span class="dt">int</span>&gt;&gt; matrix = identity(<span class="dv">3</span>); <span class="co">// &gt;&gt; are *two* tokens</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cin &gt;&gt; matrix[<span class="dv">0</span>][<span class="dv">0</span>]; <span class="co">// Here &gt;&gt; is *one* token</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;&gt;</span> matrix <span class="op">=</span> identity<span class="op">(</span><span class="dv">3</span><span class="op">);</span> <span class="co">// &gt;&gt; are *two* tokens</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cin<span class="op"> &gt;&gt;</span> matrix<span class="op">[</span><span class="dv">0</span><span class="op">][</span><span class="dv">0</span><span class="op">];</span> <span class="co">// Here &gt;&gt; is *one* token</span></span></code></pre></div></li>
 <li><p>È impossibile creare la sequenza di token corretta con l’approccio che abbiamo seguito, che divide rigidamente il <em>lexing</em> dal <em>parsing</em> (e infatti la prima riga non era ammessa dallo standard C++ fino a pochi anni fa).</p></li>
 </ul>
 </section>
@@ -518,11 +519,11 @@
 <h1>Altre difficoltà dei <code>template</code></h1>
 <ul>
 <li><p>I template C++ rendono complessa anche l’analisi sintattica:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span>&lt;<span class="dt">bool</span> amd64&gt; <span class="kw">struct</span> MyStruct;</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span>&lt;&gt; <span class="kw">struct</span> MyStruct&lt;<span class="kw">false</span>&gt; { <span class="co">/* Valid on 32-bit machines */</span> };</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span>&lt;&gt; <span class="kw">struct</span> MyStruct&lt;<span class="kw">true</span>&gt; { <span class="co">/* Valid on 64-bit machines */</span> };</span></code></pre></div></li>
+<div class="sourceCode" id="cb16"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="dt">bool</span> amd64<span class="op">&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">&lt;</span><span class="kw">false</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">/* Valid on 32-bit machines */</span> <span class="op">};</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">&lt;</span><span class="kw">true</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">/* Valid on 64-bit machines */</span> <span class="op">};</span></span></code></pre></div></li>
 <li><p>Si tratta in pratica di <em>due</em> strutture con lo stesso nome (<code>MyStruct</code>). Questo può essere usato ad esempio nel codice seguente:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>MyStruct&lt;<span class="kw">sizeof</span>(<span class="dt">size_t</span>) &gt; <span class="dv">4</span>&gt; A;  <span class="co">// On 64-bit machines use the extended definition</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>MyStruct<span class="op">&lt;</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">&gt;</span> A<span class="op">;</span>  <span class="co">// On 64-bit machines use the extended definition</span></span></code></pre></div>
 <p>Ma a livello di sintassi, il termine <code>&gt;</code> rende tutto complicato!</p></li>
 </ul>
 </section>
@@ -532,14 +533,14 @@
 <li><p>Il problema del C++ è che quando sono stati introdotti i template (che non esistevano nelle primissime versioni del linguaggio) sono stati usati come simboli <code>&lt;</code> e <code>&gt;</code>.</p></li>
 <li><p>Questi simboli erano però già usati come operatori di confronto, e (ancora peggio!) esistevano già gli operatori <code>&lt;&lt;</code> e <code>&gt;&gt;</code>, derivati dal C.</p></li>
 <li><p>Linguaggi come Pascal e Kotlin definiscono questi operatori <code>shl</code> e <code>shr</code>: questo rimuove l’ambiguità e semplifica l’analisi lessicale. Il linguaggio D invece usa una <a href="https://dlang.org/spec/template.html">sintassi diversa</a> per i <em>template</em>, e nell’esempio precedente scriverebbe</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>MyStruct!(sizeof(<span class="bu">size_t</span>) &gt; <span class="dv">4</span>) A;</span></code></pre></div></li>
+<div class="sourceCode" id="cb18"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>MyStruct<span class="op">!(</span>sizeof<span class="op">(</span><span class="bu">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">)</span> A<span class="op">;</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="dichiarazioni-in-c" class="slide level1">
 <h1>Dichiarazioni in C++</h1>
 <ul>
 <li><p>Oltre ad essere semplice da interpretare dal compilatore, un linguaggio dovrebbe essere semplice anche per l’utente. Consideriamo questa dichiarazione C/C++:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> myvar[<span class="dv">100</span>];  <span class="co">/* More complicated: static const int * myvar[100] */</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> myvar<span class="op">[</span><span class="dv">100</span><span class="op">];</span>  <span class="co">/* More complicated: static const int * myvar[100] */</span></span></code></pre></div>
 <p>che dichiara un array di 100 variabili di tipo <code>int</code>.</p></li>
 <li><p>I token che definiscono il tipo sono <code>int</code>, <code>[</code>, <code>100</code> e <code>]</code>, e si trovano sia a <em>sinistra</em> che a <em>destra</em> del nome della variabile: questo per il programmatore è complicato! (Provate a interpretare il caso <em>more complicated</em> da soli!)</p></li>
 </ul>
@@ -548,7 +549,7 @@
 <h1>Il caso di Go</h1>
 <ul>
 <li><p>Il linguaggio <a href="https://golang.org/">Go</a>, che è fortemente ispirato al C, rende più semplici le dichiarazioni usando una notazione diversa:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> myvar [<span class="dv">100</span>]<span class="dt">int</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb20"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> myvar <span class="op">[</span><span class="dv">100</span><span class="op">]</span><span class="dt">int</span></span></code></pre></div></li>
 <li><p>La keyword <code>var</code> segnala al <em>parser</em> che si sta dichiarando una variabile.</p></li>
 <li><p>I token che definiscono il tipo sono riportati tutti insieme, <em>dopo</em> l’identificatore che rappresenta il nome della variabile.</p></li>
 <li><p>La scrittura <code>[100]int</code> segue l’ordine naturale delle parole: «un array di 100 valori <code>int</code>», ed è più facile da leggere per il programmatore (in C bisogna leggere a ritroso, da destra a sinistra).</p></li>
@@ -595,14 +596,14 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <h1>Espressioni matematiche</h1>
 <ul>
 <li><p>Il nostro linguaggio permette variabili, ma non prevede calcoli aritmetici. Questo è molto limitante! Potrei voler muovere un oggetto lungo una retta e farne ruotare un altro:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">float</span> speed_m_s(1.0);</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">float</span> freq_hz(0.5);</span>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">float</span> speed_m_s<span class="er">(</span><span class="ex">1.0</span><span class="kw">);</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">float</span> freq_hz<span class="er">(</span><span class="ex">0.5</span><span class="kw">);</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># First sphere</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">sphere</span>(sphere_material, translation([0, 0, clock_s * speed_m_s]))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">sphere</span><span class="er">(</span><span class="ex">sphere_material,</span> translation<span class="er">(</span><span class="ex">[0,</span> 0, clock_s <span class="pp">*</span> speed_m_s]<span class="kw">))</span></span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Second sphere (faster)</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="ex">sphere</span>(sphere_material, rotation_x(360 * freq_hz * clock_s) <span class="ex">*</span> translation([1, 0, 0]))</span></code></pre></div></li>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="ex">sphere</span><span class="er">(</span><span class="ex">sphere_material,</span> rotation_x<span class="er">(</span><span class="ex">360</span> <span class="pp">*</span> freq_hz <span class="pp">*</span> clock_s<span class="kw">)</span> <span class="ex">*</span> translation<span class="er">(</span><span class="ex">[1,</span> 0, 0]<span class="kw">))</span></span></code></pre></div></li>
 <li><p>Implementare il calcolo di espressioni matematiche non è difficilissimo: basta riusare i concetti che abbiamo presentato oggi.</p></li>
 </ul>
 </section>
@@ -799,38 +800,38 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Python.h&gt;</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">wchar_t</span> *program = Py_DecodeLocale(argv[<span class="dv">0</span>], NULL);</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (program == NULL) {</span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>        fprintf(stderr, <span class="st">&quot;Fatal error: cannot decode argv[0]</span><span class="sc">\n</span><span class="st">&quot;</span>);</span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>        exit(<span class="dv">1</span>);</span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    Py_SetProgramName(program);  <span class="co">/* optional but recommended */</span></span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    Py_Initialize();</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">wchar_t</span> <span class="op">*</span>program <span class="op">=</span> Py_DecodeLocale<span class="op">(</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> NULL<span class="op">);</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>program <span class="op">==</span> NULL<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Fatal error: cannot decode argv[0]</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    Py_SetProgramName<span class="op">(</span>program<span class="op">);</span>  <span class="co">/* optional but recommended */</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    Py_Initialize<span class="op">();</span></span>
 <span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* Run a simple Python program that prints the current date */</span></span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    PyRun_SimpleString(<span class="st">&quot;from time import time,ctime</span><span class="sc">\n</span><span class="st">&quot;</span></span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;print(&#39;Today is&#39;, ctime(time()))</span><span class="sc">\n</span><span class="st">&quot;</span>);</span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (Py_FinalizeEx() &lt; <span class="dv">0</span>) {</span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>        exit(<span class="dv">120</span>);</span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>    PyMem_RawFree(program);</span>
-<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
-<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    PyRun_SimpleString<span class="op">(</span><span class="st">&quot;from time import time,ctime</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;print(&#39;Today is&#39;, ctime(time()))</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>Py_FinalizeEx<span class="op">()</span> <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">120</span><span class="op">);</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>    PyMem_RawFree<span class="op">(</span>program<span class="op">);</span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="registrare-funzioni" class="slide level1">
 <h1>Registrare funzioni</h1>
 <p>Si può estendere l’interprete Python perché riconosca nuove funzioni: è in questo modo che si rendono disponibili le funzionalità del proprio programma attraverso Python. Ecco un <a href="https://docs.python.org/3/extending/embedding.html">esempio</a>:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> numargs=<span class="dv">0</span>;</span>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> numargs<span class="op">=</span><span class="dv">0</span><span class="op">;</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">/* Return the number of arguments of the application command line */</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyObject*</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>emb_numargs(PyObject *self, PyObject *args)</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(!PyArg_ParseTuple(args, <span class="st">&quot;:numargs&quot;</span>))</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> NULL;</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> PyLong_FromLong(numargs);</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyObject<span class="op">*</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>emb_numargs<span class="op">(</span>PyObject <span class="op">*</span>self<span class="op">,</span> PyObject <span class="op">*</span>args<span class="op">)</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>PyArg_ParseTuple<span class="op">(</span>args<span class="op">,</span> <span class="st">&quot;:numargs&quot;</span><span class="op">))</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> PyLong_FromLong<span class="op">(</span>numargs<span class="op">);</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
 <span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co">/* This will enable the interpreter to understand the following script:</span></span>
 <span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
@@ -838,22 +839,22 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co"> *     print(emb.numargs())</span></span>
 <span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
 <span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyMethodDef EmbMethods[] = {</span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    {<span class="st">&quot;numargs&quot;</span>, emb_numargs, METH_VARARGS,</span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>     <span class="st">&quot;Return the number of arguments received by the process.&quot;</span>},</span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    {NULL, NULL, <span class="dv">0</span>, NULL}</span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>};</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyMethodDef EmbMethods<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="st">&quot;numargs&quot;</span><span class="op">,</span> emb_numargs<span class="op">,</span> METH_VARARGS<span class="op">,</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>     <span class="st">&quot;Return the number of arguments received by the process.&quot;</span><span class="op">},</span></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>NULL<span class="op">,</span> NULL<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> NULL<span class="op">}</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
 <span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyModuleDef EmbModule = {</span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>    PyModuleDef_HEAD_INIT, <span class="st">&quot;emb&quot;</span>, NULL, -<span class="dv">1</span>, EmbMethods,</span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>    NULL, NULL, NULL, NULL</span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>};</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyModuleDef EmbModule <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>    PyModuleDef_HEAD_INIT<span class="op">,</span> <span class="st">&quot;emb&quot;</span><span class="op">,</span> NULL<span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> EmbMethods<span class="op">,</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>    NULL<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">,</span> NULL</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
 <span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyObject*</span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>PyInit_emb(<span class="dt">void</span>)</span>
-<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> PyModule_Create(&amp;EmbModule);</span>
-<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyObject<span class="op">*</span></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>PyInit_emb<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> PyModule_Create<span class="op">(&amp;</span>EmbModule<span class="op">);</span></span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="il-caso-del-nostro-ray-tracer-1" class="slide level1">
 <h1>Il caso del nostro ray-tracer</h1>
@@ -890,9 +891,9 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <li><p>I gruppi che hanno impiegato Julia possono sin da subito creare semplici script e usare il proprio <em>package</em> come una libreria:</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> MyRaytracer</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>mycam <span class="op">=</span> OrthogonalCamera(<span class="fl">16</span><span class="op">//</span><span class="fl">9</span><span class="op">,</span> rotation_z(<span class="fl">180.0</span>))</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>world <span class="op">=</span> World()</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>addshape(world<span class="op">,</span> Sphere(translation(Vec(<span class="fl">10</span><span class="op">,</span> <span class="fl">0</span><span class="op">,</span> <span class="fl">0</span>))))</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>mycam <span class="op">=</span> <span class="fu">OrthogonalCamera</span>(<span class="fl">16</span><span class="op">//</span><span class="fl">9</span><span class="op">,</span> <span class="fu">rotation_z</span>(<span class="fl">180.0</span>))</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>world <span class="op">=</span> <span class="fu">World</span>()</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">addshape</span>(world<span class="op">,</span> <span class="fu">Sphere</span>(<span class="fu">translation</span>(<span class="fu">Vec</span>(<span class="fl">10</span><span class="op">,</span> <span class="fl">0</span><span class="op">,</span> <span class="fl">0</span>))))</span>
 <span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>…</span></code></pre></div></li>
 <li><p>Ovviamente si hanno a disposizione tutte le potenzialità di Julia: cicli <code>for</code>, definizione di funzioni di supporto, etc.</p></li>
 <li><p>Questo codice può essere inserito anche direttamente nella REPL o in un notebook, ed è quindi particolarmente comodo!</p></li>
@@ -945,7 +946,7 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 
   <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
 
-  // reveal.js plugins
+  <!-- reveal.js plugins -->
   <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
@@ -955,18 +956,154 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
       // Full list of configuration options available at:
       // https://revealjs.com/config/
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
         // Display a presentation progress bar
         progress: true,
+
         // Display the page number of the current slide
         slideNumber: true,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: false,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
         // Push each slide change to the browser history
         history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
        // Parallax background image
        parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
         width: 1440,
+
         height: 810,
 
         // reveal.js plugins

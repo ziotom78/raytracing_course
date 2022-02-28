@@ -20,6 +20,7 @@
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
     div.sourceCode { margin: 1em 0; }
     pre.sourceCode { margin: 0; }
@@ -234,19 +235,19 @@ f_r = f_r(x, \Psi \rightarrow \Theta).
 <h1><code>generate-image.sh</code></h1>
 <div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span><span class="bu"> [</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;&quot;</span><span class="bu"> ]</span>; <span class="kw">then</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;&quot;</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Usage: </span><span class="va">$(</span><span class="fu">basename</span> <span class="va">$0)</span><span class="st"> ANGLE&quot;</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">exit</span> 1</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">fi</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">angle=</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">angleNNN=$(</span><span class="bu">printf</span> <span class="st">&quot;%03d&quot;</span> <span class="va">$angle)</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">pfmfile=</span>image<span class="va">$angleNNN</span>.pfm</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">pngfile=</span>image<span class="va">$angleNNN</span>.png</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">angle</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">angleNNN</span><span class="op">=</span><span class="va">$(</span><span class="bu">printf</span> <span class="st">&quot;%03d&quot;</span> <span class="va">$angle)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">pfmfile</span><span class="op">=</span>image<span class="va">$angleNNN</span>.pfm</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">pngfile</span><span class="op">=</span>image<span class="va">$angleNNN</span>.png</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="bu">time</span> ./main.py demo --algorithm flat --angle-deg <span class="va">$angle</span> <span class="kw">\</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="ex">--width</span> 640 --height 480 --pfm-output <span class="va">$pfmfile</span> <span class="kw">\</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="ex">./main.py</span> pfm2png --luminosity 0.5 <span class="va">$pfmfile</span> <span class="va">$pngfile</span></span></code></pre></div>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="bu">time</span> ./main.py demo <span class="at">--algorithm</span> flat <span class="at">--angle-deg</span> <span class="va">$angle</span> <span class="dt">\</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">--width</span> 640 <span class="at">--height</span> 480 <span class="at">--pfm-output</span> <span class="va">$pfmfile</span> <span class="dt">\</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="ex">./main.py</span> pfm2png <span class="at">--luminosity</span> 0.5 <span class="va">$pfmfile</span> <span class="va">$pngfile</span></span></code></pre></div>
 </section>
 <section id="generazione-di-numeri-pseudocasuali" class="slide level1">
 <h1>Generazione di numeri pseudocasuali</h1>
@@ -549,11 +550,11 @@ init_seq = 54</code></pre></li>
 <li><p>Per poter usare i tipi <code>unsigned</code> in una classe/funzione, potete fare l’upgrade alla versione 1.5 modificando <code>build.gradle.kts</code>. Altrimenti dovete indicare le classi e le funzioni che usano questi tipi (anche indirettamente) scrivendo <code>@ExperimentalUnsignedTypes</code>. Ad esempio:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Any class referring to PCG will need &quot;@ExperimentalUnsignedTypes&quot;</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="at">@ExperimentalUnsignedTypes</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PCG(<span class="va">initState</span>: <span class="dt">ULong</span> = 42UL, <span class="va">initSeq</span>: <span class="dt">ULong</span> = 54UL) {</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">state</span>: ULong</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">inc</span>: ULong</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    init { <span class="co">/* … */</span> }</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PCG<span class="op">(</span><span class="va">initState</span><span class="op">:</span> <span class="dt">ULong</span> <span class="op">=</span> <span class="er">42</span>UL<span class="op">,</span> <span class="va">initSeq</span><span class="op">:</span> <span class="dt">ULong</span> <span class="op">=</span> <span class="er">54</span>UL<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">state</span><span class="op">:</span> ULong</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">inc</span><span class="op">:</span> ULong</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    init <span class="op">{</span> <span class="co">/* … */</span> <span class="op">}</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="operazioni-su-bit" class="slide level1">
@@ -569,7 +570,7 @@ init_seq = 54</code></pre></li>
 
   <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
 
-  // reveal.js plugins
+  <!-- reveal.js plugins -->
   <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
@@ -579,18 +580,154 @@ init_seq = 54</code></pre></li>
       // Full list of configuration options available at:
       // https://revealjs.com/config/
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
         // Display a presentation progress bar
         progress: true,
+
         // Display the page number of the current slide
         slideNumber: true,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: false,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
         // Push each slide change to the browser history
         history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
        // Parallax background image
        parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
         width: 1440,
+
         height: 810,
 
         // reveal.js plugins

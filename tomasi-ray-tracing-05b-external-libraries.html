@@ -20,6 +20,7 @@
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
     div.sourceCode { margin: 1em 0; }
     pre.sourceCode { margin: 0; }
@@ -211,7 +212,7 @@ R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
 </section>
 <section id="punti-luminosi-2" class="slide level1">
 <h1>Punti luminosi</h1>
-<p><img data-src="pd-images/bright-point-transformation.svg" /></p>
+<p><img data-src="pd-images/3a87ff28ee0eabd619ad1344678a9956f3e23b38.svg" data-im_fname="bright-point-transformation" /></p>
 </section>
 <section id="correzione-γ" class="slide level1">
 <h1>Correzione γ</h1>
@@ -339,12 +340,12 @@ $</code></pre></li>
 </ul></li>
 <li><p>Se il vostro linguaggio supporta i tipi opzionali, potete chiamare la funzione <code>average_luminosity</code> se il parametro luminosità è nullo:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This is C#; in Kotlin it&#39;s almost the same.</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">NormalizeImage</span>(<span class="dt">float</span> factor, <span class="dt">float</span>? luminosity = <span class="kw">null</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">NormalizeImage</span><span class="op">(</span><span class="dt">float</span> factor<span class="op">,</span> <span class="dt">float</span><span class="op">?</span> luminosity <span class="op">=</span> <span class="kw">null</span><span class="op">)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// In Kotlin use &quot;?:&quot; instead of &quot;??&quot;</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">var</span> lum = luminosity ?? <span class="fu">AverageLuminosity</span>();</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; pixels.<span class="fu">Length</span>; ++i) { <span class="co">/* ... */</span> }</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">var</span> lum <span class="op">=</span> luminosity <span class="op">??</span> <span class="fu">AverageLuminosity</span><span class="op">();</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> pixels<span class="op">.</span><span class="fu">Length</span><span class="op">;</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="normalizzazione-33" class="slide level1">
@@ -541,33 +542,33 @@ $</code></pre></li>
 <div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;gd.h&quot;</span><span class="pp">     </span><span class="co">/* The library&#39;s header file */</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main() {</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">int</span> width = <span class="dv">256</span>, height = <span class="dv">256</span>;</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  gdImagePtr im;</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">FILE</span> *f;</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> row, col;</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">int</span> width <span class="op">=</span> <span class="dv">256</span><span class="op">,</span> height <span class="op">=</span> <span class="dv">256</span><span class="op">;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  gdImagePtr im<span class="op">;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">FILE</span> <span class="op">*</span>f<span class="op">;</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> row<span class="op">,</span> col<span class="op">;</span></span>
 <span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// &quot;True color&quot; is the old name for 24-bit RGB images</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  im = gdImageCreateTrueColor(width, height);</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  im <span class="op">=</span> gdImageCreateTrueColor<span class="op">(</span>width<span class="op">,</span> height<span class="op">);</span></span>
 <span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(row = <span class="dv">0</span>; row &lt; height; ++row) {</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(col = <span class="dv">0</span>; col &lt; width; ++col) {</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>      <span class="dt">int</span> red, green, blue = <span class="dv">128</span>;</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span><span class="op">(</span>row <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> row <span class="op">&lt;</span> height<span class="op">;</span> <span class="op">++</span>row<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>col <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> col <span class="op">&lt;</span> width<span class="op">;</span> <span class="op">++</span>col<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>      <span class="dt">int</span> red<span class="op">,</span> green<span class="op">,</span> blue <span class="op">=</span> <span class="dv">128</span><span class="op">;</span></span>
 <span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>      red = (<span class="dt">int</span>) (col * <span class="fl">255.0</span> / width);</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>      green = (<span class="dt">int</span>) ((<span class="fl">1.0</span> - row * <span class="fl">1.0</span> / height) * <span class="fl">255.0</span>);</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>      gdImageSetPixel(im, col, row, gdImageColorExact(im, red, green, blue));</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>      red <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)</span> <span class="op">(</span>col <span class="op">*</span> <span class="fl">255.0</span> <span class="op">/</span> width<span class="op">);</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>      green <span class="op">=</span> <span class="op">(</span><span class="dt">int</span><span class="op">)</span> <span class="op">((</span><span class="fl">1.0</span> <span class="op">-</span> row <span class="op">*</span> <span class="fl">1.0</span> <span class="op">/</span> height<span class="op">)</span> <span class="op">*</span> <span class="fl">255.0</span><span class="op">);</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>      gdImageSetPixel<span class="op">(</span>im<span class="op">,</span> col<span class="op">,</span> row<span class="op">,</span> gdImageColorExact<span class="op">(</span>im<span class="op">,</span> red<span class="op">,</span> green<span class="op">,</span> blue<span class="op">));</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
 <span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  f = fopen(<span class="st">&quot;image.png&quot;</span>, <span class="st">&quot;wb&quot;</span>);</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  f <span class="op">=</span> fopen<span class="op">(</span><span class="st">&quot;image.png&quot;</span><span class="op">,</span> <span class="st">&quot;wb&quot;</span><span class="op">);</span></span>
 <span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* Output the image to the disk file in PNG format. */</span></span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  gdImagePng(im, f);  <span class="co">/* gdImageJpeg(im, jpegout, -1); */</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  gdImagePng<span class="op">(</span>im<span class="op">,</span> f<span class="op">);</span>  <span class="co">/* gdImageJpeg(im, jpegout, -1); */</span></span>
 <span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>  fclose(f);</span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  gdImageDestroy(im);</span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>  fclose<span class="op">(</span>f<span class="op">);</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  gdImageDestroy<span class="op">(</span>im<span class="op">);</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="altre-librerie" class="slide level1">
 <h1>Altre librerie</h1>
@@ -599,16 +600,16 @@ $</code></pre></li>
 <section id="salvare-file-png" class="slide level1">
 <h1>Salvare file PNG</h1>
 <div class="sourceCode" id="cb18"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Create a sRGB bitmap</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> bitmap = <span class="kw">new</span> Image&lt;Rgb24&gt;(Configuration.<span class="fu">Default</span>, width, height);</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> bitmap <span class="op">=</span> <span class="kw">new</span> Image<span class="op">&lt;</span>Rgb24<span class="op">&gt;(</span>Configuration<span class="op">.</span><span class="fu">Default</span><span class="op">,</span> width<span class="op">,</span> height<span class="op">);</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">// The bitmap can be used as a matrix. To draw the pixels in the bitmap</span></span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">// just use the syntax &quot;bitmap[x, y]&quot; like the following:</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>bitmap[SOMEX, SOMEY] = <span class="kw">new</span> <span class="fu">Rgb24</span>(<span class="dv">255</span>, <span class="dv">255</span>, <span class="dv">128</span>); <span class="co">// Three &quot;Byte&quot; values!</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>bitmap<span class="op">[</span>SOMEX<span class="op">,</span> SOMEY<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">Rgb24</span><span class="op">(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">128</span><span class="op">);</span> <span class="co">// Three &quot;Byte&quot; values!</span></span>
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Save the bitmap as a PNG file</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> (Stream fileStream = File.<span class="fu">OpenWrite</span>(<span class="st">&quot;output.png&quot;</span>)) {</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    bitmap.<span class="fu">Save</span>(fileStream, <span class="kw">new</span> <span class="fu">PngEncoder</span>());</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="op">(</span>Stream fileStream <span class="op">=</span> File<span class="op">.</span><span class="fu">OpenWrite</span><span class="op">(</span><span class="st">&quot;output.png&quot;</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    bitmap<span class="op">.</span><span class="fu">Save</span><span class="op">(</span>fileStream<span class="op">,</span> <span class="kw">new</span> <span class="fu">PngEncoder</span><span class="op">());</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="indicazioni-per-julia" class="slide level1">
 <h1>Indicazioni per Julia</h1>
@@ -629,11 +630,11 @@ $</code></pre></li>
 <div class="sourceCode" id="cb19"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Images</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Values must be expressed in the range [0, 1]</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> [RGB(<span class="fl">0.0</span><span class="op">,</span> <span class="fl">0.0</span><span class="op">,</span> <span class="fl">1.0</span>) RGB(<span class="fl">1.0</span><span class="op">,</span> <span class="fl">0.0</span><span class="op">,</span> <span class="fl">0.0</span>)<span class="op">;</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>         RGB(<span class="fl">0.0</span><span class="op">,</span> <span class="fl">1.0</span><span class="op">,</span> <span class="fl">0.0</span>) RGB(<span class="fl">1.0</span><span class="op">,</span> <span class="fl">1.0</span><span class="op">,</span> <span class="fl">1.0</span>)]</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> [<span class="fu">RGB</span>(<span class="fl">0.0</span><span class="op">,</span> <span class="fl">0.0</span><span class="op">,</span> <span class="fl">1.0</span>) <span class="fu">RGB</span>(<span class="fl">1.0</span><span class="op">,</span> <span class="fl">0.0</span><span class="op">,</span> <span class="fl">0.0</span>)<span class="op">;</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>         <span class="fu">RGB</span>(<span class="fl">0.0</span><span class="op">,</span> <span class="fl">1.0</span><span class="op">,</span> <span class="fl">0.0</span>) <span class="fu">RGB</span>(<span class="fl">1.0</span><span class="op">,</span> <span class="fl">1.0</span><span class="op">,</span> <span class="fl">1.0</span>)]</span>
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># It&#39;s all too easy!</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>save(<span class="st">&quot;test.png&quot;</span><span class="op">,</span> image)</span></code></pre></div></li>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(<span class="st">&quot;test.png&quot;</span><span class="op">,</span> image)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="indicazioni-per-kotlin" class="slide level1">
@@ -655,20 +656,20 @@ $</code></pre></li>
 </section>
 <section id="esempio-di-codice-kotlin" class="slide level1">
 <h1>Esempio di codice Kotlin</h1>
-<div class="sourceCode" id="cb21"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span>(<span class="va">args</span>: <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;) {</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span> = <span class="dv">800</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span> = <span class="dv">600</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">ldrImage</span> = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (y <span class="kw">in</span> <span class="dv">0</span> until height) {</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (x <span class="kw">in</span> <span class="dv">0</span> until width) {</span>
+<div class="sourceCode" id="cb21"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span> <span class="op">=</span> <span class="dv">800</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span> <span class="op">=</span> <span class="dv">600</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">ldrImage</span> <span class="op">=</span> BufferedImage<span class="op">(</span>width<span class="op">,</span> height<span class="op">,</span> BufferedImage<span class="op">.</span>TYPE_INT_RGB<span class="op">)</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>y <span class="kw">in</span> <span class="dv">0</span> until height<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>x <span class="kw">in</span> <span class="dv">0</span> until width<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 0xFF0000 corresponds to sRGB(255, 0, 0): the image will be</span></span>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>            <span class="co">// painted uniformly with a bright red shade</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>            ldrImage.setRGB(x, y, <span class="dv">0xFF0000</span>)</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>            ldrImage<span class="op">.</span>setRGB<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> <span class="bn">0xFF0000</span><span class="op">)</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Save the image to the file specified on the command line</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    ImageIO.write(args[<span class="dv">0</span>], <span class="st">&quot;PNG&quot;</span>, stream)</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    ImageIO<span class="op">.</span>write<span class="op">(</span>args<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="st">&quot;PNG&quot;</span><span class="op">,</span> stream<span class="op">)</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="linea-di-comando" class="slide level1">
 <h1>Linea di comando</h1>
@@ -685,7 +686,7 @@ $</code></pre></li>
 
   <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
 
-  // reveal.js plugins
+  <!-- reveal.js plugins -->
   <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
@@ -695,18 +696,154 @@ $</code></pre></li>
       // Full list of configuration options available at:
       // https://revealjs.com/config/
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
         // Display a presentation progress bar
         progress: true,
+
         // Display the page number of the current slide
         slideNumber: true,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: false,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
         // Push each slide change to the browser history
         history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
        // Parallax background image
        parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
         width: 1440,
+
         height: 810,
 
         // reveal.js plugins

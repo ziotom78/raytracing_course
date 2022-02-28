@@ -20,6 +20,7 @@
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
     div.sourceCode { margin: 1em 0; }
     pre.sourceCode { margin: 0; }
@@ -139,18 +140,18 @@
 <h1>Costruttore o funzione?</h1>
 <ul>
 <li><p>Si può implementare la lettura di un file PFM in un costruttore (esempio in C++):</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    HdrImage image(<span class="bu">std::</span>istream &amp; stream);</span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    HdrImage image<span class="op">(</span><span class="bu">std::</span>istream<span class="op"> &amp;</span> stream<span class="op">);</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>};</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>ifstream myfile{<span class="st">&quot;input.pfm&quot;</span>};</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>HdrImage img{myfile};</span></code></pre></div></li>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>ifstream<span class="op"> </span>myfile<span class="op">{</span><span class="st">&quot;input.pfm&quot;</span><span class="op">};</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>HdrImage img<span class="op">{</span>myfile<span class="op">};</span></span></code></pre></div></li>
 <li><p>Ma si può anche pensare di implementare una funzione <code>read_pfm_file</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>HdrImage read_pfm_file(<span class="bu">std::</span>istream &amp; stream);</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>HdrImage read_pfm_file<span class="op">(</span><span class="bu">std::</span>istream<span class="op"> &amp;</span> stream<span class="op">);</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>ifstream myfile{<span class="st">&quot;input.pfm&quot;</span>};</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>HdrImage img{read_pfm_file(myfile)};</span></code></pre></div></li>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>ifstream<span class="op"> </span>myfile<span class="op">{</span><span class="st">&quot;input.pfm&quot;</span><span class="op">};</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>HdrImage img<span class="op">{</span>read_pfm_file<span class="op">(</span>myfile<span class="op">)};</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="scelta-della-api" class="slide level1">
@@ -162,8 +163,8 @@
 <li><p>In linguaggi OOP come il C#, è più naturale fornire un costruttore;</p></li>
 <li><p>In linguaggi come il Python non è possibile fare l’overloading di costruttori, quindi è meglio implementare una funzione (come faccio nel mio codice);</p></li>
 <li><p>Se pensassimo in futuro di voler implementare la lettura di più file immagine, una funzione permette di differenziare i formati (ma non è molto utile):</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>HdrImage read_pfm_file(<span class="bu">std::</span>istream &amp; stream);</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>HdrImage read_openexr_file(<span class="bu">std::</span>istream &amp; stream);</span></code></pre></div></li>
+<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>HdrImage read_pfm_file<span class="op">(</span><span class="bu">std::</span>istream<span class="op"> &amp;</span> stream<span class="op">);</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>HdrImage read_openexr_file<span class="op">(</span><span class="bu">std::</span>istream<span class="op"> &amp;</span> stream<span class="op">);</span></span></code></pre></div></li>
 </ol></li>
 </ul>
 </section>
@@ -186,14 +187,14 @@
 <div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># How handy!</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> read_pfm_file(<span class="st">&quot;image_file.pfm&quot;</span>)</span></code></pre></div></li>
 <li><p>In C++ si potrebbe usare l’overloading per definire un nuovo costruttore:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage {</span>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage <span class="op">{</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Read a PFM file from a stream</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    HdrImage(<span class="bu">std::</span>istream &amp; stream);</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    HdrImage<span class="op">(</span><span class="bu">std::</span>istream<span class="op"> &amp;</span> stream<span class="op">);</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Open a PFM file and read the stream of bytes from it</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    HdrImage(<span class="at">const</span> <span class="bu">std::</span>string &amp; file_name)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    : <span class="kw">this</span>(<span class="bu">std::</span>ifstream{file_name}) { }</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>};</span></code></pre></div></li>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    HdrImage<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span> file_name<span class="op">)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">:</span> <span class="kw">this</span><span class="op">(</span><span class="bu">std::</span>ifstream<span class="op">{</span>file_name<span class="op">})</span> <span class="op">{</span> <span class="op">}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="stream-e-nomi-di-file" class="slide level1">
@@ -209,21 +210,21 @@ hdrimages.cpp:33:58: error: cannot bind non-const lvalue reference of type ‘st
 </section>
 <section id="risolvere-il-dilemma" class="slide level1">
 <h1>Risolvere il dilemma</h1>
-<div class="sourceCode" id="cb8"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage {</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span>:</span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span><span class="op">:</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Put the code that reads the PFM file in a separate method</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> read_pfm_file(<span class="bu">std::</span>istream &amp; stream);</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> read_pfm_file<span class="op">(</span><span class="bu">std::</span>istream<span class="op"> &amp;</span> stream<span class="op">);</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span>:</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// First constructor: invoke `read_pfm_file`</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    HdrImage(<span class="bu">std::</span>istream &amp; stream) { read_pfm_file(stream); }</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    HdrImage<span class="op">(</span><span class="bu">std::</span>istream<span class="op"> &amp;</span> stream<span class="op">)</span> <span class="op">{</span> read_pfm_file<span class="op">(</span>stream<span class="op">);</span> <span class="op">}</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Second constructor: again, invoke `read_pfm_file`</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    HdrImage(<span class="at">const</span> <span class="bu">std::</span>string &amp; file_name) {</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">std::</span>ifstream stream{file_name};</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        read_pfm_file(stream);</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>};</span></code></pre></div>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    HdrImage<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span> file_name<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">std::</span>ifstream<span class="op"> </span>stream<span class="op">{</span>file_name<span class="op">};</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        read_pfm_file<span class="op">(</span>stream<span class="op">);</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
 </section>
 <section id="regola-doro-della-oop" class="slide level1">
 <h1>Regola d’oro della OOP</h1>
@@ -317,10 +318,10 @@ width height
 <section id="funzioni-di-supporto-14" class="slide level1">
 <h1>Funzioni di supporto (1/4)</h1>
 <div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _read_line(stream):</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> b<span class="st">&quot;&quot;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> <span class="st">b&quot;&quot;</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        cur_byte <span class="op">=</span> stream.read(<span class="dv">1</span>)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> cur_byte <span class="kw">in</span> [b<span class="st">&quot;&quot;</span>, b<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>]:</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> cur_byte <span class="kw">in</span> [<span class="st">b&quot;&quot;</span>, <span class="st">b&quot;\n&quot;</span>]:</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> result.decode(<span class="st">&quot;ascii&quot;</span>)</span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        result <span class="op">+=</span> cur_byte</span></code></pre></div>
@@ -328,7 +329,7 @@ width height
 <section id="test-14" class="slide level1">
 <h1>Test (1/4)</h1>
 <div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_pfm_read_line():</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> BytesIO(b<span class="st">&quot;hello</span><span class="ch">\n</span><span class="st">world&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> BytesIO(<span class="st">b&quot;hello\nworld&quot;</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> _read_line(line) <span class="op">==</span> <span class="st">&quot;hello&quot;</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> _read_line(line) <span class="op">==</span> <span class="st">&quot;world&quot;</span></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> _read_line(line) <span class="op">==</span> <span class="st">&quot;&quot;</span></span></code></pre></div>
@@ -486,7 +487,7 @@ width height
 <span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> img.get_pixel(<span class="dv">2</span>, <span class="dv">1</span>).is_close(Color(<span class="fl">7.0e2</span>, <span class="fl">8.0e2</span>, <span class="fl">9.0e2</span>))</span>
 <span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_pfm_read_wrong(<span class="va">self</span>):</span>
-<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>    buf <span class="op">=</span> BytesIO(b<span class="st">&quot;PF</span><span class="ch">\n</span><span class="st">3 2</span><span class="ch">\n</span><span class="st">-1.0</span><span class="ch">\n</span><span class="st">stop&quot;</span>)</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>    buf <span class="op">=</span> BytesIO(<span class="st">b&quot;PF\n3</span><span class="er"> </span><span class="st">2\n</span><span class="er">-</span><span class="st">1</span><span class="er">.</span><span class="st">0\nstop&quot;</span>)</span>
 <span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> pytest.raises(InvalidPfmFileFormat):</span>
 <span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> read_pfm_image(buf)</span></code></pre></div>
 </section>
@@ -524,7 +525,7 @@ width height
 
   <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
 
-  // reveal.js plugins
+  <!-- reveal.js plugins -->
   <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
@@ -534,18 +535,154 @@ width height
       // Full list of configuration options available at:
       // https://revealjs.com/config/
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
         // Display a presentation progress bar
         progress: true,
+
         // Display the page number of the current slide
         slideNumber: true,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: false,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
         // Push each slide change to the browser history
         history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
        // Parallax background image
        parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
         width: 1440,
+
         height: 810,
 
         // reveal.js plugins

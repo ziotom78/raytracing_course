@@ -170,7 +170,7 @@
 </section>
 <section id="esempio-piano-generato" class="slide level1">
 <h1>Esempio: piano generato</h1>
-<p><embed width="680px" height="680px" src="pd-images/vector_generators.html" /></p>
+<p><embed width="640px" height="640px" src="pd-images/00f3275659d41f402c8917f3e0c922c173bd007c.html" data-im_fname="vector_generators" /></p>
 </section>
 <section id="basi-12" class="slide level1">
 <h1>Basi (1/2)</h1>
@@ -354,11 +354,33 @@ M = \begin{pmatrix}s_1&amp; 0&amp; \vdots\\0&amp; s_2&amp; \vdots\\\ldots&amp; \
 <ul>
 <li><p>Un cerchio sul piano può essere trasformato in un ellisse tramite una trasformazione di scala; nell’esempio qui sotto, <span class="math inline">M = \mathrm{diag}(1/2, 1)</span>:</p>
 <center>
-<p><img data-src="pd-images/scale-demo.svg" /></p>
+<pre class="gle" data-im_fmt="svg" data-im_opt="-cairo -device svg" data-im_out="img" data-im_fname="scale-demo"><code>size 10 4
+
+amove 2 2
+circle 2 fill grey50
+
+amove 7.5 2
+begin scale 0.5 1.0
+    circle 2 fill grey20
+end scale</code></pre>
 </center></li>
 <li><p>Una riflessione rispetto all’asse <span class="math inline">y</span> è rappresentata da <span class="math inline">M = \mathrm{diag}(1, -1)</span>.</p>
 <center>
-<p><img data-src="pd-images/reflect-demo.svg" /></p>
+<pre class="gle" data-im_fmt="svg" data-im_opt="-cairo -device svg" data-im_out="img" data-im_fname="reflect-demo"><code>size 10 4
+
+begin path fill grey50 stroke
+    amove 7 0
+    rline 3 0
+    rline 0 4
+    closepath
+end path
+
+begin path fill grey20 stroke
+    amove 3 0
+    rline -3 0
+    rline 0 4
+    closepath
+end path</code></pre>
 </center></li>
 </ul>
 </section>
@@ -428,7 +450,38 @@ R(\theta) v = \begin{pmatrix}\cos\theta&amp;-\sin\theta\\\sin\theta&amp;\cos\the
 \begin{pmatrix}v_1\cos\theta - v_2\sin\theta\\v_1\sin\theta + v_2\cos\theta\end{pmatrix}.
 </span></p>
 <center>
-<p><img data-src="pd-images/rotation-demo.svg" /></p>
+<pre class="gle" data-im_fmt="svg" data-im_opt="-cairo -device svg" data-im_out="img" data-im_fname="rotation-demo"><code>size 6 4
+set hei 0.6
+set lwidth 0.04
+
+amove 0 1
+rline 6 0 arrow end
+
+amove 3 0
+rline 0 4 arrow end
+
+amove 3 1
+begin rotate 30
+    rline 2 0
+    ellipse 0.1 0.1 fill black
+end rotate
+
+amove 3 1
+begin rotate 50
+    rline 2 1
+    ellipse 0.1 0.1 fill gray50
+end rotate
+
+arc 1 30 80
+
+amove 3.75 2
+text θ
+
+amove 5 2
+text v
+
+amove 3.9 3.2
+text r(θ)v</code></pre>
 </center></li>
 <li><p>In 2 dimensioni, vale che <span class="math inline">R(\alpha) R(\beta) = R(\beta) R(\alpha) = R(\alpha + \beta)</span>.</p></li>
 </ul>
@@ -559,7 +612,7 @@ T_{\vec{k}} =
 
   <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
 
-  // reveal.js plugins
+  <!-- reveal.js plugins -->
   <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
@@ -569,18 +622,154 @@ T_{\vec{k}} =
       // Full list of configuration options available at:
       // https://revealjs.com/config/
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
         // Display a presentation progress bar
         progress: true,
+
         // Display the page number of the current slide
         slideNumber: true,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: false,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
         // Push each slide change to the browser history
         history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
        // Parallax background image
        parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
         width: 1440,
+
         height: 810,
 
         // reveal.js plugins

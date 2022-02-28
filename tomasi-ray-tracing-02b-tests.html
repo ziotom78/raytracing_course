@@ -20,6 +20,7 @@
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
     div.sourceCode { margin: 1em 0; }
     pre.sourceCode { margin: 0; }
@@ -177,12 +178,12 @@
 <ul>
 <li><p>Gli errori sono dietro l’angolo!</p></li>
 <li><p>Esempio (in un tema d’esame del corso di TNDS!):</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>CampoVettoriale <span class="kw">operator</span>+(<span class="at">const</span> CampoVettoriale &amp;v) <span class="at">const</span> {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  CampoVettoriale sum(v); <span class="co">// invoco costruttore di copia di v</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  sum.Addcomponent(getFx(), getFx(), getFz());</span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>CampoVettoriale <span class="kw">operator</span><span class="op">+(</span><span class="at">const</span> CampoVettoriale <span class="op">&amp;</span>v<span class="op">)</span> <span class="at">const</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  CampoVettoriale sum<span class="op">(</span>v<span class="op">);</span> <span class="co">// invoco costruttore di copia di v</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  sum<span class="op">.</span>Addcomponent<span class="op">(</span>getFx<span class="op">(),</span> getFx<span class="op">(),</span> getFz<span class="op">());</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> sum;</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> sum<span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Per verificare la correttezza di una funzione, occorrerebbe invocarla con dati <em>non banali</em> e controllarne il risultato.</p></li>
 </ul>
 </section>
@@ -273,8 +274,8 @@ Color(r=2.0, g=4.0, b=6.0)</code></pre></li>
 <h1>Funzioni di supporto ai test</h1>
 <ul>
 <li><p>Nel nostro codice Python, per verificare la corrispondenza tra due colori abbiamo usato <code>==</code>, che funziona perché abbiamo specificato numeri interi:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ot">assert</span> (color1 + color2) == Color(<span class="fl">6.0</span>, <span class="fl">8.0</span>, <span class="fl">10.0</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ot">assert</span> (<span class="dv">2</span> * color1) == Color(<span class="fl">2.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>)</span></code></pre></div></li>
+<div class="sourceCode" id="cb11"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ot">assert</span> <span class="op">(</span>color1 <span class="op">+</span> color2<span class="op">)</span> <span class="op">==</span> Color<span class="op">(</span><span class="fl">6.0</span><span class="op">,</span> <span class="fl">8.0</span><span class="op">,</span> <span class="fl">10.0</span><span class="op">)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ot">assert</span> <span class="op">(</span><span class="dv">2</span> <span class="op">*</span> color1<span class="op">)</span> <span class="op">==</span> Color<span class="op">(</span><span class="fl">2.0</span><span class="op">,</span> <span class="fl">4.0</span><span class="op">,</span> <span class="fl">6.0</span><span class="op">)</span></span></code></pre></div></li>
 <li><p>Però <span class="math inline">\pi</span> compare spesso nei calcoli radiometrici!</p></li>
 <li><p>Definite una funzione che confronti due <code>Color</code> come i floating-point:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> are_colors_close(a, b):</span>
@@ -361,7 +362,7 @@ Color(r=2.0, g=4.0, b=6.0)</code></pre></li>
 </section>
 <section id="grafico-delle-dipendenze" class="slide level1">
 <h1>Grafico delle dipendenze</h1>
-<p><img data-src="pd-images/project-structure.svg" /></p>
+<p><img data-src="pd-images/6240985ab459ffb4e51ede45a6aacc6c2b870da3.svg" data-im_fname="project-structure" /></p>
 <ul>
 <li>Per <em>libreria</em> intendiamo un insieme di funzioni/classi (un file <code>.a</code> in C++, un file <code>.dll</code> in C#, un insieme di classi in Kotlin; per Julia la struttura di un package è già sufficiente)</li>
 <li>Oggi non faremo nulla con l’eseguibile: basta un «Hello, world!»</li>
@@ -396,15 +397,15 @@ Color(r=2.0, g=4.0, b=6.0)</code></pre></li>
 <h1>Esempio in C++</h1>
 <div class="sourceCode" id="cb13"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main() {</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> a{};            <span class="co">// Allocated on the stack</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> * b = <span class="kw">new</span> <span class="dt">int</span>;  <span class="co">// Allocated on the heap</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> a<span class="op">{};</span>            <span class="co">// Allocated on the stack</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span> b <span class="op">=</span> <span class="kw">new</span> <span class="dt">int</span><span class="op">;</span>  <span class="co">// Allocated on the heap</span></span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    a = <span class="dv">15</span>;   <span class="co">// This is fast</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    *b = <span class="dv">16</span>;  <span class="co">// This is slower</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="dv">15</span><span class="op">;</span>   <span class="co">// This is fast</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>b <span class="op">=</span> <span class="dv">16</span><span class="op">;</span>  <span class="co">// This is slower</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout &lt;&lt; a &lt;&lt; <span class="st">&quot;, &quot;</span> &lt;&lt; *b &lt;&lt; <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>;</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> a <span class="op">&lt;&lt;</span> <span class="st">&quot;, &quot;</span> <span class="op">&lt;&lt;</span> <span class="op">*</span>b <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="dimensione-dello-stack" class="slide level1">
 <h1>Dimensione dello stack</h1>
@@ -538,11 +539,11 @@ raytracer
 <section id="cmakelists.txt" class="slide level1">
 <h1><code>CMakeLists.txt</code></h1>
 <p>Questo è il contenuto completo di <code>CMakeLists.txt</code>:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">cmake_minimum_required</span>(<span class="ot">VERSION</span> 3.12)</span>
+<div class="sourceCode" id="cb21"><pre class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">cmake_minimum_required</span>(<span class="ot">VERSION</span> <span class="dt">3.12</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a &quot;project&quot;, providing a description and a programming language</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="kw">project</span>(raytracer</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">VERSION</span> 1.0</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">VERSION</span> <span class="dt">1.0</span></span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">DESCRIPTION</span> <span class="st">&quot;Hello world in C++&quot;</span></span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">LANGUAGES</span> <span class="ot">CXX</span></span>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  )</span>
@@ -596,13 +597,13 @@ raytracer
 <div class="sourceCode" id="cb22"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;colors.h&quot;</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main() {</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    Color c1{<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>};</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    Color c2{<span class="fl">5.0</span>, <span class="fl">7.0</span>, <span class="fl">9.0</span>};</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    Color c1<span class="op">{</span><span class="fl">1.0</span><span class="op">,</span> <span class="fl">2.0</span><span class="op">,</span> <span class="fl">3.0</span><span class="op">};</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    Color c2<span class="op">{</span><span class="fl">5.0</span><span class="op">,</span> <span class="fl">7.0</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">};</span></span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> are_colors_close(Color{<span class="fl">6.0</span>, <span class="fl">9.0</span>, <span class="fl">11.0</span>}, c1 + c2)</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        ? EXIT_SUCCESS : EXIT_FAILURE;</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> are_colors_close<span class="op">(</span>Color<span class="op">{</span><span class="fl">6.0</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">,</span> <span class="fl">11.0</span><span class="op">},</span> c1 <span class="op">+</span> c2<span class="op">)</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> EXIT_SUCCESS <span class="op">:</span> EXIT_FAILURE<span class="op">;</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Si può usare <a href="https://www.cplusplus.com/reference/cstdlib/abort/?kw=abort"><code>abort</code></a> (in caso di fallimento) o <a href="https://www.cplusplus.com/reference/cassert/assert/?kw=assert"><code>assert</code></a> (occhio a <code>NDEBUG</code>!).</p></li>
 </ul>
 </section>
@@ -638,7 +639,7 @@ raytracer
 </section>
 <section id="soluzioni-e-progetti" class="slide level1">
 <h1>Soluzioni e progetti</h1>
-<p><img data-src="pd-images/project-structure-csharp.svg" /></p>
+<p><img data-src="pd-images/85e488a4db13b17cf6ed086435a081c26dfc2ebb.svg" data-im_fname="project-structure-csharp" /></p>
 <ul>
 <li><p>Il comando <code>dotnet</code> supporta la creazione di <em>soluzioni</em> e <em>progetti</em>.</p></li>
 <li><p>Per <em>progetto</em> si intende qualsiasi cosa che possa essere prodotta a partire da file contenenti codice C#</p></li>
@@ -666,20 +667,20 @@ raytracer
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. The library</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. The executable (currently printing «Hello, world!»)</span></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. The tests</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new sln -o <span class="st">&quot;Raytracer&quot;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new sln <span class="at">-o</span> <span class="st">&quot;Raytracer&quot;</span></span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Raytracer</span>
 <span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create the library and add it to the solution</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new classlib -o <span class="st">&quot;Trace&quot;</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new classlib <span class="at">-o</span> <span class="st">&quot;Trace&quot;</span></span>
 <span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace/Trace.csproj</span>
 <span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create the executable and add it to the solution</span></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new console -o <span class="st">&quot;Raytracer&quot;</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new console <span class="at">-o</span> <span class="st">&quot;Raytracer&quot;</span></span>
 <span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Raytracer/Raytracer.csproj</span>
 <span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Create the tests and add them to the solution</span></span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new xunit -o <span class="st">&quot;Trace.Tests&quot;</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new xunit <span class="at">-o</span> <span class="st">&quot;Trace.Tests&quot;</span></span>
 <span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace.Tests/Trace.Tests.csproj</span>
 <span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Both the executable and the tests depend on the «Trace» library</span></span>
@@ -710,25 +711,25 @@ raytracer
 <section id="scrittura-di-test" class="slide level1">
 <h1>Scrittura di test</h1>
 <div class="sourceCode" id="cb25"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This should be put in Trace.Tests/ColorTests.cs</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> System;</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Xunit;</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Trace;</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> System<span class="op">;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Xunit<span class="op">;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Trace<span class="op">;</span></span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="kw">namespace</span> Trace.<span class="fu">Tests</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="kw">namespace</span> Trace<span class="op">.</span><span class="fu">Tests</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
 <span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">class</span> ColorTests</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    {</span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>        [Fact]</span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">TestAdd</span>()</span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>        {</span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>            Color a = <span class="kw">new</span> <span class="fu">Color</span>(<span class="fl">1.0f</span>, <span class="fl">2.0f</span>, <span class="fl">3.0f</span>);</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>            Color b = <span class="kw">new</span> <span class="fu">Color</span>(<span class="fl">5.0f</span>, <span class="fl">6.0f</span>, <span class="fl">7.0f</span>);</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">[</span>Fact<span class="op">]</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">TestAdd</span><span class="op">()</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>            Color a <span class="op">=</span> <span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">1.0f</span><span class="op">,</span> <span class="fl">2.0f</span><span class="op">,</span> <span class="fl">3.0f</span><span class="op">);</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>            Color b <span class="op">=</span> <span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">5.0f</span><span class="op">,</span> <span class="fl">6.0f</span><span class="op">,</span> <span class="fl">7.0f</span><span class="op">);</span></span>
 <span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>            <span class="co">// C# convention: *first* the expected value, *then* the test value</span></span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>            Assert.<span class="fu">True</span>(Color.<span class="fu">are_close</span>(<span class="kw">new</span> <span class="fu">Color</span>(<span class="fl">6.0f</span>, <span class="fl">8.0f</span>, <span class="fl">10.0f</span>), a + b));</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>            Assert<span class="op">.</span><span class="fu">True</span><span class="op">(</span>Color<span class="op">.</span><span class="fu">are_close</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">6.0f</span><span class="op">,</span> <span class="fl">8.0f</span><span class="op">,</span> <span class="fl">10.0f</span><span class="op">),</span> a <span class="op">+</span> b<span class="op">));</span></span>
 <span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>            <span class="co">// ...</span></span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="indicazioni-per-julia" class="slide level1">
 <h1>Indicazioni per Julia</h1>
@@ -749,12 +750,12 @@ raytracer
 <h1>Creazione del package</h1>
 <ul>
 <li><p>Create un nuovo package con i comandi visti la volta scorsa:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Pkg</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>Pkg.generate(<span class="st">&quot;Raytracer&quot;</span>)  <span class="co"># Upper case is customary in Julia</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>Pkg.activate(<span class="st">&quot;Raytracer&quot;</span>)</span></code></pre></div></li>
+<div class="sourceCode" id="cb26"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="bu">Pkg</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">generate</span>(<span class="st">&quot;Raytracer&quot;</span>)  <span class="co"># Upper case is customary in Julia</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">activate</span>(<span class="st">&quot;Raytracer&quot;</span>)</span></code></pre></div></li>
 <li><p>Julia supporta la gestione dei colori tramite <a href="https://github.com/JuliaGraphics/ColorTypes.jl">ColorTypes</a> e <a href="https://juliagraphics.github.io/Colors.jl/stable/">Colors</a>:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>Pkg.add(<span class="st">&quot;ColorTypes&quot;</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>Pkg.add(<span class="st">&quot;Colors&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">&quot;ColorTypes&quot;</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">&quot;Colors&quot;</span>)</span></code></pre></div>
 <p>Questo modificherà <code>Project.toml</code> e aggiungerà <code>Manifest.toml</code>, che vanno salvati in Git (guardate cosa contengono!).</p></li>
 </ul>
 </section>
@@ -765,9 +766,9 @@ raytracer
 <li><p>La libreria Colors implementa una serie di tipi template:</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Colors</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> RGB(<span class="fl">0.1</span><span class="op">,</span> <span class="fl">0.3</span><span class="op">,</span> <span class="fl">0.7</span>)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> XYZ(<span class="fl">0.8</span><span class="op">,</span> <span class="fl">0.4</span><span class="op">,</span> <span class="fl">0.2</span>)</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>println(convert(XYZ<span class="op">,</span> a))  <span class="co"># Convert a from RGB to XYZ space</span></span></code></pre></div></li>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fu">RGB</span>(<span class="fl">0.1</span><span class="op">,</span> <span class="fl">0.3</span><span class="op">,</span> <span class="fl">0.7</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="fu">XYZ</span>(<span class="fl">0.8</span><span class="op">,</span> <span class="fl">0.4</span><span class="op">,</span> <span class="fl">0.2</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="fu">convert</span>(XYZ<span class="op">,</span> a))  <span class="co"># Convert a from RGB to XYZ space</span></span></code></pre></div></li>
 <li><p>La libreria non implementa però le operazioni sui colori che ci interessano (somma, differenza, prodotto, confronto). Implementatele voi nel file <code>src/Raytracer.jl</code> (il nome del file dipende dal nome del vostro progetto).</p></li>
 </ul>
 </section>
@@ -781,23 +782,23 @@ raytracer
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="bu">Base</span>.<span class="op">:+,</span> <span class="bu">Base</span>.<span class="op">:*,</span> <span class="bu">Base</span>.<span class="op">:</span>≈</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># To make this work, first define the product &quot;scalar * color&quot;</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="bu">Base</span>.<span class="op">:*</span>(c<span class="op">::</span>ColorTypes.RGB{T}<span class="op">,</span> scalar) <span class="kw">where</span> {T} <span class="op">=</span> scalar <span class="op">*</span> c</span></code></pre></div></li>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="bu">Base</span>.<span class="op">:</span><span class="fu">*</span>(c<span class="op">::</span><span class="dt">ColorTypes.RGB{T},</span> scalar) <span class="kw">where</span> {T} <span class="op">=</span> scalar <span class="op">*</span> c</span></code></pre></div></li>
 </ul>
 </section>
 <section id="creazione-di-test" class="slide level1">
 <h1>Creazione di test</h1>
 <ul>
 <li><p>Per implementare i test, create un file <code>test/runtests.jl</code>, in modo che la struttura delle directory sia la seguente:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">tree</span> Raytracer</span>
+<div class="sourceCode" id="cb30"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> tree Raytracer</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Raytracer</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>├── <span class="ex">Manifest.toml</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>├── <span class="ex">Project.toml</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>├── <span class="ex">src</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>│   └── <span class="ex">Raytracer.jl</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>└── <span class="bu">test</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    └── <span class="ex">runtests.jl</span></span></code></pre></div></li>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> Manifest.toml</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> Project.toml</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> src</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="ex">│  </span> └── Raytracer.jl</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> test</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> runtests.jl</span></code></pre></div></li>
 <li><p>Per scrivere test, dovete aggiungere la libreria <a href="">Test</a>:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>Pkg.add(<span class="st">&quot;Test&quot;</span>)</span></code></pre></div></li>
+<div class="sourceCode" id="cb31"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">&quot;Test&quot;</span>)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="come-scrivere-test" class="slide level1">
@@ -805,14 +806,14 @@ raytracer
 <ul>
 <li><p>Nel file <code>runtests.jl</code> dovete scrivere le procedure di test. La libreria Test implementa le macro <code>@testset</code> (raggruppa test) e <code>@test</code>:</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Raytracer   <span class="co"># Mettete il nome che avete scelto</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Test</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="bu">Test</span></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="pp">@testset</span> <span class="st">&quot;Colors&quot;</span> <span class="kw">begin</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="pp">@testset</span> <span class="st">&quot;Colors&quot;</span> <span class="cf">begin</span></span>
 <span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Put here the tests required for color sum and product</span></span>
 <span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@test</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">==</span> <span class="fl">2</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div></li>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div></li>
 <li><p>Per eseguirli dalla REPL, scrivete</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>Pkg.test()</span></code></pre></div></li>
+<div class="sourceCode" id="cb33"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">test</span>()</span></code></pre></div></li>
 </ul>
 </section>
 <section id="esecuzione-di-test" class="slide level1">
@@ -849,9 +850,9 @@ raytracer
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param g The level of green</span></span>
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param b The level of blue</span></span>
 <span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">data</span> <span class="kw">class</span> Color(<span class="kw">val</span> <span class="va">r</span>: <span class="dt">Double</span>, <span class="kw">val</span> <span class="va">g</span>: <span class="dt">Double</span>, <span class="kw">val</span> <span class="va">b</span>: <span class="dt">Double</span>) {</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">data</span> <span class="kw">class</span> Color<span class="op">(</span><span class="kw">val</span> <span class="va">r</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">g</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></li>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Definite <code>is_close</code> e gli operatori <code>plus</code> (somma di due colori) e <code>times</code> (prodotto tra colore e scalare).</p></li>
 </ul>
 </section>
@@ -895,7 +896,7 @@ raytracer
 
   <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
 
-  // reveal.js plugins
+  <!-- reveal.js plugins -->
   <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
   <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
@@ -905,18 +906,154 @@ raytracer
       // Full list of configuration options available at:
       // https://revealjs.com/config/
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
         // Display a presentation progress bar
         progress: true,
+
         // Display the page number of the current slide
         slideNumber: true,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: false,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
         // Push each slide change to the browser history
         history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
        // Parallax background image
        parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
         width: 1440,
+
         height: 810,
 
         // reveal.js plugins
