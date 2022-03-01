@@ -1,5 +1,5 @@
 ---
-title: "Lezione 1"
+title: "Lezione 1: l'equazione del rendering"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

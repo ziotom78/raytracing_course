@@ -1,5 +1,5 @@
 ---
-title: "Esercitazione 1"
+title: "Esercitazione 1: Git e GitHub"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
@@ -421,110 +421,38 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
     Hello, Maurizio!
     ```
 
-# Indicazioni per C++
+# Uso di IDE
 
-# Istruzioni
+-   Se possibile, iniziate già oggi ad impratichirvi con un ambiente di sviluppo integrato (IDE) appropriato per il vostro linguaggio
+-   Personalmente sono un ammiratore delle IDE sviluppate da [JetBrains](https://www.jetbrains.com/)
+-   Ho realizzato un video che mostra come usare [Rider](https://www.jetbrains.com/rider/); è utile che lo guardino anche coloro che usano altri linguaggi, in modo da sapere quali caratteristiche cercare nelle IDE
 
--   Installare CMake; sotto Linux Debian/Ubuntu/Mint basta eseguire
+---
 
-    ```
-    sudo apt install cmake
-    ```
+<iframe src="https://player.vimeo.com/video/683431827?h=9e4de4dba1&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Come usare una IDE (JetBrains Rider)"></iframe>
 
--   Creare un'applicazione che produca un eseguibile. Strutturare il codice in questo modo:
+# Suggerimenti per C\#
 
-    -   Un file `CMakeLists.txt` nella directory principale
-    -   Una directory `src` che contiene il file `main.cpp`
+# Suggerimenti
 
--   In `.gitignore` elencate `*.o`, il nome dell'eseguibile (es. `hello_world`), eventuali file di backup (`*.bak`, `*~` a seconda dell'editor che usate) e la directory `build`
-
-# Esempio di CMake per C++
-
-```cmake
-cmake_minimum_required(VERSION 3.12)
-
-# Define a "project", providing a description and a programming language
-project(hello_world
-    VERSION 1.0
-    DESCRIPTION "Hello world in C++"
-    LANGUAGES CXX
-)
-
-# Our "project" will be able to build an executable out of a C++ source file
-add_executable(hello_world
-    src/main.cpp
-)
-
-# Force the compiler to use the C++17 standard
-target_compile_features(hello_world PUBLIC cxx_std_17)
-```
-
-# Esempio d'uso di CMake
-
-<asciinema-player src="cast/cmake-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
-
-# Riferimenti per CMake
-
-- [Documentazione ufficiale](https://cmake.org/documentation/) (abbastanza illeggibile, ma è la più aggiornata per definizione)
-- [*Professional CMake*](https://crascit.com/professional-cmake/) (C. Scott)
-- [*An Introduction to Modern CMake*](https://cliutils.gitlab.io/modern-cmake/)
-
-# Formattazione
-
--   Esistono tool per formattare automaticamente codice sorgente. Per il C++ esiste `clang-format`; installatelo con
-
-    ```sh
-    sudo apt install clang-format
-    ```
-    
--   Se scrivete questo:
-
-    ```c++
-    int sum  ( int a,int b    )    {    return a+ b;}
-    ```
-    
-    la formattazione automatica lo trasforma in
-    ```c++
-    int sum(int a, int b) { return a + b; }
-    ```
-
-# Formattazione
-
--   Il programma `clang-format` si usa da linea di comando:
-
-    ```sh
-    clang-format -i main.cpp
-    ```
-    
--   È possibile configurare gli editor moderni perché lo chiamino automaticamente ad ogni salvataggio. Per Visual Studio Code esiste il package [clang-format](https://github.com/xaverh/vscode-clang-format-provider); analoghi strumenti esistono per Emacs, Vim, etc.
-
--   Questi strumenti sono utilissimi per mantenere il codice pulito e chiaro da leggere: cercate di configurarli al meglio.
-
-# Indicazioni per C\#
-
-# Istruzioni (1/2)
-
--   Installate [.NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0): è disponibile per Windows, Mac OS X e Linux
--   Questo installerà il programma `dotnet` (da usare dalla linea di comando)
--   Se usate il comando `dotnet`, sarà così facile che sembra di barare!
--   Come editor vi consiglio [Visual Studio Code](https://code.visualstudio.com/) (Windows, Mac OS X, Linux), oppure [Visual Studio Community](https://visualstudio.microsoft.com/it/vs/community/) (solo per Windows, complesso!)
-
-# Istruzioni (2/2)
-
--   Creare un'applicazione vuota e il file `.gitignore` con
+-   Creare un'applicazione vuota e il file `.gitignore`; se usate `dotnet` da linea di comando, eseguite
 
     ```sh
     $ dotnet new console
     $ dotnet new gitignore
     ```
     
+    Se usate Rider, assicuratevi di attivare Git quando create il progetto.
+    
 -   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
     
--   Compilate ed eseguite con
+-   Compilate ed eseguite; da linea di comando, eseguite
 
     ```
     dotnet run
     ```
+    
+    mentre sotto Rider premete Shift+F10.
 
 # Esempio
 
@@ -532,7 +460,9 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
 
 # Formattazione
 
--   Per formattare automaticamente il codice in Visual Studio Code, installate il package [C\#](https://code.visualstudio.com/docs/languages/csharp).
+-   Per formattare automaticamente il codice in Rider, eseguite *Code*/*Reformat code* (Shift+Alt+L)
+
+-   Sotto Visual Studio Code, installate il package [C\#](https://code.visualstudio.com/docs/languages/csharp).
 
 -   Per formattare il codice da linea di comando, installate `dotnet-format`:
 
@@ -540,112 +470,33 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
     $ dotnet tool install -g dotnet-format
     ```
 
-# Indicazioni per Julia
+# Indicazioni per Nim/D
 
-# Istruzioni
+# Suggerimenti (1/2)
 
--   Creare un package usando il [manuale di Julia](https://julialang.github.io/Pkg.jl/v1/creating-packages/) (vedi l'esempio nella slide seguente)
+-   Creare un'applicazione vuota usando il package manager del vostro linguaggio
 
--   Creare un'applicazione `hello_world` (nella directory dove c'è `Project.toml`) in questo modo:
-
-    ```julia
-    #!/usr/bin/env julia
-    
-    using Pkg
-    Pkg.activate(normpath(@__DIR__))
-    
-    using hello_world
-    
-    function main()
-        hello_world.greet()
-    end
-    
-    main()
-    ```
-
----
-
-# Creazione di un package
-
-<asciinema-player src="cast/julia-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
-
-# Struttura della directory
-
--   Quando avrete completato l'esercizio, la directory dovrebbe avere questo aspetto:
-
-    ```text
-    $ tree hello_world
-    hello_world/
-    ├── hello_world
-    ├── Project.toml
-    └── src
-        └── hello_world.jl
-    ```
-
--   La logica di questa struttura è che la libreria di funzioni venga implementata dentro `src`, mentre in `hello_world` vada messo il codice relativo alla parte eseguibile (es., interpretazione dei parametri da linea di comando).
-
-# Formattazione
-
--   Se usate Visual Studio Code, esiste il pacchetto [julia-vscode](https://www.julia-vscode.org/docs/stable/gettingstarted/).
-
--   Dovrebbe garantire la possibilità di formattare il codice, ma è bene che verifichiate che funzioni.
-
--   Esiste anche un package autonomo, [DocumentFormat](https://github.com/julia-vscode/DocumentFormat.jl).
-
-# Uso di package
-
--   Aspetto fondamentale di Julia!
-
--   Corrispondono ai *virtual environments* di Python
-
--   Con `Pkg.generate` si crea un nuovo package, con `Pkg.activate` si attiva il package
-
--   Lo script `hello_world` mostrato prima attiva il package e lo invoca:
-
-    ```julia
-    # This activates the package in the current directory ("hello_world")
-    using Pkg
-    Pkg.activate(normpath(@__DIR__))
-    
-    # Not calling "activate" above would make this "using" statement fail
-    using hello_world
-    ```
-
-
-# Indicazioni per Kotlin
-
-# Istruzioni
-
--   Creare un'applicazione in IntelliJ IDEA:
-
-    -   Come *Build system* scegliete «Gradle Kotlin»
-    
-    -   Come JDK, se non ne avete di installati scegliete il numero (versione) 11
-    
-    -   Usate «Console application» come template
-    
--   L'applicazione vuota stampa `Hello World!`: come prima cosa, cambiate il messaggio in `Hello, wold!`.
-
--   Per usare Git, meglio fare affidamento al menu «VCS» di IntelliJ (gestisce automaticamente i `.gitignore`).
-
----
-
-<center>
-![](./media/intellij_new_kotlin_project.png)
-</center>
-
-# Compilare ed eseguire
-
--   La directory che contiene il progetto ha un eseguibile, `gradlew`, che può essere usato per produrre una *distribution* nella directory `./build/distributions`:
+-   Nim usa `nimble`:
 
     ```
-    gradlew assembleDist
+    $ nimble init helloworld
     ```
+    
+-   D usa `dub`:
 
--   Siccome è una funzione molto utile, esploratela! Create una distribuzione del vostro programma e cercate di capire come installarla e usarla.
+    ```
+    $ dub init helloworld
+    ```
+    
+-   Sia con Nim che con D dovrete rispondere ad alcune domande. Se possibile, scegliete il default (ma per Nim assicuratevi di specificare che volete un `binary`).
 
-# Suggerimenti
+# Suggerimenti (2/2)
 
--   In Kotlin (come in Java) si fa grande affidamento sull'ambiente di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!
+-   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
+    
+-   Per compilare ed eseguire, basta usare il comando `run` (identico in `nimble` e in `dub`):
 
--   Abituatevi a invocare regolarmente il comando «Code | Reformat code» (Ctrl+Alt+L).
+    ```
+    $ cd helloworld
+    $ nimble run     # Oppure: dub run
+    ```

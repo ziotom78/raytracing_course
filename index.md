@@ -5,9 +5,10 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Slides del corso (A.A. 2021–2022)
 
-| Lezione | Data       | Argomento                                                                |
-|---------|------------|--------------------------------------------------------------------------|
+| Lezione | Data       | Argomento                                                                 |
+|---------|------------|---------------------------------------------------------------------------|
 | 1a      | 2022/02/28 | [Equazione del rendering](tomasi-ray-tracing-01a-rendering-equation.html) |
+| 1b      | 2022/03/02 | [Git e GitHub](tomasi-ray-tracing-01b-github.html)                        |
 
 # Scelta del linguaggio
 
