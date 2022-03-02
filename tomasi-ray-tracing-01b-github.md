@@ -470,13 +470,11 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
     $ dotnet tool install -g dotnet-format
     ```
 
-# Indicazioni per Nim/D
+# Indicazioni per Nim/D/Rust
 
 # Suggerimenti (1/2)
 
--   Creare un'applicazione vuota usando il package manager del vostro linguaggio
-
--   Nim usa `nimble`:
+-   Creare un'applicazione vuota usando il package manager del vostro linguaggio. Nim usa `nimble`:
 
     ```
     $ nimble init helloworld
@@ -488,17 +486,23 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
     $ dub init helloworld
     ```
     
+-   Rust usa `cargo`:
+
+    ```
+    $ cargo init helloworld
+    ```
+    
 -   Sia con Nim che con D dovrete rispondere ad alcune domande. Se possibile, scegliete il default (ma per Nim assicuratevi di specificare che volete un `binary`).
 
 # Suggerimenti (2/2)
 
 -   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
     
--   Per compilare ed eseguire, basta usare il comando `run` (identico in `nimble` e in `dub`):
+-   Per compilare ed eseguire, basta usare il comando `run` (identico in `nimble`, `dub` e `cargo`):
 
     ```
     $ cd helloworld
-    $ nimble run     # Oppure: dub run
+    $ nimble run     # Oppure: dub run, oppure: cargo run
     ```
 
--   Sia per [D](https://intellij-dlanguage.github.io/) che per [Nim](https://plugins.jetbrains.com/plugin/15128-nim) esistono dei plugin per IntelliJ IDEA, l'IDE Java di JetBrains.
+-   Sia per [D](https://intellij-dlanguage.github.io/) che per [Nim](https://plugins.jetbrains.com/plugin/15128-nim) esistono dei plugin per IntelliJ IDEA, l'IDE Java di JetBrains. Per Rust, potete usare CLion con il plugin [Rust](https://plugins.jetbrains.com/plugin/8182-rust/docs).
