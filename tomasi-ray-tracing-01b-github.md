@@ -500,3 +500,5 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
     $ cd helloworld
     $ nimble run     # Oppure: dub run
     ```
+
+-   Sia per [D](https://intellij-dlanguage.github.io/) che per [Nim](https://plugins.jetbrains.com/plugin/15128-nim) esistono dei plugin per IntelliJ IDEA, l'IDE Java di JetBrains.
