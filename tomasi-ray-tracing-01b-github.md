@@ -506,3 +506,41 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
     ```
 
 -   Sia per [D](https://intellij-dlanguage.github.io/) che per [Nim](https://plugins.jetbrains.com/plugin/15128-nim) esistono dei plugin per IntelliJ IDEA, l'IDE Java di JetBrains. Per Rust, potete usare CLion con il plugin [Rust](https://plugins.jetbrains.com/plugin/8182-rust/docs).
+
+# Suggerimenti per Kotlin
+
+# Suggerimenti
+
+-   Creare un'applicazione Kotlin in IntelliJ IDEA:
+
+    -   Come *Build system* scegliete «Gradle Kotlin»
+    
+    -   Come JDK, se non ne avete di installati scegliete il numero (versione) 17
+    
+    -   Usate «Console application» come template
+    
+-   L'applicazione vuota stampa `Hello World!`: come prima cosa, cambiate il messaggio in `Hello, wold!`.
+
+-   Per usare Git, meglio fare affidamento al menu «VCS» di IntelliJ (gestisce automaticamente i `.gitignore`).
+
+---
+
+<center>
+![](./media/intellij_new_kotlin_project.png)
+</center>
+
+# Compilare ed eseguire
+
+-   La directory che contiene il progetto ha un eseguibile, `gradlew`, che può essere usato per produrre una *distribution* nella directory `./build/distributions`:
+
+    ```
+    gradlew assembleDist
+    ```
+
+-   Siccome è una funzione molto utile, esploratela! Create una distribuzione del vostro programma e cercate di capire come installarla e usarla.
+
+# Suggerimenti
+
+-   In Kotlin (come in Java) si fa grande affidamento sull'ambiente di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!
+
+-   Abituatevi a invocare regolarmente il comando «Code | Reformat code» (Ctrl+Alt+L).
