@@ -17,6 +17,69 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
@@ -59,7 +122,7 @@ L = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A^\perp}
 <li><p>Equazione del rendering: <span class="math display">
 \begin{aligned}
 L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
-&amp;\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
+&amp;\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
 \end{aligned}
 </span></p></li>
 </ul>
@@ -67,7 +130,7 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 <section id="codifica-del-colore" class="slide level1">
 <h1>Codifica del colore</h1>
 <ul>
-<li><p>Le quantità <span class="math inline">\Phi</span>, <span class="math inline">L</span>, etc. sono tutte dipendenti dalla lunghezza d’onda <span class="math inline">\lambda</span> (radianza → <em>radianza spettrale</em>), e vanno rappresentate come funzioni <span class="math inline">\mathbb{R} \rightarrow \mathbb{R}</span>.</p></li>
+<li><p>Le quantità <span class="math inline">\Phi</span>, <span class="math inline">L</span>, etc. sono tutte dipendenti dalla lunghezza d’onda <span class="math inline">\lambda</span> (radianza → <em>radianza spettrale</em>)</p></li>
 <li><p>In codici numerici che simulano la propagazione della luce, dobbiamo risolvere due problemi:</p>
 <ol type="1">
 <li><p>Una funzione <span class="math inline">f(\lambda)</span> dipendente dalla lunghezza d’onda ha un numero infinito di gradi di libertà: come rappresentarla numericamente?</p></li>
@@ -82,10 +145,10 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 <section id="emissioni-realistiche" class="slide level1">
 <h1>Emissioni realistiche</h1>
 <ul>
-<li><p>Anche se nella scorsa lezione abbiamo parlato di «colore», non dobbiamo pensare che basti <strong>un</strong> numero a codificarlo: questo è vero solo per un corpo nero ideale (dove è sufficiente la temperatura <code>T</code>)!</p></li>
-<li><p>Gli spettri di emissione di oggetti del mondo reale possono essere molto complessi (v. lezione precedente):</p>
+<li><p>Non basta <strong>un</strong> numero per codificare un colore: questo è vero solo per un corpo nero ideale (dove è sufficiente la temperatura <code>T</code>)!</p></li>
+<li><p>Gli spettri di emissione di oggetti del mondo reale possono essere molto complessi (v. lezione precedente):</p>
 <center>
-<p><img data-src="./media/led-lighting-2.jpg" height="300" /></p>
+<p><img data-src="./media/led-lighting-2.jpg" height="360" /></p>
 </center></li>
 </ul>
 </section>
@@ -109,10 +172,6 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 <li><p>Ovviamente a noi oggi interessano i coni!</p></li>
 </ul>
 </section>
-<section class="slide level1">
-
-<p><img data-src="./media/cone_cell_eng_wikipedia.png" /></p>
-</section>
 <section id="tipi-di-coni" class="slide level1">
 <h1>Tipi di coni</h1>
 <ul>
@@ -133,48 +192,20 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 <section id="sistema-xyz" class="slide level1">
 <h1>Sistema XYZ</h1>
 <ul>
-<li><p>Teoria tristimolare dei colori: è sempre possibile codificare il colore percepito dall’occhio umano usando tre quantità scalari legate alla SPD:</p>
+<li><p>Teoria tristimolare dei colori: è sempre possibile codificare il colore percepito dall’occhio umano usando tre quantità scalari legate alle SPD <span class="math inline">X(\lambda)</span>, <span class="math inline">Y(\lambda)</span> e <span class="math inline">Z(\lambda)</span> dei coni:</p>
 <p><span class="math display">
 \begin{aligned}
-x &amp;= \frac{
-    \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,X(\lambda)
-}{
-    \int_\lambda \mathrm{d}\lambda\,Y(\lambda)
-},\\
-y &amp;= \frac{
-    \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Y(\lambda)
-}{
-    \int_\lambda \mathrm{d}\lambda\,Y(\lambda)
-},\\
-z &amp;= \frac{
-    \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Z(\lambda)
-}{
-    \int_\lambda \mathrm{d}\lambda\,Y(\lambda)
-}.
+x &amp;= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,X(\lambda),\\
+y &amp;= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Y(\lambda),\\
+z &amp;= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Z(\lambda).
 \end{aligned}
 </span></p></li>
 </ul>
 </section>
-<section id="sistema-xyz-1" class="slide level1">
-<h1>Sistema XYZ</h1>
-<ul>
-<li><p>Le curve <span class="math inline">X(\lambda)</span>, <span class="math inline">Y(\lambda)</span> e <span class="math inline">Z(\lambda)</span> sono predefinite.</p></li>
-<li><p>Definite dalla Commission Internationale de l’Éclairage (CIE) in seguito ad esperimenti fatti negli anni ’20 su 17 volontari.</p></li>
-<li><p>La costante di normalizzazione è sempre</p>
-<p><span class="math display">
-\int_\lambda \mathrm{d}\lambda\,Y(\lambda) \approx 106.856895\,\text{nm}.
-</span></p></li>
-<li><p>Essendo state derivate prima della scoperta dei coni (anni ’50), le curve <span class="math inline">X</span>, <span class="math inline">Y</span> e <span class="math inline">Z</span> seguono un andamento diverso dall’effettiva risposta dei coni umani.</p></li>
-</ul>
-</section>
-<section id="curve-x-y-z" class="slide level1">
-<h1>Curve X, Y, Z</h1>
-<p><img data-src="pd-images/e2d54a23d8fbfab84a0a61f6925b91f2b3a6c06f.svg" data-im_fname="cie-data" /></p>
-</section>
 <section id="metamerismo-cromatico" class="slide level1">
 <h1>Metamerismo cromatico</h1>
 <ul>
-<li><p>È possibile che due SED diverse portino agli stessi valori XYZ</p></li>
+<li><p>È possibile che due SED diverse portino agli stessi valori <span class="math inline">(x, y, z)</span></p></li>
 <li><p>In questo caso il colore dei due oggetti è indistinguibile all’occhio umano</p></li>
 <li><p>Il fenomeno è detto <em>metamerismo cromatico</em>, e i due colori si dicono <em>metamerici</em></p></li>
 <li><p>Il metamerismo dipende dal tipo di illuminazione (sole, lampada a fluorescenza, luce laser, etc.)</p></li>
@@ -183,10 +214,9 @@ z &amp;= \frac{
 <section id="xyz-e-rgb" class="slide level1">
 <h1>XYZ e RGB</h1>
 <ul>
-<li><p>La codifica XYZ è basata sul funzionamento dell’occhio umano (coni)</p></li>
-<li><p>Non è in generale adatto per la fabbricazione di hardware</p></li>
+<li><p>Esistono varie codifiche di colore, basate su terne di quantità scalari: XYZ, HSV, HSL, RGB…</p></li>
 <li><p>Codifiche molto usate sono RGB (monitor) e CYMK (stampanti)</p></li>
-<li><p>Noi ci occuperemo solo della codifica RGB</p></li>
+<li><p>In questo corso ci occuperemo solo della codifica RGB</p></li>
 </ul>
 </section>
 <section id="sistema-rgb" class="slide level1">
@@ -203,22 +233,6 @@ z &amp;= \frac{
 <p>Esistono vari tipi di schermi (tubi catodici, LED, etc.), e gli spettri di emissione dei tre canali RGB possono essere diversi:</p>
 <p><img data-src="./media/screen-emission.svg" height="400" /></p>
 <p>Non spenderemo troppo tempo su questo per motivi di tempo.</p>
-</section>
-<section id="da-xyz-a-rgb" class="slide level1">
-<h1>Da XYZ a RGB</h1>
-<p><span class="math display">
-\begin{aligned}
-\begin{pmatrix}R\\G\\B\end{pmatrix} &amp;=
-M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}X\\Y\\Z\end{pmatrix} =\\
-&amp;=
-\begin{pmatrix}
-+3.2404542&amp; -1.5371385&amp; -0.4985314\\
--0.9692660&amp; +1.8760108&amp; +0.0415560\\
-+0.0556434&amp; -0.2040259&amp; +1.0572252
-\end{pmatrix}
-\begin{pmatrix}X\\Y\\Z\end{pmatrix}.\\
-\end{aligned}
-</span></p>
 </section>
 <section id="colori-rgb" class="slide level1" data-state="rgb-colors-1.0">
 <h1 data-state="rgb-colors-1.0">Colori RGB</h1>
@@ -310,44 +324,19 @@ L_\lambda(x \rightarrow \Theta) = &amp;L_{e,\lambda}(x \rightarrow \Theta) +\\
 <li><p>Possiamo esprimere l’equazione usando <span class="math inline">R</span>, <span class="math inline">G</span> e <span class="math inline">B</span> anziché <span class="math inline">L_\lambda</span>?</p></li>
 </ul>
 </section>
-<section id="operazioni-sui-colori" class="slide level1">
-<h1>Operazioni sui colori</h1>
-<ul>
-<li><p>Per valutare l’integrale nell’equazione del rendering occorrono queste operazioni:</p>
-<ul>
-<li>Somma di densità di radianza: <span class="math inline">L_\lambda^{(1)} + L_\lambda^{(2)}</span></li>
-<li>Prodotto di densità di radianza per uno scalare: <span class="math inline">\xi\,L_\lambda</span></li>
-</ul></li>
-<li><p>Se <span class="math inline">f_{r,\lambda}</span> è costante nel dominio di integrazione, le due operazioni sono lineari</p></li>
-<li><p>La definizione di <span class="math inline">X</span>, <span class="math inline">Y</span>, <span class="math inline">Z</span> è lineare (integrale)</p></li>
-<li><p>La conversione a RGB è lineare (matrice)</p></li>
-<li><p>Quindi le due operazioni (somma e prodotto per scalare) possono essere implementate direttamente sui valori RGB.</p></li>
-</ul>
-</section>
-<section id="esempio-12" class="slide level1">
-<h1>Esempio (1/2)</h1>
+<section class="slide level1">
+
+<p>Se <span class="math inline">f_{r,\lambda} = f_{r, X}</span> è costante nel dominio di integrazione:</p>
 <p><span class="math display">
 \begin{aligned}
-L_\lambda &amp;= \alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)},\\
-\int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &amp;= \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,\bigl(\alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)}\bigr),\\
-\int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &amp;= \alpha\int_\lambda\mathrm{d}\lambda\,X(\lambda)\, L_\lambda^{(1)} +
-  \beta \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda^{(2)},\\
-x &amp;= \alpha x^{(1)} + \beta x^{(2)},\\
+L_\lambda(x \rightarrow \Theta) = &amp;L_{e,\lambda}(x \rightarrow \Theta) +\\
+&amp;\int_{\Omega_x} f_{r,\lambda}(x, \Psi \rightarrow \Theta)\,L_\lambda(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
+\int_0^\infty X(\lambda)\,L_\lambda(x \rightarrow \Theta)\,\mathrm{d}\lambda = &amp;\int_0^\infty X(\lambda)\,L_{e,\lambda}(x \rightarrow \Theta)\,\mathrm{d}\lambda +\\
+&amp;\int_0^\infty X(\lambda)\,L_\lambda(x \leftarrow \Psi)\,\mathrm{d}\lambda \int_{\Omega_x} f_{r,X}(x, \Psi \rightarrow \Theta)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
+L_X(x \rightarrow \Theta) = &amp;L_{e,X}(x \rightarrow \Theta) +\\
+&amp;\int_{\Omega_x} f_{r,X}(x, \Psi \rightarrow \Theta)\,L_X(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
 \end{aligned}
-</span> e quindi operazioni lineari sulla radianza si traducono in operazioni lineari sulle componenti di colore <span class="math inline">x</span>, <span class="math inline">y</span> e <span class="math inline">z</span>.</p>
-</section>
-<section id="esempio-22" class="slide level1">
-<h1>Esempio (2/2)</h1>
-<p><span class="math display">
-\begin{aligned}
-M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x\\y\\z\end{pmatrix} &amp;=
-M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}\alpha x^{(1)} + \beta x^{(2)}\\\alpha y^{(1)} + \beta y^{(2)}\\\alpha z^{(1)} + \beta z^{(2)}\end{pmatrix},\\
-\begin{pmatrix}R\\G\\B\end{pmatrix} &amp;=
-\alpha M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x^{(1)}\\y^{(1)}\\z^{(1)}\end{pmatrix} +
-\beta M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x^{(2)}\\y^{(2)}\\z^{(2)}\end{pmatrix},\\
-R &amp;= \alpha R^{(1)} + \beta R^{(2)},\\
-\end{aligned}
-</span> e quindi la linearità è preservata anche per <span class="math inline">R</span>, <span class="math inline">G</span> e <span class="math inline">B</span>.</p>
+</span></p>
 </section>
 <section id="equazione-del-rendering" class="slide level1">
 <h1>Equazione del rendering</h1>
@@ -376,43 +365,16 @@ R(x \rightarrow \Theta) = &amp;R_{e}(x \rightarrow \Theta) +\\
 <img data-src="./media/monitor-in-dark-room.jpg" />
 </center>
 </section>
-<section id="colori-in-terminali-unix" class="slide level1">
-<h1>Colori in terminali Unix</h1>
+<section id="codifica-rgb-di-colori" class="slide level1">
+<h1>Codifica RGB di colori</h1>
 <ul>
-<li><p>Gli «emulatori di terminale» Unix sono dei programmi che simulano il comportamento dei vecchi terminali a caratteri.</p></li>
-<li><p>Sebbene i terminali originali fossero monocromatici, emulatori come XTerm aggiunsero la possibilità di usare 8 colori</p></li>
-<li><p>Versioni più avanzate, come quelli sui primi Personal Computer Intel, supportavano ben 16 colori!</p></li>
-<li><p>Oggi i terminali supportano 256 colori, e alcuni addirittura 16 milioni.</p></li>
-<li><p>Ma perché questi numeri strani (8, 16, 256, 16 milioni?)</p></li>
+<li><p>Oggi tutti i monitor e le schede grafiche supportano la cosiddetta «codifica a 16 milioni di colori»</p></li>
+<li><p>Una terna RGB viene codificata da un computer usando tre valori interi a 8 bit; ad esempio, in C++</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> RGB <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> r<span class="op">,</span> g<span class="op">,</span> b<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
+<li><p>Il numero totale di combinazioni RGB è <span class="math inline">2^8 \times 2^8 \times 2^8 = 2^24 = 16\,777\,216</span>.</p></li>
 </ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/terminal-colors.png" />
-</center>
-</section>
-<section id="codifica-rgb-di-colori-12" class="slide level1">
-<h1>Codifica RGB di colori (1/2)</h1>
-<ul>
-<li><p>Nel caso di 8 colori, ogni colore viene rappresentato da tre bit <code>rgb</code> (es., <code>010</code>, <code>100</code>, etc.). Se un bit è <code>1</code>, il led di quel colore viene acceso, altrimenti viene spento. Quindi <code>100</code> corrisponde al rosso, <code>110</code> al giallo, etc. Tre bit possono codificare <span class="math inline">2^3 = 8</span> colori.</p></li>
-<li><p>Nel caso di 16 colori, viene aggiunto un bit che specifica se i led accesi devono emettere all’intensità massima o a una intermedia. Quindi <code>0100</code> è un rosso spento, <code>1100</code> è un rosso brillante, <code>0110</code> è marrone e <code>1110</code> è giallo. Quattro bit possono codificare <span class="math inline">2^4 = 16</span> colori.</p></li>
-</ul>
-</section>
-<section id="codifica-rgb-di-colori-22" class="slide level1">
-<h1>Codifica RGB di colori (2/2)</h1>
-<ul>
-<li><p>Nel caso di 256 colori, ci sono molti standard in gioco, e la maggior parte dei quali non sono coerenti con la codifica RGB. In alcune applicazioni si usa la maschera di bit <code>rrrgggbb</code>, usando 3 bit (8 livelli) per il rosso e per il verde, e solo 2 bit (4 livelli) per il blu. (L’occhio umano è meno sensibile alle tonalità di blu).</p></li>
-<li><p>Nel caso dei 16 milioni di colori, si usano 8 bit per ciascun livello di colore, così che <span class="math inline">2^{8+8+8} = 2^{24} = 16\,777\,216</span>.</p></li>
-<li><p>La codifica a 16 milioni di colori è rara nei terminali, ma è lo standard per le immagini fotografiche, e viene usato nei formati PNG, Jpeg, TIFF, etc.</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<p>Sinistra: 16 milioni di colori</p>
-<p>Destra: 256 colori con codifica 3+3+2</p>
-<p><img data-src="./media/cafe-forum-arles.jpg" /></p>
-<p><span style="float:right"><em>Terrazza del caffè la sera, Place du Forum, Arles</em>. Vincent Van Gogh (1888)</span></p>
 </section>
 <section id="colori-rgb-1" class="slide level1" data-state="rgb-colors">
 <h1 data-state="rgb-colors">Colori RGB</h1>
@@ -636,36 +598,8 @@ b &amp;= \left[k\,B^\gamma\right],\\
 <li>Dipende dall’unità di misura usata per <span class="math inline">L_\lambda</span>;</li>
 <li>Dipende dalla scena (astronave vicino a una supernova? stanza in penombra?)</li>
 </ul></li>
-<li>Lo standard CIE XYZ definisce una normalizzazione di riferimento in termini di un colore standard, il <em>D65</em>, che corrisponde all’emissione di un corpo nero a 6500 K (più o meno l’emissione del cielo in una giornata limpida).</li>
+<li>Esistono alcuni standard di colore (come il CIE XYZ) che fissano una normalizzazione di riferimento, solitamente in termini di un colore standard o di una temperatura di corpo nero.</li>
 <li>Vedremo meglio questo punto quando avremo discusso il salvataggio di immagini.</li>
-</ul>
-</section>
-<section id="esempio-della-vita-reale" class="slide level1">
-<h1>Esempio della vita reale</h1>
-<p><img data-src="./media/celebrating_planck.jpg" height="520" /></p>
-<p>Planck: missione spaziale ESA (2009–2013)</p>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/planck-hfi-2015-adc-paper.png" height="640" />
-</center>
-</section>
-<section id="analogue-to-digital-converters" class="slide level1">
-<h1>Analogue-to-Digital Converters</h1>
-<center>
-<img data-src="./media/planck-hfi-2015-adc-sect2.png" />
-</center>
-</section>
-<section id="lezioni-imparate-oggi" class="slide level1">
-<h1>Lezioni imparate oggi</h1>
-</section>
-<section class="slide level1">
-
-<ul>
-<li>Semplificare il più possibile: invece di trattare <span class="math inline">L_\lambda</span>, usiamo <span class="math inline">R</span>, <span class="math inline">G</span> e <span class="math inline">B</span>.</li>
-<li>Mai dimenticarsi che le misurazioni fisiche passano da uno strumento: occorre conoscerne le caratteristiche e le non-idealità!</li>
-<li>Il mondo è <em>complicato</em>!</li>
 </ul>
 </section>
     </div>

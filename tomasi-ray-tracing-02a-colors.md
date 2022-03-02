@@ -18,16 +18,14 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     \begin{aligned}
     L(x \rightarrow \Theta) = &L_e(x \rightarrow \Theta) +\\
-    &\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
+    &\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
     \end{aligned}
     $$
 
 # Codifica del colore
 
 -   Le quantità $\Phi$, $L$, etc. sono tutte dipendenti
-    dalla lunghezza d'onda $\lambda$ (radianza → *radianza spettrale*),
-    e vanno rappresentate come funzioni $\mathbb{R} \rightarrow
-    \mathbb{R}$.
+    dalla lunghezza d'onda $\lambda$ (radianza → *radianza spettrale*)
 
 -   In codici numerici che simulano la propagazione della luce,
     dobbiamo risolvere due problemi:
@@ -46,13 +44,13 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Emissioni realistiche
 
--   Anche se nella scorsa lezione abbiamo parlato di «colore», non dobbiamo pensare che basti **un** numero a codificarlo: questo è vero solo per un corpo nero ideale (dove è sufficiente la temperatura `T`)!
+-   Non basta **un** numero per codificare un colore: questo è vero solo per un corpo nero ideale (dove è sufficiente la temperatura `T`)!
 
 -   Gli spettri di emissione di oggetti del mondo reale possono essere
-    molto complessi (v. lezione precedente):
+    molto complessi (v. lezione precedente):
 
     <center>
-    ![](./media/led-lighting-2.jpg){height="300px"}
+    ![](./media/led-lighting-2.jpg){height="360px"}
     </center>
 
 # SPD
@@ -83,10 +81,6 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Ovviamente a noi oggi interessano i coni!
 
----
-
-![](./media/cone_cell_eng_wikipedia.png)
-
 # Tipi di coni
 
 -   Esistono tre tipi di coni:
@@ -95,8 +89,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     2.  Tipo M (*medium*): sensibile al verde
     3.  Tipo L (*long*): sensibile al rosso
 
--   Ci sono più teorie che spiegano come il cervello combini le
-    informazioni dei tre tipi di coni per rappresentare un colore.
+-   Ci sono più teorie che spiegano come il cervello combini le informazioni dei tre tipi di coni per rappresentare un colore.
     
 -   Nel mondo animale c'è molta varietà: il [gambero mantide](https://www.nature.com/news/mantis-shrimp-s-super-colour-vision-debunked-1.14578) possiede 12 tipi di coni!
 
@@ -108,57 +101,19 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Teoria tristimolare dei colori: è sempre possibile codificare il
     colore percepito dall'occhio umano usando tre quantità scalari
-    legate alla SPD:
+    legate alle SPD $X(\lambda)$, $Y(\lambda)$ e $Z(\lambda)$ dei coni:
 
     $$
     \begin{aligned}
-    x &= \frac{
-        \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,X(\lambda)
-    }{
-        \int_\lambda \mathrm{d}\lambda\,Y(\lambda)
-    },\\
-    y &= \frac{
-        \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Y(\lambda)
-    }{
-        \int_\lambda \mathrm{d}\lambda\,Y(\lambda)
-    },\\
-    z &= \frac{
-        \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Z(\lambda)
-    }{
-        \int_\lambda \mathrm{d}\lambda\,Y(\lambda)
-    }.
+    x &= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,X(\lambda),\\
+    y &= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Y(\lambda),\\
+    z &= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Z(\lambda).
     \end{aligned}
     $$
 
-# Sistema XYZ
-
--   Le curve $X(\lambda)$, $Y(\lambda)$ e $Z(\lambda)$ sono
-    predefinite.
-
--   Definite dalla Commission Internationale de l'Éclairage (CIE) in seguito ad esperimenti fatti negli anni '20 su 17 volontari.
-
--   La costante di normalizzazione è sempre
-
-    $$
-    \int_\lambda \mathrm{d}\lambda\,Y(\lambda) \approx 106.856895\,\text{nm}.
-    $$
-
--   Essendo state derivate prima della scoperta dei coni (anni '50), le curve $X$, $Y$ e $Z$ seguono un andamento diverso dall'effettiva risposta dei coni umani.
-
-# Curve X, Y, Z
-
-```{.gnuplot im_fmt="svg" im_out="img" im_fname="cie-data"}
-set terminal svg
-set xlabel "Wavelength [nm]"
-set ylabel "Pure number"
-plot "cie_data.txt" using 1:2 with lines lw 2 lt rgb "#3434ad" t 'X', \
-     "" using 1:3 with lines lw 2 lt rgb "#34ad34" t 'Y', \
-     "" using 1:4 with lines lw 2 lt rgb "#ad3434" t 'Z'
-```
-
 # Metamerismo cromatico
 
--   È possibile che due SED diverse portino agli stessi valori XYZ
+-   È possibile che due SED diverse portino agli stessi valori $(x, y, z)$
 
 -   In questo caso il colore dei due oggetti è indistinguibile
     all'occhio umano
@@ -171,18 +126,15 @@ plot "cie_data.txt" using 1:2 with lines lw 2 lt rgb "#3434ad" t 'X', \
 
 # XYZ e RGB
 
--   La codifica XYZ è basata sul funzionamento dell'occhio umano (coni)
-
--   Non è in generale adatto per la fabbricazione di hardware
+-   Esistono varie codifiche di colore, basate su terne di quantità scalari: XYZ, HSV, HSL, RGB… 
 
 -   Codifiche molto usate sono RGB (monitor) e CYMK (stampanti)
 
--   Noi ci occuperemo solo della codifica RGB
+-   In questo corso ci occuperemo solo della codifica RGB
 
 # Sistema RGB
 
--   La codifica RGB usa tre quantità scalari per identificare un
-    colore: rosso, verde, blu (**R**ed, **G**reen, **B**lue).
+-   La codifica RGB usa tre quantità scalari per identificare un colore: rosso, verde, blu (**R**ed, **G**reen, **B**lue).
 
 -   Basato sulla sintesi *additiva* dei colori, che è perfetta per i monitor (le stampanti usano la sintesi *sottrattiva*, e usano la codifica CYMK).
 
@@ -198,22 +150,6 @@ spettri di emissione dei tre canali RGB possono essere diversi:
 ![](./media/screen-emission.svg){height=400px}
 
 Non spenderemo troppo tempo su questo per motivi di tempo.
-
-# Da XYZ a RGB
-
-$$
-\begin{aligned}
-\begin{pmatrix}R\\G\\B\end{pmatrix} &=
-M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}X\\Y\\Z\end{pmatrix} =\\
-&=
-\begin{pmatrix}
-+3.2404542& -1.5371385& -0.4985314\\
--0.9692660& +1.8760108& +0.0415560\\
-+0.0556434& -0.2040259& +1.0572252
-\end{pmatrix}
-\begin{pmatrix}X\\Y\\Z\end{pmatrix}.\\
-\end{aligned}
-$$
 
 # Colori RGB { data-state="rgb-colors-1.0" }
 
@@ -292,47 +228,20 @@ document.addEventListener('rgb-colors-1.0', function() {
 
 -   Possiamo esprimere l'equazione usando $R$, $G$ e $B$ anziché $L_\lambda$?
 
-# Operazioni sui colori
+---
 
--   Per valutare l'integrale nell'equazione del rendering occorrono queste operazioni:
-
-    -   Somma di densità di radianza: $L_\lambda^{(1)} + L_\lambda^{(2)}$
-    -   Prodotto di densità di radianza per uno scalare: $\xi\,L_\lambda$
-
--   Se $f_{r,\lambda}$ è costante nel dominio di integrazione, le due operazioni sono lineari
-
--   La definizione di $X$, $Y$, $Z$ è lineare (integrale)
-
--   La conversione a RGB è lineare (matrice)
-
--   Quindi le due operazioni (somma e prodotto per scalare) possono essere implementate direttamente sui valori RGB.
-
-# Esempio (1/2)
+Se $f_{r,\lambda} = f_{r, X}$ è costante nel dominio di integrazione:
 
 $$
 \begin{aligned}
-L_\lambda &= \alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)},\\
-\int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &= \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,\bigl(\alpha L_\lambda^{(1)} + \beta L_\lambda^{(2)}\bigr),\\
-\int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda &= \alpha\int_\lambda\mathrm{d}\lambda\,X(\lambda)\, L_\lambda^{(1)} +
-  \beta \int_\lambda\mathrm{d}\lambda\,X(\lambda)\,L_\lambda^{(2)},\\
-x &= \alpha x^{(1)} + \beta x^{(2)},\\
+L_\lambda(x \rightarrow \Theta) = &L_{e,\lambda}(x \rightarrow \Theta) +\\
+&\int_{\Omega_x} f_{r,\lambda}(x, \Psi \rightarrow \Theta)\,L_\lambda(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
+\int_0^\infty X(\lambda)\,L_\lambda(x \rightarrow \Theta)\,\mathrm{d}\lambda = &\int_0^\infty X(\lambda)\,L_{e,\lambda}(x \rightarrow \Theta)\,\mathrm{d}\lambda +\\
+&\int_0^\infty X(\lambda)\,L_\lambda(x \leftarrow \Psi)\,\mathrm{d}\lambda \int_{\Omega_x} f_{r,X}(x, \Psi \rightarrow \Theta)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
+L_X(x \rightarrow \Theta) = &L_{e,X}(x \rightarrow \Theta) +\\
+&\int_{\Omega_x} f_{r,X}(x, \Psi \rightarrow \Theta)\,L_X(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
 \end{aligned}
 $$
-e quindi operazioni lineari sulla radianza si traducono in operazioni lineari sulle componenti di colore $x$, $y$ e $z$.
-
-# Esempio (2/2)
-
-$$
-\begin{aligned}
-M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x\\y\\z\end{pmatrix} &=
-M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}\alpha x^{(1)} + \beta x^{(2)}\\\alpha y^{(1)} + \beta y^{(2)}\\\alpha z^{(1)} + \beta z^{(2)}\end{pmatrix},\\
-\begin{pmatrix}R\\G\\B\end{pmatrix} &=
-\alpha M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x^{(1)}\\y^{(1)}\\z^{(1)}\end{pmatrix} +
-\beta M_{\text{XYZ}\rightarrow\text{RGB}}\begin{pmatrix}x^{(2)}\\y^{(2)}\\z^{(2)}\end{pmatrix},\\
-R &= \alpha R^{(1)} + \beta R^{(2)},\\
-\end{aligned}
-$$
-e quindi la linearità è preservata anche per $R$, $G$ e $B$.
 
 # Equazione del rendering
 
@@ -361,49 +270,19 @@ e analogamente per $G$ e $B$. Questo ovviamente vale solo se la BRDF $f_r$ è un
 ![](./media/monitor-in-dark-room.jpg)
 </center>
 
----
+# Codifica RGB di colori
 
-# Colori in terminali Unix
+-   Oggi tutti i monitor e le schede grafiche supportano la cosiddetta «codifica a 16 milioni di colori»
 
--   Gli «emulatori di terminale» Unix sono dei programmi che simulano il comportamento dei vecchi terminali a caratteri.
+-   Una terna RGB viene codificata da un computer usando tre valori interi a 8 bit; ad esempio, in C++
 
--   Sebbene i terminali originali fossero monocromatici, emulatori come XTerm aggiunsero la possibilità di usare 8 colori
-
--   Versioni più avanzate, come quelli sui primi Personal Computer Intel, supportavano ben 16 colori!
-
--   Oggi i terminali supportano 256 colori, e alcuni addirittura 16 milioni.
-
--   Ma perché questi numeri strani (8, 16, 256, 16 milioni?)
-
----
-
-<center>
-![](./media/terminal-colors.png)
-</center>
-
-# Codifica RGB di colori (1/2)
-
--   Nel caso di 8 colori, ogni colore viene rappresentato da tre bit `rgb` (es., `010`, `100`, etc.). Se un bit è `1`, il led di quel colore viene acceso, altrimenti viene spento. Quindi `100` corrisponde al rosso, `110` al giallo, etc. Tre bit possono codificare $2^3 = 8$ colori.
-
--   Nel caso di 16 colori, viene aggiunto un bit che specifica se i led accesi devono emettere all'intensità massima o a una intermedia. Quindi `0100` è un rosso spento, `1100` è un rosso brillante, `0110` è marrone e `1110` è giallo. Quattro bit possono codificare $2^4 = 16$ colori.
-
-# Codifica RGB di colori (2/2)
-
--   Nel caso di 256 colori, ci sono molti standard in gioco, e la maggior parte dei quali non sono coerenti con la codifica RGB. In alcune applicazioni si usa la maschera di bit `rrrgggbb`, usando 3 bit (8 livelli) per il rosso e per il verde, e solo 2 bit (4 livelli) per il blu. (L'occhio umano è meno sensibile alle tonalità di blu).
-
--   Nel caso dei 16 milioni di colori, si usano 8 bit per ciascun livello di colore, così che $2^{8+8+8} = 2^{24} = 16\,777\,216$.
-
--   La codifica a 16 milioni di colori è rara nei terminali, ma è lo standard per le immagini fotografiche, e viene usato nei formati PNG, Jpeg, TIFF, etc.
-
----
-
-Sinistra: 16 milioni di colori
-
-Destra: 256 colori con codifica 3+3+2
-
-![](./media/cafe-forum-arles.jpg)
-
-[*Terrazza del caffè la sera, Place du Forum, Arles*. Vincent Van Gogh (1888)]{style="float:right"}
+    ```c++
+    struct RGB {
+        uint8_t r, g, b;
+    };
+    ```
+    
+-   Il numero totale di combinazioni RGB è $2^8 \times 2^8 \times 2^8 = 2^24 = 16\,777\,216$.
 
 # Colori RGB { data-state="rgb-colors" }
 
@@ -628,31 +507,5 @@ document.addEventListener('monitor-calibration-state', function() {
 -   Ma l'intervallo dei possibili valori di R, G e B è infinito:
     -   Dipende dall'unità di misura usata per $L_\lambda$;
     -   Dipende dalla scena (astronave vicino a una supernova? stanza in penombra?)
--   Lo standard CIE XYZ definisce una normalizzazione di riferimento in termini di un colore standard, il *D65*, che corrisponde all'emissione di un corpo nero a 6500 K (più o meno l'emissione del cielo in una giornata limpida).
+-   Esistono alcuni standard di colore (come il CIE XYZ) che fissano una normalizzazione di riferimento, solitamente in termini di un colore standard o di una temperatura di corpo nero.
 -   Vedremo meglio questo punto quando avremo discusso il salvataggio di immagini.
-
-# Esempio della vita reale
-
-![](./media/celebrating_planck.jpg){height=520}
-
-Planck: missione spaziale ESA (2009–2013)
-
----
-
-<center>
-![](./media/planck-hfi-2015-adc-paper.png){height=640}
-</center>
-
-# Analogue-to-Digital Converters
-
-<center>
-![](./media/planck-hfi-2015-adc-sect2.png)
-</center>
-
-# Lezioni imparate oggi
-
----
-
--   Semplificare il più possibile: invece di trattare $L_\lambda$, usiamo $R$, $G$ e $B$.
--   Mai dimenticarsi che le misurazioni fisiche passano da uno strumento: occorre conoscerne le caratteristiche e le non-idealità!
--   Il mondo è *complicato*!
