@@ -97,32 +97,27 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 ![](./media/mantis-shrimp.jpg)
 
-# Sistema XYZ
+# Codifica dei colori
 
--   Teoria tristimolare dei colori: è sempre possibile codificare il
-    colore percepito dall'occhio umano usando tre quantità scalari
-    legate alle SPD $X(\lambda)$, $Y(\lambda)$ e $Z(\lambda)$ dei coni:
+-   Teoria tristimolare dei colori: è sempre possibile codificare il colore del segnale $S(\lambda)$ percepito dall'occhio umano usando tre quantità scalari legate alle risposte $B_S(\lambda)$, $B_M(\lambda)$ e $B_L(\lambda)$ dei coni:
 
     $$
     \begin{aligned}
-    x &= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,X(\lambda),\\
-    y &= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Y(\lambda),\\
-    z &= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,Z(\lambda).
+    s &= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,B_S(\lambda),\\
+    m &= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,B_M(\lambda),\\
+    l &= k \int_\lambda \mathrm{d}\lambda\,S(\lambda)\,B_L(\lambda).
     \end{aligned}
     $$
 
 # Metamerismo cromatico
 
--   È possibile che due SED diverse portino agli stessi valori $(x, y, z)$
+-   È possibile che due segnali diversi $S_1(\lambda) \not= S_2(\lambda)$ portino alla stessa terna $(s, m, l)$
 
--   In questo caso il colore dei due oggetti è indistinguibile
-    all'occhio umano
+-   In questo caso il colore percepito per i due segnali è indistinguibile all'occhio umano
 
--   Il fenomeno è detto *metamerismo cromatico*, e i due colori si
-    dicono *metamerici*
+-   Il fenomeno è detto *metamerismo cromatico*, e i due colori si dicono *metamerici*
 
--   Il metamerismo dipende dal tipo di illuminazione (sole, lampada a
-    fluorescenza, luce laser, etc.)
+-   Il metamerismo dipende dal tipo di illuminazione (sole, lampada a fluorescenza, luce laser, etc.)
 
 # XYZ e RGB
 
@@ -226,33 +221,34 @@ document.addEventListener('rgb-colors-1.0', function() {
     \end{aligned}
     $$
 
--   Possiamo esprimere l'equazione usando $R$, $G$ e $B$ anziché $L_\lambda$?
+-   Vogliamo convertire l'equazione in $L_\lambda$ in tre equazioni che forniscano $R$, $G$, $B$.
 
 ---
 
-Se $f_{r,\lambda} = f_{r, X}$ è costante nel dominio di integrazione:
+Se $f_{r,\lambda} = f_{r, X}$ è costante nella banda $X(\lambda)$, allora
 
 $$
 \begin{aligned}
 L_\lambda(x \rightarrow \Theta) = &L_{e,\lambda}(x \rightarrow \Theta) +\\
-&\int_{\Omega_x} f_{r,\lambda}(x, \Psi \rightarrow \Theta)\,L_\lambda(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
+&\int_{\Omega_x} f_{r,\lambda}(x, \Psi \rightarrow \Theta)\,L_\lambda(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi\\
 \int_0^\infty X(\lambda)\,L_\lambda(x \rightarrow \Theta)\,\mathrm{d}\lambda = &\int_0^\infty X(\lambda)\,L_{e,\lambda}(x \rightarrow \Theta)\,\mathrm{d}\lambda +\\
-&\int_0^\infty X(\lambda)\,L_\lambda(x \leftarrow \Psi)\,\mathrm{d}\lambda \int_{\Omega_x} f_{r,X}(x, \Psi \rightarrow \Theta)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
-L_X(x \rightarrow \Theta) = &L_{e,X}(x \rightarrow \Theta) +\\
+&\iint\mathrm{d}\lambda\,\mathrm{d}\omega_\Psi\,X(\lambda)\,L_\lambda(x \leftarrow \Psi) f_{r,X}(x, \Psi \rightarrow \Theta)\,\cos(N_x, \Psi)\\
+L_X(x \rightarrow \Theta) = &L_{X,e}(x \rightarrow \Theta) +\\
 &\int_{\Omega_x} f_{r,X}(x, \Psi \rightarrow \Theta)\,L_X(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
 \end{aligned}
 $$
 
 # Equazione del rendering
 
-Se indichiamo con $R$, $G$ e $B$ la radianza integrata e convertita nel sistema RGB, l'equazione del rendering si traduce in un sistema di tre equazioni identiche:
-$$
-\begin{aligned}
-R(x \rightarrow \Theta) = &R_{e}(x \rightarrow \Theta) +\\
-    &\int_{\Omega_x} f_{r,R}(x, \Psi \rightarrow \Theta)\,R(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,\\
-\end{aligned}
-$$
-e analogamente per $G$ e $B$. Questo ovviamente vale solo se la BRDF $f_r$ è una funzione costante all'interno della risposta in banda $X$, $Y$ e $Z$!
+-   Se indichiamo con $R$, $G$ e $B$ la radianza integrata e convertita nel sistema RGB, l'equazione del rendering si traduce in un sistema di tre equazioni identiche, che si possono riscrivere come una equazione vettoriale su $\vec c = (R, G, B)$:
+    $$
+    \begin{aligned}
+    \vec c(x \rightarrow \Theta) = &\vec c_{e}(x \rightarrow \Theta) +\\
+        &\int_{\Omega_x} f_{r,R}(x, \Psi \rightarrow \Theta)\,\vec c(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
+    \end{aligned}
+    $$
+    
+-   Questo ovviamente vale solo se la BRDF $f_r$ è una funzione costante all'interno delle tre risposte in banda!
 
 
 # Visualizzazione su dispositivi
@@ -262,7 +258,7 @@ e analogamente per $G$ e $B$. Questo ovviamente vale solo se la BRDF $f_r$ è un
 -   Un monitor visualizza le immagini tramite una matrice di punti (*pixel*: *picture element*)
 -   Ogni punto è comandato tramite una terna RGB di valori
 -   I valori possibili spaziano in un intervallo limitato
--   Il realismo nell'emissione di $L$ è quindi in genere impossibile
+-   Il realismo nell'emissione di $L$ da parte di un monitor è quindi in genere impossibile
 
 ---
 
@@ -274,7 +270,7 @@ e analogamente per $G$ e $B$. Questo ovviamente vale solo se la BRDF $f_r$ è un
 
 -   Oggi tutti i monitor e le schede grafiche supportano la cosiddetta «codifica a 16 milioni di colori»
 
--   Una terna RGB viene codificata da un computer usando tre valori interi a 8 bit; ad esempio, in C++
+-   Una terna RGB viene codificata da un computer usando tre valori interi a 8 bit; ad esempio, in C++ si potrebbe usare un tipo come il seguente:
 
     ```c++
     struct RGB {
@@ -282,7 +278,7 @@ e analogamente per $G$ e $B$. Questo ovviamente vale solo se la BRDF $f_r$ è un
     };
     ```
     
--   Il numero totale di combinazioni RGB è $2^8 \times 2^8 \times 2^8 = 2^24 = 16\,777\,216$.
+-   Il numero totale di combinazioni RGB è $2^8 \times 2^8 \times 2^8 = 2^{24} = 16\,777\,216$.
 
 # Colori RGB { data-state="rgb-colors" }
 
@@ -350,9 +346,9 @@ document.addEventListener('rgb-colors', function() {
 
 -   La potenza emessa dai punti di uno schermo non varia linearmente.
 
--   La relazione tra il livello di emissione richiesto $I$ e il flusso $\Phi$ effettivamente emesso da un pixel è di solito della forma
+-   La relazione tra il livello di emissione richiesto $I$ e il flusso $\Phi$ effettivamente emesso da un pixel è di solito nella forma
     $$
-    \Phi \propto \left(\frac{I}{I_\text{max}}\right)^\gamma,
+    \Phi \propto \left(\frac{I}{I_\text{max}}\right)^\gamma\ \text{per ciascuna delle bande R, G, B},
     $$
 
     dove $I \in [0, I_\text{max}]$, e $\gamma$ è un parametro caratteristico del dispositivo.
@@ -362,13 +358,13 @@ document.addEventListener('rgb-colors', function() {
 # Andamento di $\gamma$
 
 ```{.gnuplot im_fmt="svg" im_out="img" im_fname="gamma-curve"}
-set terminal svg
+set terminal svg font 'Helvetica,24'
 set xlabel "Normalized input"
 set ylabel "Normalized output"
 set key left top
-plot [0:1] x with lines t "γ = 1.0" lt rgb "#ad3434", \
-           x**1.6 with lines t "γ = 1.6" lt rgb "#34ad34", \
-           x**2.2 with lines t "γ = 2.2" lt rgb "#3434ad"
+plot [0:1] x with lines t "γ = 1.0" lt rgb "#ad3434" lw 3, \
+           x**1.6 with lines t "γ = 1.6" lt rgb "#34ad34" lw 3, \
+           x**2.2 with lines t "γ = 2.2" lt rgb "#3434ad" lw 3
 ```
 
 # Calibrazione dei monitor
@@ -376,7 +372,7 @@ plot [0:1] x with lines t "γ = 1.0" lt rgb "#ad3434", \
 ![](./media/checkered-pattern.svg)
 
 $$
-\text{value} = \frac12^\gamma \quad\Rightarrow\quad \gamma = \frac{\log 1/2}{\log(\text{value})}
+\text{value} = \left(\frac12\right)^\gamma \quad\Rightarrow\quad \gamma = \frac{\log 1/2}{\log(\text{value})}
 $$
 
 
@@ -484,9 +480,10 @@ document.addEventListener('monitor-calibration-state', function() {
 
 # Risposta dei monitor
 
--   Una volta ottenuta una terna RGB di numeri reali, per pilotare un monitor occorre convertirla in una cosiddetta «[terna sRGB](https://en.wikipedia.org/wiki/SRGB)».
--   La conversione è parametrizzata da $\gamma$ (ma non solo), e **non è lineare**.
--   Quanto abbiamo visto per la conversione $L_\lambda \rightarrow (X, Y, Z) \rightarrow (R, G, B)$ non si applica quindi a sRGB.
+-   Quindi, quando abbiamo un colore espresso come terna RGB di numeri reali, per visualizzare il colore su un monitor occorre effettuare la conversione usando il fattore $\gamma$
+-   Il colore RGB convertito con $\gamma$ è una «[terna sRGB](https://en.wikipedia.org/wiki/SRGB)».
+-   La conversione **non è lineare**, com'è evidente dalla sua espressione analitica
+-   Quanto abbiamo visto per la conversione $L_\lambda \rightarrow (R, G, B)$ non si applica quindi a sRGB: non possiamo scrivere l'equazione del rendering direttamente nello spazio sRGB!
 
 # Conversione da RGB a sRGB
 
@@ -504,8 +501,215 @@ document.addEventListener('monitor-calibration-state', function() {
 # Determinazione di $k$
 
 -   Se i valori R, G e B fossero compresi nell'intervallo $[0, 1]$, allora basterebbe porre $k = 255$.
--   Ma l'intervallo dei possibili valori di R, G e B è infinito:
+-   Ma l'intervallo dei possibili valori di R, G e B è $[0, \infty)$:
     -   Dipende dall'unità di misura usata per $L_\lambda$;
-    -   Dipende dalla scena (astronave vicino a una supernova? stanza in penombra?)
--   Esistono alcuni standard di colore (come il CIE XYZ) che fissano una normalizzazione di riferimento, solitamente in termini di un colore standard o di una temperatura di corpo nero.
--   Vedremo meglio questo punto quando avremo discusso il salvataggio di immagini.
+    -   Dipende dalla scena
+-   Esistono alcuni standard di colore (come il CIE XYZ) che fissano una normalizzazione di riferimento (colore standard, temperatura di corpo nero…)
+-   Vediamo ora come salvare immagini in un file
+
+# Immagini HDR e LDR
+
+# Da RGB a sRGB
+
+-   I file più comunemente usati per le immagini (PNG, Jpeg, TIFF…) usano tutti la codifica sRGB
+
+-   Se vogliamo che il nostro programma produca immagini facili da fruire, dobbiamo quindi convertire il risultato dell'equazione del rendering da RGB a sRGB.
+    
+-   Il *tone mapping* è il processo attraverso cui si converte un'immagine RGB in un'immagine sRGB, dove per *immagine* si intende una matrice di colori RGB.
+
+# Tipi di immagini
+
+Ci sono due categorie di immagini che sono rilevanti per questo corso:
+
+Immagini LDR (Low-Dynamic Range)
+: Codificano i colori usando il sistema sRGB: le tre componenti R, G, B sono quindi numeri interi, solitamente nell'intervallo 0–255. Tutti i formati grafici più diffusi (JPEG, PNG, GIF, etc.) appartengono a questo tipo.
+
+Immagini HDR (High-Dynamic Range)
+: Codificano i colori usando il sistema RGB o sRGB, ma le tre componenti R, G, B sono numeri floating-point e coprono quindi un grande intervallo dinamico; per visualizzarle occorre quindi applicare il *tone mapping*. Esempi di questo formato sono OpenEXR e PFM.
+
+
+# Funzionamento del nostro codice
+
+```{.graphviz im_fmt="svg" im_out="img" im_fname="course-workflow"}
+digraph "" {
+    read [label="read input file" shape=box];
+    solve [label="solve the rendering equation and create a HDR image" shape=box];
+    tonemapping [label="apply tone mapping to convert HDR to LDR" shape=box];
+    save [label="save the LDR image" shape=box];
+    read -> solve;
+    solve -> tonemapping;
+    tonemapping -> save;
+}
+```
+
+# Codifica di immagini raster
+
+-   Sia le immagini LDR che HDR sono codificate tramite una matrice di colori; ogni colore è solitamente una terna RGB.
+
+-   Il file ha solitamente questo contenuto:
+
+    Header
+    : Specifica il formato dell'immagine, le dimensioni della matrice, e a volte anche altri parametri utili (es., la data e l'ora dello scatto, le coordinate del GPS, il valore di $\gamma$ del dispositivo che ha catturato l'immagine, etc.).
+    
+    Matrice dei colori
+    : L'ordine in cui sono salvate le righe/colonne, e anche l'ordine in cui sono salvate le componenti R, G, B (RGB/BGR) varia a seconda del formato.
+
+---
+
+<center>
+![](./media/image-save-order.svg)
+</center>
+
+# Esempio: il formato PPM
+
+-   Formato LDR, molto diffuso sui sistemi Unix.
+
+-   Potete leggerlo e scriverlo usando [NetPBM](http://netpbm.sourceforge.net/) o [ImageMagick](https://imagemagick.org/index.php). Il secondo è il più diffuso, e può essere installato sotto Ubuntu con
+
+    ```text
+    $ sudo apt install imagemagick
+    ```
+    
+    Potete convertire immagini col comando
+    
+    ```text
+    $ convert input.png output_p6.ppm                  # Formato P6
+    $ convert input.jpg -compress none output_p3.ppm   # Formato P3
+    ```
+    
+-   PPM è un formato pensato per essere scritto e letto facilmente.
+
+# File PPM (P3)
+
+-   Un file PPM è un file di testo, apribile con qualsiasi editor.
+-   **Header**:
+
+    1. I due caratteri `P3`;
+    2. Numero di colonne e di righe, in formato testo e separate da uno spazio;
+    3. Valore massimo per ciascuna delle componenti R, G, B (solitamente 255).
+
+-   **Matrice dei colori**: le terne R, G, B devono essere riportate come numeri interi partendo dall'angolo in alto a sinistra a quello in basso a destra, procedendo riga per riga.
+
+# Esempio (P3)
+
+```text
+P3
+3 2
+255
+255   0   0
+  0 255   0
+  0   0 255
+255 255   0
+255 255 255
+  0   0   0
+```
+
+<center>
+![](./media/tiny-image-6pixels.png)
+</center>
+
+# File PFM
+
+-   È un tipo di file che si ispira a PPM, ma è un formato HDR
+
+-   **Molto** importante per questo corso!
+
+-   Non è così ben supportato: sotto Ubuntu esiste solo `pftools`, che si installa con
+
+    ```text
+    $ sudo apt install pftools
+    ```
+    
+-   Noi scriveremo i nostri tool che permetteranno di convertire file PFM in PPM, quindi `pftools` non sarà necessario
+
+# Struttura di un file PFM
+
+-   Come i file PPM in formato P6, anche i file PFM sono parzialmente di testo e parzialmente binari.
+-   **Header**:
+
+    1. I due caratteri `PF`, più il carattere `0x0a` (ritorno a capo);
+    2. `ncol nrows` (colonne e righe), seguito da ritorno a capo `0x0a`;
+    3. Il valore `-1.0`, seguito da `0x0a`.
+
+-   **Matrice dei colori**: le terne R, G, B devono essere scritte come sequenze di numeri a 32 bit (quindi **non** testo!), da sinistra a destra e dal **basso all'alto** (diverso da PPM!).
+
+# Codifica binaria
+
+# Codifica binaria
+
+-   I file binari sono il tipo più semplice: consistono di una sequenza di byte (ossia, 8 bit scritti in sequenza).
+
+-   Ogni byte può contenere un valore intero nell'intervallo 0–255
+
+-   Per stampare il contenuto di un file binario potete usare il comando `xxd` (sotto Ubuntu, installatelo con `sudo apt install xxd`):
+
+    ```text
+    $ xxd file.bin
+    ```
+    
+    (Su altri sistemi operativi potreste avere `hexdump` anziché `xxd`).
+    
+-   Salvare dati in un file binario vuol dire scrivere una sequenza di numeri binari sul disco fisso, memorizzati come byte.
+
+# Da binario a decimale
+
+-   Per ragionare sui valori dei byte si usa la numerazione binaria, che ovviamente usa come base il numero 2:
+
+    ```
+    0  → 0
+    1  → 1
+    2  → 10
+    3  → 11
+    4  → 100
+    …
+    ```
+    
+-   Per un numero `dcba` espresso in una base $B$, il suo valore è
+
+    $$
+    \text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times B^3.
+    $$
+    
+    Quindi il valore binario `101` corrisponde a $1 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 5.$
+
+# Ordine dei bit in un byte
+
+-   C'è sempre un'ambiguità di fondo nel raggruppamento dei bit in byte, e sta nel loro ordine.
+
+-   Se un byte è formato dalla sequenza di bit `0011 0101`, esistono due modi per interpretarlo:
+
+    $$
+    \begin{aligned}
+    2^2 + 2^3 + 2^5 + 2^7 &= 172,\\
+    2^5 + 2^4 + 2^2 + 2^0 &= 53.
+    \end{aligned}
+    $$
+
+# «Endianness» dei bit
+
+-   L'ordine dei bit in un byte è detto in gergo *bit-endianness*, termine tratto dai *Viaggi di Gulliver* (1726), di J. Swift:
+
+    1.  La codifica *big-endian* parte dalla potenza *maggiore* («big»);
+    2.  La codifica *little-endian* parte dalla potenza *minore* («little»).
+
+-   Le CPU Intel e AMD oggi usate nei personal computer usano tutte la codifica *little-endian*.
+
+-   La codifica *big-endian* è stata molto usata in passato; oggi è impiegata in alcune CPU ARM.
+
+# Salvare dati in binario
+
+-   Salvare una variabile in forma binaria non è in generale semplice!
+
+-   In C++ ad esempio, il programma seguente *non* salva il valore di `x` in binario:
+
+    ```c++
+    #include <fstream>
+    
+    int main() {
+      int x{138};  // 138 < 256, so the value fits in *one* byte
+      std::ofstream outf{"file.bin"};
+      outf << x; // Ouch! It writes *three* bytes: '1', '3', '8'
+    }
+    ```
+    
+-   Il valore `138` è stato salvato in *forma testuale*. (Se includete `<cstdint>` e cambiate il tipo di `x` da `int` a `uint8_t`, il valore viene salvato come binario!)
