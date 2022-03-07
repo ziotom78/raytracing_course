@@ -3,7 +3,7 @@ SED = /bin/sed
 JS_FILES = \
 	./js/quantization.js
 
-.phony: all
+.phony: all http
 
 all: \
 	tomasi-ray-tracing-14b-parsing.html \
@@ -70,3 +70,6 @@ giudizi-linguaggio-aa2021.html: giudizi-linguaggio-aa2021.md
 		-o $@ $<
 	# This is necessary to make Asymptote WebGL figures work
 	$(SED) -i 's/embed data-src/embed width="640px" height="640px" src/g' $@
+
+http:
+	python -m http.server
