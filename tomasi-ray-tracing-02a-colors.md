@@ -651,6 +651,12 @@ P3
     
 -   Salvare dati in un file binario vuol dire scrivere una sequenza di numeri binari sul disco fisso, memorizzati come byte.
 
+
+---
+
+<asciinema-player src="./cast/binary-files-73x19.cast" cols="73" rows="19" font-size="medium"></asciinema-player>
+
+
 # Da binario a decimale
 
 -   Per ragionare sui valori dei byte si usa la numerazione binaria, che ovviamente usa come base il numero 2:
@@ -670,7 +676,7 @@ P3
     \text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times B^3.
     $$
     
-    Quindi il valore binario `101` corrisponde a $1 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 5.$
+    Quindi il valore binario `100` corrisponde a $0 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 4.$
 
 # Ordine dei bit in un byte
 

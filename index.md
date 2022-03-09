@@ -10,6 +10,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 1a      | 2022/02/28 | [Equazione del rendering](tomasi-ray-tracing-01a-rendering-equation.html) |
 | 1b      | 2022/03/02 | [Git e GitHub](tomasi-ray-tracing-01b-github.html)                        |
 | 2a      | 2022/03/07 | [Colori](tomasi-ray-tracing-02a-colors.html)                              |
+| 2b      | 2022/03/09 | [Test automatici](tomasi-ray-tracing-02b-tests.html)                      |
 
 # Scelta del linguaggio
 
