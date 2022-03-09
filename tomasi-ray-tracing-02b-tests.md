@@ -747,7 +747,7 @@ Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, 
 
 -   La prassi è quella di definire una funzione `newMyType` che crei il tipo `MyType`
 
--   Aggiungete quindi una procedura `newHdrImage` che accetti due parametri `width` ed `height`; inizializzate il campo `pixels` usando [`newSeqUninitialized`](https://nim-lang.org/docs/system.html#newSeqUninitialized%2CNatural), poi impostate tutti i colori a zero (nero)
+-   Aggiungete quindi una procedura `newHdrImage` che accetti due parametri `width` ed `height`; inizializzate il campo `pixels` usando [`newSeq`](https://nim-lang.org/docs/system.html#newSeq), poi impostate tutti i colori a zero (nero)
 
 # Scrittura di test
 
