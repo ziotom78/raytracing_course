@@ -219,12 +219,12 @@
 <div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> Color:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.height <span class="op">+</span> x]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x]</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> set_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>, new_color: Color):</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.height <span class="op">+</span> x] <span class="op">=</span> new_color</span></code></pre></div>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x] <span class="op">=</span> new_color</span></code></pre></div>
 <p>Ma questa implementazione è la migliore?</p></li>
 <li><p>No! Ma per capirlo dobbiamo parlare di come si verifica il codice</p></li>
 </ul>
@@ -337,12 +337,12 @@ Color(r=2.0, g=4.0, b=6.0)</code></pre></li>
 <div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> Color:</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.height <span class="op">+</span> x]</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x]</span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> set_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>, new_color: Color):</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.height <span class="op">+</span> x] <span class="op">=</span> new_color</span></code></pre></div>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x] <span class="op">=</span> new_color</span></code></pre></div>
 <p>La verifica delle coordinate va testata due volte: in <code>get_pixel</code> e in <code>set_pixel</code>.</p></li>
 </ul>
 </section>

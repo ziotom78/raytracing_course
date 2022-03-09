@@ -118,12 +118,12 @@ Data la posizione `(x, y)` di un pixel (con `x` colonna e `y` riga), l'indice ne
     def get_pixel(self, x: int, y: int) -> Color:
         assert (x >= 0) and (x < self.width)
         assert (y >= 0) and (y < self.height)
-        return self.pixels[y * self.height + x]
+        return self.pixels[y * self.width + x]
 
     def set_pixel(self, x: int, y: int, new_color: Color):
         assert (x >= 0) and (x < self.width)
         assert (y >= 0) and (y < self.height)
-        self.pixels[y * self.height + x] = new_color
+        self.pixels[y * self.width + x] = new_color
     ```
 
     Ma questa implementazione è la migliore?
@@ -257,12 +257,12 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
     def get_pixel(self, x: int, y: int) -> Color:
         assert (x >= 0) and (x < self.width)
         assert (y >= 0) and (y < self.height)
-        return self.pixels[y * self.height + x]
+        return self.pixels[y * self.width + x]
 
     def set_pixel(self, x: int, y: int, new_color: Color):
         assert (x >= 0) and (x < self.width)
         assert (y >= 0) and (y < self.height)
-        self.pixels[y * self.height + x] = new_color
+        self.pixels[y * self.width + x] = new_color
     ```
 
     La verifica delle coordinate va testata due volte: in `get_pixel` e in `set_pixel`.
