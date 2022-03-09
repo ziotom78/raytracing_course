@@ -4,190 +4,7 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-# Immagini HDR e LDR
-
-# Da RGB a sRGB
-
--   Nella scorsa lezione abbiamo visto che l'equazione del rendering si riscrive naturalmente nelle componenti di colore R, G e B.
-
--   I dispositivi di visualizzazione (monitor, schermi di tablet, televisori) richiedono però l'uso di sRGB, che ha i seguenti limiti:
-
-    -   Le componenti R, G e B sono numeri interi in un intervallo limitato;
-    -   La risposta dei dispositivi non è lineare.
-    
--   Il *tone mapping* è il processo attraverso cui si converte un'immagine RGB in un'immagine sRGB, dove per *immagine* si intende una matrice di colori RGB.
-
-# Obbiettivo del corso
-
-
-```{.graphviz im_fmt="svg" im_out="img" im_fname="course-workflow"}
-digraph "" {
-    read [label="read input file" shape=box];
-    solve [label="solve the rendering equation" shape=box];
-    tonemapping [label="apply tone mapping" shape=box];
-    save [label="save the image" shape=box];
-    read -> solve;
-    solve -> tonemapping;
-    tonemapping -> save;
-}
-```
-
-# Formati grafici
-
--   Nella prossima esercitazione inizieremo la nostra implementazione dal fondo, ossia il salvataggio dell'immagine.
-
--   A seconda del tipo di immagine (foto, grafico, disegno a mano libera), il formato del salvataggio cambia.
-
--   Un'immagine fotorealistica dovrebbe essere indistinguibile da quella prodotta da una fotocamera.
-
--   In che modo una fotocamera registra in un file un'immagine?
-
-# Salvataggio di immagini
-
--   Esistono due famiglie di file grafici:
-
-    -   Grafica vettoriale: SVG, PDF, EPS, AI…
-    -   Grafica raster (matriciale): JPEG, PNG, GIF, RAW…
-    
--   I file **vettoriali** contengono istruzioni per disegnare un'immagine:
-
-    ```text
-    - cerchio centrato in (3.5, 2.6) con raggio 1.5 di colore nero
-    - linea da (1.1, 1.7) a (3.7, 7.4) di colore nero con spessore 2
-    - etc.
-    ```
-    
--   I file **raster** salvano una matrice di colori, e sono quelli che ci
-    interessano per questo corso, perché sono i file salvati dalle fotocamere.
-    
----
-
-<center>
-![](./media/difference-between-raster-and-vector-image.png)
-</center>
-
-# Grafica vettoriale
-
-<center>
-![](./media/Carnot-cycle-p-V-diagram.svg)
-</center>
-
-# Grafica raster
-
-<center>
-![](./media/gilles_tran.jpg)
-</center>
-
-# Tipi di immagini raster
-
-Ci sono due categorie di immagini raster che sono rilevanti per questo corso:
-
-Immagini LDR (Low-Dynamic Range)
-: Codificano i colori usando il sistema sRGB: le tre componenti R, G, B sono quindi numeri interi, solitamente nell'intervallo 0–255. Tutti i formati grafici più diffusi (JPEG, PNG, GIF, etc.) appartengono a questo tipo.
-
-Immagini HDR (High-Dynamic Range)
-: Codificano i colori usando il sistema RGB o sRGB, ma le tre componenti R, G, B sono numeri floating-point e coprono quindi un grande intervallo dinamico; per visualizzarle occorre quindi applicare il *tone mapping*. Esempi di questo formato sono OpenEXR e PFM.
-
-# Codifica di immagini raster
-
--   Sia le immagini LDR che HDR sono codificate tramite una matrice di colori; ogni colore è solitamente una terna (R, G, B).
-
--   Il file ha solitamente questo contenuto:
-
-    Header
-    : Specifica il formato dell'immagine, le dimensioni della matrice, e a volte anche altri parametri utili (es., la data e l'ora dello scatto, le coordinate del GPS, il valore di $\gamma$ del dispositivo che ha catturato l'immagine, etc.).
-    
-    Matrice dei colori
-    : L'ordine in cui sono salvate le righe/colonne, e anche l'ordine in cui sono salvate le componenti R, G, B (RGB/BGR) varia a seconda del formato.
-
----
-
-<center>
-![](./media/image-save-order.svg)
-</center>
-
-# Esempio: il formato PPM
-
--   Formato LDR, molto diffuso sui sistemi Unix.
-
--   Potete leggerlo e scriverlo usando [NetPBM](http://netpbm.sourceforge.net/) o [ImageMagick](https://imagemagick.org/index.php). Il secondo è il più diffuso, e può essere installato con
-
-    ```text
-    $ sudo apt install imagemagick
-    ```
-    
-    Potete convertire immagini col comando
-    
-    ```text
-    $ convert input.png output_p6.ppm                  # Formato P6
-    $ convert input.jpg -compress none output_p3.ppm   # Formato P3
-    ```
-    
--   PPM è un formato pensato per essere scritto e letto facilmente.
-
-# File PPM (P3)
-
--   Un file PPM è un file di testo, apribile con qualsiasi editor.
--   **Header**:
-
-    1. I due caratteri `P3`;
-    2. Numero di colonne e di righe, in formato testo e separate da uno spazio;
-    3. Valore massimo per ciascuna delle componenti R, G, B (solitamente 255).
-
--   **Matrice dei colori**: le terne R, G, B devono essere riportate come numeri interi partendo dall'angolo in alto a sinistra a quello in basso a destra, procedendo riga per riga.
-
-# Esempio (P3)
-
-```text
-P3
-3 2
-255
-255   0   0
-  0 255   0
-  0   0 255
-255 255   0
-255 255 255
-  0   0   0
-```
-
-<center>
-![](./media/tiny-image-6pixels.png)
-</center>
-
-# File PPM (P6)
-
--   Oltre al tipo `P3` esiste anche il file di tipo `P6`.
-
--   La differenza sta nel modo in cui le terne R, G, B sono salvate: invece di scrivere numeri in codifica testuale, vengono scritti in binario.
-
--   Vedremo dopo questa differenza, che sarà però fondamentale per l'esercitazione di questa settimana.
-
-# File PFM
-
--   È un tipo di file che si ispira a PPM, ma è un formato HDR
-
--   **Molto** importante per questo corso!
-
--   Non è così ben supportato: sotto Ubuntu esiste solo `pftools`, che si installa con
-
-    ```text
-    $ sudo apt install pftools
-    ```
-    
--   Noi scriveremo i nostri tool che permetteranno di convertire file PFM in PPM.
-
-# Struttura di un file PFM
-
--   Come i file PPM in formato P6, anche i file PFM sono parzialmente di testo e parzialmente binari.
--   **Header**:
-
-    1. I due caratteri `PF`, più il carattere `0x0a` (ritorno a capo);
-    2. `ncol nrows` (colonne e righe), seguito da ritorno a capo `0x0a`;
-    3. Il valore `-1.0`, seguito da `0x0a`.
-
--   **Matrice dei colori**: le terne R, G, B devono essere scritte come sequenze di numeri a 32 bit (quindi **non** testo!), da sinistra a destra e dal **basso all'alto** (diverso da PPM!).
-
-# Codifica testuale e binaria
+# Codifica binaria e testuale
 
 # Codifica binaria
 
@@ -204,6 +21,7 @@ P3
     (Su altri sistemi operativi potreste avere `hexdump` anziché `xxd`).
     
 -   Salvare dati in un file binario vuol dire scrivere una sequenza di numeri binari sul disco fisso, memorizzati come byte.
+
 
 # Da binario a decimale
 
@@ -224,31 +42,13 @@ P3
     \text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times B^3.
     $$
     
-    Quindi il valore binario `101` corrisponde a $1 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 5.$
-
-# Notazione ottale
-
--   La notazione binaria è comoda per una CPU ma scomoda per noi!
-
--   Una base più comoda è quella ottale (8).
-
--   In C/C++, le cifre ottali si scrivono facendole precedere da `0`.
-
--   Siccome $8 = 2^3$, una cifra ottale corrisponde a 3 cifre binarie. Basta imparare a memoria l'associazione binario-ottale per i numeri da 0 a 7 per saper convertire ogni altro valore:
-
-    ```
-    03  -> 011
-    06  -> 110
-    036 -> 011 110
-    ```
-    
-    La conversione inversa è ugualmente semplice.
+    Quindi il valore binario `100` corrisponde a $0 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 4.$
 
 # Notazione esadecimale
 
--   La notazione ottale è però scomoda, perché i computer lavorano a multipli di 8 bit (i byte), mentre la notazione ottale usa 3 bit per cifra.
+-   La notazione binaria è però scomoda, perché i numeri richiedono rapidamente molte cifre; inoltre i computer lavorano a multipli di 8 bit (i byte).
 
--   Oggi la notazione ottale è quasi completamente abbandonata in favore della notazione esadecimale (16), che usa le cifre
+-   In alternativa alla notazione binaria si usa molto la notazione esadecimale (16), che usa le cifre
 
     ```
     0 1 2 3 4 5 6 7 8 9 A B C D E F
@@ -256,7 +56,12 @@ P3
     
 -   La notazione esadecimale richiede 4 bit per cifra, perché $2^4 = 16$. Siccome un byte è composto da 8 bit, il valore di un byte è sempre codificabile usando solo due cifre esadecimali (`0xFF = 255`).
 
--   In C/C++/Julia/C\#, i numeri esadecimali si scrivono facendoli iniziare con `0x`, ad es. `0x1F67 = 8039`.
+-   In C/C++/D/Nim/Rust/Julia/C\#/Kotlin, i numeri esadecimali si scrivono con `0x`, ad es. `0x1F67 = 8039` (in alcuni linguaggi `0b` introduce un numero binario).
+
+---
+
+<asciinema-player src="./cast/binary-files-73x19.cast" cols="73" rows="19" font-size="medium"></asciinema-player>
+
 
 # Ordine dei bit in un byte
 
@@ -280,11 +85,21 @@ P3
 
 -   Le CPU Intel e AMD oggi usate nei personal computer usano tutte la codifica *little-endian*. La codifica *big-endian* è stata molto usata in passato, ma oggi è ancora impiegata in alcune CPU ARM.
 
+# Usare più di 8 bit
+
+-   Un numero a 8 bit può assumere valori da 0 a 255
+
+-   È un intervallo molto ridotto! Ma si possono combinare insieme più bytes
+
+-   In C++ esistono i tipi `int16_t` (16 bit → 2 byte), `int32_t` (32 bit → 4 byte), `int64_t` (64 bit → 8 byte)
+
+-   Ma se si combinano insieme più byte, c'è di nuovo il problema della *endianness*! Il numero esadecimale 1F3D si codifica con la coppia di byte `1F 3D` (*big endian*) oppure `3D 1F` (*little endian*)?
+
+-   Oltre alla *bit endianness*, c'è il problema del *byte endianness*!
+
 # Salvare dati in binario
 
--   Salvare una variabile in forma binaria non è in generale semplice!
-
--   In C++ ad esempio, il programma seguente *non* salva il valore di `x` in binario:
+-   Oltre al problema della *endianness*, bisogna anche capire come il proprio linguaggio gestisce i file binari. Guardate questo esempio in C++:
 
     ```c++
     #include <fstream>
@@ -296,19 +111,22 @@ P3
     }
     ```
     
--   Il valore `138` è stato salvato in *forma testuale*. (Se includete `<cstdint>` e cambiate il tipo di `x` da `int` a `uint8_t`, il valore viene salvato come binario!)
+-   Il valore `138` è stato salvato in *forma testuale*.
 
--   Vediamo in cosa consiste la codifica testuale.
+-   Se invece includete `<cstdint>` e cambiate il tipo di `x` da `int` a `uint8_t`, il valore viene salvato come binario!
+
 
 # Codifica testuale
 
--   I caratteri del computer vengono codificati tramite dei valori precisi; le lettere dell'alfabeto latino, le cifre romane e la punteggiatura di base usano la codifica ASCII:
+# Codifica testuale
+
+-   I caratteri del computer vengono codificati tramite numeri; la più usata è la codifica ASCII:
 
     -  La lettera `A` è codificata dal numero 65, `B` da 66, `C` da 67, etc.;
     -  La lettera `a` è codificata dal numero 97, `b` da 98, etc.;
     -  La cifra `0` è codificata dal numero 48, `1` da 49, etc.
     
--   Codificare una parola come `Casa` vuol dire rappresentare la parola con la sequenza di valori `67 97 115 97`.
+-   Codificare una parola come `Casa` vuol dire rappresentare la parola con la sequenza di valori `67 97 115 97 = 0x43 0x61 0x73 0x61`.
 
 -   Questi codici numerici fanno parte dello standard ASCII, che specifica 128 caratteri. ([Qui c'è la tabella completa](https://garbagecollected.org/2017/01/31/four-column-ascii/), spiegata bene).
 
@@ -320,19 +138,21 @@ P3
     Beauty - be not caused - It Is -
     Chase it, and it ceases -
     Chase it not, and it abides -
+    
     Overtake the Creases
     
     In the Meadow - when the Wind
-    Runs his fingers thro’ it -
+    Runs his fingers thro' it -
     Deity will see to it
     That You never do it -
     
-    (Emily Dickinson)
+    (Emily Dickinson, 1863)
     ```
 
 -   Ma come si codifica la fine della riga in ogni verso della poesia?
 
 -   In 128 valori è possibile codificare *tutti* i caratteri?
+
 
 # Ritorno a capo
 
@@ -488,3 +308,227 @@ P3
     -   Non hanno problemi di *endianness*.
     
 -   Questa settimana e la prossima lavoreremo su file binari; tra alcune settimane passeremo ai file testuali per leggere i file di input del nostro programma.
+
+
+# Gestione degli errori
+
+# Errori
+
+-   Nella scorsa esercitazione abbiamo implementato il tipo `HdrImage`.
+-   Questa settimana implementeremo le funzioni per scrivere e leggere file PFM.
+-   Legge e scrivere file è un'attività che è facilmente soggetta ad errori:
+    -   La directory in cui salvare il file non esiste, oppure è protetta da scrittura
+    -   Il file specificato dall'utente non esiste
+    -   Il file è danneggiato
+    -   Il file è in un formato valido ma che il nostro codice non è in grado di caricare (es., un file è codificato in *big endian*, ma noi abbiamo previsto solo *little endian*)
+
+# Tipi di errore
+
+-   Gli errori possono essere suddivisi in due classi:
+
+    -   Errori di pertinenza del programmatore
+    -   Errori di pertinenza dell'utente
+    
+-   A seconda del tipo di errore in cui vi imbattete, la sua gestione è diversa.
+
+# Errori del programmatore
+
+-   Si tratta di un errore logico del programma.
+-   Un programma «perfetto» non dovrebbe mai avere errori logici.
+-   Se si ha l'evidenza che è avvenuto un errore logico, sarebbe meglio segnalarlo **nel modo più rumoroso possibile**.
+
+# Esempio
+
+```python
+my_list = [5, 3, 8, 4, 1, 9]
+sorted = my_sort_function(my_list)
+
+if not (len(my_list) == len(sorted)):
+    print("Error, mismatch in the length of the sorted list")
+    
+if not (sorted[0] <= sorted[1]):
+    print("Error, the array is not sorted")
+
+# The program continues
+...
+```
+
+# Esempio migliorato
+
+```python
+my_list = [5, 3, 8, 4, 1, 9]
+sorted = my_sort_function(my_list)
+
+# If any "assert", the program will crash and will print details
+# about what the code was doing. If PDB support is turned on,
+# a debugger will be fired automatically.
+assert len(my_list) == len(sorted)
+assert sorted[0] <= sorted[1]
+
+# The program continues
+...
+```
+
+# Gestione errori del programmatore
+
+-   Tutti i linguaggi implementano funzioni che consentono di mandare in crash un programma (es., `assert` e `abort` in C/C++).
+-   Queste istruzioni solitamente stampano a video una serie di dettagli sulla causa dell'errore, e sono pensate per essere usate insieme a un debugger.
+-   Eseguire un debugger è sensato: se l'errore è logico, è il programmatore che deve mettere mano al codice, non l'utente!
+-   Attenzione al fatto che alcune di queste funzioni potrebbero non essere compilate in modalità *release* (es., [`assert`](https://nim-lang.org/docs/assertions.html#assert.t,untyped,string) vs [`doAssert`](https://nim-lang.org/docs/assertions.html#doAssert.t%2Cuntyped%2Cstring) in Nim).
+
+# Errori dell'utente
+
+-   Sono errori causati da un input o un contesto sbagliato, e non per colpa di un errore nel programma:
+    -   L'utente chiede di leggere un file che non esiste;
+    -   L'utente chiede di scrivere un file su un supporto che non ha più spazio libero;
+    -   L'utente specifica un input scorretto;
+    -   L'utente chiede di usare una periferica (stampante?) non connessa al computer oppure spenta.
+-   Vanno gestiti solitamente in modo molto diverso dagli errori del programmatore!
+
+# Esempio
+
+<asciinema-player src="./cast/user-error-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
+
+# Gestire errori dell'utente
+
+-   Gli errori dell'utente sono **inevitabili**.
+-   Se si ha evidenza che l'utente ha commesso un errore, ci sono diversi modi di reagire:
+    1.  Stampare un messaggio di errore, il più chiaro possibile;
+    2.  Chiedere all'utente di inserire di nuovo il dato scorretto;
+    3.  In certi contesti il codice può decidere autonomamente come correggere l'errore.
+    
+        Ad esempio, se si chiede un valore numerico entro un certo intervallo $[a, b]$ e il valore fornito è $x > b$, si può porre $x = b$ e continuare.
+
+# Correzione errori (1/2)
+
+```python
+x = float(input("Insert a number: "))
+y = float(input("Insert another number: "))
+if y != 0.0:
+    print(f"The ratio {x} / {y} is {x / y}")
+else:
+    print("Error, the second number cannot be zero!")
+```
+
+# Correzione errori (2/2)
+
+```python
+x = float(input("Insert a number: "))
+
+while True:
+    y = float(input("Insert another number: "))
+    if y == 0.0:
+        print("Error, the second number cannot be zero!")
+    else:
+        break
+        
+print(f"The ratio {x} / {y} is {x / y}")
+```
+
+# Programma corretto
+
+<asciinema-player src="./cast/user-error-corrected-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
+
+# Messaggi d'errore
+
+-   Gli studenti hanno spesso la tendenza a stampare messaggi di errore.
+
+-   Esempio (sbagliato) preso da un tema d'esame TNDS:
+
+    ```c++
+    double Bisezione::CercaZeri(double a, double b) {
+        if(f->Eval(a) * f->Eval(b) >= 0) {
+            cout << "Errore, teorema degli zeri non soddisfatto\n";
+        } else {
+            // Etc.
+        }
+    }
+    ```
+
+    Non c'è un `return` in corrispondenza dell'`if`, e l'esercizio chiedeva di calcolare lo zero di una funzione in un intervallo in cui lo zero **doveva esserci**. Se il teorema degli zeri non è soddisfatto, vuol dire che c'è un errore in `a` oppure `b`.
+
+# Visibilità dei messaggi di errore
+
+-   Se una funzione stampa un messaggio quando capita un errore, è molto probabile che quel messaggio si perda all'interno dell'output:
+
+    ```text
+    $ python3 my-beautiful-program.py
+    Initializing the program...
+    Now I am reading data from the device
+    The device has sent 163421 samples
+    Computing statistics on the samples
+    Error, some samples are negative
+    Sorting the samples
+    Running a Monte Carlo simulations, please wait...
+    Done, time elapsed: 164.96 seconds
+    Producing the plots...
+    Done, the results are saved in "output.pdf"
+    $
+    ```
+    
+-   Meglio rendere l'errore più visibile, ad esempio con i colori, oppure (meglio!) fermare del tutto l'esecuzione del programma appena l'errore si verifica.
+
+# Errori dell'utente nelle funzioni
+
+-   È solitamente molto semplice come gestire gli errori dell'utente nel `main` di un programma.
+-   È invece meno chiaro come gestire gli errori nell'input passato a una funzione o un metodo, come ad esempio `Bisezione::CercaZeri` (gli estremi erano un input dell'utente, o erano stati calcolati automaticamente dal programma?).
+-   Nessuna funzione o metodo dovrebbe **mai** fare qualcosa di catastrofico (mandare in crash il programma) o **visibile** (stampare un messaggio d'errore a video).
+-   La **regola aurea** è che la funzione restituisca un valore di ritorno che segnali l'errore, oppure che sollevi un'eccezione.
+
+# Restituire un errore
+
+-   Se un linguaggio permette di restituire valori multipli, potete usare questa sintassi (molto usata in [Go](https://blog.golang.org/error-handling-and-go)):
+
+    ```python
+    (result, error_condition) = my_function(...)
+    
+    if error_condition:
+        # Handle the error: print a message, crash the program, etc.
+        ...
+    ```
+
+-   Linguaggi come Nim e Rust implementano tipi dedicati: [`Result`](https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html) in Rust, 
+
+-   Potete impiegare le eccezioni, se il vostro linguaggio le supporta:
+
+    ```python
+    def my_function(...):
+        if something_wrong:
+            raise Exception("Error!")
+    ```
+
+# Parametri d'errore
+
+In linguaggi come il C/C++, un approccio molto usato è quello di accettare un parametro addizionale che segnali l'errore:
+
+```c++
+double my_function(..., bool & error) {
+    if (something_wrong) {
+        error = true;
+        return 0.0;
+    }
+
+    // ...
+
+    error = false;
+    return result;
+}
+```
+
+Al posto di un `bool` potete usare una `enum class` per registrare il tipo di errore, o addirittura una `struct` per racchiudere informazioni complesse.
+
+# Tipi *nullable*
+
+Linguaggi come C\# e Kotlin definiscono il tipo *nullable*, che può essere usato con qualsiasi tipo, e ne indica l'*assenza*:
+
+```csharp
+// C# example
+
+// Note the "?" after "double": this is the same syntax as in Kotlin
+double? result = my_function(...);
+
+if (! result.HasValue)
+{
+    // Something wrong happened, my_function didn't compute the result
+}
+```

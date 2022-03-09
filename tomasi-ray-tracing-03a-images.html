@@ -111,173 +111,8 @@
   <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="immagini-hdr-e-ldr" class="slide level1">
-<h1>Immagini HDR e LDR</h1>
-</section>
-<section id="da-rgb-a-srgb" class="slide level1">
-<h1>Da RGB a sRGB</h1>
-<ul>
-<li><p>Nella scorsa lezione abbiamo visto che l’equazione del rendering si riscrive naturalmente nelle componenti di colore R, G e B.</p></li>
-<li><p>I dispositivi di visualizzazione (monitor, schermi di tablet, televisori) richiedono però l’uso di sRGB, che ha i seguenti limiti:</p>
-<ul>
-<li>Le componenti R, G e B sono numeri interi in un intervallo limitato;</li>
-<li>La risposta dei dispositivi non è lineare.</li>
-</ul></li>
-<li><p>Il <em>tone mapping</em> è il processo attraverso cui si converte un’immagine RGB in un’immagine sRGB, dove per <em>immagine</em> si intende una matrice di colori RGB.</p></li>
-</ul>
-</section>
-<section id="obbiettivo-del-corso" class="slide level1">
-<h1>Obbiettivo del corso</h1>
-<p><img data-src="pd-images/efb75bb8bf876b0141713bed8c2a0501fc00e1cc.svg" data-im_fname="course-workflow" /></p>
-</section>
-<section id="formati-grafici" class="slide level1">
-<h1>Formati grafici</h1>
-<ul>
-<li><p>Nella prossima esercitazione inizieremo la nostra implementazione dal fondo, ossia il salvataggio dell’immagine.</p></li>
-<li><p>A seconda del tipo di immagine (foto, grafico, disegno a mano libera), il formato del salvataggio cambia.</p></li>
-<li><p>Un’immagine fotorealistica dovrebbe essere indistinguibile da quella prodotta da una fotocamera.</p></li>
-<li><p>In che modo una fotocamera registra in un file un’immagine?</p></li>
-</ul>
-</section>
-<section id="salvataggio-di-immagini" class="slide level1">
-<h1>Salvataggio di immagini</h1>
-<ul>
-<li><p>Esistono due famiglie di file grafici:</p>
-<ul>
-<li>Grafica vettoriale: SVG, PDF, EPS, AI…</li>
-<li>Grafica raster (matriciale): JPEG, PNG, GIF, RAW…</li>
-</ul></li>
-<li><p>I file <strong>vettoriali</strong> contengono istruzioni per disegnare un’immagine:</p>
-<pre class="text"><code>- cerchio centrato in (3.5, 2.6) con raggio 1.5 di colore nero
-- linea da (1.1, 1.7) a (3.7, 7.4) di colore nero con spessore 2
-- etc.</code></pre></li>
-<li><p>I file <strong>raster</strong> salvano una matrice di colori, e sono quelli che ci interessano per questo corso, perché sono i file salvati dalle fotocamere.</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/difference-between-raster-and-vector-image.png" />
-</center>
-</section>
-<section id="grafica-vettoriale" class="slide level1">
-<h1>Grafica vettoriale</h1>
-<center>
-<img data-src="./media/Carnot-cycle-p-V-diagram.svg" />
-</center>
-</section>
-<section id="grafica-raster" class="slide level1">
-<h1>Grafica raster</h1>
-<center>
-<img data-src="./media/gilles_tran.jpg" />
-</center>
-</section>
-<section id="tipi-di-immagini-raster" class="slide level1">
-<h1>Tipi di immagini raster</h1>
-<p>Ci sono due categorie di immagini raster che sono rilevanti per questo corso:</p>
-<dl>
-<dt>Immagini LDR (Low-Dynamic Range)</dt>
-<dd>Codificano i colori usando il sistema sRGB: le tre componenti R, G, B sono quindi numeri interi, solitamente nell’intervallo 0–255. Tutti i formati grafici più diffusi (JPEG, PNG, GIF, etc.) appartengono a questo tipo.
-</dd>
-<dt>Immagini HDR (High-Dynamic Range)</dt>
-<dd>Codificano i colori usando il sistema RGB o sRGB, ma le tre componenti R, G, B sono numeri floating-point e coprono quindi un grande intervallo dinamico; per visualizzarle occorre quindi applicare il <em>tone mapping</em>. Esempi di questo formato sono OpenEXR e PFM.
-</dd>
-</dl>
-</section>
-<section id="codifica-di-immagini-raster" class="slide level1">
-<h1>Codifica di immagini raster</h1>
-<ul>
-<li><p>Sia le immagini LDR che HDR sono codificate tramite una matrice di colori; ogni colore è solitamente una terna (R, G, B).</p></li>
-<li><p>Il file ha solitamente questo contenuto:</p>
-<dl>
-<dt>Header</dt>
-<dd>Specifica il formato dell’immagine, le dimensioni della matrice, e a volte anche altri parametri utili (es., la data e l’ora dello scatto, le coordinate del GPS, il valore di <span class="math inline">\gamma</span> del dispositivo che ha catturato l’immagine, etc.).
-</dd>
-<dt>Matrice dei colori</dt>
-<dd>L’ordine in cui sono salvate le righe/colonne, e anche l’ordine in cui sono salvate le componenti R, G, B (RGB/BGR) varia a seconda del formato.
-</dd>
-</dl></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/image-save-order.svg" />
-</center>
-</section>
-<section id="esempio-il-formato-ppm" class="slide level1">
-<h1>Esempio: il formato PPM</h1>
-<ul>
-<li><p>Formato LDR, molto diffuso sui sistemi Unix.</p></li>
-<li><p>Potete leggerlo e scriverlo usando <a href="http://netpbm.sourceforge.net/">NetPBM</a> o <a href="https://imagemagick.org/index.php">ImageMagick</a>. Il secondo è il più diffuso, e può essere installato con</p>
-<pre class="text"><code>$ sudo apt install imagemagick</code></pre>
-<p>Potete convertire immagini col comando</p>
-<pre class="text"><code>$ convert input.png output_p6.ppm                  # Formato P6
-$ convert input.jpg -compress none output_p3.ppm   # Formato P3</code></pre></li>
-<li><p>PPM è un formato pensato per essere scritto e letto facilmente.</p></li>
-</ul>
-</section>
-<section id="file-ppm-p3" class="slide level1">
-<h1>File PPM (P3)</h1>
-<ul>
-<li><p>Un file PPM è un file di testo, apribile con qualsiasi editor.</p></li>
-<li><p><strong>Header</strong>:</p>
-<ol type="1">
-<li>I due caratteri <code>P3</code>;</li>
-<li>Numero di colonne e di righe, in formato testo e separate da uno spazio;</li>
-<li>Valore massimo per ciascuna delle componenti R, G, B (solitamente 255).</li>
-</ol></li>
-<li><p><strong>Matrice dei colori</strong>: le terne R, G, B devono essere riportate come numeri interi partendo dall’angolo in alto a sinistra a quello in basso a destra, procedendo riga per riga.</p></li>
-</ul>
-</section>
-<section id="esempio-p3" class="slide level1">
-<h1>Esempio (P3)</h1>
-<pre class="text"><code>P3
-3 2
-255
-255   0   0
-  0 255   0
-  0   0 255
-255 255   0
-255 255 255
-  0   0   0</code></pre>
-<center>
-<img data-src="./media/tiny-image-6pixels.png" />
-</center>
-</section>
-<section id="file-ppm-p6" class="slide level1">
-<h1>File PPM (P6)</h1>
-<ul>
-<li><p>Oltre al tipo <code>P3</code> esiste anche il file di tipo <code>P6</code>.</p></li>
-<li><p>La differenza sta nel modo in cui le terne R, G, B sono salvate: invece di scrivere numeri in codifica testuale, vengono scritti in binario.</p></li>
-<li><p>Vedremo dopo questa differenza, che sarà però fondamentale per l’esercitazione di questa settimana.</p></li>
-</ul>
-</section>
-<section id="file-pfm" class="slide level1">
-<h1>File PFM</h1>
-<ul>
-<li><p>È un tipo di file che si ispira a PPM, ma è un formato HDR</p></li>
-<li><p><strong>Molto</strong> importante per questo corso!</p></li>
-<li><p>Non è così ben supportato: sotto Ubuntu esiste solo <code>pftools</code>, che si installa con</p>
-<pre class="text"><code>$ sudo apt install pftools</code></pre></li>
-<li><p>Noi scriveremo i nostri tool che permetteranno di convertire file PFM in PPM.</p></li>
-</ul>
-</section>
-<section id="struttura-di-un-file-pfm" class="slide level1">
-<h1>Struttura di un file PFM</h1>
-<ul>
-<li><p>Come i file PPM in formato P6, anche i file PFM sono parzialmente di testo e parzialmente binari.</p></li>
-<li><p><strong>Header</strong>:</p>
-<ol type="1">
-<li>I due caratteri <code>PF</code>, più il carattere <code>0x0a</code> (ritorno a capo);</li>
-<li><code>ncol nrows</code> (colonne e righe), seguito da ritorno a capo <code>0x0a</code>;</li>
-<li>Il valore <code>-1.0</code>, seguito da <code>0x0a</code>.</li>
-</ol></li>
-<li><p><strong>Matrice dei colori</strong>: le terne R, G, B devono essere scritte come sequenze di numeri a 32 bit (quindi <strong>non</strong> testo!), da sinistra a destra e dal <strong>basso all’alto</strong> (diverso da PPM!).</p></li>
-</ul>
-</section>
-<section id="codifica-testuale-e-binaria" class="slide level1">
-<h1>Codifica testuale e binaria</h1>
+<section id="codifica-binaria-e-testuale" class="slide level1">
+<h1>Codifica binaria e testuale</h1>
 </section>
 <section id="codifica-binaria" class="slide level1">
 <h1>Codifica binaria</h1>
@@ -304,31 +139,22 @@ $ convert input.jpg -compress none output_p3.ppm   # Formato P3</code></pre></li
 <p><span class="math display">
 \text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times B^3.
 </span></p>
-<p>Quindi il valore binario <code>101</code> corrisponde a <span class="math inline">1 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 5.</span></p></li>
-</ul>
-</section>
-<section id="notazione-ottale" class="slide level1">
-<h1>Notazione ottale</h1>
-<ul>
-<li><p>La notazione binaria è comoda per una CPU ma scomoda per noi!</p></li>
-<li><p>Una base più comoda è quella ottale (8).</p></li>
-<li><p>In C/C++, le cifre ottali si scrivono facendole precedere da <code>0</code>.</p></li>
-<li><p>Siccome <span class="math inline">8 = 2^3</span>, una cifra ottale corrisponde a 3 cifre binarie. Basta imparare a memoria l’associazione binario-ottale per i numeri da 0 a 7 per saper convertire ogni altro valore:</p>
-<pre><code>03  -&gt; 011
-06  -&gt; 110
-036 -&gt; 011 110</code></pre>
-<p>La conversione inversa è ugualmente semplice.</p></li>
+<p>Quindi il valore binario <code>100</code> corrisponde a <span class="math inline">0 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 4.</span></p></li>
 </ul>
 </section>
 <section id="notazione-esadecimale" class="slide level1">
 <h1>Notazione esadecimale</h1>
 <ul>
-<li><p>La notazione ottale è però scomoda, perché i computer lavorano a multipli di 8 bit (i byte), mentre la notazione ottale usa 3 bit per cifra.</p></li>
-<li><p>Oggi la notazione ottale è quasi completamente abbandonata in favore della notazione esadecimale (16), che usa le cifre</p>
+<li><p>La notazione binaria è però scomoda, perché i numeri richiedono rapidamente molte cifre; inoltre i computer lavorano a multipli di 8 bit (i byte).</p></li>
+<li><p>In alternativa alla notazione binaria si usa molto la notazione esadecimale (16), che usa le cifre</p>
 <pre><code>0 1 2 3 4 5 6 7 8 9 A B C D E F</code></pre></li>
 <li><p>La notazione esadecimale richiede 4 bit per cifra, perché <span class="math inline">2^4 = 16</span>. Siccome un byte è composto da 8 bit, il valore di un byte è sempre codificabile usando solo due cifre esadecimali (<code>0xFF = 255</code>).</p></li>
-<li><p>In C/C++/Julia/C#, i numeri esadecimali si scrivono facendoli iniziare con <code>0x</code>, ad es. <code>0x1F67 = 8039</code>.</p></li>
+<li><p>In C/C++/D/Nim/Rust/Julia/C#/Kotlin, i numeri esadecimali si scrivono con <code>0x</code>, ad es. <code>0x1F67 = 8039</code> (in alcuni linguaggi <code>0b</code> introduce un numero binario).</p></li>
 </ul>
+</section>
+<section class="slide level1">
+
+<p><asciinema-player src="./cast/binary-files-73x19.cast" cols="73" rows="19" font-size="medium"></asciinema-player></p>
 </section>
 <section id="ordine-dei-bit-in-un-byte" class="slide level1">
 <h1>Ordine dei bit in un byte</h1>
@@ -354,32 +180,44 @@ $ convert input.jpg -compress none output_p3.ppm   # Formato P3</code></pre></li
 <li><p>Le CPU Intel e AMD oggi usate nei personal computer usano tutte la codifica <em>little-endian</em>. La codifica <em>big-endian</em> è stata molto usata in passato, ma oggi è ancora impiegata in alcune CPU ARM.</p></li>
 </ul>
 </section>
+<section id="usare-più-di-8-bit" class="slide level1">
+<h1>Usare più di 8 bit</h1>
+<ul>
+<li><p>Un numero a 8 bit può assumere valori da 0 a 255</p></li>
+<li><p>È un intervallo molto ridotto! Ma si possono combinare insieme più bytes</p></li>
+<li><p>In C++ esistono i tipi <code>int16_t</code> (16 bit → 2 byte), <code>int32_t</code> (32 bit → 4 byte), <code>int64_t</code> (64 bit → 8 byte)</p></li>
+<li><p>Ma se si combinano insieme più byte, c’è di nuovo il problema della <em>endianness</em>! Il numero esadecimale 1F3D si codifica con la coppia di byte <code>1F 3D</code> (<em>big endian</em>) oppure <code>3D 1F</code> (<em>little endian</em>)?</p></li>
+<li><p>Oltre alla <em>bit endianness</em>, c’è il problema del <em>byte endianness</em>!</p></li>
+</ul>
+</section>
 <section id="salvare-dati-in-binario" class="slide level1">
 <h1>Salvare dati in binario</h1>
 <ul>
-<li><p>Salvare una variabile in forma binaria non è in generale semplice!</p></li>
-<li><p>In C++ ad esempio, il programma seguente <em>non</em> salva il valore di <code>x</code> in binario:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fstream&gt;</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> x<span class="op">{</span><span class="dv">138</span><span class="op">};</span>  <span class="co">// 138 &lt; 256, so the value fits in *one* byte</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>ofstream<span class="op"> </span>outf<span class="op">{</span><span class="st">&quot;file.bin&quot;</span><span class="op">};</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  outf <span class="op">&lt;&lt;</span> x<span class="op">;</span> <span class="co">// Ouch! It writes *three* bytes: &#39;1&#39;, &#39;3&#39;, &#39;8&#39;</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>Il valore <code>138</code> è stato salvato in <em>forma testuale</em>. (Se includete <code>&lt;cstdint&gt;</code> e cambiate il tipo di <code>x</code> da <code>int</code> a <code>uint8_t</code>, il valore viene salvato come binario!)</p></li>
-<li><p>Vediamo in cosa consiste la codifica testuale.</p></li>
+<li><p>Oltre al problema della <em>endianness</em>, bisogna anche capire come il proprio linguaggio gestisce i file binari. Guardate questo esempio in C++:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fstream&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> x<span class="op">{</span><span class="dv">138</span><span class="op">};</span>  <span class="co">// 138 &lt; 256, so the value fits in *one* byte</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>ofstream<span class="op"> </span>outf<span class="op">{</span><span class="st">&quot;file.bin&quot;</span><span class="op">};</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  outf <span class="op">&lt;&lt;</span> x<span class="op">;</span> <span class="co">// Ouch! It writes *three* bytes: &#39;1&#39;, &#39;3&#39;, &#39;8&#39;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<li><p>Il valore <code>138</code> è stato salvato in <em>forma testuale</em>.</p></li>
+<li><p>Se invece includete <code>&lt;cstdint&gt;</code> e cambiate il tipo di <code>x</code> da <code>int</code> a <code>uint8_t</code>, il valore viene salvato come binario!</p></li>
 </ul>
 </section>
 <section id="codifica-testuale" class="slide level1">
 <h1>Codifica testuale</h1>
+</section>
+<section id="codifica-testuale-1" class="slide level1">
+<h1>Codifica testuale</h1>
 <ul>
-<li><p>I caratteri del computer vengono codificati tramite dei valori precisi; le lettere dell’alfabeto latino, le cifre romane e la punteggiatura di base usano la codifica ASCII:</p>
+<li><p>I caratteri del computer vengono codificati tramite numeri; la più usata è la codifica ASCII:</p>
 <ul>
 <li>La lettera <code>A</code> è codificata dal numero 65, <code>B</code> da 66, <code>C</code> da 67, etc.;</li>
 <li>La lettera <code>a</code> è codificata dal numero 97, <code>b</code> da 98, etc.;</li>
 <li>La cifra <code>0</code> è codificata dal numero 48, <code>1</code> da 49, etc.</li>
 </ul></li>
-<li><p>Codificare una parola come <code>Casa</code> vuol dire rappresentare la parola con la sequenza di valori <code>67 97 115 97</code>.</p></li>
+<li><p>Codificare una parola come <code>Casa</code> vuol dire rappresentare la parola con la sequenza di valori <code>67 97 115 97 = 0x43 0x61 0x73 0x61</code>.</p></li>
 <li><p>Questi codici numerici fanno parte dello standard ASCII, che specifica 128 caratteri. (<a href="https://garbagecollected.org/2017/01/31/four-column-ascii/">Qui c’è la tabella completa</a>, spiegata bene).</p></li>
 </ul>
 </section>
@@ -390,14 +228,15 @@ $ convert input.jpg -compress none output_p3.ppm   # Formato P3</code></pre></li
 <pre class="text"><code>Beauty - be not caused - It Is -
 Chase it, and it ceases -
 Chase it not, and it abides -
+
 Overtake the Creases
 
 In the Meadow - when the Wind
-Runs his fingers thro’ it -
+Runs his fingers thro&#39; it -
 Deity will see to it
 That You never do it -
 
-(Emily Dickinson)</code></pre></li>
+(Emily Dickinson, 1863)</code></pre></li>
 <li><p>Ma come si codifica la fine della riga in ogni verso della poesia?</p></li>
 <li><p>In 128 valori è possibile codificare <em>tutti</em> i caratteri?</p></li>
 </ul>
@@ -641,6 +480,222 @@ That You never do it -
 </ul></li>
 <li><p>Questa settimana e la prossima lavoreremo su file binari; tra alcune settimane passeremo ai file testuali per leggere i file di input del nostro programma.</p></li>
 </ul>
+</section>
+<section id="gestione-degli-errori" class="slide level1">
+<h1>Gestione degli errori</h1>
+</section>
+<section id="errori" class="slide level1">
+<h1>Errori</h1>
+<ul>
+<li>Nella scorsa esercitazione abbiamo implementato il tipo <code>HdrImage</code>.</li>
+<li>Questa settimana implementeremo le funzioni per scrivere e leggere file PFM.</li>
+<li>Legge e scrivere file è un’attività che è facilmente soggetta ad errori:
+<ul>
+<li>La directory in cui salvare il file non esiste, oppure è protetta da scrittura</li>
+<li>Il file specificato dall’utente non esiste</li>
+<li>Il file è danneggiato</li>
+<li>Il file è in un formato valido ma che il nostro codice non è in grado di caricare (es., un file è codificato in <em>big endian</em>, ma noi abbiamo previsto solo <em>little endian</em>)</li>
+</ul></li>
+</ul>
+</section>
+<section id="tipi-di-errore" class="slide level1">
+<h1>Tipi di errore</h1>
+<ul>
+<li><p>Gli errori possono essere suddivisi in due classi:</p>
+<ul>
+<li>Errori di pertinenza del programmatore</li>
+<li>Errori di pertinenza dell’utente</li>
+</ul></li>
+<li><p>A seconda del tipo di errore in cui vi imbattete, la sua gestione è diversa.</p></li>
+</ul>
+</section>
+<section id="errori-del-programmatore" class="slide level1">
+<h1>Errori del programmatore</h1>
+<ul>
+<li>Si tratta di un errore logico del programma.</li>
+<li>Un programma «perfetto» non dovrebbe mai avere errori logici.</li>
+<li>Se si ha l’evidenza che è avvenuto un errore logico, sarebbe meglio segnalarlo <strong>nel modo più rumoroso possibile</strong>.</li>
+</ul>
+</section>
+<section id="esempio" class="slide level1">
+<h1>Esempio</h1>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>my_list <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">9</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">sorted</span> <span class="op">=</span> my_sort_function(my_list)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> (<span class="bu">len</span>(my_list) <span class="op">==</span> <span class="bu">len</span>(<span class="bu">sorted</span>)):</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Error, mismatch in the length of the sorted list&quot;</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> (<span class="bu">sorted</span>[<span class="dv">0</span>] <span class="op">&lt;=</span> <span class="bu">sorted</span>[<span class="dv">1</span>]):</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Error, the array is not sorted&quot;</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># The program continues</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div>
+</section>
+<section id="esempio-migliorato" class="slide level1">
+<h1>Esempio migliorato</h1>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>my_list <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">9</span>]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">sorted</span> <span class="op">=</span> my_sort_function(my_list)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># If any &quot;assert&quot;, the program will crash and will print details</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># about what the code was doing. If PDB support is turned on,</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># a debugger will be fired automatically.</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(my_list) <span class="op">==</span> <span class="bu">len</span>(<span class="bu">sorted</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">sorted</span>[<span class="dv">0</span>] <span class="op">&lt;=</span> <span class="bu">sorted</span>[<span class="dv">1</span>]</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># The program continues</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div>
+</section>
+<section id="gestione-errori-del-programmatore" class="slide level1">
+<h1>Gestione errori del programmatore</h1>
+<ul>
+<li>Tutti i linguaggi implementano funzioni che consentono di mandare in crash un programma (es., <code>assert</code> e <code>abort</code> in C/C++).</li>
+<li>Queste istruzioni solitamente stampano a video una serie di dettagli sulla causa dell’errore, e sono pensate per essere usate insieme a un debugger.</li>
+<li>Eseguire un debugger è sensato: se l’errore è logico, è il programmatore che deve mettere mano al codice, non l’utente!</li>
+<li>Attenzione al fatto che alcune di queste funzioni potrebbero non essere compilate in modalità <em>release</em> (es., <a href="https://nim-lang.org/docs/assertions.html#assert.t,untyped,string"><code>assert</code></a> vs <a href="https://nim-lang.org/docs/assertions.html#doAssert.t%2Cuntyped%2Cstring"><code>doAssert</code></a> in Nim).</li>
+</ul>
+</section>
+<section id="errori-dellutente" class="slide level1">
+<h1>Errori dell’utente</h1>
+<ul>
+<li>Sono errori causati da un input o un contesto sbagliato, e non per colpa di un errore nel programma:
+<ul>
+<li>L’utente chiede di leggere un file che non esiste;</li>
+<li>L’utente chiede di scrivere un file su un supporto che non ha più spazio libero;</li>
+<li>L’utente specifica un input scorretto;</li>
+<li>L’utente chiede di usare una periferica (stampante?) non connessa al computer oppure spenta.</li>
+</ul></li>
+<li>Vanno gestiti solitamente in modo molto diverso dagli errori del programmatore!</li>
+</ul>
+</section>
+<section id="esempio-1" class="slide level1">
+<h1>Esempio</h1>
+<p><asciinema-player src="./cast/user-error-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player></p>
+</section>
+<section id="gestire-errori-dellutente" class="slide level1">
+<h1>Gestire errori dell’utente</h1>
+<ul>
+<li>Gli errori dell’utente sono <strong>inevitabili</strong>.</li>
+<li>Se si ha evidenza che l’utente ha commesso un errore, ci sono diversi modi di reagire:
+<ol type="1">
+<li><p>Stampare un messaggio di errore, il più chiaro possibile;</p></li>
+<li><p>Chiedere all’utente di inserire di nuovo il dato scorretto;</p></li>
+<li><p>In certi contesti il codice può decidere autonomamente come correggere l’errore.</p>
+<p>Ad esempio, se si chiede un valore numerico entro un certo intervallo <span class="math inline">[a, b]</span> e il valore fornito è <span class="math inline">x &gt; b</span>, si può porre <span class="math inline">x = b</span> e continuare.</p></li>
+</ol></li>
+</ul>
+</section>
+<section id="correzione-errori-12" class="slide level1">
+<h1>Correzione errori (1/2)</h1>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert another number: &quot;</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> y <span class="op">!=</span> <span class="fl">0.0</span>:</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;The ratio </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Error, the second number cannot be zero!&quot;</span>)</span></code></pre></div>
+</section>
+<section id="correzione-errori-22" class="slide level1">
+<h1>Correzione errori (2/2)</h1>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert another number: &quot;</span>))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> y <span class="op">==</span> <span class="fl">0.0</span>:</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error, the second number cannot be zero!&quot;</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;The ratio </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+</section>
+<section id="programma-corretto" class="slide level1">
+<h1>Programma corretto</h1>
+<p><asciinema-player src="./cast/user-error-corrected-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player></p>
+</section>
+<section id="messaggi-derrore" class="slide level1">
+<h1>Messaggi d’errore</h1>
+<ul>
+<li><p>Gli studenti hanno spesso la tendenza a stampare messaggi di errore.</p></li>
+<li><p>Esempio (sbagliato) preso da un tema d’esame TNDS:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> Bisezione<span class="op">::</span>CercaZeri<span class="op">(</span><span class="dt">double</span> a<span class="op">,</span> <span class="dt">double</span> b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>f<span class="op">-&gt;</span>Eval<span class="op">(</span>a<span class="op">)</span> <span class="op">*</span> f<span class="op">-&gt;</span>Eval<span class="op">(</span>b<span class="op">)</span> <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        cout <span class="op">&lt;&lt;</span> <span class="st">&quot;Errore, teorema degli zeri non soddisfatto</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Etc.</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Non c’è un <code>return</code> in corrispondenza dell’<code>if</code>, e l’esercizio chiedeva di calcolare lo zero di una funzione in un intervallo in cui lo zero <strong>doveva esserci</strong>. Se il teorema degli zeri non è soddisfatto, vuol dire che c’è un errore in <code>a</code> oppure <code>b</code>.</p></li>
+</ul>
+</section>
+<section id="visibilità-dei-messaggi-di-errore" class="slide level1">
+<h1>Visibilità dei messaggi di errore</h1>
+<ul>
+<li><p>Se una funzione stampa un messaggio quando capita un errore, è molto probabile che quel messaggio si perda all’interno dell’output:</p>
+<pre class="text"><code>$ python3 my-beautiful-program.py
+Initializing the program...
+Now I am reading data from the device
+The device has sent 163421 samples
+Computing statistics on the samples
+Error, some samples are negative
+Sorting the samples
+Running a Monte Carlo simulations, please wait...
+Done, time elapsed: 164.96 seconds
+Producing the plots...
+Done, the results are saved in &quot;output.pdf&quot;
+$</code></pre></li>
+<li><p>Meglio rendere l’errore più visibile, ad esempio con i colori, oppure (meglio!) fermare del tutto l’esecuzione del programma appena l’errore si verifica.</p></li>
+</ul>
+</section>
+<section id="errori-dellutente-nelle-funzioni" class="slide level1">
+<h1>Errori dell’utente nelle funzioni</h1>
+<ul>
+<li>È solitamente molto semplice come gestire gli errori dell’utente nel <code>main</code> di un programma.</li>
+<li>È invece meno chiaro come gestire gli errori nell’input passato a una funzione o un metodo, come ad esempio <code>Bisezione::CercaZeri</code> (gli estremi erano un input dell’utente, o erano stati calcolati automaticamente dal programma?).</li>
+<li>Nessuna funzione o metodo dovrebbe <strong>mai</strong> fare qualcosa di catastrofico (mandare in crash il programma) o <strong>visibile</strong> (stampare un messaggio d’errore a video).</li>
+<li>La <strong>regola aurea</strong> è che la funzione restituisca un valore di ritorno che segnali l’errore, oppure che sollevi un’eccezione.</li>
+</ul>
+</section>
+<section id="restituire-un-errore" class="slide level1">
+<h1>Restituire un errore</h1>
+<ul>
+<li><p>Se un linguaggio permette di restituire valori multipli, potete usare questa sintassi (molto usata in <a href="https://blog.golang.org/error-handling-and-go">Go</a>):</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(result, error_condition) <span class="op">=</span> my_function(...)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> error_condition:</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Handle the error: print a message, crash the program, etc.</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    ...</span></code></pre></div></li>
+<li><p>Potete impiegare le eccezioni, se il vostro linguaggio le supporta:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> my_function(...):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> something_wrong:</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">&quot;Error!&quot;</span>)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="parametri-derrore" class="slide level1">
+<h1>Parametri d’errore</h1>
+<p>In linguaggi come il C/C++, un approccio molto usato è quello di accettare un parametro addizionale che segnali l’errore:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> my_function<span class="op">(...,</span> <span class="dt">bool</span> <span class="op">&amp;</span> error<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>something_wrong<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        error <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">0.0</span><span class="op">;</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    error <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Al posto di un <code>bool</code> potete usare una <code>enum class</code> per registrare il tipo di errore, o addirittura una <code>struct</code> per racchiudere informazioni complesse.</p>
+</section>
+<section id="tipi-nullable" class="slide level1">
+<h1>Tipi <em>nullable</em></h1>
+<p>Linguaggi come C# e Kotlin definiscono il tipo <em>nullable</em>, che può essere usato con qualsiasi tipo, e ne indica l’<em>assenza</em>:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">// C# example</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Note the &quot;?&quot; after &quot;double&quot;: this is the same syntax as in Kotlin</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span><span class="op">?</span> result <span class="op">=</span> <span class="fu">my_function</span><span class="op">(...);</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="op">(!</span> result<span class="op">.</span><span class="fu">HasValue</span><span class="op">)</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Something wrong happened, my_function didn&#39;t compute the result</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
     </div>
   </div>
