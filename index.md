@@ -11,6 +11,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 1b      | 2022/03/02 | [Git e GitHub](tomasi-ray-tracing-01b-github.html)                        |
 | 2a      | 2022/03/07 | [Colori](tomasi-ray-tracing-02a-colors.html)                              |
 | 2b      | 2022/03/09 | [Test automatici](tomasi-ray-tracing-02b-tests.html)                      |
+| 3a      | 2022/03/14 | [Immagini HDR](tomasi-ray-tracing-03a-images.html)                        |
 
 # Scelta del linguaggio
 
