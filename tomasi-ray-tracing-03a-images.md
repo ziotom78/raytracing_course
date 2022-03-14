@@ -131,19 +131,33 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 ---
 
+<center>
+![](media/email-wrong-encoding.png)
+</center>
+
+---
+
+<center>
 ![](media/windows-linux-newlines.png)
+</center>
 
 ---
 
+<center>
 ![](media/windows-linux-encoding-c++.png)
+</center>
 
 ---
 
+<center>
 ![](media/windows-linux-encoding-nim-console.png)
+</center>
 
 ---
 
+<center>
 ![](media/windows-linux-encoding-nim-terminal.png)
+</center>
 
 
 # Codifica testuale
