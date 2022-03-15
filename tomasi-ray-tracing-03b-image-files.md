@@ -6,33 +6,19 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Scrittura di file PFM
 
-# File PFM
-
--   La classe `HdrImage` deve essere in grado di caricare e salvare immagini PFM.
-
--   Abbiamo visto che i file PFM sono scritti in forma *binaria*, anche se includono parti di testo.
-
--   In che modo i linguaggi di programmazione che usiamo supportano l'accesso ai file?
-
--   Come distinguere tra file binari e testuali?
-
-# Accesso ai file in Python
-
-<asciinema-player src="./cast/binary-text-files-75x25.cast" cols="75" rows="25" font-size="medium"></asciinema-player>
-
-# File di testo/binari
-
--   Non è possibile in generale dire se un file è codificato in forma testuale o binaria.
--   Le estensioni dei file possono essere usate per capire il formato (ma si possono sempre prendere svarioni!).
--   Python mostra che file binari usano tipi di dati (`b"Hello, world!\n"`) diversi da quelli dei file di testo (`"Hello, world!\n"`).
--   Tutti i linguaggi (Python 3, Julia, C\#, Kotlin, etc.) supportano nativamente Unicode e gestiscono correttamente questa differenza…
--   …con l'eccezione del C++ ([è](https://stackoverflow.com/questions/31302506/stdu32string-conversion-to-from-stdstring-and-stdu16string) [una](https://stackoverflow.com/questions/17103925/how-well-is-unicode-supported-in-c11) [triste](https://stackoverflow.com/questions/2259544/is-wchar-t-needed-for-unicode-support) [storia](https://stackoverflow.com/questions/48816848/what-is-the-efficient-standards-compliant-mechanism-for-processing-unicode-usin)).
-
 # Immagini PFM
 
--   Scrivere file PFM è relativamente banale, perché hanno un [formato](http://www.pauldebevec.com/Research/HDR/PFM/) molto semplice (decisamente più semplice dei file PPM visti a lezione!)
+-   La classe `HdrImage` deve essere in grado di caricare e salvare immagini su disco.
 
--   Un file PFM deve iniziare con questi caratteri (tutti ASCII, quindi non dobbiamo preoccuparci di Unicode):
+-   Siccome `HdrImage` usa floating-point per le tre componenti di colore (rosso, verde, blu), occore un formato HDR, quindi PNG, JPEG e simili non vanno bene.
+
+-   Noi useremo il formato PFM.
+
+# Il formato PFM
+
+-   Scrivere file PFM è relativamente banale, perché hanno un [formato](http://www.pauldebevec.com/Research/HDR/PFM/) molto semplice
+
+-   Un file PFM è un file **binario**, ma inizia come se fosse un file di testo (con caratteri ASCII, quindi non dobbiamo preoccuparci di Unicode):
 
     ```text
     PF
@@ -42,7 +28,8 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
     dove `width` ed `height` sono la larghezza (numero di colonne) e l'altezza (numero di righe) dell'immagine; seguono poi i valori RGB in binario.
 
--   I ritorni a capo vanno codificati come `\n` (non c'è ambiguità Windows/DOS/Linux/etc. come per i file di testo).
+-   I ritorni a capo nelle prime tre righe vanno codificati sempre e solo come `\n`.
+
 
 # Il numero `±1.0`
 
@@ -53,11 +40,20 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     1.  Il valore `1.0` indica che si usa la codifica *big endian*;
     2.  Il valore `-1.0` indica che si usa la codifica *little endian*.
 
-# Numeri in binario
+-   In fase di scrittura potremmo scegliere uno dei due formati e non preoccuparci troppo, ma in fase di lettura dobbiamo gestirli entrambi!
 
--   Per scrivere numeri in binario, ogni linguaggio offre una serie di opzioni.
+# Floating-point in binario
 
--   In Python basta usare `import struct`:
+-   Dobbiamo però capire come salvare un floating-point in binario. In C++
+
+    ```c++
+    std::ofstream of{"file.pfm"};
+    of << 1.3;
+    ```
+    
+    stampa i caratteri «`1`», «`.`» e «`3`» (codifica testuale!).
+
+-   Ogni linguaggio ha un approccio diverso; in Python ad esempio si usa [`struct`](https://docs.python.org/3/library/struct.html):
 
     ```python
     def _write_float(stream, value):
@@ -66,6 +62,11 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
         # "f": single-precision floating point value (32 bit)
         stream.write(struct.pack("<f", value))
     ```
+
+# Accesso ai file in Python
+
+<asciinema-player src="./cast/binary-text-files-75x25.cast" cols="75" rows="25" font-size="medium"></asciinema-player>
+
 
 # API di `HdrImage`
 
@@ -138,20 +139,20 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 # Il metodo `write_pfm`
 
 ```python
-def write_pfm(self, stream):
+def write_pfm(self, stream, endianness=Endianness.LITTLE_ENDIAN):
     # The PFM header, as a Python string (UTF-8)
     header = f"PF\n{self.width} {self.height}\n-1.0\n"
 
     # Convert the header into a sequence of bytes
-    stream.write(header.encode("utf-8"))
+    stream.write(header.encode("ascii"))
 
     # Write the image (bottom-to-up, left-to-right)
     for y in reversed(range(self.height)):
         for x in range(self.width):
             color = self.get_pixel(x, y)
-            _write_float(stream, color.r)
-            _write_float(stream, color.g)
-            _write_float(stream, color.b)
+            _write_float(stream, color.r, endianness)
+            _write_float(stream, color.g, endianness)
+            _write_float(stream, color.b, endianness)
 ```
 
 # Immagine per i test
@@ -182,13 +183,12 @@ img.set_pixel(0, 1, Color(1.0e2, 2.0e2, 3.0e2)) # tests!
 img.set_pixel(1, 1, Color(4.0e2, 5.0e2, 6.0e2))
 img.set_pixel(2, 1, Color(7.0e2, 8.0e2, 9.0e2))
 
+buf = BytesIO()
+img.write_pfm(buf, endianness=Endianness.LITTLE_ENDIAN)
+
 with open("reference_le.pfm", "wb") as inpf:
     reference_bytes = inpf.readall()
 
-buf = BytesIO()
-img.write_pfm(buf)
-
-# This assumes that write_pfm uses little endian
 assert buf.getvalue() == reference_bytes
 ```
 
@@ -242,7 +242,7 @@ assert buf.getvalue() == reference_bytes
 
 -   A differenza della scrittura, la lettura presenta più difficoltà:
     -   Il file potrebbe essere in un formato errato (problemi nella copia, estensione sbagliata, etc.);
-    -   Dobbiamo essere in grado di leggere sia *little endian* che *big endian*.
+    -   Dobbiamo essere in grado di leggere sia *little endian* che *big endian*, mentre in fase di scrittura avevamo libertà di scelta.
 
 # Costruttore o funzione?
 
@@ -272,9 +272,9 @@ assert buf.getvalue() == reference_bytes
 -   Il problema di scegliere tra le due possibilità riguarda la scelta della [API](./tomasi-ray-tracing-03b-image-files.html#/api-di-hdrimage).
 
 -   La scelta dipende dal gusto personale e da altri possibili fattori:
-    1.  In linguaggi OOP come il C\#, è più naturale fornire un costruttore;
-    2.  In Nim e Rust è meglio implementare una funzione;
-    3.  In Python non è semplice fare l'overloading di costruttori, quindi nel mio codice ho usato una funzione.
+    1.  In linguaggi OOP può essere più naturale fornire un costruttore;
+    2.  In linguaggi più funzionali, come Nim e Rust, basta implementare una funzione;
+    3.  Se nel proprio linguaggio i costruttori esistono ma hanno limitazioni (es., in Python non si può fare overloading), implementate una funzione.
 
 # Stream e file
 
@@ -323,7 +323,9 @@ assert buf.getvalue() == reference_bytes
     hdrimages.cpp:33:58: error: cannot bind non-const lvalue reference of type ‘std::istream&’ {aka ‘std::basic_istream<char>&’} to an rvalue of type ‘std::basic_istream<char>’
     ```
     
--   Questo problema si ripropone anche in Kotlin e C\#, ed è dovuto alle limitazioni del cosiddetto *constructor chaining* nei linguaggi OOP (Julia viene risparmiato  semplicemente perché non è un linguaggio object-oriented, e i costruttori sono implementati come semplici funzioni).
+-   Questo problema si ripropone anche in Kotlin e C\#, ed è dovuto alle limitazioni del cosiddetto *constructor chaining* nei linguaggi OOP
+
+-   In questi casi io preferisco sempre implementare un metodo separato, oppure addirittura una funzione esterna
 
 # Risolvere il dilemma
 
@@ -344,12 +346,6 @@ public:
     }
 };
 ```
-
-# Regola d'oro della OOP
-
--   Mai, **mai** mettere codice complicato in un costruttore.
-
--   Molto meglio spostare inizializzazioni complesse in metodi privati, che vengono poi invocati corrispondentemente nel costruttore.
 
 # Il formato PFM
 
@@ -635,126 +631,19 @@ def test_pfm_read_wrong(self):
 
 # Guida per l'esercitazione
 
-1.  Implementate un costruttore `HdrImage::HdrImage` o una funzione `read_pfm_file` che legga un file PFM da uno *stream*.
-
-2.  Per implementare la lettura di file PFM, implementate le seguenti funzioni:
+1.  Implementate le seguenti funzioni:
 
     -   lettura di una sequenza di 4 byte in un floating-point a 32 bit, tenendo conto della *endianness* (`_read_float` nell'esempio Python);
     -   lettura di una sequenza di byte fino a `\n` o alla fine dello stream (`_read_line`);
     -   lettura delle dimensioni dell'immagini da una stringa (`_parse_img_size`);
     -   decodifica del tipo di *endianness* da una stringa (`_parse_endianness`).
+
+2.  Implementate una funzione/metodo che legga un file PFM da uno *stream*.
     
 3.  Implementate gli stessi test dell'esempio Python. Verificate anche che i vostri metodi segnalino correttamente gli errori.
 
-# Lavoro in gruppo
 
--   Potete dividere facilmente il lavoro tra di voi se distribuite tra voi le funzioni di base elencate nella slide precedente.
-
--   A differenza delle lezioni passate, oggi è però importante che chi implementa una funzione scriva anche i test corrispondenti di quella funzione.
-
--   Uno di voi si preoccupi anche di scrivere un `README`, e di fornire il repository di una licenza, il cui tipo (MIT, BSD, GPL, etc.) dovrete decidere insieme.
-
-# Link a Gather
-
-Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing](https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing)
-
-
-# Guida per l'esercitazione
-
-# Guida per l'esercitazione
-
-1.  Implementate il tipo `HdrImage` con le seguenti caratteristiche:
-
-    -   Campi `width` ed `height`, array di valori `Color`;
-    -   Salvataggio in formato PFM; scegliete voi se scrivere il file usando *big endian* (`1.0` nel file) o *little endian* (`-1.0`).
-
-    La dichiarazione e l'implementazione di `HdrImage` andrebbe salvata in un file a parte, nella stessa directory dove settimana scorsa avete salvato il file che implementa il tipo `Color`.
-
-2.  Implementate una serie di test per le funzioni del punto precedente.
-
-# Test (1)
-
-```python
-def test_image_creation():
-    img = HdrImage(7, 4)
-    assert img.width == 7
-    assert img.height == 4
-
-def test_coordinates():
-    img = HdrImage(7, 4)
-
-    assert img.valid_coordinates(0, 0)
-    assert img.valid_coordinates(6, 3)
-    assert not img.valid_coordinates(-1, 0)
-    assert not img.valid_coordinates(0, -1)
-
-def test_pixel_offset():
-    img = HdrImage(7, 4)
-
-    assert img.pixel_offset(0, 0) == 0
-    assert img.pixel_offset(3, 2) == 17
-    assert img.pixel_offset(6, 3) == 7 * 4 - 1
-```
-
-# Test (2)
-
-```python
-def test_get_set_pixel():
-    img = HdrImage(7, 4)
-
-    reference_color = Color(1.0, 2.0, 3.0)
-    img.set_pixel(3, 2, reference_color)
-    assert are_colors_close(reference_color, img.get_pixel(3, 2))
-
-def test_pfm_save():
-    img = HdrImage(3, 2)
-
-    img.set_pixel(0, 0, Color(1.0e1, 2.0e1, 3.0e1)) # Each component is
-    img.set_pixel(1, 0, Color(4.0e1, 5.0e1, 6.0e1)) # different from any
-    img.set_pixel(2, 0, Color(7.0e1, 8.0e1, 9.0e1)) # other: important in
-    img.set_pixel(0, 1, Color(1.0e2, 2.0e2, 3.0e2)) # tests!
-    img.set_pixel(1, 1, Color(4.0e2, 5.0e2, 6.0e2))
-    img.set_pixel(2, 1, Color(7.0e2, 8.0e2, 9.0e2))
-
-    # This is the content of "reference_le.pfm" (little-endian file)
-    reference_bytes = bytes([
-        0x50, 0x46, 0x0a, 0x33, 0x20, 0x32, 0x0a, 0x2d, 0x31, 0x2e, 0x30, 0x0a,
-        0x00, 0x00, 0xc8, 0x42, 0x00, 0x00, 0x48, 0x43, 0x00, 0x00, 0x96, 0x43,
-        0x00, 0x00, 0xc8, 0x43, 0x00, 0x00, 0xfa, 0x43, 0x00, 0x00, 0x16, 0x44,
-        0x00, 0x00, 0x2f, 0x44, 0x00, 0x00, 0x48, 0x44, 0x00, 0x00, 0x61, 0x44,
-        0x00, 0x00, 0x20, 0x41, 0x00, 0x00, 0xa0, 0x41, 0x00, 0x00, 0xf0, 0x41,
-        0x00, 0x00, 0x20, 0x42, 0x00, 0x00, 0x48, 0x42, 0x00, 0x00, 0x70, 0x42,
-        0x00, 0x00, 0x8c, 0x42, 0x00, 0x00, 0xa0, 0x42, 0x00, 0x00, 0xb4, 0x42
-    ])
-
-    buf = BytesIO()
-    img.write_pfm(buf)
-    assert buf.getvalue() == reference_bytes
-```
-
-# Lavoro in gruppo
-
--   Per iniziare il lavoro, occorre che **uno solo** di voi implementi lo scheletro del tipo `HdrImage`; basta la sua dichiarazione, ad esempio il file `.h` in C++.
-
--   Una volta fatto `git push`, prelevate in locale con `git pull`, e fate che uno di voi implementi il metodo e l'altro scriva **contemporaneamente** il test:
-
-    - `valid_coordinates` + test;
-    - `pixel_offset` + test;
-    - `get_pixel`/`set_pixel` + test;
-    - `save_pfm` + test.
-
--   Non abbiate paura di fare *merge commit*: più vi esercitate con essi, più semplice vi sarà la vita in futuro.
-
-# Linguaggi
-
--   Come le scorse volte, vi do una serie di indicazioni per l'implementazione nei vari linguaggi.
-
--   Sono presenti in ogni slide una serie di link alla documentazione del linguaggio: imparate a consultarla e a prendere familiarità col modo in cui è organizzata!
-
--   Via via che procederemo dovrete essere sempre più autonomi nel trovare soluzioni per il vostro linguaggio, e a diventare confidenti con la sua sintassi.
-
-
-# Indicazioni per C\#
+# Suggerimenti per C\#
 
 # File e stream
 
@@ -799,26 +688,31 @@ def test_pfm_save():
     
     dove `endianness_value` è un `double` che vale `1.0` oppure `-1.0`.
 
+
+# Suggerimenti per Nim
+
+# Librerie da usare
+
+-   Il codice di oggi dovrebbe essere molto semplice da implementare in Nim
+
+-   La libreria [endians](https://nim-lang.org/docs/endians.html) fornisce funzioni per convertire dati in formato *little*/*big endian*
+
+-   La libreria [streams](https://nim-lang.org/docs/streams.html) implementa il concetto di *stream* sia associato ad un file che ad una stringa in memoria
+
+
 # Suggerimenti per Rust
 
 # Uso di `enum` e `match`
 
--   Definite un `enum` che specifichi la *endianness*:
-
-    ```rust
-    enum Endianness {
-        BigEndian,
-        LittleEndian,
-    }
-    ```
+-   Per specificare la *endianness* c'è il tipo [`ByteOrder`](https://docs.rs/endianness/latest/endianness/enum.ByteOrder.html) nella crate [endianness](https://docs.rs/endianness/latest/endianness/)
     
 -   Con gli `enum` abituatevi ad usare `match` anziché `if`:
 
     ```rust
-    fn endianness_number(endianness: &Endianness) -> f32 {
+    fn endianness_number(endianness: &ByteOrder) -> f32 {
         match endianness {
-            Endianness::LittleEndian => -1.0,
-            Endianness::BigEndian => 1.0,
+            ByteOrder::LittleEndian => -1.0,
+            ByteOrder::BigEndian => 1.0,
         }
     }
     ```
@@ -846,9 +740,9 @@ def test_pfm_save():
 
 # Stream
 
--   Purtroppo il linguaggio D non supporta gli stream in maniera nativa
+-   Purtroppo la versione più recente del linguaggio D [non supporta gli stream](https://forum.dlang.org/post/mailman.797.1513034483.9493.digitalmars-d-learn@puremagic.com) in maniera nativa
 
--   Ma non è un grosso danno, perché potete usare sequenze di byte dinamiche come `ubyte[]`, o ancora meglio un [`Appender`](https://dlang.org/library/std/array/appender.html) (più efficiente)
+-   Ma non è un grosso danno, perché potete usare sequenze di byte dinamiche come `ubyte[]`; per la scrittura è ancora meglio un [`Appender`](https://dlang.org/library/std/array/appender.html) (più efficiente), oppure [`outbuffer`](https://dlang.org/phobos/std_outbuffer.html)
 
 -   Il linguaggio fornisce il tipo [Endian](https://dlang.org/library/std/system/endian.html) e la libreria [std.bitmanip](https://dlang.org/phobos/std_bitmanip.html) che fornisce la funzione template `append`:
 
@@ -860,26 +754,9 @@ def test_pfm_save():
     ```
 
 
-# Indicazioni per Kotlin
+# Suggerimenti per Kotlin
 
-# Tipo `HdrImage`
-
--   Potete crearlo con una *data class*:
-
-    ```kotlin
-    class HdrImage(val width: int, val height: int, var pixels: Array<Color>)
-    ```
-    
--   Per l'array di colori usate un tipo [`Array<Color>`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/), che è funzionalmente simile a `std::vector<Color>` in C++. Attenzione alla sintassi per inizializzarlo:
-
-    ```c++
-    // Array of 5 elements, each being black
-    val arr1 = Array<Color>(5) { Color(0.0f, 0.0f, 0.0f) }
-
-    // Array of 5 elements, with shares of red of increasing brightness
-    val arr2 = Array<Color>(5) { index -> Color(index, 0.0f, 0.0f) }
-    ```
-    
+   
 # File e stream
 
 -   Kotlin (e Java) hanno le classi [`InputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html) e [`OutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html) (in `java.io`) per rappresentare uno stream. Queste vanno bene per i prototipi di `writeFloat` e `writePfm`.
@@ -898,17 +775,21 @@ def test_pfm_save():
 
 # Scrittura di file binari
 
--   Per scrivere/leggere valori in formato binario c'è la classe [`ByteBuffer`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html) in `java.nio`:
+-   La *endianness* è identificata dal tipo [`ByteOrder`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteOrder.html) in `java.nio` (una classe Java: in Kotlin si possono usare nativamente librerie Java)
+
+-   Per scrivere/leggere valori in formato binario c'è la classe [`ByteBuffer`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html), sempre in `java.nio`:
 
     ```kotlin
-    fun writeFloatToStream(stream: OutputStream, value: Float) {
-        stream.write(ByteBuffer.allocate(4).putFloat(value).array())
+    fun writeFloatToStream(stream: OutputStream, value: Float, order: ByteOrder) {
+        val bytes = ByteBuffer.allocate(4).putFloat(value).array() // Big endian
+        
+        if (order == ByteOrder.LITTLE_ENDIAN) {
+            bytes.reverse()
+        }
+        
+        stream.write(bytes)
     }
     ```
-
--   La classe `ByteBuffer` usa sempre la codifica *big endian*: questo è una fonte in meno di ambiguità. La cosa più comoda è quindi che nel vostro codice salviate sempre `1.0` nel file PFM (anziché `-1.0`).
-
--   Usate quindi come riferimento [`reference_be.pfm`](./media/reference_be.pfm), ed evitate `reference_fe.pfm`.
 
 # Inizializzare `ByteBuffer`
 
@@ -924,7 +805,7 @@ def test_pfm_save():
 # Contenuto di `reference_be.pfm`
 
 ```kotlin
-val reference = byteArrayOfInts(
+val reference_be = byteArrayOfInts(
     0x50, 0x46, 0x0a, 0x33, 0x20, 0x32, 0x0a, 0x31, 0x2e, 0x30, 0x0a, 0x42,
     0xc8, 0x00, 0x00, 0x43, 0x48, 0x00, 0x00, 0x43, 0x96, 0x00, 0x00, 0x43,
     0xc8, 0x00, 0x00, 0x43, 0xfa, 0x00, 0x00, 0x44, 0x16, 0x00, 0x00, 0x44,
@@ -934,6 +815,8 @@ val reference = byteArrayOfInts(
     0x8c, 0x00, 0x00, 0x42, 0xa0, 0x00, 0x00, 0x42, 0xb4, 0x00, 0x00
 )
 ```
+
+Fate lo stesso con `reference_le.pfm`.
 
 # Scrittura di testo
 
