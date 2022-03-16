@@ -140,8 +140,10 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 ```python
 def write_pfm(self, stream, endianness=Endianness.LITTLE_ENDIAN):
+    endianness_str = "-1.0" if endianness == Endianness.LITTLE_ENDIAN else "1.0"
+        
     # The PFM header, as a Python string (UTF-8)
-    header = f"PF\n{self.width} {self.height}\n-1.0\n"
+    header = f"PF\n{self.width} {self.height}\n{endianness_str}\n"
 
     # Convert the header into a sequence of bytes
     stream.write(header.encode("ascii"))
@@ -491,12 +493,12 @@ def _parse_endianness(line: str):
     except ValueError:
         raise InvalidPfmFileFormat("missing endianness specification")
 
-    if value == 1.0:
+    if value > 0:
         return Endianness.BIG_ENDIAN
-    elif value == -1.0:
+    elif value < 0:
         return Endianness.LITTLE_ENDIAN
     else:
-        raise InvalidPfmFileFormat("invalid endianness specification")
+        raise InvalidPfmFileFormat("invalid endianness specification, it cannot be zero")
 ```
 
 # Test (3/4)
@@ -509,7 +511,7 @@ def test_pfm_parse_endianness():
     # We must test that the function properly raises an exception when
     # wrong input is passed. Here we use the "pytest" framework to do this.
     with pytest.raises(InvalidPfmFileFormat):
-        _ = _parse_endianness("2.0")
+        _ = _parse_endianness("0.0")
 
     with pytest.raises(InvalidPfmFileFormat):
         _ = _parse_endianness("abc")

@@ -226,19 +226,21 @@ width height
 <section id="il-metodo-write_pfm" class="slide level1">
 <h1>Il metodo <code>write_pfm</code></h1>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> write_pfm(<span class="va">self</span>, stream, endianness<span class="op">=</span>Endianness.LITTLE_ENDIAN):</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The PFM header, as a Python string (UTF-8)</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    header <span class="op">=</span> <span class="ss">f&quot;PF</span><span class="ch">\n</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>width<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>height<span class="sc">}</span><span class="ch">\n</span><span class="ss">-1.0</span><span class="ch">\n</span><span class="ss">&quot;</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert the header into a sequence of bytes</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    stream.write(header.encode(<span class="st">&quot;ascii&quot;</span>))</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Write the image (bottom-to-up, left-to-right)</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">reversed</span>(<span class="bu">range</span>(<span class="va">self</span>.height)):</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width):</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>            color <span class="op">=</span> <span class="va">self</span>.get_pixel(x, y)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>            _write_float(stream, color.r, endianness)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>            _write_float(stream, color.g, endianness)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>            _write_float(stream, color.b, endianness)</span></code></pre></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    endianness_str <span class="op">=</span> <span class="st">&quot;-1.0&quot;</span> <span class="cf">if</span> endianness <span class="op">==</span> Endianness.LITTLE_ENDIAN <span class="cf">else</span> <span class="st">&quot;1.0&quot;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The PFM header, as a Python string (UTF-8)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    header <span class="op">=</span> <span class="ss">f&quot;PF</span><span class="ch">\n</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>width<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>height<span class="sc">}</span><span class="ch">\n</span><span class="sc">{</span>endianness_str<span class="sc">}</span><span class="ch">\n</span><span class="ss">&quot;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert the header into a sequence of bytes</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    stream.write(header.encode(<span class="st">&quot;ascii&quot;</span>))</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Write the image (bottom-to-up, left-to-right)</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">reversed</span>(<span class="bu">range</span>(<span class="va">self</span>.height)):</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width):</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>            color <span class="op">=</span> <span class="va">self</span>.get_pixel(x, y)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>            _write_float(stream, color.r, endianness)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            _write_float(stream, color.g, endianness)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            _write_float(stream, color.b, endianness)</span></code></pre></div>
 </section>
 <section id="immagine-per-i-test" class="slide level1">
 <h1>Immagine per i test</h1>
@@ -568,12 +570,12 @@ width height
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> InvalidPfmFileFormat(<span class="st">&quot;missing endianness specification&quot;</span>)</span>
 <span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> value <span class="op">==</span> <span class="fl">1.0</span>:</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> value <span class="op">&gt;</span> <span class="dv">0</span>:</span>
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Endianness.BIG_ENDIAN</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> value <span class="op">==</span> <span class="op">-</span><span class="fl">1.0</span>:</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> value <span class="op">&lt;</span> <span class="dv">0</span>:</span>
 <span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Endianness.LITTLE_ENDIAN</span>
 <span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> InvalidPfmFileFormat(<span class="st">&quot;invalid endianness specification&quot;</span>)</span></code></pre></div>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> InvalidPfmFileFormat(<span class="st">&quot;invalid endianness specification, it cannot be zero&quot;</span>)</span></code></pre></div>
 </section>
 <section id="test-34" class="slide level1">
 <h1>Test (3/4)</h1>
@@ -584,7 +586,7 @@ width height
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We must test that the function properly raises an exception when</span></span>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># wrong input is passed. Here we use the &quot;pytest&quot; framework to do this.</span></span>
 <span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> pytest.raises(InvalidPfmFileFormat):</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> _parse_endianness(<span class="st">&quot;2.0&quot;</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> _parse_endianness(<span class="st">&quot;0.0&quot;</span>)</span>
 <span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> pytest.raises(InvalidPfmFileFormat):</span>
 <span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> _parse_endianness(<span class="st">&quot;abc&quot;</span>)</span></code></pre></div>
