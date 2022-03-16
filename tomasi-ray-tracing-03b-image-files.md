@@ -4,7 +4,7 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-# Scrittura di file PFM
+# Immagini PFM
 
 # Immagini PFM
 
@@ -33,12 +33,12 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Il numero `±1.0`
 
--   La terza riga dell'header del file deve contenere `1.0` oppure `-1.0`.
+-   La terza riga dell'header del file deve contenere un numero positivo (es., `1.0`) oppure negativo.
 
 -   Questo numero serve per segnalare il modo in cui ciascuna delle componenti RGB di un colore (floating-point a 32 bit) viene codificata:
 
-    1.  Il valore `1.0` indica che si usa la codifica *big endian*;
-    2.  Il valore `-1.0` indica che si usa la codifica *little endian*.
+    1.  Un valore positivo indica che si usa la codifica *big endian*;
+    2.  Un valore negativo indica che si usa la codifica *little endian*.
 
 -   In fase di scrittura potremmo scegliere uno dei due formati e non preoccuparci troppo, ma in fase di lettura dobbiamo gestirli entrambi!
 
