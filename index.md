@@ -12,6 +12,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 2a      | 2022/03/07 | [Colori](tomasi-ray-tracing-02a-colors.html)                              |
 | 2b      | 2022/03/09 | [Test automatici](tomasi-ray-tracing-02b-tests.html)                      |
 | 3a      | 2022/03/14 | [Tipi di file, gestione degli errori](tomasi-ray-tracing-03a-images.html) |
+| 3b      | 2022/03/16 | [Lettura/scrittura di file HDR](tomasi-ray-tracing-03b-image-files.html)  |
 
 # Scelta del linguaggio
 
