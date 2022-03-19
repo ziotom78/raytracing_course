@@ -4,101 +4,196 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-# Il README
-
-# Origine del [README](https://en.wikipedia.org/wiki/README)
-
--   Negli anni '80 e '90 i programmi venivano fornito di un file di testo, `README.TXT`, in cui si davano alcune indicazioni all'utente.
--   Era pensato per essere letto da chi aveva già comperato il programma.
--   Di solito conteneva queste informazioni:
-    -   Come contattare l'assistenza tecnica;
-    -   Correzioni alla documentazione stampata fornita col programma;
-    -   Istruzioni su come avviare il programma.
-
-# Ashton-Tate dBaseIII
-
-<center>
-![](./media/dbase3-box.jpg)
-</center>
+# Tone mapping
 
 ---
 
 <center>
-![](./media/ashtontate_dbaseii_ad8208.jpg){height=620px}
+![](./media/tone-mapping-problem.png)
 </center>
 
-# Ashton-Tate dBaseIII
+# Tone mapping
+
+-   Una conversione da RGB a sRGB dovrebbe preservare la «tinta» complessiva di un'immagine.
+-   Ecco perché non si parla di *tone mapping* per un singolo colore RGB, ma per una matrice di colori (ossia un'immagine).
+-   Noi useremo il *tone mapping* descritto da [Shirley & Morley (2003)](https://books.google.it/books/about/Realistic_Ray_Tracing_Second_Edition.html?id=ywOtPMpCcY8C&redir_esc=y): è fisicamente meno preciso di altri metodi (es., la normalizzazione dello standard CIE usando D65), ma più intuitivo e più semplice da implementare.
+
+# Algoritmo di tone mapping
+
+1.  Stabilire un valore «medio» per l'irradianza misurata in corrispondenza di ogni pixel dell'immagine;
+2.  Normalizzare il colore di ogni pixel a questo valore medio;
+3.  Applicare una correzione ai punti di maggiore luminosità.
+
+# Valore medio
+
+-   Il valore «neutro» per la radianza è definito dalla media logaritmica della luminosità $l_i$ dei pixel (con $i = 1\ldots N$):
+    $$
+    \left<l\right> = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
+    $$
+    dove $\delta \ll 1$ evita la singolarità di $\log_{10} x$ in $x = 0$.
+
+-   A ciascun pixel sono però associati tre valori scalari (R, G, B). Quale valore usare per la luminosità $l_i$?
+
+# Luminosità
+
+Media aritmetica
+: $l_i = \frac{R_i + G_i + B_i}3$;
+
+Media pesata
+: $l_i = \frac{w_R R_i + w_G G_i + w_B B_i}{w_R + w_G + w_B}$, data una terna di valori positivi $(w_R, w_G, w_B)$;
+
+Distanza dall'origine
+: $l_i = \sqrt{R_i^2 + G_i^2 + B_i^2}$;
+
+Funzione di luminosità
+: $l_i = \frac{\max(R_i, G_i, B_i) + \min(R_i, G_i, B_i)}2$
+
+Shirley & Morley usano l'ultima definizione perché sostengono che, nonostante non sia fisicamente significativa, produca risultati visivamente migliori.
+
+# Perché la media logaritmica?
+
+-   Non abbiamo ancora giustificato la formula
+    $$
+    \left<l\right> = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
+    $$
+
+-   Essa è plausibile perché la risposta dell'occhio a uno stimolo $S$ è logaritmica (*leggi di Weber-Fechner*):
+    $$
+    p = k \log_{10} \frac{S}{S_0}
+    $$
+    dove $p$ è il valore percepito, e $S$ è l'intensità dello stimolo.
+
+# Proprietà della media logaritmica
+
+-   La media logaritmica è una media sugli *esponenti*, mentre la media aritmetica è una media sui valori;
+
+-   Nel caso i valori siano $10^2$, $10^4$ e $10^6$, la media logaritmica è
+    $$
+    10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
+    $$
+    mentre la media aritmetica è $(10^2 + 10^4 + 10^6)/3 \approx 10^6/3$.
+
+
+# Normalizzazione
+
+-   Una volta stimato il valore medio, i valori R, G, B dell'immagine sono aggiornati tramite la trasformazione
+
+    $$
+    R_i \rightarrow a \times \frac{R_i}{\left<l\right>},
+    $$
+
+    dove $a$ è un valore impostabile dall'utente.
+
+-   Curiosamente, nel loro libro Shirley & Morley suggeriscono $a = 0.18$; in realtà non esiste un valore «giusto», e $a$ si deve scegliere a seconda dell'immagine.
+
+
+# Punti luminosi
+
+<center>![](./media/bright-light-in-room.jpg){height=520}</center>
+
+Sono notoriamente difficili da trattare!
+
+# Punti luminosi
+
+Shirley & Morley suggeriscono di applicare ai valori R, G, B di ogni punto dell'immagine la trasformazione
+$$
+R_i \rightarrow \frac{R_i}{1 + R_i},
+$$
+che ha le seguenti caratteristiche:
+$$
+\begin{aligned}
+R_i \ll 1 &\Rightarrow R_i \rightarrow R_i,\\
+R_i \gg 1 &\Rightarrow R_i \rightarrow 1.
+\end{aligned}
+$$
+
+# Punti luminosi
 
 <center>
-![](./media/dbase3-screenshot.png){height=620px}
+```{.gnuplot im_fmt="svg" im_out="img" im_fname="bright-point-transformation"}
+set terminal svg
+set xlabel "Input"
+set ylabel "Output"
+plot [0:10] [] x/(1 + x) lw 4
+```
 </center>
 
-# Ashton-Tate dBaseIII
+# Correzione γ
 
-```text
-                  IMPORTANT INFORMATION
+-   Potremmo voler applicare una correzione γ ai valori dell'immagine.
 
-Before using your dBASE III PLUS Disks, please note the 
-following information before installing dBASE III PLUS:
+-   Se in corrispondenza di un segnale $x$ il monitor emette un flusso
 
-For 256K dBASE III PLUS Operation:
+    $$
+    \Phi \propto x^\gamma,
+    $$
 
-dBASE III PLUS runs with DOS version 2.xx if you have 256K
-installed memory in your computer.  If you have a mimimum 
-of 384K of installed memory, dBASE III PLUS runs with DOS version
-3.xx as well as version 2.xx. 
+    allora i valori RGB da salvare nell'immagine LDR devono essere
 
-For 256K operation, we provide two files, CONFI256.SYS and
-CONFI256.DB, on System Disk #1.  These two files set system
-parameters for maximum overall performance of dBASE III PLUS in a
-256K environment.  Save the original CONFIG.SYS and CONFIG.DB
-files (also on System Disk #1) to another disk, and then use the
-DOS COPY command to copy CONFI256.SYS and CONFI256.DB to
-CONFIG.SYS and CONFIG.DB respectively.
-```
+    $$
+    r = \left[2^8\times R^{1/\gamma}\right],\quad
+    g = \left[2^8\times G^{1/\gamma}\right],\quad
+    b = \left[2^8\times B^{1/\gamma}\right],
+    $$
+
+---
+
+<center>
+![](./media/kitchen-gamma-settings.png)
+</center>
 
 
-# [Microsoft](https://www.youtube.com/watch?v=4Wd8K2n5ayk) [Word 5.5](http://download.microsoft.com/download/word97win/Wd55_be/97/WIN98/EN-US/Wd55_ben.exe) per DOS
+# Documentazione
 
-```text
-This file supplements the printed documentation for
-Microsoft Word, version 5.5A.
+# Commenti nel codice
 
---------Contents----------------------------------------
-. Other Sources of Information
-. Release Information for 5.5A
-. Additional Setup Information
-. Installing Word To Run Under Windows 3.0
-. Using Word Under Windows 3.0 with a Hercules Adapter
-. Installing Word To Run Under Windows 2.1
-. New Mouse Driver
-. Additional Style Sheet Information
-. Additional Macro Information
-. Using an IBM 8514 Monitor Under OS/2
-. Using an IBM PS/2 Model 70 Display Under OS/2 1.21
-. Using Word with KEYB.COM
-. Switching between keyboard drivers
-. Keyboard Information for non-US Keyboards
-. Using Word with Presentation Manager
-. Mouse Support and OS/2
-. Installing Code Pages under OS/2
---------------------------------------------------------
+-   Tutti sanno che è importante scrivere commenti nel codice!
 
-OTHER SOURCES OF INFORMATION
+-   Un commento aiuta chi legge il codice a capire cosa quel codice faccia
 
-For information on:         See:
+-   Può aiutare voi stessi! Se tra un anno leggerete il codice scritto oggi, siete sicuri che ricorderete perché l'avevate scritto così?
 
-Printers and printing       PRINTERS.DOC on Printer disk 1
-Word-DCA conversions        WORD_DCA.DOC on Utilities disk 1
-Word-RTF conversions        WORD_RTF.DOC on Utilities disk 1
-Word 5.0 macro              MACROCNV.DOC on Program disk 1
-  conversions
-```
+# Commenti da evitare
 
-# I README oggi
+-   I commenti però non devono essere pedanti: non è necessario commentare cose ovvie, magari evitando di commentare cose importanti
 
--   Oggi un README è fondamentalmente diverso da com'era usato in passato
--   È diventato di importanza fondamentale:
+    ```c++
+    // Initialize variable "a" and set it to zero
+    int a = 0;
+    // Cycle over the vector "v"
+    for(auto elem : v) {
+        // Increment a by 2*sin(elem)
+        a += 2 * sin(elem);
+    }
+    // One year from now: «Wait! but… why were we doing this calculation in the first place?»
+    ```
+    
+-   Se in una funzione sentite che è necessario mettere molti commenti per renderla chiara, forse la funzione non è scritta bene
+
+# *Docstrings*
+
+-   Gli editor moderni sono in grado di leggere commenti messi in testa a classi/metodi/funzioni/tipi, e visualizzarli in certi contesti (ad esempio quando spostate il mouse su una chiamata di funzione)
+
+-   Abituatevi a fare affidamento a questa caratteristica: vi insegnerà come scrivere meglio i commenti, e vi evita di andare avanti e indietro nel codice
+
+-   Di solito, per dichiarare una *docstring* dovete iniziare un commento con un carattere o una stringa speciale, ad esempio:
+
+    ```c++
+    // Plain comment in C++
+    int f(int x)  { return 2 * x; }
+    
+    /// Docstring: it begins with three '/' instead of two
+    int g(int x)  { return 3 * x; }
+    ```
+
+---
+
+<iframe src="https://player.vimeo.com/video/683431827?h=9e4de4dba1&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479#t=12m00s" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Come usare una IDE (JetBrains Rider)"></iframe>
+
+
+# Il file README
+
+-   Quando si pubblica un progetto su GitHub, è fondamentale includere un README:
     -   La quantità di FOSS (Free and Open Source Software) su Internet è impressionante;
     -   Gli utenti hanno bisogno di capire in poco tempo se un progetto fa al caso loro o no;
     -   Un README oggi combina la funzione di un annuncio pubblicitario (nel senso buono!) e di primo manuale d'uso.
@@ -144,17 +239,6 @@ Word 5.0 macro              MACROCNV.DOC on Program disk 1
 ![](./media/emcee-readme.png){height=620px}
 </center>
 
-# Readme-driven development
-
--   Idea di Tom Preston-Werner (creatore di GitHub e di [TOML](https://github.com/toml-lang/toml)) espressa in un [famoso articolo del 2010](https://tom.preston-werner.com/2010/08/23/readme-driven-development.html).
--   Prima di scrivere un programma, scrivete il README:
-    -   Dà l'opportunità di pensare al progetto su grande scala, prima ancora di scrivere il codice (che obbliga a concentrarsi sui dettagli).
-    -   Il momento in cui si inizia un progetto è quello in cui l'eccitazione e l'entusiasmo sono al massimo.
-    -   Se si lavora in un team, la stesura del README aiuta già a comprendere come suddividere il lavoro, ed è più semplice discutere sulla base di idee scritte.
--   Non possiamo farlo nel nostro corso (purtroppo!), perché lo sviluppo del nostro codice segue un criterio pedagogico.
-
----
-
 # Struttura di un README
 
 -   Struttura consigliata dal sito [Make a README](https://www.makeareadme.com/):
@@ -163,15 +247,15 @@ Word 5.0 macro              MACROCNV.DOC on Program disk 1
     3.  Esempi d'uso;
     4.  Come contribuire al repository;
     5.  Licenza d'uso.
--   Il sito [Awesome README](https://github.com/matiassingers/awesome-readme) è una miniera di suggerimenti e di link a README di progetti veri da imitare (come [joe](https://github.com/karan/joe#readme): bellissimo!). Visitatelo, c'è da perdersi!
+-   Il sito [Awesome README](https://github.com/matiassingers/awesome-readme) è una miniera di suggerimenti e di link a README di progetti veri da imitare (come [joe](https://github.com/karan/joe#readme): bellissimo!).
 
-# Come scrivere un README?
+# Come scrivere documentazione?
 
-# Sintassi dei README
+# Scrivere testo
 
--   In passato, i README erano semplici file di testo.
--   Abbiamo però visto che i README usati oggi includono grafica, codice evidenziato, titoli, etc.
--   Che facciamo, noi fisici dobbiamo scriverlo in LaTeX?!?
+-   In passato, i README e i manuali d'uso erano semplici file di testo.
+-   Abbiamo però visto che i README usati oggi includono grafica, codice evidenziato, titoli, etc. (Lo stesso vale per i manuali d'uso!)
+-   Che facciamo, noi fisici dobbiamo scrivere tutto in LaTeX?!?
 
 # Linguaggi di markup
 
@@ -188,8 +272,7 @@ Word 5.0 macro              MACROCNV.DOC on Program disk 1
 
 -   Di solito i documenti a corredo di un programma vengono scritti in Markdown (è la scelta di default in GitHub).
 
--   Usando [pandoc](https://pandoc.org/), un file `.md` può essere
-    convertito in:
+-   Usando [pandoc](https://pandoc.org/), un file `.md` può essere convertito in:
 
     -   Pagine HTML (queste slide, fatte con [Reveal.js](https://revealjs.com/), ne sono un esempio!);
     -   LaTeX, incluso Beamer
@@ -276,6 +359,8 @@ cupidatat non proident, sunt in culpa qui officia deserunt mollit
 anim id est laborum.
 ```
 
+(Purtroppo, come vedremo tra un attimo, questo non è vero se il file Markdown viene visualizzato in GitHub…)
+
 # Alcuni trucchi (3/4)
 
 ```markdown
@@ -304,7 +389,7 @@ Si possono associare più paragrafi a una lista puntata:
 title: "Dei delitti e delle pene"
 subtitle: "Nuova edizione corretta e accresciuta"
 author: "Cesare Beccaria"
-year: 1964
+year: 1764
 colorlinks: true
 ...
 
@@ -344,31 +429,13 @@ $endif$
     
 -   Si può passare un template personalizzato con `--template=FILE`.
 
-# Queste slide
 
--   Queste slide sono realizzate con pandoc, usando come formato di output `revealjs`. Il comando per produrle (semplificato) è il seguente:
-
-    ```
-    $ pandoc \
-        --standalone \
-        --katex \
-        -V theme=white \
-        -V progress=true
-        -V slidenumber=true \
-        -V width=1440 \
-        -V height=810 \
-        -f markdown+tex_math_single_backslash \
-        -t revealjs \
-        -o FILEOUTPUT.html \
-        FILEINPUT.md
-    ```
-    
 # Markdown in GitHub (1/2)
 
--   In GitHub non è necessario convertire il file `README.md`: il sito implementa un proprio sistema di conversione del Markdown.
+-   In GitHub non serve convertire con `pandoc` i file Markdown come `README.md`, perché implementa un convertitore interno a HTML.
 
 -   Se si carica in un repository un file con nome `README.md`, GitHub
-    lo mostrerà automaticamente convertito in una pagina HTML:
+    lo mostrerà automaticamente nella pagina principale:
 
     <center>
     ![](./media/harlequin-readme.png){height=320}
@@ -386,7 +453,7 @@ $endif$
     è per me nuovo, capir nol so.
     ```
     
-    (In pandoc sarebbe tutto scritto nel medesimo paragrafo).
+    (`pandoc` lo trasformerebbe invece in un paragrafo unico).
 
 # Licenze d'uso
 
@@ -396,7 +463,7 @@ $endif$
     cosa gli sia lecito fare e cosa no.
 -   È da sempre usata nel software commerciale.
 -   È diventata sempre più importante anche in ambito accademico:
-    -   Alcune istituzioni lo richiedono (non UniMI, che io sappia);
+    -   Alcune istituzioni lo richiedono (ma non UniMI);
     -   Può mettere al riparo l'autore da sorprese spiacevoli.
 -   Nei programmi FOSS è solitamente scritta in un file `LICENSE`,
     `LICENSE.txt` o `LICENSE.md` (in Markdown).
@@ -443,7 +510,7 @@ $endif$
 
 -   Date anche l'autorizzazione di GitHub a **visualizzare** il vostro *content*, e a permettere agli utenti di scaricarlo.
 
--   Ciò che **non** garantite necessariamente agli utenti è di poter compilare ed eseguire il vostro codice, e tantomeno di poter usare i risultati prodotti da esso in una pubblicazione!
+-   Ciò che **non** garantite necessariamente agli utenti è di poter compilare, modificare o eseguire il vostro codice, e tantomeno di poter usare i risultati prodotti da esso in una pubblicazione!
 
 # I vostri repository
 
@@ -504,7 +571,7 @@ Copyleft
 
 -   È un tipo di *Permissive license* che però pone vincoli importanti al modo in cui il codice viene redistribuito.
 
--   Se il codice di una *copyleft license* viene usato all'interno di un codice, anche quest'ultimo deve essere rilasciato con una *copyleft license*.
+-   Se il codice di una *copyleft license* viene usato all'interno di un codice, anche quest'ultimo deve essere rilasciato con una *copyleft license* (ma non è obbligatorio rilasciarlo!).
 
 -   È detta *viral license*: se un programma «tocca» del codice *copyleft*, diventa automaticamente *copyleft* lui stesso.
 
@@ -530,237 +597,4 @@ Copyleft
     1.   Scegliete la licenza. Noi prendiamo come esempio la GPL versione 3, descritta sul sito [OSI](https://opensource.org/licenses/GPL-3.0).
     2.   Il sito OSI ha un [link](https://www.gnu.org/licenses/gpl-3.0.en.html) al testo della licenza sul sito GNU. Da questo sito si può scaricare la versione in [testo ASCII](https://www.gnu.org/licenses/gpl-3.0.txt) o in [Markdown](https://www.gnu.org/licenses/gpl-3.0.md).
     3.   Scaricate la licenza e salvatela in `LICENSE` (se testo ASCII) o `LICENSE.md` (se Markdown) dentro il vostro repository.
-    4.   La maggior parte delle licenze consiglia di riportare un breve testo in un commento in cima a *ogni* file sorgente del vostro repository. (La GPL3 non fa eccezione).
-
-
-
-# Gestione degli errori
-
-# Errori
-
--   Nella scorsa esercitazione abbiamo implementato del codice per scrivere un file PFM.
--   Questa settimana implementeremo invece la *lettura* di un file PFM.
--   La lettura di un file è un'attività che è facilmente soggetta ad errori:
-    -   Il file specificato dall'utente non esiste
-    -   Il file è danneggiato
-    -   Il file è in un formato valido ma che il nostro codice non è in grado di caricare (es., un file PFM è codificato *big endian*, ma noi abbiamo previsto solo *little endian*)
-
-# Tipi di errore
-
--   Gli errori possono essere suddivisi in due classi:
-
-    -   Errori di pertinenza del programmatore
-    -   Errori di pertinenza dell'utente
-    
--   A seconda del tipo di errore in cui vi imbattete, la sua gestione è diversa.
-
-# Errori del programmatore
-
--   Si tratta di un errore logico del programma.
--   Un programma «perfetto» non dovrebbe mai avere errori logici.
--   Se si ha l'evidenza che è avvenuto un errore logico, sarebbe meglio segnalarlo **nel modo più rumoroso possibile**.
-
-# Esempio
-
-```python
-my_list = [5, 3, 8, 4, 1, 9]
-sorted = my_sort_function(my_list)
-
-if not (len(my_list) == len(sorted)):
-    print("Error, mismatch in the length of the sorted list")
-    
-if not (sorted[0] <= sorted[1]):
-    print("Error, the array is not sorted")
-
-# The program continues
-...
-```
-
-# Esempio un po' migliorato
-
-```python
-my_list = [5, 3, 8, 4, 1, 9]
-sorted = my_sort_function(my_list)
-
-if (len(my_list) == len(sorted)) and (sorted[0] <= sorted[1]):
-    # The program continues only if the conditions above are
-    # valid
-    ...
-```
-
-# Esempio migliorato
-
-```python
-my_list = [5, 3, 8, 4, 1, 9]
-sorted = my_sort_function(my_list)
-
-# If any "assert", the program will crash and will print details
-# about what the code was doing. If PDB support is turned on,
-# a debugger will be fired automatically.
-assert len(my_list) == len(sorted)
-assert sorted[0] <= sorted[1]
-
-# The program continues
-...
-```
-
-# Gestione errori del programmatore
-
--   Tutti i linguaggi implementano funzioni che consentono di mandare in crash un programma (es., `assert` e `abort` in C/C++).
--   Queste istruzioni solitamente stampano a video una serie di dettagli sulla causa dell'errore, e sono pensate per essere usate insieme a un debugger.
--   Eseguire un debugger è sensato: se l'errore è logico, è il programmatore che deve mettere mano al codice, non l'utente!
--   Attenzione al fatto che alcune di queste funzioni potrebbero non essere compilate in modalità *release*.
-
-# Errori dell'utente
-
--   Sono errori a cui il programmatore non può far fronte:
-    -   L'utente chiede di leggere un file che non esiste;
-    -   L'utente chiede di scrivere un file su un supporto che non ha più spazio libero;
-    -   L'utente specifica un input scorretto.
--   Vanno gestiti solitamente in modo molto diverso dagli errori del programmatore!
-
-# Esempio
-
-<asciinema-player src="./cast/user-error-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
-
-# Gestire errori dell'utente
-
--   Gli errori dell'utente sono **inevitabili**.
--   Se si ha evidenza che l'utente ha commesso un errore, ci sono diversi modi di reagire:
-    1.  Stampare un messaggio di errore, il più chiaro possibile;
-    2.  Chiedere all'utente di inserire di nuovo il dato scorretto;
-    3.  In certi contesti il codice può decidere autonomamente come correggere l'errore.
-    
-        Ad esempio, se si chiede un valore numerico entro un certo intervallo $[a, b]$ e il valore fornito è $x > b$, si può porre $x = b$ e continuare.
-
-# Correzione errori (1/2)
-
-```python
-x = float(input("Insert a number: "))
-y = float(input("Insert another number: "))
-if y != 0.0:
-    print(f"The ratio {x} / {y} is {x / y}")
-else:
-    print("Error, the second number cannot be zero!")
-```
-
-# Correzione errori (2/2)
-
-```python
-x = float(input("Insert a number: "))
-
-while True:
-    y = float(input("Insert another number: "))
-    if y == 0.0:
-        print("Error, the second number cannot be zero!")
-    else:
-        break
-        
-print(f"The ratio {x} / {y} is {x / y}")
-```
-
-# Programma corretto
-
-<asciinema-player src="./cast/user-error-corrected-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
-
-# Messaggi d'errore
-
--   Gli studenti hanno spesso la tendenza a stampare messaggi di errore.
-
--   Esempio (sbagliato) preso da un tema d'esame TNDS:
-
-    ```c++
-    double Bisezione::CercaZeri(double a, double b) {
-        if(f->Eval(a) * f->Eval(b) >= 0) {
-            cout << "Errore, teorema degli zeri non soddisfatto\n";
-        } else {
-            // Etc.
-        }
-    }
-    ```
-
-    Non c'è un `return` in corrispondenza dell'`if`, e l'esercizio chiedeva di calcolare lo zero di una funzione in un intervallo in cui lo zero **doveva esserci**. Se il teorema degli zeri non è soddisfatto, vuol dire che c'è un errore in `a` oppure `b`.
-
-# Visibilità dei messaggi di errore
-
--   Se una funzione stampa un messaggio quando capita un errore, è molto probabile che quel messaggio si perda all'interno dell'output:
-
-    ```text
-    $ python3 my-beautiful-program.py
-    Initializing the program...
-    Now I am reading data from the device
-    The device has sent 163421 samples
-    Computing statistics on the samples
-    Error, some samples are negative
-    Sorting the samples
-    Running a Monte Carlo simulations, please wait...
-    Done, time elapsed: 164.96 seconds
-    Producing the plots...
-    Done, the results are saved in "output.pdf"
-    $
-    ```
-    
--   Meglio rendere l'errore più visibile, ad esempio con i colori, oppure (meglio!) fermare del tutto l'esecuzione del programma appena l'errore si verifica.
-
-# Errori dell'utente nelle funzioni
-
--   È solitamente molto semplice come gestire gli errori dell'utente nel `main` di un programma.
--   È invece meno chiaro come gestire gli errori nell'input passato a una funzione o un metodo, come ad esempio `Bisezione::CercaZeri`.
--   Nessuna funzione o metodo dovrebbe **mai** fare qualcosa di **catastrofico** (mandare in crash il programma) o **visibile** (stampare un messaggio d'errore a video) se l'errore può essere dovuto all'utente.
--   La **regola aurea** è che la funzione restituisca un valore di ritorno che segnali l'errore, oppure che sollevi un'eccezione.
-
-# Restituire un errore
-
--   Se un linguaggio permette di restituire valori multipli, potete usare questa sintassi (molto usata in [Go](https://blog.golang.org/error-handling-and-go)):
-
-    ```python
-    (result, error_condition) = my_function(...)
-    
-    if error_condition:
-        # Handle the error: print a message, crash the program, etc.
-        ...
-    ```
-    
--   Potete impiegare le eccezioni, se il vostro linguaggio le supporta:
-
-    ```python
-    def my_function(...):
-        if something_wrong:
-            raise Exception("Error!")
-    ```
-
-# Parametri d'errore
-
-In linguaggi come il C/C++, un approccio molto usato è quello di accettare un parametro addizionale che segnali l'errore:
-
-```c++
-double my_function(..., bool & error) {
-    if (something_wrong) {
-        error = true;
-        return 0.0;
-    }
-
-    // ...
-
-    error = false;
-    return result;
-}
-```
-
-Al posto di un `bool` potete usare una `enum class` per registrare il tipo di errore, o addirittura una `struct` per racchiudere informazioni complesse.
-
-# Tipi *nullable*
-
-Linguaggi come C\# e Kotlin definiscono il tipo *nullable*, che può essere usato con qualsiasi tipo, e ne indica l'*assenza*:
-
-```csharp
-// C# example
-
-// Note the "?" after "double": this is the same syntax as in Kotlin
-double? result = my_function(...);
-
-if (! result.HasValue)
-{
-    // Something wrong happened, my_function didn't compute the result
-}
-```
+    4.   La maggior parte delle licenze consiglia di riportare un breve testo in un commento in cima a *ogni* file sorgente del vostro repository.

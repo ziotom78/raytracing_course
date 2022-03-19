@@ -111,102 +111,183 @@
   <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="il-readme" class="slide level1">
-<h1>Il README</h1>
-</section>
-<section id="origine-del-readme" class="slide level1">
-<h1>Origine del <a href="https://en.wikipedia.org/wiki/README">README</a></h1>
-<ul>
-<li>Negli anni ’80 e ’90 i programmi venivano fornito di un file di testo, <code>README.TXT</code>, in cui si davano alcune indicazioni all’utente.</li>
-<li>Era pensato per essere letto da chi aveva già comperato il programma.</li>
-<li>Di solito conteneva queste informazioni:
-<ul>
-<li>Come contattare l’assistenza tecnica;</li>
-<li>Correzioni alla documentazione stampata fornita col programma;</li>
-<li>Istruzioni su come avviare il programma.</li>
-</ul></li>
-</ul>
-</section>
-<section id="ashton-tate-dbaseiii" class="slide level1">
-<h1>Ashton-Tate dBaseIII</h1>
-<center>
-<img data-src="./media/dbase3-box.jpg" />
-</center>
+<section id="tone-mapping" class="slide level1">
+<h1>Tone mapping</h1>
 </section>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/ashtontate_dbaseii_ad8208.jpg" height="620" />
+<img data-src="./media/tone-mapping-problem.png" />
 </center>
 </section>
-<section id="ashton-tate-dbaseiii-1" class="slide level1">
-<h1>Ashton-Tate dBaseIII</h1>
-<center>
-<img data-src="./media/dbase3-screenshot.png" height="620" />
-</center>
-</section>
-<section id="ashton-tate-dbaseiii-2" class="slide level1">
-<h1>Ashton-Tate dBaseIII</h1>
-<pre class="text"><code>                  IMPORTANT INFORMATION
-
-Before using your dBASE III PLUS Disks, please note the 
-following information before installing dBASE III PLUS:
-
-For 256K dBASE III PLUS Operation:
-
-dBASE III PLUS runs with DOS version 2.xx if you have 256K
-installed memory in your computer.  If you have a mimimum 
-of 384K of installed memory, dBASE III PLUS runs with DOS version
-3.xx as well as version 2.xx. 
-
-For 256K operation, we provide two files, CONFI256.SYS and
-CONFI256.DB, on System Disk #1.  These two files set system
-parameters for maximum overall performance of dBASE III PLUS in a
-256K environment.  Save the original CONFIG.SYS and CONFIG.DB
-files (also on System Disk #1) to another disk, and then use the
-DOS COPY command to copy CONFI256.SYS and CONFI256.DB to
-CONFIG.SYS and CONFIG.DB respectively.</code></pre>
-</section>
-<section id="microsoft-word-5.5-per-dos" class="slide level1">
-<h1><a href="https://www.youtube.com/watch?v=4Wd8K2n5ayk">Microsoft</a> <a href="http://download.microsoft.com/download/word97win/Wd55_be/97/WIN98/EN-US/Wd55_ben.exe">Word 5.5</a> per DOS</h1>
-<pre class="text"><code>This file supplements the printed documentation for
-Microsoft Word, version 5.5A.
-
---------Contents----------------------------------------
-. Other Sources of Information
-. Release Information for 5.5A
-. Additional Setup Information
-. Installing Word To Run Under Windows 3.0
-. Using Word Under Windows 3.0 with a Hercules Adapter
-. Installing Word To Run Under Windows 2.1
-. New Mouse Driver
-. Additional Style Sheet Information
-. Additional Macro Information
-. Using an IBM 8514 Monitor Under OS/2
-. Using an IBM PS/2 Model 70 Display Under OS/2 1.21
-. Using Word with KEYB.COM
-. Switching between keyboard drivers
-. Keyboard Information for non-US Keyboards
-. Using Word with Presentation Manager
-. Mouse Support and OS/2
-. Installing Code Pages under OS/2
---------------------------------------------------------
-
-OTHER SOURCES OF INFORMATION
-
-For information on:         See:
-
-Printers and printing       PRINTERS.DOC on Printer disk 1
-Word-DCA conversions        WORD_DCA.DOC on Utilities disk 1
-Word-RTF conversions        WORD_RTF.DOC on Utilities disk 1
-Word 5.0 macro              MACROCNV.DOC on Program disk 1
-  conversions</code></pre>
-</section>
-<section id="i-readme-oggi" class="slide level1">
-<h1>I README oggi</h1>
+<section id="tone-mapping-1" class="slide level1">
+<h1>Tone mapping</h1>
 <ul>
-<li>Oggi un README è fondamentalmente diverso da com’era usato in passato</li>
-<li>È diventato di importanza fondamentale:
+<li>Una conversione da RGB a sRGB dovrebbe preservare la «tinta» complessiva di un’immagine.</li>
+<li>Ecco perché non si parla di <em>tone mapping</em> per un singolo colore RGB, ma per una matrice di colori (ossia un’immagine).</li>
+<li>Noi useremo il <em>tone mapping</em> descritto da <a href="https://books.google.it/books/about/Realistic_Ray_Tracing_Second_Edition.html?id=ywOtPMpCcY8C&amp;redir_esc=y">Shirley &amp; Morley (2003)</a>: è fisicamente meno preciso di altri metodi (es., la normalizzazione dello standard CIE usando D65), ma più intuitivo e più semplice da implementare.</li>
+</ul>
+</section>
+<section id="algoritmo-di-tone-mapping" class="slide level1">
+<h1>Algoritmo di tone mapping</h1>
+<ol type="1">
+<li>Stabilire un valore «medio» per l’irradianza misurata in corrispondenza di ogni pixel dell’immagine;</li>
+<li>Normalizzare il colore di ogni pixel a questo valore medio;</li>
+<li>Applicare una correzione ai punti di maggiore luminosità.</li>
+</ol>
+</section>
+<section id="valore-medio" class="slide level1">
+<h1>Valore medio</h1>
+<ul>
+<li><p>Il valore «neutro» per la radianza è definito dalla media logaritmica della luminosità <span class="math inline">l_i</span> dei pixel (con <span class="math inline">i = 1\ldots N</span>): <span class="math display">
+\left&lt;l\right&gt; = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
+</span> dove <span class="math inline">\delta \ll 1</span> evita la singolarità di <span class="math inline">\log_{10} x</span> in <span class="math inline">x = 0</span>.</p></li>
+<li><p>A ciascun pixel sono però associati tre valori scalari (R, G, B). Quale valore usare per la luminosità <span class="math inline">l_i</span>?</p></li>
+</ul>
+</section>
+<section id="luminosità" class="slide level1">
+<h1>Luminosità</h1>
+<dl>
+<dt>Media aritmetica</dt>
+<dd><span class="math inline">l_i = \frac{R_i + G_i + B_i}3</span>;
+</dd>
+<dt>Media pesata</dt>
+<dd><span class="math inline">l_i = \frac{w_R R_i + w_G G_i + w_B B_i}{w_R + w_G + w_B}</span>, data una terna di valori positivi <span class="math inline">(w_R, w_G, w_B)</span>;
+</dd>
+<dt>Distanza dall’origine</dt>
+<dd><span class="math inline">l_i = \sqrt{R_i^2 + G_i^2 + B_i^2}</span>;
+</dd>
+<dt>Funzione di luminosità</dt>
+<dd><span class="math inline">l_i = \frac{\max(R_i, G_i, B_i) + \min(R_i, G_i, B_i)}2</span>
+</dd>
+</dl>
+<p>Shirley &amp; Morley usano l’ultima definizione perché sostengono che, nonostante non sia fisicamente significativa, produca risultati visivamente migliori.</p>
+</section>
+<section id="perché-la-media-logaritmica" class="slide level1">
+<h1>Perché la media logaritmica?</h1>
+<ul>
+<li><p>Non abbiamo ancora giustificato la formula <span class="math display">
+\left&lt;l\right&gt; = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
+</span></p></li>
+<li><p>Essa è plausibile perché la risposta dell’occhio a uno stimolo <span class="math inline">S</span> è logaritmica (<em>leggi di Weber-Fechner</em>): <span class="math display">
+p = k \log_{10} \frac{S}{S_0}
+</span> dove <span class="math inline">p</span> è il valore percepito, e <span class="math inline">S</span> è l’intensità dello stimolo.</p></li>
+</ul>
+</section>
+<section id="proprietà-della-media-logaritmica" class="slide level1">
+<h1>Proprietà della media logaritmica</h1>
+<ul>
+<li><p>La media logaritmica è una media sugli <em>esponenti</em>, mentre la media aritmetica è una media sui valori;</p></li>
+<li><p>Nel caso i valori siano <span class="math inline">10^2</span>, <span class="math inline">10^4</span> e <span class="math inline">10^6</span>, la media logaritmica è <span class="math display">
+10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
+</span> mentre la media aritmetica è <span class="math inline">(10^2 + 10^4 + 10^6)/3 \approx 10^6/3</span>.</p></li>
+</ul>
+</section>
+<section id="normalizzazione" class="slide level1">
+<h1>Normalizzazione</h1>
+<ul>
+<li><p>Una volta stimato il valore medio, i valori R, G, B dell’immagine sono aggiornati tramite la trasformazione</p>
+<p><span class="math display">
+R_i \rightarrow a \times \frac{R_i}{\left&lt;l\right&gt;},
+</span></p>
+<p>dove <span class="math inline">a</span> è un valore impostabile dall’utente.</p></li>
+<li><p>Curiosamente, nel loro libro Shirley &amp; Morley suggeriscono <span class="math inline">a = 0.18</span>; in realtà non esiste un valore «giusto», e <span class="math inline">a</span> si deve scegliere a seconda dell’immagine.</p></li>
+</ul>
+</section>
+<section id="punti-luminosi" class="slide level1">
+<h1>Punti luminosi</h1>
+<center>
+<img data-src="./media/bright-light-in-room.jpg" height="520" />
+</center>
+<p>Sono notoriamente difficili da trattare!</p>
+</section>
+<section id="punti-luminosi-1" class="slide level1">
+<h1>Punti luminosi</h1>
+<p>Shirley &amp; Morley suggeriscono di applicare ai valori R, G, B di ogni punto dell’immagine la trasformazione <span class="math display">
+R_i \rightarrow \frac{R_i}{1 + R_i},
+</span> che ha le seguenti caratteristiche: <span class="math display">
+\begin{aligned}
+R_i \ll 1 &amp;\Rightarrow R_i \rightarrow R_i,\\
+R_i \gg 1 &amp;\Rightarrow R_i \rightarrow 1.
+\end{aligned}
+</span></p>
+</section>
+<section id="punti-luminosi-2" class="slide level1">
+<h1>Punti luminosi</h1>
+<center>
+<p><img data-src="pd-images/1c21818211c881da8e7d92d21b75e42f69a9f759.svg" data-im_fname="bright-point-transformation" /></p>
+</center>
+</section>
+<section id="correzione-γ" class="slide level1">
+<h1>Correzione γ</h1>
+<ul>
+<li><p>Potremmo voler applicare una correzione γ ai valori dell’immagine.</p></li>
+<li><p>Se in corrispondenza di un segnale <span class="math inline">x</span> il monitor emette un flusso</p>
+<p><span class="math display">
+\Phi \propto x^\gamma,
+</span></p>
+<p>allora i valori RGB da salvare nell’immagine LDR devono essere</p>
+<p><span class="math display">
+r = \left[2^8\times R^{1/\gamma}\right],\quad
+g = \left[2^8\times G^{1/\gamma}\right],\quad
+b = \left[2^8\times B^{1/\gamma}\right],
+</span></p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/kitchen-gamma-settings.png" />
+</center>
+</section>
+<section id="documentazione" class="slide level1">
+<h1>Documentazione</h1>
+</section>
+<section id="commenti-nel-codice" class="slide level1">
+<h1>Commenti nel codice</h1>
+<ul>
+<li><p>Tutti sanno che è importante scrivere commenti nel codice!</p></li>
+<li><p>Un commento aiuta chi legge il codice a capire cosa quel codice faccia</p></li>
+<li><p>Può aiutare voi stessi! Se tra un anno leggerete il codice scritto oggi, siete sicuri che ricorderete perché l’avevate scritto così?</p></li>
+</ul>
+</section>
+<section id="commenti-da-evitare" class="slide level1">
+<h1>Commenti da evitare</h1>
+<ul>
+<li><p>I commenti però non devono essere pedanti: non è necessario commentare cose ovvie, magari evitando di commentare cose importanti</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Initialize variable &quot;a&quot; and set it to zero</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Cycle over the vector &quot;v&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span><span class="op">(</span><span class="kw">auto</span> elem <span class="op">:</span> v<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Increment a by 2*sin(elem)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    a <span class="op">+=</span> <span class="dv">2</span> <span class="op">*</span> sin<span class="op">(</span>elem<span class="op">);</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">// One year from now: «Wait! but… why were we doing this calculation in the first place?»</span></span></code></pre></div></li>
+<li><p>Se in una funzione sentite che è necessario mettere molti commenti per renderla chiara, forse la funzione non è scritta bene</p></li>
+</ul>
+</section>
+<section id="docstrings" class="slide level1">
+<h1><em>Docstrings</em></h1>
+<ul>
+<li><p>Gli editor moderni sono in grado di leggere commenti messi in testa a classi/metodi/funzioni/tipi, e visualizzarli in certi contesti (ad esempio quando spostate il mouse su una chiamata di funzione)</p></li>
+<li><p>Abituatevi a fare affidamento a questa caratteristica: vi insegnerà come scrivere meglio i commenti, e vi evita di andare avanti e indietro nel codice</p></li>
+<li><p>Di solito, per dichiarare una <em>docstring</em> dovete iniziare un commento con un carattere o una stringa speciale, ad esempio:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Plain comment in C++</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> f<span class="op">(</span><span class="dt">int</span> x<span class="op">)</span>  <span class="op">{</span> <span class="cf">return</span> <span class="dv">2</span> <span class="op">*</span> x<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">/// Docstring: it begins with three &#39;/&#39; instead of two</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> g<span class="op">(</span><span class="dt">int</span> x<span class="op">)</span>  <span class="op">{</span> <span class="cf">return</span> <span class="dv">3</span> <span class="op">*</span> x<span class="op">;</span> <span class="op">}</span></span></code></pre></div></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<iframe src="https://player.vimeo.com/video/683431827?h=9e4de4dba1&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479#t=12m00s" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Come usare una IDE (JetBrains Rider)">
+</iframe>
+</section>
+<section id="il-file-readme" class="slide level1">
+<h1>Il file README</h1>
+<ul>
+<li>Quando si pubblica un progetto su GitHub, è fondamentale includere un README:
 <ul>
 <li>La quantità di FOSS (Free and Open Source Software) su Internet è impressionante;</li>
 <li>Gli utenti hanno bisogno di capire in poco tempo se un progetto fa al caso loro o no;</li>
@@ -254,19 +335,6 @@ Word 5.0 macro              MACROCNV.DOC on Program disk 1
 <img data-src="./media/emcee-readme.png" height="620" />
 </center>
 </section>
-<section id="readme-driven-development" class="slide level1">
-<h1>Readme-driven development</h1>
-<ul>
-<li>Idea di Tom Preston-Werner (creatore di GitHub e di <a href="https://github.com/toml-lang/toml">TOML</a>) espressa in un <a href="https://tom.preston-werner.com/2010/08/23/readme-driven-development.html">famoso articolo del 2010</a>.</li>
-<li>Prima di scrivere un programma, scrivete il README:
-<ul>
-<li>Dà l’opportunità di pensare al progetto su grande scala, prima ancora di scrivere il codice (che obbliga a concentrarsi sui dettagli).</li>
-<li>Il momento in cui si inizia un progetto è quello in cui l’eccitazione e l’entusiasmo sono al massimo.</li>
-<li>Se si lavora in un team, la stesura del README aiuta già a comprendere come suddividere il lavoro, ed è più semplice discutere sulla base di idee scritte.</li>
-</ul></li>
-<li>Non possiamo farlo nel nostro corso (purtroppo!), perché lo sviluppo del nostro codice segue un criterio pedagogico.</li>
-</ul>
-</section>
 <section id="struttura-di-un-readme" class="slide level1">
 <h1>Struttura di un README</h1>
 <ul>
@@ -278,18 +346,18 @@ Word 5.0 macro              MACROCNV.DOC on Program disk 1
 <li>Come contribuire al repository;</li>
 <li>Licenza d’uso.</li>
 </ol></li>
-<li>Il sito <a href="https://github.com/matiassingers/awesome-readme">Awesome README</a> è una miniera di suggerimenti e di link a README di progetti veri da imitare (come <a href="https://github.com/karan/joe#readme">joe</a>: bellissimo!). Visitatelo, c’è da perdersi!</li>
+<li>Il sito <a href="https://github.com/matiassingers/awesome-readme">Awesome README</a> è una miniera di suggerimenti e di link a README di progetti veri da imitare (come <a href="https://github.com/karan/joe#readme">joe</a>: bellissimo!).</li>
 </ul>
 </section>
-<section id="come-scrivere-un-readme" class="slide level1">
-<h1>Come scrivere un README?</h1>
+<section id="come-scrivere-documentazione" class="slide level1">
+<h1>Come scrivere documentazione?</h1>
 </section>
-<section id="sintassi-dei-readme" class="slide level1">
-<h1>Sintassi dei README</h1>
+<section id="scrivere-testo" class="slide level1">
+<h1>Scrivere testo</h1>
 <ul>
-<li>In passato, i README erano semplici file di testo.</li>
-<li>Abbiamo però visto che i README usati oggi includono grafica, codice evidenziato, titoli, etc.</li>
-<li>Che facciamo, noi fisici dobbiamo scriverlo in LaTeX?!?</li>
+<li>In passato, i README e i manuali d’uso erano semplici file di testo.</li>
+<li>Abbiamo però visto che i README usati oggi includono grafica, codice evidenziato, titoli, etc. (Lo stesso vale per i manuali d’uso!)</li>
+<li>Che facciamo, noi fisici dobbiamo scrivere tutto in LaTeX?!?</li>
 </ul>
 </section>
 <section id="linguaggi-di-markup" class="slide level1">
@@ -385,6 +453,7 @@ $ pandoc -t latex --standalone -o README.tex  --pdf-engine=lualatex  README.md</
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>cupidatat non proident, sunt in culpa qui officia deserunt mollit</span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>anim id est laborum.</span></code></pre></div>
+<p>(Purtroppo, come vedremo tra un attimo, questo non è vero se il file Markdown viene visualizzato in GitHub…)</p>
 </section>
 <section id="alcuni-trucchi-34" class="slide level1">
 <h1>Alcuni trucchi (3/4)</h1>
@@ -411,7 +480,7 @@ $ pandoc -t latex --standalone -o README.tex  --pdf-engine=lualatex  README.md</
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Dei delitti e delle pene&quot;</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> &quot;Nuova edizione corretta e accresciuta&quot;</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> &quot;Cesare Beccaria&quot;</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="an">year:</span><span class="co"> 1964</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="an">year:</span><span class="co"> 1764</span></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="an">colorlinks:</span><span class="co"> true</span></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">...</span></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
@@ -447,29 +516,11 @@ $endif$</code></pre></li>
 <li><p>Si può passare un template personalizzato con <code>--template=FILE</code>.</p></li>
 </ul>
 </section>
-<section id="queste-slide" class="slide level1">
-<h1>Queste slide</h1>
-<ul>
-<li><p>Queste slide sono realizzate con pandoc, usando come formato di output <code>revealjs</code>. Il comando per produrle (semplificato) è il seguente:</p>
-<pre><code>$ pandoc \
-    --standalone \
-    --katex \
-    -V theme=white \
-    -V progress=true
-    -V slidenumber=true \
-    -V width=1440 \
-    -V height=810 \
-    -f markdown+tex_math_single_backslash \
-    -t revealjs \
-    -o FILEOUTPUT.html \
-    FILEINPUT.md</code></pre></li>
-</ul>
-</section>
 <section id="markdown-in-github-12" class="slide level1">
 <h1>Markdown in GitHub (1/2)</h1>
 <ul>
-<li><p>In GitHub non è necessario convertire il file <code>README.md</code>: il sito implementa un proprio sistema di conversione del Markdown.</p></li>
-<li><p>Se si carica in un repository un file con nome <code>README.md</code>, GitHub lo mostrerà automaticamente convertito in una pagina HTML:</p>
+<li><p>In GitHub non serve convertire con <code>pandoc</code> i file Markdown come <code>README.md</code>, perché implementa un convertitore interno a HTML.</p></li>
+<li><p>Se si carica in un repository un file con nome <code>README.md</code>, GitHub lo mostrerà automaticamente nella pagina principale:</p>
 <center>
 <p><img data-src="./media/harlequin-readme.png" height="320" /></p>
 </center></li>
@@ -480,11 +531,11 @@ $endif$</code></pre></li>
 <ul>
 <li><p>GitHub interpreta il Markdown in modo lievemente diverso da Pandoc: consultate la guida <a href="https://github.github.com/gfm/">GitHub Flavored Markdown Spec</a>.</p></li>
 <li><p>In particolare, non potete usare ritorni a capo all’interno di un paragrafo: nel testo seguente, la poesia viene riprodotta da GitHub con i versi separati ciascuno nella propria riga:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Voi, che sapete che cosa è amor,</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>Donne vedete, s&#39;io l&#39;ho nel cor.</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>Quello ch&#39;io provo vi ridirò;</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>è per me nuovo, capir nol so.</span></code></pre></div>
-<p>(In pandoc sarebbe tutto scritto nel medesimo paragrafo).</p></li>
+<div class="sourceCode" id="cb11"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Voi, che sapete che cosa è amor,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>Donne vedete, s&#39;io l&#39;ho nel cor.</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>Quello ch&#39;io provo vi ridirò;</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>è per me nuovo, capir nol so.</span></code></pre></div>
+<p>(<code>pandoc</code> lo trasformerebbe invece in un paragrafo unico).</p></li>
 </ul>
 </section>
 <section id="licenze-duso" class="slide level1">
@@ -497,7 +548,7 @@ $endif$</code></pre></li>
 <li>È da sempre usata nel software commerciale.</li>
 <li>È diventata sempre più importante anche in ambito accademico:
 <ul>
-<li>Alcune istituzioni lo richiedono (non UniMI, che io sappia);</li>
+<li>Alcune istituzioni lo richiedono (ma non UniMI);</li>
 <li>Può mettere al riparo l’autore da sorprese spiacevoli.</li>
 </ul></li>
 <li>Nei programmi FOSS è solitamente scritta in un file <code>LICENSE</code>, <code>LICENSE.txt</code> o <code>LICENSE.md</code> (in Markdown).</li>
@@ -542,7 +593,7 @@ $endif$</code></pre></li>
 <li><p>Anche se avete pubblicato codice su GitHub, voi restate i proprietari del codice.</p></li>
 <li><p>Ma date ovviamente a GitHub il diritto di mantenere sul loro server una copia del codice (in legalese si chiama «content», perché include anche altri tipi di file, come immagini e testo Markdown).</p></li>
 <li><p>Date anche l’autorizzazione di GitHub a <strong>visualizzare</strong> il vostro <em>content</em>, e a permettere agli utenti di scaricarlo.</p></li>
-<li><p>Ciò che <strong>non</strong> garantite necessariamente agli utenti è di poter compilare ed eseguire il vostro codice, e tantomeno di poter usare i risultati prodotti da esso in una pubblicazione!</p></li>
+<li><p>Ciò che <strong>non</strong> garantite necessariamente agli utenti è di poter compilare, modificare o eseguire il vostro codice, e tantomeno di poter usare i risultati prodotti da esso in una pubblicazione!</p></li>
 </ul>
 </section>
 <section id="i-vostri-repository" class="slide level1">
@@ -603,7 +654,7 @@ $endif$</code></pre></li>
 <h1><em>Copyleft licenses</em></h1>
 <ul>
 <li><p>È un tipo di <em>Permissive license</em> che però pone vincoli importanti al modo in cui il codice viene redistribuito.</p></li>
-<li><p>Se il codice di una <em>copyleft license</em> viene usato all’interno di un codice, anche quest’ultimo deve essere rilasciato con una <em>copyleft license</em>.</p></li>
+<li><p>Se il codice di una <em>copyleft license</em> viene usato all’interno di un codice, anche quest’ultimo deve essere rilasciato con una <em>copyleft license</em> (ma non è obbligatorio rilasciarlo!).</p></li>
 <li><p>È detta <em>viral license</em>: se un programma «tocca» del codice <em>copyleft</em>, diventa automaticamente <em>copyleft</em> lui stesso.</p></li>
 <li><p>L’esempio più famoso è la <a href="https://opensource.org/licenses/gpl-license">GNU Public License</a>, usata per Linux, Emacs, Bash e il vostro amato GCC.</p></li>
 </ul>
@@ -629,233 +680,9 @@ $endif$</code></pre></li>
 <li>Scegliete la licenza. Noi prendiamo come esempio la GPL versione 3, descritta sul sito <a href="https://opensource.org/licenses/GPL-3.0">OSI</a>.</li>
 <li>Il sito OSI ha un <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">link</a> al testo della licenza sul sito GNU. Da questo sito si può scaricare la versione in <a href="https://www.gnu.org/licenses/gpl-3.0.txt">testo ASCII</a> o in <a href="https://www.gnu.org/licenses/gpl-3.0.md">Markdown</a>.</li>
 <li>Scaricate la licenza e salvatela in <code>LICENSE</code> (se testo ASCII) o <code>LICENSE.md</code> (se Markdown) dentro il vostro repository.</li>
-<li>La maggior parte delle licenze consiglia di riportare un breve testo in un commento in cima a <em>ogni</em> file sorgente del vostro repository. (La GPL3 non fa eccezione).</li>
+<li>La maggior parte delle licenze consiglia di riportare un breve testo in un commento in cima a <em>ogni</em> file sorgente del vostro repository.</li>
 </ol></li>
 </ul>
-</section>
-<section id="gestione-degli-errori" class="slide level1">
-<h1>Gestione degli errori</h1>
-</section>
-<section id="errori" class="slide level1">
-<h1>Errori</h1>
-<ul>
-<li>Nella scorsa esercitazione abbiamo implementato del codice per scrivere un file PFM.</li>
-<li>Questa settimana implementeremo invece la <em>lettura</em> di un file PFM.</li>
-<li>La lettura di un file è un’attività che è facilmente soggetta ad errori:
-<ul>
-<li>Il file specificato dall’utente non esiste</li>
-<li>Il file è danneggiato</li>
-<li>Il file è in un formato valido ma che il nostro codice non è in grado di caricare (es., un file PFM è codificato <em>big endian</em>, ma noi abbiamo previsto solo <em>little endian</em>)</li>
-</ul></li>
-</ul>
-</section>
-<section id="tipi-di-errore" class="slide level1">
-<h1>Tipi di errore</h1>
-<ul>
-<li><p>Gli errori possono essere suddivisi in due classi:</p>
-<ul>
-<li>Errori di pertinenza del programmatore</li>
-<li>Errori di pertinenza dell’utente</li>
-</ul></li>
-<li><p>A seconda del tipo di errore in cui vi imbattete, la sua gestione è diversa.</p></li>
-</ul>
-</section>
-<section id="errori-del-programmatore" class="slide level1">
-<h1>Errori del programmatore</h1>
-<ul>
-<li>Si tratta di un errore logico del programma.</li>
-<li>Un programma «perfetto» non dovrebbe mai avere errori logici.</li>
-<li>Se si ha l’evidenza che è avvenuto un errore logico, sarebbe meglio segnalarlo <strong>nel modo più rumoroso possibile</strong>.</li>
-</ul>
-</section>
-<section id="esempio" class="slide level1">
-<h1>Esempio</h1>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>my_list <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">9</span>]</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="bu">sorted</span> <span class="op">=</span> my_sort_function(my_list)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> (<span class="bu">len</span>(my_list) <span class="op">==</span> <span class="bu">len</span>(<span class="bu">sorted</span>)):</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Error, mismatch in the length of the sorted list&quot;</span>)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> (<span class="bu">sorted</span>[<span class="dv">0</span>] <span class="op">&lt;=</span> <span class="bu">sorted</span>[<span class="dv">1</span>]):</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Error, the array is not sorted&quot;</span>)</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># The program continues</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div>
-</section>
-<section id="esempio-un-po-migliorato" class="slide level1">
-<h1>Esempio un po’ migliorato</h1>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>my_list <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">9</span>]</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">sorted</span> <span class="op">=</span> my_sort_function(my_list)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="bu">len</span>(my_list) <span class="op">==</span> <span class="bu">len</span>(<span class="bu">sorted</span>)) <span class="kw">and</span> (<span class="bu">sorted</span>[<span class="dv">0</span>] <span class="op">&lt;=</span> <span class="bu">sorted</span>[<span class="dv">1</span>]):</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The program continues only if the conditions above are</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># valid</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    ...</span></code></pre></div>
-</section>
-<section id="esempio-migliorato" class="slide level1">
-<h1>Esempio migliorato</h1>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>my_list <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">9</span>]</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">sorted</span> <span class="op">=</span> my_sort_function(my_list)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># If any &quot;assert&quot;, the program will crash and will print details</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># about what the code was doing. If PDB support is turned on,</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># a debugger will be fired automatically.</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(my_list) <span class="op">==</span> <span class="bu">len</span>(<span class="bu">sorted</span>)</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">sorted</span>[<span class="dv">0</span>] <span class="op">&lt;=</span> <span class="bu">sorted</span>[<span class="dv">1</span>]</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># The program continues</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div>
-</section>
-<section id="gestione-errori-del-programmatore" class="slide level1">
-<h1>Gestione errori del programmatore</h1>
-<ul>
-<li>Tutti i linguaggi implementano funzioni che consentono di mandare in crash un programma (es., <code>assert</code> e <code>abort</code> in C/C++).</li>
-<li>Queste istruzioni solitamente stampano a video una serie di dettagli sulla causa dell’errore, e sono pensate per essere usate insieme a un debugger.</li>
-<li>Eseguire un debugger è sensato: se l’errore è logico, è il programmatore che deve mettere mano al codice, non l’utente!</li>
-<li>Attenzione al fatto che alcune di queste funzioni potrebbero non essere compilate in modalità <em>release</em>.</li>
-</ul>
-</section>
-<section id="errori-dellutente" class="slide level1">
-<h1>Errori dell’utente</h1>
-<ul>
-<li>Sono errori a cui il programmatore non può far fronte:
-<ul>
-<li>L’utente chiede di leggere un file che non esiste;</li>
-<li>L’utente chiede di scrivere un file su un supporto che non ha più spazio libero;</li>
-<li>L’utente specifica un input scorretto.</li>
-</ul></li>
-<li>Vanno gestiti solitamente in modo molto diverso dagli errori del programmatore!</li>
-</ul>
-</section>
-<section id="esempio-1" class="slide level1">
-<h1>Esempio</h1>
-<p><asciinema-player src="./cast/user-error-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player></p>
-</section>
-<section id="gestire-errori-dellutente" class="slide level1">
-<h1>Gestire errori dell’utente</h1>
-<ul>
-<li>Gli errori dell’utente sono <strong>inevitabili</strong>.</li>
-<li>Se si ha evidenza che l’utente ha commesso un errore, ci sono diversi modi di reagire:
-<ol type="1">
-<li><p>Stampare un messaggio di errore, il più chiaro possibile;</p></li>
-<li><p>Chiedere all’utente di inserire di nuovo il dato scorretto;</p></li>
-<li><p>In certi contesti il codice può decidere autonomamente come correggere l’errore.</p>
-<p>Ad esempio, se si chiede un valore numerico entro un certo intervallo <span class="math inline">[a, b]</span> e il valore fornito è <span class="math inline">x &gt; b</span>, si può porre <span class="math inline">x = b</span> e continuare.</p></li>
-</ol></li>
-</ul>
-</section>
-<section id="correzione-errori-12" class="slide level1">
-<h1>Correzione errori (1/2)</h1>
-<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert another number: &quot;</span>))</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> y <span class="op">!=</span> <span class="fl">0.0</span>:</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;The ratio </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Error, the second number cannot be zero!&quot;</span>)</span></code></pre></div>
-</section>
-<section id="correzione-errori-22" class="slide level1">
-<h1>Correzione errori (2/2)</h1>
-<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert another number: &quot;</span>))</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> y <span class="op">==</span> <span class="fl">0.0</span>:</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error, the second number cannot be zero!&quot;</span>)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;The ratio </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
-</section>
-<section id="programma-corretto" class="slide level1">
-<h1>Programma corretto</h1>
-<p><asciinema-player src="./cast/user-error-corrected-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player></p>
-</section>
-<section id="messaggi-derrore" class="slide level1">
-<h1>Messaggi d’errore</h1>
-<ul>
-<li><p>Gli studenti hanno spesso la tendenza a stampare messaggi di errore.</p></li>
-<li><p>Esempio (sbagliato) preso da un tema d’esame TNDS:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> Bisezione<span class="op">::</span>CercaZeri<span class="op">(</span><span class="dt">double</span> a<span class="op">,</span> <span class="dt">double</span> b<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>f<span class="op">-&gt;</span>Eval<span class="op">(</span>a<span class="op">)</span> <span class="op">*</span> f<span class="op">-&gt;</span>Eval<span class="op">(</span>b<span class="op">)</span> <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        cout <span class="op">&lt;&lt;</span> <span class="st">&quot;Errore, teorema degli zeri non soddisfatto</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Etc.</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>Non c’è un <code>return</code> in corrispondenza dell’<code>if</code>, e l’esercizio chiedeva di calcolare lo zero di una funzione in un intervallo in cui lo zero <strong>doveva esserci</strong>. Se il teorema degli zeri non è soddisfatto, vuol dire che c’è un errore in <code>a</code> oppure <code>b</code>.</p></li>
-</ul>
-</section>
-<section id="visibilità-dei-messaggi-di-errore" class="slide level1">
-<h1>Visibilità dei messaggi di errore</h1>
-<ul>
-<li><p>Se una funzione stampa un messaggio quando capita un errore, è molto probabile che quel messaggio si perda all’interno dell’output:</p>
-<pre class="text"><code>$ python3 my-beautiful-program.py
-Initializing the program...
-Now I am reading data from the device
-The device has sent 163421 samples
-Computing statistics on the samples
-Error, some samples are negative
-Sorting the samples
-Running a Monte Carlo simulations, please wait...
-Done, time elapsed: 164.96 seconds
-Producing the plots...
-Done, the results are saved in &quot;output.pdf&quot;
-$</code></pre></li>
-<li><p>Meglio rendere l’errore più visibile, ad esempio con i colori, oppure (meglio!) fermare del tutto l’esecuzione del programma appena l’errore si verifica.</p></li>
-</ul>
-</section>
-<section id="errori-dellutente-nelle-funzioni" class="slide level1">
-<h1>Errori dell’utente nelle funzioni</h1>
-<ul>
-<li>È solitamente molto semplice come gestire gli errori dell’utente nel <code>main</code> di un programma.</li>
-<li>È invece meno chiaro come gestire gli errori nell’input passato a una funzione o un metodo, come ad esempio <code>Bisezione::CercaZeri</code>.</li>
-<li>Nessuna funzione o metodo dovrebbe <strong>mai</strong> fare qualcosa di <strong>catastrofico</strong> (mandare in crash il programma) o <strong>visibile</strong> (stampare un messaggio d’errore a video) se l’errore può essere dovuto all’utente.</li>
-<li>La <strong>regola aurea</strong> è che la funzione restituisca un valore di ritorno che segnali l’errore, oppure che sollevi un’eccezione.</li>
-</ul>
-</section>
-<section id="restituire-un-errore" class="slide level1">
-<h1>Restituire un errore</h1>
-<ul>
-<li><p>Se un linguaggio permette di restituire valori multipli, potete usare questa sintassi (molto usata in <a href="https://blog.golang.org/error-handling-and-go">Go</a>):</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(result, error_condition) <span class="op">=</span> my_function(...)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> error_condition:</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Handle the error: print a message, crash the program, etc.</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    ...</span></code></pre></div></li>
-<li><p>Potete impiegare le eccezioni, se il vostro linguaggio le supporta:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> my_function(...):</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> something_wrong:</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">&quot;Error!&quot;</span>)</span></code></pre></div></li>
-</ul>
-</section>
-<section id="parametri-derrore" class="slide level1">
-<h1>Parametri d’errore</h1>
-<p>In linguaggi come il C/C++, un approccio molto usato è quello di accettare un parametro addizionale che segnali l’errore:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> my_function<span class="op">(...,</span> <span class="dt">bool</span> <span class="op">&amp;</span> error<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>something_wrong<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        error <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">0.0</span><span class="op">;</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    error <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>Al posto di un <code>bool</code> potete usare una <code>enum class</code> per registrare il tipo di errore, o addirittura una <code>struct</code> per racchiudere informazioni complesse.</p>
-</section>
-<section id="tipi-nullable" class="slide level1">
-<h1>Tipi <em>nullable</em></h1>
-<p>Linguaggi come C# e Kotlin definiscono il tipo <em>nullable</em>, che può essere usato con qualsiasi tipo, e ne indica l’<em>assenza</em>:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">// C# example</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Note the &quot;?&quot; after &quot;double&quot;: this is the same syntax as in Kotlin</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span><span class="op">?</span> result <span class="op">=</span> <span class="fu">my_function</span><span class="op">(...);</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="op">(!</span> result<span class="op">.</span><span class="fu">HasValue</span><span class="op">)</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Something wrong happened, my_function didn&#39;t compute the result</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
     </div>
   </div>
