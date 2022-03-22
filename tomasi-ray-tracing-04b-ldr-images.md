@@ -23,15 +23,13 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Implementazione
 
--   Le attività da compiere sul codice sono le seguenti:
+Le attività da compiere sul codice sono le seguenti:
 
-    #.   Definire una funzione che calcoli la luminosità di un oggetto `Color`;
-    #.   Definire una funzione che calcoli la luminosità media di un `HdrImage`;
-    #.   Definire una funzione che normalizzi i valori di un `HdrImage` usando una certa luminosità media, opzionalmente passata come argomento;
-    #.   Definire una funzione che applichi la correzione per le sorgenti luminose;
-    #.   Implementare il `main` nel codice dell'applicazione.
-
--   Come al solito, fornisco un'implementazione di riferimento in Python nel repository [pytracer](https://github.com/ziotom78/pytracer).
+#.   Definire una funzione che calcoli la luminosità di un oggetto `Color`;
+#.   Definire una funzione che calcoli la luminosità media di un `HdrImage`;
+#.   Definire una funzione che normalizzi i valori di un `HdrImage` usando una certa luminosità media, opzionalmente passata come argomento;
+#.   Definire una funzione che applichi la correzione per le sorgenti luminose;
+#.   Implementare il `main` nel codice dell'applicazione.
 
 # Luminosità (1/2)
 
@@ -191,6 +189,18 @@ def test_clamp_image():
 -   Questo genere di librerie di solito si installano usando in qualche modo `sudo`, come ad esempio `./configure && make && sudo make install`
 
 -   Esempio: installare ROOT sul proprio sistema per lavorare alle esercitazioni di TNDS!
+
+# Librerie di sistema
+
+-   Capita però spesso che si debbano usare librerie *incompatibili* nei propri codici! Supponiamo per esempio che io controlli gli oscilloscopi del mio laboratorio tramite un singolo computer:
+
+    -   Voglio usare la versione 3.0 della libreria `oscilloscope`: è appena uscita e ha nuove funzionalità che mi servono per una mia nuova ricerca
+    
+    -   Però sul mio computer ho miei vecchi codici scritti per la versione 2.4, che non compilano con la versione 3.0
+    
+    -   Tra un anno uscirà la versione 4.0 di `oscilloscope`, che non supporterà più uno dei vecchi oscilloscopi che ancora usiamo in laboratorio.
+
+-   A volte aggiornare una libreria è **necessario**, ma a volte è **impossibile**.
 
 # Librerie locali
 

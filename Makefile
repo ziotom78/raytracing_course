@@ -25,7 +25,7 @@ all: \
 	tomasi-ray-tracing-06a-geometry.html \
 	tomasi-ray-tracing-05b-external-libraries.html \
 	tomasi-ray-tracing-05a-compression.html \
-	tomasi-ray-tracing-04b-reading-images.html \
+	tomasi-ray-tracing-04b-ldr-images.html \
 	tomasi-ray-tracing-04a-documentation.html \
 	tomasi-ray-tracing-03b-image-files.html \
 	tomasi-ray-tracing-03a-images.html \

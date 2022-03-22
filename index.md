@@ -14,6 +14,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 3a      | 2022/03/14 | [Tipi di file, gestione degli errori](tomasi-ray-tracing-03a-images.html)          |
 | 3b      | 2022/03/16 | [Lettura/scrittura di file HDR](tomasi-ray-tracing-03b-image-files.html)           |
 | 4a      | 2022/03/21 | [Tone mapping, documentazione, licenze](tomasi-ray-tracing-04a-documentation.html) |
+| 4b      | 2022/03/23 | [Tone mapping, file LDR](tomasi-ray-tracing-04b-ldr-images.html)                   |
 
 # Scelta del linguaggio
 
