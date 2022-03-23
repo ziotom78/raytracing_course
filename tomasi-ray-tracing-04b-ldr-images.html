@@ -284,18 +284,51 @@ $</code></pre></li>
 </section>
 <section id="librerie-di-sistema-1" class="slide level1">
 <h1>Librerie di sistema</h1>
+<p>Capita però spesso che si debbano usare librerie <em>incompatibili</em> nei propri codici! Supponiamo di avere numerosi oscilloscopi in un laboratorio di elettronica, e che usiamo la libreria <code>oscilloscope</code> per analizzarne le misure:</p>
 <ul>
-<li><p>Capita però spesso che si debbano usare librerie <em>incompatibili</em> nei propri codici! Supponiamo per esempio che io controlli gli oscilloscopi del mio laboratorio tramite un singolo computer:</p>
-<ul>
-<li><p>Voglio usare la versione 3.0 della libreria <code>oscilloscope</code>: è appena uscita e ha nuove funzionalità che mi servono per una mia nuova ricerca</p></li>
-<li><p>Però sul mio computer ho miei vecchi codici scritti per la versione 2.4, che non compilano con la versione 3.0</p></li>
-<li><p>Tra un anno uscirà la versione 4.0 di <code>oscilloscope</code>, che non supporterà più uno dei vecchi oscilloscopi che ancora usiamo in laboratorio.</p></li>
-</ul></li>
-<li><p>A volte aggiornare una libreria è <strong>necessario</strong>, ma a volte è <strong>impossibile</strong>.</p></li>
+<li><p>Sinora abbiamo utilizzato la versione 2.4 per scrivere molti codici di analisi usati regolarmente</p></li>
+<li><p>È però uscita ormai da un po’ la versione 3.0 di <code>oscilloscope</code>, che ha nuove funzionalità interessanti, ma non ho ancora fatto l’aggiornamento perché è incompatibile con la versione 2.4!</p></li>
+<li><p>Sta per uscire la versione 4.0, ancora più potente, ma non supporterà più uno dei miei vecchi oscilloscopi, che mi è ancora indispensabile.</p></li>
 </ul>
+</section>
+<section id="possibili-soluzioni" class="slide level1">
+<h1>Possibili soluzioni</h1>
+<ul>
+<li><p>Il modo più primitivo di risolvere il problema è di tenere svariati computer in laboratorio, ciascuno con la propria versione di <code>oscilloscope</code></p></li>
+<li><p>Un modo un po’ più comodo consiste nel creare varie <em>virtual machine</em></p></li>
+<li><p>Ormai da una decina d’anni hanno preso piede i <em>container</em> (es. <a href="https://www.docker.com/">Docker</a>, <a href="https://podman.io/">Podman</a>, <a href="https://sylabs.io/singularity">Singularity</a>), che sono macchine virtuali «leggere»: sono meno versatili, ma il tempo di avvio è praticamente zero</p></li>
+<li><p>Ciascuna di queste soluzioni rende però complicato scambiare dati tra programmi che usano librerie diverse (ad esempio, per sovrapporre il plot di una curva di un oscilloscopio con quella di un altro) ed installare nuove versioni</p></li>
+</ul>
+</section>
+<section id="esempio" class="slide level1">
+<h1>Esempio</h1>
+<pre><code># Install GCC 10 and the C++ library Healpix version 3.70
+Bootstrap: docker
+From: ubuntu:20.04
+
+%runscript
+        exec /usr/bin/g++-10 &quot;$@&quot;
+
+%post
+
+        apt-get update
+        DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
+        apt-get install -y build-essential gcc-10 g++-10 cmake curl libcfitsio-dev
+
+        echo &quot;export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH&quot; &gt;&gt; $SINGULARITY_ENVIRONMENT
+
+        curl -L &quot;https://downloads.sourceforge.net/project/healpix/Healpix_3.70/Healpix_3.70_2020Jul23.tar.gz&quot; &gt; healpix.tar.gz
+        tar xvf healpix.tar.gz
+        (cd Healpix_3.70 &amp;&amp; ./configure --auto=cxx &amp;&amp; make -j 4)</code></pre>
+<p>Questo file viene «compilato» dall’eseguibile <code>singularity</code>, che produce un file eseguibile di ~200 MB contenente il comando <code>g++-10</code> insieme al sistema operativo Ubuntu Linux 20.04.</p>
+</section>
+<section class="slide level1">
+
+<p><asciinema-player src="cast/singularity-90x19.cast" cols="90" rows="19" font-size="medium"></asciinema-player></p>
 </section>
 <section id="librerie-locali" class="slide level1">
 <h1>Librerie locali</h1>
+<p>Le librerie locali risolvono questi problemi perché non vengono installate a livello di sistema, ma sono legate a un singolo <em>repository</em>:</p>
 <center>
 <img data-src="media/dependencies-complex.svg" />
 </center>
@@ -363,78 +396,88 @@ $</code></pre></li>
 </table>
 <p>Potete scegliere altre librerie, ma attenzione a scegliere quelle pixel-based!</p>
 </section>
+<section id="cosa-ci-serve" class="slide level1">
+<h1>Cosa ci serve</h1>
+<p>Scegliete una libreria LDR che abbia queste caratteristiche:</p>
+<ul>
+<li>Creazione di una immagine specificando numero di colonne (<code>width</code>) e numero di righe (<code>height</code>)</li>
+<li>Impostazione del valore sRGB di un pixel date le sue coordinate <code>x</code> e <code>y</code></li>
+<li>Salvataggio dell’immagine in un formato grafico diffuso</li>
+<li>Fate molta attenzione al sistema di coordinate: il pixel a <code>(0, 0)</code> è in alto a sinistra? in basso a sinistra? oppure…?</li>
+</ul>
+</section>
 <section id="conversione-a-ldr-33" class="slide level1">
 <h1>Conversione a LDR (3/3)</h1>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage:</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> write_ldr_image(<span class="va">self</span>, stream, <span class="bu">format</span>, gamma<span class="op">=</span><span class="fl">1.0</span>):</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="im">from</span> PIL <span class="im">import</span> Image</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> Image.new(<span class="st">&quot;RGB&quot;</span>, (<span class="va">self</span>.width, <span class="va">self</span>.height))</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.height):</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width):</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>                cur_color <span class="op">=</span> <span class="va">self</span>.get_pixel(x, y)</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                img.putpixel(xy<span class="op">=</span>(x, y), value<span class="op">=</span>(</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">int</span>(<span class="dv">255</span> <span class="op">*</span> math.<span class="bu">pow</span>(cur_color.r, <span class="dv">1</span> <span class="op">/</span> gamma)),</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">int</span>(<span class="dv">255</span> <span class="op">*</span> math.<span class="bu">pow</span>(cur_color.g, <span class="dv">1</span> <span class="op">/</span> gamma)),</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">int</span>(<span class="dv">255</span> <span class="op">*</span> math.<span class="bu">pow</span>(cur_color.b, <span class="dv">1</span> <span class="op">/</span> gamma)),</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>                ))</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        img.save(stream, <span class="bu">format</span><span class="op">=</span><span class="bu">format</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage:</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> write_ldr_image(<span class="va">self</span>, stream, <span class="bu">format</span>, gamma<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> Image.new(<span class="st">&quot;RGB&quot;</span>, (<span class="va">self</span>.width, <span class="va">self</span>.height))</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.height):</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.width):</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>                cur_color <span class="op">=</span> <span class="va">self</span>.get_pixel(x, y)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>                img.putpixel(xy<span class="op">=</span>(x, y), value<span class="op">=</span>(</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">int</span>(<span class="dv">255</span> <span class="op">*</span> math.<span class="bu">pow</span>(cur_color.r, <span class="dv">1</span> <span class="op">/</span> gamma)),</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">int</span>(<span class="dv">255</span> <span class="op">*</span> math.<span class="bu">pow</span>(cur_color.g, <span class="dv">1</span> <span class="op">/</span> gamma)),</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">int</span>(<span class="dv">255</span> <span class="op">*</span> math.<span class="bu">pow</span>(cur_color.b, <span class="dv">1</span> <span class="op">/</span> gamma)),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>                ))</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        img.save(stream, <span class="bu">format</span><span class="op">=</span><span class="bu">format</span>)</span></code></pre></div>
 </section>
 <section id="funzione-main-12" class="slide level1">
 <h1>Funzione <code>main</code> (1/2)</h1>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Parameters:</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    input_pfm_file_name: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    factor:<span class="bu">float</span> <span class="op">=</span> <span class="fl">0.2</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    gamma:<span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    output_png_file_name: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> parse_command_line(<span class="va">self</span>, argv):</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(sys.argv) <span class="op">!=</span> <span class="dv">5</span>:</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="st">&quot;Usage: main.py INPUT_PFM_FILE FACTOR GAMMA OUTPUT_PNG_FILE&quot;</span>)</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.input_pfm_file_name <span class="op">=</span> sys.argv[<span class="dv">1</span>]</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.factor <span class="op">=</span> <span class="bu">float</span>(sys.argv[<span class="dv">2</span>])</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="ss">f&quot;Invalid factor (&#39;</span><span class="sc">{</span>sys<span class="sc">.</span>argv[<span class="dv">2</span>]<span class="sc">}</span><span class="ss">&#39;), it must be a floating-point number.&quot;</span>)</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.gamma <span class="op">=</span> <span class="bu">float</span>(sys.argv[<span class="dv">3</span>])</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="ss">f&quot;Invalid gamma (&#39;</span><span class="sc">{</span>sys<span class="sc">.</span>argv[<span class="dv">3</span>]<span class="sc">}</span><span class="ss">&#39;), it must be a floating-point number.&quot;</span>)</span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.output_png_file_name <span class="op">=</span> sys.argv[<span class="dv">4</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Parameters:</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    input_pfm_file_name: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    factor:<span class="bu">float</span> <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    gamma:<span class="bu">float</span> <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    output_png_file_name: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> parse_command_line(<span class="va">self</span>, argv):</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(sys.argv) <span class="op">!=</span> <span class="dv">5</span>:</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="st">&quot;Usage: main.py INPUT_PFM_FILE FACTOR GAMMA OUTPUT_PNG_FILE&quot;</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.input_pfm_file_name <span class="op">=</span> sys.argv[<span class="dv">1</span>]</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.factor <span class="op">=</span> <span class="bu">float</span>(sys.argv[<span class="dv">2</span>])</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="ss">f&quot;Invalid factor (&#39;</span><span class="sc">{</span>sys<span class="sc">.</span>argv[<span class="dv">2</span>]<span class="sc">}</span><span class="ss">&#39;), it must be a floating-point number.&quot;</span>)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.gamma <span class="op">=</span> <span class="bu">float</span>(sys.argv[<span class="dv">3</span>])</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="ss">f&quot;Invalid gamma (&#39;</span><span class="sc">{</span>sys<span class="sc">.</span>argv[<span class="dv">3</span>]<span class="sc">}</span><span class="ss">&#39;), it must be a floating-point number.&quot;</span>)</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.output_png_file_name <span class="op">=</span> sys.argv[<span class="dv">4</span>]</span></code></pre></div>
 <p>(Anziché usare variabili globali per i parametri letti da <code>argv</code>, uso una <code>struct</code> che poi passo alle varie funzioni: è più facile scrivere test!)</p>
 </section>
 <section id="funzione-main-22" class="slide level1">
 <h1>Funzione <code>main</code> (2/2)</h1>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main(argv):</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    parameters <span class="op">=</span> Parameters()</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        parameters.parse_command_line(argv)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">RuntimeError</span> <span class="im">as</span> err:</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error: &quot;</span>, err)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(parameters.input_pfm_file_name, <span class="st">&quot;rb&quot;</span>) <span class="im">as</span> inpf:</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> hdrimages.read_pfm_image(inpf)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;File </span><span class="sc">{</span>parameters<span class="sc">.</span>input_pfm_file_name<span class="sc">}</span><span class="ss"> has been read from disk.&quot;</span>)</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    img.normalize_image(factor<span class="op">=</span>parameters.factor)</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    img.clamp_image()</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(parameters.output_png_file_name, <span class="st">&quot;wb&quot;</span>) <span class="im">as</span> outf:</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        img.write_ldr_image(stream<span class="op">=</span>outf, <span class="bu">format</span><span class="op">=</span><span class="st">&quot;PNG&quot;</span>, gamma<span class="op">=</span>parameters.gamma)</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;File </span><span class="sc">{</span>parameters<span class="sc">.</span>output_png_file_name<span class="sc">}</span><span class="ss"> has been written to disk.&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main(argv):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    parameters <span class="op">=</span> Parameters()</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        parameters.parse_command_line(argv)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">RuntimeError</span> <span class="im">as</span> err:</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error: &quot;</span>, err)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(parameters.input_pfm_file_name, <span class="st">&quot;rb&quot;</span>) <span class="im">as</span> inpf:</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> hdrimages.read_pfm_image(inpf)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;File </span><span class="sc">{</span>parameters<span class="sc">.</span>input_pfm_file_name<span class="sc">}</span><span class="ss"> has been read from disk.&quot;</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    img.normalize_image(factor<span class="op">=</span>parameters.factor)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    img.clamp_image()</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(parameters.output_png_file_name, <span class="st">&quot;wb&quot;</span>) <span class="im">as</span> outf:</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        img.write_ldr_image(stream<span class="op">=</span>outf, <span class="bu">format</span><span class="op">=</span><span class="st">&quot;PNG&quot;</span>, gamma<span class="op">=</span>parameters.gamma)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;File </span><span class="sc">{</span>parameters<span class="sc">.</span>output_png_file_name<span class="sc">}</span><span class="ss"> has been written to disk.&quot;</span>)</span></code></pre></div>
 </section>
 <section id="guida-per-lesercitazione" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
@@ -471,17 +514,17 @@ $</code></pre></li>
 </section>
 <section id="salvare-file-png" class="slide level1">
 <h1>Salvare file PNG</h1>
-<div class="sourceCode" id="cb15"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Create a sRGB bitmap</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> bitmap <span class="op">=</span> <span class="kw">new</span> Image<span class="op">&lt;</span>Rgb24<span class="op">&gt;(</span>Configuration<span class="op">.</span><span class="fu">Default</span><span class="op">,</span> width<span class="op">,</span> height<span class="op">);</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">// The bitmap can be used as a matrix. To draw the pixels in the bitmap</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">// just use the syntax &quot;bitmap[x, y]&quot; like the following:</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>bitmap<span class="op">[</span>SOMEX<span class="op">,</span> SOMEY<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">Rgb24</span><span class="op">(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">128</span><span class="op">);</span> <span class="co">// Three &quot;Byte&quot; values!</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Save the bitmap as a PNG file</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="op">(</span>Stream fileStream <span class="op">=</span> File<span class="op">.</span><span class="fu">OpenWrite</span><span class="op">(</span><span class="st">&quot;output.png&quot;</span><span class="op">))</span> <span class="op">{</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    bitmap<span class="op">.</span><span class="fu">Save</span><span class="op">(</span>fileStream<span class="op">,</span> <span class="kw">new</span> <span class="fu">PngEncoder</span><span class="op">());</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Create a sRGB bitmap</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> bitmap <span class="op">=</span> <span class="kw">new</span> Image<span class="op">&lt;</span>Rgb24<span class="op">&gt;(</span>Configuration<span class="op">.</span><span class="fu">Default</span><span class="op">,</span> width<span class="op">,</span> height<span class="op">);</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">// The bitmap can be used as a matrix. To draw the pixels in the bitmap</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">// just use the syntax &quot;bitmap[x, y]&quot; like the following:</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>bitmap<span class="op">[</span>SOMEX<span class="op">,</span> SOMEY<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">Rgb24</span><span class="op">(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">128</span><span class="op">);</span> <span class="co">// Three &quot;Byte&quot; values!</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Save the bitmap as a PNG file</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="op">(</span>Stream fileStream <span class="op">=</span> File<span class="op">.</span><span class="fu">OpenWrite</span><span class="op">(</span><span class="st">&quot;output.png&quot;</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    bitmap<span class="op">.</span><span class="fu">Save</span><span class="op">(</span>fileStream<span class="op">,</span> <span class="kw">new</span> <span class="fu">PngEncoder</span><span class="op">());</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="indicazioni-per-dnimrust" class="slide level1">
 <h1>Indicazioni per D/Nim/Rust</h1>
@@ -520,20 +563,20 @@ $</code></pre></li>
 </section>
 <section id="esempio-di-codice-kotlin" class="slide level1">
 <h1>Esempio di codice Kotlin</h1>
-<div class="sourceCode" id="cb17"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span> <span class="op">=</span> <span class="dv">800</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span> <span class="op">=</span> <span class="dv">600</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">ldrImage</span> <span class="op">=</span> BufferedImage<span class="op">(</span>width<span class="op">,</span> height<span class="op">,</span> BufferedImage<span class="op">.</span>TYPE_INT_RGB<span class="op">)</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>y <span class="kw">in</span> <span class="dv">0</span> until height<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>x <span class="kw">in</span> <span class="dv">0</span> until width<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 0xFF0000 corresponds to sRGB(255, 0, 0): the image will be</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>            <span class="co">// painted uniformly with a bright red shade</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>            ldrImage<span class="op">.</span>setRGB<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> <span class="bn">0xFF0000</span><span class="op">)</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Save the image to the file specified on the command line</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    ImageIO<span class="op">.</span>write<span class="op">(</span>args<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="st">&quot;PNG&quot;</span><span class="op">,</span> stream<span class="op">)</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span> <span class="op">=</span> <span class="dv">800</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span> <span class="op">=</span> <span class="dv">600</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">ldrImage</span> <span class="op">=</span> BufferedImage<span class="op">(</span>width<span class="op">,</span> height<span class="op">,</span> BufferedImage<span class="op">.</span>TYPE_INT_RGB<span class="op">)</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>y <span class="kw">in</span> <span class="dv">0</span> until height<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>x <span class="kw">in</span> <span class="dv">0</span> until width<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 0xFF0000 corresponds to sRGB(255, 0, 0): the image will be</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>            <span class="co">// painted uniformly with a bright red shade</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>            ldrImage<span class="op">.</span>setRGB<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> <span class="bn">0xFF0000</span><span class="op">)</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Save the image to the file specified on the command line</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    ImageIO<span class="op">.</span>write<span class="op">(</span>args<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="st">&quot;PNG&quot;</span><span class="op">,</span> stream<span class="op">)</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="linea-di-comando" class="slide level1">
 <h1>Linea di comando</h1>

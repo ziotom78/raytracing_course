@@ -192,17 +192,57 @@ def test_clamp_image():
 
 # Librerie di sistema
 
--   Capita però spesso che si debbano usare librerie *incompatibili* nei propri codici! Supponiamo per esempio che io controlli gli oscilloscopi del mio laboratorio tramite un singolo computer:
+Capita però spesso che si debbano usare librerie *incompatibili* nei propri codici! Supponiamo di avere numerosi oscilloscopi in un laboratorio di elettronica, e che usiamo la libreria `oscilloscope` per analizzarne le misure:
 
-    -   Voglio usare la versione 3.0 della libreria `oscilloscope`: è appena uscita e ha nuove funzionalità che mi servono per una mia nuova ricerca
-    
-    -   Però sul mio computer ho miei vecchi codici scritti per la versione 2.4, che non compilano con la versione 3.0
-    
-    -   Tra un anno uscirà la versione 4.0 di `oscilloscope`, che non supporterà più uno dei vecchi oscilloscopi che ancora usiamo in laboratorio.
+-   Sinora abbiamo utilizzato la versione 2.4 per scrivere molti codici di analisi usati regolarmente
 
--   A volte aggiornare una libreria è **necessario**, ma a volte è **impossibile**.
+-   È però uscita ormai da un po' la versione 3.0 di `oscilloscope`, che ha nuove funzionalità interessanti, ma non ho ancora fatto l'aggiornamento perché è incompatibile con la versione 2.4!
+    
+-   Sta per uscire la versione 4.0, ancora più potente, ma non supporterà più uno dei miei vecchi oscilloscopi, che mi è ancora indispensabile.
+
+# Possibili soluzioni
+
+-   Il modo più primitivo di risolvere il problema è di tenere svariati computer in laboratorio, ciascuno con la propria versione di `oscilloscope`
+
+-   Un modo un po' più comodo consiste nel creare varie *virtual machine*
+
+-   Ormai da una decina d'anni hanno preso piede i *container* (es. [Docker](https://www.docker.com/), [Podman](https://podman.io/), [Singularity](https://sylabs.io/singularity)), che sono macchine virtuali «leggere»: sono meno versatili, ma il tempo di avvio è praticamente zero
+
+-   Ciascuna di queste soluzioni rende però complicato scambiare dati tra programmi che usano librerie diverse (ad esempio, per sovrapporre il plot di una curva di un oscilloscopio con quella di un altro) ed installare nuove versioni
+
+# Esempio
+
+```
+# Install GCC 10 and the C++ library Healpix version 3.70
+Bootstrap: docker
+From: ubuntu:20.04
+
+%runscript
+        exec /usr/bin/g++-10 "$@"
+
+%post
+
+        apt-get update
+        DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
+        apt-get install -y build-essential gcc-10 g++-10 cmake curl libcfitsio-dev
+
+        echo "export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH" >> $SINGULARITY_ENVIRONMENT
+
+        curl -L "https://downloads.sourceforge.net/project/healpix/Healpix_3.70/Healpix_3.70_2020Jul23.tar.gz" > healpix.tar.gz
+        tar xvf healpix.tar.gz
+        (cd Healpix_3.70 && ./configure --auto=cxx && make -j 4)
+```
+
+Questo file viene «compilato» dall'eseguibile `singularity`, che produce un file eseguibile di ~200 MB contenente il comando `g++-10` insieme al sistema operativo Ubuntu Linux 20.04.
+
+---
+
+<asciinema-player src="cast/singularity-90x19.cast" cols="90" rows="19" font-size="medium"></asciinema-player>
+
 
 # Librerie locali
+
+Le librerie locali risolvono questi problemi perché non vengono installate a livello di sistema, ma sono legate a un singolo *repository*:
 
 <center>![](media/dependencies-complex.svg)</center>
 
@@ -241,6 +281,15 @@ def test_clamp_image():
 | Rust       | [image](https://crates.io/crates/image)                                                                |
 
 Potete scegliere altre librerie, ma attenzione a scegliere quelle pixel-based!
+
+# Cosa ci serve
+
+Scegliete una libreria LDR che abbia queste caratteristiche:
+
+-   Creazione di una immagine specificando numero di colonne (`width`) e numero di righe (`height`)
+-   Impostazione del valore sRGB di un pixel date le sue coordinate `x` e `y`
+-   Salvataggio dell'immagine in un formato grafico diffuso
+-   Fate molta attenzione al sistema di coordinate: il pixel a `(0, 0)` è in alto a sinistra? in basso a sinistra? oppure…?
 
 # Conversione a LDR (3/3)
 
