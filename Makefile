@@ -19,12 +19,9 @@ all: \
 	tomasi-ray-tracing-09a-shapes.html \
 	tomasi-ray-tracing-08b-docstrings.html \
 	tomasi-ray-tracing-08a-projections.html \
-	tomasi-ray-tracing-07b-ci-builds.html \
-	tomasi-ray-tracing-07a-clifford-algebras.html \
-	tomasi-ray-tracing-06b-pull-requests.html \
-	tomasi-ray-tracing-06a-geometry.html \
-	tomasi-ray-tracing-05b-external-libraries.html \
-	tomasi-ray-tracing-05a-compression.html \
+	tomasi-ray-tracing-06a.html \
+	tomasi-ray-tracing-05b.html \
+	tomasi-ray-tracing-05a.html \
 	tomasi-ray-tracing-04b-ldr-images.html \
 	tomasi-ray-tracing-04a-documentation.html \
 	tomasi-ray-tracing-03b-image-files.html \

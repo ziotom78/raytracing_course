@@ -48,6 +48,130 @@
   <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
+<section id="numeri-di-versione" class="slide level1">
+<h1>Numeri di versione</h1>
+</section>
+<section id="scopo-dei-numeri-di-versione" class="slide level1">
+<h1>Scopo dei numeri di versione</h1>
+<ul>
+<li>Ogni programma dovrebbe avere un <strong>numero di versione</strong> associato, che dice quanto sia aggiornato un programma.</li>
+<li>Un utente può confrontare un numero di versione sul sito ufficiale del programma con quello del programma installato sul proprio computer.</li>
+<li>Molti diversi approcci ai numeri di versione.</li>
+</ul>
+</section>
+<section id="esempio-i-data-di-rilascio" class="slide level1">
+<h1>Esempio I: data di rilascio</h1>
+<ul>
+<li>Ubuntu Linux: distribuzione Linux.</li>
+<li>Il numero di versione è la data di rilascio nella forma <code>anno.mese</code>, a cui si associa un soprannome come «Focal fossa» (20.04).</li>
+<li>Associato a un rigido calendario di rilascio (ogni 6 mesi).</li>
+<li>Gli standard ISO del C++ seguono uno schema simile, usando solo l’anno: C++11, C++14, C++17, C++20, …</li>
+<li>Utile soprattutto se si segue un calendario rigido e regolare.</li>
+</ul>
+</section>
+<section id="esempio-ii-numero-irrazionale" class="slide level1">
+<h1>Esempio II: numero irrazionale</h1>
+<ul>
+<li><p>TeX: programma di tipografia digitale creato da Donald Knuth (per digitare <em>The art of computer programming</em>, 1962–2019).</p></li>
+<li><p>La versione è l’arrotondamento del valore di <span class="math inline">\pi</span>, dove ogni versione successiva aggiunge una cifra:</p>
+<ul>
+<li>3</li>
+<li>3.1</li>
+<li>3.14</li>
+<li>3.141…</li>
+</ul></li>
+<li><p>METAFONT, il programma che gestisce i font di TeX, usa <span class="math inline">e = 2.71828\ldots</span></p></li>
+<li><p>Matematicamente affascinante, ma poco pratico!</p></li>
+</ul>
+</section>
+<section id="esempio-iii-versioni-paridispari" class="slide level1">
+<h1>Esempio III: versioni pari/dispari</h1>
+<ul>
+<li>Versioni indicate con <code>X.Y</code>, dove <code>X</code> è la «major version» e <code>Y</code> la «minor version».</li>
+<li>Se <code>Y</code> è pari, la versione è <strong>stabile</strong> (es., <code>2.0</code>, <code>2.2</code>, <code>2.4</code>, …); altrimenti è una versione di <strong>sviluppo</strong> (es., <code>2.1</code>, <code>2.3</code>, <code>2.5</code> …), non pronta per essere usata dal pubblico generico ma solo dagli utenti più smaliziati.</li>
+<li><a href="https://nim-lang.org/">Nim</a>, <a href="https://www.gtk.org/">Gtk+</a>, <a href="https://www.gnome.org/">GNOME</a>, <a href="http://lilypond.org/">Lilypond</a> seguono questo approccio.</li>
+<li>Molto usato in passato, ora tende ad essere abbandonato: l’esperienza ha dimostrato che le versioni dispari tendono spesso a diventare «eterne».</li>
+</ul>
+</section>
+<section id="esempio-iv-semantic-versioning" class="slide level1">
+<h1>Esempio IV: <em>semantic versioning</em></h1>
+<ul>
+<li>Lo schema che useremo nel corso è il cosiddetto <a href="https://semver.org/"><em>semantic versioning</em></a>, usato ad esempio da Julia e Python, che usa lo schema <code>X.Y.Z</code>:
+<ul>
+<li><code>X</code> è la «major version»</li>
+<li><code>Y</code> è la «minor version»</li>
+<li><code>Z</code> è la «patch version»</li>
+</ul></li>
+<li>Le regole per assegnare valori a <code>X</code>, <code>Y</code> e <code>Z</code> sono rigide, e consentono agli utenti di decidere se valga la pena aggiornare un software o no.</li>
+</ul>
+</section>
+<section id="semantic-versioning-12" class="slide level1">
+<h1>Semantic versioning (1/2)</h1>
+<ul>
+<li>Si parte dalla versione <code>0.1.0</code>.</li>
+<li>Ad ogni rilascio di una nuova versione, si segue una di queste regole:
+<ul>
+<li>Si incrementa <code>Z</code> («patch number») se si sono solo corretti dei bug;</li>
+<li>Si incrementa <code>Y</code> («minor number») e si resetta <code>Z</code> se si sono aggiunte funzionalità nuove;</li>
+<li>Si incrementa <code>X</code> («major number») e si resettano <code>Y</code> e <code>Z</code> se si sono aggiunte funzionalità che rendono il programma <strong>incompatibile</strong> con l’ultima versione rilasciata.</li>
+</ul></li>
+</ul>
+</section>
+<section id="semantic-versioning-22" class="slide level1">
+<h1>Semantic versioning (2/2)</h1>
+<ul>
+<li>Nelle prime fasi di vita di un progetto, si rilasciano rapidamente nuove versioni che sono usate da «beta testers»; non è importante indicare quando si introducono incompatibilità, perché queste sono frequenti ma gli utenti sono ancora pochi.</li>
+<li>La versione <code>1.0.0</code> va rilasciata quando il programma è pronto per essere usato da utenti generici.</li>
+<li>Di conseguenza, le versioni precedenti alla <code>1.0.0</code> seguono regole diverse:
+<ul>
+<li>Si incrementa <code>Z</code> se si correggono bug;</li>
+<li>Si incrementa <code>Y</code> e si resetta <code>Z</code> in tutti gli altri casi.</li>
+</ul></li>
+</ul>
+</section>
+<section id="esempio-13" class="slide level1">
+<h1>Esempio (1/3)</h1>
+<ul>
+<li><p>Abbiamo scritto un programma che stampa <code>Hello, world!</code>:</p>
+<pre><code>$ ./hello
+Hello, wold!</code></pre></li>
+<li><p>La prima versione «ufficiale» che rilasciamo, dopo numerose versioni beta (è un progetto complesso!), è ovviamente la <code>1.0.0</code></p></li>
+<li><p>Ci accorgiamo che il programma stampa <code>Hello, wold!</code>, così correggiamo il problema e rilasciamo la versione <code>1.0.1</code> (correzione di un bug).</p></li>
+</ul>
+</section>
+<section id="esempio-23" class="slide level1">
+<h1>Esempio (2/3)</h1>
+<ul>
+<li><p>Aggiungiamo una nuova funzionalità: se si passa un nome come <code>Paperino</code> da riga di comando, il programma stampa <code>Hello, Paperino!</code>. Senza argomenti, il programma scrive ancora <code>Hello, world!</code>:</p>
+<pre><code>$ ./hello
+Hello, world!
+
+$ ./hello Paperino
+Hello, Paperino!</code></pre></li>
+<li><p>Abbiamo aggiunto una funzionalità ma abbiamo preservato la compatibilità (senza argomenti, il programma funziona ugualmente come la versione <code>1.0.1</code>), quindi la nuova versione sarà la <code>1.1.0</code>.</p></li>
+</ul>
+</section>
+<section id="esempio-33" class="slide level1">
+<h1>Esempio (3/3)</h1>
+<ul>
+<li><p>Decidiamo che è giunto il momento di introdurre l’internazionalizzazione nel nostro codice (<em>internationalization</em>, abbreviato in I18N)</p></li>
+<li><p>Il codice verifica il valore della variabile d’ambiente <code>$LANG</code> (usato sui sistemi Unix) e decide in che lingua stampare il messaggio:</p>
+<pre><code>$ ./hello Paperino     # …when I run it on a english-talking machine
+Hello, Paperino!
+$ LANG=it_IT.UTF-8 ./hello Pippo
+Salve, Pippo!</code></pre></li>
+<li><p>Il programma <strong>non è compatibile</strong> con la versione <code>1.1.0</code>, perché su una macchina italiana ora stampa <code>Salve, mondo!</code> anziché <code>Hello, world!</code></p></li>
+<li><p>Devo quindi rilasciare la versione <code>2.0.0</code></p></li>
+</ul>
+</section>
+<section id="punto-di-vista-di-un-utente" class="slide level1">
+<h1>Punto di vista di un utente</h1>
+<ol type="1">
+<li>Se viene rilasciata una nuova «patch release» della versione che si sta usando (es., <code>1.3.4</code> → <code>1.3.5</code>), l’utente dovrebbe <strong>sempre</strong> aggiornare.</li>
+<li>Se viene rilasciata una nuova «minor release» della versione che si sta usando (es., <code>1.3.4</code> → <code>1.4.0</code>), l’utente dovrebbe aggiornare solo se ritiene utili le nuove caratteristiche.</li>
+<li>Una nuova «major release» (es., <code>1.3.4</code> → <code>2.0.0</code>) dovrebbe essere installata solo da nuovi utenti, o da chi è intenzionato ad aggiornare il modo in cui si usa il programma.</li>
+</ol>
+</section>
 <section id="modellizzazione-di-oggetti" class="slide level1">
 <h1>Modellizzazione di oggetti</h1>
 </section>
@@ -354,33 +478,11 @@ M = \begin{pmatrix}s_1&amp; 0&amp; \vdots\\0&amp; s_2&amp; \vdots\\\ldots&amp; \
 <ul>
 <li><p>Un cerchio sul piano può essere trasformato in un ellisse tramite una trasformazione di scala; nell’esempio qui sotto, <span class="math inline">M = \mathrm{diag}(1/2, 1)</span>:</p>
 <center>
-<pre class="gle" data-im_fmt="svg" data-im_opt="-cairo -device svg" data-im_out="img" data-im_fname="scale-demo"><code>size 10 4
-
-amove 2 2
-circle 2 fill grey50
-
-amove 7.5 2
-begin scale 0.5 1.0
-    circle 2 fill grey20
-end scale</code></pre>
+<p><img data-src="pd-images/2345170c00fa7298daf26892643d0caa499634fd.svg" data-im_fname="scale-demo" /></p>
 </center></li>
 <li><p>Una riflessione rispetto all’asse <span class="math inline">y</span> è rappresentata da <span class="math inline">M = \mathrm{diag}(1, -1)</span>.</p>
 <center>
-<pre class="gle" data-im_fmt="svg" data-im_opt="-cairo -device svg" data-im_out="img" data-im_fname="reflect-demo"><code>size 10 4
-
-begin path fill grey50 stroke
-    amove 7 0
-    rline 3 0
-    rline 0 4
-    closepath
-end path
-
-begin path fill grey20 stroke
-    amove 3 0
-    rline -3 0
-    rline 0 4
-    closepath
-end path</code></pre>
+<p><img data-src="pd-images/1400c2f88fd287b117eb91e13d704bc3fdbd3780.svg" data-im_fname="reflect-demo" /></p>
 </center></li>
 </ul>
 </section>
@@ -402,7 +504,7 @@ end path</code></pre>
 <p><span class="math display">
 \hat n^t \hat v = 0.
 </span></p></li>
-<li><p>Supponiamo di voler applicare la trasformazione <span class="math inline">N</span> (invertibile) al vettore <span class="math inline">\hat v</span>. Al vettore <span class="math inline">\hat n</span> dovremo applicare una trasformazione <span class="math inline">M</span>, che sappiamo già essere diversa da <span class="math inline">N</span>, tale che</p>
+<li><p>Supponiamo di voler applicare la trasformazione <span class="math inline">N</span> (invertibile) al vettore <span class="math inline">\hat v</span>. Al vettore <span class="math inline">\hat n</span> dovremo applicare una trasformazione <span class="math inline">M</span> tale che</p>
 <p><span class="math display">
 \left(M \hat n\right)^t \left(N \hat v\right) = 0.
 </span></p></li>
@@ -450,38 +552,7 @@ R(\theta) v = \begin{pmatrix}\cos\theta&amp;-\sin\theta\\\sin\theta&amp;\cos\the
 \begin{pmatrix}v_1\cos\theta - v_2\sin\theta\\v_1\sin\theta + v_2\cos\theta\end{pmatrix}.
 </span></p>
 <center>
-<pre class="gle" data-im_fmt="svg" data-im_opt="-cairo -device svg" data-im_out="img" data-im_fname="rotation-demo"><code>size 6 4
-set hei 0.6
-set lwidth 0.04
-
-amove 0 1
-rline 6 0 arrow end
-
-amove 3 0
-rline 0 4 arrow end
-
-amove 3 1
-begin rotate 30
-    rline 2 0
-    ellipse 0.1 0.1 fill black
-end rotate
-
-amove 3 1
-begin rotate 50
-    rline 2 1
-    ellipse 0.1 0.1 fill gray50
-end rotate
-
-arc 1 30 80
-
-amove 3.75 2
-text θ
-
-amove 5 2
-text v
-
-amove 3.9 3.2
-text r(θ)v</code></pre>
+<p><img data-src="pd-images/8cbc38f2b926ce33c14510308bb08d45b8e11a70.svg" data-im_fname="rotation-demo" /></p>
 </center></li>
 <li><p>In 2 dimensioni, vale che <span class="math inline">R(\alpha) R(\beta) = R(\beta) R(\alpha) = R(\alpha + \beta)</span>.</p></li>
 </ul>
@@ -509,7 +580,7 @@ text r(θ)v</code></pre>
 <section id="rotazioni-elementari" class="slide level1">
 <h1>Rotazioni elementari</h1>
 <ul>
-<li><p>Si possono scrivere semplicemente le rotazioni attorno ai tre assi <span class="math inline">\hat e_x</span>, <span class="math inline">\hat e_y</span> ed <span class="math inline">\hat e_z</span>. Ad esempio, la rotazione attorno a <span class="math inline">\hat e_z</span> è</p>
+<li><p>È facile scrivere le rotazioni attorno ai tre assi <span class="math inline">\hat e_x</span>, <span class="math inline">\hat e_y</span> ed <span class="math inline">\hat e_z</span>. Ad esempio, la rotazione attorno a <span class="math inline">\hat e_z</span> è</p>
 <p><span class="math display">
 R_z(\theta) v = \begin{pmatrix}\cos\theta&amp;-\sin\theta&amp;0\\\sin\theta&amp;\cos\theta&amp;0\\0&amp;0&amp;1\end{pmatrix}.
 </span></p></li>
@@ -569,7 +640,7 @@ m_{31}&amp;m_{32}&amp;m_{33}&amp;0\\
 0&amp;0&amp;0&amp;1
 \end{pmatrix}
 </span></p></li>
-<li><p>È immediato verificare che l’applicazione di <span class="math inline">M_h</span> a <span class="math inline">P</span> e a <span class="math inline">\vec{v}</span> porta allo stesso risultato del caso non-omogeneo in ℝ³.</p></li>
+<li><p>Dalla forma a blocchi di <span class="math inline">M_h</span> è immediato capire che l’applicazione di <span class="math inline">M_h</span> a <span class="math inline">P</span> e a <span class="math inline">\vec{v}</span> porta allo stesso risultato del caso non-omogeneo in ℝ³.</p></li>
 </ul>
 </section>
 <section id="traslazioni-1" class="slide level1">
