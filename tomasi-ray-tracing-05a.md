@@ -1,5 +1,5 @@
 ---
-title: "Lezione 6"
+title: "Lezione 5"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
