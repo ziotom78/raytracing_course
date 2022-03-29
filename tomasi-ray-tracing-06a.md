@@ -1,10 +1,10 @@
 ---
-title: "Lezione 7"
+title: "Lezione 6"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-# Quaternioni (argomento opzionale)
+# Quaternioni
 
 # Numeri complessi e quaternioni
 
@@ -229,7 +229,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   In generale, più si va avanti e meno le algebre sono interessanti e pratiche.
 
-# Algebre di Clifford (argomento opzionale)
+# Algebre di Clifford
 
 # Limiti della geometria classica
 
@@ -239,7 +239,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Il prodotto vettoriale è definibile solo per $\mathbb{R}^3$.
 
--   Le rotazioni possono essere rappresentate da numeri complessi (2D), quaternioni (3D), etc., ma non si può andare oltre senza perdere importanti proprietà (associatività).
+-   La rappresentazione delle rotazioni richiede algebre via via più complicate man mano che aumentano le dimensioni (numeri complessi, quaternioni…).
 
 -   Non è possibile invertire i prodotti tra vettori: se $\vec a \times \vec x = \vec b$ con $\vec a$ e $\vec b$ vettori noti e $x$ vettore incognito, non c'è modo di ricostruire $\vec x$. (Idem per il prodotto scalare).
 
@@ -444,7 +444,7 @@ label("$\hat e_1 \wedge \hat e_3$", (0.5, 0.05, 0.5));
     \hat e_1 \wedge \hat e_3 \wedge \hat e_2 &= \hat e_1 \wedge (\hat e_3 \wedge \hat e_2) = -\hat e_1 \wedge (\hat e_2 \wedge \hat e_3) = -\hat e_1 \wedge \hat e_2 \wedge \hat e_3,\\
     \hat e_2 \wedge \hat e_3 \wedge \hat e_1 &= -\hat e_2 \wedge \hat e_1 \wedge \hat e_3 = \hat e_1 \wedge \hat e_2 \wedge \hat e_3,\\
     \hat e_1 \wedge \hat e_2 \wedge \hat e_3 \wedge \hat e_3 &= \hat e_1 \wedge \hat e_2 \wedge (\hat e_3 \wedge \hat e_3) = 0,\\
-    \hat e_1 \wedge \hat e_2 \wedge \hat e_3 \wedge \hat e_2 &= -\hat e_1 \wedge \hat e_2 \wedge \hat e_3 \wedge \hat e_3 = 0.\\
+    \hat e_1 \wedge \hat e_2 \wedge \hat e_3 \wedge \hat e_2 &= -\hat e_1 \wedge (\hat e_2 \wedge \hat e_2) \wedge \hat e_3 = 0.\\
     \end{aligned}
     $$
     
@@ -489,7 +489,7 @@ $$
 
 -   La definizione e lo studio delle proprietà del prodotto geometrico si deve a [William Kingdon Clifford](https://en.wikipedia.org/wiki/William_Kingdon_Clifford) (1845–1879), che sistematizzò le idee di Grassmann.
 
--   Il prodotto geometrico definise un'algebra sullo spazio vettoriale.
+-   Il prodotto geometrico definisce un'algebra sullo spazio vettoriale.
 
 
 # Prodotto geometrico
@@ -664,7 +664,7 @@ $$
     \vec v' = e^{i\theta} \vec v = e^{i\theta/2} e^{i\theta/2} \vec v = e^{i\theta/2}\vec v e^{-i\theta/2}
     $$
     
-    allora la nuova formula è valida in qualsiasi dimensione.
+    vedremo che la formula ha un'applicazione molto più generale.
 
 # Algebra geometrica in 3D
 
@@ -698,7 +698,11 @@ $$
     $$
     
     che è l'espressione che [avevamo già visto](tomasi-ray-tracing-07a-clifford-algebras.html#/rotazione-2d-alternativa) nel caso 2D, dove $\hat I = i = \hat e_1 \hat e_2$: era il piano complesso. Abbiamo un'interpretazione geometrica della presenza di $i$!
-    
+
+# Equazione di Schrödinger
+
+-   L'equazione di Schrödinger XXX
+
 # Multivettori e quaternioni
 
 -   È facile dimostrare che
