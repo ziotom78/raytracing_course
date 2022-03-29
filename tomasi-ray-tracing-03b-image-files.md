@@ -755,6 +755,73 @@ def test_pfm_read_wrong(self):
     append!(uint, Endian.bigEndian)(stream, *cast(uint*)(&value));
     ```
 
+# Scrivere un file
+
+-   Per scrivere un numero `float` in un `Appender`, potete usare questo codice:
+
+    ```d
+    void write_float(Appender!(ubyte[]) appender, float value, Endian endianness) {
+      if (endianness == Endian.bigEndian) {
+        append!(uint, Endian.bigEndian)(appender, *cast(uint*)(&value));
+      } else {
+        append!(uint, Endian.littleEndian)(appender, *cast(uint*)(&value));
+      }
+    }
+    ```
+
+-   Notate che non si può passare il valore `endianness` a `append!`, perché essendo un template richiede che il valore sia noto in fase di compilazione.
+
+-   Per scrivere l'header, potete inviare la stringa di file ASCII con la funzione `put`: `appender.put(cast(ubyte[])(header_string))`.
+
+# Leggere un file (1/2)
+
+-   È semplice interpretare un array di bytes come se fosse uno *stream*:
+
+    ```d
+    class StringStream {
+      uint curidx = 0;
+      const ubyte[] stream;
+
+      this(const ubyte[] _stream) { stream = _stream; }
+      bool eof() { return curidx >= stream.length; }
+
+      char read_char() {
+        if (curidx < stream.length) {
+          char result = stream[curidx];
+          curidx++;
+          return result;
+        }
+
+        return 0;  // If we are at the end of the string, return 0
+      }
+    }
+    ```
+
+-   Aggiungete un metodo `read_line()` per maggiore comodità
+
+# Leggere un file (2/2)
+
+-   Per leggere un `float`, usate questo metodo:
+
+    ```d
+    float read_float(Endian endianness) {
+      uint result = 0;
+      for(int i = 0; i < 4; ++i) {
+        result = (result << 8) + read_char(); // Assume big endian here
+      }
+
+      if(endianness != Endian.bigEndian) result = result.swapEndian;
+      return *cast(float*)(&result);
+    }
+    ```
+
+-   Oltre a `decode_pfm(const ubyte[])`, potete implementare anche
+
+    ```d
+    HdrImage decode_pfm_from_file(const string file_name) {
+      return decode_pfm(cast(const(ubyte)[])read(file_name));
+    }
+    ```
 
 # Suggerimenti per Kotlin
 
