@@ -592,7 +592,7 @@ Quello che serve per definire velocemente operazioni matematiche su più tipi so
 
 ```nim
 template define_sum(type1: typedesc, type2: typedesc, rettype: typedesc) =
-  proc `+`(a: type1, b: type2): rettype =
+  proc `+`*(a: type1, b: type2): rettype =
     result.x = a.x + b.x
     result.y = a.y + b.y
     result.z = a.z + b.z
@@ -609,7 +609,7 @@ Possiamo spingerci oltre e rendere l'approccio estendibile anche al tipo di oper
 
 ```nim
 template define_3dop(fname: untyped, type1: typedesc, type2: typedesc, rettype: typedesc) =
-  proc fname(a: type1, b: type2): rettype =
+  proc fname*(a: type1, b: type2): rettype =
     result.x = fname(a.x, b.x)  # This works because "a + b" is interpreted as `+`(a, b)
     result.y = fname(a.y, b.y)
     result.z = fname(a.z, b.z)
