@@ -16,6 +16,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 4a      | 2022/03/21 | [Tone mapping, documentazione, licenze](tomasi-ray-tracing-04a-documentation.html) |
 | 4b      | 2022/03/23 | [Tone mapping, file LDR](tomasi-ray-tracing-04b-ldr-images.html)                   |
 | 5a      | 2022/03/28 | [Versioni, geometria](tomasi-ray-tracing-05a.html)                                 |
+| 5b      | 2022/03/30 | [Geometria, branch, pull request](tomasi-ray-tracing-05b.html)                     |
 
 # Scelta del linguaggio
 
