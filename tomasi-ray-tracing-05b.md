@@ -684,5 +684,26 @@ struct Point {
 
 # Indicazioni per Kotlin
 
--   Nessuna indicazione in particolare: l'implementazione di `Point`, `Vec`, `Normal` e `Transformation` dovrebbe essere abbastanza semplice.
+-   Nessuna indicazione in particolare per `Point`, `Vec`, `Normal`: l'implementazione dovrebbe essere abbastanza semplice.
 -   Come il C\#, neppure Kotlin supporta la metaprogrammazione, quindi dovrete duplicare un po' di funzioni, come quelle che calcolano `Point + Vec` e `Vec + Vec`.
+
+# Trasformazioni
+
+Per semplificare `Transformation`, Vi consiglio di definire un tipo `HomMatrix` che implementi una matrice omogenea 4×4; usate internamente un array di 16 elementi come avevate fatto con `HdrImage`:
+
+```kotlin
+class HomMatrix(var elements: FloatArray) {
+    init {
+        require(elements.size == 16) { "A homogeneous matrix must be 4×4" }
+    }
+
+    constructor() : this(
+        floatArrayOf(
+            1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+        )
+    )
+
+    // Etc.
+}
+```
+
