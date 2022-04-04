@@ -82,7 +82,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   `git checkout -b NOME` crea un nuovo branch e lo rende attivo.
 
--   `git checkout -b NOME` rende attivo un branch già esistente.
+-   `git checkout NOME` rende attivo il branch `NOME`, già esistente.
 
 -   `git merge NOME1 NOME2` incorpora le modifiche al branch `NOME1` dentro il branch `NOME2`; di solito `NOME2` è `master`.
 
