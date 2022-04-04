@@ -4,7 +4,19 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-# Quaternioni
+# Approfondimento sul calcolo vettoriale
+
+# Breve panoramica storica
+
+-   Antica Grecia: primi esempi di regola del parallelogramma
+-   Fine '600: [Leibniz](https://en.wikipedia.org/wiki/Gottfried_Wilhelm_Leibniz) sollecita la creazione di un modo per legare algebra e geometria
+-   Fine '700: [Wessel](https://en.wikipedia.org/wiki/Caspar_Wessel) introduce la somma e il prodotto di numeri complessi, che lega a proprietà geometriche, e ipotizza i quaternioni
+-   1843: [Hamilton](https://en.wikipedia.org/wiki/William_Rowan_Hamilton) pubblica il suo primo lavoro sui quaternioni
+-   1844–1878: [Grassmann](https://en.wikipedia.org/wiki/Hermann_Grassmann) e [Clifford](https://en.wikipedia.org/wiki/William_Kingdon_Clifford) propongono l'algebra geometrica
+-   1861: [Maxwell](https://en.wikipedia.org/wiki/James_Clerk_Maxwell) formula le equazioni dell'elettromagnetismo, usando il formalismo dei quaternioni di Hamilton
+-   Fine '800: [Gibbs](https://en.wikipedia.org/wiki/Josiah_Willard_Gibbs) ed [Heavyside](https://en.wikipedia.org/wiki/Oliver_Heaviside) propongono il calcolo vettoriale moderno, che in pochi decenni diventa il linguaggio dominante nella fisica
+
+# Numeri complessi e quaternioni
 
 # Numeri complessi e quaternioni
 
@@ -66,10 +78,10 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   I numeri complessi rappresentano una rotazione tramite il prodotto tra complessi; il prodotto su ℂ soddisfa le proprietà di un'algebra associativa.
 
--   Il prodotto $p \times q$ tra due quaternioni è definito così:
+-   Il prodotto $p q$ tra due quaternioni è definito così:
 
     $$
-    p \times q = \begin{pmatrix}
+    p q = \begin{pmatrix}
     p_0 q_0 - p_1 q_1 - p_2 q_2 - p_3 q_3\\
     p_1 q_0 + p_0 q_1 + p_2 q_3 - p_3 q_2\\
     p_2 q_0 + p_0 q_2 + p_3 q_1 - p_1 q_3\\
@@ -77,7 +89,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     \end{pmatrix}.
     $$
     
--   Questo prodotto soddisfa tutte le proprietà di un'algebra associativa, ma **non è commutativo**: $p \times q \not= q \times p$. (Primo sistema algebrico di questo tipo!).
+-   Questo prodotto soddisfa tutte le proprietà di un'algebra associativa, ma **non è commutativo**: $p q \not= q p$. (Prima algebra di questo tipo nella storia!).
 
 # Notazione per i quaternioni
 
@@ -128,20 +140,20 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     
 -   Se $\left\|\hat n\right\| = 1$, vale ovviamente che $\left\|r(\theta, \hat n)\right\| = 1$.
 
--   Notate che una rotazione attorno a un asse arbitrario $\hat n$ è espressa in modo molto compatto ed elegante, a differenza della notazione matriciale.
+-   Vediamo ora come rappresentare una rotazione 3D mediante $r(\theta, \hat n)$.
 
 # Applicazione della rotazione.
 
--   Un generico vettore $\vec v$ viene ruotato in $\vec v'$ tramite la formula
+-   Un generico vettore $\vec v$ viene ruotato in $\vec v'$ tramite questo prodotto di tre quaternioni:
 
     $$
     \vec v' = r(\theta, \hat n) \cdot (0, \vec v) \cdot r^{-1}(\theta, \hat n),
     $$
-    dove $(0, \vec v)$ rappresenta il quaternione associato a $\vec v$. (Questa formula è un «trucco» mnemonico, la derivazione corretta passerebbe dalla matrice di rotazione scritta esplicitamente).
+    dove $(0, \vec v)$ rappresenta il quaternione associato a $\vec v$.
     
--   Intuitivamente, la rotazione $r(\theta, \hat n)$ compare **due** volte nella formula perché in essa compare l'angolo $\theta/2$.
+-   Intuitivamente, $r(\theta, \hat n)$ compare **due** volte nella formula perché dipende dall'angolo $\theta/2$.
 
--   Sia $r(\theta, \hat n)$ che $-r(\theta, \hat n)$ rappresentano la medesima rotazione.
+-   Dalla formula è evidente che $r(\theta, \hat n)$ e $-r(\theta, \hat n)$ rappresentano la medesima rotazione.
 
 # I quaternioni sono efficienti?
 
@@ -209,13 +221,13 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Il satellite *Planck* aveva a bordo uno *star tracker* che identificava l'orientamento del satellite rispetto alle stelle fisse.
 
--   L'orientamento (*attitude*) era misurato 10 volte al secondi (i dati scientifici venivano campionati ~100 volte al secondo) e trasmesso alla stazione di terra:
+-   L'orientamento (*attitude*) era misurato 10 volte al secondo (i dati scientifici venivano campionati ~100 volte al secondo) e trasmesso alla stazione di terra:
 
     <center>
     ![](./media/planck-attitude-quaternions.svg)
     </center>
 
--   Per capire in che posizione era orientato il satellite Planck in corrispondenza di ogni misurazione, l'orientamento era convertito in quaternioni che venivano poi interpolati.
+-   Per capire in che posizione era orientato il satellite Planck in corrispondenza di ogni misurazione, l'orientamento era convertito in quaternioni, che venivano poi interpolati.
 
 # Oltre i quaternioni?
 
@@ -590,7 +602,7 @@ $$
     q = \alpha + \beta_1 \hat e_1 + \beta_2 \hat e_2 + \gamma \hat e_1 \hat e_2
     $$
 
-    è possibile individuare quattro insiemi (sottoalgebre):
+    è possibile individuare quattro sottoinsiemi (sottoalgebre):
 
     #.   Se $\beta_1 = \beta_2 = \gamma = 0$, allora l'insieme dei $q = \alpha$ è isomorfo a ℝ.
     #.   Se $\alpha = \gamma = 0$, allora l'insieme dei $q$ è isomorfo allo spazio vettoriale $\mathbb{R}^2$.
@@ -600,15 +612,13 @@ $$
 
 # Multivettori e numeri complessi
 
--   Lo pseudoscalare $\hat e_1 \hat e_2$ ha una interessantissima proprietà:
+-   Lo pseudoscalare $\hat e_1 \hat e_2$ si comporta come $i$!
 
     $$
     \bigl(\hat e_1 \hat e_2\bigr)^2 = \hat e_1 \hat e_2 \hat e_1 \hat e_2 = -\hat e_1 \hat e_2 \hat e_2 \hat e_1 = -1.
     $$
     
-    Il bivettore $\hat e_1 \hat e_2$ si comporta come l'unità immaginaria $i$!
-    
--   Confrontiamo il comportamento di due numeri complessi e due multivettori:
+-   Confrontiamo numeri complessi e multivettori con $\beta_1 = \beta_2 = 0$:
 
     $$
     \begin{aligned}
@@ -643,10 +653,8 @@ $$
 -   Per ruotare un vettore $\vec v$ di un angolo θ attorno all'origine è sufficiente considerare due versori $\hat u_1$ e $\hat u_2$, il cui angolo tra loro sia θ, e calcolare il multivettore ruotato $\vec v'$ come
 
     $$
-    \vec v' = \hat u_1 \hat u_2 \vec v = e^{i\theta} \vec v,
+    \vec v' = \hat u_1 \hat u_2 \vec v = e^{i\theta} \vec v = \left(\cos\theta + i \sin\theta\right) \vec v.
     $$
-    
-    dove si intende $i = \hat e_1 \hat e_2$ (bivettore), e l'esponenziale è $\cos\theta + i\sin\theta$ (si può definirlo anche tramite la serie di Taylor).
 
 -   Questa formula vale solo nel caso 2D, ma si può riscrivere in forma generale.
 
@@ -658,10 +666,10 @@ $$
 
 -   Si può dimostrare che in 2D vale $z \vec v = \vec v z^*$, dove $z^*$ è il complesso coniugato.
 
--   Se ci riconduciamo a una relazione simile a quella [vista per i quaternioni](tomasi-ray-tracing-07a-clifford-algebras.html#/applicazione-della-rotazione.)
+-   Se ci riconduciamo a una relazione simile a quella [vista per i quaternioni](tomasi-ray-tracing-07a-clifford-algebras.html#/applicazione-della-rotazione), ossia
 
     $$
-    \vec v' = e^{i\theta} \vec v = e^{i\theta/2} e^{i\theta/2} \vec v = e^{i\theta/2}\vec v e^{-i\theta/2}
+    \vec v' = e^{i\theta} \vec v = e^{i\theta/2} e^{i\theta/2} \vec v = e^{i\theta/2}\vec v e^{-i\theta/2},
     $$
     
     vedremo che la formula ha un'applicazione molto più generale.
@@ -699,9 +707,15 @@ $$
     
     che è l'espressione che [avevamo già visto](tomasi-ray-tracing-07a-clifford-algebras.html#/rotazione-2d-alternativa) nel caso 2D, dove $\hat I = i = \hat e_1 \hat e_2$: era il piano complesso. Abbiamo un'interpretazione geometrica della presenza di $i$!
 
-# Equazione di Schrödinger
+# Meccanica quantistica
 
--   L'equazione di Schrödinger XXX
+-   [D. Hestenes](https://en.wikipedia.org/wiki/David_Hestenes) negli anni '60-'70 ha riscoperto i lavori di Grassmann e Clifford, mostrando che il termine $i$ nell'equazione di Schrödinger
+    $$
+    H \left|\psi\right> = i\hbar \frac{\mathrm{d}}{\mathrm{d}t} \left|\psi\right>,
+    $$
+    è legato alla medesima rotazione che nella teoria di Dirac-Pauli rappresenta lo spin dell'elettrone.
+
+-   *It is only in a theory with electron spin that one can see why the wave function is complex […] spin is not a mere add-on in quantum mechanics, [and] was inadvertently incorporated into the original Schrödinger equation* ([Hestenes 2002](https://geocalc.clas.asu.edu/pdf/OerstedMedalLecture.pdf))
 
 # Multivettori e quaternioni
 
@@ -718,6 +732,16 @@ $$
     $$
     
     Come è facile dimostrare, tutte le [proprietà che avevamo elencato](tomasi-ray-tracing-07a-clifford-algebras.html#/notazione-per-i-quaternioni) continuano ad essere valide.
+
+# Meccanica quantistica
+
+-   Ma le proprietà dei bivettori in ℝ³ sono le medesime che definiscono le **matrici di Pauli**, usate per descrivere l'accoppiamento tra lo spin e il campo e.m.:
+
+    $$
+    \sigma_1 = \begin{pmatrix}0& 1\\1& 0\end{pmatrix}, \quad \sigma_2 = \begin{pmatrix}0& -i\\i& 0\end{pmatrix}, \quad \sigma_3 = \begin{pmatrix}1& 0\\0& -1\end{pmatrix}.
+    $$
+    
+-   Nell'ottica dell'algebra geometrica, il divario tra fisica classica e meccanica quantistica si riduce, perché quest'ultima si basa su bivettori sul campo **reale** ℝ come nel caso della meccanica classica (dove però i bivettori sono molto meno pervasivi)
 
 # Prodotto vettoriale
 
@@ -742,7 +766,7 @@ $$
 -   Si può verificare facilmente che
 
     $$
-    \vec u \times \vec v = i^{-1} \vec u \wedge \vec v,\quad\text{o equivalentemente}\quad i\vec u \times \vec v = \vec u \wedge \vec v,
+    i\vec u \times \vec v = \vec u \wedge \vec v,
     $$
     
     dove ovviamente $i = \hat e_1 \hat e_2 \hat e_3$.
@@ -813,7 +837,7 @@ $$
     
 -   Dato che $\vec B$ è moltiplicato per $i$, il risultato è un **bivettore** (facile verificarlo).
 
--   Ciò vale in generale: se nella geometria classica una quantità è il risultato di un prodotto vettoriale, nell'algebra geometrica deve essere un bivettore.
+-   Il fatto che $\vec B$ sia un bivettore risolve il problema della riflessione nella [legge di Ampère](tomasi-ray-tracing-05a.html#pseudovettori-1)
 
 # Equazione di Maxwell
 
@@ -826,8 +850,6 @@ $$
 -   Il lato destro e sinistro sono multivettori, e l'uguaglianza si riferisce alle componenti (1) scalari, (2) vettoriali, (3) bivettoriali, e (4) pseudoscalari.
     
 -   Essendo $F$ e $J$ dei multivettori (che ammettono l'inversa), è possibile usare molti teoremi dell' analisi per risolvere direttamente l'equazione.
-
--   Anche la relatività speciale si semplifica molto con l'algebra geometrica, perché non è più necessario lavorare in uno spazio 4D.
 
 # Compendio
 
@@ -874,4 +896,4 @@ $$
 
 -   [*Geometric Algebra. An Algebraic System for Computer Games and Animation*](https://www.springer.com/gp/book/9781848823785) (J. A. Vince): mostra come le equazioni tipiche usate nella grafica computerizzata (rotazioni, quaternioni, proiezioni, ray-tracing, etc.) possano essere riformulate usando i multivettori.
 
--   [*A history of vector analysis*](https://en.wikipedia.org/wiki/A_History_of_Vector_Analysis) (M. J. Crowe): descrive la storia dell'analisi vettoriale, confrontando le algebre di Hamilton, Grassmann/Clifford, e il sistema vettoriale di Gibbs ed Heavyside (che è quello «classico», nato però per ultimo).
+-   [*A history of vector analysis*](https://en.wikipedia.org/wiki/A_History_of_Vector_Analysis) (M. J. Crowe): descrive la storia dell'analisi vettoriale, confrontando le algebre di Hamilton, Grassmann/Clifford, e il sistema vettoriale di Gibbs/Heavyside (che è quello «classico», nato però per ultimo).
