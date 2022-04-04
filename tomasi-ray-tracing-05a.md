@@ -104,7 +104,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $ LANG=it_IT.UTF-8 ./hello Pippo
     Salve, Pippo!
     ```
-    
+
 -   Il programma **non è compatibile** con la versione `1.1.0`, perché su una macchina italiana ora stampa `Salve, mondo!` anziché `Hello, world!`
 
 -   Devo quindi rilasciare la versione `2.0.0`
@@ -214,9 +214,9 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
     $$
     \left\|u\right\| = \sqrt{\left<u, u\right>},
     $$
-    
+
     che è positiva definita, e si annulla solo se $u = 0$.
-    
+
 -   Si definiscono *ortogonali* due vettori $u$ e $v$ se vale che $\left<u, v\right> = 0$.
 
 -   Un vettore $u$ tale che $\left\|u\right\| = 1$ si dice *normalizzato*.
@@ -260,7 +260,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     $$
     \sum_{i=1}^N \alpha_i v_i = 0
     $$
-    
+
     vale solo se $\alpha_i = 0\ \forall i=1\ldots N$.
 
 -   Un insieme di vettori $\left\{v_i\right\}_{i=1}^N$ è detto *base* di $B$ se sono linearmente indipendenti e generano $V$, ossia
@@ -268,7 +268,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     $$
     \mathrm{Span}\left(\{v_i\}_{i=1}^N\right) = V.
     $$
-    
+
 # Basi (2/2)
 
 -   Se $V$ ammette due basi $\left\{e_i\right\}_{i=1}^N$ ed $\left\{f_i\right\}_{i=1}^M$, il numero di elementi in entrambe è identico ($N = M$) ed è detto *dimensione* di $V$. (Ignoriamo in questo corso gli spazi infinito-dimensionali.)
@@ -278,7 +278,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     $$
     \left<e_i, e_j\right> = \delta_{ij}\quad\forall i, j = 1 \ldots N.
     $$
-    
+
 # Rappresentazione di vettori
 
 -   Data una base $\{e_i\}_{i=1}^N$, è sempre possibile scrivere $v \in V$ come
@@ -286,13 +286,13 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     $$
     v = \sum_{i=1}^N \alpha_i e_i,
     $$
-    
+
     dove $\alpha_i \in F$. (Conseguenza del fatto che la base genera lo spazio $V$).
-    
+
 -   Tale rappresentazione è sempre unica; se la base è ortonormale, allora
 
     $$\alpha_i = \left<v, e_i\right>.$$
-    
+
 -   I vettori si rappresentano come matrici a una colonna: $v = (\alpha_1\ \alpha_2\ \ldots)^t$.
 
 # Rappresentazione di vettori
@@ -304,7 +304,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     $$
     v = e_1 + 3 e_2 = \begin{pmatrix}1\\0\end{pmatrix} + 3 \begin{pmatrix}1\\1\end{pmatrix} = \begin{pmatrix}4\\3\end{pmatrix},
     $$
-    
+
     ma $\left<v, e_1\right> = 4$ e $\left<v, e_2\right> = 7$.
 
 -   Il nostro codice userà sempre basi ortonormali.
@@ -316,7 +316,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     $$
     f(\alpha u + \beta v) = \alpha f(u) + \beta f(v).
     $$
-    
+
 -   Dalla linearità ne segue che $f(0) = 0$, perché
 
     $$
@@ -347,9 +347,9 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     $$
     M = \begin{pmatrix}3&4\\2&-1\end{pmatrix}
     $$
-    
+
     e la base canonica $e_1 = (1\ 0)^t, e_2 = (0\ 1)^t$.
-    
+
 -   È facile vedere che la prima colonna di $M$ è uguale a $M e_1$ e la seconda a $M e_2$:
 
     $$
@@ -367,9 +367,9 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     R(\theta) e_1 = \begin{pmatrix}\cos\theta\\\sin\theta\end{pmatrix}, \quad
     R(\theta) e_2 = \begin{pmatrix}\cos(\theta + 90^\circ)\\\sin(\theta + 90^\circ)\end{pmatrix} = \begin{pmatrix}-\sin\theta\\\cos\theta\end{pmatrix},
     $$
-    
+
     perché essi sono le colonne della matrice $R(\theta)$:
-    
+
     $$
     R(\theta) = \begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix}.
     $$
@@ -393,7 +393,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     <center>
     ![](./media/auto-angular-momentum.svg){height=380px}
     </center>
-    
+
 # Pseudovettori
 
 -   Il problema di $\vec\omega$ è che è definito tramite il prodotto vettoriale: $\vec \omega = \vec r \times \vec p$, e il risultato di un prodotto vettoriale è *sempre* uno pseudovettore.
@@ -421,7 +421,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     #.  Trasformazione di scala (ingrandimento/rimpicciolimento);
     #.  Rotazione attorno ad un asse;
     #.  Traslazione (spostamento).
-    
+
     <center>
     ![](./media/transformations.svg)
     </center>
@@ -435,7 +435,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     $$
     M = \begin{pmatrix}s_1& 0& \vdots\\0& s_2& \vdots\\\ldots& \ldots&\end{pmatrix}.
     $$
-    
+
 -   Trasformazioni di scala in cui $s_i < 0$ sono anche dette *speculari* rispetto all'asse $i$-esimo (riflessione rispetto a uno specchio).
 
 # Esempio
@@ -455,7 +455,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     end scale
     ```
     </center>
-    
+
 -   Una riflessione rispetto all'asse $y$ è rappresentata da $M = \mathrm{diag}(1, -1)$.
 
     <center>
@@ -497,27 +497,27 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     $$
     \hat n^t \hat v = 0.
     $$
-    
+
 -   Supponiamo di voler applicare la trasformazione $N$ (invertibile) al vettore $\hat v$. Al vettore $\hat n$ dovremo applicare una trasformazione $M$ tale che
 
     $$
     \left(M \hat n\right)^t \left(N \hat v\right) = 0.
     $$
-    
+
 # Trasformazioni e normali
 
 -   Sapendo che $\left(A B\right)^t = B^t A^t$, si ottiene che
-    
+
     $$
     \left(M \hat n\right)^t \left(N \hat v\right) = 0\quad\Rightarrow\quad\hat n^t \left(M^t N\right) \hat v = 0.
     $$
-    
+
 -   Sapendo già che $\hat n^t \hat v = 0$, ne segue che l'equazione è vera se
 
     $$
     M^t N = \mathbb{1}\quad\Rightarrow\quad M = \left(N^{-1}\right)^t,
     $$
-    
+
     dove abbiamo usato l'assunzione che la trasformazione $N$ ammette un'inversa.
 
 # Trattamento delle normali
@@ -546,7 +546,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 -   In 2D, abbiamo già scritto la [matrice di rotazione attorno all'origine](./tomasi-ray-tracing-06a-geometry.html#/secondo-esempio):
 
     $$
-    R(\theta) v = \begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix} \begin{pmatrix}v_1\\v_2\end{pmatrix} = 
+    R(\theta) v = \begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix} \begin{pmatrix}v_1\\v_2\end{pmatrix} =
     \begin{pmatrix}v_1\cos\theta - v_2\sin\theta\\v_1\sin\theta + v_2\cos\theta\end{pmatrix}.
     $$
 
@@ -567,7 +567,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
         rline 2 0
         ellipse 0.1 0.1 fill black
     end rotate
-    
+
     amove 3 1
     begin rotate 50
         rline 2 1
@@ -575,24 +575,24 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     end rotate
 
     arc 1 30 80
-    
+
     amove 3.75 2
     text θ
-    
+
     amove 5 2
     text v
-    
+
     amove 3.9 3.2
     text r(θ)v
     ```
     </center>
 
 -   In 2 dimensioni, vale che $R(\alpha) R(\beta) = R(\beta) R(\alpha) = R(\alpha + \beta)$.
-    
+
 # Rotazioni in 3D
-    
+
 -   In 3 dimensioni, le rotazioni possono essere notevolmente più complesse, perché ci sono infiniti assi usabili per la rotazione intorno all'origine!
-    
+
     <center>
         <video src="./media/rotating-cubes.mp4" width="960" height="360" controls loop autoplay/>
     </center>
@@ -616,7 +616,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     $$
     R_z(\theta) v = \begin{pmatrix}\cos\theta&-\sin\theta&0\\\sin\theta&\cos\theta&0\\0&0&1\end{pmatrix}.
     $$
-    
+
 -   È possibile scrivere una matrice $R_{\hat v}(\theta)$ che descriva una rotazione di un angolo θ attorno a un asse $\hat v$ arbitrario; vedi la [pagina Wikipedia](https://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations) per i dettagli.
 
 # Angoli di Eulero
