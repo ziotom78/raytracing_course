@@ -17,6 +17,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 4b      | 2022/03/23 | [Tone mapping, file LDR](tomasi-ray-tracing-04b-ldr-images.html)                   |
 | 5a      | 2022/03/28 | [Versioni, geometria](tomasi-ray-tracing-05a.html)                                 |
 | 5b      | 2022/03/30 | [Geometria, branch, pull request](tomasi-ray-tracing-05b.html)                     |
+| 6a      | 2022/04/04 | [Quaternioni e algebre di Clifford](tomasi-ray-tracing-06a.html)                   |
 
 # Scelta del linguaggio
 
