@@ -389,16 +389,17 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.camera <span class="op">=</span> camera</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, col: <span class="bu">int</span>, row: <span class="bu">int</span>, u_pixel<span class="op">=</span><span class="fl">0.5</span>, v_pixel<span class="op">=</span><span class="fl">0.5</span>):</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> (<span class="va">self</span>.image.width <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        v <span class="op">=</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> (<span class="va">self</span>.image.height <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.camera.fire_ray(u, v)</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_all_rays(<span class="va">self</span>, func):</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.height):</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.width):</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                ray <span class="op">=</span> <span class="va">self</span>.fire_ray(col, row)</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                color <span class="op">=</span> func(ray)</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.image.set_pixel(col, row, color)</span></code></pre></div>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># There is an error in this formula, but implement it as is anyway!</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> (<span class="va">self</span>.image.width <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        v <span class="op">=</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> (<span class="va">self</span>.image.height <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.camera.fire_ray(u, v)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_all_rays(<span class="va">self</span>, func):</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.height):</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.width):</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                ray <span class="op">=</span> <span class="va">self</span>.fire_ray(col, row)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>                color <span class="op">=</span> func(ray)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.image.set_pixel(col, row, color)</span></code></pre></div>
 </section>
 <section id="test-per-imagetracer" class="slide level1">
 <h1>Test per <code>ImageTracer</code></h1>
@@ -416,10 +417,6 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(image.width):</span>
 <span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> image.get_pixel(col, row) <span class="op">==</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span></code></pre></div>
 </section>
-<section id="link-a-gather" class="slide level1">
-<h1>Link a Gather</h1>
-<p>Useremo il solito link: <a href="https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing">gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing</a></p>
-</section>
 <section id="guida-per-lesercitazione" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
 </section>
@@ -434,112 +431,6 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <li><code>ImageTracer</code>.</li>
 </ol></li>
 <li><p>Implementate tutti i test. Quando avete terminato l’implementazione e i test passano con successo, chiudete il PR.</p></li>
-</ul>
-</section>
-<section id="documentazione" class="slide level1">
-<h1>Documentazione</h1>
-<ul>
-<li><p>Iniziate ad inserire documentazione per le nuove classi che implementate oggi.</p></li>
-<li><p>Aggiungete documentazione per quelle classi/funzioni/metodi delle lezioni passate che oggi vi capita di impiegare, e per cui il funzionamento non vi sembrava più così ovvio.</p></li>
-<li><p>Questo dovrebbe essere un lavoro facile da distribuire tra le persone del gruppo.</p></li>
-</ul>
-</section>
-<section id="indicazioni-per-c" class="slide level1">
-<h1>Indicazioni per C++</h1>
-</section>
-<section id="implementazione" class="slide level1">
-<h1>Implementazione</h1>
-<ul>
-<li><p>Create una classe per <code>Camera</code>, e derivate le due classi <code>OrthogonalCamera</code> e <code>PerspectiveCamera</code>. Preoccupatevi che in <code>Camera</code> ci siano le due funzioni virtuali pure</p>
-<ol>
-<li><code>fire_ray</code>;</li>
-<li><code>fire_all_rays</code>.</li>
-</ol></li>
-<li><p>Per passare a <code>fire_all_rays</code> la funzione da chiamare su ciascun raggio, ci sono svariate soluzioni:</p>
-<ol>
-<li>Usate un template (probabilmente l’opzione più efficiente);</li>
-<li>Passate un parametro <a href="https://en.cppreference.com/w/cpp/utility/functional/function"><code>std::function</code></a>;</li>
-<li>Passate un puntatore a funzione.</li>
-</ol></li>
-</ul>
-</section>
-<section id="documentazione-1" class="slide level1">
-<h1>Documentazione</h1>
-<ul>
-<li><p>In C++ il programma più usato per gestire la documentazione è <a href="https://www.doxygen.nl/index.html">Doxygen</a>. Consultate la guida per imparare la sintassi, basata su Markdown.</p></li>
-<li><p>Esempio di documentazione:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * Return `true` if the difference between `a` and `b` is less than `epsilon`.</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param</span><span class="co"> </span><span class="cv">a</span><span class="co"> The first number to compare</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param</span><span class="co"> </span><span class="cv">b</span><span class="co"> The second number to compare</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@param</span><span class="co"> </span><span class="cv">epsilon</span><span class="co"> The maximum tolerance</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@return</span><span class="co"> A Boolean telling whether `a` and `b` are close or not.</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> are_close<span class="op">(</span><span class="dt">float</span> a<span class="op">,</span> <span class="dt">float</span> b<span class="op">,</span> <span class="dt">float</span> epsilon <span class="op">=</span> <span class="fl">1e-5</span><span class="op">)</span> <span class="op">{</span> … <span class="op">}</span></span></code></pre></div></li>
-</ul>
-</section>
-<section id="esempio-c-in-clion" class="slide level1">
-<h1>Esempio C++ in <a href="https://www.jetbrains.com/clion/">CLion</a></h1>
-<center>
-<img data-src="./media/clion-documentation-comment.png" height="560" />
-</center>
-</section>
-<section id="indicazioni-per-julia" class="slide level1">
-<h1>Indicazioni per Julia</h1>
-</section>
-<section id="esempio-julia" class="slide level1">
-<h1>Esempio Julia</h1>
-<ul>
-<li><p>Julia supporta nativamente le <a href="https://docs.julialang.org/en/v1/manual/documentation/"><em>docstrings</em></a> e il Markdown 😀</p></li>
-<li><p>Per estrarre tutte le docstring da un package e pubblicarle su un sito esiste <a href="https://juliadocs.github.io/Documenter.jl/stable/">Documenter.jl</a>.</p></li>
-<li><p>Esempio di documentazione:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;&quot;&quot;Return `true` if ``\left|a - b</span><span class="sc">\r</span><span class="st">ight| &lt; ε``.</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="st">Check if two numbers are close enough or not. This is often used in tests</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;&quot;&quot;</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">are_close</span>(a<span class="op">,</span> b<span class="op">,</span> ε <span class="op">=</span> <span class="fl">1e-5</span>) <span class="op">=</span> <span class="fu">abs</span>(a <span class="op">-</span> b) <span class="op">&lt;</span> ε</span></code></pre></div></li>
-<li><p>La documentazione è consultabile anche dalla REPL scrivendo <code>?are_close</code>.</p></li>
-</ul>
-</section>
-<section id="esempio-julia-1" class="slide level1">
-<h1>Esempio Julia</h1>
-<ul>
-<li><p>In Visual Studio Code:</p>
-<center>
-<p><img data-src="./media/julia-docstring-vscode.png" height="230" /></p>
-</center></li>
-<li><p>Nella REPL:</p>
-<center>
-<p><img data-src="./media/julia-docstring-repl.png" height="160" /></p>
-</center></li>
-</ul>
-</section>
-<section id="indicazioni-per-c-1" class="slide level1">
-<h1>Indicazioni per C#</h1>
-</section>
-<section id="documentazione-2" class="slide level1">
-<h1>Documentazione</h1>
-<ul>
-<li><p>Purtroppo il C# <a href="https://docs.microsoft.com/en-us/dotnet/csharp/codedoc">richiede</a> che i commenti siano scritti in formato XML anziché in Markdown.</p></li>
-<li><p>Esempio di documentazione:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">/// </span><span class="kw">&lt;summary&gt;</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">/// Save the image in a PFM file</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">/// </span><span class="kw">&lt;/summary&gt;</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">/// </span><span class="kw">&lt;param</span><span class="ot"> name=</span><span class="dt">&quot;outputStream&quot;</span><span class="kw">&gt;</span><span class="co">The output stream where to save the image</span><span class="kw">&lt;/param&gt;</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">SavePfm</span><span class="op">(</span>Stream outputStream<span class="op">)</span> <span class="op">{</span> … <span class="op">}</span></span></code></pre></div></li>
-<li><p>Se usate Visual Studio Code e attivate dal menu «File | Settings…» l’opzione <em>Format on type</em>, digitando <code>///</code> sopra un metodo o classe produrrà un template della documentazione. È molto comodo!</p></li>
-</ul>
-</section>
-<section id="indicazioni-per-kotlin" class="slide level1">
-<h1>Indicazioni per Kotlin</h1>
-</section>
-<section id="documentazione-3" class="slide level1">
-<h1>Documentazione</h1>
-<ul>
-<li><p>I commenti di documentazione iniziano con <code>/**</code> anziché <code>/*</code>, oppure con <code>///</code> anziché <code>//</code>.</p></li>
-<li><p>Il testo può essere scritto usando il linguaggio Markdown.</p></li>
-<li><p>Esistono una serie di comandi che si possono impiegare nel testo. Iniziano tutti con <code>@</code> (es., <code>@param</code>, <code>@return</code>, <code>@see</code>), e sono documentati alla pagina <a href="https://kotlinlang.org/docs/kotlin-doc.html">Document Kotlin code</a>.</p></li>
 </ul>
 </section>
     </div>

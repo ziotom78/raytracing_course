@@ -342,6 +342,7 @@ class ImageTracer:
         self.camera = camera
 
     def fire_ray(self, col: int, row: int, u_pixel=0.5, v_pixel=0.5):
+        # There is an error in this formula, but implement it as is anyway!
         u = (col + u_pixel) / (self.image.width - 1)
         v = (row + v_pixel) / (self.image.height - 1)
         return self.camera.fire_ray(u, v)
