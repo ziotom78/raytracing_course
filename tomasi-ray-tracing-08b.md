@@ -8,22 +8,23 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Un bug nel codice!
 
--   Il codice Python di settimana scorsa conteneva un errore nell'implementazione del metodo `ImageTracer.fire_ray`:
+-   Il codice Python di settimana scorsa conteneva volutamente un errore nell'implementazione del metodo `ImageTracer.fire_ray`:
 
     ```python
     u = (col + u_pixel) / (self.image.width - 1)
     v = (row + v_pixel) / (self.image.height - 1)
     ```
 
--   L'errore sta nel fatto che le righe in `HdrImage` sono numerate dall'*alto*, non dal *basso* (come avevo erroneamente detto). Nella seconda riga invece, `v` cresce quando cresce `row`.
+-   L'errore sta nel fatto che le righe in `HdrImage` sono numerate dall'*alto*, non dal *basso*. Nella seconda riga invece, `v` cresce quando cresce `row`.
 
 # Cosa fare con i bug
 
 -   L'esistenza di questo bug provoca un ribaltamento verticale delle immagini: l'alto e il basso sono scambiati!
 
--   Curiosamente, nella presentazione del corso che avevo fatto a Dicembre avevo mostrato esattamente questa possibilità… 😀
+-   Eppure abbiamo implementato dei test!
 
--   Eppure abbiamo implementato dei test! Perché non ce ne siamo accorti?
+-   Perché non ce ne siamo accorti?
+
 
 # Test della scorsa lezione
 
@@ -212,6 +213,7 @@ class TestImageTracer(unittest.TestCase):
 
 -   Di solito si divide in sezioni, una per ogni versione del codice. La prima sezione si chiama di solito `HEAD`, e contiene le correzioni e le modifiche che finiranno nella prossima futura versione del codice.
 
+
 # CHANGELOG di [Healpix.jl](https://github.com/ziotom78/Healpix.jl)
 
 <center>![](./media/healpixjl-changelog.png)</center>
@@ -219,10 +221,10 @@ class TestImageTracer(unittest.TestCase):
 
 # CHANGELOG di [pytracer](https://github.com/ziotom78/pytracer)
 
--   Ho aggiunto nel repository di [pytracer](https://github.com/ziotom78/pytracer) questo file `CHANGELOG.md`, scritto in Markdown, che potete usare come ispirazione:
+-   Nel repository di [pytracer](https://github.com/ziotom78/pytracer) c'è un file `CHANGELOG.md`, scritto in Markdown, che potete usare come ispirazione. In particolare, il «nostro» bug figura così:
 
     ```markdown
-    # HEAD
+    …
 
     -   Fix an issue with the vertical order of the images [#4](https://github.com/ziotom78/pytracer/pull/4)
 
@@ -562,63 +564,8 @@ Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing]
 #.  Creare un file `CHANGELOG.md`;
 #.  Lavorare su un nuovo branch `demo`;
 #.  Creare i tipi `Shape`, `Sphere`, `World`, `Vec2d`;
-#.  Implementare il comando `demo`, nel modo in cui preferite;
+#.  Implementare il comando `demo`, nel modo in cui preferite (potete cercare una libreria per interpretare la linea di comando);
 #.  Aprire una PR e aggiornare il file `CHANGELOG.md`.
-
-
-# Indicazioni per C++
-
-# Indicazioni per C++
-
--   Se vi piace l'interfaccia a linea di comando di pytracer, potete usare librerie come [args](https://github.com/Taywee/args) o [CLI11](https://github.com/CLIUtils/CLI11#other-parsers), che supportano le *azioni* (chiamate rispettivamente *commands* e *subcommands*).
-
--   Per implementare il tipo `World`, usate [`make_shared`](https://www.cplusplus.com/reference/memory/make_shared/) e [`shared_ptr`](https://www.cplusplus.com/reference/memory/shared_ptr/).
-
-    In questo modo evitate di dover chiamare `new` e `delete` per creare distruggere gli oggetti derivati da `Shape`.
-
-# Esempio di `shared_ptr`
-
-```c++
-#include <iostream>
-#include <memory>
-#include <vector>
-
-using namespace std;
-
-struct Shape {};
-struct Sphere : public Shape {};
-struct Plane : public Shape {};
-
-int main() {
-  // This would work even if "Shape" were an abstract type
-  std::vector<std::shared_ptr<Shape>> list_of_shapes;
-
-  // This calls "new" automatically, and it will call "delete" at the end
-  list_of_shapes.push_back(make_shared<Sphere>());
-  list_of_shapes.push_back(make_shared<Sphere>());
-  list_of_shapes.push_back(make_shared<Plane>());
-}
-```
-
-# Indicazioni per Julia
-
-# Indicazioni per Julia
-
--   Non preoccupatevi troppo dell'interfaccia da linea di comando: i programmi Julia non sono pensati per essere efficienti da linea di comando. Potete limitarvi a fornire uno script `demo.jl` accanto a uno script `pfm2png.jl`.
-
--   Definite un `abstract struct` per `Shape`, e poi derivate il tipo `Sphere`.
-
--   In questa lezione vedrete veramente quanto può essere chiaro il codice matematico in Julia! (intersezione raggio-sfera).
-
-# Indicazioni per C\#
-
-# Indicazioni per C\#
-
--   La lezione di oggi dovrebbe essere molto semplice da implementare.
-
--   Sfruttate a fondo le caratteristiche OOP del C\#: definite una classe astratta `Shape` da cui derivare `Sphere`.
-
--   Se volete implementare una buona interfaccia utente, potete usare la libreria [RunInfoBuilder](https://github.com/rushfive/RunInfoBuilder) oppure [EntryPoint](https://github.com/Nick-Lucas/EntryPoint).
 
 
 # Indicazioni per Kotlin

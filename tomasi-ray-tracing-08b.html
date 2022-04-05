@@ -117,18 +117,18 @@
 <section id="un-bug-nel-codice" class="slide level1">
 <h1>Un bug nel codice!</h1>
 <ul>
-<li><p>Il codice Python di settimana scorsa conteneva un errore nell’implementazione del metodo <code>ImageTracer.fire_ray</code>:</p>
+<li><p>Il codice Python di settimana scorsa conteneva volutamente un errore nell’implementazione del metodo <code>ImageTracer.fire_ray</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> (<span class="va">self</span>.image.width <span class="op">-</span> <span class="dv">1</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> (<span class="va">self</span>.image.height <span class="op">-</span> <span class="dv">1</span>)</span></code></pre></div></li>
-<li><p>L’errore sta nel fatto che le righe in <code>HdrImage</code> sono numerate dall’<em>alto</em>, non dal <em>basso</em> (come avevo erroneamente detto). Nella seconda riga invece, <code>v</code> cresce quando cresce <code>row</code>.</p></li>
+<li><p>L’errore sta nel fatto che le righe in <code>HdrImage</code> sono numerate dall’<em>alto</em>, non dal <em>basso</em>. Nella seconda riga invece, <code>v</code> cresce quando cresce <code>row</code>.</p></li>
 </ul>
 </section>
 <section id="cosa-fare-con-i-bug" class="slide level1">
 <h1>Cosa fare con i bug</h1>
 <ul>
 <li><p>L’esistenza di questo bug provoca un ribaltamento verticale delle immagini: l’alto e il basso sono scambiati!</p></li>
-<li><p>Curiosamente, nella presentazione del corso che avevo fatto a Dicembre avevo mostrato esattamente questa possibilità… 😀</p></li>
-<li><p>Eppure abbiamo implementato dei test! Perché non ce ne siamo accorti?</p></li>
+<li><p>Eppure abbiamo implementato dei test!</p></li>
+<li><p>Perché non ce ne siamo accorti?</p></li>
 </ul>
 </section>
 <section id="test-della-scorsa-lezione" class="slide level1">
@@ -319,8 +319,8 @@
 <section id="changelog-di-pytracer" class="slide level1">
 <h1>CHANGELOG di <a href="https://github.com/ziotom78/pytracer">pytracer</a></h1>
 <ul>
-<li><p>Ho aggiunto nel repository di <a href="https://github.com/ziotom78/pytracer">pytracer</a> questo file <code>CHANGELOG.md</code>, scritto in Markdown, che potete usare come ispirazione:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># HEAD</span></span>
+<li><p>Nel repository di <a href="https://github.com/ziotom78/pytracer">pytracer</a> c’è un file <code>CHANGELOG.md</code>, scritto in Markdown, che potete usare come ispirazione. In particolare, il «nostro» bug figura così:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>…</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Fix an issue with the vertical order of the images <span class="co">[</span><span class="ot">#4</span><span class="co">](https://github.com/ziotom78/pytracer/pull/4)</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -599,64 +599,9 @@ t_2 &amp;= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
 <li>Creare un file <code>CHANGELOG.md</code>;</li>
 <li>Lavorare su un nuovo branch <code>demo</code>;</li>
 <li>Creare i tipi <code>Shape</code>, <code>Sphere</code>, <code>World</code>, <code>Vec2d</code>;</li>
-<li>Implementare il comando <code>demo</code>, nel modo in cui preferite;</li>
+<li>Implementare il comando <code>demo</code>, nel modo in cui preferite (potete cercare una libreria per interpretare la linea di comando);</li>
 <li>Aprire una PR e aggiornare il file <code>CHANGELOG.md</code>.</li>
 </ol>
-</section>
-<section id="indicazioni-per-c" class="slide level1">
-<h1>Indicazioni per C++</h1>
-</section>
-<section id="indicazioni-per-c-1" class="slide level1">
-<h1>Indicazioni per C++</h1>
-<ul>
-<li><p>Se vi piace l’interfaccia a linea di comando di pytracer, potete usare librerie come <a href="https://github.com/Taywee/args">args</a> o <a href="https://github.com/CLIUtils/CLI11#other-parsers">CLI11</a>, che supportano le <em>azioni</em> (chiamate rispettivamente <em>commands</em> e <em>subcommands</em>).</p></li>
-<li><p>Per implementare il tipo <code>World</code>, usate <a href="https://www.cplusplus.com/reference/memory/make_shared/"><code>make_shared</code></a> e <a href="https://www.cplusplus.com/reference/memory/shared_ptr/"><code>shared_ptr</code></a>.</p>
-<p>In questo modo evitate di dover chiamare <code>new</code> e <code>delete</code> per creare distruggere gli oggetti derivati da <code>Shape</code>.</p></li>
-</ul>
-</section>
-<section id="esempio-di-shared_ptr" class="slide level1">
-<h1>Esempio di <code>shared_ptr</code></h1>
-<div class="sourceCode" id="cb18"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;memory&gt;</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> std<span class="op">;</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Shape <span class="op">{};</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Sphere <span class="op">:</span> <span class="kw">public</span> Shape <span class="op">{};</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Plane <span class="op">:</span> <span class="kw">public</span> Shape <span class="op">{};</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// This would work even if &quot;Shape&quot; were an abstract type</span></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>shared_ptr<span class="op">&lt;</span>Shape<span class="op">&gt;&gt;</span> list_of_shapes<span class="op">;</span></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">// This calls &quot;new&quot; automatically, and it will call &quot;delete&quot; at the end</span></span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  list_of_shapes<span class="op">.</span>push_back<span class="op">(</span>make_shared<span class="op">&lt;</span>Sphere<span class="op">&gt;());</span></span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  list_of_shapes<span class="op">.</span>push_back<span class="op">(</span>make_shared<span class="op">&lt;</span>Sphere<span class="op">&gt;());</span></span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  list_of_shapes<span class="op">.</span>push_back<span class="op">(</span>make_shared<span class="op">&lt;</span>Plane<span class="op">&gt;());</span></span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-</section>
-<section id="indicazioni-per-julia" class="slide level1">
-<h1>Indicazioni per Julia</h1>
-</section>
-<section id="indicazioni-per-julia-1" class="slide level1">
-<h1>Indicazioni per Julia</h1>
-<ul>
-<li><p>Non preoccupatevi troppo dell’interfaccia da linea di comando: i programmi Julia non sono pensati per essere efficienti da linea di comando. Potete limitarvi a fornire uno script <code>demo.jl</code> accanto a uno script <code>pfm2png.jl</code>.</p></li>
-<li><p>Definite un <code>abstract struct</code> per <code>Shape</code>, e poi derivate il tipo <code>Sphere</code>.</p></li>
-<li><p>In questa lezione vedrete veramente quanto può essere chiaro il codice matematico in Julia! (intersezione raggio-sfera).</p></li>
-</ul>
-</section>
-<section id="indicazioni-per-c-2" class="slide level1">
-<h1>Indicazioni per C#</h1>
-</section>
-<section id="indicazioni-per-c-3" class="slide level1">
-<h1>Indicazioni per C#</h1>
-<ul>
-<li><p>La lezione di oggi dovrebbe essere molto semplice da implementare.</p></li>
-<li><p>Sfruttate a fondo le caratteristiche OOP del C#: definite una classe astratta <code>Shape</code> da cui derivare <code>Sphere</code>.</p></li>
-<li><p>Se volete implementare una buona interfaccia utente, potete usare la libreria <a href="https://github.com/rushfive/RunInfoBuilder">RunInfoBuilder</a> oppure <a href="https://github.com/Nick-Lucas/EntryPoint">EntryPoint</a>.</p></li>
-</ul>
 </section>
 <section id="indicazioni-per-kotlin" class="slide level1">
 <h1>Indicazioni per Kotlin</h1>
@@ -686,22 +631,22 @@ t_2 &amp;= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
 <section id="gradlefile" class="slide level1">
 <h1>Gradlefile</h1>
 <p>Dovete modificare il file <code>build.gradle.kts</code> in modo che abbia le righe evidenziate col commento <code>// ←</code>:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">jetbrains</span><span class="op">.</span><span class="im">kotlin</span><span class="op">.</span><span class="im">gradle</span><span class="op">.</span><span class="im">tasks</span><span class="op">.</span><span class="im">KotlinCompile</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">github</span><span class="op">.</span><span class="im">jengelman</span><span class="op">.</span><span class="im">gradle</span><span class="op">.</span><span class="im">plugins</span><span class="op">.</span><span class="im">shadow</span><span class="op">.</span><span class="im">tasks</span><span class="op">.</span><span class="im">ShadowJar</span>  // ←</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>plugins <span class="op">{</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    kotlin<span class="op">(</span><span class="st">&quot;jvm&quot;</span><span class="op">)</span> version <span class="st">&quot;1.5.0&quot;</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    id<span class="op">(</span><span class="st">&quot;com.github.johnrengelman.shadow&quot;</span><span class="op">)</span> version <span class="st">&quot;7.0.0&quot;</span>          <span class="co">// ←</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    application</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>tasks<span class="op">.</span>withType<span class="op">&lt;</span>ShadowJar<span class="op">&gt;()</span> <span class="op">{</span>                                      <span class="co">// ←</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    manifest <span class="op">{</span>                                                     <span class="co">// ←</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        attributes<span class="op">[</span><span class="st">&quot;Main-Class&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="st">&quot;MainKt&quot;</span>                        <span class="co">// ←</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>                                                              <span class="co">// ←</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>                                                                  <span class="co">// ←</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co">// Etc.</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">jetbrains</span><span class="op">.</span><span class="im">kotlin</span><span class="op">.</span><span class="im">gradle</span><span class="op">.</span><span class="im">tasks</span><span class="op">.</span><span class="im">KotlinCompile</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">github</span><span class="op">.</span><span class="im">jengelman</span><span class="op">.</span><span class="im">gradle</span><span class="op">.</span><span class="im">plugins</span><span class="op">.</span><span class="im">shadow</span><span class="op">.</span><span class="im">tasks</span><span class="op">.</span><span class="im">ShadowJar</span>  // ←</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>plugins <span class="op">{</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    kotlin<span class="op">(</span><span class="st">&quot;jvm&quot;</span><span class="op">)</span> version <span class="st">&quot;1.5.0&quot;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    id<span class="op">(</span><span class="st">&quot;com.github.johnrengelman.shadow&quot;</span><span class="op">)</span> version <span class="st">&quot;7.0.0&quot;</span>          <span class="co">// ←</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    application</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>tasks<span class="op">.</span>withType<span class="op">&lt;</span>ShadowJar<span class="op">&gt;()</span> <span class="op">{</span>                                      <span class="co">// ←</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    manifest <span class="op">{</span>                                                     <span class="co">// ←</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        attributes<span class="op">[</span><span class="st">&quot;Main-Class&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="st">&quot;MainKt&quot;</span>                        <span class="co">// ←</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>                                                              <span class="co">// ←</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>                                                                  <span class="co">// ←</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co">// Etc.</span></span></code></pre></div>
 </section>
 <section id="creare-ed-eseguire-jar" class="slide level1">
 <h1>Creare ed eseguire JAR</h1>
