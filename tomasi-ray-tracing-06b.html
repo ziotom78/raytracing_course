@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Esercitazione 7</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Esercitazione 7</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="ci-builds" class="slide level1">
+<h1>CI builds</h1>
+</section>
+<section id="ci-builds-1" class="slide level1">
+<h1>CI builds</h1>
+<ul>
+<li><p>Nel momento in cui si gestiscono <em>pull request</em>, è necessario essere sicuri che la modifica non peggiori il codice.</p></li>
+<li><p>Un requisito basilare è che tutti i test continuino a passare una volta che viene incorporato il <em>pull request</em>.</p></li>
+<li><p>GitHub consente di verificare automaticamente questo requisito, tramite i <em>Continuous Integration builds</em>.</p></li>
+</ul>
+</section>
+<section id="continuous-integration-ci" class="slide level1">
+<h1>Continuous Integration (CI)</h1>
+<ul>
+<li><p>È un termine che indica un metodo di lavoro in cui miglioramenti e modifiche al codice vengono incorporate il prima possibile nel branch <code>master</code>.</p></li>
+<li><p>Perché possano essere incorporati, occorre essere certi della loro qualità!</p></li>
+<li><p>Un CI build consiste nel creare una macchina virtuale su cui si installa un sistema operativo «pulito» e su cui si installa il codice, lo si compila e si eseguono i test.</p></li>
+<li><p>Al termine dell’esecuzione dei test, la macchina virtuale viene cancellata; se si esegue di nuovo il CI build, si ricomincia da capo.</p></li>
+</ul>
+</section>
+<section id="vantaggi-dei-ci-build" class="slide level1">
+<h1>Vantaggi dei CI build</h1>
+<ul>
+<li><p>Installano il codice su una macchina virtuale: più difficile combinare guai.</p></li>
+<li><p>La macchina virtuale viene creata sempre da zero: più facile scoprire quali sono le dipendenze del codice. (Esempio: è stata installato il compilatore C++? È stata installata la libreria <code>libgd</code>?)</p></li>
+<li><p>Si possono creare macchine virtuali che installano diversi sistemi operativi (Linux, Windows, Mac OS X, FreeBSD, etc.): il codice viene verificato su ciascuna di esse.</p></li>
+<li><p>I CI builds possono venire eseguiti automaticamente da GitHub ogni volta che si apre un pull request, ogni volta che si fa un commit, etc.</p></li>
+</ul>
+</section>
+<section id="ci-builds-in-github" class="slide level1">
+<h1>CI builds in GitHub</h1>
+<ul>
+<li><p>Un CI build può essere creato ed eseguito in GitHub tramite <a href="https://docs.github.com/en/actions">GitHub Actions</a>, un servizio che include una serie di possibilità che vanno oltre i semplici CI build.</p></li>
+<li><p>Per attivare un CI build è sufficiente create una directory nascosta <code>.github/workflows</code> nel proprio repository, che contenga un file di testo in formato <a href="https://en.wikipedia.org/wiki/YAML">YAML</a>, che contenga queste informazioni:</p>
+<ol>
+<li>Quando eseguire l’azione (a ogni pull request? a ogni commit?)</li>
+<li>Quale sistema operativo usare (Linux? Windows? quale versione?)</li>
+<li>Quali pacchetti aggiuntivi installare (compilatore C++? Python?)</li>
+<li>Come compilare il codice ed eseguire i test?</li>
+</ol></li>
+</ul>
+</section>
+<section id="il-marketplace" class="slide level1">
+<h1>Il «Marketplace»</h1>
+<ul>
+<li><p>GitHub Actions ha un «marketplace» che consente di configurare automaticamente con pochi click del mouse un CI build in funzione del linguaggio che usate.</p></li>
+<li><p>Sono disponibili azioni pre-configurate per molti linguaggi ed ambienti di sviluppo.</p></li>
+<li><p>Non è drammatico se non trovate un’azione che fa al caso vostro: è abbastanza semplice creare nuove azioni su misura, una volta che capite come fare a descriverle.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/github-action-run-tests.png" height="720" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/github-action-run-tests-detail.png" height="720" />
+</center>
+</section>
+<section id="guida-per-lesercitazione" class="slide level1">
+<h1>Guida per l’esercitazione</h1>
+</section>
+<section id="transformation" class="slide level1">
+<h1><code>Transformation</code></h1>
+<ul>
+<li><p>Continuate a lavorare nella pull request <code>geometry</code>.</p></li>
+<li><p>Implementate un semplice tipo <code>Normal</code>.</p></li>
+<li><p>Implementate il tipo <code>Transformation</code>, che possa essere costruito da una matrice 4×4 e dalla sua inversa. (Fatelo agile come <code>Vec</code>, <code>Point</code>, etc.)</p></li>
+<li><p>Implementate le seguenti operazioni:</p>
+<ol>
+<li>Metodo <code>is_close</code> o funzione <code>are_close</code> per <code>Transformation</code>;</li>
+<li>Prodotto con <code>Transformation</code>, <code>Vec</code>, <code>Point</code> e <code>Normal</code>;</li>
+<li>Inversa;</li>
+<li>Funzioni <code>translation</code>, <code>scaling</code>, e le tre rotazioni attorno a <span class="math inline">x</span>, <span class="math inline">y</span> e <span class="math inline">z</span>.</li>
+</ol></li>
+</ul>
+</section>
+<section id="test" class="slide level1">
+<h1>Test</h1>
+<ul>
+<li><p>Fate riferimento al <a href="https://github.com/ziotom78/pytracer/blob/351213037ecf14e380530194b89b4190d984aa87/test_all.py#L241-L368">file test_all.py di pytracer</a> per vedere come sono implementati i test.</p></li>
+<li><p>Preoccupatevi di verificare che <strong>tutti</strong> i test passino: le operazioni in <code>Transformation</code> sono fondamentali per il codice che scriveremo le prossime volte, e non devono esserci errori.</p></li>
+<li><p>Una volta che avete implementato tutte le funzionalità e tutti i test passano, fate il merge del pull request.</p></li>
+</ul>
+</section>
+<section id="workflow-in-github" class="slide level1">
+<h1>Workflow in GitHub</h1>
+<ul>
+<li><p>Aggiungete un <em>workflow</em> al vostro repository GitHub.</p></li>
+<li><p>Ci sono molti template disponibili in GitHub: scegliete il più appropriato.</p></li>
+<li><p>Il workflow deve eseguire le seguenti azioni:</p>
+<ol type="1">
+<li>Scaricare il codice dal repository GitHub (verifica che non manchino file);</li>
+<li>Compilare il codice (verifica che non ci siano errori di sintassi);</li>
+<li>Eseguire i test (verifica che il codice funzioni a dovere).</li>
+</ol></li>
+<li><p>Modificate un test in modo che fallisca e verificate che quando fate il commit ciò vi venga segnalato. (Poi rimettete a posto il test).</p></li>
+</ul>
+</section>
+<section id="indicazioni-per-il-c" class="slide level1">
+<h1>Indicazioni per il C++</h1>
+</section>
+<section id="github-actions" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li><p>Una volta salvato il codice in un repository su GitHub, configurate una nuova «Action» (v. video seguente).</p></li>
+<li><p>Il modello è «CMake based projects» (ignorate il fatto che sembri supportare solo il linguaggio C):</p>
+<center>
+<p><img data-src="./media/cmake-github-action.png" /></p>
+</center></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<iframe src="https://player.vimeo.com/video/520878087?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Setting up GitHub Actions for CMake-based projects">
+</iframe>
+</section>
+<section id="esecuzione-dei-test" class="slide level1">
+<h1>Esecuzione dei test</h1>
+<ul>
+<li><p>Modificate uno dei test che sono già implementati nel vostro codice, in modo che fallisca:</p>
+<ul>
+<li>Cambiate il codice del test e modificate il valore atteso per un test;</li>
+<li>Andate nella directory <code>build</code> ed eseguite <code>ctest</code>, verificando il fallimento;</li>
+<li>Fate il commit delle modifiche;</li>
+<li>Inviate le modifiche a GitHub col comando <code>git push</code>.</li>
+</ul></li>
+<li><p>Cosa succede al <em>CI build</em>? Fallisce come vi aspettavate?</p></li>
+</ul>
+</section>
+<section id="suggerimenti" class="slide level1">
+<h1>Suggerimenti</h1>
+<ul>
+<li>Se il build <strong>non</strong> fallisce, è probabilmente perché viene usato come tipo di build il <code>Release</code> anziché il <code>Debug</code>, e avete usato <code>assert</code> nel vostro codice.</li>
+<li>Soluzioni:
+<ul>
+<li>Cambiate il file <code>.yml</code> in modo da usare <code>Debug</code> anziché <code>Release</code></li>
+<li>Usate <code>#undef NDEBUG</code> prima di <code>#include &lt;cassert&gt;</code> (meglio!)</li>
+<li>Definite una vostra funzione <code>my_assert</code> (ancora meglio!)</li>
+<li>Usate una libreria di testing C++, come <a href="https://github.com/catchorg/Catch2/tree/v2.x">Catch2</a> (ottimo!)</li>
+</ul></li>
+<li>Insegnamento: provare <strong>sempre</strong> a far fallire uno o più test quando si configura un <em>CI build</em>!</li>
+</ul>
+</section>
+<section id="indicazioni-per-c" class="slide level1">
+<h1>Indicazioni per C#</h1>
+</section>
+<section id="github-actions-1" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li><p>Aggiungete una Action al repository GitHub, una volta che avete fatto il commit ed eseguito <code>git push</code>.</p></li>
+<li><p>Il modello è «.NET» (evitate il modello «.NET desktop», a noi serve quello per i programmi che funzionano da linea di comando):</p>
+<center>
+<p><img data-src="./media/dotnet-github-action.png" /></p>
+</center></li>
+</ul>
+</section>
+<section id="indicazioni-per-julia" class="slide level1">
+<h1>Indicazioni per Julia</h1>
+</section>
+<section id="github-actions-2" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li>A differenza del C++ e del C#, Julia non ha una action preconfigurata nel sito.</li>
+<li>Ma GitHub gestisce un «marketplace», e il team Julia l’ha usato per fornire alla comunità una <a href="https://github.com/julia-actions">serie di actions</a>.</li>
+<li>Le azioni che servono sono le seguenti:
+<ul>
+<li><code>julia-actions/setup-julia@v1</code> (installa Julia);</li>
+<li><code>actions/cache@v1</code> (evita di reinstallare pacchetti Julia ogni volta)</li>
+<li><code>julia-actions/julia-buildpkg@latest</code> (compila il package)</li>
+<li><code>julia-actions/julia-runtest@latest</code> (esegue i test)</li>
+</ul></li>
+</ul>
+</section>
+<section id="file-unittests.yml" class="slide level1">
+<h1>File <code>UnitTests.yml</code></h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Unit tests</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> master</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">test</span><span class="kw">:</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.arch }}</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ${{ matrix.os }}</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">strategy</span><span class="kw">:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">matrix</span><span class="kw">:</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">julia-version</span><span class="kw">:</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="st">&#39;1.5&#39;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">os</span><span class="kw">:</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">arch</span><span class="kw">:</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> x64</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v2</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Set up Julia&quot;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/setup-julia@v1</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">version</span><span class="kw">:</span><span class="at"> ${{ matrix.julia-version }}</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">arch</span><span class="kw">:</span><span class="at"> ${{ matrix.arch }}</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Cache artifacts&quot;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/cache@v1</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">cache-name</span><span class="kw">:</span><span class="at"> cache-artifacts</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">path</span><span class="kw">:</span><span class="at"> ~/.julia/artifacts</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">key</span><span class="kw">:</span><span class="at"> ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles(&#39;**/Project.toml&#39;) }}</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">          restore-keys</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-test-${{ env.cache-name }}-</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-test-</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>            ${{ runner.os }}-</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Build package&quot;</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/julia-buildpkg@latest</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Run unit tests&quot;</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> julia-actions/julia-runtest@latest</span></span></code></pre></div>
+</section>
+<section id="indicazioni-per-kotlin" class="slide level1">
+<h1>Indicazioni per Kotlin</h1>
+</section>
+<section id="github-actions-3" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li><p>Selezionate «Java with Gradle»:</p>
+<center>
+<p><img data-src="./media/gradle-github-action.png" /></p>
+</center>
+<p>Gradle scaricherà automaticamente il supporto Kotlin.</p></li>
+<li><p>Il processo proverà a compilare il codice e a eseguire <em>tutti</em> i test nel repository</p></li>
+</ul>
+</section>
+<section id="risoluzione-dei-problemi" class="slide level1">
+<h1>Risoluzione dei problemi</h1>
+<ul>
+<li><p>Ricordatevi di aggiungere al commit i file in <code>gradle/wrapper/</code></p></li>
+<li><p>Se avete problemi a causa della versione di Gradle, rigenerate <code>gradlew</code> da linea di comando così:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> wrapper <span class="at">--gradle-version</span> 5.3</span></code></pre></div>
+<p>(Gradle supporta Kotlin a partire dalla versione 5.3).</p></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: true,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: false,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
+    </body>
+</html>
