@@ -85,7 +85,7 @@ Piano infinito diffusivo ideale e non emettente ($L_e = 0$) e una sferetta di ra
     L(x \rightarrow \Theta) = \int_{2\pi} \frac{\rho_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
     $$
     
--   Qual è il valore di $L(x \leftarrow \Psi)$? (No, *non* è $L_d$!)
+-   Qual è il valore di $L(x \leftarrow \Psi)$?
 
 # Radianza entrante
 
@@ -374,7 +374,7 @@ Come si tratta questo caso?
 
 -   Dal punto di vista di un programma, è utile porre dei limiti alla distanza $t$: ad esempio, è ovvio che siamo interessati solo alle intersezioni con $t > 0$.
 
--   Non solo, ma i raggi che partono dall'occhio dell'osservatore devono avere almeno il tempo di raggiungere lo schermo, ossia $t \geq t_\text{min}$.
+-   In alcuni casi ha senso anche imporre che $t > t_\text{pixel}$, ossia che il raggio abbia quantomeno superato lo schermo.
 
     <center>
     ![](./media/leon-battista-alberti-piramide-visuale.webp){height=320px}
