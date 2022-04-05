@@ -249,11 +249,11 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Per descrivere le rotazioni su un piano 2D è necessario usare (pseudo)vettori 3D, come il *momento angolare* $\vec{L} = \vec{r} \times \vec{p}$ o il *momento torcente* $\vec{\tau} = \vec r \times \vec F$.
 
--   Il prodotto vettoriale è definibile solo per $\mathbb{R}^3$.
+-   Il prodotto vettoriale è definibile solo per $\mathbb{R}^3$, e ha unità strane: se $v$ e $w$ sono in metri, $v \times w$ è in m² pur essendo ancora una direzione (ossia un vettore).
 
 -   La rappresentazione delle rotazioni richiede algebre via via più complicate man mano che aumentano le dimensioni (numeri complessi, quaternioni…).
 
--   Non è possibile invertire i prodotti tra vettori: se $\vec a \times \vec x = \vec b$ con $\vec a$ e $\vec b$ vettori noti e $x$ vettore incognito, non c'è modo di ricostruire $\vec x$. (Idem per il prodotto scalare).
+-   Non è possibile invertire i prodotti tra vettori: se $\vec a \times \vec x = \vec b$ con $\vec a$ e $\vec b$ noti e $x$ vettore incognito, non c'è modo di ricostruire univocamente $\vec x$.
 
 # Algebra geometrica
 
@@ -263,43 +263,6 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   L'**algebra geometrica** è l'applicazione delle algebre di Clifford al caso di $\mathbb{R}^n$, ed è ciò che solitamente interessa ai fisici. Noi ci limiteremo a queste.
 
-# Nascita dell'algebra geometrica
-
--   L'algebra geometrica parte dalla definizione di un **prodotto tra vettori**, che rende lo spazio vettoriale $\mathbb{R}^n$ un'algebra con proprietà molto interessanti.
-
--   Il punto di partenza è la constatazione che prodotto scalare e vettoriale sono intuitivamente legati tra loro, perché
-
-    $$
-    \vec{v} \cdot \vec{w} \propto \cos\theta, \quad \vec{v} \times \vec{w} \propto \sin\theta,
-    $$
-    
-    ed ovviamente $\sin^2\theta + \cos^2\theta = 1$.
-    
-# Tabelle di moltiplicazione
-
--   La relazione si vede anche confrontando il modo in cui si combinano gli elementi della base canonica di ℝ³:
-
-    $$
-    \begin{matrix}
-    \cdot& e_1& e_2& e_3\\
-    e_1& 1& 0& 0\\
-    e_2& 0& 1& 0\\
-    e_3& 0& 0& 1
-    \end{matrix}
-    \qquad\qquad
-    \begin{matrix}
-    \times& e_1& e_2& e_3\\
-    e_1& 0& e_3& -e_2\\
-    e_2& -e_3& 0& e_1\\
-    e_3& e_2& -e_1& 0
-    \end{matrix}
-    $$
-    
--   È tentante l'idea di sommarli insieme, anche perché ciò ricorda la formula
-
-    $$
-    z = \left|z\right|\bigl(\cos\theta + i\sin\theta\bigr).
-    $$
 
 # Il prodotto esterno (o di Grassmann)
 
@@ -489,6 +452,46 @@ $$
 
 # Il prodotto geometrico
 
+# Nascita dell'algebra geometrica
+
+-   L'algebra geometrica parte dalla definizione di un **prodotto tra vettori**, che rende lo spazio vettoriale $\mathbb{R}^n$ un'algebra con proprietà molto interessanti.
+
+-   Il prodotto geometrico venne introdotto da Clifford, usando il prodotto di Grassmann (che viene chiamato *prodotto esterno*) e il classico prodotto scalare
+
+-   Il punto di partenza è la constatazione che prodotto scalare e vettoriale sono intuitivamente legati tra loro, perché
+
+    $$
+    \vec{v} \cdot \vec{w} \propto \cos\theta, \quad \vec{v} \wedge \vec{w} \propto \sin\theta,
+    $$
+    
+    ed ovviamente $\sin^2\theta + \cos^2\theta = 1$.
+    
+# Tabelle di moltiplicazione
+
+-   La relazione si vede anche confrontando il modo in cui si combinano gli elementi della base canonica di ℝ³:
+
+    $$
+    \begin{matrix}
+    \cdot& e_1& e_2& e_3\\
+    e_1& 1& 0& 0\\
+    e_2& 0& 1& 0\\
+    e_3& 0& 0& 1
+    \end{matrix}
+    \qquad\qquad
+    \begin{matrix}
+    \wedge& e_1& e_2& e_3\\
+    e_1& 0& e_1 \wedge e_2& e_1 \wedge e_3\\
+    e_2& -e_1 \wedge e_2& 0& e_2 \wedge e_3\\
+    e_3& -e_1 \wedge e_3& -e_2 \wedge e_3& 0
+    \end{matrix}
+    $$
+    
+-   È tentante l'idea di sommarli insieme, anche perché ciò ricorda la formula
+
+    $$
+    z = \left|z\right|\bigl(\cos\theta + i\sin\theta\bigr).
+    $$
+
 # Prodotto geometrico
 
 -   Il **prodotto geometrico** è la somma del prodotto interno e del prodotto esterno:
@@ -501,7 +504,7 @@ $$
 
 -   La definizione e lo studio delle proprietà del prodotto geometrico si deve a [William Kingdon Clifford](https://en.wikipedia.org/wiki/William_Kingdon_Clifford) (1845–1879), che sistematizzò le idee di Grassmann.
 
--   Il prodotto geometrico definisce un'algebra sullo spazio vettoriale.
+-   Questo prodotto definisce un'algebra associativa sullo spazio vettoriale.
 
 
 # Prodotto geometrico
@@ -540,7 +543,7 @@ $$
     
     Per vettori perpendicolari, il prodotto geometrico coincide con quello esterno.
     
--   La base canonica $\left\{\hat e_i\right\}$ gode delle seguenti proprietà:
+-   La base canonica $\left\{\hat e_i\right\}$ gode quindi delle seguenti proprietà:
 
     $$
     \hat e_i \hat e_i = \left\|\hat e_i\right\|^2 = 1, \quad \hat e_i \hat e_j = \hat e_i \wedge \hat e_j = -\hat e_j \wedge \hat e_i = - \hat e_j \hat e_i\ \text{se $i \not= j$}.
@@ -771,10 +774,10 @@ $$
     
     dove ovviamente $i = \hat e_1 \hat e_2 \hat e_3$.
     
--   Il prodotto esterno è quindi riconducibile a quello vettoriale, ma ha una serie di vantaggi:
+-   Il prodotto esterno ha una serie di vantaggi su quello vettoriale:
 
     #.   È definito su $\mathbb{R}^n$ per qualsiasi $n$, mentre quello vettoriale solo per $n = 3$: formule che usano ∧ sono quindi più facili da generalizzare.
-    #.   Il prodotto esterno è associativo, quello vettoriale no: i calcoli sono più semplici.
+    #.   Il prodotto esterno è associativo, quello vettoriale no: $u \times (v \times w) \not= (u \times v) \times w$. I calcoli sono quindi più semplici.
 
 # Leggi della fisica e ∧
 
@@ -796,7 +799,7 @@ $$
     ![](./media/rigid-body-rotation.svg)
     </center>
     
--   A differenza della definizione classica ($\vec L = \vec r \times \vec p$), qui $\vec L$ rappresenta una sezione orientata di piano, che è intuitivo: è il piano sul quale avviene la rotazione, e l'orientamento corrisponde al verso.
+-   A differenza della definizione tradizionale ($\vec L = \vec r \times \vec p$), qui $\vec L$ rappresenta una sezione orientata di piano, che è intuitivo: è il piano sul quale avviene la rotazione, e l'orientamento corrisponde al verso.
 
 # Riflessioni e momento angolare
 
@@ -835,9 +838,7 @@ $$
     \end{aligned}
     $$
     
--   Dato che $\vec B$ è moltiplicato per $i$, il risultato è un **bivettore** (facile verificarlo).
-
--   Il fatto che $\vec B$ sia un bivettore risolve il problema della riflessione nella [legge di Ampère](tomasi-ray-tracing-05a.html#pseudovettori-1)
+-   $\vec E$ è un vettore, ma $\vec B$ è un bivettore: questo risolve il problema della riflessione nella [legge di Ampère](tomasi-ray-tracing-05a.html#pseudovettori-1)
 
 # Equazione di Maxwell
 
