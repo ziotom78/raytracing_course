@@ -1,133 +1,8 @@
 ---
 title: "Esercitazione 8"
-subtitle: "Documentazione delle API"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
-
-# Documentazione
-
-# Il problema
-
--   Sinora abbiamo implementato codice, ma a parte la scrittura del `README.md` non abbiamo impegnato energie per la stesura della documentazione.
-
--   Si pensa spesso che la documentazione sia utile per l'utente finale, ma non per chi sviluppa il programma…
-
--   …ma non c'è nulla di più sbagliato!
-
--   L'affermazione sopra è più comprensibile se si è reduci da settimane di lavoro in cui *non* si è avuta a disposizione la documentazione!
-
-
-# Tipi di documentazione
-
-README
-: L'abbiamo trattato nella [lezione 4](tomasi-ray-tracing-04a-documentation.html#il-readme).
-
-Tutorial
-: Serve all'utente per comprendere come iniziare ad usare il programma.
-
-Manuale dell'utente
-: È il manuale di riferimento, che l'utente dovrebbe consultare ogni volta che ha un dubbio. Non è necessario che sia leggibile capitolo dopo capitolo.
-
-API documentation
-: Avevamo parlato delle API nella [lezione 3](tomasi-ray-tracing-03b-image-files.html#/api-di-hdrimage): sono l'insieme dei prototipi delle classi/metodi/funzioni implementati in una libreria che sono invocabili dall'utente.
-
-
-# API documentation
-
-<center>
-    <div style="padding:75% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/541582710?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:260px;width:885px;height:640px;" title="Docstrings in Kotlin"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
-</center>
-
-# *Docstrings*
-
--   L'esempio precedente mostrava che in Kotlin è possibile associare la documentazione di una classe/funzione/metodo usando dei commenti formattati in un modo appropriato.
-
--   L'uso di commenti per documentare il codice è comune a molti altri linguaggi, come C++, C\# e Java.
-
--   Per alcuni linguaggi (Python, Julia, Common LISP…) la documentazione va invece scritta all'interno di stringhe, nel qual caso si parla di *docstrings*:
-
-    ```python
-    def are_close(num1, num2, epsilon=1e-6):
-        """Return True if the two numbers differ by less than `epsilon`"""
-        return abs(num1 - num2) < epsilon
-    ```
-
----
-
-| Linguaggio | Tipo                                   |
-|------------|----------------------------------------|
-| Python     | Stringa *dentro* la classe/funzione    |
-| C++        | Commento *fuori* dalla classe/funzione |
-| Julia      | Stringa *fuori* dalla classe/funzione  |
-| C\#        | Commento *fuori* dalla classe/funzione |
-| Kotlin     | Commento *fuori* dalla classe/funzione |
-
-
-# Sintassi
-
--   L'*API documentation* va scritta in un linguaggio di markup adeguato; solitamente è Markdown (che avevamo spiegato nella [lezione 4](tomasi-ray-tracing-04a-documentation.html#markdown)), ma non è sempre vero purtroppo.
-
--   L'*API documentation* viene di solito interpretata da programmi che la estraggono e generano un PDF/webpage in cui sono raccolte tutte le descrizioni.
-
--   Per capire come scrivere la documentazione di classi e funzioni è quindi necessario fare riferimento alla guida di questi programmi.
-
-
-# Come scrivere documentazione
-
--   Scrivere buona documentazione non è semplice!
-
--   E, diciamocelo, è anche abbastanza noioso!
-
--   Un metodo efficace per produrre documentazione è scriverla in maniera graduale, tutte le volte che si hanno dubbi sul modo in cui si deve usare una classe/funzione/metodo.
-
--   Non è necessario scrivere un lungo testo per una funzione, basta scrivere il minimo indispensabile perché sia **utile**!
-
-
-# Documentazione utile
-
--   Esempi di problemi risolubili con della buona documentazione:
-
-    -   Non ricordate più come si invoca la funzione che scrive un tipo `HdrImage` in un file PFM.
-
-    -   Non ricordate più se i campi del tipo `Color` si chiamino `r`/`g`/`b` o `red`/`green`/`blue`.
-
-    -   Non ricordate più se in un'immagine `HdrImage` il punto `(0, 0)` sia quello in basso a sinistra o quello in alto a sinistra.
-
--   Questi sono alcuni degli inciampi tipici in cui può imbattersi lo sviluppatore stesso!
-
-
-# Documentazione inutile
-
--   Una documentazione come la seguente è inutile:
-
-    ```python
-    def is_even(x: int):
-        """Return True if x is even, False otherwise"""
-        return (x % 2) == 0
-    ```
-    
-    perché è impossibile avere dubbi su quello che fa questo codice:
-    
-    ```python
-    if is_even(myvar):
-        …
-    ```
-    
--   Capire quando un commento è utile è un'arte che si impara col tempo!
-
-
-# Informazioni importanti
-
-Queste sono alcune delle informazioni che di solito servono di più:
-
--   Nomi dei campi di una classe/struttura (`r`/`g`/`b` o `red`/`green`/`blue`?);
-
--   Unità di misura dei parametri e del tipo di ritorno di una funzione (`angle` è in gradi o radianti? qui può aiutare il nome del parametro, es. `angle_deg`);
-
--   Assunzioni sui parametri di input (`x` è positivo, `y` è un numero minore di 4, etc.);
-
--   Casi in cui è meglio invocare un'altra funzione (`Vec.squaredNorm` anziché `Vec.norm`).
-
 
 # Codice da implementare
 
@@ -139,11 +14,11 @@ Queste sono alcune delle informazioni che di solito servono di più:
     #.  Il tipo `Camera` rappresenta l'osservatore/telecamera;
     #.  Il tipo `ImageTracer` invia raggi dall'osservatore allo schermo.
     
--   Il tipo `Ray` deve essere molto efficiente, quindi è meglio che sia un *value type* (quindi: `struct` in C\# e Julia), come spiegato nella [lezione 02b](./tomasi-ray-tracing-02b-tests.html#uso-della-memoria).
+-   Il tipo `Ray` deve essere molto efficiente, quindi è meglio che sia un *value type* come `Color`, `Vec`, etc. (vedi [lezione 02b](./tomasi-ray-tracing-02b-tests.html#uso-della-memoria)).
 
 -   I tipi `Camera` e `ImageTracer` non sono critici, e non serve che siano particolarmente ottimizzati.
 
--   Come al solito, è tutto implementato in Python nel repository [pytracer](https://github.com/ziotom78/pytracer/tree/d6cbb6604d5427cec62fe1610ff7b66e99ea1018).
+-   Come al solito, potete fare riferimento al repository [pytracer](https://github.com/ziotom78/pytracer) per una implementazione in Python.
 
 # La classe `Ray`
 
@@ -201,7 +76,7 @@ class TestRays(unittest.TestCase):
 
 # Le classi `*Camera`
 
--   In linguaggi che implementano l'ereditarietà, `Camera` sarà il tipo da cui sono derivati i nuovi tipi `OrthogonalCamera` e `PerspectiveCamera`.
+-   `Camera` dev'essere il tipo base da cui sono derivati i nuovi tipi `OrthogonalCamera` e `PerspectiveCamera` (ereditarietà, /traits/, interfacce…)
 
 -   Dovremo implementare la seguente gerarchia di tipi:
 
@@ -497,9 +372,6 @@ def test_image_tracer(self):
             assert image.get_pixel(col, row) == Color(1.0, 2.0, 3.0)
 ```
 
-# Link a Gather
-
-Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing](https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing)
 
 # Guida per l'esercitazione
 
@@ -514,116 +386,3 @@ Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing]
     #.  `ImageTracer`.
     
 -   Implementate tutti i test. Quando avete terminato l'implementazione e i test passano con successo, chiudete il PR.
-
-
-# Documentazione
-
--   Iniziate ad inserire documentazione per le nuove classi che implementate oggi.
-
--   Aggiungete documentazione per quelle classi/funzioni/metodi delle lezioni passate che oggi vi capita di impiegare, e per cui il funzionamento non vi sembrava più così ovvio.
-
--   Questo dovrebbe essere un lavoro facile da distribuire tra le persone del gruppo.
-
-# Indicazioni per C++
-
-# Implementazione
-
--   Create una classe per `Camera`, e derivate le due classi `OrthogonalCamera` e `PerspectiveCamera`. Preoccupatevi che in `Camera` ci siano le due funzioni virtuali pure
-
-    #.  `fire_ray`;
-    #.  `fire_all_rays`.
-    
--   Per passare a `fire_all_rays` la funzione da chiamare su ciascun raggio, ci sono svariate soluzioni:
-
-    #.  Usate un template (probabilmente l'opzione più efficiente);
-    #.  Passate un parametro [`std::function`](https://en.cppreference.com/w/cpp/utility/functional/function);
-    #.  Passate un puntatore a funzione.
-
-# Documentazione
-
--   In C++ il programma più usato per gestire la documentazione è [Doxygen](https://www.doxygen.nl/index.html). Consultate la guida per imparare la sintassi, basata su Markdown.
-
--   Esempio di documentazione:
-
-    ```c++
-    /**
-     * Return `true` if the difference between `a` and `b` is less than `epsilon`.
-     *
-     * @param a The first number to compare
-     * @param b The second number to compare
-     * @param epsilon The maximum tolerance
-     * @return A Boolean telling whether `a` and `b` are close or not.
-     */
-    bool are_close(float a, float b, float epsilon = 1e-5) { … }
-    ```
-
-# Esempio C++ in [CLion](https://www.jetbrains.com/clion/)
-
-<center>
-![](./media/clion-documentation-comment.png){height=560px}
-</center>
-
-
-# Indicazioni per Julia
-
-# Esempio Julia
-
--   Julia supporta nativamente le [*docstrings*](https://docs.julialang.org/en/v1/manual/documentation/) e il Markdown 😀
-
--   Per estrarre tutte le docstring da un package e pubblicarle su un sito esiste [Documenter.jl](https://juliadocs.github.io/Documenter.jl/stable/).
-
--   Esempio di documentazione:
-
-    ```julia
-    """Return `true` if ``\left|a - b\right| < ε``.
-    
-    Check if two numbers are close enough or not. This is often used in tests
-    """
-    are_close(a, b, ε = 1e-5) = abs(a - b) < ε
-    ```
-
--   La documentazione è consultabile anche dalla REPL scrivendo `?are_close`.
-
-# Esempio Julia
-
--   In Visual Studio Code:
-
-    <center>
-    ![](./media/julia-docstring-vscode.png){height=230px}
-    </center>
-    
--   Nella REPL:
-
-    <center>
-    ![](./media/julia-docstring-repl.png){height=160px}
-    </center>
-
-
-
-# Indicazioni per C\#
-
-# Documentazione
-
--   Purtroppo il C\# [richiede](https://docs.microsoft.com/en-us/dotnet/csharp/codedoc) che i commenti siano scritti in formato XML anziché in Markdown.
-
--   Esempio di documentazione:
-
-    ```csharp
-    /// <summary>
-    /// Save the image in a PFM file
-    /// </summary>
-    /// <param name="outputStream">The output stream where to save the image</param>
-    public void SavePfm(Stream outputStream) { … }
-    ```
-
--   Se usate Visual Studio Code e attivate dal menu «File | Settings…» l'opzione *Format on type*, digitando `///` sopra un metodo o classe produrrà un template della documentazione. È molto comodo!
-
-# Indicazioni per Kotlin
-
-# Documentazione
-
--   I commenti di documentazione iniziano con `/**` anziché `/*`, oppure con `///` anziché `//`.
-
--   Il testo può essere scritto usando il linguaggio Markdown.
-
--   Esistono una serie di comandi che si possono impiegare nel testo. Iniziano tutti con `@` (es., `@param`, `@return`, `@see`), e sono documentati alla pagina [Document Kotlin code](https://kotlinlang.org/docs/kotlin-doc.html).
