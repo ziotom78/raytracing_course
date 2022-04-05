@@ -19,6 +19,7 @@ all: \
 	tomasi-ray-tracing-09a-shapes.html \
 	tomasi-ray-tracing-08b-docstrings.html \
 	tomasi-ray-tracing-08a-projections.html \
+	tomasi-ray-tracing-06b.html \
 	tomasi-ray-tracing-06a.html \
 	tomasi-ray-tracing-05b.html \
 	tomasi-ray-tracing-05a.html \

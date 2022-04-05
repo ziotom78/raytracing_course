@@ -1,5 +1,5 @@
 ---
-title: "Esercitazione 7"
+title: "Esercitazione 6"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
@@ -68,30 +68,6 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Guida per l'esercitazione
 
-# `Transformation`
-
--   Continuate a lavorare nella pull request `geometry`.
-
--   Implementate un semplice tipo `Normal`.
-
--   Implementate il tipo `Transformation`, che possa essere costruito da una matrice 4×4 e dalla sua inversa. (Fatelo agile come `Vec`, `Point`, etc.)
-
--   Implementate le seguenti operazioni:
-
-    #.  Metodo `is_close` o funzione `are_close` per `Transformation`;
-    #.  Prodotto con `Transformation`, `Vec`, `Point` e `Normal`;
-    #.  Inversa;
-    #.  Funzioni `translation`, `scaling`, e le tre rotazioni attorno a $x$, $y$ e $z$.
-
-
-# Test
-
--   Fate riferimento al [file test_all.py di pytracer](https://github.com/ziotom78/pytracer/blob/351213037ecf14e380530194b89b4190d984aa87/test_all.py#L241-L368) per vedere come sono implementati i test.
-
--   Preoccupatevi di verificare che **tutti** i test passino: le operazioni in `Transformation` sono fondamentali per il codice che scriveremo le prossime volte, e non devono esserci errori.
-
--   Una volta che avete implementato tutte le funzionalità e tutti i test passano, fate il merge del pull request.
-
 
 # Workflow in GitHub
 
@@ -107,43 +83,6 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Modificate un test in modo che fallisca e verificate che quando fate il commit ciò vi venga segnalato. (Poi rimettete a posto il test).
 
-# Indicazioni per il C++
-
-# GitHub Actions
-
--   Una volta salvato il codice in un repository su GitHub, configurate una nuova «Action» (v. video seguente).
-
--   Il modello è «CMake based projects» (ignorate il fatto che sembri supportare solo il linguaggio C):
-
-    <center>
-    ![](./media/cmake-github-action.png)
-    </center>
-    
----
-
-<iframe src="https://player.vimeo.com/video/520878087?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Setting up GitHub Actions for CMake-based projects"></iframe>
-
-# Esecuzione dei test
-
--   Modificate uno dei test che sono già implementati nel vostro codice, in modo che fallisca:
-
-    -   Cambiate il codice del test e modificate il valore atteso per un test;
-    -   Andate nella directory `build` ed eseguite `ctest`, verificando il fallimento;
-    -   Fate il commit delle modifiche;
-    -   Inviate le modifiche a GitHub col comando `git push`.
-
- -  Cosa succede al *CI build*? Fallisce come vi aspettavate?
-
-# Suggerimenti
-
--   Se il build **non** fallisce, è probabilmente perché viene usato come tipo di build il `Release` anziché il `Debug`, e avete usato `assert` nel vostro codice.
--   Soluzioni:
-    -   Cambiate il file `.yml` in modo da usare `Debug` anziché `Release`
-    -   Usate `#undef NDEBUG` prima di `#include <cassert>` (meglio!)
-    -   Definite una vostra funzione `my_assert` (ancora meglio!)
-    -   Usate una libreria di testing C++, come [Catch2](https://github.com/catchorg/Catch2/tree/v2.x) (ottimo!)
--   Insegnamento: provare **sempre** a far fallire uno o più test quando si configura un *CI build*!
-
 # Indicazioni per C\#
 
 # GitHub Actions
@@ -156,72 +95,17 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     ![](./media/dotnet-github-action.png)
     </center>
 
-# Indicazioni per Julia
+# Indicazioni per D/Nim/Rust
 
 # GitHub Actions
 
--   A differenza del C++ e del C\#, Julia non ha una action preconfigurata nel sito.
--   Ma GitHub gestisce un «marketplace», e il team Julia l'ha usato per fornire alla comunità una [serie di actions](https://github.com/julia-actions).
--   Le azioni che servono sono le seguenti:
-    - `julia-actions/setup-julia@v1` (installa Julia);
-    - `actions/cache@v1` (evita di reinstallare pacchetti Julia ogni volta)
-    - `julia-actions/julia-buildpkg@latest` (compila il package)
-    - `julia-actions/julia-runtest@latest` (esegue i test)
+-   Per D, potete usare [setup-dlang](https://github.com/dlang-community/setup-dlang)
 
+-   Per Nim, esiste [Setup Nim Environment](https://github.com/marketplace/actions/setup-nim-environment)
 
-# File `UnitTests.yml`
-
-```yaml
-name: Unit tests
-
-on:
-  push:
-    branches:
-      - master
-
-jobs:
-  test:
-    name: Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.arch }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        julia-version:
-          - '1.5'
-        os:
-          - ubuntu-latest
-        arch:
-          - x64
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: "Set up Julia"
-        uses: julia-actions/setup-julia@v1
-        with:
-          version: ${{ matrix.julia-version }}
-          arch: ${{ matrix.arch }}
-
-      - name: "Cache artifacts"
-        uses: actions/cache@v1
-        env:
-          cache-name: cache-artifacts
-        with:
-          path: ~/.julia/artifacts
-          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-test-${{ env.cache-name }}-
-            ${{ runner.os }}-test-
-            ${{ runner.os }}-
-
-      - name: "Build package"
-        uses: julia-actions/julia-buildpkg@latest
-
-      - name: "Run unit tests"
-        uses: julia-actions/julia-runtest@latest
-```
+-   Chi usa Rust ha già configurato una action, quindi tutto ok!
 
 # Indicazioni per Kotlin
-
 
 # GitHub Actions
 
