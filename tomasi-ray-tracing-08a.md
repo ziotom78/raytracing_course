@@ -196,7 +196,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     O - 0 = \vec O,
     $$
     
-    che suggerisce che dovremo aggiungere al tipo `Point` un metodo `toVec`.
+    che suggerisce che potremo usare la funzione/metodo `Point.toVec()`.
     
 # Soluzione dell'equazione
 

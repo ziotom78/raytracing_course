@@ -504,7 +504,7 @@ label("$\vec u$", (1.0, 0, 0.7));
 
 # Monitor catodici
 
--   I vecchi monitor e televisori a tubo catodico avevano un *aspect ratio* di 4:3.
+-   I vecchi monitor e televisori a tubo catodico avevano un *aspect ratio* di 4:3 (e anche pixel non quadrati, ma questo per fortuna oggi non è più vero…).
 
 -   I monitor moderni hanno un *aspect ratio* di 16:9 (più spesso) o 16:10.
 
@@ -517,27 +517,3 @@ label("$\vec u$", (1.0, 0, 0.7));
     $$
     
     dove $R_\text{display} = N_\text{columns} / N_\text{rows}$ è l'*aspect ratio* dello schermo.
-
-
-# *Pixel aspect ratio*
-
--   Oltre al *display aspect ratio* esiste anche il *pixel aspect ratio*, che è il rapporto tra larghezza ed altezza di un singolo pixel.
-
--   Questo era un problema sentito soprattutto con vecchie schede grafiche ([CGA](https://en.wikipedia.org/wiki/Color_Graphics_Adapter), [EGA](https://en.wikipedia.org/wiki/Enhanced_Graphics_Adapter), [VGA](https://en.wikipedia.org/wiki/Video_Graphics_Array), [SVGA](https://en.wikipedia.org/wiki/Super_video_graphics_array)), che adottavano risoluzioni con *pixel aspect ratio* 16:10 (es., 320×200, 640×400, …).
-
--   Su questi tipi di display, non tenere conto del valore del *pixel aspect ratio* porta a deformazioni nelle immagini visualizzate.
-
----
-
-<center>
-![](./media/aspect-ratios.png)
-</center>
-[Sinistra: immagine corretta. Destra: *aspect ratio* sbagliato]{style="float:right"}
-
-# Display moderni
-
--   Per risolvere il problema della discrepanza tra *pixel* e *display aspect ratio*, oggi tutti i display adottano un *pixel aspect ratio* uguale a 1:1.
-
--   Nel nostro codice assumeremo quindi che il *pixel aspect ratio* sia sempre 1:1.
-
--   Sarebbe comunque banale introdurre il supporto per diversi *pixel aspect ratio* nel nostro ray-tracer: basta suddividere lo schermo virtuale in rettangoli anziché in quadrati.
