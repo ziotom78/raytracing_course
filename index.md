@@ -18,6 +18,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 5a      | 2022/03/28 | [Versioni, geometria](tomasi-ray-tracing-05a.html)                                 |
 | 5b      | 2022/03/30 | [Geometria, branch, pull request](tomasi-ray-tracing-05b.html)                     |
 | 6a      | 2022/04/04 | [Quaternioni e algebre di Clifford](tomasi-ray-tracing-06a.html)                   |
+| 6b      | 2022/04/06 | [GitHub Actions](tomasi-ray-tracing-06b.html)                                      |
 
 # Scelta del linguaggio
 
