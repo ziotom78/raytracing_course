@@ -4,6 +4,14 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
+# Conferenze LCM
+
+-   Quest'anno il Laboratorio Calcolo e Multimedia ripropone le conferenze OpenLab su temi informatici, in presenza ed online ([aula X](https://zoom.us/my/aula.x))
+
+-   L'elenco degli incontri è disponibile al sito [https://lcm.mi.infn.it/](https://lcm.mi.infn.it/)
+
+-   Oggi pomeriggio (ore 16) è prevista la conferenza *Strumenti avanzati per progetti in Python* (Gabriele Bozzola)
+
 # CI builds
 
 # CI builds
