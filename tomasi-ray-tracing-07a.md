@@ -1,6 +1,6 @@
 ---
-title: "Lezione 8"
-subtitle: "Proiezioni"
+title: "Lezione 7"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 

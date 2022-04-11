@@ -1,6 +1,6 @@
 ---
-title: "Lezione 9"
-subtitle: "Forme geometriche"
+title: "Lezione 8"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 

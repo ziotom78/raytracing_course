@@ -1,5 +1,5 @@
 ---
-title: "Esercitazione 8"
+title: "Esercitazione 7"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
@@ -18,7 +18,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   I tipi `Camera` e `ImageTracer` non sono critici, e non serve che siano particolarmente ottimizzati.
 
--   Come al solito, potete fare riferimento al repository [pytracer](https://github.com/ziotom78/pytracer) per una implementazione in Python.
+-   Come al solito, potete fare riferimento al repository [pytracer](https://github.com/ziotom78/pytracer) per una implementazione in Python (ma non implementate i test nel modo usato lì!).
 
 # La classe `Ray`
 
@@ -74,11 +74,12 @@ class TestRays(unittest.TestCase):
         assert ray.at(2.0).is_close(Point(9.0, 6.0, 6.0))
 ```
 
+
 # Le classi `*Camera`
 
--   `Camera` dev'essere il tipo base da cui sono derivati i nuovi tipi `OrthogonalCamera` e `PerspectiveCamera` (ereditarietà, /traits/, interfacce…)
+-   In linguaggi che implementano l'ereditarietà, `Camera` sarà il tipo da cui sono derivati i nuovi tipi `OrthogonalCamera` e `PerspectiveCamera`.
 
--   Dovremo implementare la seguente gerarchia di tipi:
+-   L'idea è di implementare la seguente gerarchia di tipi:
 
     <center>
     ```{.graphviz im_fmt="svg" im_out="img" im_fname="camera-hierarchy"}
@@ -92,7 +93,7 @@ class TestRays(unittest.TestCase):
     ```
     </center>
     
--   Per le due proiezioni (ortografica e prospettica) useremo un sistema di riferimento rigido e molto semplice.
+-   Usate quanto il vostro linguaggio permette per implementare il polimorfismo: gerarchia di classi in C\#/D/Kotlin, [*traits*](https://doc.rust-lang.org/book/ch10-02-traits.html) in Rust, [*dynamic dispatch*](https://nim-lang.org/docs/tut2.html#object-oriented-programming-dynamic-dispatch) in Nim
 
 ---
 
