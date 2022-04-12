@@ -51,7 +51,7 @@ class Ray:
         return (self.origin.is_close(other.origin, epsilon=epsilon) and
                 self.dir.is_close(other.dir, epsilon=epsilon))
 
-    def at(self, t):
+    def at(self, t: float) -> Point:
         return self.origin + self.dir * t
 ```
 
@@ -74,12 +74,99 @@ class TestRays(unittest.TestCase):
         assert ray.at(2.0).is_close(Point(9.0, 6.0, 6.0))
 ```
 
+# L'osservatore
+
+-   Vogliamo implementare due tipi di proiezioni nel nostro codice:
+
+    1.   Proiezione ortogonale
+    2.   Proiezione prospettica
+    
+-   Questa è una buona occasione per implementare il *polimorfismo*, ossia il fatto che il nome di una funzione corrisponda ad implementazioni diverse a seconda del tipo dell'oggetto
+
+# Esempio
+
+-   L'esempio più semplice (ma forse inatteso!) di polimorfismo è l'overloading:
+
+    ```c++
+    void print(int i) { std::cout << "Integer: " << i << "\n"; }
+    void print(float f) { std::cout << "Float: " << f << "\n"; }
+    
+    int main() {
+        print(1);    // "Integer: 1"
+        print(1.0f); // "Float: 1"
+    }
+    ```
+    
+-   La funzione `print` assume due *forme* a seconda che l'argomento sia un intero o un floating-point
+
+-   La decisione di quale chiamata usare viene decisa dal compilatore in fase di compilazione
+
+# Proiezioni e polimorfismo
+
+-   Potremmo allora usare l'overloading per implementare le due proiezioni (ortogonale e prospettica):
+
+    ```c++
+    struct OrthogonalCamera { /* ... */ };
+    struct PerspectiveCamera { /* ... */ };
+    
+    void fire_ray(const OrthogonalCamera & cam, ...);
+    void fire_ray(const PerspectiveCamera & cam, ...);
+    
+    int main() {
+        std::string kind_of_camera = input_camera();
+        // ?
+    }
+    ```
+    
+-   Ma che tipo stabiliamo per la variabile `cam`? `OrthogonalCamera` oppure `PerspectiveCamera`?
+
+# Polimorfismo dinamico
+
+La programmazione OOP consente di salvarsi da questo pasticcio introducendo un **terzo** tipo oltre a `OrthogonalCamera` oppure `PerspectiveCamera`:
+
+```c++
+struct Camera { virtual void fire_ray(...) = 0; };
+struct OrthogonalCamera : public Camera { void fire_ray(...) override; };
+struct PerspectiveCamera : public Camera { void fire_ray(...) override; };
+
+int main() {
+    std::string kind_of_camera = input_camera();
+    Camera * camera = (kind_of_camera == "orthogonal") ? 
+        new OrthogonalCamera() : new PerspectiveCamera();
+    // ...
+}
+```
+
+# Tipi di polimorfismo
+
+-   Ci sono due tipi di polimorfismo:
+
+    1.  Polimorfismo statico (ossia in fase di compilazione): è il caso dell'*overloading*.
+
+    2.  Polimorfismo dinamico: è il caso della gerarchia di classi.
+
+-   Esistono tipi di polimorfismo più sofisticati, come il *multiple dispatch* che è un concetto cardine del linguaggio Julia ed è implementato in modo sperimentale anche in Nim, ma a noi non interessa.
+
+# Interfacce e *traits*
+
+-   Un caso molto comune è quello in cui la classe base è solo un *escamotage* per avere un tipo base, ma tutti i metodi sono virtuali
+
+-   Per questo motivo alcuni linguaggi moderni offrono meccanismi più leggeri chiamati *interfacce* (Go, C\#) o *traits* (Rust). Una *interfaccia* è l'analogo di una classe in cui tutti i metodi sono vuoti; ecco un esempio in Go:
+
+    ```go
+    type camera interface { fire_ray(...) void }
+    type orthogonal_camera struct { /* ... */ }
+    type perspective_camera struct { /* ... */ }
+    
+    func (cam orthogonal_camera) fire_ray(...) void { /* ... */ }
+    func (cam perspective_camera) fire_ray(...) void { /* ... */ }
+    ```
 
 # Le classi `*Camera`
 
 -   In linguaggi che implementano l'ereditarietà, `Camera` sarà il tipo da cui sono derivati i nuovi tipi `OrthogonalCamera` e `PerspectiveCamera`.
 
--   L'idea è di implementare la seguente gerarchia di tipi:
+-   L'idea è proprio di implementare la gerarchia di tipi che abbiamo visto:
 
     <center>
     ```{.graphviz im_fmt="svg" im_out="img" im_fname="camera-hierarchy"}
@@ -142,7 +229,7 @@ $$
 
 # Trasformazioni
 
--   Se associamo una trasformazione $T$ all'osservatore, potremmo applicarla ai vettori che definiscono l'osservatore, ossia $\vec d$, $\vec u$ e $\vec r$, e spostare/orientare l'osservatore.
+-   Se associamo una trasformazione $T$ all'osservatore, potremmo applicarla ai punti/vettori che definiscono l'osservatore, ossia $P$, $\vec d$, $\vec u$ e $\vec r$, e spostare/orientare l'osservatore.
 
 -   Ma così è complicato calcolare le direzioni dei raggi che attraversano lo schermo nella funzione `fire_ray`!
 
@@ -189,13 +276,13 @@ def test_transform():
 
 # Coordinate dello schermo
 
--   Per evitare confusione tra coordinate spaziali $(x, y, z)$ e coordinate 2D dello schermo, useremo le lettere $(u, v)$ per indicare punti dello schermo.
-
--   Il sistema di riferimento è il seguente:
+-   Per evitare confusione tra coordinate spaziali $(x, y, z)$ e coordinate 2D dello schermo, useremo le lettere $(u, v)$ per indicare punti dello schermo:
 
     <center>
     ![](./media/screen-coordinates.svg)
     </center>
+    
+    Ad esempio, un raggio sparato verso $(u, v) = (0, 1)$ deve passare per il punto $P + \vec d - \vec r + \vec u$.
 
 # `OrthogonalCamera`
 
@@ -209,7 +296,7 @@ def test_transform():
             self.aspect_ratio = aspect_ratio
             self.transformation = transformation
 
-        def fire_ray(self, u, v):
+        def fire_ray(self, u: float, v: float):
             origin = Point(-1.0, (1.0 - 2 * u) * self.aspect_ratio, 2 * v - 1)
             direction = VEC_X
             return Ray(origin=origin, dir=direction, tmin=1.0).transform(self.transformation)
@@ -221,7 +308,7 @@ def test_transform():
 
 -   Per `OrthogonalCamera` verifichiamo che i raggi siano paralleli tra loro: lo facciamo calcolandone il prodotto scalare e verificando che coincida col vettore nullo.
 
--   Per `PerspectiveCamera` verifichiamo invece che tutti i raggi abbiano la medesima origine.
+-   (Per `PerspectiveCamera` verificheremo invece che tutti i raggi abbiano la medesima origine).
 
 # Test per `OrthogonalCamera`
 
@@ -274,7 +361,7 @@ def test_orthogonal_camera(self):
             self.aspect_ratio = aspect_ratio
             self.transformation = transformation
 
-        def fire_ray(self, u, v):
+        def fire_ray(self, u: float, v: float):
             origin = Point(-self.distance, 0.0, 0.0)
             direction = Vec(self.distance, (1.0 - 2 * u) * self.aspect_ratio, 2 * v - 1)
             return Ray(origin=origin, dir=direction, tmin=1.0).transform(self.transformation)
@@ -328,11 +415,13 @@ def test_perspective_camera(self):
 
 # `fire_all_rays`
 
--   Ma una volta che viene «lanciato» un raggio verso un pixel, la funzione `fire_all_rays` cosa dovrebbe fare?
+-   Una volta che viene «lanciato» un raggio verso un pixel, la funzione `fire_all_rays` dovrebbe calcolare la soluzione dell'equazione del rendering
 
--   Sappiamo che nel programma completo dovremo calcolare la soluzione dell'equazione del rendering, ma non siamo pronti a farlo!
+-   Implementeremo più metodi risolutivi, alcuni accurati ma lenti e altri grossolani ma velocissimi: quindi anche qui potremmo usare il polimorfismo. **Ma**…
 
--   Quello che possiamo fare è accettare come argomento di `fire_all_rays` una **funzione**: essa verrà invocata per ogni pixel/raggio dell'immagine e dovrà restituire un colore, ossia un oggetto di tipo `Color`.
+-   …quello che invece facciamo è accettare come argomento di `fire_all_rays` una **funzione** che venga invocata per ogni pixel/raggio dell'immagine e restituisca un oggetto di tipo `Color`.
+
+-   Questo è un approccio alternativo al polimorfismo, e vi consiglio di provarlo!
 
 # `ImageTracer` in Python
 

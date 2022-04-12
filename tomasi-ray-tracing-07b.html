@@ -159,7 +159,7 @@
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="va">self</span>.origin.is_close(other.origin, epsilon<span class="op">=</span>epsilon) <span class="kw">and</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.<span class="bu">dir</span>.is_close(other.<span class="bu">dir</span>, epsilon<span class="op">=</span>epsilon))</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> at(<span class="va">self</span>, t):</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> at(<span class="va">self</span>, t: <span class="bu">float</span>) <span class="op">-&gt;</span> Point:</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.origin <span class="op">+</span> <span class="va">self</span>.<span class="bu">dir</span> <span class="op">*</span> t</span></code></pre></div>
 </section>
 <section id="test-per-ray" class="slide level1">
@@ -179,11 +179,92 @@
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> ray.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">5.0</span>, <span class="fl">4.0</span>, <span class="fl">5.0</span>))</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> ray.at(<span class="fl">2.0</span>).is_close(Point(<span class="fl">9.0</span>, <span class="fl">6.0</span>, <span class="fl">6.0</span>))</span></code></pre></div>
 </section>
+<section id="losservatore" class="slide level1">
+<h1>L’osservatore</h1>
+<ul>
+<li><p>Vogliamo implementare due tipi di proiezioni nel nostro codice:</p>
+<ol type="1">
+<li>Proiezione ortogonale</li>
+<li>Proiezione prospettica</li>
+</ol></li>
+<li><p>Questa è una buona occasione per implementare il <em>polimorfismo</em>, ossia il fatto che il nome di una funzione corrisponda ad implementazioni diverse a seconda del tipo dell’oggetto</p></li>
+</ul>
+</section>
+<section id="esempio" class="slide level1">
+<h1>Esempio</h1>
+<ul>
+<li><p>L’esempio più semplice (ma forse inatteso!) di polimorfismo è l’overloading:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print<span class="op">(</span><span class="dt">int</span> i<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;Integer: &quot;</span> <span class="op">&lt;&lt;</span> i <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print<span class="op">(</span><span class="dt">float</span> f<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;Float: &quot;</span> <span class="op">&lt;&lt;</span> f <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    print<span class="op">(</span><span class="dv">1</span><span class="op">);</span>    <span class="co">// &quot;Integer: 1&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    print<span class="op">(</span><span class="fl">1.0</span><span class="bu">f</span><span class="op">);</span> <span class="co">// &quot;Float: 1&quot;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<li><p>La funzione <code>print</code> assume due <em>forme</em> a seconda che l’argomento sia un intero o un floating-point</p></li>
+<li><p>La decisione di quale chiamata usare viene decisa dal compilatore in fase di compilazione</p></li>
+</ul>
+</section>
+<section id="proiezioni-e-polimorfismo" class="slide level1">
+<h1>Proiezioni e polimorfismo</h1>
+<ul>
+<li><p>Potremmo allora usare l’overloading per implementare le due proiezioni (ortogonale e prospettica):</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> OrthogonalCamera <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">};</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> PerspectiveCamera <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">};</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> fire_ray<span class="op">(</span><span class="at">const</span> OrthogonalCamera <span class="op">&amp;</span> cam<span class="op">,</span> <span class="op">...);</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> fire_ray<span class="op">(</span><span class="at">const</span> PerspectiveCamera <span class="op">&amp;</span> cam<span class="op">,</span> <span class="op">...);</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>string<span class="op"> </span>kind_of_camera <span class="op">=</span> input_camera<span class="op">();</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ?</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<li><p>Ma che tipo stabiliamo per la variabile <code>cam</code>? <code>OrthogonalCamera</code> oppure <code>PerspectiveCamera</code>?</p></li>
+</ul>
+</section>
+<section id="polimorfismo-dinamico" class="slide level1">
+<h1>Polimorfismo dinamico</h1>
+<p>La programmazione OOP consente di salvarsi da questo pasticcio introducendo un <strong>terzo</strong> tipo oltre a <code>OrthogonalCamera</code> oppure <code>PerspectiveCamera</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Camera <span class="op">{</span> <span class="kw">virtual</span> <span class="dt">void</span> fire_ray<span class="op">(...)</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="op">};</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> OrthogonalCamera <span class="op">:</span> <span class="kw">public</span> Camera <span class="op">{</span> <span class="dt">void</span> fire_ray<span class="op">(...)</span> <span class="kw">override</span><span class="op">;</span> <span class="op">};</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> PerspectiveCamera <span class="op">:</span> <span class="kw">public</span> Camera <span class="op">{</span> <span class="dt">void</span> fire_ray<span class="op">(...)</span> <span class="kw">override</span><span class="op">;</span> <span class="op">};</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>string<span class="op"> </span>kind_of_camera <span class="op">=</span> input_camera<span class="op">();</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    Camera <span class="op">*</span> camera <span class="op">=</span> <span class="op">(</span>kind_of_camera <span class="op">==</span> <span class="st">&quot;orthogonal&quot;</span><span class="op">)</span> <span class="op">?</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">new</span> OrthogonalCamera<span class="op">()</span> <span class="op">:</span> <span class="kw">new</span> PerspectiveCamera<span class="op">();</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="tipi-di-polimorfismo" class="slide level1">
+<h1>Tipi di polimorfismo</h1>
+<ul>
+<li><p>Ci sono due tipi di polimorfismo:</p>
+<ol type="1">
+<li><p>Polimorfismo statico (ossia in fase di compilazione): è il caso dell’<em>overloading</em>.</p></li>
+<li><p>Polimorfismo dinamico: è il caso della gerarchia di classi.</p></li>
+</ol></li>
+<li><p>Esistono tipi di polimorfismo più sofisticati, come il <em>multiple dispatch</em> che è un concetto cardine del linguaggio Julia ed è implementato in modo sperimentale anche in Nim, ma a noi non interessa.</p></li>
+</ul>
+</section>
+<section id="interfacce-e-traits" class="slide level1">
+<h1>Interfacce e <em>traits</em></h1>
+<ul>
+<li><p>Un caso molto comune è quello in cui la classe base è solo un <em>escamotage</em> per avere un tipo base, ma tutti i metodi sono virtuali</p></li>
+<li><p>Per questo motivo alcuni linguaggi moderni offrono meccanismi più leggeri chiamati <em>interfacce</em> (Go, C#) o <em>traits</em> (Rust). Una <em>interfaccia</em> è l’analogo di una classe in cui tutti i metodi sono vuoti; ecco un esempio in Go:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> camera <span class="kw">interface</span> <span class="op">{</span> fire_ray<span class="op">(...)</span> void <span class="op">}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> orthogonal_camera <span class="kw">struct</span> <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> perspective_camera <span class="kw">struct</span> <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="op">(</span>cam orthogonal_camera<span class="op">)</span> fire_ray<span class="op">(...)</span> void <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="op">(</span>cam perspective_camera<span class="op">)</span> fire_ray<span class="op">(...)</span> void <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></span></code></pre></div></li>
+</ul>
+</section>
 <section id="le-classi-camera" class="slide level1">
 <h1>Le classi <code>*Camera</code></h1>
 <ul>
 <li><p>In linguaggi che implementano l’ereditarietà, <code>Camera</code> sarà il tipo da cui sono derivati i nuovi tipi <code>OrthogonalCamera</code> e <code>PerspectiveCamera</code>.</p></li>
-<li><p>L’idea è di implementare la seguente gerarchia di tipi:</p>
+<li><p>L’idea è proprio di implementare la gerarchia di tipi che abbiamo visto:</p>
 <center>
 <p><img data-src="pd-images/cbea9322804844d441255573d434cfd0b9e51a6e.svg" data-im_fname="camera-hierarchy" /></p>
 </center></li>
@@ -209,7 +290,7 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <section id="trasformazioni" class="slide level1">
 <h1>Trasformazioni</h1>
 <ul>
-<li><p>Se associamo una trasformazione <span class="math inline">T</span> all’osservatore, potremmo applicarla ai vettori che definiscono l’osservatore, ossia <span class="math inline">\vec d</span>, <span class="math inline">\vec u</span> e <span class="math inline">\vec r</span>, e spostare/orientare l’osservatore.</p></li>
+<li><p>Se associamo una trasformazione <span class="math inline">T</span> all’osservatore, potremmo applicarla ai punti/vettori che definiscono l’osservatore, ossia <span class="math inline">P</span>, <span class="math inline">\vec d</span>, <span class="math inline">\vec u</span> e <span class="math inline">\vec r</span>, e spostare/orientare l’osservatore.</p></li>
 <li><p>Ma così è complicato calcolare le direzioni dei raggi che attraversano lo schermo nella funzione <code>fire_ray</code>!</p></li>
 <li><p>È meglio creare i raggi nel sistema di riferimento originale, e <strong>poi</strong> applicare la trasformazione al raggio: è più semplice e si fanno meno calcoli.</p></li>
 <li><p>Serve quindi implementare l’operatore <code>Transformation * Ray</code>, che applicherà la trasformazione <span class="math inline">T</span> sia a <span class="math inline">O</span> (origine) che a <span class="math inline">\vec d</span> (direzione del raggio).</p></li>
@@ -219,27 +300,27 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <h1>Trasformare <code>Ray</code></h1>
 <ul>
 <li><p>Questa è l’applicazione di una trasformazione a un raggio; potreste in alternativa ridefinire l’operatore <code>*</code> nel caso <code>Transform * Ray</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Ray:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    …</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> transform(<span class="va">self</span>, transformation: Transformation):</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Ray(origin<span class="op">=</span>transformation <span class="op">*</span> <span class="va">self</span>.origin,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                   <span class="bu">dir</span><span class="op">=</span>transformation <span class="op">*</span> <span class="va">self</span>.<span class="bu">dir</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                   tmin<span class="op">=</span><span class="va">self</span>.tmin,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                   tmax<span class="op">=</span><span class="va">self</span>.tmax,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                   depth<span class="op">=</span><span class="va">self</span>.depth)</span></code></pre></div></li>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Ray:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    …</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> transform(<span class="va">self</span>, transformation: Transformation):</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Ray(origin<span class="op">=</span>transformation <span class="op">*</span> <span class="va">self</span>.origin,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                   <span class="bu">dir</span><span class="op">=</span>transformation <span class="op">*</span> <span class="va">self</span>.<span class="bu">dir</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                   tmin<span class="op">=</span><span class="va">self</span>.tmin,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                   tmax<span class="op">=</span><span class="va">self</span>.tmax,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                   depth<span class="op">=</span><span class="va">self</span>.depth)</span></code></pre></div></li>
 <li><p>Non è necessario trasformare <code>tmin</code> e <code>tmax</code>.</p></li>
 </ul>
 </section>
 <section id="test-per-transform" class="slide level1">
 <h1>Test per <code>transform</code></h1>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_transform():</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    ray <span class="op">=</span> Ray(origin<span class="op">=</span>Point(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>), <span class="bu">dir</span><span class="op">=</span>Vec(<span class="fl">6.0</span>, <span class="fl">5.0</span>, <span class="fl">4.0</span>))</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    transformation <span class="op">=</span> translation(Vec(<span class="fl">10.0</span>, <span class="fl">11.0</span>, <span class="fl">12.0</span>)) <span class="op">*</span> rotation_x(<span class="fl">90.0</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    transformed <span class="op">=</span> ray.transform(transformation)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> transformed.origin.is_close(Point(<span class="fl">11.0</span>, <span class="fl">8.0</span>, <span class="fl">14.0</span>))</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> transformed.<span class="bu">dir</span>.is_close(Vec(<span class="fl">6.0</span>, <span class="op">-</span><span class="fl">4.0</span>, <span class="fl">5.0</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_transform():</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    ray <span class="op">=</span> Ray(origin<span class="op">=</span>Point(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>), <span class="bu">dir</span><span class="op">=</span>Vec(<span class="fl">6.0</span>, <span class="fl">5.0</span>, <span class="fl">4.0</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    transformation <span class="op">=</span> translation(Vec(<span class="fl">10.0</span>, <span class="fl">11.0</span>, <span class="fl">12.0</span>)) <span class="op">*</span> rotation_x(<span class="fl">90.0</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    transformed <span class="op">=</span> ray.transform(transformation)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> transformed.origin.is_close(Point(<span class="fl">11.0</span>, <span class="fl">8.0</span>, <span class="fl">14.0</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> transformed.<span class="bu">dir</span>.is_close(Vec(<span class="fl">6.0</span>, <span class="op">-</span><span class="fl">4.0</span>, <span class="fl">5.0</span>))</span></code></pre></div>
 </section>
 <section id="tipi-di-proiezioni" class="slide level1">
 <h1>Tipi di proiezioni</h1>
@@ -250,11 +331,11 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <section id="coordinate-dello-schermo" class="slide level1">
 <h1>Coordinate dello schermo</h1>
 <ul>
-<li><p>Per evitare confusione tra coordinate spaziali <span class="math inline">(x, y, z)</span> e coordinate 2D dello schermo, useremo le lettere <span class="math inline">(u, v)</span> per indicare punti dello schermo.</p></li>
-<li><p>Il sistema di riferimento è il seguente:</p>
+<li><p>Per evitare confusione tra coordinate spaziali <span class="math inline">(x, y, z)</span> e coordinate 2D dello schermo, useremo le lettere <span class="math inline">(u, v)</span> per indicare punti dello schermo:</p>
 <center>
 <p><img data-src="./media/screen-coordinates.svg" /></p>
-</center></li>
+</center>
+<p>Ad esempio, un raggio sparato verso <span class="math inline">(u, v) = (0, 1)</span> deve passare per il punto <span class="math inline">P + \vec d - \vec r + \vec u</span>.</p></li>
 </ul>
 </section>
 <section id="orthogonalcamera" class="slide level1">
@@ -262,15 +343,15 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <ul>
 <li><p>Per costruirla serve il parametro <code>aspect_ratio</code> (un floating point, o un razionale come <code>16//9</code> in Julia) e <code>transformation</code>.</p></li>
 <li><p>Questa è una possibile implementazione in Python:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> OrthogonalCamera(Camera):</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, aspect_ratio<span class="op">=</span><span class="fl">1.0</span>, transformation<span class="op">=</span>Transformation()):</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.aspect_ratio <span class="op">=</span> aspect_ratio</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, u, v):</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        origin <span class="op">=</span> Point(<span class="op">-</span><span class="fl">1.0</span>, (<span class="fl">1.0</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> u) <span class="op">*</span> <span class="va">self</span>.aspect_ratio, <span class="dv">2</span> <span class="op">*</span> v <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        direction <span class="op">=</span> VEC_X</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Ray(origin<span class="op">=</span>origin, <span class="bu">dir</span><span class="op">=</span>direction, tmin<span class="op">=</span><span class="fl">1.0</span>).transform(<span class="va">self</span>.transformation)</span></code></pre></div></li>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> OrthogonalCamera(Camera):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, aspect_ratio<span class="op">=</span><span class="fl">1.0</span>, transformation<span class="op">=</span>Transformation()):</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.aspect_ratio <span class="op">=</span> aspect_ratio</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, u: <span class="bu">float</span>, v: <span class="bu">float</span>):</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        origin <span class="op">=</span> Point(<span class="op">-</span><span class="fl">1.0</span>, (<span class="fl">1.0</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> u) <span class="op">*</span> <span class="va">self</span>.aspect_ratio, <span class="dv">2</span> <span class="op">*</span> v <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        direction <span class="op">=</span> VEC_X</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Ray(origin<span class="op">=</span>origin, <span class="bu">dir</span><span class="op">=</span>direction, tmin<span class="op">=</span><span class="fl">1.0</span>).transform(<span class="va">self</span>.transformation)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="test-per-losservatore" class="slide level1">
@@ -278,39 +359,39 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <ul>
 <li><p>È importante verificare che i quattro angoli dell’immagine siano proiettati in modo corretto. Scegliamo anche un <em>aspect ratio</em> diverso da 1.</p></li>
 <li><p>Per <code>OrthogonalCamera</code> verifichiamo che i raggi siano paralleli tra loro: lo facciamo calcolandone il prodotto scalare e verificando che coincida col vettore nullo.</p></li>
-<li><p>Per <code>PerspectiveCamera</code> verifichiamo invece che tutti i raggi abbiano la medesima origine.</p></li>
+<li><p>(Per <code>PerspectiveCamera</code> verificheremo invece che tutti i raggi abbiano la medesima origine).</p></li>
 </ul>
 </section>
 <section id="test-per-orthogonalcamera" class="slide level1">
 <h1>Test per <code>OrthogonalCamera</code></h1>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_orthogonal_camera(<span class="va">self</span>):</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    cam <span class="op">=</span> OrthogonalCamera(aspect_ratio<span class="op">=</span><span class="fl">2.0</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    ray1 <span class="op">=</span> cam.fire_ray(<span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    ray2 <span class="op">=</span> cam.fire_ray(<span class="fl">1.0</span>, <span class="fl">0.0</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    ray3 <span class="op">=</span> cam.fire_ray(<span class="fl">0.0</span>, <span class="fl">1.0</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    ray4 <span class="op">=</span> cam.fire_ray(<span class="fl">1.0</span>, <span class="fl">1.0</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the rays are parallel by verifying that cross-products vanish</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> are_close(<span class="fl">0.0</span>, ray1.<span class="bu">dir</span>.cross(ray2.<span class="bu">dir</span>).squared_norm())</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> are_close(<span class="fl">0.0</span>, ray1.<span class="bu">dir</span>.cross(ray3.<span class="bu">dir</span>).squared_norm())</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> are_close(<span class="fl">0.0</span>, ray1.<span class="bu">dir</span>.cross(ray4.<span class="bu">dir</span>).squared_norm())</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the ray hitting the corners have the right coordinates</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="fl">2.0</span>, <span class="op">-</span><span class="fl">1.0</span>))</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray2.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="op">-</span><span class="fl">1.0</span>))</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray3.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="fl">2.0</span>, <span class="fl">1.0</span>))</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray4.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="fl">1.0</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_orthogonal_camera(<span class="va">self</span>):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    cam <span class="op">=</span> OrthogonalCamera(aspect_ratio<span class="op">=</span><span class="fl">2.0</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    ray1 <span class="op">=</span> cam.fire_ray(<span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    ray2 <span class="op">=</span> cam.fire_ray(<span class="fl">1.0</span>, <span class="fl">0.0</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    ray3 <span class="op">=</span> cam.fire_ray(<span class="fl">0.0</span>, <span class="fl">1.0</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    ray4 <span class="op">=</span> cam.fire_ray(<span class="fl">1.0</span>, <span class="fl">1.0</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the rays are parallel by verifying that cross-products vanish</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> are_close(<span class="fl">0.0</span>, ray1.<span class="bu">dir</span>.cross(ray2.<span class="bu">dir</span>).squared_norm())</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> are_close(<span class="fl">0.0</span>, ray1.<span class="bu">dir</span>.cross(ray3.<span class="bu">dir</span>).squared_norm())</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> are_close(<span class="fl">0.0</span>, ray1.<span class="bu">dir</span>.cross(ray4.<span class="bu">dir</span>).squared_norm())</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the ray hitting the corners have the right coordinates</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="fl">2.0</span>, <span class="op">-</span><span class="fl">1.0</span>))</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray2.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="op">-</span><span class="fl">1.0</span>))</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray3.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="fl">2.0</span>, <span class="fl">1.0</span>))</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray4.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="fl">1.0</span>))</span></code></pre></div>
 </section>
 <section id="test-per-losservatore-1" class="slide level1">
 <h1>Test per l’osservatore</h1>
 <ul>
 <li><p>Verifichiamo anche l’applicazione di una trasformazione:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_orthogonal_camera_transform():</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    cam <span class="op">=</span> OrthogonalCamera(transformation<span class="op">=</span>translation(<span class="op">-</span>VEC_Y <span class="op">*</span> <span class="fl">2.0</span>) <span class="op">*</span> rotation_z(angle_deg<span class="op">=</span><span class="dv">90</span>))</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    ray <span class="op">=</span> cam.fire_ray(<span class="fl">0.5</span>, <span class="fl">0.5</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="fl">0.0</span>))</span></code></pre></div></li>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_orthogonal_camera_transform():</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    cam <span class="op">=</span> OrthogonalCamera(transformation<span class="op">=</span>translation(<span class="op">-</span>VEC_Y <span class="op">*</span> <span class="fl">2.0</span>) <span class="op">*</span> rotation_z(angle_deg<span class="op">=</span><span class="dv">90</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    ray <span class="op">=</span> cam.fire_ray(<span class="fl">0.5</span>, <span class="fl">0.5</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="fl">0.0</span>))</span></code></pre></div></li>
 <li><p>Per <code>PerspectiveCamera</code> il test sarà molto simile.</p></li>
 </ul>
 </section>
@@ -319,38 +400,38 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <ul>
 <li><p>Oltre all’<em>aspect ratio</em> e alla trasformazione, la proiezione prospettica richiede anche la distanza <span class="math inline">d</span> tra lo schermo e l’osservatore.</p></li>
 <li><p>Questa è l’implementazione in Python:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PerspectiveCamera(Camera):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, distance<span class="op">=</span><span class="fl">1.0</span>, aspect_ratio<span class="op">=</span><span class="fl">1.0</span>, transformation<span class="op">=</span>Transformation()):</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.distance <span class="op">=</span> distance</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.aspect_ratio <span class="op">=</span> aspect_ratio</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, u, v):</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        origin <span class="op">=</span> Point(<span class="op">-</span><span class="va">self</span>.distance, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        direction <span class="op">=</span> Vec(<span class="va">self</span>.distance, (<span class="fl">1.0</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> u) <span class="op">*</span> <span class="va">self</span>.aspect_ratio, <span class="dv">2</span> <span class="op">*</span> v <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Ray(origin<span class="op">=</span>origin, <span class="bu">dir</span><span class="op">=</span>direction, tmin<span class="op">=</span><span class="fl">1.0</span>).transform(<span class="va">self</span>.transformation)</span></code></pre></div></li>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PerspectiveCamera(Camera):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, distance<span class="op">=</span><span class="fl">1.0</span>, aspect_ratio<span class="op">=</span><span class="fl">1.0</span>, transformation<span class="op">=</span>Transformation()):</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.distance <span class="op">=</span> distance</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.aspect_ratio <span class="op">=</span> aspect_ratio</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, u: <span class="bu">float</span>, v: <span class="bu">float</span>):</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        origin <span class="op">=</span> Point(<span class="op">-</span><span class="va">self</span>.distance, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        direction <span class="op">=</span> Vec(<span class="va">self</span>.distance, (<span class="fl">1.0</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> u) <span class="op">*</span> <span class="va">self</span>.aspect_ratio, <span class="dv">2</span> <span class="op">*</span> v <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Ray(origin<span class="op">=</span>origin, <span class="bu">dir</span><span class="op">=</span>direction, tmin<span class="op">=</span><span class="fl">1.0</span>).transform(<span class="va">self</span>.transformation)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="test-per-perspectivecamera" class="slide level1">
 <h1>Test per <code>PerspectiveCamera</code></h1>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_perspective_camera(<span class="va">self</span>):</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    cam <span class="op">=</span> PerspectiveCamera(screen_distance<span class="op">=</span><span class="fl">1.0</span>, aspect_ratio<span class="op">=</span><span class="fl">2.0</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    ray1 <span class="op">=</span> cam.fire_ray(<span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    ray2 <span class="op">=</span> cam.fire_ray(<span class="fl">1.0</span>, <span class="fl">0.0</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    ray3 <span class="op">=</span> cam.fire_ray(<span class="fl">0.0</span>, <span class="fl">1.0</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    ray4 <span class="op">=</span> cam.fire_ray(<span class="fl">1.0</span>, <span class="fl">1.0</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that all the rays depart from the same point</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.origin.is_close(ray2.origin)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.origin.is_close(ray3.origin)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.origin.is_close(ray4.origin)</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the ray hitting the corners have the right coordinates</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="fl">2.0</span>, <span class="op">-</span><span class="fl">1.0</span>))</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray2.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="op">-</span><span class="fl">1.0</span>))</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray3.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="fl">2.0</span>, <span class="fl">1.0</span>))</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray4.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="fl">1.0</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_perspective_camera(<span class="va">self</span>):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    cam <span class="op">=</span> PerspectiveCamera(screen_distance<span class="op">=</span><span class="fl">1.0</span>, aspect_ratio<span class="op">=</span><span class="fl">2.0</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    ray1 <span class="op">=</span> cam.fire_ray(<span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    ray2 <span class="op">=</span> cam.fire_ray(<span class="fl">1.0</span>, <span class="fl">0.0</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    ray3 <span class="op">=</span> cam.fire_ray(<span class="fl">0.0</span>, <span class="fl">1.0</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    ray4 <span class="op">=</span> cam.fire_ray(<span class="fl">1.0</span>, <span class="fl">1.0</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that all the rays depart from the same point</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.origin.is_close(ray2.origin)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.origin.is_close(ray3.origin)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.origin.is_close(ray4.origin)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the ray hitting the corners have the right coordinates</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="fl">2.0</span>, <span class="op">-</span><span class="fl">1.0</span>))</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray2.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="op">-</span><span class="fl">1.0</span>))</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray3.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="fl">2.0</span>, <span class="fl">1.0</span>))</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray4.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="fl">1.0</span>))</span></code></pre></div>
 </section>
 <section id="imagetracer" class="slide level1">
 <h1><code>ImageTracer</code></h1>
@@ -376,46 +457,47 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <section id="fire_all_rays" class="slide level1">
 <h1><code>fire_all_rays</code></h1>
 <ul>
-<li><p>Ma una volta che viene «lanciato» un raggio verso un pixel, la funzione <code>fire_all_rays</code> cosa dovrebbe fare?</p></li>
-<li><p>Sappiamo che nel programma completo dovremo calcolare la soluzione dell’equazione del rendering, ma non siamo pronti a farlo!</p></li>
-<li><p>Quello che possiamo fare è accettare come argomento di <code>fire_all_rays</code> una <strong>funzione</strong>: essa verrà invocata per ogni pixel/raggio dell’immagine e dovrà restituire un colore, ossia un oggetto di tipo <code>Color</code>.</p></li>
+<li><p>Una volta che viene «lanciato» un raggio verso un pixel, la funzione <code>fire_all_rays</code> dovrebbe calcolare la soluzione dell’equazione del rendering</p></li>
+<li><p>Implementeremo più metodi risolutivi, alcuni accurati ma lenti e altri grossolani ma velocissimi: quindi anche qui potremmo usare il polimorfismo. <strong>Ma</strong>…</p></li>
+<li><p>…quello che invece facciamo è accettare come argomento di <code>fire_all_rays</code> una <strong>funzione</strong> che venga invocata per ogni pixel/raggio dell’immagine e restituisca un oggetto di tipo <code>Color</code>.</p></li>
+<li><p>Questo è un approccio alternativo al polimorfismo, e vi consiglio di provarlo!</p></li>
 </ul>
 </section>
 <section id="imagetracer-in-python" class="slide level1">
 <h1><code>ImageTracer</code> in Python</h1>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ImageTracer:</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, image: HdrImage, camera: Camera):</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.image <span class="op">=</span> image</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.camera <span class="op">=</span> camera</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, col: <span class="bu">int</span>, row: <span class="bu">int</span>, u_pixel<span class="op">=</span><span class="fl">0.5</span>, v_pixel<span class="op">=</span><span class="fl">0.5</span>):</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># There is an error in this formula, but implement it as is anyway!</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> (<span class="va">self</span>.image.width <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        v <span class="op">=</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> (<span class="va">self</span>.image.height <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.camera.fire_ray(u, v)</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_all_rays(<span class="va">self</span>, func):</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.height):</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.width):</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                ray <span class="op">=</span> <span class="va">self</span>.fire_ray(col, row)</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>                color <span class="op">=</span> func(ray)</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.image.set_pixel(col, row, color)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ImageTracer:</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, image: HdrImage, camera: Camera):</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.image <span class="op">=</span> image</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.camera <span class="op">=</span> camera</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, col: <span class="bu">int</span>, row: <span class="bu">int</span>, u_pixel<span class="op">=</span><span class="fl">0.5</span>, v_pixel<span class="op">=</span><span class="fl">0.5</span>):</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># There is an error in this formula, but implement it as is anyway!</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> (<span class="va">self</span>.image.width <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        v <span class="op">=</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> (<span class="va">self</span>.image.height <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.camera.fire_ray(u, v)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_all_rays(<span class="va">self</span>, func):</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.height):</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.width):</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>                ray <span class="op">=</span> <span class="va">self</span>.fire_ray(col, row)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>                color <span class="op">=</span> func(ray)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.image.set_pixel(col, row, color)</span></code></pre></div>
 </section>
 <section id="test-per-imagetracer" class="slide level1">
 <h1>Test per <code>ImageTracer</code></h1>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_image_tracer(<span class="va">self</span>):</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> HdrImage(width<span class="op">=</span><span class="dv">4</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    camera <span class="op">=</span> PerspectiveCamera(aspect_ratio<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    tracer <span class="op">=</span> ImageTracer(image<span class="op">=</span>image, camera<span class="op">=</span>camera)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    ray1 <span class="op">=</span> tracer.fire_ray(<span class="dv">0</span>, <span class="dv">0</span>, u_pixel<span class="op">=</span><span class="fl">2.5</span>, v_pixel<span class="op">=</span><span class="fl">1.5</span>)</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    ray2 <span class="op">=</span> tracer.fire_ray(<span class="dv">2</span>, <span class="dv">1</span>, u_pixel<span class="op">=</span><span class="fl">0.5</span>, v_pixel<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.is_close(ray2)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    tracer.fire_all_rays(<span class="kw">lambda</span> ray: Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(image.height):</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(image.width):</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> image.get_pixel(col, row) <span class="op">==</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_image_tracer(<span class="va">self</span>):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> HdrImage(width<span class="op">=</span><span class="dv">4</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    camera <span class="op">=</span> PerspectiveCamera(aspect_ratio<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    tracer <span class="op">=</span> ImageTracer(image<span class="op">=</span>image, camera<span class="op">=</span>camera)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    ray1 <span class="op">=</span> tracer.fire_ray(<span class="dv">0</span>, <span class="dv">0</span>, u_pixel<span class="op">=</span><span class="fl">2.5</span>, v_pixel<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    ray2 <span class="op">=</span> tracer.fire_ray(<span class="dv">2</span>, <span class="dv">1</span>, u_pixel<span class="op">=</span><span class="fl">0.5</span>, v_pixel<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray1.is_close(ray2)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    tracer.fire_all_rays(<span class="kw">lambda</span> ray: Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(image.height):</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(image.width):</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> image.get_pixel(col, row) <span class="op">==</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span></code></pre></div>
 </section>
 <section id="guida-per-lesercitazione" class="slide level1">
 <h1>Guida per l’esercitazione</h1>

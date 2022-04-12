@@ -20,6 +20,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 6a      | 2022/04/04 | [Quaternioni e algebre di Clifford](tomasi-ray-tracing-06a.html)                   |
 | 6b      | 2022/04/06 | [GitHub Actions](tomasi-ray-tracing-06b.html)                                      |
 | 7a      | 2022/04/11 | [Proiezioni](tomasi-ray-tracing-07a.html)                                          |
+| 7b      | 2022/04/11 | [Polimorfismo](tomasi-ray-tracing-07b.html)                                        |
 
 # Scelta del linguaggio
 
