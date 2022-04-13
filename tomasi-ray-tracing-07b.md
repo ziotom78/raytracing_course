@@ -415,13 +415,13 @@ def test_perspective_camera(self):
 
 # `fire_all_rays`
 
--   Una volta che viene «lanciato» un raggio verso un pixel, la funzione `fire_all_rays` dovrebbe calcolare la soluzione dell'equazione del rendering
+-   Una volta «lanciato» un raggio verso un pixel, la funzione `fire_all_rays` dovrebbe calcolare la soluzione dell'equazione del rendering
 
 -   Implementeremo più metodi risolutivi, alcuni accurati ma lenti e altri grossolani ma velocissimi: quindi anche qui potremmo usare il polimorfismo. **Ma**…
 
--   …quello che invece facciamo è accettare come argomento di `fire_all_rays` una **funzione** che venga invocata per ogni pixel/raggio dell'immagine e restituisca un oggetto di tipo `Color`.
+-   …quello che invece facciamo per ora è accettare come argomento di `fire_all_rays` una **funzione** che venga invocata per ogni pixel/raggio dell'immagine e restituisca un oggetto di tipo `Color`.
 
--   Questo è un approccio alternativo al polimorfismo, e vi consiglio di provarlo!
+-   Questo è un approccio alternativo al polimorfismo, e vi consiglio di provarlo! Potrete poi cambiarlo se vedete che nel vostro linguaggio porta a codice poco naturale.
 
 # `ImageTracer` in Python
 

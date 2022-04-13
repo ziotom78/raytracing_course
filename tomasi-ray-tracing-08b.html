@@ -280,6 +280,25 @@
 </section>
 <section id="chiusura-del-bug" class="slide level1">
 <h1>Chiusura del bug</h1>
+<ul>
+<li><p>A questo punto il bug è sistemato, e possiamo procedere a chiudere la <em>issue</em></p></li>
+<li><p>È molto importante però prima dare un’occhiata complessiva alla PR, per verificare che sia chiaramente leggibile. In particolare, selezionate il tab <em>Files changed</em> e leggetelo con occhio critico:</p>
+<ol type="1">
+<li><p>I file che vengono modificati sono quelli che mi aspetto, o è presente qualche altra modifica a cui stavo lavorando quando il bug è stato scoperto?</p></li>
+<li><p>Chi vedrà queste modifiche, sarà in grado di capirle senza leggere l’intero codice?</p></li>
+</ol></li>
+<li><p>Evitate di includere modifiche «gratuite» (correzioni di errori grammaticali in docstring, linee vuote aggiunte a caso…)</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/github-pr-last-check-before-merging.png" height="680" />
+</center>
+<p>Esempio preso da un PR di <a href="https://github.com/ziotom78/pytracer/pull/10/files">pytracer</a></p>
+</section>
+<section id="chiusura-del-bug-1" class="slide level1">
+<h1>Chiusura del bug</h1>
 <iframe src="https://player.vimeo.com/video/544950712?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="672" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="How to close an issue in GitHub">
 </iframe>
 </section>
@@ -305,8 +324,8 @@
 <h1>CHANGELOG</h1>
 <ul>
 <li><p>In un file <code>CHANGELOG</code> occorre indicare tutte le correzioni e modifiche fatte al codice.</p></li>
-<li><p>Non serve essere verbosi, una volta che si inserisce il link alla <em>issue</em> o alla <em>pull request</em>: in genere basta una riga o due.</p></li>
-<li><p>Va scritto in ordine <strong>cronologico inverso</strong>: ossia, le modifiche più recenti vanno riportate in cima. In questo modo è più semplice per chi legge vedere quali sono le novità.</p></li>
+<li><p>Non serve essere verbosi: basta una o due righe per modifica, se si inserisce il link alla <em>issue</em>/<em>pull request</em></p></li>
+<li><p>Va scritto in ordine <strong>cronologico inverso</strong>: le modifiche più recenti stanno in cima. In questo modo è più semplice per chi legge vedere quali sono le novità dell’ultima versione (che verosimilmente è quella che si vuole scaricare).</p></li>
 <li><p>Di solito si divide in sezioni, una per ogni versione del codice. La prima sezione si chiama di solito <code>HEAD</code>, e contiene le correzioni e le modifiche che finiranno nella prossima futura versione del codice.</p></li>
 </ul>
 </section>
@@ -327,7 +346,7 @@
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Version 0.1.0</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>First release of the code</span></code></pre></div></li>
-<li><p>Ricordatevi d’ora in poi che <strong>ogni volta</strong> che farete il <em>merge</em> di un <em>pull request</em> dovrete aggiornare <code>CHANGELOG.md</code> subito dopo!</p></li>
+<li><p>Ricordatevi d’ora in poi che <strong>l’ultimo commit in un PR</strong> dovrà sempre essere l’aggiornamento di <code>CHANGELOG.md</code>!</p></li>
 </ul>
 </section>
 <section id="cose-da-fare-oggi" class="slide level1">
@@ -357,7 +376,7 @@
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, transformation<span class="op">=</span>Transformation()):</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Union[HitRecord, <span class="va">None</span>]:</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Optional[HitRecord]:</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="pp">NotImplementedError</span>(</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Shape.ray_intersection is an abstract method and cannot be called directly&quot;</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        )</span></code></pre></div>
@@ -380,7 +399,7 @@
 <section id="sphere-in-python" class="slide level1">
 <h1><code>Sphere</code> in Python</h1>
 <ul>
-<li><p>Ricordiamo che il numero di intersezioni tra il raggio <span class="math inline">O + t \vec d</span> e la sfera unitaria dipende dal discriminante:</p>
+<li><p>Il numero di intersezioni tra il raggio <span class="math inline">O + t \vec d</span> e la sfera dipende dal segno di</p>
 <p><span class="math display">
 \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
 </span></p></li>
@@ -397,7 +416,7 @@ t_2 &amp;= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
 <h1><code>Sphere</code> in Python</h1>
 <ul>
 <li><p>Dovete <strong>antitrasformare</strong> il raggio prima di calcolare l’intersezione:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Union[HitRecord, <span class="va">None</span>]:</span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Optional[HitRecord]:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    inv_ray <span class="op">=</span> ray.transform(<span class="va">self</span>.transformation.inverse())</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span></code></pre></div></li>
 <li><p>Quando avete calcolato <code>t1</code> e <code>t2</code>, dovete determinare quale delle due intersezioni è la più vicina all’origine del raggio:</p>
@@ -406,7 +425,7 @@ t_2 &amp;= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> (tmax <span class="op">&gt;</span> inv_ray.tmin) <span class="kw">and</span> (tmax <span class="op">&lt;</span> inv_ray.tmax):</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    first_hit_t <span class="op">=</span> tmax</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span></span></code></pre></div></li>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span>   <span class="co"># The ray missed the sphere</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="normali-e-coordinate-uv" class="slide level1">
@@ -416,9 +435,10 @@ t_2 &amp;= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
 <div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _sphere_normal(point: Point, ray_dir: Vec) <span class="op">-&gt;</span> Normal:</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> Normal(point.x, point.y, point.z)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result <span class="cf">if</span> (point.to_vec().dot(ray_dir) <span class="op">&lt;</span> <span class="fl">0.0</span>) <span class="cf">else</span> <span class="op">-</span>result</span></code></pre></div></li>
-<li><p>Serve anche il codice che calcola il punto di intersezione sulla superficie della sfera, in coordinate <span class="math inline">(u, v)</span> (<code>Vec2d</code> è un nuovo semplice tipo per queste coordinate):</p>
+<li><p>Serve anche il codice che calcola il punto di intersezione sulla superficie della sfera, in coordinate <span class="math inline">(u, v)</span>, per cui è utile un nuovo tipo <code>Vec2d</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _sphere_point_to_uv(point: Point) <span class="op">-&gt;</span> Vec2d:</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Vec2d(u<span class="op">=</span>atan2(point.y, point.x) <span class="op">/</span> (<span class="fl">2.0</span> <span class="op">*</span> pi), v<span class="op">=</span>acos(point.z) <span class="op">/</span> pi)</span></code></pre></div></li>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> atan2(point.y, point.x) <span class="op">/</span> (<span class="fl">2.0</span> <span class="op">*</span> pi)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Vec2d(u<span class="op">=</span>u <span class="cf">if</span> u <span class="op">&gt;=</span> <span class="fl">0.0</span> <span class="cf">else</span> u <span class="op">+</span> <span class="fl">1.0</span>, v<span class="op">=</span>acos(point.z) <span class="op">/</span> pi)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="creazione-di-hitrecord" class="slide level1">
@@ -472,7 +492,7 @@ t_2 &amp;= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add(<span class="va">self</span>, shape: Shape):</span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.shapes.append(shape)</span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Union[HitRecord, <span class="va">None</span>]:</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Optional[HitRecord]:</span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        closest <span class="op">=</span> <span class="va">None</span>  <span class="co"># &quot;closest&quot; should be a nullable type!</span></span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> shape <span class="kw">in</span> <span class="va">self</span>.shapes:</span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>            intersection <span class="op">=</span> shape.ray_intersection(ray)</span>
@@ -585,10 +605,6 @@ t_2 &amp;= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
 <h1>Proiezione ortogonale</h1>
 <video src="./media/spheres-orthogonal.mp4" width="640px" height="480px" controls loop autoplay/>
 </section>
-<section id="link-a-gather" class="slide level1">
-<h1>Link a Gather</h1>
-<p>Useremo il solito link: <a href="https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing">gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing</a></p>
-</section>
 <section id="guida-per-lesercitazione" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
 </section>
@@ -602,62 +618,6 @@ t_2 &amp;= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
 <li>Implementare il comando <code>demo</code>, nel modo in cui preferite (potete cercare una libreria per interpretare la linea di comando);</li>
 <li>Aprire una PR e aggiornare il file <code>CHANGELOG.md</code>.</li>
 </ol>
-</section>
-<section id="indicazioni-per-kotlin" class="slide level1">
-<h1>Indicazioni per Kotlin</h1>
-</section>
-<section id="indicazioni-per-kotlin-1" class="slide level1">
-<h1>Indicazioni per Kotlin</h1>
-<ul>
-<li><p>Come per il C#, anche per Kotlin le cose da implementare oggi dovrebbero essere molto banali.</p></li>
-<li><p>Per creare una interfaccia utente da linea di comando potete usare <a href="https://github.com/ajalt/clikt">Clikt</a>.</p></li>
-<li><p>Se aggiungete questa dipendenza seguendo le istruzioni sul sito di Clikt, dovete poi scaricarla prima di poterla usare. È sufficiente usare l’icona <em>Refresh</em> nella finestra <em>Gradle</em> (v. slide successiva).</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/intellij-idea-update-dependencies.png" height="640" />
-</center>
-</section>
-<section id="file-jar" class="slide level1">
-<h1>File JAR</h1>
-<ul>
-<li><p>È abbastanza noioso dover invocare <code>gradlew</code> per eseguire un programma Kotlin da linea di comando. Esiste però un plugin che consente di creare file JAR autonomi, l’equivalente degli «eseguibili» nel mondo Java.</p></li>
-<li><p>Assicuratevi innanzitutto di avere una versione recente di Gradle e dello script <code>gradlew</code>:</p>
-<pre class="text"><code>gradle wrapper --gradle-version 7.0</code></pre></li>
-</ul>
-</section>
-<section id="gradlefile" class="slide level1">
-<h1>Gradlefile</h1>
-<p>Dovete modificare il file <code>build.gradle.kts</code> in modo che abbia le righe evidenziate col commento <code>// ←</code>:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">jetbrains</span><span class="op">.</span><span class="im">kotlin</span><span class="op">.</span><span class="im">gradle</span><span class="op">.</span><span class="im">tasks</span><span class="op">.</span><span class="im">KotlinCompile</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">com</span><span class="op">.</span><span class="im">github</span><span class="op">.</span><span class="im">jengelman</span><span class="op">.</span><span class="im">gradle</span><span class="op">.</span><span class="im">plugins</span><span class="op">.</span><span class="im">shadow</span><span class="op">.</span><span class="im">tasks</span><span class="op">.</span><span class="im">ShadowJar</span>  // ←</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>plugins <span class="op">{</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    kotlin<span class="op">(</span><span class="st">&quot;jvm&quot;</span><span class="op">)</span> version <span class="st">&quot;1.5.0&quot;</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    id<span class="op">(</span><span class="st">&quot;com.github.johnrengelman.shadow&quot;</span><span class="op">)</span> version <span class="st">&quot;7.0.0&quot;</span>          <span class="co">// ←</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    application</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>tasks<span class="op">.</span>withType<span class="op">&lt;</span>ShadowJar<span class="op">&gt;()</span> <span class="op">{</span>                                      <span class="co">// ←</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    manifest <span class="op">{</span>                                                     <span class="co">// ←</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        attributes<span class="op">[</span><span class="st">&quot;Main-Class&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="st">&quot;MainKt&quot;</span>                        <span class="co">// ←</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>                                                              <span class="co">// ←</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>                                                                  <span class="co">// ←</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co">// Etc.</span></span></code></pre></div>
-</section>
-<section id="creare-ed-eseguire-jar" class="slide level1">
-<h1>Creare ed eseguire JAR</h1>
-<ul>
-<li><p>Per creare un file JAR è sufficiente eseguire il comando</p>
-<pre class="text"><code>./gradlew shadowJar</code></pre></li>
-<li><p>Il risultato sarà salvato nella directory <code>./build/libs</code> e avrà nome <code>*-all.jar</code>.</p></li>
-<li><p>Potete eseguire da linea di comando un file JAR col comando</p>
-<pre class="text"><code>java jar NOMEFILE.jar</code></pre>
-<p>eventualmente passando gli argomenti (senza bisogno di <code>--args</code> come avveniva per <code>gradlew</code>).</p></li>
-</ul>
 </section>
     </div>
   </div>

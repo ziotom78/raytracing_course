@@ -185,6 +185,24 @@ class TestImageTracer(unittest.TestCase):
 
 # Chiusura del bug
 
+-   A questo punto il bug è sistemato, e possiamo procedere a chiudere la *issue*
+
+-   È molto importante però prima dare un'occhiata complessiva alla PR, per verificare che sia chiaramente leggibile. In particolare, selezionate il tab *Files changed* e leggetelo con occhio critico:
+
+    1.  I file che vengono modificati sono quelli che mi aspetto, o è presente qualche altra modifica a cui stavo lavorando quando il bug è stato scoperto?
+    
+    2.  Chi vedrà queste modifiche, sarà in grado di capirle senza leggere l'intero codice?
+    
+-   Evitate di includere modifiche «gratuite» (correzioni di errori grammaticali in docstring, linee vuote aggiunte a caso…)
+
+---
+
+<center>![](media/github-pr-last-check-before-merging.png){height=680px}</center>
+
+Esempio preso da un PR di [pytracer](https://github.com/ziotom78/pytracer/pull/10/files)
+
+# Chiusura del bug
+
 <iframe src="https://player.vimeo.com/video/544950712?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="672" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="How to close an issue in GitHub"></iframe>
 
 # Traccia dei bug
@@ -207,9 +225,9 @@ class TestImageTracer(unittest.TestCase):
 
 -   In un file `CHANGELOG` occorre indicare tutte le correzioni e modifiche fatte al codice.
 
--   Non serve essere verbosi, una volta che si inserisce il link alla *issue* o alla *pull request*: in genere basta una riga o due.
+-   Non serve essere verbosi: basta una o due righe per modifica, se si inserisce il link alla *issue*/*pull request*
 
--   Va scritto in ordine **cronologico inverso**: ossia, le modifiche più recenti vanno riportate in cima. In questo modo è più semplice per chi legge vedere quali sono le novità.
+-   Va scritto in ordine **cronologico inverso**: le modifiche più recenti stanno in cima. In questo modo è più semplice per chi legge vedere quali sono le novità dell'ultima versione (che verosimilmente è quella che si vuole scaricare).
 
 -   Di solito si divide in sezioni, una per ogni versione del codice. La prima sezione si chiama di solito `HEAD`, e contiene le correzioni e le modifiche che finiranno nella prossima futura versione del codice.
 
@@ -233,7 +251,7 @@ class TestImageTracer(unittest.TestCase):
     -   First release of the code
     ```
 
--   Ricordatevi d'ora in poi che **ogni volta** che farete il *merge* di un *pull request* dovrete aggiornare `CHANGELOG.md` subito dopo!
+-   Ricordatevi d'ora in poi che **l'ultimo commit in un PR** dovrà sempre essere l'aggiornamento di `CHANGELOG.md`!
 
 # Cose da fare oggi
 
@@ -315,7 +333,7 @@ class Shape:
     def __init__(self, transformation=Transformation()):
         self.transformation = transformation
 
-    def ray_intersection(self, ray: Ray) -> Union[HitRecord, None]:
+    def ray_intersection(self, ray: Ray) -> Optional[HitRecord]:
         return NotImplementedError(
             "Shape.ray_intersection is an abstract method and cannot be called directly"
         )
@@ -337,7 +355,7 @@ class Shape:
 
 # `Sphere` in Python
 
--   Ricordiamo che il numero di intersezioni tra il raggio $O + t \vec d$ e la sfera unitaria dipende dal discriminante:
+-   Il numero di intersezioni tra il raggio $O + t \vec d$ e la sfera dipende dal segno di
 
     $$
     \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
@@ -357,7 +375,7 @@ class Shape:
 -   Dovete **antitrasformare** il raggio prima di calcolare l'intersezione:
 
     ```python
-    def ray_intersection(self, ray: Ray) -> Union[HitRecord, None]:
+    def ray_intersection(self, ray: Ray) -> Optional[HitRecord]:
         inv_ray = ray.transform(self.transformation.inverse())
         # ...
     ```
@@ -370,7 +388,7 @@ class Shape:
     elif (tmax > inv_ray.tmin) and (tmax < inv_ray.tmax):
         first_hit_t = tmax
     else:
-        return None
+        return None   # The ray missed the sphere
     ```
 
 #   Normali e coordinate UV
@@ -383,11 +401,12 @@ class Shape:
         return result if (point.to_vec().dot(ray_dir) < 0.0) else -result
     ```
 
--   Serve anche il codice che calcola il punto di intersezione sulla superficie della sfera, in coordinate $(u, v)$ (`Vec2d` è un nuovo semplice tipo per queste coordinate):
+-   Serve anche il codice che calcola il punto di intersezione sulla superficie della sfera, in coordinate $(u, v)$, per cui è utile un nuovo tipo `Vec2d`:
 
     ```python
     def _sphere_point_to_uv(point: Point) -> Vec2d:
-        return Vec2d(u=atan2(point.y, point.x) / (2.0 * pi), v=acos(point.z) / pi)
+        u = atan2(point.y, point.x) / (2.0 * pi)
+        return Vec2d(u=u if u >= 0.0 else u + 1.0, v=acos(point.z) / pi)
     ```
 
 # Creazione di `HitRecord`
@@ -438,7 +457,7 @@ class World:
     def add(self, shape: Shape):
         self.shapes.append(shape)
 
-    def ray_intersection(self, ray: Ray) -> Union[HitRecord, None]:
+    def ray_intersection(self, ray: Ray) -> Optional[HitRecord]:
         closest = None  # "closest" should be a nullable type!
         for shape in self.shapes:
             intersection = shape.ray_intersection(ray)
@@ -550,11 +569,6 @@ L'asimmetria nella disposizione delle sfere consente di individuare errori nell'
 
 <video src="./media/spheres-orthogonal.mp4" width="640px" height="480px" controls loop autoplay/>
 
-# Link a Gather
-
-Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing](https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing)
-
-
 # Guida per l'esercitazione
 
 
@@ -566,69 +580,3 @@ Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing]
 #.  Creare i tipi `Shape`, `Sphere`, `World`, `Vec2d`;
 #.  Implementare il comando `demo`, nel modo in cui preferite (potete cercare una libreria per interpretare la linea di comando);
 #.  Aprire una PR e aggiornare il file `CHANGELOG.md`.
-
-
-# Indicazioni per Kotlin
-
-# Indicazioni per Kotlin
-
--   Come per il C\#, anche per Kotlin le cose da implementare oggi dovrebbero essere molto banali.
-
--   Per creare una interfaccia utente da linea di comando potete usare [Clikt](https://github.com/ajalt/clikt).
-
--   Se aggiungete questa dipendenza seguendo le istruzioni sul sito di Clikt, dovete poi scaricarla prima di poterla usare. È sufficiente usare l'icona *Refresh* nella finestra *Gradle* (v. slide successiva).
-
----
-
-<center>![](./media/intellij-idea-update-dependencies.png){height=640px}</center>
-
-# File JAR
-
--   È abbastanza noioso dover invocare `gradlew` per eseguire un programma Kotlin da linea di comando. Esiste però un plugin che consente di creare file JAR autonomi, l'equivalente degli «eseguibili» nel mondo Java.
-
--   Assicuratevi innanzitutto di avere una versione recente di Gradle e dello script `gradlew`:
-
-    ```text
-    gradle wrapper --gradle-version 7.0
-    ```
-    
-# Gradlefile
-
-Dovete modificare il file `build.gradle.kts` in modo che abbia le righe evidenziate col commento `// ←`:
-
-```kotlin
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar  // ←
-
-plugins {
-    kotlin("jvm") version "1.5.0"
-    id("com.github.johnrengelman.shadow") version "7.0.0"          // ←
-    application
-}
-
-tasks.withType<ShadowJar>() {                                      // ←
-    manifest {                                                     // ←
-        attributes["Main-Class"] = "MainKt"                        // ←
-    }                                                              // ←
-}                                                                  // ←
-
-// Etc.
-```
-
-# Creare ed eseguire JAR
-
--   Per creare un file JAR è sufficiente eseguire il comando
-
-    ```text
-    ./gradlew shadowJar
-    ```
-
--   Il risultato sarà salvato nella directory `./build/libs` e avrà nome `*-all.jar`.
-
--   Potete eseguire da linea di comando un file JAR col comando
-
-    ```text
-    java jar NOMEFILE.jar
-    ```
-    
-    eventualmente passando gli argomenti (senza bisogno di `--args` come avveniva per `gradlew`).
