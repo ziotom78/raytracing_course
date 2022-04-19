@@ -57,16 +57,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     \int_{\sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x, x - x')\,\frac{\cos\theta_i\,\cos\theta'}{\left\|x - x'\right\|^2}\mathrm{d}\sigma',
     $$
     
-    dove il dominio di integrazione $\sum S$ richiede una certa attenzione.
-
-
-# Dominio di integrazione
-
--   Abbiamo riscritto l'integrale sull'angolo solido come un'integrale sulle superfici $\sum S$.
-
--   Ingenuamente, potremmo credere che $\sum S$ rappresenti *tutte* le superfici del nostro «mondo virtuale».
-
--   Non è purtroppo così! Il problema è che non tutte le superfici di un ambiente sono visibili dal generico punto $x$.
+    dove $\sum S$ indica tutte le superfici **visibili** da $x$.
 
 ---
 
@@ -115,11 +106,15 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Trasformazioni
 
--   Alcune forme geometriche hanno forme piuttosto complicate.
+-   Solitamente le forme geometriche sono espresse in forme complesse; ad esempio, la sfera unitaria è rappresentata da una equazione implicita:
 
--   Diventa difficile applicare trasformazioni a forme nel caso generale.
+    $$
+    x^2 + y^2 + z^2 = 1.
+    $$
 
--   È più conveniente applicare ai raggi luminosi la trasformazione **inversa**.
+-   Diventa difficile applicare una trasformazione $T$ a una forma nel caso generale. (Sono facili da applicare solo a punti e a vettori!)
+
+-   È più conveniente applicare ai raggi luminosi la trasformazione **inversa**: se $T$ trasforma il sistema di riferimento «privilegiato» di una forma nel sistema reale del mondo, $T^{-1}$ può trasformare un raggio $O + t \vec d$ nel sistema reale del mondo in quello privilegiato della forma.
 
 # Trasformare raggi
 
@@ -135,7 +130,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde t\,T^{-1} \vec d = \tilde x,
     $$
     
-    ossia l'intersezione tra raggio e superficie *trasformata* $T\cdot S$ è lo stesso punto intersezione del raggio *antitrasformato* con la superficie $S$, e $\tilde t$ non cambia.
+    ossia l'intersezione tra raggio e superficie *trasformata* $T\cdot S$ è lo stesso punto di intersezione del raggio *antitrasformato* con la superficie $S$, e $\tilde t$ non cambia.
     
 # Tipi di forme
 
@@ -159,7 +154,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     (x - c_x)^2 + (y - c_y)^2 + (z - c_z)^2 = R^2,
     $$
     
-    e deriva dalla definizione geometrica di sfera. Ma la presenza di $C$ ed $R$ è inutile, perché implementeremo le trasformazioni.
+    e deriva dalla definizione geometrica di sfera. Ma la presenza di $C$ ed $R$ è inutile, perché come detto useremo le trasformazioni.
 
 -   Ci limitiamo quindi a considerare la sfera unitaria centrata nell'origine:
 
@@ -284,9 +279,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Normale di una sfera
 
--   La scelta della normale dipende dalla concavità/convessità della superficie *dal punto di vista del raggio*.
-
--   Dovremmo quindi scegliere la normale in funzione della direzione di arrivo $\vec d$ del raggio.
+-   La scelta della normale dipende dalla *direzione di arrivo $\vec d$ del raggio*.
 
 -   Possiamo quindi verificare il segno di
 
@@ -301,7 +294,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Una volta determinato il punto di intersezione $P$ tra la sfera e il raggio, bisogna solitamente stimare la BRDF in $P$.
 
--   Ma è scomodo farlo se $P$ è un punto nello spazio tridimensionale, occorre piuttosto conoscerne la posizione in termini della superficie della sfera.
+-   Ma è scomodo farlo se $P$ è un punto nello spazio tridimensionale; occorre piuttosto conoscerne la posizione in termini della superficie della sfera.
 
 -   Nel caso specifico della sfera si può usare la coppia latitudine-longitudine; nel caso generico di una superficie $S$ si cerca comunque una parametrizzazione bidimensionale $(u, v)$.
 
