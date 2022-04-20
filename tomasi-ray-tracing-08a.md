@@ -264,10 +264,10 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Fortunatamente la sfera è una forma geometrica regolare. Dato un punto $P$, la normale alla superficie è il raggio:
 
     $$
-    \hat n_P = P - O,
+    \hat n_P = P - C,
     $$
     
-    dove $O$ è il centro della sfera.
+    dove $C$ è il centro della sfera.
     
 -   C'è però una ambiguità: la normale dovrebbe essere *entrante* o *uscente*?
 
