@@ -324,7 +324,7 @@ label("$z$", 1.5Z + 0.2X);
 
 -   Per oggi basta implementare un tipo `Sphere`; se volete, aggiungete anche un `Plane` (è molto veloce da aggiungere).
 
--   Create un tipo astratto `Shape`, che implementi il metodo (astratto) `ray_intersection`. Questo accetta come parametro un parametro `Ray` e restituisce un tipo `HitRecord`. Se il vostro linguaggio lo supporta, il tipo di ritorno dovrebbe essere *nullable*.
+-   Create un tipo astratto `Shape`, che implementi il metodo (astratto) `ray_intersection`. Questo accetta come parametro un parametro `Ray` e restituisce un tipo `HitRecord`. Se il vostro linguaggio lo supporta, potete rendere il tipo di ritorno *nullable* (c'è/non c'è intersezione).
 
 # `Shape` in Python
 
@@ -384,9 +384,9 @@ class Shape:
 
     ```python
     if (tmin > inv_ray.tmin) and (tmin < inv_ray.tmax):
-        first_hit_t = tmin
+        first_hit_t = t1
     elif (tmax > inv_ray.tmin) and (tmax < inv_ray.tmax):
-        first_hit_t = tmax
+        first_hit_t = t2
     else:
         return None   # The ray missed the sphere
     ```
@@ -444,7 +444,7 @@ In tutti questi casi verificate anche le coordinate $(u, v)$ e il valore di $t$.
 
 -   Una scena è composta da tante forme.
 -   Ci occorre un tipo che contenga questa lista di forme: il tipo `World`.
--   Esso deve mantenere al suo interno una lista di oggetti `Shape`: abbiate cura a dichiarare correttamente questa lista, perché alcuni linguaggi potrebbero richiedere cautele particolari per liste di oggetti astratti.
+-   Esso deve mantenere al suo interno una lista di oggetti `Shape`: abbiate cura a dichiarare correttamente questa lista, perché alcuni linguaggi potrebbero richiedere cautele particolari per liste di oggetti astratti (es., un [vettore di *traits*](https://doc.rust-lang.org/book/ch17-02-trait-objects.html) in Rust).
 -   Deve implementare un metodo `ray_intersection` che iteri sulle forme, cerchi le intersezioni, e restituisca quella più vicina all'origine del raggio.
 
 # `World` in Python
