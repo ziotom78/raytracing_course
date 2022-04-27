@@ -62,13 +62,13 @@ Correzioni in un repository pubblico come GitHub richiedono questi passaggi:
 
 #.   Segnalare il problema su GitHub, aprendo una *issue* (sinonimi: *bug report* o *ticket*). Alla issue sarà assegnato un numero unico, ad es. #156.
 
-#.   Creare una branch nel repository, chiamandola `fix156`.
+#.   Creare una branch nel repository, chiamandola ad esempio `fix156`.
 
 #.   Modificare i test in modo che evidenzino l'errore: una volta implementati, questi nuovi test devono ovviamente fallire.
 
 #.   Solo una volta che i nuovi test sono implementati si può correggere il bug.
 
-#.   Quando i nuovi test passano, aprire una PR legata al branch, e se tutto funziona (inclusi i *CI builds*) si fa il *merge* e si chiude la *issue*.
+#.   Quando i nuovi test passano, aprire una PR legata al branch, e se tutto funziona (inclusi i *CI builds*) si aggiorna il `CHANGELOG`, si fa il *merge*, e si chiude la *issue*.
 
 
 # Aprire una *issue*

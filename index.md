@@ -22,6 +22,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 7a      | 2022/04/11 | [Proiezioni](tomasi-ray-tracing-07a.html)                                          |
 | 7b      | 2022/04/13 | [Polimorfismo](tomasi-ray-tracing-07b.html)                                        |
 | 8a      | 2022/04/20 | [Proiezioni](tomasi-ray-tracing-08a.html)                                          |
+| 8b      | 2022/04/27 | [Issues e forme](tomasi-ray-tracing-08b.html)                                      |
 
 # Scelta del linguaggio
 
