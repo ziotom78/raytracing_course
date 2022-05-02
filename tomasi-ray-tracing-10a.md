@@ -795,8 +795,7 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
 -   Abbiamo già visto alcuni tipi di BRDF nella prima lezione:
 
     #.   [Superficie diffusiva ideale](tomasi-ray-tracing-01a-rendering-equation.html#/superficie-diffusiva-ideale);
-    #.   [Superficie riflettente](tomasi-ray-tracing-01a-rendering-equation.html#/superficie-riflettente);
-    #.   [Superficie rifrattiva](tomasi-ray-tracing-01a-rendering-equation.html#/superficie-rifrattiva).
+    #.   [Superficie riflettente](tomasi-ray-tracing-01a-rendering-equation.html#/superficie-riflettente).
 
 -   Nelle esercitazioni implementeremo le BRDF, insieme a un generatore di numeri casuali.
 
