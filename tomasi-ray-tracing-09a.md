@@ -1,5 +1,5 @@
 ---
-title: "Lezione 10"
+title: "Lezione 9"
 subtitle: "Ottimizzazione delle forme"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
@@ -37,16 +37,18 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Intersezione raggio-AAB
 
--   Scriviamo con $F_i$ il generico punto del piano perpendicolare alla direzione $i$-esima ($i = 0: x$, $i = 1: y$, $i = 2: z$), che avrà coordinate
+-   Scriviamo con $F_i$ il generico punto del piano perpendicolare alla direzione $i$-esima (sei piani in tutto), che avrà coordinate
     
     $$
-    F_0 = (0, u, v), \quad F_1 = (u, 0, v), \quad F_2 = (u, v, 0).
+    F_0 = (f_0^{\text{min}/\text{max}}, u, v), \quad F_1 = (u, f_1^{\text{min}/\text{max}}, v), \quad F_2 = (u, v, f_2^{\text{min}/\text{max}}).
     $$
     
--   Lungo la coordinata $i$-esima si avranno *due* intersezioni (una per ciascuno dei due piani del parallelepipedo):
+    dove $u$ e $v$ indicano una generica posizione sul piano scelto.
+    
+-   Lungo la coordinata $i$-esima si intersecano *due* piani:
 
     $$
-    O + t_i \vec d = F^{\text{min}/\text{max}}_i\quad\Rightarrow\quad t_i = \frac{f^{\text{min}/\text{max}} - O_i}{d_i}.
+    O + t_i \vec d = F^{\text{min}/\text{max}}_i\quad\Rightarrow\quad t_i^{\text{min}/\text{max}} = \frac{f_i^{\text{min}/\text{max}} - O_i}{d_i}.
     $$
 
 # Intersezione raggio-AAB
@@ -55,7 +57,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Ma non tutte le intersezioni sono corrette: esse sono calcolate per l'intero piano infinito su cui giace la faccia del cubo.
 
--   Occorre quindi verificare per ciascuna che il punto $P$ corrispondente abbia le coordinate interne ai vertici $P_m$ e $P_M$.
+-   Occorre quindi verificare per ciascun valore di $t$ se il punto $P$ corrispondente stia effettivamente su una delle facce del cubo.
 
 # Intersezione raggio-AAB
 
@@ -73,6 +75,46 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 <center>![](./media/aab-ray-missed-intersection.svg)</center>
 
 -   Se quindi l'intersezione degli intervalli per i tre assi dà l'insieme vuoto, il raggio non colpisce l'AAB.
+
+# Bounding boxes
+
+# Complessità del rendering
+
+-   Settimana scorsa abbiamo implementato il tipo `World`, che contiene una lista di oggetti
+
+-   Quando si calcola una intersezione con un oggetto, `World.ray_intersection` deve iterare su tutte le `Shape` di `World`
+
+-   Se si decuplica il numero di `Shape`, decuplica anche il tempo necessario a produrre un'immagine…
+
+-   …ma già per risolvere l'equazione del rendering in casi semplici possono volerci anche ore!
+
+
+---
+
+<center>![](./media/pathtracer100.webp)</center>
+
+Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è stata calcolata in ~156 secondi.
+
+---
+
+<iframe src="https://player.vimeo.com/video/517979969?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1934" height="810" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Moana (Clements, Musker, Hall, Williams) Beach scene (no sound)"></iframe>
+
+# [*Moana island scene*](https://www.disneyanimation.com/resources/moana-island-scene/)
+
+<center>
+![](./media/moana-island-scene.webp)
+</center>
+
+
+# Ottimizzazioni
+
+-   Con la nostra implementazione di `World`, il tempo necessario per il calcolo di un'immagine è all'incirca proporzionale al numero di intersezioni tra raggi e forme.
+
+-   Ma scene realistiche contengono moltissime forme!
+
+-   *Moana island scene* è una scena composta da ~15 miliardi di forme base. Il tempo del rendering sarebbe dell'ordine di 25 000 anni!
+
+-   Esistono però tecniche di ottimizzazione che consentono di ridurre molto il numero di intersezioni da calcolare. Una di queste si basa sugli *axis-aligned bounding boxes*
 
 
 # *Axis-aligned bounding box*
@@ -174,8 +216,10 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
 -   Usando l'ultima uguaglianza, si ottiene una forma più significativa:
 
     $$
-    P(\beta, \gamma) = A + \beta(B - A) + \gamma(C - A).
+    P(\beta, \gamma) = A + \beta(B - A) + \gamma(C - A) = A + \beta \vec v_{AB} + \gamma \vec v_{AC},
     $$
+    
+    che esprime $P$ come $A$ più uno spostamento verso $B$ e uno verso $C$.
 
 ---
 
@@ -183,7 +227,7 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
 
 # Coordinate nei triangoli
 
--   Si può dimostrare che le coordinate baricentriche di un punto $P$ sono legate all'area $A$ del triangolo e alle aree dei tre sotto-triangoli aventi come vertice il punto $P$ e due dei vertici:
+-   Si può dimostrare che le coordinate baricentriche di un punto $P$ sono legate all'area $\sigma$ del triangolo e alle aree dei tre sotto-triangoli aventi come vertice il punto $P$ e due dei vertici:
 
     $$
     \alpha = \frac{\sigma_1}\sigma = 1 - \frac{\sigma_2 + \sigma_3}\sigma, \quad \beta = \frac{\sigma_2}\sigma, \quad \gamma = \frac{\sigma_3}\sigma.
@@ -293,10 +337,6 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
 
 # *Mesh* di triangoli
 
----
-
-<iframe src="https://player.vimeo.com/video/517979969?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1934" height="810" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Moana (Clements, Musker, Hall, Williams) Beach scene (no sound)"></iframe>
-
 # [*Moana island scene*](https://www.disneyanimation.com/resources/moana-island-scene/)
 
 <center>
@@ -355,23 +395,19 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 # Normali
 
+<p style="text-align:center">![](media/triangle-normals.png){height=240px}</p>
+
 -   Un triangolo è una superficie piana, ed ogni punto della sua superficie possiede quindi la medesima normale $\hat n$.
 
--   Nel caso di *mesh* di triangoli, si possono usare le coordinate baricentriche del triangolo per simulare una superficie liscia.
-
--   Ricordiamo che le tre coordinate baricentriche sono definite in modo che la loro somma sia normalizzata:
-
-    $$
-    \alpha + \beta + \gamma = 1.
-    $$
+-   Nel caso di *mesh* di triangoli, si possono usare le coordinate baricentriche del triangolo per simulare una superficie liscia: ciò è utile soprattutto quando la *mesh* è ottenuta dalla discretizzazione di una superficie liscia.
     
 # Smooth shading
-    
--   Se una *mesh* di triangoli è il risultato dell'approssimazione di una superficie liscia, nel momento in cui si approssima la superficie occorre quindi calcolare sia i vertici dei triangoli che le normali.
 
--   Ogni normale è associata a un punto, e viene mantenuta in una lista separata.
+<p style="text-align:center">![](media/triangle-normals.png){height=240px}</p>
 
--   In corrispondenza di un punto $P$ definito da $\alpha, \beta, \gamma$ si può assegnare la normale
+-   Nel momento in cui si approssima una superficie liscia occorre calcolare sia i vertici dei triangoli che le normali sui vertici.
+
+-   In corrispondenza del punto $P$ definito da $\alpha, \beta, \gamma$ si assegna la normale
 
     $$
     \hat n_P = \alpha \hat n_1 + \beta \hat n_2 + \gamma \hat n_3.
@@ -418,9 +454,7 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 # File OBJ
 
--   Sotto Linux potete installare `openctm-tools`.
-
--   Il comando `ctmviewer NOMEFILE` visualizza un file OBJ in una finestra interattiva.
+-   Il modo più comodo di visualizzarli è usare [Blender](https://www.blender.org/), ovviamente! Sotto Linux potete anche impiegare `openctm-tools`, che è più agile (il comando `ctmviewer NOMEFILE` visualizza un file OBJ in una finestra interattiva).
 
 -   Il sito di [J. Burkardt](https://people.sc.fsu.edu/~jburkardt/data/obj/obj.html) contiene molti file OBJ scaricabili liberamente (il modello della Mini Cooper è preso da lì).
 
@@ -431,21 +465,6 @@ Modello: 44.000 vertici, 80.000 triangoli.
 -   Il problema è che gran parte del tempo richiesto per calcolare la soluzione dell'equazione del rendering viene speso per l'intersezione tra raggi e forme.
 
 -   All'aumentare delle forme aumenta necessariamente anche il tempo di calcolo.
-
-
----
-
-<center>![](./media/pathtracer100.webp)</center>
-
-Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è stata calcolata in ~156 secondi.
-
-# Intersezione con *mesh*
-
--   Il tempo necessario per il calcolo di un'immagine è all'incirca proporzionale al numero di intersezioni tra raggi e forme.
-
--   Se nell'immagine precedente ci fosse uno degli alberi di *Oceania* (18 milioni di triangoli), il tempo scalerebbe di conseguenza, e sarebbe dell'ordine di 93 anni anziché 156 secondi.
-
--   Ovviamente ciò non è accettabile, ma esistono tecniche di ottimizzazione che consentono di ridurre molto il numero di intersezioni da calcolare.
 
 # AABB e *mesh*
 
@@ -473,7 +492,7 @@ Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è st
 
 -   I KD-tree sono un'applicazione particolare di una famiglia più ampia di algoritmi, chiamati *Binary Space Partitions* (BSP).
 
--   Gli algoritmo BSP sono usati per effettuare ricerche su domini spaziali; nel nostro caso, il problema è quello di ricercare l'eventuale triangolo nella *mesh* che intersechi un raggio dato.
+-   Gli algoritmi BSP sono usati per effettuare ricerche su domini spazio/temporali; nel nostro caso, il problema è quello di ricercare l'eventuale triangolo nella *mesh* che intersechi un raggio dato.
 
 -   I metodi BSP sono iterativi, e a ogni iterazione dimezzano il volume dello spazio da ricercare.
 
@@ -486,6 +505,12 @@ Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è st
 -   Il metodo di bisezione consiste nel dividere l'intervallo $[a, b]$ in due parti $[a, c]$ e $[c, b]$, con $c = (a + b)/2$, e applicare il metodo al sottointervallo in cui il teorema degli zeri vale ancora.
 
 -   Si può dimostrare che per ottenere una precisione $\epsilon$ nella stima dello zero servono $N = \log_2 (b - a)/\epsilon$ passaggi, ossia $O(\log N)$: è molto efficiente!
+
+---
+
+<p style="text-align:center">![](media/bisection-method.svg){height=520px}</p>
+
+Se lo zero $x_0$ è noto con precisione $\pm 1$, bastano 20 passaggi per raggiungere una precisione $\pm 2^{-20} = \pm 10^{-6}$.
 
 # Metodi BSP
 
@@ -553,7 +578,7 @@ Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è st
         #.  Se entrambe, si analizza prima quella intersecata per valori minori di $t$.
     #.  Il processo continua finché non si arriva in un nodo terminale: a quel punto si analizzano tutti i triangoli nel nodo usando l'algoritmo lineare.
 
--   Si può dimostrare che questo processo richiede un tempo $O(\log N)$, dove $N$ è il numero di triangoli della *mesh*: è quindi un procedimento estremamente efficiente!
+-   Per l'albero di Oceania, nel caso di un *KD-tree* perfettamente bilanciato (50%–50%), ci vogliono meno di 25 confronti per determinare l'intersezione con un raggio.
 
 ---
 
@@ -570,9 +595,6 @@ Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è st
     #.  Quando è meglio fermarsi? (Quando un nodo ha meno di *N* forme?)
     
 -   Rispondere a queste domande non è banale, ma è importante trovare una soluzione *efficiente*!
-
--   Una soluzione ottimizzata può essere anche 1÷2 ordini di grandezza più veloce della soluzione banale suggerita qui sopra.
-
 
 # Irregolarità delle *mesh*
 
