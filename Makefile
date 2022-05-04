@@ -67,7 +67,7 @@ giudizi-linguaggio-aa2021.html: giudizi-linguaggio-aa2021.md
 		-t revealjs \
 		-o $@ $<
 	# This is necessary to make Asymptote WebGL figures work
-	$(SED) -i 's/embed data-src/embed width="640px" height="640px" src/g' $@
+	$(SED) -z -i 's/embed.data-src/embed width="640px" height="640px" src/g' $@
 
 http:
 	python -m http.server
