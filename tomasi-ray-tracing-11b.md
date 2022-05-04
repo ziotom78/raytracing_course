@@ -1,5 +1,5 @@
 ---
-title: "Esercitazione 12"
+title: "Esercitazione 11"
 subtitle: "Path tracing (continua)"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

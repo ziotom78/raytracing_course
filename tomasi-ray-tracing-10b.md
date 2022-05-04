@@ -1,5 +1,5 @@
 ---
-title: "Esercitazione 11"
+title: "Esercitazione 10"
 subtitle: "BRDFs e numeri casuali"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

@@ -1,5 +1,5 @@
 ---
-title: "Lezione 12"
+title: "Lezione 11"
 subtitle: "Path tracing (continua)"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

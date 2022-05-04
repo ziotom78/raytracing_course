@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
+  <title>Lezione 11</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="./css/custom.css"/>
+  <link rel="stylesheet" href="./css/asciinema-player.css"/>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Lezione 11</h1>
+  <p class="subtitle">Path tracing (continua)</p>
+  <p class="author">Maurizio Tomasi <a
+href="mailto:maurizio.tomasi@unimi.it"
+class="email">maurizio.tomasi@unimi.it</a></p>
+</section>
+
+<section id="mc-e-path-tracing" class="slide level1">
+<h1>MC e path-tracing</h1>
+</section>
+<section id="integrale-mc" class="slide level1">
+<h1>Integrale MC</h1>
+<ul>
+<li><p>Nella scorsa lezione abbiamo introdotto i metodi Monte Carlo per
+stimare l’integrale nell’equazione del rendering:</p>
+<p><span class="math display">
+\begin{aligned}
+L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
+&amp;\int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
+\Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
+\end{aligned}
+</span></p></li>
+<li><p>Abbiamo detto che è possibile usare il metodo della media,
+ottimizzato tramite <em>importance sampling</em>, per stimare
+l’integrale.</p></li>
+</ul>
+</section>
+<section id="direzioni-casuali" class="slide level1">
+<h1>Direzioni casuali</h1>
+<ul>
+<li><p>Per stimare l’integrale in due dimensioni abbiamo dapprima
+discusso il caso del semplice metodo della media, <strong>senza</strong>
+usare l’<em>importance sampling</em>.</p></li>
+<li><p>In questo caso, la valutazione dell’integrale richiede di
+scegliere <span class="math inline">N</span> direzioni casuali <span
+class="math inline">\Psi</span> e calcolare il valore dell’integranda.
+La PDF delle direzione è definita tramite il loro angolo solido <span
+class="math inline">\omega</span>, e abbiamo visto che</p>
+<p><span class="math display">
+p(\omega) = \frac1{2\pi}.
+</span></p></li>
+<li><p>Questo però spiega come valutare l’integrale se già si conosce il
+valore di <span class="math inline">L(x \leftarrow \Psi)</span>
+nell’integranda, ma non è questo il caso generale!</p></li>
+</ul>
+</section>
+<section id="integrale-ricorsivo" class="slide level1">
+<h1>Integrale ricorsivo</h1>
+<ul>
+<li><p>In linea di principio non dovrebbe essere difficile valutare il
+termine <span class="math inline">L(x \leftarrow \Psi)</span>
+all’interno dell’integrale: basta applicare ricorsivamente l’equazione
+del rendering.</p></li>
+<li><p>La chiamata ricorsiva rappresenta il fatto che per calcolare la
+radianza <em>uscente</em> da un punto della superficie dobbiamo
+conoscere la radianza <em>entrante</em> in quel punto, e questo porta a
+una catena di calcoli.</p></li>
+<li><p>Ma in linea di principio questa sequenza di chiamate ricorsive è
+infinita! Come fare a capire quando arrestarsi?</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> radiance(<span class="va">self</span>, ray: Ray, num_of_samples<span class="op">=</span><span class="dv">100</span>) <span class="op">-&gt;</span> Color:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    hit_record <span class="op">=</span> <span class="va">self</span>.world.ray_intersection(ray)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    material <span class="op">=</span> get_material(hit_record)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    emitted_radiance <span class="op">=</span> material.get_emitted_radiance(hit_record.surface_point)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Estimate the integral using Monte Carlo</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    cum_radiance <span class="op">=</span> Color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_of_samples):</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Start a new (secondary) ray and compute the radiance along it</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        mc_ray <span class="op">=</span> scatter_ray(..., depth<span class="op">=</span>ray.depth <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Recursive call! Will it ever stop?</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        mc_radiance <span class="op">=</span> radiance(mc_ray, num_of_samples<span class="op">=</span>num_of_samples)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        cum_radiance <span class="op">+=</span> material.brdf(...) <span class="op">*</span> mc_radiance</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> emitted_radiance <span class="op">+</span> cum_radiance <span class="op">*</span> (<span class="dv">2</span> <span class="op">*</span> pi) <span class="op">/</span> num_of_samples</span></code></pre></div>
+</section>
+<section id="fermare-la-ricorsione" class="slide level1">
+<h1>Fermare la ricorsione</h1>
+<ul>
+<li><p>Il criterio più semplice è quello di fissare un numero massimo di
+iterazioni: dopo tre o quattro chiamate ricorsive, si arresta
+l’iterazione:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hit_record <span class="op">=</span> <span class="va">self</span>.world.ray_intersection(ray)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>material <span class="op">=</span> get_material(hit_record)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>emitted_radiance <span class="op">=</span> material.get_emitted_radiance(hit_record.surface_point)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>cum_radiance <span class="op">=</span> Color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ray.depth <span class="op">&gt;</span> <span class="dv">5</span>:</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute the MC integral only if we have not gone too deep</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_of_samples):</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        ....</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># If ray.depth &gt; 5, then &quot;cum_radiance&quot; is zero</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> emitted_radiance <span class="op">+</span> cum_radiance <span class="op">*</span> (<span class="dv">2</span> <span class="op">*</span> pi) <span class="op">/</span> num_of_samples</span></code></pre></div></li>
+<li><p>Questo è un metodo efficace per limitare il tempo di calcolo. Ma
+è corretto?</p></li>
+</ul>
+</section>
+<section id="fermare-la-ricorsione-1" class="slide level1">
+<h1>Fermare la ricorsione</h1>
+<ul>
+<li><p>Anche se è un metodo molto usato, attribuire alla radianza un
+valore nullo se <code>ray.depth</code> supera una soglia <em>non</em> è
+fisicamente corretto!</p></li>
+<li><p>Dal momento che <span class="math inline">L(x \leftarrow \Psi)
+\geq 0</span> infatti, «troncare» il contributo dell’integrale dopo un
+certo numero di iterazioni vuol dire <strong>sottostimare</strong> il
+valore dell’integrale: se si sottostima la radianza, si introduce un
+<em>bias</em> nella soluzione.</p></li>
+<li><p>La situazione è uguale a quella in cui si stima il valore di
+<span class="math inline">\sum_{n=0}^\infty \frac1{n!} = e</span>
+sommando solo i primi <span class="math inline">N</span> termini:
+ovviamente la stima sarà per difetto, e l’errore sarà tanto più grave
+quanto è piccolo <span class="math inline">N</span>.</p></li>
+<li><p>È importante? Dipende!</p></li>
+</ul>
+</section>
+<section id="section" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/big-hero-6-2waves.webp" />
+</center>
+<p><span style="float:right">Big Hero 6 (Walt Disney Animation Studios,
+2014), 2 riflessioni</span></p>
+</section>
+<section id="section-1" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/big-hero-6-9waves.webp" />
+</center>
+<p><span style="float:right">Big Hero 6 (Walt Disney Animation Studios,
+2014), 9 riflessioni</span></p>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/1997-veach-metropolis-rendering.webp" />
+</center>
+<p><span style="float:right"><a
+href="https://graphics.stanford.edu/papers/metro/"><em>Metropolis Light
+Transport</em></a>, Veach &amp; Guibas (1997)</span></p>
+</section>
+<section id="roulette-russa" class="slide level1">
+<h1>Roulette russa</h1>
+<ul>
+<li><p>Un algoritmo molto usato nel path-tracing è la <em>roulette
+russa</em>, che rimuove completamente il <em>bias</em>, ossia la
+sottostima della radianza, al prezzo però di aumentare il rumore
+scorrelato (bianco).</p></li>
+<li><p>Il procedimento richiede di fissare una probabilità <span
+class="math inline">0 \leq q \leq 1</span> e una costante <span
+class="math inline">c</span> (solitamente <span class="math inline">c =
+0</span>), e procede nel modo seguente:</p>
+<ol>
+<li>Si estrae un numero casuale <span class="math inline">0 \leq x \leq
+1</span>;</li>
+<li>Se <span class="math inline">x &gt; q</span>, si procede a calcolare
+la radianza <span class="math inline">L</span> e si restituisce <span
+class="math inline">(L - q c) / (1 - q)</span>;</li>
+<li>Se <span class="math inline">x \leq q</span>, si ferma il calcolo e
+si restituisce <span class="math inline">c</span>.</li>
+</ol></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<ul>
+<li><p>Per quale motivo la roulette russa dovrebbe rimuovere il bias?
+Proviamo a calcolare il valore di aspettazione della radianza.</p></li>
+<li><p>Il metodo sostituisce la radianza <span
+class="math inline">L</span> con una radianza casuale <span
+class="math inline">L&#39;</span> così fatta:</p>
+<p><span class="math display">
+L&#39; = \begin{cases}
+\frac{L - q c}{1 - q}\ &amp;\text{se $x &gt; q$},\\
+c&amp;\text{altrimenti}.
+\end{cases}
+</span></p>
+<p><span class="math inline">L&#39;</span> ha valore di aspettazione</p>
+<p><span class="math display">
+E[L&#39;] = E\left[(1 - q) \frac{L - q c}{1 - q} + q c\right] = E[L].
+</span></p></li>
+</ul>
+</section>
+<section id="significato-intuitivo" class="slide level1">
+<h1>Significato intuitivo</h1>
+<ul>
+<li><p>Se supponiamo <span class="math inline">c = 0</span>, otteniamo
+che</p>
+<p><span class="math display">
+L&#39; = \begin{cases}
+\frac{L}{1 - q}\ &amp;\text{se $x &gt; q$},\\
+0&amp;\text{altrimenti}.
+\end{cases}
+</span></p></li>
+<li><p>Questo risultato è intuitivo da comprendere: c’è una probabilità
+<span class="math inline">q</span> di restituire zero, ma se <span
+class="math inline">x &gt; q</span> (con probabilità <span
+class="math inline">1 - q</span>) si restituisce «qualcosa di più» di
+<span class="math inline">L</span> (perché <span class="math inline">1 /
+(1 - q) &gt; 1</span>) per compensare quanto si perderebbe nel primo
+caso.</p></li>
+</ul>
+</section>
+<section id="svantaggi" class="slide level1">
+<h1>Svantaggi</h1>
+<ul>
+<li><p>La roulette russa non è una soluzione priva di difetti!</p></li>
+<li><p>Supponete ad esempio di scegliere <span class="math inline">q =
+0.99</span>. In questo caso sarà molto difficile restituire <span
+class="math inline">L / (1 - q)</span>, perché nella maggior parte dei
+casi si restituirà semplicemente zero.</p></li>
+<li><p>D’altra parte, le poche volte in cui si restituisce <span
+class="math inline">L / (1 - q)</span>, si restituirà il valore <span
+class="math inline">L</span> moltiplicato per cento volte, ossia <span
+class="math inline">1 / (1 - 0.99)</span>.</p></li>
+<li><p>Ovviamente questo implica un notevole incremento nella varianza
+della stima, il che vuol dire che l’immagine risulterà più sgranata,
+seppure chiaramente <em>unbiased</em>.</p></li>
+</ul>
+</section>
+<section id="dettagli" class="slide level1">
+<h1>Dettagli</h1>
+<ul>
+<li><p>Per implementare la roulette russa, di solito si fissa una soglia
+minima al valore di <code>depth</code>:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ray.depth <span class="op">&gt;</span> <span class="dv">5</span>:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    threshold <span class="op">=</span> compute_threshold(...)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pcg.random_float() <span class="op">&gt;</span> threshold:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> radiance <span class="op">/</span> (<span class="dv">1</span> <span class="op">-</span> threshold)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span></code></pre></div>
+<p>Questo <em>non</em> introduce un bias, ma permette di ridurre il
+rumore nell’immagine.</p></li>
+<li><p>Qualsiasi valore di <span class="math inline">q</span> funziona,
+ma i risultati migliori si ottengono scegliendo il valore massimo tra le
+componenti R, G, B della BRDF nel punto di intersezione.</p></li>
+</ul>
+</section>
+<section id="path-tracing-allopera" class="slide level1">
+<h1>Path tracing all’opera</h1>
+<ul>
+<li><p>Abbiamo a disposizione tutta la teoria per implementare
+l’algoritmo di path-tracing!</p></li>
+<li><p>Il numero <span class="math inline">N</span> di campioni
+(direzioni) usati per stimare ciascun integrale è un parametro libero, e
+va scelto a seconda della scena e di quanto è efficiente il path
+tracer.</p></li>
+<li><p>Supponendo di fissare una soglia a <code>ray.depth</code> uguale
+a <span class="math inline">m</span> riflessioni, il numero totale <span
+class="math inline">N_\text{tot}</span> di raggi che il codice deve
+simulare è <span class="math inline">\leq N^m</span>. Se si sceglie
+<span class="math inline">N = 100</span> e <span class="math inline">m =
+9</span> si ottiene <span class="math inline">N_\text{tot} =
+10^{18}</span>: è importante non esagerare col valore di <span
+class="math inline">N</span>!</p></li>
+</ul>
+</section>
+<section id="n-3" class="slide level1" data-transition="none">
+<h1 data-transition="none"><span class="math inline">N = 3</span></h1>
+<center>
+<img data-src="media/pathtracing-003rays.webp" />
+</center>
+<p><span style="float:right">726,939 raggi</span></p>
+</section>
+<section id="n-10" class="slide level1" data-transition="none">
+<h1 data-transition="none"><span class="math inline">N = 10</span></h1>
+<center>
+<img data-src="media/pathtracing-010rays.webp" />
+</center>
+<p><span style="float:right">5,010,840 raggi</span></p>
+</section>
+<section id="n-25" class="slide level1" data-transition="none">
+<h1 data-transition="none"><span class="math inline">N = 25</span></h1>
+<center>
+<img data-src="media/pathtracing-025rays.webp" />
+</center>
+<p><span style="float:right">26,343,150 raggi</span></p>
+</section>
+<section id="n-50" class="slide level1" data-transition="none">
+<h1 data-transition="none"><span class="math inline">N = 50</span></h1>
+<center>
+<img data-src="media/pathtracing-050rays.webp" />
+</center>
+<p><span style="float:right">98,875,400 raggi</span></p>
+</section>
+<section id="n-100" class="slide level1" data-transition="none">
+<h1 data-transition="none"><span class="math inline">N = 100</span></h1>
+<center>
+<img data-src="media/pathtracing-100rays.webp" />
+</center>
+<p><span style="float:right">382,384,500 raggi</span></p>
+</section>
+<section id="importance-sampling" class="slide level1">
+<h1><em>Importance sampling</em></h1>
+<ul>
+<li><p>Abbiamo implementato il codice usando il metodo della media per
+stimare l’integrale, ma questo non è ottimale!</p></li>
+<li><p>Nella scorsa lezione avevamo visto infatti che la varianza del
+metodo della media può essere ridotta se estraiamo i campioni casuali
+secondo una distribuzione «furba» <span class="math inline">p(\theta,
+\phi)</span>.</p></li>
+<li><p>Quale distribuzione potrebbe essere «furba» qui?</p></li>
+</ul>
+</section>
+<section id="importance-sampling-1" class="slide level1">
+<h1><em>Importance sampling</em></h1>
+<ul>
+<li><p>Scriviamo ancora una volta l’integrale dell’equazione del
+rendering:</p>
+<p><span class="math display">
+\int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
+\Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
+</span></p></li>
+<li><p>Supponiamo di metterci nel sistema di riferimento in cui <span
+class="math inline">\theta</span> e <span
+class="math inline">\phi</span> sono misurati rispetto all’asse della
+normale <span class="math inline">N_x</span>; allora l’angolo tra <span
+class="math inline">N_x</span> e <span class="math inline">\Psi</span> è
+proprio <span class="math inline">\theta</span>, e quindi</p>
+<p><span class="math display">
+\int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
+\Psi)\,\cos\theta\,\mathrm{d}\omega_\Psi.
+</span></p></li>
+</ul>
+</section>
+<section id="possibilità" class="slide level1">
+<h1>Possibilità</h1>
+<p><span class="math display">
+\int_{2\pi}
+\textcolor{#ad3434}{f_r(x, \Psi \rightarrow \Theta)}\,
+\textcolor{#34ad34}{L(x \leftarrow \Psi)}\,
+\textcolor{#3434ad}{\cos\theta}\,
+\mathrm{d}\omega_\Psi.
+</span></p>
+<ul>
+<li><p>Per scegliere una distribuzione «furba», dovremmo cercare una
+<span class="math inline">p(x)</span> che assomigli all’integranda ma
+sia nel contempo facile da normalizzare.</p></li>
+<li><p>Ci sono tre termini nell’integranda, che dobbiamo capire come
+combinare in una <span class="math inline">p(\omega)</span>:</p>
+<ol>
+<li><span class="math inline">\textcolor{#ad3434}{f_r(x, \Psi
+\rightarrow \Theta)}</span>;</li>
+<li><span class="math inline">\textcolor{#34ad34}{L(x \leftarrow
+\Psi)}</span>;</li>
+<li><span
+class="math inline">\textcolor{#3434ad}{\cos\theta}</span>.</li>
+</ol></li>
+</ul>
+</section>
+<section id="implementazione" class="slide level1">
+<h1>Implementazione</h1>
+<ul>
+<li><p>Una soluzione è quella di scegliere <span
+class="math inline">p(\omega) \propto \cos\theta</span>. Il senso
+intuitivo è che «paga» di più scegliere le direzioni più allineate lungo
+la normale (ossia con <span class="math inline">\theta</span> piccolo),
+perché è da lì che proviene la maggior parte della radianza.</p></li>
+<li><p>Una soluzione migliore però è quella di scegliere</p>
+<p><span class="math display">
+p(\omega) \propto f_r(x, \Psi \rightarrow \Theta) \cos\theta,
+</span></p>
+<p>perché la stessa funzione <span class="math inline">f_r</span> può
+avere forti dipendenze dalla direzione, come nel caso di superfici
+riflettenti.</p></li>
+</ul>
+</section>
+<section id="brdf-diffusa" class="slide level1">
+<h1>BRDF diffusa</h1>
+<ul>
+<li><p>Su una superficie diffusiva la radiazione incidente è diffusa su
+2π, e vale che</p>
+<p><span class="math display">
+f_r(x, \Psi \rightarrow \Theta) = \frac{\rho_d}\pi.
+</span></p></li>
+<li><p>Di conseguenza, per usare l’<em>importance sampling</em> occorre
+trovare una PDF <span class="math inline">p(\omega)</span> tale che</p>
+<p><span class="math display">
+p(\omega) \propto \frac{\rho_d}\pi\,\cos\theta \propto \cos\theta.
+</span></p>
+<p>Questo risultato è riconducibile alla <a
+href="tomasi-ray-tracing-11a-path-tracing.html#/distribuzione-di-phong">distribuzione
+di Phong</a> (<span class="math inline">\propto
+\cos^n\theta</span>).</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p>Nel caso di una superficie diffusa vale che</p>
+<p><span class="math display">
+\begin{aligned}
+&amp;\int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
+\Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi \approx\\
+\approx&amp;\frac1N\sum_{i=1}^N \frac{f_r(x, \Psi_i \rightarrow
+\Theta)\,L(x \leftarrow \Psi_i)\,\cos\theta}{p(\omega)} =\\
+=&amp;\frac{\rho_d}{N}\sum_{i=1}^N L(x \leftarrow \Psi_i),
+\end{aligned}
+</span></p>
+<p>dove ovviamente è necessario che le <span
+class="math inline">\Psi_i</span> siano distribuite secondo <span
+class="math inline">p(\omega) \propto \cos\theta</span>.</p>
+</section>
+<section id="uso-delle-brdf" class="slide level1">
+<h1>Uso delle BRDF</h1>
+<ul>
+<li><p>Fissato un certo numero <span class="math inline">N</span> di
+raggi con cui calcolare l’integrale, l’uso dell’<em>importance
+sampling</em> permette di ridurre la varianza: a parità di <span
+class="math inline">N</span>, con l’<em>importance sampling</em>
+l’immagine è meno rumorosa.</p></li>
+<li><p>Notiamo che se usiamo l’<em>importance sampling</em> per valutare
+l’integrale, <strong>non</strong> è necessario che il codice calcoli in
+maniera esplicita il valore di <span class="math inline">f_r</span>:
+questo si semplifica nell’espressione!</p></li>
+<li><p>Il prezzo da pagare è che però bisogna generare direzioni casuali
+con distribuzioni che in generale non sono uniformi.</p></li>
+</ul>
+</section>
+<section id="brdf-riflettente" class="slide level1">
+<h1>BRDF riflettente</h1>
+<ul>
+<li><p>Consideriamo ora la BRDF di uno specchio perfettamente
+riflettente.</p></li>
+<li><p>Sappiamo già che gli specchi obbediscono alla legge della
+riflessione:</p>
+<center>
+<p><img data-src="media/reflection-law.svg" height="320" /></p>
+</center>
+<p>In questo caso la BRDF è ovviamente proporzionale a una Delta di
+Dirac.</p></li>
+</ul>
+</section>
+<section id="brdf-riflettente-1" class="slide level1">
+<h1>BRDF riflettente</h1>
+<ul>
+<li><p>In <a
+href="https://graphics.stanford.edu/courses/cs448-05-winter/papers/nicodemus-brdf-nist.pdf"><em>Geometrical
+Considerations and Nomenclature for Reflectance</em></a> (Nicodemus,
+Richmond &amp; Hsia, 1977) si dimostra mediante considerazioni
+energetiche che per una superficie riflettente ideale si ha che</p>
+<p><span class="math display">
+f_r(x, \Psi \rightarrow \Theta) \propto \frac{\delta(\sin^2\theta_r -
+\sin^2\theta)\,\delta(\psi_r \pm \pi - \psi)}{\cos\theta},
+</span></p>
+<p>dove <span class="math inline">(\theta, \phi)</span> è ovviamente la
+direzione <span class="math inline">\Psi</span> di arrivo del raggio, e
+<span class="math inline">(\theta_r, \psi_r)</span> è la direzione
+riflessa.</p></li>
+<li><p>La presenza di <span class="math inline">\cos\theta</span> al
+denominatore fa sì che nell’<em>importance sampling</em> <span
+class="math inline">p(\omega)</span> non dipenda da <span
+class="math inline">\cos\theta</span>.</p></li>
+</ul>
+</section>
+<section id="brdf-riflettente-2" class="slide level1">
+<h1>BRDF riflettente</h1>
+<ul>
+<li><p>L’implementazione della BRDF riflettente è molto semplice, perché
+nella valutazione dell’integrale i raggi secondari sono tutti allineati
+lungo la direzione <span class="math inline">(\theta_r,
+\phi_r)</span>.</p></li>
+<li><p>Dal punto di vista dei vettori, la legge di riflessione si scrive
+così:</p>
+<p><span class="math display">
+\vec r = 2(\hat n \cdot \Psi) \hat n - \Psi,
+</span></p>
+<p>dove <span class="math inline">\vec r</span> è il vettore
+riflesso.</p></li>
+</ul>
+</section>
+<section id="basi-ortonormali-onb-arbitrarie" class="slide level1">
+<h1>Basi ortonormali (ONB) arbitrarie</h1>
+</section>
+<section id="direzioni-casuali-nello-spazio" class="slide level1">
+<h1>Direzioni casuali nello spazio</h1>
+<ul>
+<li><p>Per stimare l’integrale dell’equazione del rendering col metodo
+della media bisogna generare direzioni casuali con una data
+distribuzione <span class="math inline">p(\omega)</span> sull’emisfero
+2π.</p></li>
+<li><p>L’emisfero 2π è però definito rispetto alla normale <span
+class="math inline">\hat n</span>, che può avere un’orientamento
+arbitrario nello spazio tridimensionale!</p></li>
+<li><p>Se dal punto di vista matematico la generazione di direzioni
+casuali è chiara, dal punto di vista <em>implementativo</em> non è così
+semplice: bisogna cambiare sistemi di riferimento!</p></li>
+</ul>
+</section>
+<section id="sistemi-di-riferimento" class="slide level1">
+<h1>Sistemi di riferimento</h1>
+<center>
+<img data-src="media/rendering-equation-and-onb.svg" />
+</center>
+<ul>
+<li><p>Le espressioni che abbiamo ricavato per generare direzioni
+casuali secondo varie distribuzioni assumono tutte che <span
+class="math inline">\theta</span> sia misurato partendo dall’asse <span
+class="math inline">z</span>.</p></li>
+<li><p>Quando generiamo una direzione casuale in quel sistema di
+riferimento, dobbiamo quindi poi convertire il vettore nel sistema
+<em>globale</em> con cui sono definiti gli oggetti del «mondo».</p></li>
+<li><p>Il compito è semplice se si usano basi ortonormali (ONB) create
+<em>ad hoc</em>.</p></li>
+</ul>
+</section>
+<section id="basi-ortonormali" class="slide level1">
+<h1>Basi ortonormali</h1>
+<ul>
+<li><p>Data una base ortonormale (ONB) <span
+class="math inline">\left\{\hat e_1, \hat e_2, \hat e_3\right\}</span> e
+un vettore <span class="math inline">\vec v</span>, vale che</p>
+<p><span class="math display">
+\vec v = \sum_{i=1}^3 \left&lt;\vec v, \hat e_i\right&gt; \hat e_i = v_x
+\hat e_x + v_y \hat e_y + v_z \hat e_z.
+</span></p></li>
+<li><p>Se si ha una nuova ONB <span class="math inline">\left\{\hat
+e&#39;_1, \hat e&#39;_2, \hat e&#39;_3\right\}</span>, il vettore <span
+class="math inline">\vec v&#39;</span> ottenuto ruotando <span
+class="math inline">\vec v</span> dalla vecchia alla nuova base deve
+avere le stesse componenti:</p>
+<p><span class="math display">
+\vec v&#39; = \sum_{i=1}^3 \left&lt;\vec v&#39;, \hat e&#39;_i\right&gt;
+\hat e&#39;_i = v&#39;_x \hat e&#39;_x + v&#39;_y \hat e&#39;_y +
+v&#39;_z \hat e&#39;_z = v_x \hat e&#39;_x + v_y \hat e&#39;_y + v_z
+\hat e&#39;_z.
+</span></p></li>
+</ul>
+</section>
+<section id="onb-arbitrarie" class="slide level1">
+<h1>ONB arbitrarie</h1>
+<center>
+<img data-src="media/rendering-equation-and-onb.svg" />
+</center>
+<ul>
+<li><p>Dato un vettore casuale <span class="math inline">\vec v = (v_x,
+v_y, v_z)</span> nel sistema di riferimento della normale (ossia dove
+<span class="math inline">\theta = 0</span> è allineato con l’asse <span
+class="math inline">z</span>), possiamo ruotare <span
+class="math inline">\vec v</span> in una nuova ONB <span
+class="math inline">\left\{\hat e&#39;_i\right\}</span> scrivendo</p>
+<p><span class="math display">
+\vec v&#39; = v_x \hat e&#39;_x + v_y \hat e&#39;_y + v_z \hat e&#39;_z.
+</span></p></li>
+<li><p>Deve valere che <span class="math inline">\hat e&#39;_z = \hat
+n</span>, ma l’orientamento di <span class="math inline">\hat
+e&#39;_x</span> e <span class="math inline">\hat e&#39;_y</span> è
+ininfluente.</p></li>
+</ul>
+</section>
+<section id="onb-arbitrarie-1" class="slide level1">
+<h1>ONB arbitrarie</h1>
+<ul>
+<li><p>Il modo più semplice per creare una nuova ONB è basarsi sul fatto
+che da due elementi della base si può sempre ricavare il terzo tramite
+il prodotto vettoriale:</p>
+<p><span class="math display">
+\hat e_x \times \hat e_y = \hat e_z,\quad
+\hat e_y \times \hat e_z = \hat e_x,\quad
+\hat e_z \times \hat e_x = \hat e_y.
+</span></p></li>
+<li><p>Per creare una ONB scegliamo un vettore arbitrario <span
+class="math inline">\vec g</span>, e poniamo</p>
+<p><span class="math display">
+\hat e&#39;_x = \text{norm}(\hat n \times \vec g),\quad
+\hat e&#39;_y = \hat n \times \hat e&#39;_x,\quad
+\hat e&#39;_z = \hat n,
+</span></p>
+<p>dove <span class="math inline">\text{norm}(\vec v) = \vec v /
+\left\|\vec v\right\|</span> normalizza la lunghezza del
+vettore.</p></li>
+</ul>
+</section>
+<section id="una-difficoltà" class="slide level1">
+<h1>Una difficoltà</h1>
+<ul>
+<li><p>Il metodo per creare una nuova ONB funziona però solo a patto che
+il vettore arbitrario <span class="math inline">\vec g</span> non sia
+allineato con <span class="math inline">\hat n</span>, altrimenti</p>
+<p><span class="math display">
+\hat n \times \vec g = 0.
+</span></p></li>
+<li><p>Nell’implementazione dell’algoritmo occorre quindi inserire un
+test, ed eventualmente usare un altro vettore arbitrario <span
+class="math inline">\vec h</span>. Di solito si sceglie <span
+class="math inline">\vec g = (1, 0, 0)</span> e <span
+class="math inline">\vec h = (0, 1, 0)</span>..</p></li>
+<li><p><a
+href="https://graphics.pixar.com/library/OrthonormalB/paper.pdf">Duff et
+al. 2017</a>, basandosi su <a
+href="http://orbit.dtu.dk/files/%20126824972/onb_frisvad_jgt2012_v2.pdf">Frisvad,
+2012</a>, hanno proposto un algoritmo alternativo basato sui quaternioni
+che richiede la metà del tempo di esecuzione (evita questo controllo e
+la normalizzazione).</p></li>
+</ul>
+</section>
+<section id="duff-et-al.-2017" class="slide level1">
+<h1>Duff et al. (2017)</h1>
+<center>
+<img data-src="media/2017duff-algorithm.png" />
+</center>
+<p>[Gli autori lavorano alla <a href="https://www.pixar.com/">Pixar
+Animation Studios</a>.]</p>
+</section>
+<section id="approfondimenti" class="slide level1">
+<h1>Approfondimenti</h1>
+</section>
+<section id="approfondimenti-1" class="slide level1">
+<h1>Approfondimenti</h1>
+<ul>
+<li>Vediamo ora brevemente alcune possibilità per migliorare l’algoritmo
+di path tracing:
+<ul>
+<li>Illuminazione diretta;</li>
+<li><em>Photon mapping</em>;</li>
+<li>Antialiasing;</li>
+<li><em>Point-light tracing</em>.</li>
+</ul></li>
+<li>Se desiderate potete implementare l’antialiasing e il
+<em>point-light tracing</em> nel vostro codice.</li>
+<li>L’illuminazione diretta e il <em>photon mapping</em> vanno ben oltre
+quanto si possa implementare per questo corso.</li>
+</ul>
+</section>
+<section id="illuminazione-diretta" class="slide level1">
+<h1>Illuminazione diretta</h1>
+<ul>
+<li><p>Abbiamo applicato l’<em>importance sampling</em> all’equazione
+del raytracing scrivendo una funzione di probabilità</p>
+<p><span class="math display">
+p(\omega) \propto \cos\theta \times f_r.
+</span></p></li>
+<li><p>Questo trucco può migliorare molto la qualità del rendering nel
+caso di BRDF molto dipendenti da <span
+class="math inline">\theta</span>, ma non aiuta se il termine</p>
+<p><span class="math display">
+L(x \leftarrow \Psi)
+</span></p>
+<p>nell’integrale dell’equazione del rendering varia molto. Per ridurre
+la varianza in questi casi esiste l’algoritmo <em>(explicit) direct
+lighting</em>.</p></li>
+</ul>
+</section>
+<section id="caso-facile" class="slide level1">
+<h1>Caso «facile»</h1>
+<center>
+<img data-src="./media/pathtracer100.webp" />
+</center>
+</section>
+<section id="caso-difficile" class="slide level1">
+<h1>Caso «difficile»</h1>
+<center>
+<img data-src="./media/pathtracer-difficult-scene.webp" />
+</center>
+</section>
+<section id="illuminazione-diretta-1" class="slide level1">
+<h1>Illuminazione diretta</h1>
+<center>
+<img data-src="media/direct-lighting-sketch.svg" />
+</center>
+<p>Se la <span class="math inline">p(\omega)</span> usata
+nell’<em>importance sampling</em> potesse «pesare» la presenza o meno di
+sorgenti luminose, la convergenza sarebbe molto più rapida!</p>
+</section>
+<section id="implementazione-1" class="slide level1">
+<h1>Implementazione</h1>
+<ul>
+<li><p>Per implementare un’ottimizzazione di questo tipo occorre
+aggiungere un flag al tipo <code>Material</code>, che dica se il
+materiale è un emettitore «significativo» o no.</p></li>
+<li><p>Nel calcolo dell’integrale dell’equazione del rendering, il
+dominio 2π viene diviso in due parti:</p>
+<ol>
+<li>L’angolo solido <span class="math inline">\Omega_\text{lum}</span>
+sotteso da quegli oggetti il cui <code>Material</code> ha il flag
+«emettitore» impostato a <code>true</code>;</li>
+<li>L’angolo solido <span class="math inline">\Omega_\text{rem}</span>
+restante.</li>
+</ol></li>
+<li><p>L’integrale relativo a <span
+class="math inline">\Omega_\text{rem}</span> viene calcolato nel modo
+solito.</p></li>
+</ul>
+</section>
+<section id="luminarie" class="slide level1">
+<h1>Luminarie</h1>
+<ul>
+<li><p>L’integrale relativo all’angolo solido <span
+class="math inline">\Omega_\text{lum}</span> viene calcolato in un modo
+speciale.</p></li>
+<li><p>Occorre che ogni <code>Shape</code> abbia la possibilità di
+calcolare il proprio angolo solido (facile per piani, sfere e triangoli,
+difficile per oggetti CSG!).</p></li>
+<li><p>Inoltre, è necessario un metodo che restituisca una direzione
+casuale verso l’oggetto emissivo distribuita uniformemente entro il suo
+angolo solido (facile per sfere e triangoli, difficile per piani e
+oggetti CSG!).</p></li>
+<li><p>L’implementazione è complicata dal fatto che si devono tenere in
+conto le costanti di normalizzazione per le varie <span
+class="math inline">p(\omega)</span> usate, e le sovrapposizioni di
+diversi angoli solidi.</p></li>
+</ul>
+</section>
+<section id="photon-mapping" class="slide level1">
+<h1><em>Photon mapping</em></h1>
+</section>
+<section id="photon-mapping-1" class="slide level1">
+<h1><em>Photon mapping</em></h1>
+<ul>
+<li><p>Il <em>photon mapping</em> è una tecnica che ottimizza il tempo
+di calcolo della soluzione dell’equazione del rendering. È illustrato
+nel libro <a
+href="https://www.routledge.com/Realistic-Image-Synthesis-Using-Photon-Mapping/Jensen/p/book/9781568814629"><em>Realistic
+Image Synthesis Using Photon Mapping</em></a> (Jensen, 2009)</p></li>
+<li><p>È un algoritmo <a
+href="tomasi-ray-tracing-08a-projections.html#/forward-ray-tracing"><em>forward
+ray-tracing</em></a> (l’unico che analizziamo in questo corso!) che
+viene eseguito in due passaggi:</p>
+<ol>
+<li>Creazione della <em>photon map</em>;</li>
+<li>Rendering dell’immagine.</li>
+</ol></li>
+</ul>
+</section>
+<section id="fotoni-nel-cornell-box" class="slide level1">
+<h1>Fotoni nel «Cornell box»</h1>
+<p><img data-src="./media/cornell-box-schema.svg" height="560" /></p>
+</section>
+<section id="algoritmo-di-photon-mapping" class="slide level1">
+<h1>Algoritmo di <em>photon mapping</em></h1>
+<ul>
+<li><p>Per ogni sorgente luminosa si emettono una serie di raggi che
+dipartono verso direzioni casuali.</p></li>
+<li><p>Ad ogni interazione con una superficie si sceglie con una certa
+probabilità se creare un <em>fotone</em>: questo è un tipo
+<code>Photon</code> che contiene la posizione (un <code>Point</code>) e
+la sua energia (ossia, un campo <code>Color</code>).</p></li>
+<li><p>La lista di tutti i <code>Photon</code> creati (la <em>photon
+map</em>, appunto) viene memorizzata nel tipo <code>World</code> (non è
+necessario associare un <code>Photon</code> alla <code>Shape</code> che
+l’ha prodotto).</p></li>
+<li><p>Per calcolare <span class="math inline">L(x \leftarrow
+\Psi)</span> nell’equazione del rendering, si considerano tutti i
+<code>Photon</code> entro una certa distanza <span
+class="math inline">d</span> da <span
+class="math inline">x</span>.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/2017Retzlaff-photon-mapping.png" height="480" />
+</center>
+<p><span style="float:right"><a
+href="https://jsss.copernicus.org/articles/6/171/2017/"><em>Physically
+based computer graphics for realistic image formation to simulate
+optical measurement systems</em></a>, Retzlaff et al. (2017)</span></p>
+</section>
+<section id="caratteristiche-dellalgoritmo" class="slide level1">
+<h1>Caratteristiche dell’algoritmo</h1>
+<ul>
+<li><p>Il calcolo dei fotoni può essere riutilizzato per successive
+esecuzioni dell’algoritmo di <em>path tracing</em> (eventualmente
+salvandolo su disco).</p></li>
+<li><p>La ricerca dei fotoni più vicini a un punto <span
+class="math inline">x</span> può essere resa molto rapida usando una
+struttura KD-Tree (memorizzata direttamente in
+<code>World</code>).</p></li>
+<li><p>È facile usarlo per simulare effetti legati allo spettro della
+luce (diffrazione da prismi, caustiche, etc.)</p></li>
+<li><p>Di solito si usa il <em>photon mapping</em> solo per calcolare la
+componente luminosa indiretta (ossia, la luce che raggiunge le superfici
+ma <strong>non</strong> quella che raggiunge direttamente l’occhio
+dell’osservatore): per quest’ultima si può usare il
+<em>path-tracing</em>.</p></li>
+</ul>
+</section>
+<section id="aliasing-e-antialiasing" class="slide level1">
+<h1>Aliasing e antialiasing</h1>
+</section>
+<section id="aliasing" class="slide level1">
+<h1>Aliasing</h1>
+<ul>
+<li><p>Nel tipo <code>ImageTracer</code> del nostro ray-tracer abbiamo
+assunto che il colore di ogni pixel fosse determinato dal colore del
+raggio <a
+href="http://localhost:8000/tomasi-ray-tracing-08a-projections.html#/raggi-per-pixel">passante
+per il centro</a>:</p>
+<center>
+<p><img data-src="./media/projection-pixel-centers-cube.svg"
+height="280" /></p>
+</center></li>
+<li><p>Questa assunzione provoca il fenomeno chiamato <em>aliasing</em>,
+causato dalla dimensione finita dei pixel, e alla produzione delle
+cosiddette <a
+href="https://en.wikipedia.org/wiki/Moir%C3%A9_pattern"><em>frange di
+Moiré</em></a></p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/aliasing.webp" />
+</center>
+<p>L’occhio umano tende a notare delle linee ondulate nella trama a
+scacchiera sul piano.</p>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/aliasing-zoom.webp" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/projection-pixel-centers-cube.svg" />
+</center>
+<p>Il problema dell’<em>aliasing</em> è che certi pixel coprono aree
+dello schermo che contengono colori diversi.</p>
+</section>
+<section id="antialiasing" class="slide level1">
+<h1>Antialiasing</h1>
+<ul>
+<li><p>Per <em>antialiasing</em> si intende un algoritmo che riduca gli
+artefatti di un’immagine che sono causati da variazioni di colore su
+scale inferiori del pixel.</p></li>
+<li><p>Un modo semplice per implementare l’<em>antialiasing</em> è
+dotare il nostro tipo <code>ImageTracer</code> dell’abilità di
+campionare un pixel usando più raggi, e calcolando poi la media della
+radianza associata a ciascuno.</p></li>
+</ul>
+</section>
+<section id="antialiasing-e-mc" class="slide level1">
+<h1>Antialiasing e MC</h1>
+<ul>
+<li><p>Non è forse immediato da comprendere, ma i raggi che inviamo
+all’interno dello stesso pixel <strong>non devono essere
+equispaziati</strong>, altrimenti il problema delle frange di Moiré si
+ripresenterebbe ugualmente (sebbene in misura minore):</p>
+<center>
+<p><img data-src="media/equispaced-ray-samples-in-pixel.svg"
+height="240" /></p>
+</center></li>
+<li><p>Meglio usare un metodo Monte Carlo per campionare l’interno di un
+pixel.</p></li>
+</ul>
+</section>
+<section id="stratified-sampling" class="slide level1">
+<h1><em>Stratified sampling</em></h1>
+<ul>
+<li><p>Estrarre casualmente punti sul piano <span
+class="math inline">[0, 1] \times [0, 1]</span> di un pixel è semplice:
+basta estrarre sia <span class="math inline">u</span> che <span
+class="math inline">v</span> da una distribuzione uniforme.</p></li>
+<li><p>Il risultato ha però un cattivo comportamento dal punto di vista
+della varianza, perché è facile che ci siano regioni del pixel poco
+campionate rispetto ad altre.</p></li>
+<li><p>Lo <em>stratified sampling</em> è un semplice metodo per ridurre
+la varianza: si divide lo spazio del pixel in tanti sotto-quadrati, e si
+estrae una posizione casuale dentro ciascuno dei quadrati.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/random-points.svg" />
+</center>
+</section>
+<section id="implementazione-2" class="slide level1">
+<h1>Implementazione</h1>
+<ul>
+<li><p>Lo <em>stratified sampling</em> è semplice da implementare, ma
+pone il vincolo che il numero di raggi sia un quadrato perfetto (1, 4,
+9, …).</p></li>
+<li><p>Implementare l’antialiasing con lo <em>stratified sampling</em>
+ha il vantaggio di ridurre molto l’aspetto granuloso delle immagini
+prodotte col <em>path tracing</em>.</p></li>
+<li><p>Abbiamo già visto che si può ridurre la granulosità aumentando il
+numero <span class="math inline">N</span> di raggi secondari, ma il
+tempo di calcolo è proporzionale a <span class="math inline">N^m</span>,
+con <span class="math inline">m</span> numero massimo di
+ricorsioni.</p></li>
+<li><p>Usando l’antialiasing con <span class="math inline">N</span>
+raggi, il tempo di calcolo è solamente proporzionale a <span
+class="math inline">N</span>: molto meglio!</p></li>
+</ul>
+</section>
+<section id="section-2" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/antialiasing-01.webp" />
+</center>
+<p>1 raggio per pixel</p>
+</section>
+<section id="section-3" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/antialiasing-04.webp" />
+</center>
+<p>4 raggi per pixel</p>
+</section>
+<section id="section-4" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/antialiasing-09.webp" />
+</center>
+<p>9 raggi per pixel</p>
+</section>
+<section id="section-5" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/antialiasing-16.webp" />
+</center>
+<p>16 raggi per pixel</p>
+</section>
+<section id="section-6" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/antialiasing-25.webp" />
+</center>
+<p>25 raggi per pixel</p>
+</section>
+<section id="point-light-tracing" class="slide level1">
+<h1>Point-light tracing</h1>
+</section>
+<section id="point-light-tracing-1" class="slide level1">
+<h1>Point-light tracing</h1>
+<ul>
+<li><p>Un algoritmo molto usato per generare immagini 3D è quello che
+chiameremo <em>point-light tracing</em>. (Di solito è chiamato <em>ray
+tracing</em> o <em>ray casting</em>; entrambi i termini sono però molto
+generici, e a volte indicano algoritmi differenti).</p></li>
+<li><p>Si basa sulla considerazione che in certe scene la maggior parte
+dell’energia luminosa si origina da pochi oggetti con un diametro
+apparente piccolo: una lampada, il sole, etc.</p></li>
+<li><p>Se si dividono tutti gli oggetti della scena in «luminosi» e non,
+si può valutare l’integrale dell’equazione su un dominio
+ridotto.</p></li>
+</ul>
+</section>
+<section id="sorgenti-luminose" class="slide level1">
+<h1>Sorgenti luminose</h1>
+<ul>
+<li><p>L’algoritmo di <em>point-light tracing</em> classico fa queste
+assunzioni:</p>
+<ol>
+<li>Le sorgenti luminose sono puntiformi e si riducono a delta di
+Dirac.</li>
+<li>Se una sorgente non è luminosa, non contribuisce alla luminosità
+complessiva dell’immagine.</li>
+<li>Per ovviare alla mancanza di radiazione che illumini le parti non
+illuminate direttamente, alcuni ray-tracers aggiungono arbitrariamente
+un termine «ambient light» (un colore vicino al nero ma non esattamente
+nullo).</li>
+</ol></li>
+<li><p>Non è possibile modellare l’illuminazione diffusa, ma il tempo
+necessario al calcolo della soluzione è molto minore.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/ray-tracing-algorithm.webp" />
+</center>
+</section>
+<section id="implementazione-3" class="slide level1">
+<h1>Implementazione</h1>
+<ul>
+<li><p>Nel tipo <code>World</code> si deve mantenere una lista di
+oggetti <code>LightSource</code>, ciascuno dei quali è un
+<code>Point</code> associato a una certa emissione
+(<code>Color</code>).</p></li>
+<li><p>La generazione di un’immagine usa come al solito
+<code>ImageTracer</code> per proiettare raggi da <code>Camera</code> a
+<code>HdrImage</code> (eventualmente usando l’anti-aliasing).</p></li>
+<li><p>Quando un raggio interagisce con una superficie, si determina
+quali <code>LightSource</code> siano visibili e si somma il loro
+contributo modulato per la <code>BRDF</code>.</p></li>
+<li><p>L’algoritmo è molto veloce perché non è ricorsivo (tranne se si
+vogliono implementare superfici riflettenti/rifrattive).</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<video src="media/raycaster-demo.mp4" width="640px" height="360px" controls loop autoplay/>
+</section>
+<section id="accorgimenti" class="slide level1">
+<h1>Accorgimenti</h1>
+<ul>
+<li><p>Nel caso generale, più una sorgente luminosa è lontana, meno è
+brillante; la sua radianza è costante, ma l’angolo solido <span
+class="math inline">\mathrm{d}\omega</span> nell’integrale
+dell’equazione del rendering scala come <span
+class="math inline">r^{-2}</span>.</p></li>
+<li><p>Se una sorgente luminosa è una delta di Dirac, non ha però angolo
+solido, e quindi in un point-light tracer bisognerebbe compensare per
+questo effetto.</p></li>
+<li><p>Non è sufficiente però dividere per <span
+class="math inline">r^2</span> il contributo di una sorgente luminosa,
+perché non corrisponderebbero le unità di misura!</p></li>
+<li><p>Di solito nei point-light tracers si ignora questo effetto (v. il
+caso di <a
+href="https://www.povray.org/documentation/view/3.6.1/317/">POV-Ray</a>).
+In alternativa si può attribuire una distanza <span
+class="math inline">d</span> di riferimento per ogni sorgente luminosa,
+e scalare per <span class="math inline">(d / r)^2</span>.</p></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: true,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+       // Parallax background image
+       parallaxBackgroundImage: './media/background.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1440,
+
+        height: 810,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script src="js/asciinema-player.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.58.4.min.js"></script>
+    <script type="text/javascript" src="./js/quantization.js"></script>
+    </body>
+</html>

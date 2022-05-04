@@ -4,13 +4,16 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Esercitazione 12</title>
+  <title>Esercitazione 11</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     span.underline{text-decoration: underline;}
@@ -84,31 +87,35 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
   </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Esercitazione 12</h1>
+  <h1 class="title">Esercitazione 11</h1>
   <p class="subtitle">Path tracing (continua)</p>
-  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+  <p class="author">Maurizio Tomasi <a
+href="mailto:maurizio.tomasi@unimi.it"
+class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
 <section id="basi-ortonormali-onb" class="slide level1">
@@ -117,8 +124,11 @@
 <section id="creazioni-di-onb" class="slide level1">
 <h1>Creazioni di ONB</h1>
 <ul>
-<li><p>È conveniente usare l’algoritmo di <a href="https://graphics.pixar.com/library/OrthonormalB/paper.pdf">Duff et al. 2017</a>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_onb_from_z(normal: Union[Vec, Normal]) <span class="op">-&gt;</span> Tuple[Vec, Vec, Vec]:</span>
+<li><p>È conveniente usare l’algoritmo di <a
+href="https://graphics.pixar.com/library/OrthonormalB/paper.pdf">Duff et
+al. 2017</a>:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_onb_from_z(normal: Union[Vec, Normal]) <span class="op">-&gt;</span> Tuple[Vec, Vec, Vec]:</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    sign <span class="op">=</span> <span class="fl">1.0</span> <span class="cf">if</span> (normal.z <span class="op">&gt;</span> <span class="fl">0.0</span>) <span class="cf">else</span> <span class="op">-</span><span class="fl">1.0</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span> <span class="op">/</span> (sign <span class="op">+</span> normal.z)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> normal.x <span class="op">*</span> normal.y <span class="op">*</span> a</span>
@@ -127,20 +137,36 @@
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    e2 <span class="op">=</span> Vec(b, sign <span class="op">+</span> normal.y <span class="op">*</span> normal.y <span class="op">*</span> a, <span class="op">-</span>normal.y)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> e1, e2, Vec(normal.x, normal.y, normal.z)</span></code></pre></div></li>
-<li><p>Quando invocate questa funzione, fate molta attenzione al fatto che il parametro <code>normal</code> deve essere già normalizzato!</p></li>
+<li><p>Quando invocate questa funzione, fate molta attenzione al fatto
+che il parametro <code>normal</code> deve essere già
+normalizzato!</p></li>
 </ul>
 </section>
 <section id="test" class="slide level1">
 <h1>Test</h1>
 <ul>
-<li><p>Per verificare il funzionamento di <code>create_onb_from_z</code>, possiamo usare il <em>random testing</em> (un’idea apparentemente nata nel mondo del linguaggio <a href="https://www.haskell.org/">Haskell</a>, vedi <a href="https://hackage.haskell.org/package/QuickCheck">quickcheck</a>).</p></li>
-<li><p>L’idea è quella di generare un gran numero di vettori casuali, passarli come parametri a <code>create_onb_from_z</code>, e verificare che il tipo di ritorno sia effettivamente una ONB. (Pare che Duff et al. abbiano scoperto così il bug nell’algoritmo di <a href="http://orbit.dtu.dk/files/%20126824972/onb_frisvad_jgt2012_v2.pdf">Frisvad, 2012</a>).</p></li>
-<li><p>L’approccio generale del <em>random testing</em> è quello di generare input casuali, e verificare che gli output soddisfino certe proprietà. È conveniente soprattutto per funzioni matematiche, ma non è sempre la soluzione migliore.</p></li>
+<li><p>Per verificare il funzionamento di
+<code>create_onb_from_z</code>, possiamo usare il <em>random
+testing</em> (un’idea apparentemente nata nel mondo del linguaggio <a
+href="https://www.haskell.org/">Haskell</a>, vedi <a
+href="https://hackage.haskell.org/package/QuickCheck">quickcheck</a>).</p></li>
+<li><p>L’idea è quella di generare un gran numero di vettori casuali,
+passarli come parametri a <code>create_onb_from_z</code>, e verificare
+che il tipo di ritorno sia effettivamente una ONB. (Pare che Duff et
+al. abbiano scoperto così il bug nell’algoritmo di <a
+href="http://orbit.dtu.dk/files/%20126824972/onb_frisvad_jgt2012_v2.pdf">Frisvad,
+2012</a>).</p></li>
+<li><p>L’approccio generale del <em>random testing</em> è quello di
+generare input casuali, e verificare che gli output soddisfino certe
+proprietà. È conveniente soprattutto per funzioni matematiche, ma non è
+sempre la soluzione migliore.</p></li>
 </ul>
 </section>
 <section id="random-testing-in-pytracer" class="slide level1">
-<h1><em>Random testing</em> in <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/test_all.py#L914-L934">pytracer</a></h1>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pcg <span class="op">=</span> PCG()</span>
+<h1><em>Random testing</em> in <a
+href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/test_all.py#L914-L934">pytracer</a></h1>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pcg <span class="op">=</span> PCG()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>expected_zero <span class="op">=</span> pytest.approx(<span class="fl">0.0</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>expected_one <span class="op">=</span> pytest.approx(<span class="fl">1.0</span>)</span>
@@ -171,11 +197,15 @@
 <section id="implementazione" class="slide level1">
 <h1>Implementazione</h1>
 <ul>
-<li><p>Nella lezione di teoria abbiamo anticipato che il nostro <em>path tracer</em> userà il metodo Monte Carlo per stimare l’integrale dell’equazione del rendering:</p>
+<li><p>Nella lezione di teoria abbiamo anticipato che il nostro <em>path
+tracer</em> userà il metodo Monte Carlo per stimare l’integrale
+dell’equazione del rendering:</p>
 <p><span class="math display">
-\int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos\theta\,\mathrm{d}\omega_\Psi.
+\int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
+\Psi)\,\cos\theta\,\mathrm{d}\omega_\Psi.
 </span></p></li>
-<li><p>Per migliorare la varianza useremo l’<em>importance sampling</em>, impiegando la PDF</p>
+<li><p>Per migliorare la varianza useremo l’<em>importance
+sampling</em>, impiegando la PDF</p>
 <p><span class="math display">
 p(\omega) \propto f_r \times \cos\theta.
 </span></p></li>
@@ -184,23 +214,36 @@ p(\omega) \propto f_r \times \cos\theta.
 <section id="il-tipo-brdf" class="slide level1">
 <h1>Il tipo <code>BRDF</code></h1>
 <ul>
-<li><p>Dobbiamo quindi aggiungere un metodo che si applichi ai tipi derivati da <code>BRDF</code> e che abbia <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L103">questa segnatura</a>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, </span>
+<li><p>Dobbiamo quindi aggiungere un metodo che si applichi ai tipi
+derivati da <code>BRDF</code> e che abbia <a
+href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L103">questa
+segnatura</a>:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pcg: PCG,                    <span class="co"># Used to generate random numbers</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    incoming_dir: Vec,           <span class="co"># Direction of the incoming ray</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    interaction_point: Point,    <span class="co"># Where the ray hit the surface</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    normal: Normal,              <span class="co"># Normal on interaction_point</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    depth: <span class="bu">int</span>,                  <span class="co"># Depth value for the new ray</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> Ray</span></code></pre></div></li>
-<li><p>Ogni tipo derivato da <code>BRDF</code> (es., <code>DiffuseBRDF</code>, <code>SpecularBRDF</code>, etc.) dovrà ridefinire <code>scatter_ray</code>.</p></li>
+<li><p>Ogni tipo derivato da <code>BRDF</code> (es.,
+<code>DiffuseBRDF</code>, <code>SpecularBRDF</code>, etc.) dovrà
+ridefinire <code>scatter_ray</code>.</p></li>
 </ul>
 </section>
 <section id="diffusebrdf" class="slide level1">
 <h1><code>DiffuseBRDF</code></h1>
 <ul>
-<li><p>Per la BRDF diffusa, abbiamo dimostrato che <span class="math inline">p(\omega) \propto \cos\theta</span>.</p></li>
-<li><p>L’implementazione di <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L117-L130"><code>DiffuseBRDF.scatter_ray</code></a> deve quindi usare l’<a href="tomasi-ray-tracing-11a-path-tracing.html#risultato-di-phong">algoritmo che abbiamo ricavato</a> per la distribuzione di Phong con <span class="math inline">n = 1</span>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec,</span>
+<li><p>Per la BRDF diffusa, abbiamo dimostrato che <span
+class="math inline">p(\omega) \propto \cos\theta</span>.</p></li>
+<li><p>L’implementazione di <a
+href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L117-L130"><code>DiffuseBRDF.scatter_ray</code></a>
+deve quindi usare l’<a
+href="tomasi-ray-tracing-11a-path-tracing.html#risultato-di-phong">algoritmo
+che abbiamo ricavato</a> per la distribuzione di Phong con <span
+class="math inline">n = 1</span>:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec,</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                interaction_point: Point, normal: Normal, depth: <span class="bu">int</span>) <span class="op">-&gt;</span> Ray:</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    e1, e2, e3 <span class="op">=</span> create_onb_from_z(normal)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    cos_theta_sq <span class="op">=</span> pcg.random_float()</span>
@@ -217,9 +260,15 @@ p(\omega) \propto f_r \times \cos\theta.
 <section id="specularbrdf" class="slide level1">
 <h1><code>SpecularBRDF</code></h1>
 <ul>
-<li><p>La generazione di raggi per la BRDF speculare è perfettamente deterministica, e non c’è un termine <span class="math inline">\cos\theta</span> con cui pesare il contributo del raggio.</p></li>
-<li><p>L’implementazione di <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L151-L164"><code>SpecularBRDF.scatter_ray</code></a> è quindi particolarmente semplice:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec,</span>
+<li><p>La generazione di raggi per la BRDF speculare è perfettamente
+deterministica, e non c’è un termine <span
+class="math inline">\cos\theta</span> con cui pesare il contributo del
+raggio.</p></li>
+<li><p>L’implementazione di <a
+href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L151-L164"><code>SpecularBRDF.scatter_ray</code></a>
+è quindi particolarmente semplice:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec,</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                interaction_point: Point, normal: Normal, depth: <span class="bu">int</span>) <span class="op">-&gt;</span> Ray:</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    ray_dir <span class="op">=</span> Vec(incoming_dir.x, incoming_dir.y, incoming_dir.z).normalize()</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    normal <span class="op">=</span> normal.to_vec().normalize()</span>
@@ -237,21 +286,28 @@ p(\omega) \propto f_r \times \cos\theta.
 <section id="il-tipo-pathtracer" class="slide level1">
 <h1>Il tipo <code>PathTracer</code></h1>
 <ul>
-<li><p>Abbiamo finora definito due renderer: <code>OnOffRenderer</code> e <code>FlatRenderer</code>. Oggi implementiamo <code>PathTracer</code>.</p></li>
+<li><p>Abbiamo finora definito due renderer: <code>OnOffRenderer</code>
+e <code>FlatRenderer</code>. Oggi implementiamo
+<code>PathTracer</code>.</p></li>
 <li><p>I parametri del costruttore sono i seguenti:</p>
 <ol>
 <li>L’oggetto <code>World</code> per cui fare il render;</li>
-<li>Il colore di background, usato per quelle direzioni lungo cui non ci sono intersezioni;</li>
-<li>Il generatore di numeri casuali da usare (tipo <code>PCG</code>);</li>
+<li>Il colore di background, usato per quelle direzioni lungo cui non ci
+sono intersezioni;</li>
+<li>Il generatore di numeri casuali da usare (tipo
+<code>PCG</code>);</li>
 <li>Numero di raggi da generare per il calcolo dell’integrale;</li>
 <li>Profondità massima dei raggi;</li>
-<li>Limite per la profondità oltre il quale usare la Roulette russa.</li>
+<li>Limite per la profondità oltre il quale usare la Roulette
+russa.</li>
 </ol></li>
 </ul>
 </section>
 <section id="implementazione-1" class="slide level1">
-<h1><a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126">Implementazione</a></h1>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Color:</span>
+<h1><a
+href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126">Implementazione</a></h1>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Color:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ray.depth <span class="op">&gt;</span> <span class="va">self</span>.max_depth:</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -298,11 +354,18 @@ p(\omega) \propto f_r \times \cos\theta.
 <section id="test-1" class="slide level1">
 <h1>Test</h1>
 <ul>
-<li><p>Un metodo molto semplice per verificare il funzionamento di un <em>path tracer</em> è il cosiddetto <em>test della fornace</em>.</p></li>
-<li><p>Si tratta di lanciare un raggio all’interno di un oggetto di forma arbitraria e BRDF diffusa con luminosità <span class="math inline">L_e</span> e riflettanza <span class="math inline">\rho_d</span> costanti.</p></li>
-<li><p>Il generico raggio percorrerà un cammino intrappolato nell’oggetto, e la radianza totale sarà uguale a</p>
+<li><p>Un metodo molto semplice per verificare il funzionamento di un
+<em>path tracer</em> è il cosiddetto <em>test della
+fornace</em>.</p></li>
+<li><p>Si tratta di lanciare un raggio all’interno di un oggetto di
+forma arbitraria e BRDF diffusa con luminosità <span
+class="math inline">L_e</span> e riflettanza <span
+class="math inline">\rho_d</span> costanti.</p></li>
+<li><p>Il generico raggio percorrerà un cammino intrappolato
+nell’oggetto, e la radianza totale sarà uguale a</p>
 <p><span class="math display">
-L = L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\Bigr).
+L = L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e +
+\dots)\bigr)\Bigr).
 </span></p></li>
 </ul>
 </section>
@@ -316,7 +379,8 @@ L = L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\Bigr).
 
 <p><span class="math display">
 \begin{aligned}
-L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\Bigr) =\\
+L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e +
+\dots)\bigr)\Bigr) =\\
   &amp;= L_e + \rho_d L_e + \rho_d^2 L_e + \rho_d^3 L_e + \ldots =\\
   &amp;= L_e \bigl(1 + \rho_d + \rho_d^2 + \rho_d^3 + \ldots \bigr) =\\
   &amp;= L_e \sum_{n=0}^\infty \rho_d^n =\\
@@ -327,19 +391,28 @@ L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\B
 <section id="test-in-pytracer" class="slide level1">
 <h1>Test in pytracer</h1>
 <ul>
-<li><p>Il codice di pytracer implementa il test <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/test_all.py#L938-L962"><code>testFurnace</code></a> che usa queste assunzioni:</p>
+<li><p>Il codice di pytracer implementa il test <a
+href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/test_all.py#L938-L962"><code>testFurnace</code></a>
+che usa queste assunzioni:</p>
 <ol>
 <li>Crea una sfera centrata nell’origine;</li>
 <li>Lancia un raggio che parta dal centro della sfera;</li>
-<li>Invoca <code>PathTracer</code> fissando <code>max_depth=100</code> e assicurandosi che <em>non</em> venga usato l’algoritmo della roulette russa;</li>
-<li>Verifica che la radianza restituita corrisponda a <span class="math inline">L_e / (1 - \rho_d)</span>.</li>
+<li>Invoca <code>PathTracer</code> fissando <code>max_depth=100</code> e
+assicurandosi che <em>non</em> venga usato l’algoritmo della roulette
+russa;</li>
+<li>Verifica che la radianza restituita corrisponda a <span
+class="math inline">L_e / (1 - \rho_d)</span>.</li>
 </ol></li>
-<li><p>Il test viene ripetuto un certo numero di volte usando valori casuali di <span class="math inline">L_e</span> e di <span class="math inline">\rho_d</span> (evitando di scegliere <span class="math inline">\rho_d \approx 1</span>!).</p></li>
+<li><p>Il test viene ripetuto un certo numero di volte usando valori
+casuali di <span class="math inline">L_e</span> e di <span
+class="math inline">\rho_d</span> (evitando di scegliere <span
+class="math inline">\rho_d \approx 1</span>!).</p></li>
 </ul>
 </section>
 <section class="slide level1">
 
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pcg <span class="op">=</span> PCG()</span>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pcg <span class="op">=</span> PCG()</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the furnace test several times using random values for</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># the emitted radiance and reflectance</span></span>
@@ -375,10 +448,21 @@ L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\B
 <section id="il-metodo-main" class="slide level1">
 <h1>Il metodo <code>main</code></h1>
 <ul>
-<li><p>Ora che abbiamo un <em>path tracer</em>, è bene modificare il nostro comando <code>demo</code> in modo che crei un’immagine che metta meglio in luce il funzionamento dell’algoritmo.</p></li>
-<li><p>Potete sbizzarrirvi a definire la scena che preferite, usando le forme che avete implementato nel vostro codice (sfere, piani, triangoli, CSG, etc.).</p></li>
-<li><p>La cosa importante è che definiate una grande superficie diffusiva (un piano o una sfera di raggio grande), che funga da sorgente luminosa e che abbia quindi una componente <span class="math inline">L_e</span> non trascurabile.</p></li>
-<li><p>In <a href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/main.py#L116-L150">pytracer</a> ho definito un piano per il suolo, una sfera per il cielo, e due sfere in primo piano: la prima ha una BRDF diffusiva, la seconda una BRDF riflessiva.</p></li>
+<li><p>Ora che abbiamo un <em>path tracer</em>, è bene modificare il
+nostro comando <code>demo</code> in modo che crei un’immagine che metta
+meglio in luce il funzionamento dell’algoritmo.</p></li>
+<li><p>Potete sbizzarrirvi a definire la scena che preferite, usando le
+forme che avete implementato nel vostro codice (sfere, piani, triangoli,
+CSG, etc.).</p></li>
+<li><p>La cosa importante è che definiate una grande superficie
+diffusiva (un piano o una sfera di raggio grande), che funga da sorgente
+luminosa e che abbia quindi una componente <span
+class="math inline">L_e</span> non trascurabile.</p></li>
+<li><p>In <a
+href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/main.py#L116-L150">pytracer</a>
+ho definito un piano per il suolo, una sfera per il cielo, e due sfere
+in primo piano: la prima ha una BRDF diffusiva, la seconda una BRDF
+riflessiva.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -390,14 +474,24 @@ L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\B
 <section id="numeri-casuali" class="slide level1">
 <h1>Numeri casuali</h1>
 <ul>
-<li><p>Fate in modo che si possano passare i due numeri che inizializzano il generatore <code>PCG</code> da linea di comando.</p></li>
-<li><p>Il numero che interessa di più è <code>init_seq</code>, perché identifica univocamente la sequenza di numeri generati dal <code>PCG</code>, e consente quindi di produrre immagini completamente decorrelate (che possono quindi essere mediate tra loro senza produrre <em>bias</em>).</p></li>
-<li><p>Mediare immagini diverse (prodotte contemporaneamente mediante <a href="https://www.gnu.org/software/parallel/">GNU Parallel</a>) è un buon modo per ridurre la varianza senza aumentare il tempo di calcolo effettivo (<em>wall-clock time</em>).</p></li>
+<li><p>Fate in modo che si possano passare i due numeri che
+inizializzano il generatore <code>PCG</code> da linea di
+comando.</p></li>
+<li><p>Il numero che interessa di più è <code>init_seq</code>, perché
+identifica univocamente la sequenza di numeri generati dal
+<code>PCG</code>, e consente quindi di produrre immagini completamente
+decorrelate (che possono quindi essere mediate tra loro senza produrre
+<em>bias</em>).</p></li>
+<li><p>Mediare immagini diverse (prodotte contemporaneamente mediante <a
+href="https://www.gnu.org/software/parallel/">GNU Parallel</a>) è un
+buon modo per ridurre la varianza senza aumentare il tempo di calcolo
+effettivo (<em>wall-clock time</em>).</p></li>
 </ul>
 </section>
 <section id="link-a-gather" class="slide level1">
 <h1>Link a Gather</h1>
-<p>Useremo il solito link: <a href="https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing">gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing</a></p>
+<p>Useremo il solito link: <a
+href="https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing">gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing</a></p>
 </section>
 <section id="guida-per-lesercitazione" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
@@ -406,18 +500,31 @@ L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\B
 <h1>Cose da fare</h1>
 <ol>
 <li>Continuate il lavoro nel branch <code>pathtracing</code>;</li>
-<li>Implementate una funzione per creare una base ortonormale partendo da un vettore normale (se nel vostro linguaggio non è semplice restituire tre valori di ritorno, implementate un nuovo tipo <code>ONB</code>);</li>
-<li>Implementate il metodo <code>scatter_ray</code> che funzioni sui tipi BRDF, e implementate la BRDF speculare;</li>
+<li>Implementate una funzione per creare una base ortonormale partendo
+da un vettore normale (se nel vostro linguaggio non è semplice
+restituire tre valori di ritorno, implementate un nuovo tipo
+<code>ONB</code>);</li>
+<li>Implementate il metodo <code>scatter_ray</code> che funzioni sui
+tipi BRDF, e implementate la BRDF speculare;</li>
 <li>Implementate l’algoritmo di path tracing;</li>
-<li>Modificate il demo in modo che abbia un cielo diffusivo in grado di illuminare la scena.</li>
-<li>Fatto il <em>merging</em>, incrementate il numero di versione a <code>0.3.0</code> e aggiornate il file <code>CHANGELOG.md</code>.</li>
+<li>Modificate il demo in modo che abbia un cielo diffusivo in grado di
+illuminare la scena.</li>
+<li>Fatto il <em>merging</em>, incrementate il numero di versione a
+<code>0.3.0</code> e aggiornate il file <code>CHANGELOG.md</code>.</li>
 </ol>
 </section>
 <section id="aggiunte-opzionali" class="slide level1">
 <h1>Aggiunte opzionali</h1>
 <ul>
-<li><a href="tomasi-ray-tracing-12a-path-tracing2.html#aliasing">Antialiasing</a> (vedi la <a href="https://github.com/ziotom78/pytracer/pull/13">PR#13 di pytracer</a>);</li>
-<li><a href="tomasi-ray-tracing-12a-path-tracing2.html#point-light-tracing-1">Point-light tracing</a> (vedi la <a href="https://github.com/ziotom78/pytracer/pull/14">PR#14 di pytracer</a>).</li>
+<li><a
+href="tomasi-ray-tracing-12a-path-tracing2.html#aliasing">Antialiasing</a>
+(vedi la <a href="https://github.com/ziotom78/pytracer/pull/13">PR#13 di
+pytracer</a>);</li>
+<li><a
+href="tomasi-ray-tracing-12a-path-tracing2.html#point-light-tracing-1">Point-light
+tracing</a> (vedi la <a
+href="https://github.com/ziotom78/pytracer/pull/14">PR#14 di
+pytracer</a>).</li>
 </ul>
 </section>
     </div>
@@ -460,7 +567,7 @@ L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\B
 
         // Add the current slide number to the URL hash so that reloading the
         // page/copying the URL will return you to the same slide
-        hash: false,
+        hash: true,
 
         // Start with 1 for the hash rather than 0
         hashOneBasedIndex: false,
