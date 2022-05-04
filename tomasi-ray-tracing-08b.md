@@ -433,7 +433,7 @@ In tutti questi casi verificate anche le coordinate $(u, v)$ e il valore di $t$.
 # Test per `Sphere` (2/2)
 
 -   Applicate una traslazione $\vec t = (10, 0, 0)$ alla sfera e intersecatela con il raggio con $O = (10, 0, 2)$ e $\vec d = -\hat e_z$.
--   Intersecate la stessa sfera traslata con il raggio con $O = (13, 0, 2)$ e $\vec d = -\hat e_x$. L'intersezione dovrebbe essere $P = (11, 0, 0)$ con normale $\hat n = \hat e_x$.
+-   Intersecate la stessa sfera traslata con il raggio con $O = (13, 0, 0)$ e $\vec d = -\hat e_x$. L'intersezione dovrebbe essere $P = (11, 0, 0)$ con normale $\hat n = \hat e_x$.
 -   Verificate che non vi siano potenziali intersezioni con la sfera **non** traslata, usando questi raggi:
     #.  Raggio con $O = (0, 0, 2)$ e $\vec d = -\hat e_z$;
     #.  Raggio con $O = (-10, 0, 0)$ e $\vec d = -\hat e_z$;
