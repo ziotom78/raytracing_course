@@ -200,7 +200,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <h1>BRDF e <code>Pigment</code></h1>
 <ul>
 <li><p>Il tipo <code>BRDF</code> dovrebbe contenere un tipo
-<code>Pigment</code> (o un puntatore: in C++ è bene usare
+<code>Pigment</code> (o un puntatore: in C++ ad esempio si userebbe
 <code>std::shared_ptr&lt;Pigment&gt;</code>).</p></li>
 <li><p>Usate le componenti R/G/B restituite dal pigmento per un dato
 punto <span class="math inline">(u, v)</span> della superficie per
@@ -579,9 +579,9 @@ medesimo generatore col medesimo seed.</p></li>
 <li><p>L’implementazione Python dell’algoritmo richiede delle operazioni
 che permettano di controllare il modo in cui Python esegue operazioni su
 interi.</p></li>
-<li><p>A differenza dei linguaggi che usate voi (C++, Julia, etc.), in
-Python esiste solo un tipo <code>int</code>, le cui dimensioni si
-adattano a seconda del numero che va memorizzato.</p></li>
+<li><p>A differenza dei linguaggi usati da voi, in Python esiste solo un
+tipo <code>int</code>, le cui dimensioni si adattano a seconda del
+numero che va memorizzato.</p></li>
 <li><p>In Python non è possibile avere un overflow, perché l’interprete
 Python alloca sempre più spazio per non perdere cifre.</p></li>
 <li><p>I linguaggi che usate ottimizzano invece le prestazioni, e
@@ -729,105 +729,6 @@ demo).</li>
 <li>Implementate gli stessi test di <a
 href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/test_all.py#L729-L841">pytracer</a>.</li>
 </ol>
-</section>
-<section id="indicazioni-per-c" class="slide level1">
-<h1>Indicazioni per C++</h1>
-</section>
-<section id="indicazioni-per-c-1" class="slide level1">
-<h1>Indicazioni per C++</h1>
-<ul>
-<li>È necessario includere spesso un oggetto in un altro (un
-<code>Pigment</code> dentro un <code>BRDF</code>, un
-<code>Pigment</code> dentro un <code>Material</code>, etc.).</li>
-<li>Il modo più efficiente di farlo è tramite
-<code>std::shared_ptr&lt;T&gt;</code>: abituatevi ad usarlo!</li>
-<li>In questo modo è possibile creare un oggetto <code>Material</code>
-che viene usato da più forme (<code>Shape</code>) senza doverlo
-duplicare in memoria, e una <code>Shape</code> non deve essere copiata
-ogni volta in un <code>HitRecord</code> .</li>
-</ul>
-</section>
-<section id="generatore-pcg" class="slide level1">
-<h1>Generatore PCG</h1>
-<ul>
-<li><p>Per usare i tipi interi con numero di bit fissato, dovete
-#includere <code>&lt;cstdint&gt;</code>.</p></li>
-<li><p>I tipi che vi interessano sono <code>uint32_t</code> e
-<code>uint64_t</code>.</p></li>
-<li><p>Siccome lo stato del generatore va modificato ogni volta che si
-genera un numero casuale, quando una funzione lo richiede come parametro
-bisogna specificare il tipo come <code>PCG &amp;</code> e non
-<code>const PCG &amp;</code>.</p></li>
-</ul>
-</section>
-<section id="indicazioni-per-c-2" class="slide level1">
-<h1>Indicazioni per C#</h1>
-</section>
-<section id="indicazioni-per-c-3" class="slide level1">
-<h1>Indicazioni per C#</h1>
-<ul>
-<li><p>I tipi interi a 32 e a 64 bit si indicano con <code>uint</code> e
-<code>ulong</code>.</p></li>
-<li><p>Per obbligare un numero ad essere rappresentato come
-<code>uint</code> aggiungete una <code>U</code> (es. <code>10U</code>);
-per renderlo un <code>ulong</code> aggiungete <code>UL</code>
-(es. <code>10UL</code>).</p></li>
-</ul>
-</section>
-<section id="indicazioni-per-julia" class="slide level1">
-<h1>Indicazioni per Julia</h1>
-</section>
-<section id="indicazioni-per-julia-1" class="slide level1">
-<h1>Indicazioni per Julia</h1>
-<ul>
-<li><p>I tipi interi a 32 e a 64 bit si indicano con <code>UInt32</code>
-e <code>UInt64</code>.</p></li>
-<li><p>Per forzare un numero ad essere rappresentato come
-<em>unsigned</em>, scrivetelo in notazione esadecimale (es.,
-<code>0xa</code> anziché <code>10</code>) oppure usate il costruttore
-del tipo: <code>UInt64(10)</code>.</p></li>
-<li><p>L’operatore <em>xor</em> logico in Julia si indica con
-<code>⊻</code> (<code>\xor</code>).</p></li>
-</ul>
-</section>
-<section id="indicazioni-per-kotlin" class="slide level1">
-<h1>Indicazioni per Kotlin</h1>
-</section>
-<section id="numeri-unsigned" class="slide level1">
-<h1>Numeri unsigned</h1>
-<ul>
-<li><p>Kotlin supporta tipi <code>unsigned</code> dalla versione 1.3, ma
-sono classificati come «sperimentali» fino alla versione 1.5, rilasciata
-pochi giorni fa. (<a
-href="https://www.infoworld.com/article/3615548/kotlin-150-stabilizes-unsigned-integer-types.html">Qui
-l’annuncio</a>).</p></li>
-<li><p>Per poter usare i tipi <code>unsigned</code> in una
-classe/funzione, potete fare l’upgrade alla versione 1.5 modificando
-<code>build.gradle.kts</code>. Altrimenti dovete indicare le classi e le
-funzioni che usano questi tipi (anche indirettamente) scrivendo
-<code>@ExperimentalUnsignedTypes</code>. Ad esempio:</p>
-<div class="sourceCode" id="cb14"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Any class referring to PCG will need &quot;@ExperimentalUnsignedTypes&quot;</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="at">@ExperimentalUnsignedTypes</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PCG<span class="op">(</span><span class="va">initState</span><span class="op">:</span> <span class="dt">ULong</span> <span class="op">=</span> <span class="er">42</span>UL<span class="op">,</span> <span class="va">initSeq</span><span class="op">:</span> <span class="dt">ULong</span> <span class="op">=</span> <span class="er">54</span>UL<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">state</span><span class="op">:</span> ULong</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">inc</span><span class="op">:</span> ULong</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    init <span class="op">{</span> <span class="co">/* … */</span> <span class="op">}</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-</ul>
-</section>
-<section id="operazioni-su-bit" class="slide level1">
-<h1>Operazioni su bit</h1>
-<ul>
-<li><p>In Kotlin le operazioni binarie usano nomi mnemonici anziché
-simboli.</p></li>
-<li><p>Lo shift di bit a destra (<code>&gt;&gt;</code> in Python) e a
-sinistra (<code>&lt;&lt;</code>) si indica con <code>shr</code>
-(<em>SHift Right</em>) e <code>shl</code> (<em>SHift
-Left</em>).</p></li>
-<li><p>L’operazione di <em>xor</em> tra bit si indica banalmente con
-<code>xor</code>.</p></li>
-</ul>
 </section>
     </div>
   </div>

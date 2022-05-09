@@ -60,7 +60,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 ---
 
-<iframe width="840" height="472" src="https://www.youtube.com/embed/eo_MTI-d28s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="1050" height="590" src="https://www.youtube.com/embed/eo_MTI-d28s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 [An explanation of the rendering equation (Eric Arnebäck)](https://www.youtube.com/watch?v=eo_MTI-d28s)
 
@@ -105,7 +105,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     E_p[f] = \int_\mathbb{R}\,f(x)\,p(x)\,\mathrm{d}x.
     $$
     
--   Si definisce *varianza* di $f(X)$ il valore
+-   Si definisce *varianza* di $f(X)$ rispetto a $p$ il valore
 
     $$
     V_p[f] = E_p\left[\bigl(f(x) - E_p[f]\bigr)^2\right] = \int_\mathbb{R}\,\bigl(f(x) - E_p[f]\bigr)^2\,p(x)\,\mathrm{d}x.
@@ -122,7 +122,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     E_p[a f(x)] = a E_p[f(x)], \quad E[f(x) + g(x)] = E[f(x)] + E[g(x)].
     $$
     
--   Per la varianza vale invece che
+-   Per la varianza (che **non è lineare!**) vale invece che
 
     $$
     V_p[a f(x)] = a^2 V_p[f(x)].
@@ -136,19 +136,31 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Integrazione Monte Carlo
 
+# Integrazione Monte Carlo
+
+-   Nell'algoritmo di *path tracing* si calcolano gli integrali con metodi Monte Carlo
+
+-   Ciò richiede la generazione di numeri pseudo-casuali
+
+-   Siccome si tratta di integrali molto complessi (infiniti!), è spesso necessario implementare ottimizzazioni: una di queste ottimizzazioni (*importance sampling*) richiede di estrarre numeri pseudo-casuali con distribuzioni di probabilità arbitrarie
+
+-   Vediamo un esempio semplice di integrale Monte Carlo e di *importance sampling*
+
+# Esempio
+
 -   Supponiamo di voler calcolare numericamente il valore dell'integrale
 
     $$
     I = \int_a^b f(x)\,\mathrm{d}x
     $$
     
--   Il metodo della media fornisce una semplice approssimazione:
+-   Il metodo della media fornisce una semplice approssimazione $F_N$ per $I$:
     
     $$
     I = \int_a^b f(x)\,\mathrm{d}x \approx F_N \equiv \frac{b - a}N \sum_{i=1}^N f(X_i),
     $$
     
-    dove $x_i$ sono $N$ numeri casuali con PDF $p(x) = 1 / (b - a)$.
+    dove $x_i$ sono $N$ numeri casuali con PDF costante $p(x) = 1 / (b - a)$.
 
 
 ---
@@ -172,7 +184,7 @@ $$
     
     a patto che $p(x) > 0$ quando $f(x) \not= 0$. (Notate che qui non figura $b - a$).
     
--   Se si sceglie accuratamente $p(x)$, è possibile aumentare l'accuratezza della stima. Nel caso in cui $f(x) \propto p(x)$ infatti, il termine nella sommatoria è costante e uguale all'integrale: basta $N = 1$ per stimarlo!
+-   Se si sceglie bene $p(x)$, è possibile aumentare l'accuratezza della stima. Nel caso in cui $f(x) = k \cdot p(x)$ infatti, il termine nella sommatoria è costante (k) e uguale all'integrale, quindi basta $N = 1$ per stimarlo!
 
 # Esempio
 
@@ -184,9 +196,9 @@ $$
     
 -   Per usare l'*importance sampling* dobbiamo decidere quale $p(x)$ usare:
 
+    #.  $p(x) \propto \sqrt{x}\,\sin x$? (No, questa è proprio l'integranda!)
     #.  $p(x) \propto \sqrt{x}$?
     #.  $p(x) \propto \sin x$?
-    #.  $p(x) \propto \sqrt{x}\,\sin x$? (No, questa è proprio l'integranda!)
 
 -   Per decidere è sempre bene fare il grafico dell'integranda $f(x)$.
 
@@ -210,7 +222,7 @@ $$
 
 # Esempio
 
--   Se $p(x) \propto \sin x$ nel dominio di integrazione, vuol dire che
+-   Normalizzando $p(x) \propto \sin x$ sul dominio di integrazione si ottiene che
 
     $$
     p(x) = \frac12 \sin x\,\chi_{[0, \pi]}(x).
@@ -237,29 +249,19 @@ $$
 ---
 
 ```python
-import numpy as np
-import matplotlib.pylab as plt
+import numpy as np, matplotlib.pylab as plt
 
-def f(x):
-    return np.sqrt(x) * np.sin(x)
-
-# Plain mean method
-def estimate(f, n):
-    # Random numbers in the range [0, π]
-    x = np.random.rand(n) * np.pi
+def estimate(f, n):  # Plain mean method
+    x = np.random.rand(n) * np.pi  # Random numbers in the range [0, π]
     return np.mean(np.pi * f(x))
 
-# Mean method with importance sampling
-def estimate_importance(f, n):
-    # Random numbers in the range [0, 1], uniformly distributed
-    x = np.random.rand(n)
-    
-    # These are distributed as p(x) = 1/2 sin(x)
-    xp = np.arccos(1 - 2 * x)
-    
+def estimate_importance(f, n):  # Mean method with importance sampling
+    x = np.random.rand(n)       # Uniform random numbers in the range [0, 1]
+    xp = np.arccos(1 - 2 * x)   # These are distributed as p(x) = 1/2 sin(x)
     return np.mean(f(xp) / (0.5 * np.sin(xp)))
     
 # Estimate many times the same integral using the two methods
+f = lambda x: np.sqrt(x) * np.sin(x)
 est1 = [estimate(f, 1000) for i in range(100)]
 est2 = [estimate_importance(f, 1000) for i in range(len(est1))]
 
@@ -302,27 +304,9 @@ plt.legend()
 ---
 
 ```python
-import numpy as np
-import matplotlib.pylab as plt
+# The first part of the script is the same as in the previous example
+# …
 
-def f(x):
-    return np.sqrt(x) * np.sin(x)
-
-# Plain mean method
-def estimate(f, n):
-    # Random numbers in the range [0, π]
-    x = np.random.rand(n) * np.pi
-    return np.mean(np.pi * f(x))
-
-def estimate_importance(f, n):
-    # Random numbers in the range [0, 1], uniformly distributed
-    x = np.random.rand(n)
-    
-    # These are distributed as p(x) = 1/2 sin(x)
-    xp = np.arccos(1 - 2 * x)
-    
-    return np.mean(f(xp) / (0.5 * np.sin(xp)))
-    
 def estimate_importance2(f, n):
     x = np.random.rand(n)
     
@@ -347,6 +331,8 @@ plt.ylabel("Estimated value for the integral")
 ---
 
 <center>![](media/importance-sampling-demo2.svg)</center>
+
+# Monte Carlo e ray-tracing
 
 # Applicazione al ray-tracing
 

@@ -24,6 +24,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 8a      | 2022/04/20 | [Proiezioni](tomasi-ray-tracing-08a.html)                                          |
 | 8b      | 2022/04/27 | [Issues e forme](tomasi-ray-tracing-08b.html)                                      |
 | 9a      | 2022/05/02 | [Ottimizzazione di forme](tomasi-ray-tracing-09a.html)                             |
+| 10a     | 2022/05/09 | [Path tracing (1/2)](tomasi-ray-tracing-10a.html)                                  |
 
 # Scelta del linguaggio
 

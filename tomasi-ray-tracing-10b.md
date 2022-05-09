@@ -53,7 +53,7 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
 
 # BRDF e `Pigment`
 
--   Il tipo `BRDF` dovrebbe contenere un tipo `Pigment` (o un puntatore: in C++ è bene usare `std::shared_ptr<Pigment>`).
+-   Il tipo `BRDF` dovrebbe contenere un tipo `Pigment` (o un puntatore: in C++ ad esempio si userebbe `std::shared_ptr<Pigment>`).
 
 -   Usate le componenti R/G/B restituite dal pigmento per un dato punto $(u, v)$ della superficie per «pesare» il contributo di $f_r$ alle varie frequenze (se una delle componenti RGB è nulla, tutti i fotoni in quella banda vengono assorbiti).
 
@@ -292,7 +292,7 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
 
 -   L'implementazione Python dell'algoritmo richiede delle operazioni che permettano di controllare il modo in cui Python esegue operazioni su interi.
 
--   A differenza dei linguaggi che usate voi (C++, Julia, etc.), in Python esiste solo un tipo `int`, le cui dimensioni si adattano a seconda del numero che va memorizzato.
+-   A differenza dei linguaggi usati da voi, in Python esiste solo un tipo `int`, le cui dimensioni si adattano a seconda del numero che va memorizzato.
 
 -   In Python non è possibile avere un overflow, perché l'interprete Python alloca sempre più spazio per non perdere cifre.
 
@@ -422,64 +422,3 @@ def test_random():
 #.  Se vi va, implementate un flat-renderer (ma modificate anche il demo).
 #.  Implementate il generatore PCG.
 #.  Implementate gli stessi test di [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/test_all.py#L729-L841).
-
-
-# Indicazioni per C++
-
-# Indicazioni per C++
-
--   È necessario includere spesso un oggetto in un altro (un `Pigment` dentro un `BRDF`, un `Pigment` dentro un `Material`, etc.).
--   Il modo più efficiente di farlo è tramite `std::shared_ptr<T>`: abituatevi ad usarlo!
--   In questo modo è possibile creare un oggetto `Material` che viene usato da più forme (`Shape`) senza doverlo duplicare in memoria, e una `Shape` non deve essere copiata ogni volta in un `HitRecord` .
-
-# Generatore PCG
-
--   Per usare i tipi interi con numero di bit fissato, dovete \#includere `<cstdint>`.
-
--   I tipi che vi interessano sono `uint32_t` e `uint64_t`.
-
--   Siccome lo stato del generatore va modificato ogni volta che si genera un numero casuale, quando una funzione lo richiede come parametro bisogna specificare il tipo come `PCG &` e non `const PCG &`.
-
-# Indicazioni per C\#
-
-# Indicazioni per C\#
-
--   I tipi interi a 32 e a 64 bit si indicano con `uint` e `ulong`.
-
--   Per obbligare un numero ad essere rappresentato come `uint` aggiungete una `U` (es. `10U`); per renderlo un `ulong` aggiungete `UL` (es. `10UL`).
-
-# Indicazioni per Julia
-
-# Indicazioni per Julia
-
--   I tipi interi a 32 e a 64 bit si indicano con `UInt32` e `UInt64`.
-
--   Per forzare un numero ad essere rappresentato come *unsigned*, scrivetelo in notazione esadecimale (es., `0xa` anziché `10`) oppure usate il costruttore del tipo: `UInt64(10)`.
-
--   L'operatore *xor* logico in Julia si indica con `⊻` (`\xor`).
-
-# Indicazioni per Kotlin
-
-# Numeri unsigned
-
--   Kotlin supporta tipi `unsigned` dalla versione 1.3, ma sono classificati come «sperimentali» fino alla versione 1.5, rilasciata pochi giorni fa. ([Qui l'annuncio](https://www.infoworld.com/article/3615548/kotlin-150-stabilizes-unsigned-integer-types.html)).
-
--   Per poter usare i tipi `unsigned` in una classe/funzione, potete fare l'upgrade alla versione 1.5 modificando `build.gradle.kts`. Altrimenti dovete indicare le classi e le funzioni che usano questi tipi (anche indirettamente) scrivendo `@ExperimentalUnsignedTypes`. Ad esempio:
-
-    ```kotlin
-    // Any class referring to PCG will need "@ExperimentalUnsignedTypes"
-    @ExperimentalUnsignedTypes
-    class PCG(initState: ULong = 42UL, initSeq: ULong = 54UL) {
-        var state: ULong
-        var inc: ULong
-        init { /* … */ }
-    }
-    ```
-
-# Operazioni su bit
-
--   In Kotlin le operazioni binarie usano nomi mnemonici anziché simboli.
-
--   Lo shift di bit a destra (`>>` in Python) e a sinistra (`<<`) si indica con `shr` (*SHift Right*) e `shl` (*SHift Left*).
-
--   L'operazione di *xor* tra bit si indica banalmente con `xor`.

@@ -195,7 +195,7 @@ calcolo.</p></li>
 </section>
 <section class="slide level1">
 
-<iframe width="840" height="472" src="https://www.youtube.com/embed/eo_MTI-d28s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<iframe width="1050" height="590" src="https://www.youtube.com/embed/eo_MTI-d28s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 </iframe>
 <p><a href="https://www.youtube.com/watch?v=eo_MTI-d28s">An explanation
 of the rendering equation (Eric Arnebäck)</a></p>
@@ -253,7 +253,8 @@ class="math inline">p(x)</span> il valore</p>
 E_p[f] = \int_\mathbb{R}\,f(x)\,p(x)\,\mathrm{d}x.
 </span></p></li>
 <li><p>Si definisce <em>varianza</em> di <span
-class="math inline">f(X)</span> il valore</p>
+class="math inline">f(X)</span> rispetto a <span
+class="math inline">p</span> il valore</p>
 <p><span class="math display">
 V_p[f] = E_p\left[\bigl(f(x) - E_p[f]\bigr)^2\right] =
 \int_\mathbb{R}\,\bigl(f(x) - E_p[f]\bigr)^2\,p(x)\,\mathrm{d}x.
@@ -269,7 +270,8 @@ class="math inline">\sqrt{V_p[f]}</span>.</p></li>
 <p><span class="math display">
 E_p[a f(x)] = a E_p[f(x)], \quad E[f(x) + g(x)] = E[f(x)] + E[g(x)].
 </span></p></li>
-<li><p>Per la varianza vale invece che</p>
+<li><p>Per la varianza (che <strong>non è lineare!</strong>) vale invece
+che</p>
 <p><span class="math display">
 V_p[a f(x)] = a^2 V_p[f(x)].
 </span></p></li>
@@ -281,19 +283,39 @@ V_p[f] = E_p\bigl[f^2(x)\bigr] - E_p\bigl[f(x)\bigr]^2.
 </section>
 <section id="integrazione-monte-carlo" class="slide level1">
 <h1>Integrazione Monte Carlo</h1>
+</section>
+<section id="integrazione-monte-carlo-1" class="slide level1">
+<h1>Integrazione Monte Carlo</h1>
+<ul>
+<li><p>Nell’algoritmo di <em>path tracing</em> si calcolano gli
+integrali con metodi Monte Carlo</p></li>
+<li><p>Ciò richiede la generazione di numeri pseudo-casuali</p></li>
+<li><p>Siccome si tratta di integrali molto complessi (infiniti!), è
+spesso necessario implementare ottimizzazioni: una di queste
+ottimizzazioni (<em>importance sampling</em>) richiede di estrarre
+numeri pseudo-casuali con distribuzioni di probabilità
+arbitrarie</p></li>
+<li><p>Vediamo un esempio semplice di integrale Monte Carlo e di
+<em>importance sampling</em></p></li>
+</ul>
+</section>
+<section id="esempio" class="slide level1">
+<h1>Esempio</h1>
 <ul>
 <li><p>Supponiamo di voler calcolare numericamente il valore
 dell’integrale</p>
 <p><span class="math display">
 I = \int_a^b f(x)\,\mathrm{d}x
 </span></p></li>
-<li><p>Il metodo della media fornisce una semplice approssimazione:</p>
+<li><p>Il metodo della media fornisce una semplice approssimazione <span
+class="math inline">F_N</span> per <span
+class="math inline">I</span>:</p>
 <p><span class="math display">
 I = \int_a^b f(x)\,\mathrm{d}x \approx F_N \equiv \frac{b - a}N
 \sum_{i=1}^N f(X_i),
 </span></p>
 <p>dove <span class="math inline">x_i</span> sono <span
-class="math inline">N</span> numeri casuali con PDF <span
+class="math inline">N</span> numeri casuali con PDF costante <span
 class="math inline">p(x) = 1 / (b - a)</span>.</p></li>
 </ul>
 </section>
@@ -322,15 +344,14 @@ F_N = \frac1N \sum_{i = 1}^N \frac{f(X_i)}{p(X_i)},
 <p>a patto che <span class="math inline">p(x) &gt; 0</span> quando <span
 class="math inline">f(x) \not= 0</span>. (Notate che qui non figura
 <span class="math inline">b - a</span>).</p></li>
-<li><p>Se si sceglie accuratamente <span
-class="math inline">p(x)</span>, è possibile aumentare l’accuratezza
-della stima. Nel caso in cui <span class="math inline">f(x) \propto
-p(x)</span> infatti, il termine nella sommatoria è costante e uguale
-all’integrale: basta <span class="math inline">N = 1</span> per
-stimarlo!</p></li>
+<li><p>Se si sceglie bene <span class="math inline">p(x)</span>, è
+possibile aumentare l’accuratezza della stima. Nel caso in cui <span
+class="math inline">f(x) = k \cdot p(x)</span> infatti, il termine nella
+sommatoria è costante (k) e uguale all’integrale, quindi basta <span
+class="math inline">N = 1</span> per stimarlo!</p></li>
 </ul>
 </section>
-<section id="esempio" class="slide level1">
+<section id="esempio-1" class="slide level1">
 <h1>Esempio</h1>
 <ul>
 <li><p>Vediamo un esempio pratico nel calcolo dell’integrale di <span
@@ -342,10 +363,10 @@ class="math inline">f(x) = \sqrt{x}\,\sin x</span>:</p>
 <li><p>Per usare l’<em>importance sampling</em> dobbiamo decidere quale
 <span class="math inline">p(x)</span> usare:</p>
 <ol>
-<li><span class="math inline">p(x) \propto \sqrt{x}</span>?</li>
-<li><span class="math inline">p(x) \propto \sin x</span>?</li>
 <li><span class="math inline">p(x) \propto \sqrt{x}\,\sin x</span>? (No,
 questa è proprio l’integranda!)</li>
+<li><span class="math inline">p(x) \propto \sqrt{x}</span>?</li>
+<li><span class="math inline">p(x) \propto \sin x</span>?</li>
 </ol></li>
 <li><p>Per decidere è sempre bene fare il grafico dell’integranda <span
 class="math inline">f(x)</span>.</p></li>
@@ -366,11 +387,11 @@ data-im_fname="importance-sampling-demo1" /></p>
 class="math inline">f(x)</span>.</p></li>
 </ul>
 </section>
-<section id="esempio-1" class="slide level1">
+<section id="esempio-2" class="slide level1">
 <h1>Esempio</h1>
 <ul>
-<li><p>Se <span class="math inline">p(x) \propto \sin x</span> nel
-dominio di integrazione, vuol dire che</p>
+<li><p>Normalizzando <span class="math inline">p(x) \propto \sin
+x</span> sul dominio di integrazione si ottiene che</p>
 <p><span class="math display">
 p(x) = \frac12 \sin x\,\chi_{[0, \pi]}(x).
 </span></p></li>
@@ -385,7 +406,7 @@ x).
 </span></p></li>
 </ul>
 </section>
-<section id="esempio-2" class="slide level1">
+<section id="esempio-3" class="slide level1">
 <h1>Esempio</h1>
 <ul>
 <li><p>Siccome <span class="math inline">P(x) = \frac12 (1 - \cos
@@ -407,42 +428,32 @@ il vantaggio.</p></li>
 <section class="slide level1">
 
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pylab <span class="im">as</span> plt</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x):</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.sqrt(x) <span class="op">*</span> np.sin(x)</span>
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, matplotlib.pylab <span class="im">as</span> plt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate(f, n):  <span class="co"># Plain mean method</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n) <span class="op">*</span> np.pi  <span class="co"># Random numbers in the range [0, π]</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(np.pi <span class="op">*</span> f(x))</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plain mean method</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate(f, n):</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Random numbers in the range [0, π]</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n) <span class="op">*</span> np.pi</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(np.pi <span class="op">*</span> f(x))</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean method with importance sampling</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_importance(f, n):</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Random numbers in the range [0, 1], uniformly distributed</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># These are distributed as p(x) = 1/2 sin(x)</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> np.arccos(<span class="dv">1</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> x)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(f(xp) <span class="op">/</span> (<span class="fl">0.5</span> <span class="op">*</span> np.sin(xp)))</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate many times the same integral using the two methods</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>est1 <span class="op">=</span> [estimate(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>)]</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>est2 <span class="op">=</span> [estimate_importance(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(est1))]</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>plt.plot(est1, label<span class="op">=</span><span class="st">&#39;$p(x) = k$ (plain method)&#39;</span>, color<span class="op">=</span><span class="st">&quot;gray&quot;</span>)</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>plt.plot(est2, label<span class="op">=</span><span class="st">&#39;$p(x) \propto \sin x$ (importance sampling)&#39;</span>,</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span><span class="st">&quot;black&quot;</span>, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="fl">2.435321164</span> <span class="op">*</span> np.ones(<span class="bu">len</span>(est1)), label<span class="op">=</span><span class="st">&quot;True value&quot;</span>,</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span><span class="st">&quot;red&quot;</span>, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;# of the estimate&quot;</span>)</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Estimated value for the integral&quot;</span>)</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code></pre></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_importance(f, n):  <span class="co"># Mean method with importance sampling</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n)       <span class="co"># Uniform random numbers in the range [0, 1]</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> np.arccos(<span class="dv">1</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> x)   <span class="co"># These are distributed as p(x) = 1/2 sin(x)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(f(xp) <span class="op">/</span> (<span class="fl">0.5</span> <span class="op">*</span> np.sin(xp)))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate many times the same integral using the two methods</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="kw">lambda</span> x: np.sqrt(x) <span class="op">*</span> np.sin(x)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>est1 <span class="op">=</span> [estimate(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>)]</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>est2 <span class="op">=</span> [estimate_importance(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(est1))]</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>plt.plot(est1, label<span class="op">=</span><span class="st">&#39;$p(x) = k$ (plain method)&#39;</span>, color<span class="op">=</span><span class="st">&quot;gray&quot;</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>plt.plot(est2, label<span class="op">=</span><span class="st">&#39;$p(x) \propto \sin x$ (importance sampling)&#39;</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span><span class="st">&quot;black&quot;</span>, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="fl">2.435321164</span> <span class="op">*</span> np.ones(<span class="bu">len</span>(est1)), label<span class="op">=</span><span class="st">&quot;True value&quot;</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span><span class="st">&quot;red&quot;</span>, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;# of the estimate&quot;</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Estimated value for the integral&quot;</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code></pre></div>
 </section>
 <section class="slide level1">
 
@@ -473,52 +484,37 @@ stime Monte Carlo si distribuiscono attorno al valore vero.</p></li>
 <section class="slide level1">
 
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pylab <span class="im">as</span> plt</span>
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The first part of the script is the same as in the previous example</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># …</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x):</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.sqrt(x) <span class="op">*</span> np.sin(x)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plain mean method</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate(f, n):</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Random numbers in the range [0, π]</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n) <span class="op">*</span> np.pi</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(np.pi <span class="op">*</span> f(x))</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_importance(f, n):</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Random numbers in the range [0, 1], uniformly distributed</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># These are distributed as p(x) = 1/2 sin(x)</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> np.arccos(<span class="dv">1</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> x)</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(f(xp) <span class="op">/</span> (<span class="fl">0.5</span> <span class="op">*</span> np.sin(xp)))</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_importance2(f, n):</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n)</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># These are distributed as p(x) = 3/(2π^3/2) * √x</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> np.pi <span class="op">*</span> x<span class="op">**</span>(<span class="dv">2</span><span class="op">/</span><span class="dv">3</span>)</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(f(xp) <span class="op">/</span> (<span class="dv">3</span> <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">**</span> <span class="fl">1.5</span>) <span class="op">*</span> np.sqrt(xp)))</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>est0 <span class="op">=</span> [estimate(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10_000</span>)]</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>est1 <span class="op">=</span> [estimate_importance1(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10_000</span>)]</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>est2 <span class="op">=</span> [estimate_importance2(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10_000</span>)]</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>plt.hist(est0, bins<span class="op">=</span><span class="dv">50</span>, label<span class="op">=</span><span class="st">&quot;$p(x) = k$&quot;</span>, orientation<span class="op">=</span><span class="st">&quot;horizontal&quot;</span>)</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>plt.hist(est2, bins<span class="op">=</span><span class="dv">50</span>, label<span class="op">=</span><span class="st">&quot;$p(x) \propto \sqrt</span><span class="sc">{x}</span><span class="st">$&quot;</span>, orientation<span class="op">=</span><span class="st">&quot;horizontal&quot;</span>)</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>plt.hist(est1, bins<span class="op">=</span><span class="dv">50</span>, label<span class="op">=</span><span class="st">&quot;$p(x) \propto \sin x$&quot;</span>, orientation<span class="op">=</span><span class="st">&quot;horizontal&quot;</span>)</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Number of estimates&quot;</span>)</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Estimated value for the integral&quot;</span>)</span></code></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_importance2(f, n):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># These are distributed as p(x) = 3/(2π^3/2) * √x</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> np.pi <span class="op">*</span> x<span class="op">**</span>(<span class="dv">2</span><span class="op">/</span><span class="dv">3</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(f(xp) <span class="op">/</span> (<span class="dv">3</span> <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">**</span> <span class="fl">1.5</span>) <span class="op">*</span> np.sqrt(xp)))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>est0 <span class="op">=</span> [estimate(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10_000</span>)]</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>est1 <span class="op">=</span> [estimate_importance1(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10_000</span>)]</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>est2 <span class="op">=</span> [estimate_importance2(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10_000</span>)]</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>plt.hist(est0, bins<span class="op">=</span><span class="dv">50</span>, label<span class="op">=</span><span class="st">&quot;$p(x) = k$&quot;</span>, orientation<span class="op">=</span><span class="st">&quot;horizontal&quot;</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>plt.hist(est2, bins<span class="op">=</span><span class="dv">50</span>, label<span class="op">=</span><span class="st">&quot;$p(x) \propto \sqrt</span><span class="sc">{x}</span><span class="st">$&quot;</span>, orientation<span class="op">=</span><span class="st">&quot;horizontal&quot;</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>plt.hist(est1, bins<span class="op">=</span><span class="dv">50</span>, label<span class="op">=</span><span class="st">&quot;$p(x) \propto \sin x$&quot;</span>, orientation<span class="op">=</span><span class="st">&quot;horizontal&quot;</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Number of estimates&quot;</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Estimated value for the integral&quot;</span>)</span></code></pre></div>
 </section>
 <section class="slide level1">
 
 <center>
 <img data-src="media/importance-sampling-demo2.svg" />
 </center>
+</section>
+<section id="monte-carlo-e-ray-tracing" class="slide level1">
+<h1>Monte Carlo e ray-tracing</h1>
 </section>
 <section id="applicazione-al-ray-tracing" class="slide level1">
 <h1>Applicazione al ray-tracing</h1>
@@ -840,7 +836,7 @@ height="560" /></p>
 <h1>Schema del «Cornell box»</h1>
 <p><img data-src="./media/cornell-box-schema.svg" height="560" /></p>
 </section>
-<section id="esempio-3" class="slide level1">
+<section id="esempio-4" class="slide level1">
 <h1>Esempio</h1>
 <ul>
 <li><p>Facciamo un semplice esempio in cui <span
@@ -862,7 +858,7 @@ raggio colpisca lo stesso cubo ma <strong>non</strong> sia partito dalla
 lampada.</p></li>
 </ul>
 </section>
-<section id="esempio-4" class="slide level1">
+<section id="esempio-5" class="slide level1">
 <h1>Esempio</h1>
 <ul>
 <li><p>La densità marginale <span class="math inline">p(x) = \int p(x,
@@ -1144,7 +1140,7 @@ riflettente</a>.</li>
 generatore di numeri casuali.</p></li>
 </ul>
 </section>
-<section id="esempio-5" class="slide level1">
+<section id="esempio-6" class="slide level1">
 <h1>Esempio</h1>
 <center>
 <img data-src="media/brdf-examples.webp" />

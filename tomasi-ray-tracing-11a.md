@@ -276,7 +276,7 @@ $$
     p(\omega) \propto \frac{\rho_d}\pi\,\cos\theta \propto \cos\theta.
     $$
     
-    Questo risultato è riconducibile alla [distribuzione di Phong](tomasi-ray-tracing-11a-path-tracing.html#/distribuzione-di-phong) ($\propto \cos^n\theta$).
+    Questo risultato è riconducibile alla [distribuzione di Phong](tomasi-ray-tracing-10a.html#/distribuzione-di-phong) ($\propto \cos^n\theta$).
     
 ---
 
@@ -669,4 +669,4 @@ Il problema dell'*aliasing* è che certi pixel coprono aree dello schermo che co
 
 -   Non è sufficiente però dividere per $r^2$ il contributo di una sorgente luminosa, perché non corrisponderebbero le unità di misura!
 
--   Di solito nei point-light tracers si ignora questo effetto (v. il caso di [POV-Ray](https://www.povray.org/documentation/view/3.6.1/317/)). In alternativa si può attribuire una distanza $d$ di riferimento per ogni sorgente luminosa, e scalare per $(d / r)^2$.
+-   Di solito nei point-light tracers si ignora questo effetto (v. il caso di [POV-Ray](https://www.povray.org/documentation/view/3.6.1/317/)). In alternativa si può attribuire una dimensione $d$ di riferimento per ogni sorgente luminosa, e scalare per $(d / r)^2$.

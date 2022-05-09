@@ -40,15 +40,12 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 ```python
 pcg = PCG()
-
-expected_zero = pytest.approx(0.0)
-expected_one = pytest.approx(1.0)
+expected_zero, expected_one = pytest.approx(0.0), pytest.approx(1.0)
 
 # As Python is slow, we just test 100 times the function. You can use
 # larger numbers, as far as the time required to run the test is kept short
 for i in range(100):
-    normal = Vec(pcg.random_float(), pcg.random_float(), pcg.random_float())
-    normal.normalize()
+    normal = Vec(*[pcg.random_float() for i in range(3)]).normalize()
     e1, e2, e3 = create_onb_from_z(normal)
 
     # Verify that the z axis is aligned with the normal
@@ -152,16 +149,14 @@ for i in range(100):
     #.  Profondità massima dei raggi;
     #.  Limite per la profondità oltre il quale usare la Roulette russa.
 
-# [Implementazione](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126)
+# [Implementazione (1/2)](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126)
 
 ```python
 def __call__(self, ray: Ray) -> Color:
-    if ray.depth > self.max_depth:
-        return Color(0.0, 0.0, 0.0)
+    return Color(0.0, 0.0, 0.0) if ray.depth > self.max_depth
 
     hit_record = self.world.ray_intersection(ray)
-    if not hit_record:
-        return self.background_color
+    return self.background_color if not hit_record
 
     hit_material = hit_record.material
     hit_color = hit_material.brdf.pigment.get_color(hit_record.surface_point)
@@ -169,8 +164,7 @@ def __call__(self, ray: Ray) -> Color:
 
     hit_color_lum = max(hit_color.r, hit_color.g, hit_color.b)
 
-    # Russian roulette
-    if ray.depth >= self.russian_roulette_limit:
+    if ray.depth >= self.russian_roulette_limit:  # Russian roulette
         q = max(0.05, 1 - hit_color_lum)
         if self.pcg.random_float() > q:
             # Keep the recursion going, but compensate for other potentially discarded rays
@@ -179,25 +173,30 @@ def __call__(self, ray: Ray) -> Color:
             # Terminate prematurely
             return emitted_radiance
 
-    # Monte Carlo integration
-    
-    cum_radiance = Color(0.0, 0.0, 0.0)
-    
-    # Only do costly recursions if it's worth it
-    if hit_color_lum > 0.0:
-        for ray_index in range(self.num_of_rays):
-            new_ray = hit_material.brdf.scatter_ray(
-                pcg=self.pcg,
-                incoming_dir=hit_record.ray.dir,
-                interaction_point=hit_record.world_point,
-                normal=hit_record.normal,
-                depth=ray.depth + 1,
-            )
-            # Recursive call
-            new_radiance = self(new_ray)
-            cum_radiance += hit_color * new_radiance
+    # (continue)
+```
 
-    return emitted_radiance + cum_radiance * (1.0 / self.num_of_rays)
+# [Implementazione (2/2)](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126)
+
+```python
+# Monte Carlo integration
+
+cum_radiance = Color(0.0, 0.0, 0.0)
+
+# Only do costly recursions if it's worth it
+if hit_color_lum > 0.0:
+    for ray_index in range(self.num_of_rays):
+        new_ray = hit_material.brdf.scatter_ray(
+            pcg=self.pcg,
+            incoming_dir=hit_record.ray.dir,
+            interaction_point=hit_record.world_point,
+            normal=hit_record.normal,
+            depth=ray.depth + 1,
+        )
+        new_radiance = self(new_ray)  # Recursive call
+        cum_radiance += hit_color * new_radiance
+
+return emitted_radiance + cum_radiance * (1.0 / self.num_of_rays)
 ```
 
 # Test
@@ -245,8 +244,7 @@ $$
 ```python
 pcg = PCG()
 
-# Run the furnace test several times using random values for
-# the emitted radiance and reflectance
+# Run the furnace test several times using random values for L_e and ρ_d
 for i in range(5):
     emitted_radiance = pcg.random_float()
     reflectance = pcg.random_float() * 0.9  # Avoid numbers that are too close to 1
@@ -260,13 +258,7 @@ for i in range(5):
 
     world.add(Sphere(material=enclosure_material))
 
-    path_tracer = PathTracer(
-        pcg=pcg, 
-        num_of_rays=1, 
-        world=world, 
-        max_depth=100, 
-        russian_roulette_limit=101,
-    )
+    path_tracer = PathTracer(pcg=pcg, num_of_rays=1, world=world, max_depth=100, russian_roulette_limit=101)
 
     ray = Ray(origin=Point(0, 0, 0), dir=Vec(1, 0, 0))
     color = path_tracer(ray)
@@ -299,11 +291,6 @@ for i in range(5):
 -   Il numero che interessa di più è `init_seq`, perché identifica univocamente la sequenza di numeri generati dal `PCG`, e consente quindi di produrre immagini completamente decorrelate (che possono quindi essere mediate tra loro senza produrre *bias*).
 
 -   Mediare immagini diverse (prodotte contemporaneamente mediante [GNU Parallel](https://www.gnu.org/software/parallel/)) è un buon modo per ridurre la varianza senza aumentare il tempo di calcolo effettivo (*wall-clock time*).
-
-
-# Link a Gather
-
-Useremo il solito link: [gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing](https://gather.town/app/CgOtJvyNfVKMIQ9e/LaboratorioRayTracing)
 
 
 # Guida per l'esercitazione
