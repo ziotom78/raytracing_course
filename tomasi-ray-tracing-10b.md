@@ -1,159 +1,8 @@
 ---
 title: "Esercitazione 10"
-subtitle: "BRDFs e numeri casuali"
+subtitle: "Numeri casuali e BRDF"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
-
-# BRDFs
-
-# Tipi di dati
-
--   Oggi inizieremo ad implementare il nostro path-tracer, e inizieremo da materiali, BRDFs e pigmenti. Ci serviranno questi tipi di dati primitivi:
-
-    #.  Il tipo `Pigment` è il colore associato ad un punto particolare di una superficie $(u, v)$;
-    #.  Il tipo `BRDF` rappresenta la BRDF di un materiale, che deve contenere al suo interno un membro `Pigment`;
-    #.  Il tipo `Material` rappresenta l'unione della parte emissiva di un materiale (il termine $L_e$, che rappresentiamo ancora come un `Pigment`) e della sua BRDF.
-    
--   Da questi tipi astratti dovrete derivare una serie di tipi concreti a piacimento.
-
-# `Pigment`
-
--   Il tipo base `Pigment` serve per calcolare un colore (tipo `Color`) associato con una coordinata $(u, v)$.
-
--   Dovreste quanto meno definire questi due tipi:
-
-    -   `UniformPigment` (colore uniforme, il pigmento più semplice!);
-    -   `CheckeredPigment` (scacchiera, utile per il debugging).
-    
--   Potreste definire anche un `ImagePigment` che si costruisca a partire da una `HdrImage`: questo consente di creare effetti molto interessanti se applicate a sfere delle immagini contenenti [proiezioni equirettangolari](https://en.wikipedia.org/wiki/Equirectangular_projection), dal momento che queste proiezioni sono facili da convertire nello spazio $(u, v)$.
-
-# Pigmento a scacchiera
-
-<center>![](media/checkered-pigment.svg){height=420px}</center>
-
-Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono entrambi pari o dispari, il colore 2 negli altri casi. Il numero di divisioni è impostabile nel costruttore.
-
-# `BRDF`
-
--   Il tipo `BRDF` deve codificare la BRDF dell'equazione del rendering, ossia
-
-    $$
-    f_r = f_r(x, \Psi \rightarrow \Theta).
-    $$
-    
--   La BRDF è per definizione uno scalare, ma per rappresentare la dipendenza dalla lunghezza d'onda $\lambda$, il codice Python restituisce un `Color` anziché un `float`: ogni componente (R/G/B) è la BRDF integrata su quella banda.
-
--   Questo è il prototipo di `BRDF.Eval` com'è implementato in [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L92-L98):
-    
-    ```python
-    class BRDF:
-        def eval(self, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) -> Color:
-            # …
-    ```
-
-# BRDF e `Pigment`
-
--   Il tipo `BRDF` dovrebbe contenere un tipo `Pigment` (o un puntatore: in C++ ad esempio si userebbe `std::shared_ptr<Pigment>`).
-
--   Usate le componenti R/G/B restituite dal pigmento per un dato punto $(u, v)$ della superficie per «pesare» il contributo di $f_r$ alle varie frequenze (se una delle componenti RGB è nulla, tutti i fotoni in quella banda vengono assorbiti).
-
--   Questa è ad esempio l'implementazione della BRDF diffusa ($f_r = \rho_d / \pi$) in [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L101-L108), che di fatto assume $\rho_d = \rho_d(\lambda)$:
-
-    ```python
-    class DiffuseBRDF(BRDF):
-        def eval(self, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) -> Color:
-            return self.pigment.get_color(uv) * (self.reflectance / pi)
-    ```
-
-# `Material`
-
--   Il tipo `Material` deve racchiudere le informazioni sull'interazione tra punti della superficie e fotoni:
-
-    #.  La BRDF $f_r = f_r(x, \Psi \rightarrow \Theta)$;
-    #.  La radianza emessa in funzione del punto sulla superficie: $L_e = L_e(u, v)$.
-    
--   In [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L111-L115) è definito così:
-
-    ```python
-    @dataclass
-    class Material:
-        """A material"""
-        brdf: BRDF = DiffuseBRDF()
-        emitted_radiance: Pigment = UniformPigment(BLACK)  # A *pigment*!
-    ```
-
-# Versatilità
-
--   Il tipo `Pigment` non deve fare altro che restituire un colore data una coordinata $(u, v)$; se sapete cosa sono gli [*oggetti funzione*](https://en.wikipedia.org/wiki/Function_object) e come si usano nel vostro linguaggio, `Pigment` è il candidato ideale.
-
--   Il tipo `BRDF` dovrà diventare più complesso di come l'abbiamo implementato oggi (in un path tracer **non serve valutare** $f_r$, e quindi useremo `BRDF.eval` per altri scopi!), quindi è meglio non usare scorciatoie.
-
--   Il tipo `Material` è semplicemente l'unione di una BRDF e di un pigmento (il termine $L_e$), e non andrà esteso.
-
-# Modifiche a `Shape`
-
--   Dovete anche modificare la definizione di `Shape` in modo che contenga al suo interno una istanza del tipo `Material`:
-
-    ```python
-    class Shape:
-        def __init__(self,
-                     transformation: Transformation = Transformation(), 
-                     material: Material = Material()):
-            self.transformation = transformation
-            self.material = material
-    ```
-
--   Il tipo `HitRecord` dovrebbe essere modificato in modo da contenere anche un puntatore all'oggetto `Shape` che è stato «colpito» dal raggio: in questo modo si potrà risalire al `Material` da usare durante la risoluzione dell'equazione del rendering (un'alternativa è salvare `Material` anziché `Shape`).
-
-
-# Flat-renderer
-
--   Ora che abbiamo attribuito un `Material` a ogni `Shape`, è possibile creare un renderer un po' più interessante del tipo on/off usato nel nostro demo.
-
--   Nello specifico, potremmo implementare un semplice renderer che, invece di usare i colori bianco e nero, assegna a un pixel il colore del `Pigment` calcolato nel punto dove il raggio colpisce l'oggetto.
-
--   Il codice di pytracer implementa una classe base, [`Renderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L24-L35), da cui derivano due classi [`OnOffRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L38-L49) e [`FlatRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L52-L69): quando si esegue il comando `demo` si può scegliere quale usare mediante il flag `--algorithm`.
-
----
-
-<center>
-    <video src="media/flat-renderer.mp4" width="640" height="480" controls loop autoplay/>
-</center>
-
-(A causa del fatto che l'immagine è quasi completamente nera, il *tone mapping* fa saturare i colori se si usa il valore standard di luminosità; convertite l'immagine fissando una luminosità media di ~0.5).
-
-# Generare animazioni
-
--   Generare un'animazione lunga può essere molto tedioso.
-
--   Se la CPU del vostro computer supporta più *core* (molto probabile), potete usare [GNU Parallel](https://www.gnu.org/software/parallel/) (`sudo apt install parallel` sotto Debian/Ubuntu/Mint) per usare tutti i core e produrre tanti frame contemporaneamente: il vantaggio in termini di tempo è impressionante!
-
--   Scrivete uno script `generate-image.sh` che produca una immagine dato un parametro numerico e rendetelo eseguibile con `chmod +x NOMEFILE`, poi eseguite il comando `parallel` in un modo simile a questo:
-
-    ```text
-    parallel -j NUM_OF_CORES ./generate-image.sh '{}' ::: $(seq 0 359)
-    ```
-
-# `generate-image.sh`
-
-```sh
-#!/bin/bash
-
-if [ "$1" == "" ]; then
-    echo "Usage: $(basename $0) ANGLE"
-    exit 1
-fi
-
-readonly angle="$1"
-readonly angleNNN=$(printf "%03d" $angle)
-readonly pfmfile=image$angleNNN.pfm
-readonly pngfile=image$angleNNN.png
-
-time ./main.py demo --algorithm flat --angle-deg $angle \
-    --width 640 --height 480 --pfm-output $pfmfile \
-    && ./main.py pfm2png --luminosity 0.5 $pfmfile $pngfile
-```
-
 
 # Generazione di numeri pseudocasuali
 
@@ -177,7 +26,7 @@ time ./main.py demo --algorithm flat --angle-deg $angle \
 
 # Come funziona un generatore
 
--   Un generatore di numeri pseudo-casuali è solitamente implementato come una *state machine*, ossia un algoritmo che mantiene in memoria una informazione sul proprio stato[^*], che viene aggiornata ogni volta che produce un nuovo numero.
+-   Un generatore di numeri pseudo-casuali è solitamente implementato come una *state machine*, ossia un algoritmo che mantiene in memoria una informazione sul proprio stato, che viene aggiornata ogni volta che produce un nuovo numero.
 
 -   I generatori usati oggi di solito producono numeri *interi* in un dato intervallo.
 
@@ -213,19 +62,21 @@ time ./main.py demo --algorithm flat --angle-deg $angle \
 
 -   I numeri casuali vengono spesso usati per produrre vettori casuali, ossia campioni $x \in \mathbb{R}^n$, per qualche valore di $n$ (ad esempio, punti sul piano con $n = 2$, punti nello spazio con $n = 3$, etc.).
 
--   Un cattivo generatore di numeri casuali può mostrare strane correlazioni quando usato per generare punti 2D, ma non mostrare alcun problema se usato per punti 1D.
+-   Un cattivo generatore di numeri casuali può funzionare perfettamente nel generare sequenze 1D, ma mostrare strane correlazioni quando usato per generare punti 2D.
 
--   Un generatore che mantiene le proprietà di «casualità» ad ogni dimensione si dice che soddisfa l'*equidistribuzione $k$-dimensionale*.
+-   Un generatore che mantiene le proprietà di «casualità» in $k$ dimensioni si dice che soddisfa l'*equidistribuzione $k$-dimensionale*.
 
 ---
 
 <center>![](./media/2d-randomness.png)</center>
 
+Un *randogramma* (v. O'Neill 2014).
+
 # 4. Velocità
 
 -   Le applicazioni alla fisica dei metodi Monte Carlo richiedono di eseguire molte volte delle simulazioni, in modo da ridurre gli effetti del campionamento.
 
--   I generatori di numeri casuali più diffusi sai basano su operazioni a livello di bit, che sono le più veloci realizzabili con le comuni CPU.
+-   I generatori di numeri casuali più diffusi si basano su operazioni a livello di bit, che sono le più veloci realizzabili con le comuni CPU.
 
 -   Un generatore dovrebbe mantenere il proprio stato in una struttura di memoria il più piccola possibile: in questo modo è più facile per la CPU ottimizzarne l'esecuzione.
 
@@ -240,22 +91,25 @@ time ./main.py demo --algorithm flat --angle-deg $angle \
 
 # Esempio
 
--   Supponiamo che io inizi dal *seed* 5 sul primo computer, e assegno al secondo computer il *seed* 36.
+-   Se assegno lo stesso *seed* ai due computer, ottengo la stessa sequenza: argh!
 
--   Per colmo di sfortuna però, il generatore è tale per cui dopo il numero 5 estrae il numero 36…
+-   Potrei allora assegnare il *seed* 5 al primo computer, e il *seed* 36 al secondo.
 
--   …così che la sequenza di numeri generati è la seguente:
+-   Se però il generatore è tale per cui dopo il numero 5 estrae il numero 36, la sequenza di numeri generati è allora la seguente:
 
     ```text
     computer #1:  5  36  17  29  45  …
     computer #2: 36  17  29  45   3  …
     ```
     
--   Non basta dare un *seed* diverso ai due computer per essere sicuri!
+-   Ovviamente, questo sarebbe un problema anche se anziché 36 assegnassi 17, 29 o 45 al secondo computer.
+    
+-   Non basta dare un *seed* diverso ai due computer per ottenere sequenze indipendenti!
+
 
 # Soluzioni al problema
 
--   Una possibile soluzione è quella di avere un criterio per cui due stati del generatore siano *ortogonali*: ossia, non possono generare la stessa sequenza di campioni, neppure sfasata. Questi generatore tipicamente richiedono di essere inizializzati con *due* numeri iniziali: il *seed* e un identificativo della sequenza. Se si usano due identificativi diversi, le sequenze generate sono scorrelate.
+-   Una possibile soluzione è quella di avere un criterio per cui due stati del generatore siano *ortogonali*: ossia, non possono generare la stessa sequenza di campioni, neppure sfasata. Questi generatore tipicamente richiedono di essere inizializzati con *due* numeri iniziali: un identificativo della sequenza e il *seed*. Se si usano due identificativi diversi, le sequenze generate sono scorrelate.
 
 -   Un'altra soluzione è quella di poter avanzare lo stato del generatore di $k$ passaggi in maniera rapida, *senza* effettivamente generare $k - 1$ numeri casuali e richiedendo un numero di operazioni ben minore di $\propto k$ (tipicamente vale che $\propto \log k$).
 
@@ -408,11 +262,163 @@ def test_random():
 -   In questo modo nei test basterà creare una variabile `PCG` col costruttore di default e il test sarà ripetibile (e confrontabile tra gruppi diversi!).
 
 
+# BRDFs
+
+# Tipi di dati
+
+-   Oggi inizieremo ad implementare il nostro path-tracer, e inizieremo da materiali, BRDFs e pigmenti. Ci serviranno questi tipi di dati primitivi:
+
+    #.  Il tipo `Pigment` è **astratto**, e rappresenta il colore associato ad un punto particolare di una superficie $(u, v)$;
+    #.  Il tipo `BRDF` è **astratto**, e rappresenta la BRDF di un materiale, che deve contenere al suo interno un membro `Pigment`;
+    #.  Il tipo `Material` è **concreto**, e rappresenta l'unione della parte emissiva di un materiale (il termine $L_e$, che rappresentiamo ancora come un `Pigment`) e della sua BRDF.
+    
+-   Dai tipi astratti `Pigment` e `BRDF` derivereremo poi una serie di tipi concreti.
+
+# `Pigment`
+
+-   Il tipo base `Pigment` serve per calcolare un colore (tipo `Color`) associato con una coordinata $(u, v)$, tramite un metodo/funzione `get_color`, che associa un `Vec2D` a un `Color`.
+
+-   Dovreste quanto meno definire questi due tipi:
+
+    -   `UniformPigment` (colore uniforme, il pigmento più semplice!);
+    -   `CheckeredPigment` (scacchiera, utile per il debugging).
+    
+-   Potreste definire anche un `ImagePigment` che si costruisca a partire da una `HdrImage`: questo consente di creare effetti molto interessanti se applicate a sfere delle immagini contenenti [proiezioni equirettangolari](https://en.wikipedia.org/wiki/Equirectangular_projection). Usate come riferimento l'implementazione in [pytracer](https://github.com/ziotom78/pytracer/blob/f994f863bf2c37b3f3f73f681435895f8117c8fb/materials.py#L53-L73).
+
+# Pigmento a scacchiera
+
+<center>![](media/checkered-pigment.svg){height=420px}</center>
+
+Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono entrambi pari o dispari, il colore 2 negli altri casi. Il numero di divisioni dovrebbe essere impostabile nel costruttore.
+
+# `BRDF`
+
+-   Il tipo `BRDF` deve codificare la BRDF dell'equazione del rendering, ossia
+
+    $$
+    f_r = f_r(x, \Psi \rightarrow \Theta).
+    $$
+    
+-   La BRDF è per definizione uno scalare, ma per rappresentare la dipendenza dalla lunghezza d'onda $\lambda$, il codice Python restituisce un `Color` anziché un `float`: ogni componente (R/G/B) è la BRDF integrata su quella banda.
+
+-   Questo è il prototipo di `BRDF.Eval` com'è implementato in [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L92-L98):
+    
+    ```python
+    class BRDF:
+        def eval(self, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) -> Color:
+            # …
+    ```
+
+# BRDF e `Pigment`
+
+-   Il tipo `BRDF` dovrebbe contenere un tipo `Pigment` o un suo derivato (in C++ ad esempio si userebbe un puntatore, oppure `std::shared_ptr<Pigment>`).
+
+-   Usate le componenti R/G/B restituite dal pigmento per un dato punto $(u, v)$ della superficie per «pesare» il contributo di $f_r$ alle varie frequenze (se una delle componenti RGB è nulla, tutti i fotoni in quella banda vengono assorbiti).
+
+-   Questa è ad esempio l'implementazione della BRDF diffusa ($f_r = \rho_d / \pi$) in [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L101-L108), che di fatto assume $\rho_d = \rho_d(\lambda)$:
+
+    ```python
+    class DiffuseBRDF(BRDF):
+        def eval(self, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) -> Color:
+            return self.pigment.get_color(uv) * (self.reflectance / pi)
+    ```
+
+# `Material`
+
+-   Il tipo `Material` deve racchiudere le informazioni sull'interazione tra punti della superficie e fotoni:
+
+    #.  La BRDF $f_r = f_r(x, \Psi \rightarrow \Theta)$;
+    #.  La radianza emessa in funzione del punto sulla superficie: $L_e = L_e(u, v)$.
+    
+-   In [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L111-L115) è definito così:
+
+    ```python
+    @dataclass
+    class Material:
+        """A material"""
+        brdf: BRDF = DiffuseBRDF()
+        emitted_radiance: Pigment = UniformPigment(BLACK)  # A *pigment*!
+    ```
+
+# Versatilità
+
+-   Il tipo `Pigment` non deve fare altro che restituire un colore data una coordinata $(u, v)$, quindi richiede solo un metodo `get_color`. (Potrebbe quindi essere ripensato come un [*oggetto funzione*](https://en.wikipedia.org/wiki/Function_object), volendo…)
+
+-   Il tipo `BRDF` dovrà diventare più complesso di come l'abbiamo implementato oggi (in un path tracer **non serve valutare** $f_r$, e quindi useremo `BRDF.eval` per altri scopi!), quindi è meglio non usare scorciatoie.
+
+-   Il tipo `Material` è semplicemente l'unione di una BRDF e di un pigmento (il termine $L_e$), e non andrà esteso.
+
+# Modifiche a `Shape`
+
+-   Dovete anche modificare la definizione di `Shape` in modo che contenga al suo interno una istanza del tipo `Material`:
+
+    ```python
+    class Shape:
+        def __init__(self,
+                     transformation: Transformation = Transformation(), 
+                     material: Material = Material()):
+            self.transformation = transformation
+            self.material = material
+    ```
+
+-   Il tipo `HitRecord` dovrebbe essere modificato in modo da contenere anche un puntatore all'oggetto `Shape` che è stato «colpito» dal raggio: in questo modo si potrà risalire al `Material` da usare durante la risoluzione dell'equazione del rendering (un'alternativa è salvare `Material` anziché `Shape`).
+
+
+# Flat-renderer
+
+-   Ora che abbiamo attribuito un `Material` a ogni `Shape`, è possibile creare un renderer un po' più interessante del tipo on/off usato nel nostro demo.
+
+-   Nello specifico, potremmo implementare un semplice renderer che, invece di usare i colori bianco e nero, assegna a un pixel il colore del `Pigment` calcolato nel punto dove il raggio colpisce l'oggetto.
+
+-   Il codice di pytracer implementa una classe base, [`Renderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L24-L35), da cui derivano due classi [`OnOffRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L38-L49) e [`FlatRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L52-L69): quando si esegue il comando `demo` si può scegliere quale usare mediante il flag `--algorithm`.
+
+---
+
+<center>
+    <video src="media/flat-renderer.mp4" width="640" height="480" controls loop autoplay/>
+</center>
+
+(A causa del fatto che l'immagine è quasi completamente nera, il *tone mapping* fa saturare i colori se si usa il valore standard di luminosità; convertite l'immagine fissando una luminosità media di ~0.5).
+
+# Generare animazioni
+
+-   Generare un'animazione lunga può essere molto tedioso.
+
+-   Se la CPU del vostro computer supporta più *core* (molto probabile), potete usare [GNU Parallel](https://www.gnu.org/software/parallel/) (`sudo apt install parallel` sotto Debian/Ubuntu/Mint) per usare tutti i core e produrre tanti frame contemporaneamente: il vantaggio in termini di tempo è impressionante!
+
+-   Scrivete uno script `generate-image.sh` che produca una immagine dato un parametro numerico e rendetelo eseguibile con `chmod +x NOMEFILE`, poi eseguite il comando `parallel` in un modo simile a questo:
+
+    ```text
+    parallel -j NUM_OF_CORES ./generate-image.sh '{}' ::: $(seq 0 359)
+    ```
+
+# `generate-image.sh`
+
+```sh
+#!/bin/bash
+
+if [ "$1" == "" ]; then
+    echo "Usage: $(basename $0) ANGLE"
+    exit 1
+fi
+
+readonly angle="$1"
+readonly angleNNN=$(printf "%03d" $angle)
+readonly pfmfile=image$angleNNN.pfm
+readonly pngfile=image$angleNNN.png
+
+time ./main.py demo --algorithm flat --angle-deg $angle \
+    --width 640 --height 480 --pfm-output $pfmfile \
+    && ./main.py pfm2png --luminosity 0.5 $pfmfile $pngfile
+```
+
+
 # Guida per l'esercitazione
 
 
 # Cose da fare
 
+#.  Implementate il generatore PCG.
 #.  Create un nuovo branch di nome `pathtracing`;
 #.  Create i tipi `Pigment`, `UniformPigment`, `CheckeredPigment` (se vi va, implementate anche `ImagePigment`);
 #.  Create i tipi `BRDF` e `DiffuseBRDF`;
@@ -420,5 +426,4 @@ def test_random():
 #.  Modificate `Shape` perché contenga una istanza di `Material`;
 #.  Modificate `HitRecord` perché contenga un puntatore alla `Shape` colpita da un raggio;
 #.  Se vi va, implementate un flat-renderer (ma modificate anche il demo).
-#.  Implementate il generatore PCG.
 #.  Implementate gli stessi test di [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/test_all.py#L729-L841).
