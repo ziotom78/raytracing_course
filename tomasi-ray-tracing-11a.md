@@ -69,7 +69,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
     emitted_radiance = material.get_emitted_radiance(hit_record.surface_point)
 
     cum_radiance = Color(0.0, 0.0, 0.0)
-    if ray.depth > 5:
+    if ray.depth < 5:
         # Compute the MC integral only if we have not gone too deep
         for i in range(num_of_samples):
             ....
@@ -388,7 +388,7 @@ dove ovviamente è necessario che le $\Psi_i$ siano distribuite secondo $p(\omeg
     \hat n \times \vec g = 0.
     $$
     
--   Nell'implementazione dell'algoritmo occorre quindi inserire un test: se $\hat n \approx \vec g$, allora si sostituisce $\vec g$ con un altro vettore $\vec h$. Di solito si sceglie $\vec g = (1, 0, 0)$ e $\vec h = (0, 1, 0)$..
+-   Nell'implementazione dell'algoritmo occorre quindi inserire un test: se $\hat n \approx \vec g$, allora si sostituisce $\vec g$ con un altro vettore $\vec h$. Di solito si sceglie $\vec g = (1, 0, 0)$ e $\vec h = (0, 1, 0)$.
 
 -   [Duff et al. 2017](https://graphics.pixar.com/library/OrthonormalB/paper.pdf), basandosi su [Frisvad, 2012](http://orbit.dtu.dk/files/
 126824972/onb_frisvad_jgt2012_v2.pdf), hanno proposto un algoritmo alternativo basato sui quaternioni che richiede la metà del tempo di esecuzione (evita questo controllo e la normalizzazione).
@@ -516,6 +516,10 @@ Il problema dell'*aliasing* è che certi pixel coprono aree dello schermo che co
 
 -   Se si dividono tutti gli oggetti della scena in «luminosi» e non, si può valutare l'integrale dell'equazione su un dominio ridotto.
 
+---
+
+<center>![](media/ray-tracing-algorithm.webp)</center>
+
 # Sorgenti luminose
 
 -   L'algoritmo di *point-light tracing* classico fa queste assunzioni:
@@ -525,10 +529,6 @@ Il problema dell'*aliasing* è che certi pixel coprono aree dello schermo che co
     #.  Per ovviare alla mancanza di radiazione che illumini le parti non illuminate direttamente, alcuni ray-tracers aggiungono arbitrariamente un termine «ambient light» (un colore vicino al nero ma non esattamente nullo).
 
 -   Non è possibile modellare l'illuminazione diffusa, ma il tempo necessario al calcolo della soluzione è molto minore.
-
----
-
-<center>![](media/ray-tracing-algorithm.webp)</center>
 
 # Implementazione
 

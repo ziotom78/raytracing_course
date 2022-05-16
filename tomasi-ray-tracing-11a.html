@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
     .reveal .sourceCode {  /* see #7635 */
-      overflow: visible;
+      /* overflow: visible; */
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -203,7 +203,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>emitted_radiance <span class="op">=</span> material.get_emitted_radiance(hit_record.surface_point)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>cum_radiance <span class="op">=</span> Color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ray.depth <span class="op">&gt;</span> <span class="dv">5</span>:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ray.depth <span class="op">&lt;</span> <span class="dv">5</span>:</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute the MC integral only if we have not gone too deep</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_of_samples):</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        ....</span>
@@ -668,7 +668,7 @@ test: se <span class="math inline">\hat n \approx \vec g</span>, allora
 si sostituisce <span class="math inline">\vec g</span> con un altro
 vettore <span class="math inline">\vec h</span>. Di solito si sceglie
 <span class="math inline">\vec g = (1, 0, 0)</span> e <span
-class="math inline">\vec h = (0, 1, 0)</span>..</p></li>
+class="math inline">\vec h = (0, 1, 0)</span>.</p></li>
 <li><p><a
 href="https://graphics.pixar.com/library/OrthonormalB/paper.pdf">Duff et
 al. 2017</a>, basandosi su <a
@@ -870,6 +870,12 @@ si può valutare l’integrale dell’equazione su un dominio
 ridotto.</p></li>
 </ul>
 </section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/ray-tracing-algorithm.webp" />
+</center>
+</section>
 <section id="sorgenti-luminose" class="slide level1">
 <h1>Sorgenti luminose</h1>
 <ul>
@@ -888,12 +894,6 @@ nullo).</li>
 <li><p>Non è possibile modellare l’illuminazione diffusa, ma il tempo
 necessario al calcolo della soluzione è molto minore.</p></li>
 </ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="media/ray-tracing-algorithm.webp" />
-</center>
 </section>
 <section id="implementazione-2" class="slide level1">
 <h1>Implementazione</h1>
