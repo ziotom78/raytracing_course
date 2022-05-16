@@ -6,10 +6,10 @@ JS_FILES = \
 .phony: all http
 
 all: \
-	tomasi-ray-tracing-14b-parsing.html \
-	tomasi-ray-tracing-14a-parsing.html \
-	tomasi-ray-tracing-13b-lexing.html \
-	tomasi-ray-tracing-13a-lexing.html \
+	tomasi-ray-tracing-13b.html \
+	tomasi-ray-tracing-13a.html \
+	tomasi-ray-tracing-12b.html \
+	tomasi-ray-tracing-12a.html \
 	tomasi-ray-tracing-11b.html \
 	tomasi-ray-tracing-11a.html \
 	tomasi-ray-tracing-10b.html \
@@ -56,6 +56,7 @@ giudizi-linguaggio-aa2021.html: giudizi-linguaggio-aa2021.md
 		-A asciinema-include.html \
 		-A nim-include.html \
 		--katex \
+		--template template-revealjs.html \
 		-V theme=white \
 		-V progress=true \
 		-V slideNumber=true \

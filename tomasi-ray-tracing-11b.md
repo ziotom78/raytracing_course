@@ -149,7 +149,7 @@ for i in range(100):
     #.  Profondità massima dei raggi;
     #.  Limite per la profondità oltre il quale usare la Roulette russa.
 
-# [Implementazione (1/2)](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126)
+# [Implementazione](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126)
 
 ```python
 def __call__(self, ray: Ray) -> Color:
@@ -173,30 +173,24 @@ def __call__(self, ray: Ray) -> Color:
             # Terminate prematurely
             return emitted_radiance
 
-    # (continued)
-```
+    # Monte Carlo integration
 
-# [Implementazione (2/2)](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126)
+    cum_radiance = Color(0.0, 0.0, 0.0)
 
-```python
-# Monte Carlo integration
+    # Only do costly recursions if it's worth it
+    if hit_color_lum > 0.0:
+        for ray_index in range(self.num_of_rays):
+            new_ray = hit_material.brdf.scatter_ray(
+                pcg=self.pcg,
+                incoming_dir=hit_record.ray.dir,
+                interaction_point=hit_record.world_point,
+                normal=hit_record.normal,
+                depth=ray.depth + 1,
+            )
+            new_radiance = self(new_ray)  # Recursive call
+            cum_radiance += hit_color * new_radiance
 
-cum_radiance = Color(0.0, 0.0, 0.0)
-
-# Only do costly recursions if it's worth it
-if hit_color_lum > 0.0:
-    for ray_index in range(self.num_of_rays):
-        new_ray = hit_material.brdf.scatter_ray(
-            pcg=self.pcg,
-            incoming_dir=hit_record.ray.dir,
-            interaction_point=hit_record.world_point,
-            normal=hit_record.normal,
-            depth=ray.depth + 1,
-        )
-        new_radiance = self(new_ray)  # Recursive call
-        cum_radiance += hit_color * new_radiance
-
-return emitted_radiance + cum_radiance * (1.0 / self.num_of_rays)
+    return emitted_radiance + cum_radiance * (1.0 / self.num_of_rays)
 ```
 
 # Test

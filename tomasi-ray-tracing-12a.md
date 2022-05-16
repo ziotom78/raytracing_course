@@ -36,19 +36,24 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Nel caso in cui il linguaggio usato sia Julia o Python, che ammette un uso interattivo, la soluzione migliore sarebbe quella di definire le scene direttamente sulla REPL (o in un notebook Jupyter/Pluto)!
 
--   Ma nel caso di programmi scritti in C++, C\# o Kotlin, una soluzione del genere non è ovviamente percorribile.
+-   Ma nel caso di programmi scritti in C\#, Nim o Rust, una soluzione del genere non è ovviamente percorribile.
 
--   L'implementazione di un mini-linguaggio **non è la soluzione migliore** per linguaggi che offrono una REPL come Julia; chiedo comunque a tutti di implementare quanto richiesto, perché l'esercizio offre tanti spunti didattici.
+-   (Questo è vero a maggior ragione per quelli di voi che forniscono a ogni nuova *release* del codice i binari: in quel caso, i vostri utenti potrebbero non avere neppure i compilatori installati!)
 
 # Valore didattico dell'esercizio
 
-#.  Per implementare questa *feature* dovremo apprendere i rudimenti della teoria dei compilatori, che non viene affrontata in altri corsi (che io sappia), ma che insegna a scrivere codice molto elegante.
+Implementare un compilatore è un'attività didatticamente molto utile:
 
-#.  Avete usato in questo corso linguaggi diversi: ora capirete meglio perché i linguaggi richiedono di definire le cose in un modo anziché in un altro, e certi errori dei compilatori saranno più comprensibili.
+1.  La teoria dei compilatori insegna come affrontare un problema complesso (la compilazione) scomponendolo in una serie di problemi semplici che vanno risolti in sequenza: ciò è molto istruttivo!
 
-#.  Dovremo scrivere codice che gestisca le (tante) possibili condizioni di errore in modo robusto ed elegante, più di quanto abbiamo fatto sinora (un *path-tracer* non è il contesto migliore per imparare ciò): ciò è molto educativo!
+2.  Capirete meglio la sintassi dei linguaggi usati in questo corso.
 
-#.  Creare nuovi linguaggi può essere molto divertente!
+3.  Intuirete perché in certi casi i compilatori producono  errori fuorvianti.
+
+4.  In caso di errori di sintassi, dovrete fornire all'utente informazioni chiare e precise (es., «alla riga NN manca una parentesi»).
+
+5.  Creare nuovi linguaggi può essere molto divertente!
+
 
 # Tipi di linguaggi
 
@@ -419,7 +424,6 @@ Pensiamo a cosa deve essere specificabile nel nostro formato. Dobbiamo sicuramen
 float clock(150)
 
 # Declare a few new materials. Each of them includes a BRDF and a pigment
-
 # We can split a definition over multiple lines and indent them as we like
 material sky_material(
     diffuse(image("sky-dome.pfm")),
