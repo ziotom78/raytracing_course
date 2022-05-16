@@ -56,7 +56,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
         mc_radiance = radiance(mc_ray, num_of_samples=num_of_samples)
         cum_radiance += material.brdf(...) * mc_radiance
 
-    return emitted_radiance + cum_radiance * (2 * pi) / num_of_samples
+    return emitted_radiance + 2 * pi * (cum_radiance * (1.0 / num_of_samples))
 ```
 
 # Fermare la ricorsione
@@ -86,19 +86,19 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 -   Dal momento che $L(x \leftarrow \Psi) \geq 0$ infatti, «troncare» il contributo dell'integrale dopo un certo numero di iterazioni vuol dire **sottostimare** il valore dell'integrale: se si sottostima la radianza, si introduce un *bias* nella soluzione.
 
--   La situazione è uguale a quella in cui si stima il valore di $\sum_{n=0}^\infty \frac1{n!} = e$ sommando solo i primi $N$ termini: ovviamente la stima sarà per difetto, e l'errore sarà tanto più grave quanto è piccolo $N$.
+-   Confrontate questo tipo di errore con quello compiuto nel misurare una quantità con uno strumento (es., una corrente con un amperometro): in questo caso, l'errore a volte sovrastima, a volte sottostima il valore vero.
 
--   È importante? Dipende!
+-   Nel nostro caso il troncamento della ricorsione produrrà sempre un'immagine **più scura**.
 
 # {data-transition="none"}
 
-<center>![](media/big-hero-6-2waves.webp)</center>
+<center>![](media/big-hero-6-2waves.webp){height=560px}</center>
 
 [Big Hero 6 (Walt Disney Animation Studios, 2014), 2 riflessioni]{style="float:right"}
 
 # {data-transition="none"}
 
-<center>![](media/big-hero-6-9waves.webp)</center>
+<center>![](media/big-hero-6-9waves.webp){height=560px}</center>
 
 [Big Hero 6 (Walt Disney Animation Studios, 2014), 9 riflessioni]{style="float:right"}
 
@@ -112,34 +112,15 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 -   Un algoritmo molto usato nel path-tracing è la *roulette russa*, che rimuove completamente il *bias*, ossia la sottostima della radianza, al prezzo però di aumentare il rumore scorrelato (bianco).
 
--   Il procedimento richiede di fissare una probabilità $0 \leq q \leq 1$ e una costante $c$ (solitamente $c = 0$), e procede nel modo seguente:
+-   Il procedimento richiede di fissare una probabilità $0 \leq q \leq 1$ (nella vera roulette russa, $q = 1/6$, a meno che non sia il film [Il cacciatore](https://www.youtube.com/watch?v=nnGTuNtMQmc)!). Questo è l'algoritmo:
 
     #.  Si estrae un numero casuale $0 \leq x \leq 1$;
-    #.  Se $x > q$, si procede a calcolare la radianza $L$ e si restituisce $(L - q c) / (1 - q)$;
-    #.  Se $x \leq q$, si ferma il calcolo e si restituisce $c$.
+    #.  Se $x > q$, si procede a calcolare la radianza $L$ e si restituisce $L/ (1 - q)$;
+    #.  Se $x \leq q$, si ferma il calcolo e si restituisce zero.
 
 ---
 
--   Per quale motivo la roulette russa dovrebbe rimuovere il bias? Proviamo a calcolare il valore di aspettazione della radianza.
-
 -   Il metodo sostituisce la radianza $L$ con una radianza casuale $L'$ così fatta:
-
-    $$
-    L' = \begin{cases}
-    \frac{L - q c}{1 - q}\ &\text{se $x > q$},\\
-    c&\text{altrimenti}.
-    \end{cases}
-    $$
-    
-    $L'$ ha valore di aspettazione
-    
-    $$
-    E[L'] = E\left[(1 - q) \frac{L - q c}{1 - q} + q c\right] = E[L].
-    $$
-
-# Significato intuitivo
-
--   Se supponiamo $c = 0$, otteniamo che
 
     $$
     L' = \begin{cases}
@@ -147,8 +128,14 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
     0&\text{altrimenti}.
     \end{cases}
     $$
+    
+    $L'$ ha valore di aspettazione
+    
+    $$
+    E[L'] = E\left[(1 - q) \frac{L}{1 - q} + 0\cdot q\right] = E[L].
+    $$
 
--   Questo risultato è intuitivo da comprendere: c'è una probabilità $q$ di restituire zero, ma se $x > q$ (con probabilità $1 - q$) si restituisce «qualcosa di più» di $L$ (perché $1 / (1 - q) > 1$) per compensare quanto si perderebbe nel primo caso.
+-   C'è una probabilità $q$ di restituire zero (sottostima), ma se $x > q$ (con probabilità $1 - q$) si restituisce una sovrastima di $L$, perché $1 / (1 - q) > 1$.
 
 # Svantaggi
 
@@ -158,7 +145,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 -   D'altra parte, le poche volte in cui si restituisce $L / (1 - q)$, si restituirà il valore $L$ moltiplicato per cento volte, ossia $1 / (1 - 0.99)$.
 
--   Ovviamente questo implica un notevole incremento nella varianza della stima, il che vuol dire che l'immagine risulterà più sgranata, seppure chiaramente *unbiased*.
+-   Ovviamente questo implica un notevole incremento nella varianza della stima, il che vuol dire che l'immagine sarà dominata dalle cosiddette *fireflies* (lucciole), seppure chiaramente *unbiased*.
 
 # Dettagli
 
@@ -166,7 +153,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
     ```python
     if ray.depth > 5:
-        threshold = compute_threshold(...)
+        threshold = compute_threshold(...)  # Estimate a reasonable value for "q"
         if pcg.random_float() > threshold:
             return radiance / (1 - threshold)
         else:
@@ -175,7 +162,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
     
     Questo *non* introduce un bias, ma permette di ridurre il rumore nell'immagine.
 
--   Qualsiasi valore di $q$ funziona, ma i risultati migliori si ottengono scegliendo il valore massimo tra le componenti R, G, B della BRDF nel punto di intersezione.
+-   Per $q$ vi suggerisco di usare il valore massimo tra le componenti R, G, B della BRDF nel punto di intersezione.
 
 # Path tracing all'opera
 
@@ -310,17 +297,6 @@ dove ovviamente è necessario che le $\Psi_i$ siano distribuite secondo $p(\omeg
     
     In questo caso la BRDF è ovviamente proporzionale a una Delta di Dirac.
 
-# BRDF riflettente
-
--   In [*Geometrical Considerations and Nomenclature for Reflectance*](https://graphics.stanford.edu/courses/cs448-05-winter/papers/nicodemus-brdf-nist.pdf) (Nicodemus, Richmond & Hsia, 1977) si dimostra mediante considerazioni energetiche che per una superficie riflettente ideale si ha che
-
-    $$
-    f_r(x, \Psi \rightarrow \Theta) \propto \frac{\delta(\sin^2\theta_r - \sin^2\theta)\,\delta(\psi_r \pm \pi - \psi)}{\cos\theta},
-    $$
-    
-    dove $(\theta, \phi)$ è ovviamente la direzione $\Psi$ di arrivo del raggio, e $(\theta_r, \psi_r)$ è la direzione riflessa.
-    
--   La presenza di $\cos\theta$ al denominatore fa sì che nell'*importance sampling* $p(\omega)$ non dipenda da $\cos\theta$.
 
 # BRDF riflettente
 
@@ -333,6 +309,19 @@ dove ovviamente è necessario che le $\Psi_i$ siano distribuite secondo $p(\omeg
     $$
 
     dove $\vec r$ è il vettore riflesso.
+
+
+# BRDF riflettente
+
+-   In [*Geometrical Considerations and Nomenclature for Reflectance*](https://graphics.stanford.edu/courses/cs448-05-winter/papers/nicodemus-brdf-nist.pdf) (Nicodemus, Richmond & Hsia, 1977) si dimostra mediante considerazioni energetiche che per una superficie riflettente ideale si ha che
+
+    $$
+    f_r(x, \Psi \rightarrow \Theta) \propto \frac{\delta(\sin^2\theta_r - \sin^2\theta)\,\delta(\psi_r \pm \pi - \psi)}{\cos\theta},
+    $$
+    
+    dove $(\theta, \phi)$ è ovviamente la direzione $\Psi$ di arrivo del raggio, e $(\theta_r, \psi_r)$ è la direzione riflessa.
+    
+-   La presenza di $\cos\theta$ al denominatore fa sì che $p(\omega)$ non dipenda da $\cos\theta$: non dobbiamo quindi «pesare» la radianza riflessa per $\cos\theta$.
 
 
 # Basi ortonormali (ONB) arbitrarie
@@ -364,24 +353,12 @@ dove ovviamente è necessario che le $\Psi_i$ siano distribuite secondo $p(\omeg
     \vec v = \sum_{i=1}^3 \left<\vec v, \hat e_i\right> \hat e_i = v_x \hat e_x + v_y \hat e_y + v_z \hat e_z.
     $$
     
--   Se si ha una nuova ONB $\left\{\hat e'_1, \hat e'_2, \hat e'_3\right\}$, il vettore $\vec v'$ ottenuto ruotando $\vec v$ dalla vecchia alla nuova base deve avere le stesse componenti:
+-   Se si ha una nuova ONB $\left\{\hat e'_1, \hat e'_2, \hat e'_3\right\}$, il vettore $\vec v$ cambia la sua rappresentazione a seconda della base, da $(v_x, v_y, v_z)$ a $(v'_x, v'_y, v'_z)$:
 
     $$
-    \vec v' = \sum_{i=1}^3 \left<\vec v', \hat e'_i\right> \hat e'_i = v'_x \hat e'_x + v'_y \hat e'_y + v'_z \hat e'_z = v_x \hat e'_x + v_y \hat e'_y + v_z \hat e'_z.
-    $$
-    
-
-# ONB arbitrarie
-
-<center>![](media/rendering-equation-and-onb.svg)</center>
-
--   Dato un vettore casuale $\vec v = (v_x, v_y, v_z)$ nel sistema di riferimento della normale (ossia dove $\theta = 0$ è allineato con l'asse $z$), possiamo ruotare $\vec v$ in una nuova ONB $\left\{\hat e'_i\right\}$ scrivendo
-
-    $$
-    \vec v' = v_x \hat e'_x + v_y \hat e'_y + v_z \hat e'_z.
+    \vec v' = \sum_{i=1}^3 \left<\vec v', \hat e'_i\right> \hat e'_i = v'_x \hat e'_x + v'_y \hat e'_y + v'_z \hat e'_z = v_x \hat e_x + v_y \hat e_y + v_z \hat e_z.
     $$
     
--   Deve valere che $\hat e'_z = \hat n$, ma l'orientamento di $\hat e'_x$ e $\hat e'_y$ è ininfluente.
 
 # ONB arbitrarie
 
@@ -411,7 +388,7 @@ dove ovviamente è necessario che le $\Psi_i$ siano distribuite secondo $p(\omeg
     \hat n \times \vec g = 0.
     $$
     
--   Nell'implementazione dell'algoritmo occorre quindi inserire un test, ed eventualmente usare un altro vettore arbitrario $\vec h$. Di solito si sceglie $\vec g = (1, 0, 0)$ e $\vec h = (0, 1, 0)$..
+-   Nell'implementazione dell'algoritmo occorre quindi inserire un test: se $\hat n \approx \vec g$, allora si sostituisce $\vec g$ con un altro vettore $\vec h$. Di solito si sceglie $\vec g = (1, 0, 0)$ e $\vec h = (0, 1, 0)$..
 
 -   [Duff et al. 2017](https://graphics.pixar.com/library/OrthonormalB/paper.pdf), basandosi su [Frisvad, 2012](http://orbit.dtu.dk/files/
 126824972/onb_frisvad_jgt2012_v2.pdf), hanno proposto un algoritmo alternativo basato sui quaternioni che richiede la metà del tempo di esecuzione (evita questo controllo e la normalizzazione).
@@ -427,106 +404,12 @@ dove ovviamente è necessario che le $\Psi_i$ siano distribuite secondo $p(\omeg
 # Approfondimenti
 
 -   Vediamo ora brevemente alcune possibilità per migliorare l'algoritmo di path tracing:
-    -   Illuminazione diretta;
-    -   *Photon mapping*;
     -   Antialiasing;
-    -   *Point-light tracing*.
+    -   *Point-light tracing*;
+    -   Illuminazione diretta;
+    -   *Photon mapping*.
 -   Se desiderate potete implementare l'antialiasing e il *point-light tracing* nel vostro codice.
 -   L'illuminazione diretta e il *photon mapping* vanno ben oltre quanto si possa implementare per questo corso.
-
-# Illuminazione diretta
-
--   Abbiamo applicato l'*importance sampling* all'equazione del raytracing scrivendo una funzione di probabilità
-
-    $$
-    p(\omega) \propto \cos\theta \times f_r.
-    $$
-
--   Questo trucco può migliorare molto la qualità del rendering nel caso di BRDF molto dipendenti da $\theta$, ma non aiuta se il termine
-
-    $$
-    L(x \leftarrow \Psi)
-    $$
-    
-    nell'integrale dell'equazione del rendering varia molto. Per ridurre la varianza in questi casi esiste l'algoritmo *(explicit) direct lighting*.
-
-# Caso «facile»
-
-<center>![](./media/pathtracer100.webp)</center>
-
-# Caso «difficile»
-
-<center>![](./media/pathtracer-difficult-scene.webp)</center>
-
-# Illuminazione diretta
-
-<center>![](media/direct-lighting-sketch.svg)</center>
-
-Se la $p(\omega)$ usata nell'*importance sampling* potesse «pesare» la presenza o meno di sorgenti luminose, la convergenza sarebbe molto più rapida!
-
-# Implementazione
-
--   Per implementare un'ottimizzazione di questo tipo occorre aggiungere un flag al tipo `Material`, che dica se il materiale è un emettitore «significativo» o no.
-
--   Nel calcolo dell'integrale dell'equazione del rendering, il dominio 2π viene diviso in due parti:
-
-    #.   L'angolo solido $\Omega_\text{lum}$ sotteso da quegli oggetti il cui `Material` ha il flag «emettitore» impostato a `true`;
-    #.   L'angolo solido $\Omega_\text{rem}$ restante.
-    
--   L'integrale relativo a $\Omega_\text{rem}$ viene calcolato nel modo solito.
-
-# Luminarie
-
--   L'integrale relativo all'angolo solido $\Omega_\text{lum}$ viene calcolato in un modo speciale.
-
--   Occorre che ogni `Shape` abbia la possibilità di calcolare il proprio angolo solido (facile per piani, sfere e triangoli, difficile per oggetti CSG!).
-
--   Inoltre, è necessario un metodo che restituisca una direzione casuale verso l'oggetto emissivo distribuita uniformemente entro il suo angolo solido (facile per sfere e triangoli, difficile per piani e oggetti CSG!).
-
--   L'implementazione è complicata dal fatto che si devono tenere in conto le costanti di normalizzazione per le varie $p(\omega)$ usate, e le sovrapposizioni di diversi angoli solidi.
-
-# *Photon mapping*
-
-# *Photon mapping*
-
--   Il *photon mapping* è una tecnica che ottimizza il tempo di calcolo della soluzione dell'equazione del rendering. È illustrato nel libro [*Realistic Image Synthesis Using Photon Mapping*](https://www.routledge.com/Realistic-Image-Synthesis-Using-Photon-Mapping/Jensen/p/book/9781568814629) (Jensen, 2009)
-
--   È un algoritmo [*forward ray-tracing*](tomasi-ray-tracing-08a-projections.html#/forward-ray-tracing) (l'unico che analizziamo in questo corso!) che viene eseguito in due passaggi:
-
-    #.  Creazione della *photon map*;
-    #.  Rendering dell'immagine.
-
-# Fotoni nel «Cornell box»
-
-![](./media/cornell-box-schema.svg){height=560}
-
-# Algoritmo di *photon mapping*
-
--   Per ogni sorgente luminosa si emettono una serie di raggi che dipartono verso direzioni casuali.
-
--   Ad ogni interazione con una superficie si sceglie con una certa probabilità se creare un *fotone*: questo è un tipo `Photon` che contiene la posizione (un `Point`) e la sua energia (ossia, un campo `Color`).
-
--   La lista di tutti i `Photon` creati (la *photon map*, appunto) viene memorizzata nel tipo `World` (non è necessario associare un `Photon` alla `Shape` che l'ha prodotto).
-
--   Per calcolare $L(x \leftarrow \Psi)$ nell'equazione del rendering, si considerano tutti i `Photon` entro una certa distanza $d$ da $x$.
-
----
-
-<center>![](media/2017Retzlaff-photon-mapping.png){height=480px}</center>
-
-[[*Physically based computer graphics for realistic image formation to simulate optical measurement systems*](https://jsss.copernicus.org/articles/6/171/2017/), Retzlaff et al. (2017)]{style="float:right"}
-
-
-# Caratteristiche dell'algoritmo
-
--   Il calcolo dei fotoni può essere riutilizzato per successive esecuzioni dell'algoritmo di *path tracing* (eventualmente salvandolo su disco).
-
--   La ricerca dei fotoni più vicini a un punto $x$ può essere resa molto rapida usando una struttura KD-Tree (memorizzata direttamente in `World`).
-
--   È facile usarlo per simulare effetti legati allo spettro della luce (diffrazione da prismi, caustiche, etc.)
-
--   Di solito si usa il *photon mapping* solo per calcolare la componente luminosa indiretta (ossia, la luce che raggiunge le superfici ma **non** quella che raggiunge direttamente l'occhio dell'osservatore): per quest'ultima si può usare il *path-tracing*.
-
 
 # Aliasing e antialiasing
 
@@ -670,3 +553,99 @@ Il problema dell'*aliasing* è che certi pixel coprono aree dello schermo che co
 -   Non è sufficiente però dividere per $r^2$ il contributo di una sorgente luminosa, perché non corrisponderebbero le unità di misura!
 
 -   Di solito nei point-light tracers si ignora questo effetto (v. il caso di [POV-Ray](https://www.povray.org/documentation/view/3.6.1/317/)). In alternativa si può attribuire una dimensione $d$ di riferimento per ogni sorgente luminosa, e scalare per $(d / r)^2$.
+
+
+# Illuminazione diretta
+
+# Illuminazione diretta
+
+-   Abbiamo applicato l'*importance sampling* all'equazione del raytracing scrivendo una funzione di probabilità
+
+    $$
+    p(\omega) \propto \cos\theta \times f_r.
+    $$
+
+-   Questo trucco può migliorare molto la qualità del rendering nel caso di BRDF molto dipendenti da $\theta$, ma non aiuta se il termine
+
+    $$
+    L(x \leftarrow \Psi)
+    $$
+    
+    nell'integrale dell'equazione del rendering varia molto. Per ridurre la varianza in questi casi esiste l'algoritmo *(explicit) direct lighting*.
+
+# Caso «facile»
+
+<center>![](./media/pathtracer100.webp)</center>
+
+# Caso «difficile»
+
+<center>![](./media/pathtracer-difficult-scene.webp)</center>
+
+# Illuminazione diretta
+
+<center>![](media/direct-lighting-sketch.svg)</center>
+
+Se la $p(\omega)$ usata nell'*importance sampling* potesse «pesare» la presenza o meno di sorgenti luminose, la convergenza sarebbe molto più rapida!
+
+# Implementazione
+
+-   Per implementare un'ottimizzazione di questo tipo occorre aggiungere un flag al tipo `Material`, che dica se il materiale è un emettitore «significativo» o no.
+
+-   Nel calcolo dell'integrale dell'equazione del rendering, il dominio 2π viene diviso in due parti:
+
+    #.   L'angolo solido $\Omega_\text{lum}$ sotteso da quegli oggetti il cui `Material` ha il flag «emettitore» impostato a `true`;
+    #.   L'angolo solido $\Omega_\text{rem}$ restante.
+    
+-   L'integrale relativo a $\Omega_\text{rem}$ viene calcolato nel modo solito.
+
+# Luminarie
+
+-   L'integrale relativo all'angolo solido $\Omega_\text{lum}$ viene calcolato in un modo speciale.
+
+-   Occorre che ogni `Shape` abbia la possibilità di calcolare il proprio angolo solido (facile per piani, sfere e triangoli, difficile per oggetti CSG!).
+
+-   Inoltre, è necessario un metodo che restituisca una direzione casuale verso l'oggetto emissivo distribuita uniformemente entro il suo angolo solido (facile per sfere e triangoli, difficile per piani e oggetti CSG!).
+
+-   L'implementazione è complicata dal fatto che si devono tenere in conto le costanti di normalizzazione per le varie $p(\omega)$ usate, e le sovrapposizioni di diversi angoli solidi.
+
+# *Photon mapping*
+
+# *Photon mapping*
+
+-   Il *photon mapping* è una tecnica che ottimizza il tempo di calcolo della soluzione dell'equazione del rendering. È illustrato nel libro [*Realistic Image Synthesis Using Photon Mapping*](https://www.routledge.com/Realistic-Image-Synthesis-Using-Photon-Mapping/Jensen/p/book/9781568814629) (Jensen, 2009)
+
+-   È un algoritmo [*forward ray-tracing*](tomasi-ray-tracing-08a-projections.html#/forward-ray-tracing) (l'unico che analizziamo in questo corso!) che viene eseguito in due passaggi:
+
+    #.  Creazione della *photon map*;
+    #.  Rendering dell'immagine.
+
+# Fotoni nel «Cornell box»
+
+![](./media/cornell-box-schema.svg){height=560}
+
+# Algoritmo di *photon mapping*
+
+-   Per ogni sorgente luminosa si emettono una serie di raggi che dipartono verso direzioni casuali.
+
+-   Ad ogni interazione con una superficie si sceglie con una certa probabilità se creare un *fotone*: questo è un tipo `Photon` che contiene la posizione (un `Point`) e la sua energia (ossia, un campo `Color`).
+
+-   La lista di tutti i `Photon` creati (la *photon map*, appunto) viene memorizzata nel tipo `World` (non è necessario associare un `Photon` alla `Shape` che l'ha prodotto).
+
+-   Per calcolare $L(x \leftarrow \Psi)$ nell'equazione del rendering, si considerano tutti i `Photon` entro una certa distanza $d$ da $x$.
+
+---
+
+<center>![](media/2017Retzlaff-photon-mapping.png){height=480px}</center>
+
+[[*Physically based computer graphics for realistic image formation to simulate optical measurement systems*](https://jsss.copernicus.org/articles/6/171/2017/), Retzlaff et al. (2017)]{style="float:right"}
+
+
+# Caratteristiche dell'algoritmo
+
+-   Il calcolo dei fotoni può essere riutilizzato per successive esecuzioni dell'algoritmo di *path tracing* (eventualmente salvandolo su disco).
+
+-   La ricerca dei fotoni più vicini a un punto $x$ può essere resa molto rapida usando una struttura KD-Tree (memorizzata direttamente in `World`).
+
+-   È facile usarlo per simulare effetti legati allo spettro della luce (diffrazione da prismi, caustiche, etc.)
+
+-   Di solito si usa il *photon mapping* solo per calcolare la componente luminosa indiretta (ossia, la luce che raggiunge le superfici ma **non** quella che raggiunge direttamente l'occhio dell'osservatore): per quest'ultima si può usare il *path-tracing*.

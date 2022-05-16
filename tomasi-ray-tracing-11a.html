@@ -189,7 +189,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        mc_radiance <span class="op">=</span> radiance(mc_ray, num_of_samples<span class="op">=</span>num_of_samples)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        cum_radiance <span class="op">+=</span> material.brdf(...) <span class="op">*</span> mc_radiance</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> emitted_radiance <span class="op">+</span> cum_radiance <span class="op">*</span> (<span class="dv">2</span> <span class="op">*</span> pi) <span class="op">/</span> num_of_samples</span></code></pre></div>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> emitted_radiance <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> pi <span class="op">*</span> (cum_radiance <span class="op">*</span> (<span class="fl">1.0</span> <span class="op">/</span> num_of_samples))</span></code></pre></div>
 </section>
 <section id="fermare-la-ricorsione" class="slide level1">
 <h1>Fermare la ricorsione</h1>
@@ -225,18 +225,18 @@ fisicamente corretto!</p></li>
 certo numero di iterazioni vuol dire <strong>sottostimare</strong> il
 valore dell’integrale: se si sottostima la radianza, si introduce un
 <em>bias</em> nella soluzione.</p></li>
-<li><p>La situazione è uguale a quella in cui si stima il valore di
-<span class="math inline">\sum_{n=0}^\infty \frac1{n!} = e</span>
-sommando solo i primi <span class="math inline">N</span> termini:
-ovviamente la stima sarà per difetto, e l’errore sarà tanto più grave
-quanto è piccolo <span class="math inline">N</span>.</p></li>
-<li><p>È importante? Dipende!</p></li>
+<li><p>Confrontate questo tipo di errore con quello compiuto nel
+misurare una quantità con uno strumento (es., una corrente con un
+amperometro): in questo caso, l’errore a volte sovrastima, a volte
+sottostima il valore vero.</p></li>
+<li><p>Nel nostro caso il troncamento della ricorsione produrrà sempre
+un’immagine <strong>più scura</strong>.</p></li>
 </ul>
 </section>
 <section id="section" class="slide level1" data-transition="none">
 <h1 data-transition="none"></h1>
 <center>
-<img data-src="media/big-hero-6-2waves.webp" />
+<img data-src="media/big-hero-6-2waves.webp" height="560" />
 </center>
 <p><span style="float:right">Big Hero 6 (Walt Disney Animation Studios,
 2014), 2 riflessioni</span></p>
@@ -244,7 +244,7 @@ quanto è piccolo <span class="math inline">N</span>.</p></li>
 <section id="section-1" class="slide level1" data-transition="none">
 <h1 data-transition="none"></h1>
 <center>
-<img data-src="media/big-hero-6-9waves.webp" />
+<img data-src="media/big-hero-6-9waves.webp" height="560" />
 </center>
 <p><span style="float:right">Big Hero 6 (Walt Disney Animation Studios,
 2014), 9 riflessioni</span></p>
@@ -266,58 +266,42 @@ russa</em>, che rimuove completamente il <em>bias</em>, ossia la
 sottostima della radianza, al prezzo però di aumentare il rumore
 scorrelato (bianco).</p></li>
 <li><p>Il procedimento richiede di fissare una probabilità <span
-class="math inline">0 \leq q \leq 1</span> e una costante <span
-class="math inline">c</span> (solitamente <span class="math inline">c =
-0</span>), e procede nel modo seguente:</p>
+class="math inline">0 \leq q \leq 1</span> (nella vera roulette russa,
+<span class="math inline">q = 1/6</span>, a meno che non sia il film <a
+href="https://www.youtube.com/watch?v=nnGTuNtMQmc">Il cacciatore</a>!).
+Questo è l’algoritmo:</p>
 <ol>
 <li>Si estrae un numero casuale <span class="math inline">0 \leq x \leq
 1</span>;</li>
 <li>Se <span class="math inline">x &gt; q</span>, si procede a calcolare
 la radianza <span class="math inline">L</span> e si restituisce <span
-class="math inline">(L - q c) / (1 - q)</span>;</li>
+class="math inline">L/ (1 - q)</span>;</li>
 <li>Se <span class="math inline">x \leq q</span>, si ferma il calcolo e
-si restituisce <span class="math inline">c</span>.</li>
+si restituisce zero.</li>
 </ol></li>
 </ul>
 </section>
 <section class="slide level1">
 
 <ul>
-<li><p>Per quale motivo la roulette russa dovrebbe rimuovere il bias?
-Proviamo a calcolare il valore di aspettazione della radianza.</p></li>
 <li><p>Il metodo sostituisce la radianza <span
 class="math inline">L</span> con una radianza casuale <span
 class="math inline">L&#39;</span> così fatta:</p>
 <p><span class="math display">
 L&#39; = \begin{cases}
-\frac{L - q c}{1 - q}\ &amp;\text{se $x &gt; q$},\\
-c&amp;\text{altrimenti}.
+\frac{L}{1 - q}\ &amp;\text{se $x &gt; q$},\\
+0&amp;\text{altrimenti}.
 \end{cases}
 </span></p>
 <p><span class="math inline">L&#39;</span> ha valore di aspettazione</p>
 <p><span class="math display">
-E[L&#39;] = E\left[(1 - q) \frac{L - q c}{1 - q} + q c\right] = E[L].
+E[L&#39;] = E\left[(1 - q) \frac{L}{1 - q} + 0\cdot q\right] = E[L].
 </span></p></li>
-</ul>
-</section>
-<section id="significato-intuitivo" class="slide level1">
-<h1>Significato intuitivo</h1>
-<ul>
-<li><p>Se supponiamo <span class="math inline">c = 0</span>, otteniamo
-che</p>
-<p><span class="math display">
-L&#39; = \begin{cases}
-\frac{L}{1 - q}\ &amp;\text{se $x &gt; q$},\\
-0&amp;\text{altrimenti}.
-\end{cases}
-</span></p></li>
-<li><p>Questo risultato è intuitivo da comprendere: c’è una probabilità
-<span class="math inline">q</span> di restituire zero, ma se <span
-class="math inline">x &gt; q</span> (con probabilità <span
-class="math inline">1 - q</span>) si restituisce «qualcosa di più» di
-<span class="math inline">L</span> (perché <span class="math inline">1 /
-(1 - q) &gt; 1</span>) per compensare quanto si perderebbe nel primo
-caso.</p></li>
+<li><p>C’è una probabilità <span class="math inline">q</span> di
+restituire zero (sottostima), ma se <span class="math inline">x &gt;
+q</span> (con probabilità <span class="math inline">1 - q</span>) si
+restituisce una sovrastima di <span class="math inline">L</span>, perché
+<span class="math inline">1 / (1 - q) &gt; 1</span>.</p></li>
 </ul>
 </section>
 <section id="svantaggi" class="slide level1">
@@ -333,8 +317,9 @@ class="math inline">L / (1 - q)</span>, si restituirà il valore <span
 class="math inline">L</span> moltiplicato per cento volte, ossia <span
 class="math inline">1 / (1 - 0.99)</span>.</p></li>
 <li><p>Ovviamente questo implica un notevole incremento nella varianza
-della stima, il che vuol dire che l’immagine risulterà più sgranata,
-seppure chiaramente <em>unbiased</em>.</p></li>
+della stima, il che vuol dire che l’immagine sarà dominata dalle
+cosiddette <em>fireflies</em> (lucciole), seppure chiaramente
+<em>unbiased</em>.</p></li>
 </ul>
 </section>
 <section id="dettagli" class="slide level1">
@@ -344,16 +329,16 @@ seppure chiaramente <em>unbiased</em>.</p></li>
 minima al valore di <code>depth</code>:</p>
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ray.depth <span class="op">&gt;</span> <span class="dv">5</span>:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    threshold <span class="op">=</span> compute_threshold(...)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    threshold <span class="op">=</span> compute_threshold(...)  <span class="co"># Estimate a reasonable value for &quot;q&quot;</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pcg.random_float() <span class="op">&gt;</span> threshold:</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> radiance <span class="op">/</span> (<span class="dv">1</span> <span class="op">-</span> threshold)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span></code></pre></div>
 <p>Questo <em>non</em> introduce un bias, ma permette di ridurre il
 rumore nell’immagine.</p></li>
-<li><p>Qualsiasi valore di <span class="math inline">q</span> funziona,
-ma i risultati migliori si ottengono scegliendo il valore massimo tra le
-componenti R, G, B della BRDF nel punto di intersezione.</p></li>
+<li><p>Per <span class="math inline">q</span> vi suggerisco di usare il
+valore massimo tra le componenti R, G, B della BRDF nel punto di
+intersezione.</p></li>
 </ul>
 </section>
 <section id="path-tracing-allopera" class="slide level1">
@@ -553,6 +538,22 @@ Dirac.</p></li>
 <section id="brdf-riflettente-1" class="slide level1">
 <h1>BRDF riflettente</h1>
 <ul>
+<li><p>L’implementazione della BRDF riflettente è molto semplice, perché
+nella valutazione dell’integrale i raggi secondari sono tutti allineati
+lungo la direzione <span class="math inline">(\theta_r,
+\phi_r)</span>.</p></li>
+<li><p>Dal punto di vista dei vettori, la legge di riflessione si scrive
+così:</p>
+<p><span class="math display">
+\vec r = 2(\hat n \cdot \Psi) \hat n - \Psi,
+</span></p>
+<p>dove <span class="math inline">\vec r</span> è il vettore
+riflesso.</p></li>
+</ul>
+</section>
+<section id="brdf-riflettente-2" class="slide level1">
+<h1>BRDF riflettente</h1>
+<ul>
 <li><p>In <a
 href="https://graphics.stanford.edu/courses/cs448-05-winter/papers/nicodemus-brdf-nist.pdf"><em>Geometrical
 Considerations and Nomenclature for Reflectance</em></a> (Nicodemus,
@@ -567,25 +568,10 @@ direzione <span class="math inline">\Psi</span> di arrivo del raggio, e
 <span class="math inline">(\theta_r, \psi_r)</span> è la direzione
 riflessa.</p></li>
 <li><p>La presenza di <span class="math inline">\cos\theta</span> al
-denominatore fa sì che nell’<em>importance sampling</em> <span
-class="math inline">p(\omega)</span> non dipenda da <span
+denominatore fa sì che <span class="math inline">p(\omega)</span> non
+dipenda da <span class="math inline">\cos\theta</span>: non dobbiamo
+quindi «pesare» la radianza riflessa per <span
 class="math inline">\cos\theta</span>.</p></li>
-</ul>
-</section>
-<section id="brdf-riflettente-2" class="slide level1">
-<h1>BRDF riflettente</h1>
-<ul>
-<li><p>L’implementazione della BRDF riflettente è molto semplice, perché
-nella valutazione dell’integrale i raggi secondari sono tutti allineati
-lungo la direzione <span class="math inline">(\theta_r,
-\phi_r)</span>.</p></li>
-<li><p>Dal punto di vista dei vettori, la legge di riflessione si scrive
-così:</p>
-<p><span class="math display">
-\vec r = 2(\hat n \cdot \Psi) \hat n - \Psi,
-</span></p>
-<p>dove <span class="math inline">\vec r</span> è il vettore
-riflesso.</p></li>
 </ul>
 </section>
 <section id="basi-ortonormali-onb-arbitrarie" class="slide level1">
@@ -635,39 +621,17 @@ un vettore <span class="math inline">\vec v</span>, vale che</p>
 </span></p></li>
 <li><p>Se si ha una nuova ONB <span class="math inline">\left\{\hat
 e&#39;_1, \hat e&#39;_2, \hat e&#39;_3\right\}</span>, il vettore <span
-class="math inline">\vec v&#39;</span> ottenuto ruotando <span
-class="math inline">\vec v</span> dalla vecchia alla nuova base deve
-avere le stesse componenti:</p>
+class="math inline">\vec v</span> cambia la sua rappresentazione a
+seconda della base, da <span class="math inline">(v_x, v_y, v_z)</span>
+a <span class="math inline">(v&#39;_x, v&#39;_y, v&#39;_z)</span>:</p>
 <p><span class="math display">
 \vec v&#39; = \sum_{i=1}^3 \left&lt;\vec v&#39;, \hat e&#39;_i\right&gt;
 \hat e&#39;_i = v&#39;_x \hat e&#39;_x + v&#39;_y \hat e&#39;_y +
-v&#39;_z \hat e&#39;_z = v_x \hat e&#39;_x + v_y \hat e&#39;_y + v_z
-\hat e&#39;_z.
+v&#39;_z \hat e&#39;_z = v_x \hat e_x + v_y \hat e_y + v_z \hat e_z.
 </span></p></li>
 </ul>
 </section>
 <section id="onb-arbitrarie" class="slide level1">
-<h1>ONB arbitrarie</h1>
-<center>
-<img data-src="media/rendering-equation-and-onb.svg" />
-</center>
-<ul>
-<li><p>Dato un vettore casuale <span class="math inline">\vec v = (v_x,
-v_y, v_z)</span> nel sistema di riferimento della normale (ossia dove
-<span class="math inline">\theta = 0</span> è allineato con l’asse <span
-class="math inline">z</span>), possiamo ruotare <span
-class="math inline">\vec v</span> in una nuova ONB <span
-class="math inline">\left\{\hat e&#39;_i\right\}</span> scrivendo</p>
-<p><span class="math display">
-\vec v&#39; = v_x \hat e&#39;_x + v_y \hat e&#39;_y + v_z \hat e&#39;_z.
-</span></p></li>
-<li><p>Deve valere che <span class="math inline">\hat e&#39;_z = \hat
-n</span>, ma l’orientamento di <span class="math inline">\hat
-e&#39;_x</span> e <span class="math inline">\hat e&#39;_y</span> è
-ininfluente.</p></li>
-</ul>
-</section>
-<section id="onb-arbitrarie-1" class="slide level1">
 <h1>ONB arbitrarie</h1>
 <ul>
 <li><p>Il modo più semplice per creare una nuova ONB è basarsi sul fatto
@@ -700,9 +664,10 @@ allineato con <span class="math inline">\hat n</span>, altrimenti</p>
 \hat n \times \vec g = 0.
 </span></p></li>
 <li><p>Nell’implementazione dell’algoritmo occorre quindi inserire un
-test, ed eventualmente usare un altro vettore arbitrario <span
-class="math inline">\vec h</span>. Di solito si sceglie <span
-class="math inline">\vec g = (1, 0, 0)</span> e <span
+test: se <span class="math inline">\hat n \approx \vec g</span>, allora
+si sostituisce <span class="math inline">\vec g</span> con un altro
+vettore <span class="math inline">\vec h</span>. Di solito si sceglie
+<span class="math inline">\vec g = (1, 0, 0)</span> e <span
 class="math inline">\vec h = (0, 1, 0)</span>..</p></li>
 <li><p><a
 href="https://graphics.pixar.com/library/OrthonormalB/paper.pdf">Duff et
@@ -730,10 +695,10 @@ Animation Studios</a>.]</p>
 <li>Vediamo ora brevemente alcune possibilità per migliorare l’algoritmo
 di path tracing:
 <ul>
-<li>Illuminazione diretta;</li>
-<li><em>Photon mapping</em>;</li>
 <li>Antialiasing;</li>
-<li><em>Point-light tracing</em>.</li>
+<li><em>Point-light tracing</em>;</li>
+<li>Illuminazione diretta;</li>
+<li><em>Photon mapping</em>.</li>
 </ul></li>
 <li>Se desiderate potete implementare l’antialiasing e il
 <em>point-light tracing</em> nel vostro codice.</li>
@@ -741,7 +706,242 @@ di path tracing:
 quanto si possa implementare per questo corso.</li>
 </ul>
 </section>
+<section id="aliasing-e-antialiasing" class="slide level1">
+<h1>Aliasing e antialiasing</h1>
+</section>
+<section id="aliasing" class="slide level1">
+<h1>Aliasing</h1>
+<ul>
+<li><p>Nel tipo <code>ImageTracer</code> del nostro ray-tracer abbiamo
+assunto che il colore di ogni pixel fosse determinato dal colore del
+raggio <a
+href="http://localhost:8000/tomasi-ray-tracing-08a-projections.html#/raggi-per-pixel">passante
+per il centro</a>:</p>
+<center>
+<p><img data-src="./media/projection-pixel-centers-cube.svg"
+height="280" /></p>
+</center></li>
+<li><p>Questa assunzione provoca il fenomeno chiamato <em>aliasing</em>,
+causato dalla dimensione finita dei pixel, e alla produzione delle
+cosiddette <a
+href="https://en.wikipedia.org/wiki/Moir%C3%A9_pattern"><em>frange di
+Moiré</em></a></p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/aliasing.webp" />
+</center>
+<p>L’occhio umano tende a notare delle linee ondulate nella trama a
+scacchiera sul piano.</p>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/aliasing-zoom.webp" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/projection-pixel-centers-cube.svg" />
+</center>
+<p>Il problema dell’<em>aliasing</em> è che certi pixel coprono aree
+dello schermo che contengono colori diversi.</p>
+</section>
+<section id="antialiasing" class="slide level1">
+<h1>Antialiasing</h1>
+<ul>
+<li><p>Per <em>antialiasing</em> si intende un algoritmo che riduca gli
+artefatti di un’immagine che sono causati da variazioni di colore su
+scale inferiori del pixel.</p></li>
+<li><p>Un modo semplice per implementare l’<em>antialiasing</em> è
+dotare il nostro tipo <code>ImageTracer</code> dell’abilità di
+campionare un pixel usando più raggi, e calcolando poi la media della
+radianza associata a ciascuno.</p></li>
+</ul>
+</section>
+<section id="antialiasing-e-mc" class="slide level1">
+<h1>Antialiasing e MC</h1>
+<ul>
+<li><p>Non è forse immediato da comprendere, ma i raggi che inviamo
+all’interno dello stesso pixel <strong>non devono essere
+equispaziati</strong>, altrimenti il problema delle frange di Moiré si
+ripresenterebbe ugualmente (sebbene in misura minore):</p>
+<center>
+<p><img data-src="media/equispaced-ray-samples-in-pixel.svg"
+height="240" /></p>
+</center></li>
+<li><p>Meglio usare un metodo Monte Carlo per campionare l’interno di un
+pixel.</p></li>
+</ul>
+</section>
+<section id="stratified-sampling" class="slide level1">
+<h1><em>Stratified sampling</em></h1>
+<ul>
+<li><p>Estrarre casualmente punti sul piano <span
+class="math inline">[0, 1] \times [0, 1]</span> di un pixel è semplice:
+basta estrarre sia <span class="math inline">u</span> che <span
+class="math inline">v</span> da una distribuzione uniforme.</p></li>
+<li><p>Il risultato ha però un cattivo comportamento dal punto di vista
+della varianza, perché è facile che ci siano regioni del pixel poco
+campionate rispetto ad altre.</p></li>
+<li><p>Lo <em>stratified sampling</em> è un semplice metodo per ridurre
+la varianza: si divide lo spazio del pixel in tanti sotto-quadrati, e si
+estrae una posizione casuale dentro ciascuno dei quadrati.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/random-points.svg" />
+</center>
+</section>
+<section id="implementazione-1" class="slide level1">
+<h1>Implementazione</h1>
+<ul>
+<li><p>Lo <em>stratified sampling</em> è semplice da implementare, ma
+pone il vincolo che il numero di raggi sia un quadrato perfetto (1, 4,
+9, …).</p></li>
+<li><p>Implementare l’antialiasing con lo <em>stratified sampling</em>
+ha il vantaggio di ridurre molto l’aspetto granuloso delle immagini
+prodotte col <em>path tracing</em>.</p></li>
+<li><p>Abbiamo già visto che si può ridurre la granulosità aumentando il
+numero <span class="math inline">N</span> di raggi secondari, ma il
+tempo di calcolo è proporzionale a <span class="math inline">N^m</span>,
+con <span class="math inline">m</span> numero massimo di
+ricorsioni.</p></li>
+<li><p>Usando l’antialiasing con <span class="math inline">N</span>
+raggi, il tempo di calcolo è solamente proporzionale a <span
+class="math inline">N</span>: molto meglio!</p></li>
+</ul>
+</section>
+<section id="section-2" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/antialiasing-01.webp" />
+</center>
+<p>1 raggio per pixel</p>
+</section>
+<section id="section-3" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/antialiasing-04.webp" />
+</center>
+<p>4 raggi per pixel</p>
+</section>
+<section id="section-4" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/antialiasing-09.webp" />
+</center>
+<p>9 raggi per pixel</p>
+</section>
+<section id="section-5" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/antialiasing-16.webp" />
+</center>
+<p>16 raggi per pixel</p>
+</section>
+<section id="section-6" class="slide level1" data-transition="none">
+<h1 data-transition="none"></h1>
+<center>
+<img data-src="media/antialiasing-25.webp" />
+</center>
+<p>25 raggi per pixel</p>
+</section>
+<section id="point-light-tracing" class="slide level1">
+<h1>Point-light tracing</h1>
+</section>
+<section id="point-light-tracing-1" class="slide level1">
+<h1>Point-light tracing</h1>
+<ul>
+<li><p>Un algoritmo molto usato per generare immagini 3D è quello che
+chiameremo <em>point-light tracing</em>. (Di solito è chiamato <em>ray
+tracing</em> o <em>ray casting</em>; entrambi i termini sono però molto
+generici, e a volte indicano algoritmi differenti).</p></li>
+<li><p>Si basa sulla considerazione che in certe scene la maggior parte
+dell’energia luminosa si origina da pochi oggetti con un diametro
+apparente piccolo: una lampada, il sole, etc.</p></li>
+<li><p>Se si dividono tutti gli oggetti della scena in «luminosi» e non,
+si può valutare l’integrale dell’equazione su un dominio
+ridotto.</p></li>
+</ul>
+</section>
+<section id="sorgenti-luminose" class="slide level1">
+<h1>Sorgenti luminose</h1>
+<ul>
+<li><p>L’algoritmo di <em>point-light tracing</em> classico fa queste
+assunzioni:</p>
+<ol>
+<li>Le sorgenti luminose sono puntiformi e si riducono a delta di
+Dirac.</li>
+<li>Se una sorgente non è luminosa, non contribuisce alla luminosità
+complessiva dell’immagine.</li>
+<li>Per ovviare alla mancanza di radiazione che illumini le parti non
+illuminate direttamente, alcuni ray-tracers aggiungono arbitrariamente
+un termine «ambient light» (un colore vicino al nero ma non esattamente
+nullo).</li>
+</ol></li>
+<li><p>Non è possibile modellare l’illuminazione diffusa, ma il tempo
+necessario al calcolo della soluzione è molto minore.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="media/ray-tracing-algorithm.webp" />
+</center>
+</section>
+<section id="implementazione-2" class="slide level1">
+<h1>Implementazione</h1>
+<ul>
+<li><p>Nel tipo <code>World</code> si deve mantenere una lista di
+oggetti <code>LightSource</code>, ciascuno dei quali è un
+<code>Point</code> associato a una certa emissione
+(<code>Color</code>).</p></li>
+<li><p>La generazione di un’immagine usa come al solito
+<code>ImageTracer</code> per proiettare raggi da <code>Camera</code> a
+<code>HdrImage</code> (eventualmente usando l’anti-aliasing).</p></li>
+<li><p>Quando un raggio interagisce con una superficie, si determina
+quali <code>LightSource</code> siano visibili e si somma il loro
+contributo modulato per la <code>BRDF</code>.</p></li>
+<li><p>L’algoritmo è molto veloce perché non è ricorsivo (tranne se si
+vogliono implementare superfici riflettenti/rifrattive).</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<video src="media/raycaster-demo.mp4" width="640px" height="360px" controls loop autoplay/>
+</section>
+<section id="accorgimenti" class="slide level1">
+<h1>Accorgimenti</h1>
+<ul>
+<li><p>Nel caso generale, più una sorgente luminosa è lontana, meno è
+brillante; la sua radianza è costante, ma l’angolo solido <span
+class="math inline">\mathrm{d}\omega</span> nell’integrale
+dell’equazione del rendering scala come <span
+class="math inline">r^{-2}</span>.</p></li>
+<li><p>Se una sorgente luminosa è una delta di Dirac, non ha però angolo
+solido, e quindi in un point-light tracer bisognerebbe compensare per
+questo effetto.</p></li>
+<li><p>Non è sufficiente però dividere per <span
+class="math inline">r^2</span> il contributo di una sorgente luminosa,
+perché non corrisponderebbero le unità di misura!</p></li>
+<li><p>Di solito nei point-light tracers si ignora questo effetto (v. il
+caso di <a
+href="https://www.povray.org/documentation/view/3.6.1/317/">POV-Ray</a>).
+In alternativa si può attribuire una dimensione <span
+class="math inline">d</span> di riferimento per ogni sorgente luminosa,
+e scalare per <span class="math inline">(d / r)^2</span>.</p></li>
+</ul>
+</section>
 <section id="illuminazione-diretta" class="slide level1">
+<h1>Illuminazione diretta</h1>
+</section>
+<section id="illuminazione-diretta-1" class="slide level1">
 <h1>Illuminazione diretta</h1>
 <ul>
 <li><p>Abbiamo applicato l’<em>importance sampling</em> all’equazione
@@ -772,7 +972,7 @@ lighting</em>.</p></li>
 <img data-src="./media/pathtracer-difficult-scene.webp" />
 </center>
 </section>
-<section id="illuminazione-diretta-1" class="slide level1">
+<section id="illuminazione-diretta-2" class="slide level1">
 <h1>Illuminazione diretta</h1>
 <center>
 <img data-src="media/direct-lighting-sketch.svg" />
@@ -781,7 +981,7 @@ lighting</em>.</p></li>
 nell’<em>importance sampling</em> potesse «pesare» la presenza o meno di
 sorgenti luminose, la convergenza sarebbe molto più rapida!</p>
 </section>
-<section id="implementazione-1" class="slide level1">
+<section id="implementazione-3" class="slide level1">
 <h1>Implementazione</h1>
 <ul>
 <li><p>Per implementare un’ottimizzazione di questo tipo occorre
@@ -892,238 +1092,6 @@ componente luminosa indiretta (ossia, la luce che raggiunge le superfici
 ma <strong>non</strong> quella che raggiunge direttamente l’occhio
 dell’osservatore): per quest’ultima si può usare il
 <em>path-tracing</em>.</p></li>
-</ul>
-</section>
-<section id="aliasing-e-antialiasing" class="slide level1">
-<h1>Aliasing e antialiasing</h1>
-</section>
-<section id="aliasing" class="slide level1">
-<h1>Aliasing</h1>
-<ul>
-<li><p>Nel tipo <code>ImageTracer</code> del nostro ray-tracer abbiamo
-assunto che il colore di ogni pixel fosse determinato dal colore del
-raggio <a
-href="http://localhost:8000/tomasi-ray-tracing-08a-projections.html#/raggi-per-pixel">passante
-per il centro</a>:</p>
-<center>
-<p><img data-src="./media/projection-pixel-centers-cube.svg"
-height="280" /></p>
-</center></li>
-<li><p>Questa assunzione provoca il fenomeno chiamato <em>aliasing</em>,
-causato dalla dimensione finita dei pixel, e alla produzione delle
-cosiddette <a
-href="https://en.wikipedia.org/wiki/Moir%C3%A9_pattern"><em>frange di
-Moiré</em></a></p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="media/aliasing.webp" />
-</center>
-<p>L’occhio umano tende a notare delle linee ondulate nella trama a
-scacchiera sul piano.</p>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="media/aliasing-zoom.webp" />
-</center>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="media/projection-pixel-centers-cube.svg" />
-</center>
-<p>Il problema dell’<em>aliasing</em> è che certi pixel coprono aree
-dello schermo che contengono colori diversi.</p>
-</section>
-<section id="antialiasing" class="slide level1">
-<h1>Antialiasing</h1>
-<ul>
-<li><p>Per <em>antialiasing</em> si intende un algoritmo che riduca gli
-artefatti di un’immagine che sono causati da variazioni di colore su
-scale inferiori del pixel.</p></li>
-<li><p>Un modo semplice per implementare l’<em>antialiasing</em> è
-dotare il nostro tipo <code>ImageTracer</code> dell’abilità di
-campionare un pixel usando più raggi, e calcolando poi la media della
-radianza associata a ciascuno.</p></li>
-</ul>
-</section>
-<section id="antialiasing-e-mc" class="slide level1">
-<h1>Antialiasing e MC</h1>
-<ul>
-<li><p>Non è forse immediato da comprendere, ma i raggi che inviamo
-all’interno dello stesso pixel <strong>non devono essere
-equispaziati</strong>, altrimenti il problema delle frange di Moiré si
-ripresenterebbe ugualmente (sebbene in misura minore):</p>
-<center>
-<p><img data-src="media/equispaced-ray-samples-in-pixel.svg"
-height="240" /></p>
-</center></li>
-<li><p>Meglio usare un metodo Monte Carlo per campionare l’interno di un
-pixel.</p></li>
-</ul>
-</section>
-<section id="stratified-sampling" class="slide level1">
-<h1><em>Stratified sampling</em></h1>
-<ul>
-<li><p>Estrarre casualmente punti sul piano <span
-class="math inline">[0, 1] \times [0, 1]</span> di un pixel è semplice:
-basta estrarre sia <span class="math inline">u</span> che <span
-class="math inline">v</span> da una distribuzione uniforme.</p></li>
-<li><p>Il risultato ha però un cattivo comportamento dal punto di vista
-della varianza, perché è facile che ci siano regioni del pixel poco
-campionate rispetto ad altre.</p></li>
-<li><p>Lo <em>stratified sampling</em> è un semplice metodo per ridurre
-la varianza: si divide lo spazio del pixel in tanti sotto-quadrati, e si
-estrae una posizione casuale dentro ciascuno dei quadrati.</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="media/random-points.svg" />
-</center>
-</section>
-<section id="implementazione-2" class="slide level1">
-<h1>Implementazione</h1>
-<ul>
-<li><p>Lo <em>stratified sampling</em> è semplice da implementare, ma
-pone il vincolo che il numero di raggi sia un quadrato perfetto (1, 4,
-9, …).</p></li>
-<li><p>Implementare l’antialiasing con lo <em>stratified sampling</em>
-ha il vantaggio di ridurre molto l’aspetto granuloso delle immagini
-prodotte col <em>path tracing</em>.</p></li>
-<li><p>Abbiamo già visto che si può ridurre la granulosità aumentando il
-numero <span class="math inline">N</span> di raggi secondari, ma il
-tempo di calcolo è proporzionale a <span class="math inline">N^m</span>,
-con <span class="math inline">m</span> numero massimo di
-ricorsioni.</p></li>
-<li><p>Usando l’antialiasing con <span class="math inline">N</span>
-raggi, il tempo di calcolo è solamente proporzionale a <span
-class="math inline">N</span>: molto meglio!</p></li>
-</ul>
-</section>
-<section id="section-2" class="slide level1" data-transition="none">
-<h1 data-transition="none"></h1>
-<center>
-<img data-src="media/antialiasing-01.webp" />
-</center>
-<p>1 raggio per pixel</p>
-</section>
-<section id="section-3" class="slide level1" data-transition="none">
-<h1 data-transition="none"></h1>
-<center>
-<img data-src="media/antialiasing-04.webp" />
-</center>
-<p>4 raggi per pixel</p>
-</section>
-<section id="section-4" class="slide level1" data-transition="none">
-<h1 data-transition="none"></h1>
-<center>
-<img data-src="media/antialiasing-09.webp" />
-</center>
-<p>9 raggi per pixel</p>
-</section>
-<section id="section-5" class="slide level1" data-transition="none">
-<h1 data-transition="none"></h1>
-<center>
-<img data-src="media/antialiasing-16.webp" />
-</center>
-<p>16 raggi per pixel</p>
-</section>
-<section id="section-6" class="slide level1" data-transition="none">
-<h1 data-transition="none"></h1>
-<center>
-<img data-src="media/antialiasing-25.webp" />
-</center>
-<p>25 raggi per pixel</p>
-</section>
-<section id="point-light-tracing" class="slide level1">
-<h1>Point-light tracing</h1>
-</section>
-<section id="point-light-tracing-1" class="slide level1">
-<h1>Point-light tracing</h1>
-<ul>
-<li><p>Un algoritmo molto usato per generare immagini 3D è quello che
-chiameremo <em>point-light tracing</em>. (Di solito è chiamato <em>ray
-tracing</em> o <em>ray casting</em>; entrambi i termini sono però molto
-generici, e a volte indicano algoritmi differenti).</p></li>
-<li><p>Si basa sulla considerazione che in certe scene la maggior parte
-dell’energia luminosa si origina da pochi oggetti con un diametro
-apparente piccolo: una lampada, il sole, etc.</p></li>
-<li><p>Se si dividono tutti gli oggetti della scena in «luminosi» e non,
-si può valutare l’integrale dell’equazione su un dominio
-ridotto.</p></li>
-</ul>
-</section>
-<section id="sorgenti-luminose" class="slide level1">
-<h1>Sorgenti luminose</h1>
-<ul>
-<li><p>L’algoritmo di <em>point-light tracing</em> classico fa queste
-assunzioni:</p>
-<ol>
-<li>Le sorgenti luminose sono puntiformi e si riducono a delta di
-Dirac.</li>
-<li>Se una sorgente non è luminosa, non contribuisce alla luminosità
-complessiva dell’immagine.</li>
-<li>Per ovviare alla mancanza di radiazione che illumini le parti non
-illuminate direttamente, alcuni ray-tracers aggiungono arbitrariamente
-un termine «ambient light» (un colore vicino al nero ma non esattamente
-nullo).</li>
-</ol></li>
-<li><p>Non è possibile modellare l’illuminazione diffusa, ma il tempo
-necessario al calcolo della soluzione è molto minore.</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="media/ray-tracing-algorithm.webp" />
-</center>
-</section>
-<section id="implementazione-3" class="slide level1">
-<h1>Implementazione</h1>
-<ul>
-<li><p>Nel tipo <code>World</code> si deve mantenere una lista di
-oggetti <code>LightSource</code>, ciascuno dei quali è un
-<code>Point</code> associato a una certa emissione
-(<code>Color</code>).</p></li>
-<li><p>La generazione di un’immagine usa come al solito
-<code>ImageTracer</code> per proiettare raggi da <code>Camera</code> a
-<code>HdrImage</code> (eventualmente usando l’anti-aliasing).</p></li>
-<li><p>Quando un raggio interagisce con una superficie, si determina
-quali <code>LightSource</code> siano visibili e si somma il loro
-contributo modulato per la <code>BRDF</code>.</p></li>
-<li><p>L’algoritmo è molto veloce perché non è ricorsivo (tranne se si
-vogliono implementare superfici riflettenti/rifrattive).</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<video src="media/raycaster-demo.mp4" width="640px" height="360px" controls loop autoplay/>
-</section>
-<section id="accorgimenti" class="slide level1">
-<h1>Accorgimenti</h1>
-<ul>
-<li><p>Nel caso generale, più una sorgente luminosa è lontana, meno è
-brillante; la sua radianza è costante, ma l’angolo solido <span
-class="math inline">\mathrm{d}\omega</span> nell’integrale
-dell’equazione del rendering scala come <span
-class="math inline">r^{-2}</span>.</p></li>
-<li><p>Se una sorgente luminosa è una delta di Dirac, non ha però angolo
-solido, e quindi in un point-light tracer bisognerebbe compensare per
-questo effetto.</p></li>
-<li><p>Non è sufficiente però dividere per <span
-class="math inline">r^2</span> il contributo di una sorgente luminosa,
-perché non corrisponderebbero le unità di misura!</p></li>
-<li><p>Di solito nei point-light tracers si ignora questo effetto (v. il
-caso di <a
-href="https://www.povray.org/documentation/view/3.6.1/317/">POV-Ray</a>).
-In alternativa si può attribuire una dimensione <span
-class="math inline">d</span> di riferimento per ogni sorgente luminosa,
-e scalare per <span class="math inline">(d / r)^2</span>.</p></li>
 </ul>
 </section>
     </div>

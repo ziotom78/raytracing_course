@@ -173,7 +173,7 @@ def __call__(self, ray: Ray) -> Color:
             # Terminate prematurely
             return emitted_radiance
 
-    # (continue)
+    # (continued)
 ```
 
 # [Implementazione (2/2)](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126)
