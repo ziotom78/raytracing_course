@@ -75,7 +75,7 @@ for i in range(100):
 -   Per migliorare la varianza useremo l'*importance sampling*, impiegando la PDF
 
     $$
-    p(\omega) \propto f_r \times \cos\theta.
+    p(\omega) \propto f_r \cdot \cos\theta.
     $$
     
 # Il tipo `BRDF`
@@ -96,7 +96,7 @@ for i in range(100):
 
 # `DiffuseBRDF`
 
--   Per la BRDF diffusa, abbiamo dimostrato che $p(\omega) \propto \cos\theta$.
+-   Per la BRDF diffusa, abbiamo dedotto che $p(\omega) \propto \cos\theta$.
 
 -   L'implementazione di [`DiffuseBRDF.scatter_ray`](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L117-L130) deve quindi usare l'[algoritmo che abbiamo ricavato](tomasi-ray-tracing-11a-path-tracing.html#risultato-di-phong) per la distribuzione di Phong con $n = 1$:
 
