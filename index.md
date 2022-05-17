@@ -26,6 +26,8 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 9a      | 2022/05/02 | [Ottimizzazione di forme](tomasi-ray-tracing-09a.html)                             |
 | 10a     | 2022/05/09 | [Path tracing (1/2)](tomasi-ray-tracing-10a.html)                                  |
 | 10b     | 2022/05/11 | [Numeri casuali e BRDF](tomasi-ray-tracing-10b.html)                               |
+| 11a     | 2022/05/16 | [Path tracing (2/2)](tomasi-ray-tracing-11a.html)                                  |
+| 11b     | 2022/05/18 | [Basi ortonormali e path tracing](tomasi-ray-tracing-11b.html)                     |
 
 # Scelta del linguaggio
 
