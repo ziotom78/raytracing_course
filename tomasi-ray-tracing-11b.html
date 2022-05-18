@@ -474,6 +474,68 @@ buon modo per ridurre la varianza senza aumentare il tempo di calcolo
 effettivo (<em>wall-clock time</em>).</p></li>
 </ul>
 </section>
+<section id="profiling" class="slide level1">
+<h1><em>Profiling</em></h1>
+</section>
+<section id="profiling-1" class="slide level1">
+<h1><em>Profiling</em></h1>
+<ul>
+<li><p>Da oggi, il vostro codice dovrà fare molti calcoli!</p></li>
+<li><p>Confrontate tra diversi gruppi le velocità del codice nel
+generare immagini simili, per capire se ci sono colli di bottiglia: con
+i linguaggi che usate, in teoria non dovrebbero esserci differenze
+significative</p></li>
+<li><p>Se notate differenze, è necessario misurare quale parte del
+codice lo rallenta: è ciò che viene chiamato <em>profiling</em></p></li>
+</ul>
+</section>
+<section id="misura-delle-prestazioni" class="slide level1">
+<h1>Misura delle prestazioni</h1>
+<ul>
+<li><p>Non è sufficiente sapere quanto tempo impieghi in tutto il vostro
+codice per produrre un’immagine: occorre sapere quanto spende in
+ciascuna funzione.</p></li>
+<li><p>Ci sono vari modi di misurarlo, e molti strumenti a disposizione:
+è impossibile essere esaustivi!</p></li>
+<li><p>Vi elenco alcune possibilità, e vi offro alcuni suggerimenti e
+trucchi</p></li>
+</ul>
+</section>
+<section id="tipi-di-profilers" class="slide level1">
+<h1>Tipi di <em>profilers</em></h1>
+<ul>
+<li><p>Il metodo più semplice è quello di circondare le funzioni
+«sospette» di essere colli di bottiglia con misure del tempo:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> perf_counter_ns   <span class="co"># Or: &quot;monotonic&quot;. DO NOT USE ANYTHING ELSE!!</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> perf_counter_ns()</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>long_function_call(...)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>elapsed_time <span class="op">=</span> perf_counter_ns() <span class="op">-</span> start</span></code></pre></div></li>
+<li><p>Esistono profiler che misurano il tempo cumulativo speso da
+ciascuna linea di codice: attenzione, perché possono rallentare molto il
+codice!</p></li>
+<li><p>Sono anche disponibili profiler statistici, che sono meno
+accurati ma non rallentano significativamente il codice.</p></li>
+</ul>
+</section>
+<section id="accorgimenti" class="slide level1">
+<h1>Accorgimenti</h1>
+<ul>
+<li><p>Non misurate il tempo di <em>ogni</em> funzione, concentratevi
+solo su quelle che potrebbero essere problematiche. (Ad esempio, non
+importa che la funzione che interpreta la linea di comando sia
+veloce!)</p></li>
+<li><p>Spesso gli output dei profiler sono abbastanza illeggibili e
+troppo dettagliati: esistono però strumenti per estrarre grafici
+riassuntivi come i <a
+href="http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html">flamegraph</a>,
+che sono più facili da leggere.</p></li>
+<li><p>Il sito <a href="https://www.speedscope.app/">speedscope</a>
+fornisce un modo per produrre <em>flamegraphs</em> navigabili tramite
+browser, partendo dall’output di svariati profiler, e non richiede
+installazione.</p></li>
+</ul>
+</section>
 <section id="guida-per-lesercitazione" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
 </section>

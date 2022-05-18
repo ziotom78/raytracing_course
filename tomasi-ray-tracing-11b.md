@@ -287,6 +287,51 @@ for i in range(5):
 -   Mediare immagini diverse (prodotte contemporaneamente mediante [GNU Parallel](https://www.gnu.org/software/parallel/)) è un buon modo per ridurre la varianza senza aumentare il tempo di calcolo effettivo (*wall-clock time*).
 
 
+# *Profiling*
+
+# *Profiling*
+
+-   Da oggi, il vostro codice dovrà fare molti calcoli!
+
+-   Confrontate tra diversi gruppi le velocità del codice nel generare immagini simili, per capire se ci sono colli di bottiglia: con i linguaggi che usate, in teoria non dovrebbero esserci differenze significative
+
+-   Se notate differenze, è necessario misurare quale parte del codice lo rallenta: è ciò che viene chiamato *profiling*
+
+
+# Misura delle prestazioni
+
+-   Non è sufficiente sapere quanto tempo impieghi in tutto il vostro
+    codice per produrre un'immagine: occorre sapere quanto spende in
+    ciascuna funzione.
+    
+-   Ci sono vari modi di misurarlo, e molti strumenti a disposizione: è impossibile essere esaustivi!
+
+-   Vi elenco alcune possibilità, e vi offro alcuni suggerimenti e trucchi
+
+
+# Tipi di *profilers*
+
+-   Il metodo più semplice è quello di circondare le funzioni «sospette» di essere colli di bottiglia con misure del tempo:
+
+    ```python
+    from time import perf_counter_ns   # Or: "monotonic". DO NOT USE ANYTHING ELSE!!
+    start = perf_counter_ns()
+    long_function_call(...)
+    elapsed_time = perf_counter_ns() - start
+    ```
+    
+-   Esistono profiler che misurano il tempo cumulativo speso da ciascuna linea di codice: attenzione, perché possono rallentare molto il codice!
+
+-   Sono anche disponibili profiler statistici, che sono meno accurati ma non rallentano significativamente il codice.
+
+# Accorgimenti
+
+-   Non misurate il tempo di *ogni* funzione, concentratevi solo su quelle che potrebbero essere problematiche. (Ad esempio, non importa che la funzione che interpreta la linea di comando sia veloce!)
+
+-   Spesso gli output dei profiler sono abbastanza illeggibili e troppo dettagliati: esistono però strumenti per estrarre grafici riassuntivi come i [flamegraph](http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html), che sono più facili da leggere.
+
+-   Il sito [speedscope](https://www.speedscope.app/) fornisce un modo per produrre *flamegraphs* navigabili tramite browser, partendo dall'output di svariati profiler, e non richiede installazione.
+
 # Guida per l'esercitazione
 
 
