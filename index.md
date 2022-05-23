@@ -28,6 +28,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 10b     | 2022/05/11 | [Numeri casuali e BRDF](tomasi-ray-tracing-10b.html)                               |
 | 11a     | 2022/05/16 | [Path tracing (2/2)](tomasi-ray-tracing-11a.html)                                  |
 | 11b     | 2022/05/18 | [Basi ortonormali e path tracing](tomasi-ray-tracing-11b.html)                     |
+| 12a     | 2022/05/23 | [Teoria dei compilatori (1/2)](tomasi-ray-tracing-12a.html)                        |
 
 # Scelta del linguaggio
 
