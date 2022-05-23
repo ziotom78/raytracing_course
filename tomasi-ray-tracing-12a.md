@@ -1,5 +1,5 @@
 ---
-title: "Lezione 13"
+title: "Lezione 12"
 subtitle: "Analisi lessicale"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
@@ -153,7 +153,7 @@ La libreria [karax/karaxdsl](https://github.com/karaxnim/karax) estende il lingu
 
 -   Per definire il nostro linguaggio dovremmo innanzitutto farci un'idea di cosa faccia la «concorrenza».
 
--   Vediamo quindi come quattro *renderer* permettono di specificare le scene che sono fornite come input: DBKTrace, POV-Ray, PolyRay e YafaRay. Ovviamente tutti questi programmi funzionano da linea di comando come farà il nostro:
+-   Vediamo quindi come tre *renderer* permettono di specificare le scene che sono fornite come input: DBKTrace, POV-Ray e  YafaRay. Ovviamente tutti questi programmi funzionano da linea di comando come farà il nostro:
 
     ```
     $ program input_file
@@ -239,47 +239,8 @@ light_source { <2, 4, -3> color White }
 
 ---
 
-<center>![](media/mtpiano.webp){height=640px}</center>
+<center>![](media/mtpiano.webp){height=720px}</center>
 
-# PolyRay
-
--   Creato da Alexander Enzmann nel 1991 (lo stesso anno di POV-Ray!).
--   Scritto interamente in C.
--   Ultima versione (1.8) rilasciata nel 1995.
--   Non più sviluppato, ma usato come ispirazione nello sviluppo delle versioni di POV-Ray successive alla 1.0.
-
-# File di input
-
-```text
-// PolyRay example file
-viewpoint {
-    from <0,0,-8>        // The location of the eye
-    at <0,0,0>           // The point that we are looking at
-    up <0,1,0>           // The direction that will be up
-    angle 45             // The vertical field of view
-    resolution 160, 160  // The image will be 160x160 pixels
-}
-
-background skyblue
-
-light <-10,3, -20>
-
-define shiny_red
-texture {
-   surface {
-      color red
-      ambient 0.2
-      diffuse 0.6
-      specular white, 0.5
-      microfacet Cook 5
-   }
-}
-
-object {
-   sphere <0, 0, 0>, 2
-   shiny_red
-}
-```
 
 # [YafaRay](http://www.yafaray.org/)
 
@@ -287,9 +248,9 @@ object {
 
 -   Risolve l'equazione del rendering usando un algoritmo di *path-tracing*.
 
--   Può essere usato in Blender come «motore» per il rendering.
+-   Può essere usato in [Blender](https://www.blender.org/) come «motore» per il rendering.
 
--   Il formato delle scene è XML.
+-   Il formato delle scene è [XML](https://en.wikipedia.org/wiki/XML).
 
 # File di input
 
@@ -387,34 +348,31 @@ object {
 
 # Cosa includere
 
-Pensiamo a cosa deve essere specificabile nel nostro formato. Dobbiamo sicuramente prevedere una sintassi per ciascuno di questi oggetti:
+-   Il nostro formato serve per descrivere una scena, non per fare rendering!
 
-- Osservatori;
-- Forme (sfere, piani, e qualsiasi altro oggetto voi abbiate implementato);
-- Trasformazioni;
-- Vettori;
-- Materiali;
-- BRDF;
-- Pigmenti;
-- Colori;
-- Numeri.
+-   Per questo scopo, bisogna pensare a una sintassi per specificare:
+
+    - Osservatori;
+    - Forme (sfere, piani, e qualsiasi altro oggetto voi abbiate implementato);
+    - Trasformazioni;
+    - Vettori;
+    - BRDF, materiali e pigmenti;
+    - Colori;
+    - Numeri.
 
 # Scelte da compiere
 
 -   Dobbiamo definire una sintassi per creare oggetti, e ovviamente ci sono varie possibilità. Ad esempio, per definire una sfera potremmo usare una qualsiasi di queste quattro sintassi:
 
     ```text
-    sphere: [1, 3, 6], 2
+    sphere [1 3 6] 2
     sphere([1, 3, 6], 2)
-    sphere with center=[1, 3, 6], radius=2
-    [1, 3, 6] 2 sphere
+    create sphere with center [1, 3, 6] and radius 2
     ```
-    
-    (L'ultima sintassi è comune in linguaggi *stack-based* come il Postscript).
     
 -   La scelta dell'una o dell'altra sintassi è in linea di principio completamente nelle nostre mani!
     
--   Senza ulteriori indugi, vi mostro la sintassi che ho scelto per il corso tramite un esempio concreto.
+-   Per Pytracer ho scelto la sintassi che ora illustro.
 
 
 # Esempio di formato
@@ -424,7 +382,8 @@ Pensiamo a cosa deve essere specificabile nel nostro formato. Dobbiamo sicuramen
 float clock(150)
 
 # Declare a few new materials. Each of them includes a BRDF and a pigment
-# We can split a definition over multiple lines and indent them as we like
+# (the emitted radiance). We can split a definition over multiple lines
+# and indent them as we like
 material sky_material(
     diffuse(image("sky-dome.pfm")),
     uniform(<0.7, 0.5, 1>)
@@ -452,7 +411,8 @@ plane (ground_material, identity)
 # that we can compose transformations through the "*" operator
 plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))
 
-# Define a camera
+# Define a perspective camera, with some transformation, aspect
+# ratio, and eye-screen distance
 camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 ```
 
@@ -518,11 +478,25 @@ graph "" {
 }
 ```
 
--   Il *lexer* scompone il codice sorgente in elementi semplici, chiamati *token*;
+-   Il *lexer* scompone il codice sorgente in elementi semplici, chiamati *token*, e segnala gli errori di natura lessicale;
 -   Il *parser* analizza la sequenza dei *token* per legarli tra loro e comprenderne la sintassi e la semantica;
 -   L'*AST builder* crea il cosiddetto *Abstract Syntax Tree* (non usato nel nostro caso);
 -   L'*optimizer* applica ottimizzazioni all'AST (non usato nel nostro caso);
 -   Dall'AST ottimizzato viene generato l'eseguibile (non usato nel nostro caso).
+
+# Esempio: analisi lessicale
+
+-   Consideriamo la frase
+
+    ```
+    Il bambino mangia la mela
+    ```
+    
+-   Quello che farebbe un *lexer* della lingua italiana è produrre questa lista:
+
+    1.  `Il`: articolo determinativo maschile singolare
+    2.  `bambino`: nome comune di persona maschile singolare
+    3.  `mangia`: voce del verbo mangiare, modo indicativo, tempo presente, terza persona singolare…
 
 # Esempio: analisi lessicale
 
@@ -533,7 +507,7 @@ graph "" {
     float clock(150)
     ```
 
--   Il risultato dell'analisi lessicale delle linee sopra è la produzione della sequenza di token seguente (da cui sono già rimossi spazi bianchi e commenti):
+-   Il risultato dell'analisi lessicale delle linee sopra è la produzione della lista di token seguente (da cui sono già rimossi spazi bianchi e commenti):
 
     ```python
     [
@@ -547,14 +521,23 @@ graph "" {
 
 # Esempio: analisi sintattica
 
-```text
-# Declare a variable named "clock"
-float clock(150)
-```
+-   Consideriamo la frase
+
+    ```
+    Il bambino mangia la mela
+    ```
+    
+-   L'analisi sintattica verifica che le concordanze siano corrette (articolo/nome, nome/verbo…)
+
+-   Determine quale è il soggetto e quale il complemento oggetto
+
+
+# Esempio: analisi sintattica
 
 -   L'analisi sintattica parte dalla sequenza di token prodotta dall'analisi lessicale:
 
     ```python
+    # List of tokens for `float clock(150)`:
     [
         KeywordToken(TOKEN_FLOAT), IdentifierToken("clock"), SymbolToken("("),
         LiteralNumberToken(150.0), SymbolToken(")"),
@@ -631,7 +614,7 @@ float clock(150)
 
 -   L'implementazione del tipo `Token` ci consente di approfondire il sistema dei tipi dei linguaggi che abbiamo usato nel corso.
 
--   Concettualmente, i diversi tipi di *token* sono derivati da un tipo base, `Token` appunto. È quindi naturale pensare a una gerarchia di classi, che ha `Token` come tipo base.
+-   Seguendo un approccio OOP, i diversi tipi di *token* potrebbero essere classi derivate da un tipo base, `Token` appunto: si costruisce quindi una gerarchia di classi.
 
 -   Questa soluzione funziona, ed è ciò che ho usato in pytracer. Non è però la soluzione più comoda!
 
@@ -675,7 +658,7 @@ class SymbolToken(Token):
     #.  Il codice diventa molto verboso: si devono implementare tante classi, tutte molto simili tra loro.
     #.  Le gerarchie di classi sono pensate per essere *estendibili*: posso sempre definire una nuova classe derivata da `Token`. Ma nel caso di un linguaggio, l'elenco dei tipi di token è fissato ed è molto difficile che cambi.
     
--   Il tipo più indicato per un *token* è un *sum type*, chiamato anche *tagged union*, che si contrappone ai *product type* che tutti voi conoscete (probabilmente senza saperlo). Vediamo in cosa consistono.
+-   Il tipo più indicato per un *token* è un *sum type*, chiamato anche *tagged union* o *object variant*, che si contrappone ai *product type* che tutti voi conoscete (probabilmente senza saperlo). Vediamo in cosa consistono.
 
 
 # *Product types*
@@ -839,11 +822,13 @@ int main() {
 
 -   L'esempio mostra che per implementare una *tagged union* occorrono *tre* tipi:
 
-    #.  Il tipo `Token` è una `struct` che contiene al suo interno il cosiddetto *tag* (che indica se il token appartiene a $N$ o a $S$);
+    #.  Il tipo `Token` contiene al suo interno il cosiddetto *tag* (che indica se il token appartiene a $N$ o a $S$);
     #.  Il tipo `TokenType` è il *tag*, ed un `enum` (C) o `enum class` (C++);
     #.  Il tipo `TokenValue` è la `union` vera e propria, che in C++ va corredata di un costruttore e un distruttore di default per poter essere usata in `Token`.
 
--   Questo modo di fare è complicato, ma è necessario in quei linguaggi come il C++ che non supportano le *tagged union* (vedi [questo post](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/sum-types) per una panoramica dei linguaggi che hanno questa lacuna). (Julia supporta le *tagged unions* tramite il tipo `Union` e la funzione `isa`, C\# e Kotlin non supportano i *sum types*).
+-   Tutto ciò è necessario in quei linguaggi che non supportano le *tagged union* (vedi [questo post](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/sum-types) per una panoramica dei linguaggi che hanno questa lacuna).
+
+-   Nim supporta in maniera nativa i tag: vedete la sezione del manuale [*Object variants*](https://nim-lang.org/docs/manual.html#types-object-variants)
 
 
 # Esaustività dei controlli
@@ -861,7 +846,7 @@ void print_token(const Token & t) {
     switch(t.type) {
     case TokenType::LITERAL_NUMBER: std::cout << t.value.number; break;
     case TokenType::LITERAL_STRING: std::cout << t.value.string; break;
-    case TokenType::LITERAL_SYMBOL: std::cout << t.value.symbol; break;
+    case TokenType::SYMBOL: std::cout << t.value.symbol; break;
     // Oops! I forgot TokenType::KEYWORD, but not every compiler will produce a warning!
     }
 }
@@ -870,7 +855,7 @@ void print_token(const Token & t) {
 
 # *Sum types* fatti bene
 
--   Linguaggi come [Haskell](https://wiki.haskell.org/Algebraic_data_type), i derivati di ML (es., [OCaml](https://ocaml.org/), F\#), [Pascal](https://www.freepascal.org/docs-html/ref/refsu15.html), [Nim](https://nim-lang.org/docs/tut2.html#object-oriented-programming-object-variants), etc., consentono di definire *sum types* in maniera molto più naturale.
+-   Linguaggi come [Haskell](https://wiki.haskell.org/Algebraic_data_type), i derivati di ML (es., [OCaml](https://ocaml.org/), F\#), [Pascal](https://www.freepascal.org/docs-html/ref/refsu15.html), [Nim](https://nim-lang.org/docs/tut2.html#object-oriented-programming-object-variants), [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), etc., consentono di definire *sum types* in maniera molto più naturale.
 
 -   Ad esempio, ecco come definire il tipo `Token` in OCaml:
 
@@ -889,13 +874,12 @@ void print_token(const Token & t) {
 -   In linguaggi come [OCaml](https://ocaml.org/) e [F\#](https://fsharpforfunandprofit.com/posts/discriminated-unions/), i controlli sui *sum types* sono esaustivi:
 
     ```ocaml
-    let tok = LiteralNumber 0.5;
-    match tok with
+    let print_token tok = match tok with
        | LiteralNumber a -> print_float a
        | LiteralString s -> print_string s
        | Symbol c -> print_char c;
    
-    (* Warning: this pattern-matching is not exhaustive.
+    (* Warning 8 [partial-match]: this pattern-matching is not exhaustive.
      * Here is an example of a case that is not matched:
      * Keyword _                                         *)
     ```

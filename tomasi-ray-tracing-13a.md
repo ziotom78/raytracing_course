@@ -1,5 +1,5 @@
 ---
-title: "Lezione 14"
+title: "Lezione 13"
 subtitle: "Analisi sintattica e semantica – Conclusioni"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
@@ -140,15 +140,16 @@ def parse_pigment(stream: InputStream) -> Pigment:
     #include <iostream>
     #include <cstdlib>
 
+    struct Color { float r, g, b; }
+    
     int main(int argc, const char *argv[]) {
-        float a = 15.0;
-        float b = std::atof(argv[1]);
+        Color col{1.0, 0.0, 0.5};
 
-        std::cout << a << "\n" << b << "\n";
+        std::cout << "<" << col.r << ", " << col.g << ", " << col.b << ">\n";
     }
     ```
 
--   A differenza del nostro parser, il compilatore C++ **non può** creare in memoria le variabili `a` e `b` mentre fa il *parsing*, perché quelle variabili «vivono» solo in fase di esecuzione.
+-   A differenza del nostro parser, il compilatore C++ **non può** creare in memoria la variabile `col` mentre fa il *parsing*, perché quelle variabili «vivono» solo in fase di esecuzione.
 
 # Ruolo della AST
 
@@ -207,7 +208,7 @@ graph "" {
 
 Le AST sono studiate come degli alberi, ma la loro struttura in memoria non deve necessariamente essere implementata esattamente così.
 
-# La nostra AST
+---
 
 -   In Python, la AST precedente potrebbe essere definita così:
 
@@ -235,7 +236,7 @@ Le AST sono studiate come degli alberi, ma la loro struttura in memoria non deve
     ]
     ```
 
--   In realtà `scene` va costruita man mano che procede l'analisi sintattica!
+-   Il nostro caso è più semplice, e costruiamo `scene` man mano che procede l'analisi sintattica!
 
 
 # Manipolazione di AST
@@ -317,6 +318,9 @@ elif …:  # Statements other than "float …" can be interpreted here
 ---
 
 ```python
+# Start from the identity matrix
+result = Transformation()
+
 while True:
     # For simplicity, let's consider just two kinds of transformations
     transformation_kw = expect_keywords(stream, [
@@ -488,8 +492,8 @@ vector ::= "[" number "," number "," number "]"
 
     ```c++
     template<bool amd64> struct MyStruct;
-    template<> struct MyStruct<false> { /* Valid on 32-bit machines */ };
-    template<> struct MyStruct<true> { /* Valid on 64-bit machines */ };
+    template<> struct MyStruct<false> { /* Fields valid on 32-bit machines */ };
+    template<> struct MyStruct<true> { /* Fields valid on 64-bit machines */ };
     ```
     
 -   Si tratta in pratica di *due* strutture con lo stesso nome (`MyStruct`). Questo può essere usato ad esempio nel codice seguente:
@@ -502,15 +506,15 @@ vector ::= "[" number "," number "," number "]"
     
 # Natura del problema
 
--   Il problema del C++ è che quando sono stati introdotti i template (che non esistevano nelle primissime versioni del linguaggio) sono stati usati come simboli `<` e `>`.
+-   Quando sono stati introdotti i *template* in C++, è stata una [pessima scelta](https://keleshev.com/parsing-ambiguity-type-argument-v-less-than) usare come simboli `<` e `>`, perché erano già usati come operatori di confronto, e (ancora peggio!) esistevano già gli operatori `<<` e `>>`, derivati dal C.
 
--   Questi simboli erano però già usati come operatori di confronto, e (ancora peggio!) esistevano già gli operatori `<<` e `>>`, derivati dal C.
-
--   Linguaggi come Pascal e Kotlin definiscono questi operatori `shl` e `shr`: questo rimuove l'ambiguità e semplifica l'analisi lessicale. Il linguaggio D invece usa una [sintassi diversa](https://dlang.org/spec/template.html) per i *template*, e nell'esempio precedente scriverebbe
+-   Alcuni linguaggi come Pascal, Nim e Kotlin usano `shl` e `shr` per questi operatori, togliendo l'ambiguità. Il linguaggio D invece usa una [sintassi diversa](https://dlang.org/spec/template.html) per i *template*, e nell'esempio precedente scriverebbe
 
     ```d
     MyStruct!(sizeof(size_t) > 4) A;
     ```
+    
+    Rust usa `<>` come il C++, ma per rimuovere l'ambiguità richiede di scrivere `::<` nelle espressioni: `let x: foo::Foo<Bar> = foo::Foo::<Bar>();`
 
 # Dichiarazioni in C++
 

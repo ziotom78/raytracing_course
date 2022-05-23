@@ -1,5 +1,5 @@
 ---
-title: "Esercitazione 13"
+title: "Esercitazione 12"
 subtitle: "Analisi lessicale"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
@@ -83,7 +83,7 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
     #.  Il numero della riga (un intero, numerato partendo da 1);
     #.  Il numero della colonna (idem).
     
--   Il tipo `Token` dovrebbe quindi contenere questi tre campi. Nel caso di pytracer ho definito un tipo [`SourceLocation`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L20-L32):
+-   Il tipo `Token` dovrebbe quindi contenere questi tre campi. Nel caso di pytracer, ha un membro di tipo [`SourceLocation`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L20-L32).
 
     ```python
     @dataclass
@@ -95,7 +95,7 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
 
 # Posizioni e token
 
--   In Python, la classe base `Token` contiene un campo di tipo `SourceLocation`:
+-   Se usate una gerarchia di classi, mettete un campo di tipo `SourceLocation` nella classe base `Token`:
 
     ```python
     @dataclass
@@ -104,20 +104,13 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
         location: SourceLocation
     ```
 
--   Ovviamente, se usate una *tagged union* dovete associare ad essa un `SourceLocation`; in Julia ad esempio fate così:
-
-    ```julia
-    struct Token  # Use "isa(token.value, …) to determine the token type
-        loc::SourceLocation
-        value::Union{LiteralNumber, LiteralString, Keyword, Identifier, Symbol, StopToken}
-    end
-    ```
+-   Se usate i *sum types*, ricordatevi di usare i *tag* se il vostro linguaggio lo richiede (es., [Nim](https://nim-lang.org/docs/manual.html#types-object-variants)).
 
 # Segnalare errori
 
 -   Il modo più pratico per segnalare errori è quello di sollevare una eccezione: pytracer definisce [`GrammarError`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L149-L161).
 
--   Questa eccezione deve essere associata a un `SourceLocation` oltre che al messaggio d'errore: in questo modo si può indicare all'utente la posizione in cui è stato riscontrato l'errore.
+-   All'eccezione si associa il messaggio di errore e un `SourceLocation`: così si può indicare all'utente la posizione in cui è stato riscontrato l'errore.
 
 -   Usare le eccezioni implica che non appena si trova un errore la compilazione si ferma. Questo non è molto *user-frendly*: se la compilazione è un processo lento (es., C++, Rust), sarebbe meglio produrre una *lista* di errori.
 
@@ -232,11 +225,11 @@ class InputStream:
 
 # Definizione di `Token`
 
--   Se usate C++ o Julia, siete incoraggiati ad implementare una *tagged union*, mentre se usate C\# o Kotlin implementate una gerarchia di classi come nel codice di [pytracer](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146).
+-   Decidete se volete usare una gerarchia di classi o una *tagged union* (*sum type*); siccome Python non ammette queste ultime, in [pytracer](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146) ho usato una gerarchia di classi.
 
 -   I tipi di token da definire sono i seguenti:
 
-    #.  *Keyword*: usate un tipo enumerativo (`enum class` in [C++](https://en.cppreference.com/w/cpp/language/enum) e [Kotlin](https://kotlinlang.org/docs/enum-classes.html), [`@enum`](https://docs.julialang.org/en/v1/base/base/#Base.Enums.@enum) in Julia, [`enum`](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum) in C\#), perché renderà il *parser* più efficiente;
+    #.  *Keyword*: usate un tipo enumerativo (`enum` in [Nim](https://nim-lang.org/docs/manual.html#types-enumeration-types), [D](https://dlang.org/spec/enum.html), [C\#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum) e [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), `enum class` in [Kotlin](https://kotlinlang.org/docs/enum-classes.html)), perché renderà il *parser* più efficiente;
     #.  *Identificatore*: è una stringa;
     #.  *Literal string*: è nuovamente una stringa;
     #.  *Literal number*: un valore floating-point;
@@ -251,7 +244,7 @@ class InputStream:
 
 -   Il trucco di `StopToken` non è indispensabile: si potrebbe semplicemente verificare quando lo stream è arrivato alla fine…
 
--   …ma mostra quanto possa essere duttile il concetto di *token*. Trucchi del genere sono molto diffusi nei compilatori (v. ad esempio come Python gestisce i cambi di indentazione a livello di *lexer*).
+-   …ma mostra quanto possa essere duttile il concetto di *token*. Trucchi del genere sono molto diffusi nei compilatori (v. ad esempio come Python gestisce i cambi di indentazione [a livello di *lexer*](https://riptutorial.com/python/example/8674/how-indentation-is-parsed)).
 
 # Spazi bianchi e ritorni a capo
 

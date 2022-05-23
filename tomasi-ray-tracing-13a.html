@@ -4,13 +4,16 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Lezione 14</title>
+  <title>Lezione 13</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
+    .reveal .sourceCode {  /* see #7635 */
+      /* overflow: visible; */
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     span.underline{text-decoration: underline;}
@@ -84,31 +87,35 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
   </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Lezione 14</h1>
+  <h1 class="title">Lezione 13</h1>
   <p class="subtitle">Analisi sintattica e semantica – Conclusioni</p>
-  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+  <p class="author">Maurizio Tomasi <a
+href="mailto:maurizio.tomasi@unimi.it"
+class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
 <section id="analisi-sintattica-e-semantica" class="slide level1">
@@ -117,28 +124,43 @@
 <section id="analisi-sintattica-e-semantica-1" class="slide level1">
 <h1>Analisi sintattica e semantica</h1>
 <ul>
-<li><p>Nella scorsa lezione abbiamo visto come è possibile implementare un’analisi lessicale di un file sorgente che definisce la scena 3D.</p></li>
-<li><p>Il <em>lexer</em> che abbiamo implementato legge una sequenza di caratteri da uno <em>stream</em> (un file) e produce come output una sequenza di <em>token</em>.</p></li>
-<li><p>Il compito di oggi è interpretare la sequenza di <em>token</em> (analisi sintattica) e da questa costruire in memoria una serie di oggetti di tipo <code>Shape</code>, <code>Material</code>, etc. (analisi semantica).</p></li>
+<li><p>Nella scorsa lezione abbiamo visto come è possibile implementare
+un’analisi lessicale di un file sorgente che definisce la scena
+3D.</p></li>
+<li><p>Il <em>lexer</em> che abbiamo implementato legge una sequenza di
+caratteri da uno <em>stream</em> (un file) e produce come output una
+sequenza di <em>token</em>.</p></li>
+<li><p>Il compito di oggi è interpretare la sequenza di <em>token</em>
+(analisi sintattica) e da questa costruire in memoria una serie di
+oggetti di tipo <code>Shape</code>, <code>Material</code>, etc. (analisi
+semantica).</p></li>
 </ul>
 </section>
 <section id="analisi-sintattica" class="slide level1">
 <h1>Analisi sintattica</h1>
 <ul>
-<li><p>La sintassi di un linguaggio è divisibile in categorie a seconda delle peculiarità nella sua sintassi e nel modo in cui sono quindi concatenati i token: LL(n), LR(n), GLR(n), LALR(n), etc.</p></li>
-<li><p>Ciascuna di queste famiglie richiede algoritmi specifici per l’analisi sintattica, e purtroppo algoritmi che vanno bene per una famiglia non vanno bene per altre!</p></li>
-<li><p>Il nostro linguaggio è di tipo LL(1), e l’algoritmo corrispondente per analizzare la grammatica è tra i più semplici.</p></li>
+<li><p>La sintassi di un linguaggio è divisibile in categorie a seconda
+delle peculiarità nella sua sintassi e nel modo in cui sono quindi
+concatenati i token: LL(n), LR(n), GLR(n), LALR(n), etc.</p></li>
+<li><p>Ciascuna di queste famiglie richiede algoritmi specifici per
+l’analisi sintattica, e purtroppo algoritmi che vanno bene per una
+famiglia non vanno bene per altre!</p></li>
+<li><p>Il nostro linguaggio è di tipo LL(1), e l’algoritmo
+corrispondente per analizzare la grammatica è tra i più
+semplici.</p></li>
 </ul>
 </section>
 <section id="come-affrontare-il-problema" class="slide level1">
 <h1>Come affrontare il problema</h1>
 <ul>
 <li><p>Consideriamo questa definizione:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">material</span> sky_material<span class="er">(</span></span>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">material</span> sky_material<span class="er">(</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="ex">diffuse</span><span class="er">(</span><span class="ex">image</span><span class="er">(</span><span class="st">&quot;sky-dome.pfm&quot;</span><span class="kw">))</span><span class="ex">,</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">uniform</span><span class="er">(</span><span class="op">&lt;</span>0.7, <span class="ex">0.5,</span> <span class="dv">1</span><span class="op">&gt;</span><span class="kw">)</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">)</span></span></code></pre></div></li>
-<li><p>È una definizione che include elementi più complessi di un <em>token</em>:</p>
+<li><p>È una definizione che include elementi più complessi di un
+<em>token</em>:</p>
 <ol>
 <li>Un materiale;</li>
 <li>Una BRDF (<code>diffuse</code>);</li>
@@ -150,14 +172,24 @@
 <section id="approccio-top-down" class="slide level1">
 <h1>Approccio <em>top-down</em></h1>
 <ul>
-<li><p>La definizione di <code>sky_material</code> è però semplice da analizzare se suddividiamo il problema in tante funzioni, ciascuna delle quali analizza <em>un elemento soltanto</em>.</p></li>
-<li><p>Definiamo quindi una funzione <code>parse_color</code> che si occupa di interpretare un colore e di restituire l’oggetto <code>Color</code> corrispondente, una funzione <code>parse_pigment</code>, una funzione <code>parse_brdf</code>, etc.</p></li>
-<li><p>Queste funzioni avranno il compito di chiamarsi a vicenda, una dentro l’altra, in modo che quelle più ad alto livello come <code>parse_material</code> possano contare su quelle via via più semplici come <code>parse_color</code>.</p></li>
+<li><p>La definizione di <code>sky_material</code> è però semplice da
+analizzare se suddividiamo il problema in tante funzioni, ciascuna delle
+quali analizza <em>un elemento soltanto</em>.</p></li>
+<li><p>Definiamo quindi una funzione <code>parse_color</code> che si
+occupa di interpretare un colore e di restituire l’oggetto
+<code>Color</code> corrispondente, una funzione
+<code>parse_pigment</code>, una funzione <code>parse_brdf</code>,
+etc.</p></li>
+<li><p>Queste funzioni avranno il compito di chiamarsi a vicenda, una
+dentro l’altra, in modo che quelle più ad alto livello come
+<code>parse_material</code> possano contare su quelle via via più
+semplici come <code>parse_color</code>.</p></li>
 </ul>
 </section>
 <section id="parse_color" class="slide level1">
 <h1><code>parse_color</code></h1>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expect_symbol(stream: InputStream, symbol: <span class="bu">str</span>):</span>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expect_symbol(stream: InputStream, symbol: <span class="bu">str</span>):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Read a token from `stream` and check that it matches `symbol`.&quot;&quot;&quot;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> stream.read_token()</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(token, SymbolToken) <span class="kw">or</span> token.symbol <span class="op">!=</span> symbol:</span>
@@ -195,7 +227,8 @@
 </section>
 <section id="parse_pigment" class="slide level1">
 <h1><code>parse_pigment</code></h1>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_pigment(stream: InputStream) <span class="op">-&gt;</span> Pigment:</span>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_pigment(stream: InputStream) <span class="op">-&gt;</span> Pigment:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    keyword <span class="op">=</span> expect_keywords(stream, [</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        KeywordEnum.UNIFORM, </span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        KeywordEnum.CHECKERED, </span>
@@ -230,49 +263,73 @@
 <section id="analisi-semantica-e-oltre" class="slide level1">
 <h1>Analisi semantica e oltre</h1>
 <ul>
-<li><p>Il nostro «compilatore» è molto semplice, e non appena l’analisi sintattica capisce che si sta definendo una variabile/materiale/forma/osservatore crea immediatamente in memoria un oggetto corrispondente (es., <code>Color</code>).</p></li>
-<li><p>Compilatori più complessi creano in memoria una AST (Abstract Syntax Tree), che è una rappresentazione del contenuto del file sorgente molto comoda per fare un’analisi <em>semantica</em>. (Nel nostro caso, analisi sintattica e semantica sono fuse insieme).</p></li>
-<li><p>La AST viene poi passata come input alle fasi successive del compilatore (ottimizzatore, generatore di codice, etc.); sono loro a preoccuparsi di creare oggetti in memoria o salvare istruzioni in linguaggio macchina su file.</p></li>
+<li><p>Il nostro «compilatore» è molto semplice, e non appena l’analisi
+sintattica capisce che si sta definendo una
+variabile/materiale/forma/osservatore crea immediatamente in memoria un
+oggetto corrispondente (es., <code>Color</code>).</p></li>
+<li><p>Compilatori più complessi creano in memoria una AST (Abstract
+Syntax Tree), che è una rappresentazione del contenuto del file sorgente
+molto comoda per fare un’analisi <em>semantica</em>. (Nel nostro caso,
+analisi sintattica e semantica sono fuse insieme).</p></li>
+<li><p>La AST viene poi passata come input alle fasi successive del
+compilatore (ottimizzatore, generatore di codice, etc.); sono loro a
+preoccuparsi di creare oggetti in memoria o salvare istruzioni in
+linguaggio macchina su file.</p></li>
 </ul>
 </section>
 <section id="perché-una-ast" class="slide level1">
 <h1>Perché una AST?</h1>
 <ul>
 <li><p>Consideriamo questo codice C++:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="at">const</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> a <span class="op">=</span> <span class="fl">15.0</span><span class="op">;</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> b <span class="op">=</span> <span class="bu">std::</span>atof<span class="op">(</span>argv<span class="op">[</span><span class="dv">1</span><span class="op">]);</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> a <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span> <span class="op">&lt;&lt;</span> b <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>A differenza del nostro parser, il compilatore C++ <strong>non può</strong> creare in memoria le variabili <code>a</code> e <code>b</code> mentre fa il <em>parsing</em>, perché quelle variabili «vivono» solo in fase di esecuzione.</p></li>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Color <span class="op">{</span> <span class="dt">float</span> r<span class="op">,</span> g<span class="op">,</span> b<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="at">const</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    Color col<span class="op">{</span><span class="fl">1.0</span><span class="op">,</span> <span class="fl">0.0</span><span class="op">,</span> <span class="fl">0.5</span><span class="op">};</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;&lt;&quot;</span> <span class="op">&lt;&lt;</span> col<span class="op">.</span>r <span class="op">&lt;&lt;</span> <span class="st">&quot;, &quot;</span> <span class="op">&lt;&lt;</span> col<span class="op">.</span>g <span class="op">&lt;&lt;</span> <span class="st">&quot;, &quot;</span> <span class="op">&lt;&lt;</span> col<span class="op">.</span>b <span class="op">&lt;&lt;</span> <span class="st">&quot;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<li><p>A differenza del nostro parser, il compilatore C++ <strong>non
+può</strong> creare in memoria la variabile <code>col</code> mentre fa
+il <em>parsing</em>, perché quelle variabili «vivono» solo in fase di
+esecuzione.</p></li>
 </ul>
 </section>
 <section id="ruolo-della-ast" class="slide level1">
 <h1>Ruolo della AST</h1>
 <ul>
-<li><p>Un programma come quello dell’esempio precedente «vive» nella memoria del computer due volte:</p>
+<li><p>Un programma come quello dell’esempio precedente «vive» nella
+memoria del computer due volte:</p>
 <ol type="1">
 <li>Quando viene compilato (<code>g++ -o myprog main.cpp</code>);</li>
 <li>Quando viene eseguito (<code>./myprog 150.0</code>)</li>
 </ol></li>
-<li><p>La AST viene prodotta durante la compilazione (punto 1), mentre l’allocazione della memoria necessaria per le variabili <code>a</code> e <code>b</code> avviene durante l’esecuzione (punto 2).</p></li>
-<li><p>Il nostro interprete di scene 3D non opera questa distinzione tra due fasi, perché descrive una scena ma non la «esegue»: ecco perché non serve una AST.</p></li>
+<li><p>La AST viene prodotta durante la compilazione (punto 1), mentre
+l’allocazione della memoria necessaria per le variabili <code>a</code> e
+<code>b</code> avviene durante l’esecuzione (punto 2).</p></li>
+<li><p>Il nostro interprete di scene 3D non opera questa distinzione tra
+due fasi, perché descrive una scena ma non la «esegue»: ecco perché non
+serve una AST.</p></li>
 </ul>
 </section>
 <section id="esempio-di-ast" class="slide level1">
 <h1>Esempio di AST</h1>
-<p><img data-src="pd-images/9b2516c848031269ac7b1f07b64f8f82fc83692c.svg" data-im_fname="ast-example" /></p>
-<p>Le AST sono studiate come degli alberi, ma la loro struttura in memoria non deve necessariamente essere implementata esattamente così.</p>
+<p><img
+data-src="pd-images/9b2516c848031269ac7b1f07b64f8f82fc83692c.svg"
+data-im_fname="ast-example" /></p>
+<p>Le AST sono studiate come degli alberi, ma la loro struttura in
+memoria non deve necessariamente essere implementata esattamente
+così.</p>
 </section>
-<section id="la-nostra-ast" class="slide level1">
-<h1>La nostra AST</h1>
+<section class="slide level1">
+
 <ul>
 <li><p>In Python, la AST precedente potrebbe essere definita così:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>scene <span class="op">=</span> [</span>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>scene <span class="op">=</span> [</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    FloatAst(</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        identifier<span class="op">=</span><span class="st">&quot;shade&quot;</span>, </span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        value<span class="op">=</span>NumberLiteral(<span class="fl">0.4</span>),</span>
@@ -293,15 +350,31 @@
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        ),</span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div></li>
-<li><p>In realtà <code>scene</code> va costruita man mano che procede l’analisi sintattica!</p></li>
+<li><p>Il nostro caso è più semplice, e costruiamo <code>scene</code>
+man mano che procede l’analisi sintattica!</p></li>
 </ul>
 </section>
 <section id="manipolazione-di-ast" class="slide level1">
 <h1>Manipolazione di AST</h1>
 <ul>
-<li><p>Linguaggi come <a href="https://docs.julialang.org/en/v1/manual/metaprogramming/">Julia</a>, <a href="https://livebook.manning.com/book/nim-in-action/chapter-9/7">Nim</a>, <a href="https://doc.rust-lang.org/book/ch19-06-macros.html">Rust</a> consentono di scrivere programmi che manipolano la propria AST. (Sembra incredibile, ma il primo linguaggio a permetterlo, il <a href="https://en.wikipedia.org/wiki/Lisp_(programming_language)">LISP</a>, fu proposto da McCarty nel 1958!)</p></li>
-<li><p>Le operazioni di modifica della AST sono compiute al momento della <em>compilazione</em> del programma (fase 1), non durante la sua esecuzione (fase 2).</p></li>
-<li><p>Questa possibilità, denominata <em>metaprogrammazione</em>, è fondamentale per definire DSL all’interno del linguaggio: lo sviluppatore può istruire il compilatore perché una sequenza di token altrimenti invalida produca una AST corretta (LISP), oppure la AST prodotta dal compilatore venga modificata (Rust, Nim, Julia, D).</p></li>
+<li><p>Linguaggi come <a
+href="https://docs.julialang.org/en/v1/manual/metaprogramming/">Julia</a>,
+<a
+href="https://livebook.manning.com/book/nim-in-action/chapter-9/7">Nim</a>,
+<a href="https://doc.rust-lang.org/book/ch19-06-macros.html">Rust</a>
+consentono di scrivere programmi che manipolano la propria AST. (Sembra
+incredibile, ma il primo linguaggio a permetterlo, il <a
+href="https://en.wikipedia.org/wiki/Lisp_(programming_language)">LISP</a>,
+fu proposto da McCarty nel 1958!)</p></li>
+<li><p>Le operazioni di modifica della AST sono compiute al momento
+della <em>compilazione</em> del programma (fase 1), non durante la sua
+esecuzione (fase 2).</p></li>
+<li><p>Questa possibilità, denominata <em>metaprogrammazione</em>, è
+fondamentale per definire DSL all’interno del linguaggio: lo
+sviluppatore può istruire il compilatore perché una sequenza di token
+altrimenti invalida produca una AST corretta (LISP), oppure la AST
+prodotta dal compilatore venga modificata (Rust, Nim, Julia,
+D).</p></li>
 </ul>
 </section>
 <section id="tipi-di-grammatiche" class="slide level1">
@@ -310,31 +383,47 @@
 <section id="grammatiche-lln" class="slide level1">
 <h1>Grammatiche LL(n)</h1>
 <ul>
-<li><p>In una grammatica LL(n), si analizzano i token «da sinistra a destra», ossia nell’ordine in cui sono prodotti dal <em>lexer</em>.</p></li>
-<li><p>Il numero <span class="math inline">n</span> nella scrittura LL(n) indica che per interpretare correttamente la sintassi servono <span class="math inline">n</span> token di <em>look-ahead</em>: ossia, si dà un’occhiata agli <span class="math inline">n</span> token successivi per interpretare il token corrente (simile a come funziona <code>unread_char</code> nel nostro <em>lexer</em>).</p></li>
-<li><p>Di conseguenza, il nostro formato per descrivere le scene è di tipo LL(1) perché:</p>
+<li><p>In una grammatica LL(n), si analizzano i token «da sinistra a
+destra», ossia nell’ordine in cui sono prodotti dal
+<em>lexer</em>.</p></li>
+<li><p>Il numero <span class="math inline">n</span> nella scrittura
+LL(n) indica che per interpretare correttamente la sintassi servono
+<span class="math inline">n</span> token di <em>look-ahead</em>: ossia,
+si dà un’occhiata agli <span class="math inline">n</span> token
+successivi per interpretare il token corrente (simile a come funziona
+<code>unread_char</code> nel nostro <em>lexer</em>).</p></li>
+<li><p>Di conseguenza, il nostro formato per descrivere le scene è di
+tipo LL(1) perché:</p>
 <ol>
-<li>Si analizza la sintassi leggendo un token alla volta e procedendo in ordine;</li>
-<li>Può essere necessario controllare il tipo del token successivo a quello corrente, ma non di più.</li>
+<li>Si analizza la sintassi leggendo un token alla volta e procedendo in
+ordine;</li>
+<li>Può essere necessario controllare il tipo del token successivo a
+quello corrente, ma non di più.</li>
 </ol></li>
 </ul>
 </section>
 <section id="perché-ll1" class="slide level1">
 <h1>Perché LL(1)?</h1>
 <ul>
-<li><p>Spieghiamo ora in quali contesti è necessario usare il <em>look-ahead</em>.</p></li>
+<li><p>Spieghiamo ora in quali contesti è necessario usare il
+<em>look-ahead</em>.</p></li>
 <li><p>Consideriamo questa definizione:</p>
 <pre><code>float clock(150)</code></pre>
-<p>In questo caso <strong>non</strong> è necessario un <em>look-ahead</em>:</p>
+<p>In questo caso <strong>non</strong> è necessario un
+<em>look-ahead</em>:</p>
 <ol>
-<li>Il primo token è la <em>keyword</em> <code>float</code>, che indica che si sta definendo una variabile;</li>
-<li>So quindi che per forza i token successivi saranno l’<em>identificatore</em>, il simbolo <code>(</code>, un <em>numeric literal</em> e il simbolo <code>)</code>.</li>
+<li>Il primo token è la <em>keyword</em> <code>float</code>, che indica
+che si sta definendo una variabile;</li>
+<li>So quindi che per forza i token successivi saranno
+l’<em>identificatore</em>, il simbolo <code>(</code>, un <em>numeric
+literal</em> e il simbolo <code>)</code>.</li>
 </ol></li>
 </ul>
 </section>
 <section id="dichiarazione-di-un-float" class="slide level1">
 <h1>Dichiarazione di un <code>float</code></h1>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the first token of the next statement. Only a handful of</span></span>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the first token of the next statement. Only a handful of</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># keywords are allowed at the beginning of a statement.</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>what <span class="op">=</span> expect_keywords(stream, [KeywordEnum.FLOAT, …])</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -363,36 +452,47 @@
 <ul>
 <li><p>Consideriamo invece questa definizione:</p>
 <pre class="text"><code>plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))</code></pre></li>
-<li><p>Il modo più naturale di interpretare questa riga è tramite una funzione <code>parse_plane</code>, che al suo interno invochi una funzione <code>parse_transformation</code>.</p></li>
-<li><p>Però la trasformazione presenta un problema: dopo i caratteri <code>…100])</code> non si può sapere se la trasformazione è terminata (e occorre ritornare a <code>parse_plane</code>), oppure se segua il simbolo <code>*</code> che rappresenta l’operatore di composizione: in quest’ultimo caso, <code>parse_transformation</code> non avrebbe ancora finito il suo lavoro!</p></li>
+<li><p>Il modo più naturale di interpretare questa riga è tramite una
+funzione <code>parse_plane</code>, che al suo interno invochi una
+funzione <code>parse_transformation</code>.</p></li>
+<li><p>Però la trasformazione presenta un problema: dopo i caratteri
+<code>…100])</code> non si può sapere se la trasformazione è terminata
+(e occorre ritornare a <code>parse_plane</code>), oppure se segua il
+simbolo <code>*</code> che rappresenta l’operatore di composizione: in
+quest’ultimo caso, <code>parse_transformation</code> non avrebbe ancora
+finito il suo lavoro!</p></li>
 </ul>
 </section>
 <section class="slide level1">
 
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For simplicity, let&#39;s consider just two kinds of transformations</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    transformation_kw <span class="op">=</span> expect_keywords(stream, [</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        KeywordEnum.TRANSLATION,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        KeywordEnum.ROTATION_Y,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> transformation_kw <span class="op">==</span> KeywordEnum.TRANSLATION:</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;(&quot;</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        result <span class="op">*=</span> translation(parse_vector(stream, scene))</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;)&quot;</span>)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> transformation_kw <span class="op">==</span> KeywordEnum.ROTATION_Y:</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;(&quot;</span>)</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        result <span class="op">*=</span> rotation_y(expect_number(stream, scene))</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;)&quot;</span>)</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Peek the next token</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    next_kw <span class="op">=</span> stream.read_token()</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="kw">not</span> <span class="bu">isinstance</span>(next_kw, SymbolToken)) <span class="kw">or</span> (next_kw.symbol <span class="op">!=</span> <span class="st">&quot;*&quot;</span>):</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Pretend you never read this token and put it back!</span></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># This requires to alter the definition of `InputStream`</span></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># so that it holds the unread tokens as well as unread characters</span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        stream.unread_token(next_kw)</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start from the identity matrix</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> Transformation()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For simplicity, let&#39;s consider just two kinds of transformations</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    transformation_kw <span class="op">=</span> expect_keywords(stream, [</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        KeywordEnum.TRANSLATION,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        KeywordEnum.ROTATION_Y,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> transformation_kw <span class="op">==</span> KeywordEnum.TRANSLATION:</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;(&quot;</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        result <span class="op">*=</span> translation(parse_vector(stream, scene))</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;)&quot;</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> transformation_kw <span class="op">==</span> KeywordEnum.ROTATION_Y:</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;(&quot;</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        result <span class="op">*=</span> rotation_y(expect_number(stream, scene))</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        expect_symbol(stream, <span class="st">&quot;)&quot;</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Peek the next token</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    next_kw <span class="op">=</span> stream.read_token()</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="kw">not</span> <span class="bu">isinstance</span>(next_kw, SymbolToken)) <span class="kw">or</span> (next_kw.symbol <span class="op">!=</span> <span class="st">&quot;*&quot;</span>):</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Pretend you never read this token and put it back!</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># This requires to alter the definition of `InputStream`</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># so that it holds the unread tokens as well as unread characters</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        stream.unread_token(next_kw)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span></code></pre></div>
 </section>
 <section id="grammatiche-ebnf" class="slide level1">
 <h1>Grammatiche EBNF</h1>
@@ -400,23 +500,37 @@
 <section id="descrivere-una-grammatica" class="slide level1">
 <h1>Descrivere una grammatica</h1>
 <ul>
-<li><p>Per «grammatica» si intende l’insieme delle regole lessicali, sintattiche e semantiche di un linguaggio.</p></li>
-<li><p>Dal punto di vista dell’analisi sintattica, dovrebbe essere evidente che un parser ha bisogno in ogni istante di sapere qual è la lista di <em>token</em> ammissibili nel punto in cui è arrivato ad interpretare il codice sorgente.</p></li>
-<li><p>Nella teoria dei compilatori sono state inventate alcune notazioni per descrivere la grammatica di linguaggi, che sono utilissime nel momento in cui si implementa un <em>lexer</em> o un <em>parser</em>.</p></li>
-<li><p>In effetti, prima di implementare il parser di pytracer ho dovuto io stesso scrivere la nostra grammatica in un formato che consentisse di derivare la lista esaustiva di tutte le possibilità.</p></li>
+<li><p>Per «grammatica» si intende l’insieme delle regole lessicali,
+sintattiche e semantiche di un linguaggio.</p></li>
+<li><p>Dal punto di vista dell’analisi sintattica, dovrebbe essere
+evidente che un parser ha bisogno in ogni istante di sapere qual è la
+lista di <em>token</em> ammissibili nel punto in cui è arrivato ad
+interpretare il codice sorgente.</p></li>
+<li><p>Nella teoria dei compilatori sono state inventate alcune
+notazioni per descrivere la grammatica di linguaggi, che sono utilissime
+nel momento in cui si implementa un <em>lexer</em> o un
+<em>parser</em>.</p></li>
+<li><p>In effetti, prima di implementare il parser di pytracer ho dovuto
+io stesso scrivere la nostra grammatica in un formato che consentisse di
+derivare la lista esaustiva di tutte le possibilità.</p></li>
 </ul>
 </section>
 <section id="grammatica-ebnf" class="slide level1">
 <h1>Grammatica EBNF</h1>
 <ul>
-<li><p>La notazione che vedremo è detta <em>Extended Backus-Naur Form</em> (EBNF), ed è il risultato del lavoro di molte persone, tra cui Niklaus Wirth (il creatore del linguaggio Pascal).</p></li>
-<li><p>Non descriveremo EBNF in modo completo, ma la presenteremo solo nella misura in cui serve ai nostri scopi.</p></li>
-<li><p>Nella slide successiva è mostrata l’intera struttura sintattica della nostra grammatica in formato EBNF.</p></li>
+<li><p>La notazione che vedremo è detta <em>Extended Backus-Naur
+Form</em> (EBNF), ed è il risultato del lavoro di molte persone, tra cui
+Niklaus Wirth (il creatore del linguaggio Pascal).</p></li>
+<li><p>Non descriveremo EBNF in modo completo, ma la presenteremo solo
+nella misura in cui serve ai nostri scopi.</p></li>
+<li><p>Nella slide successiva è mostrata l’intera struttura sintattica
+della nostra grammatica in formato EBNF.</p></li>
 </ul>
 </section>
 <section id="ebnf-del-nostro-formato" class="slide level1">
 <h1>EBNF del nostro formato</h1>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>scene ::<span class="op">=</span> declaration<span class="op">*</span></span>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>scene ::<span class="op">=</span> declaration<span class="op">*</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>declaration ::<span class="op">=</span> float_decl <span class="op">|</span> plane_decl <span class="op">|</span> sphere_decl <span class="op">|</span> material_decl <span class="op">|</span> camera_decl</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -464,12 +578,16 @@
 <section id="spiegazione-di-ebnf" class="slide level1">
 <h1>Spiegazione di EBNF</h1>
 <ul>
-<li><p>Il simbolo <code>::=</code> definisce un elemento della grammatica, ad esempio:</p>
+<li><p>Il simbolo <code>::=</code> definisce un elemento della
+grammatica, ad esempio:</p>
 <pre><code>number ::= LITERAL_NUMBER | IDENTIFIER</code></pre></li>
-<li><p>Il simbolo <code>|</code> rappresenta una serie di alternative (<em>or</em> logico).</p></li>
+<li><p>Il simbolo <code>|</code> rappresenta una serie di alternative
+(<em>or</em> logico).</p></li>
 <li><p>Il simbolo <code>*</code> denota zero o più ripetizioni:</p>
 <pre><code>scene ::= declaration*</code></pre></li>
-<li><p>Gli identificatori <code>MAIUSCOLI</code> identificano <em>token</em>, quelli <code>minuscoli</code> altri elementi definiti nella grammatica EBNF.</p></li>
+<li><p>Gli identificatori <code>MAIUSCOLI</code> identificano
+<em>token</em>, quelli <code>minuscoli</code> altri elementi definiti
+nella grammatica EBNF.</p></li>
 <li><p>Sono possibili definizioni ricorsive:</p>
 <pre><code>transformation ::= basic_transformation | basic_transformation &quot;*&quot; transformation</code></pre></li>
 </ul>
@@ -480,91 +598,163 @@
 <section id="gestione-degli-errori-1" class="slide level1">
 <h1>Gestione degli errori</h1>
 <ul>
-<li><p>Il nostro codice solleva una eccezione tutte le volte che viene individuato un errore nel codice sorgente.</p></li>
-<li><p>È in grado di segnalare la riga e la colonna del <em>token</em> in corrispondenza del quale è stato trovato l’errore, e ciò è molto utile!</p></li>
-<li><p>Ma questo modello di esecuzione impone che al primo errore la compilazione termini! I compilatori moderni come <code>g++</code> e <code>clang++</code> invece proseguono la compilazione andando in cerca anche degli errori successivi.</p></li>
-<li><p>Per non fermarsi al primo errore occorre cercare un <em>termination token</em>, ossia un <em>token</em> che sia usato per terminare un comando: una volta trovato, si prosegue dal <em>token</em> successivo.</p></li>
+<li><p>Il nostro codice solleva una eccezione tutte le volte che viene
+individuato un errore nel codice sorgente.</p></li>
+<li><p>È in grado di segnalare la riga e la colonna del <em>token</em>
+in corrispondenza del quale è stato trovato l’errore, e ciò è molto
+utile!</p></li>
+<li><p>Ma questo modello di esecuzione impone che al primo errore la
+compilazione termini! I compilatori moderni come <code>g++</code> e
+<code>clang++</code> invece proseguono la compilazione andando in cerca
+anche degli errori successivi.</p></li>
+<li><p>Per non fermarsi al primo errore occorre cercare un
+<em>termination token</em>, ossia un <em>token</em> che sia usato per
+terminare un comando: una volta trovato, si prosegue dal <em>token</em>
+successivo.</p></li>
 </ul>
 </section>
 <section id="termination-tokens" class="slide level1">
 <h1><em>Termination tokens</em></h1>
 <ul>
-<li><p>Nel linguaggio C++, due <em>termination tokens</em> molto usati sono il <code>;</code> (usato per terminare uno <em>statement</em>) e <code>}</code> (usato per terminare un blocco di codice. Ad esempio:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>x <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<li><p>Nel linguaggio C++, due <em>termination tokens</em> molto usati
+sono il <code>;</code> (usato per terminare uno <em>statement</em>) e
+<code>}</code> (usato per terminare un blocco di codice. Ad esempio:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>x <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">*=</span> <span class="op">-</span><span class="fl">1.0</span>  <span class="co">// Error: missing &#39;;&#39;</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">/=</span> <span class="dv">1</span><span class="er">O</span><span class="op">;</span>       <span class="co">// Uh-oh, I wrote a capital &quot;o&quot; instead of &quot;0&quot;</span></span></code></pre></div></li>
-<li><p>In un linguaggio come il nostro non è semplice individuare un <em>termination token</em>; la cosa migliore sarebbe richiedere la presenza di <code>;</code> alla fine di ogni <em>statement</em>, come nel C++, oppure obbligare a concludere le definizioni con un ritorno a capo (che sia codificato come un token <code>TOKEN_NEWLINE</code>).</p></li>
+<li><p>In un linguaggio come il nostro non è semplice individuare un
+<em>termination token</em>; la cosa migliore sarebbe richiedere la
+presenza di <code>;</code> alla fine di ogni <em>statement</em>, come
+nel C++, oppure obbligare a concludere le definizioni con un ritorno a
+capo (che sia codificato come un token
+<code>TOKEN_NEWLINE</code>).</p></li>
 </ul>
 </section>
 <section id="velocità-di-un-compilatore" class="slide level1">
 <h1>Velocità di un compilatore</h1>
 <ul>
-<li><p>La produzione di <em>liste</em> di errori anziché di un solo errore alla volta è importante soprattutto in quei casi in cui il compilatore è molto lento da eseguire. Questo è il caso del C++ e di Rust.</p></li>
-<li><p>Il nostro linguaggio sarà molto semplice da interpretare (non ha una semantica complessa, e non richiede la creazione di una AST né l’applicazione di un ottimizzatore): non vale quindi la pena preoccuparsi di implementare questa funzionalità.</p></li>
-<li><p>Però cogliamo l’occasione per capire perché possano esserci grandi differenze nella velocità di compilazione di linguaggi!</p></li>
+<li><p>La produzione di <em>liste</em> di errori anziché di un solo
+errore alla volta è importante soprattutto in quei casi in cui il
+compilatore è molto lento da eseguire. Questo è il caso del C++ e di
+Rust.</p></li>
+<li><p>Il nostro linguaggio sarà molto semplice da interpretare (non ha
+una semantica complessa, e non richiede la creazione di una AST né
+l’applicazione di un ottimizzatore): non vale quindi la pena
+preoccuparsi di implementare questa funzionalità.</p></li>
+<li><p>Però cogliamo l’occasione per capire perché possano esserci
+grandi differenze nella velocità di compilazione di linguaggi!</p></li>
 </ul>
 </section>
 <section id="complessità-del-c" class="slide level1">
 <h1>Complessità del C++</h1>
 <ul>
-<li><p>La grande complessità del C++ è legata soprattutto ai <code>template</code> e all’uso degli <em>header file</em>; rendiamoci conto di questa difficoltà già guardando alcuni semplici esempi.</p></li>
-<li><p>Considerate questa definizione, che mostra la difficoltà di interpretare <code>&gt;&gt;</code>:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;&gt;</span> matrix <span class="op">=</span> identity<span class="op">(</span><span class="dv">3</span><span class="op">);</span> <span class="co">// &gt;&gt; are *two* tokens</span></span>
+<li><p>La grande complessità del C++ è legata soprattutto ai
+<code>template</code> e all’uso degli <em>header file</em>; rendiamoci
+conto di questa difficoltà già guardando alcuni semplici
+esempi.</p></li>
+<li><p>Considerate questa definizione, che mostra la difficoltà di
+interpretare <code>&gt;&gt;</code>:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;&gt;</span> matrix <span class="op">=</span> identity<span class="op">(</span><span class="dv">3</span><span class="op">);</span> <span class="co">// &gt;&gt; are *two* tokens</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cin<span class="op"> &gt;&gt;</span> matrix<span class="op">[</span><span class="dv">0</span><span class="op">][</span><span class="dv">0</span><span class="op">];</span> <span class="co">// Here &gt;&gt; is *one* token</span></span></code></pre></div></li>
-<li><p>È impossibile creare la sequenza di token corretta con l’approccio che abbiamo seguito, che divide rigidamente il <em>lexing</em> dal <em>parsing</em> (e infatti la prima riga non era ammessa dallo standard C++ fino a pochi anni fa).</p></li>
+<li><p>È impossibile creare la sequenza di token corretta con
+l’approccio che abbiamo seguito, che divide rigidamente il
+<em>lexing</em> dal <em>parsing</em> (e infatti la prima riga non era
+ammessa dallo standard C++ fino a pochi anni fa).</p></li>
 </ul>
 </section>
 <section id="altre-difficoltà-dei-template" class="slide level1">
 <h1>Altre difficoltà dei <code>template</code></h1>
 <ul>
 <li><p>I template C++ rendono complessa anche l’analisi sintattica:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="dt">bool</span> amd64<span class="op">&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">;</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">&lt;</span><span class="kw">false</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">/* Valid on 32-bit machines */</span> <span class="op">};</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">&lt;</span><span class="kw">true</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">/* Valid on 64-bit machines */</span> <span class="op">};</span></span></code></pre></div></li>
-<li><p>Si tratta in pratica di <em>due</em> strutture con lo stesso nome (<code>MyStruct</code>). Questo può essere usato ad esempio nel codice seguente:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>MyStruct<span class="op">&lt;</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">&gt;</span> A<span class="op">;</span>  <span class="co">// On 64-bit machines use the extended definition</span></span></code></pre></div>
-<p>Ma a livello di sintassi, il termine <code>&gt;</code> rende tutto complicato!</p></li>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="dt">bool</span> amd64<span class="op">&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">&lt;</span><span class="kw">false</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">/* Fields valid on 32-bit machines */</span> <span class="op">};</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">&lt;</span><span class="kw">true</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">/* Fields valid on 64-bit machines */</span> <span class="op">};</span></span></code></pre></div></li>
+<li><p>Si tratta in pratica di <em>due</em> strutture con lo stesso nome
+(<code>MyStruct</code>). Questo può essere usato ad esempio nel codice
+seguente:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>MyStruct<span class="op">&lt;</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">&gt;</span> A<span class="op">;</span>  <span class="co">// On 64-bit machines use the extended definition</span></span></code></pre></div>
+<p>Ma a livello di sintassi, il termine <code>&gt;</code> rende tutto
+complicato!</p></li>
 </ul>
 </section>
 <section id="natura-del-problema" class="slide level1">
 <h1>Natura del problema</h1>
 <ul>
-<li><p>Il problema del C++ è che quando sono stati introdotti i template (che non esistevano nelle primissime versioni del linguaggio) sono stati usati come simboli <code>&lt;</code> e <code>&gt;</code>.</p></li>
-<li><p>Questi simboli erano però già usati come operatori di confronto, e (ancora peggio!) esistevano già gli operatori <code>&lt;&lt;</code> e <code>&gt;&gt;</code>, derivati dal C.</p></li>
-<li><p>Linguaggi come Pascal e Kotlin definiscono questi operatori <code>shl</code> e <code>shr</code>: questo rimuove l’ambiguità e semplifica l’analisi lessicale. Il linguaggio D invece usa una <a href="https://dlang.org/spec/template.html">sintassi diversa</a> per i <em>template</em>, e nell’esempio precedente scriverebbe</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>MyStruct<span class="op">!(</span>sizeof<span class="op">(</span><span class="bu">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">)</span> A<span class="op">;</span></span></code></pre></div></li>
+<li><p>Quando sono stati introdotti i <em>template</em> in C++, è stata
+una <a
+href="https://keleshev.com/parsing-ambiguity-type-argument-v-less-than">pessima
+scelta</a> usare come simboli <code>&lt;</code> e <code>&gt;</code>,
+perché erano già usati come operatori di confronto, e (ancora peggio!)
+esistevano già gli operatori <code>&lt;&lt;</code> e
+<code>&gt;&gt;</code>, derivati dal C.</p></li>
+<li><p>Alcuni linguaggi come Pascal, Nim e Kotlin usano <code>shl</code>
+e <code>shr</code> per questi operatori, togliendo l’ambiguità. Il
+linguaggio D invece usa una <a
+href="https://dlang.org/spec/template.html">sintassi diversa</a> per i
+<em>template</em>, e nell’esempio precedente scriverebbe</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>MyStruct<span class="op">!(</span>sizeof<span class="op">(</span><span class="bu">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">)</span> A<span class="op">;</span></span></code></pre></div>
+<p>Rust usa <code>&lt;&gt;</code> come il C++, ma per rimuovere
+l’ambiguità richiede di scrivere <code>::&lt;</code> nelle espressioni:
+<code>let x: foo::Foo&lt;Bar&gt; = foo::Foo::&lt;Bar&gt;();</code></p></li>
 </ul>
 </section>
 <section id="dichiarazioni-in-c" class="slide level1">
 <h1>Dichiarazioni in C++</h1>
 <ul>
-<li><p>Oltre ad essere semplice da interpretare dal compilatore, un linguaggio dovrebbe essere semplice anche per l’utente. Consideriamo questa dichiarazione C/C++:</p>
+<li><p>Oltre ad essere semplice da interpretare dal compilatore, un
+linguaggio dovrebbe essere semplice anche per l’utente. Consideriamo
+questa dichiarazione C/C++:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> myvar<span class="op">[</span><span class="dv">100</span><span class="op">];</span>  <span class="co">/* More complicated: static const int * myvar[100] */</span></span></code></pre></div>
-<p>che dichiara un array di 100 variabili di tipo <code>int</code>.</p></li>
-<li><p>I token che definiscono il tipo sono <code>int</code>, <code>[</code>, <code>100</code> e <code>]</code>, e si trovano sia a <em>sinistra</em> che a <em>destra</em> del nome della variabile: questo per il programmatore è complicato! (Provate a interpretare il caso <em>more complicated</em> da soli!)</p></li>
+<p>che dichiara un array di 100 variabili di tipo
+<code>int</code>.</p></li>
+<li><p>I token che definiscono il tipo sono <code>int</code>,
+<code>[</code>, <code>100</code> e <code>]</code>, e si trovano sia a
+<em>sinistra</em> che a <em>destra</em> del nome della variabile: questo
+per il programmatore è complicato! (Provate a interpretare il caso
+<em>more complicated</em> da soli!)</p></li>
 </ul>
 </section>
 <section id="il-caso-di-go" class="slide level1">
 <h1>Il caso di Go</h1>
 <ul>
-<li><p>Il linguaggio <a href="https://golang.org/">Go</a>, che è fortemente ispirato al C, rende più semplici le dichiarazioni usando una notazione diversa:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> myvar <span class="op">[</span><span class="dv">100</span><span class="op">]</span><span class="dt">int</span></span></code></pre></div></li>
-<li><p>La keyword <code>var</code> segnala al <em>parser</em> che si sta dichiarando una variabile.</p></li>
-<li><p>I token che definiscono il tipo sono riportati tutti insieme, <em>dopo</em> l’identificatore che rappresenta il nome della variabile.</p></li>
-<li><p>La scrittura <code>[100]int</code> segue l’ordine naturale delle parole: «un array di 100 valori <code>int</code>», ed è più facile da leggere per il programmatore (in C bisogna leggere a ritroso, da destra a sinistra).</p></li>
+<li><p>Il linguaggio <a href="https://golang.org/">Go</a>, che è
+fortemente ispirato al C, rende più semplici le dichiarazioni usando una
+notazione diversa:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> myvar <span class="op">[</span><span class="dv">100</span><span class="op">]</span><span class="dt">int</span></span></code></pre></div></li>
+<li><p>La keyword <code>var</code> segnala al <em>parser</em> che si sta
+dichiarando una variabile.</p></li>
+<li><p>I token che definiscono il tipo sono riportati tutti insieme,
+<em>dopo</em> l’identificatore che rappresenta il nome della
+variabile.</p></li>
+<li><p>La scrittura <code>[100]int</code> segue l’ordine naturale delle
+parole: «un array di 100 valori <code>int</code>», ed è più facile da
+leggere per il programmatore (in C bisogna leggere a ritroso, da destra
+a sinistra).</p></li>
 </ul>
 </section>
 <section id="altri-esempi" class="slide level1">
 <h1>Altri esempi</h1>
 <ul>
-<li><p>Nel linguaggio Pascal le variabili si elencano dentro una clausola <code>var</code>, e come in Go il nome viene per primo ed è chiaramente separato dal tipo:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span></span>
+<li><p>Nel linguaggio Pascal le variabili si elencano dentro una
+clausola <code>var</code>, e come in Go il nome viene per primo ed è
+chiaramente separato dal tipo:</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    myvar : <span class="kw">Array</span> [<span class="dv">1</span>..<span class="dv">100</span>] <span class="kw">of</span> <span class="dt">Integer</span>;</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    other : <span class="dt">String</span>;</span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    x     : <span class="dt">Real</span>;</span></code></pre></div></li>
-<li><p>Anche questa sintassi è molto semplice da interpretare; il Pascal è infatti progettato per essere veloce da compilare.</p></li>
-<li><p>Idee simili sono usate nei linguaggi Modula-2 e Modula-3, Oberon, Ada, Nim, Kotlin e Rust (è vero che quest’ultimo è lentissimo da compilare, ma ciò è a causa della complessità della sua semantica).</p></li>
+<li><p>Anche questa sintassi è molto semplice da interpretare; il Pascal
+è infatti progettato per essere veloce da compilare.</p></li>
+<li><p>Idee simili sono usate nei linguaggi Modula-2 e Modula-3, Oberon,
+Ada, Nim, Kotlin e Rust (è vero che quest’ultimo è lentissimo da
+compilare, ma ciò è a causa della complessità della sua
+semantica).</p></li>
 </ul>
 </section>
 <section id="testing-di-compilatori" class="slide level1">
@@ -573,9 +763,18 @@
 <section id="testing" class="slide level1">
 <h1>Testing</h1>
 <ul>
-<li><p>La scrittura di test per un compilatore è una faccenda molto complessa, perché il numero di possibili errori è praticamente infinito!</p></li>
-<li><p>Non è possibile avere test completamente esaustivi; bisogna avere fantasia e prepararsi ad aggiungere molti nuovi test una volta che gli utenti inizieranno ad usare il proprio programma. (In pytracer ho implementato giusto il minimo sindacale, siete incoraggiati a scrivere più test!)</p></li>
-<li><p>Se siete curiosi, nella directory <a href="https://github.com/llvm/llvm-project/tree/main/clang/test/Lexer"><code>clang/test/Lexer</code></a> ci sono i file sorgente usati per i test del solo <em>lexer</em> di Clang!</p></li>
+<li><p>La scrittura di test per un compilatore è una faccenda molto
+complessa, perché il numero di possibili errori è praticamente
+infinito!</p></li>
+<li><p>Non è possibile avere test completamente esaustivi; bisogna avere
+fantasia e prepararsi ad aggiungere molti nuovi test una volta che gli
+utenti inizieranno ad usare il proprio programma. (In pytracer ho
+implementato giusto il minimo sindacale, siete incoraggiati a scrivere
+più test!)</p></li>
+<li><p>Se siete curiosi, nella directory <a
+href="https://github.com/llvm/llvm-project/tree/main/clang/test/Lexer"><code>clang/test/Lexer</code></a>
+ci sono i file sorgente usati per i test del solo <em>lexer</em> di
+Clang!</p></li>
 </ul>
 </section>
 <section id="estensioni" class="slide level1">
@@ -583,20 +782,32 @@
 </section>
 <section id="estensioni-alla-grammatica" class="slide level1">
 <h1>Estensioni alla grammatica</h1>
-<p>Il nostro linguaggio è abbastanza completo, ma potrebbe essere più versatile:</p>
+<p>Il nostro linguaggio è abbastanza completo, ma potrebbe essere più
+versatile:</p>
 <ul>
-<li><p>Se avete implementato un <em>point-light tracer</em>, potreste estendere il linguaggio per specificare le sorgenti puntiformi, ad esempio con questa sintassi:</p>
+<li><p>Se avete implementato un <em>point-light tracer</em>, potreste
+estendere il linguaggio per specificare le sorgenti puntiformi, ad
+esempio con questa sintassi:</p>
 <pre class="text"><code># Specify the position and the color of the point light
 point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
-<li><p>Può accadere che i nomi di file contengano il carattere <code>"</code> (ad es., <code>Incisione di Doré per la "Divina Commedia".jpg</code>), nel qual caso il nostro lexer fa cilecca. Potreste estendere il lexer in modo che accetti <code>\"</code> come un carattere <code>"</code> da includere nella stringa, in maniera analoga al C++ e al Python.</p></li>
-<li><p>Potreste implementare il supporto per espressioni matematiche!</p></li>
+<li><p>Può accadere che i nomi di file contengano il carattere
+<code>"</code> (ad es.,
+<code>Incisione di Doré per la "Divina Commedia".jpg</code>), nel qual
+caso il nostro lexer fa cilecca. Potreste estendere il lexer in modo che
+accetti <code>\"</code> come un carattere <code>"</code> da includere
+nella stringa, in maniera analoga al C++ e al Python.</p></li>
+<li><p>Potreste implementare il supporto per espressioni
+matematiche!</p></li>
 </ul>
 </section>
 <section id="espressioni-matematiche" class="slide level1">
 <h1>Espressioni matematiche</h1>
 <ul>
-<li><p>Il nostro linguaggio permette variabili, ma non prevede calcoli aritmetici. Questo è molto limitante! Potrei voler muovere un oggetto lungo una retta e farne ruotare un altro:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">float</span> speed_m_s<span class="er">(</span><span class="ex">1.0</span><span class="kw">);</span></span>
+<li><p>Il nostro linguaggio permette variabili, ma non prevede calcoli
+aritmetici. Questo è molto limitante! Potrei voler muovere un oggetto
+lungo una retta e farne ruotare un altro:</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">float</span> speed_m_s<span class="er">(</span><span class="ex">1.0</span><span class="kw">);</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">float</span> freq_hz<span class="er">(</span><span class="ex">0.5</span><span class="kw">);</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># First sphere</span></span>
@@ -604,39 +815,75 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Second sphere (faster)</span></span>
 <span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="ex">sphere</span><span class="er">(</span><span class="ex">sphere_material,</span> rotation_x<span class="er">(</span><span class="ex">360</span> <span class="pp">*</span> freq_hz <span class="pp">*</span> clock_s<span class="kw">)</span> <span class="ex">*</span> translation<span class="er">(</span><span class="ex">[1,</span> 0, 0]<span class="kw">))</span></span></code></pre></div></li>
-<li><p>Implementare il calcolo di espressioni matematiche non è difficilissimo: basta riusare i concetti che abbiamo presentato oggi.</p></li>
+<li><p>Implementare il calcolo di espressioni matematiche non è
+difficilissimo: basta riusare i concetti che abbiamo presentato
+oggi.</p></li>
 </ul>
 </section>
 <section id="grammatica-per-espressioni" class="slide level1">
 <h1>Grammatica per espressioni</h1>
 <ul>
-<li><p>Questa è una grammatica che implementa le quattro operazioni aritmetiche:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>expression ::<span class="op">=</span> term <span class="st">&quot;+&quot;</span> expression <span class="op">|</span> term <span class="st">&quot;-&quot;</span> expression <span class="op">|</span> term <span class="op">|</span> <span class="st">&quot;-&quot;</span> term</span>
+<li><p>Questa è una grammatica che implementa le quattro operazioni
+aritmetiche:</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>expression ::<span class="op">=</span> term <span class="st">&quot;+&quot;</span> expression <span class="op">|</span> term <span class="st">&quot;-&quot;</span> expression <span class="op">|</span> term <span class="op">|</span> <span class="st">&quot;-&quot;</span> term</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>term ::<span class="op">=</span> factor <span class="st">&quot;*&quot;</span> term <span class="op">|</span> factor <span class="st">&quot;/&quot;</span> term <span class="op">|</span> factor</span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>factor ::<span class="op">=</span> <span class="st">&quot;(&quot;</span> expression <span class="st">&quot;)&quot;</span> <span class="op">|</span> LITERAL_NUMBER <span class="op">|</span> IDENTIFIER</span></code></pre></div></li>
-<li><p>La grammatica implementa le usuali regole di precedenza degli operatori: nell’espressione <code>a + b * c</code>, il termine <code>b * c</code> è valutato prima della somma.</p></li>
-<li><p>Notate che la regola per <code>expression</code> richiede un token di <em>look-ahead</em>.</p></li>
-<li><p>Non è troppo difficile aggiungere il supporto per chiamate a funzioni come <code>sin</code>, <code>cos</code>, etc. (Ben più difficile è permettere all’utente di definire nuove funzioni!)</p></li>
+<li><p>La grammatica implementa le usuali regole di precedenza degli
+operatori: nell’espressione <code>a + b * c</code>, il termine
+<code>b * c</code> è valutato prima della somma.</p></li>
+<li><p>Notate che la regola per <code>expression</code> richiede un
+token di <em>look-ahead</em>.</p></li>
+<li><p>Non è troppo difficile aggiungere il supporto per chiamate a
+funzioni come <code>sin</code>, <code>cos</code>, etc. (Ben più
+difficile è permettere all’utente di definire nuove funzioni!)</p></li>
 </ul>
 </section>
 <section id="generazione-automatica" class="slide level1">
 <h1>Generazione automatica</h1>
 <ul>
-<li><p>Esistono strumenti per generare automaticamente <em>lexer</em> e <em>parser</em>. Questi richiedono come file di input una grammatica (solitamente nella forma EBNF), e producono in output codice sorgente che interpreta la grammatica.</p></li>
-<li><p>Due strumenti storicamente importanti sono <code>lex</code> e <code>yacc</code>, che oggi sono disponibili nelle versioni open source <a href="https://en.wikipedia.org/wiki/Flex_(lexical_analyser_generator)">Flex</a> e <a href="https://en.wikipedia.org/wiki/GNU_Bison">Bison</a> (generano codice C/C++).</p></li>
-<li><p><a href="https://sqlite.org/src/doc/trunk/doc/lemon.html">Lemon</a> genera codice C, ed è stato usato per scrivere il parser SQL usato in SQLite.</p></li>
-<li><p><a href="https://en.wikipedia.org/wiki/ANTLR">ANTLR</a> (C++, C#, Java, Python) è la soluzione più completa e moderna.</p></li>
-<li><p>Tenete però presente che la maggior parte della gente preferisce scrivere <em>lexer</em> e <em>parser</em> a mano…</p></li>
+<li><p>Esistono strumenti per generare automaticamente <em>lexer</em> e
+<em>parser</em>. Questi richiedono come file di input una grammatica
+(solitamente nella forma EBNF), e producono in output codice sorgente
+che interpreta la grammatica.</p></li>
+<li><p>Due strumenti storicamente importanti sono <code>lex</code> e
+<code>yacc</code>, che oggi sono disponibili nelle versioni open source
+<a
+href="https://en.wikipedia.org/wiki/Flex_(lexical_analyser_generator)">Flex</a>
+e <a href="https://en.wikipedia.org/wiki/GNU_Bison">Bison</a> (generano
+codice C/C++).</p></li>
+<li><p><a
+href="https://sqlite.org/src/doc/trunk/doc/lemon.html">Lemon</a> genera
+codice C, ed è stato usato per scrivere il parser SQL usato in
+SQLite.</p></li>
+<li><p><a href="https://en.wikipedia.org/wiki/ANTLR">ANTLR</a> (C++, C#,
+Java, Python) è la soluzione più completa e moderna.</p></li>
+<li><p>Tenete però presente che la maggior parte della gente preferisce
+scrivere <em>lexer</em> e <em>parser</em> a mano…</p></li>
 </ul>
 </section>
 <section id="approfondimenti" class="slide level1">
 <h1>Approfondimenti</h1>
 <ul>
-<li><p>Il libro di Wirth <a href="https://people.inf.ethz.ch/wirth/CompilerConstruction/"><em>Compiler Construction</em></a> (Addison-Wesley, 1996) è di una chiarezza esemplare: in poche pagine come implementa un compilatore per il linguaggio <a href="https://en.wikipedia.org/wiki/Oberon_(programming_language)">Oberon</a> (un linguaggio creato da Wirth come successore del Pascal).</p></li>
-<li><p>Il testo «sacro» che illustra la teoria dei compilatori è il cosiddetto <em>dragon book</em> di Aho, Sethi, Lam &amp; Ullman: <em>Compilers – Principles, Techniques and Tools</em> (Pearson Publishing, 2006).</p></li>
-<li><p>Oggi i compilatori sono notevolmente più complessi a causa della necessaria integrazione con gli ambienti di sviluppo (PyCharm, CLion, IntelliJ IDEA, etc.). Guardate il video <a href="https://www.youtube.com/watch?v=wSdV1M7n4gQ"><em>Anders Hejlsberg on Modern Compiler Construction</em></a>: apprezzerete molto di più quello che fanno le vostre IDE!</p></li>
+<li><p>Il libro di Wirth <a
+href="https://people.inf.ethz.ch/wirth/CompilerConstruction/"><em>Compiler
+Construction</em></a> (Addison-Wesley, 1996) è di una chiarezza
+esemplare: in poche pagine come implementa un compilatore per il
+linguaggio <a
+href="https://en.wikipedia.org/wiki/Oberon_(programming_language)">Oberon</a>
+(un linguaggio creato da Wirth come successore del Pascal).</p></li>
+<li><p>Il testo «sacro» che illustra la teoria dei compilatori è il
+cosiddetto <em>dragon book</em> di Aho, Sethi, Lam &amp; Ullman:
+<em>Compilers – Principles, Techniques and Tools</em> (Pearson
+Publishing, 2006).</p></li>
+<li><p>Oggi i compilatori sono notevolmente più complessi a causa della
+necessaria integrazione con gli ambienti di sviluppo (PyCharm, CLion,
+IntelliJ IDEA, etc.). Guardate il video <a
+href="https://www.youtube.com/watch?v=wSdV1M7n4gQ"><em>Anders Hejlsberg
+on Modern Compiler Construction</em></a>: apprezzerete molto di più
+quello che fanno le vostre IDE!</p></li>
 </ul>
 </section>
 <section id="conclusioni-del-corso" class="slide level1">
@@ -646,55 +893,91 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <h1>Conclusioni del corso</h1>
 <ul>
 <li><p>Siamo arrivati alla fine del corso!</p></li>
-<li><p>Una volta implementato il <em>parser</em>, potrete rilasciare la versione <code>1.0</code> del vostro programma, venderla alla Disney Studios, fare un sacco di soldi e vivere da nababbi per il resto della vostra vita!</p></li>
-<li><p>Se invece avete intenzione di continuare a fare il mestiere del «fisico», prima di concludere è bene rivedere cosa abbiamo imparato in questo corso e come ciò vi possa essere utile in futuro, anche se questo non prevederà il <em>rendering</em> di scene 3D…</p></li>
+<li><p>Una volta implementato il <em>parser</em>, potrete rilasciare la
+versione <code>1.0</code> del vostro programma, venderla alla Disney
+Studios, fare un sacco di soldi e vivere da nababbi per il resto della
+vostra vita!</p></li>
+<li><p>Se invece avete intenzione di continuare a fare il mestiere del
+«fisico», prima di concludere è bene rivedere cosa abbiamo imparato in
+questo corso e come ciò vi possa essere utile in futuro, anche se questo
+non prevederà il <em>rendering</em> di scene 3D…</p></li>
 </ul>
 </section>
 <section id="le-abilità-più-importanti" class="slide level1">
 <h1>Le abilità più importanti</h1>
 <ul>
-<li><p>Scrivere test, test, test e ancora test: ogni funzionalità deve avere un test automatico che ne verifichi la consistenza!</p></li>
-<li><p>Progettate funzioni e classi in modo che siano facili da testare (es., passare in input <em>stream</em> anziché nomi di file).</p></li>
-<li><p>Decidere sin da subito quale licenza usare per rilasciare il proprio codice.</p></li>
-<li><p>Usare sistemi di controllo versione per monitorare i cambiamenti.</p></li>
-<li><p>Essere ordinati nell’uso di <em>issues</em> e <em>pull requests</em>, mantenendo aggiornato il <em>CHANGELOG</em>.</p></li>
-<li><p>Fornire documentazione del proprio lavoro sotto forma di <code>README</code>, un manuale, e/o docstrings.</p></li>
+<li><p>Scrivere test, test, test e ancora test: ogni funzionalità deve
+avere un test automatico che ne verifichi la consistenza!</p></li>
+<li><p>Progettate funzioni e classi in modo che siano facili da testare
+(es., passare in input <em>stream</em> anziché nomi di file).</p></li>
+<li><p>Decidere sin da subito quale licenza usare per rilasciare il
+proprio codice.</p></li>
+<li><p>Usare sistemi di controllo versione per monitorare i
+cambiamenti.</p></li>
+<li><p>Essere ordinati nell’uso di <em>issues</em> e <em>pull
+requests</em>, mantenendo aggiornato il <em>CHANGELOG</em>.</p></li>
+<li><p>Fornire documentazione del proprio lavoro sotto forma di
+<code>README</code>, un manuale, e/o docstrings.</p></li>
 </ul>
 </section>
 <section id="codici-di-simulazione" class="slide level1">
 <h1>Codici di simulazione</h1>
 <ul>
-<li><p>Nel caso specifico di codici di simulazione, scegliete bene il vostro <a href="tomasi-ray-tracing-11b-random-numbers-and-pigments.html#algoritmi">generatore di numeri casuali</a>!</p></li>
-<li><p>È importante che l’utente del vostro codice possa specificare il <em>seed</em> e, se il generatore lo prevede, l’identificatore della sequenza: questo permette la ripetibilità delle simulazioni, e ciò aiuta molto in fase di <em>debugging</em>.</p></li>
-<li><p>Se si devono fare tante simulazioni, usate la possibilità dei computer moderni di fare calcoli in parallelo. Nei casi più semplici è sufficiente usare <a href="tomasi-ray-tracing-11b-random-numbers-and-pigments.html#generare-animazioni">GNU Parallel</a>.</p></li>
+<li><p>Nel caso specifico di codici di simulazione, scegliete bene il
+vostro <a
+href="tomasi-ray-tracing-11b-random-numbers-and-pigments.html#algoritmi">generatore
+di numeri casuali</a>!</p></li>
+<li><p>È importante che l’utente del vostro codice possa specificare il
+<em>seed</em> e, se il generatore lo prevede, l’identificatore della
+sequenza: questo permette la ripetibilità delle simulazioni, e ciò aiuta
+molto in fase di <em>debugging</em>.</p></li>
+<li><p>Se si devono fare tante simulazioni, usate la possibilità dei
+computer moderni di fare calcoli in parallelo. Nei casi più semplici è
+sufficiente usare <a
+href="tomasi-ray-tracing-11b-random-numbers-and-pigments.html#generare-animazioni">GNU
+Parallel</a>.</p></li>
 </ul>
 </section>
 <section id="estendibilità" class="slide level1">
 <h1>Estendibilità</h1>
 <ul>
-<li><p>È molto probabile che gli utenti dei programmi che svilupperete provino ad usarli in contesti che voi non avevate previsto.</p></li>
-<li><p>È importante quindi che il proprio programma abbia un certo grado di <em>versatilità</em>.</p></li>
-<li><p>(Non bisogna però esagerare: più un programma è versatile, più e complesso da scrivere, e rischiate quindi di non arrivare mai a rilasciare la versione 1.0!)</p></li>
+<li><p>È molto probabile che gli utenti dei programmi che svilupperete
+provino ad usarli in contesti che voi non avevate previsto.</p></li>
+<li><p>È importante quindi che il proprio programma abbia un certo grado
+di <em>versatilità</em>.</p></li>
+<li><p>(Non bisogna però esagerare: più un programma è versatile, più e
+complesso da scrivere, e rischiate quindi di non arrivare mai a
+rilasciare la versione 1.0!)</p></li>
 </ul>
 </section>
 <section id="estendibilità-del-path-tracer" class="slide level1">
 <h1>Estendibilità del path-tracer</h1>
 <ul>
-<li><p>Nel nostro progetto abbiamo implementato la possibilità di leggere la scena da un file. Questo è molto più versatile del semplice comando <code>demo</code>!</p></li>
-<li><p>In maniera analoga, alcuni di voi hanno fatto in modo che il proprio programma salvasse immagini in più formati: non solo PFM, ma anche PNG, JPEG, etc.</p></li>
-<li><p>In un caso più generale, che esula dall’esempio specifico del nostro ray-tracer, come garantire questa versatilità in termini di lettura/scrittura dati da file?</p></li>
-<li><p>Siccome i fisici devono spesso leggere e scrivere grandi quantità di dati, è bene spendere qualche parola su questo.</p></li>
+<li><p>Nel nostro progetto abbiamo implementato la possibilità di
+leggere la scena da un file. Questo è molto più versatile del semplice
+comando <code>demo</code>!</p></li>
+<li><p>In maniera analoga, alcuni di voi hanno fatto in modo che il
+proprio programma salvasse immagini in più formati: non solo PFM, ma
+anche PNG, JPEG, etc.</p></li>
+<li><p>In un caso più generale, che esula dall’esempio specifico del
+nostro ray-tracer, come garantire questa versatilità in termini di
+lettura/scrittura dati da file?</p></li>
+<li><p>Siccome i fisici devono spesso leggere e scrivere grandi quantità
+di dati, è bene spendere qualche parola su questo.</p></li>
 </ul>
 </section>
 <section id="possibili-approcci" class="slide level1">
 <h1>Possibili approcci</h1>
 <ul>
-<li><p>La versatilità negli input/output di un programma si ottiene in vari modi:</p>
+<li><p>La versatilità negli input/output di un programma si ottiene in
+vari modi:</p>
 <ol>
 <li>Usare un formato di dati generico già disponibile;</li>
 <li>Inventare un formato di dati <em>ad hoc</em> per il programma;</li>
-<li>Incorporare il compilatore/interprete di un linguaggio nel proprio programma;</li>
-<li>Creare <em>bindings</em> al nostro codice in un linguaggio interpretato (es. Python).</li>
+<li>Incorporare il compilatore/interprete di un linguaggio nel proprio
+programma;</li>
+<li>Creare <em>bindings</em> al nostro codice in un linguaggio
+interpretato (es. Python).</li>
 </ol></li>
 <li><p>Vediamo una ad una queste possibilità.</p></li>
 </ul>
@@ -705,30 +988,61 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <section id="usare-un-formato-esistente-1" class="slide level1">
 <h1>Usare un formato esistente</h1>
 <ul>
-<li><p>Se dovete solo salvare tabelle di numeri, le soluzioni migliori sono probabilmente file CSV (di testo) o file Excel (binari). La libreria Python <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html">Pandas</a> li supporta entrambi.</p></li>
-<li><p>Formati più compatti che vanno bene per dati tabulari e matriciali sono <a href="https://en.wikipedia.org/wiki/FITS">FITS</a> (vecchio ma molto ben supportato) e <a href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format">HDF5</a> (più nuovo ed efficiente, meno supportato).</p></li>
-<li><p>Il vantaggio di formati esistenti è che sono leggibili anche da programmi diversi dal vostro: ad esempio, un file CSV è leggibile da Microsoft Excel, LibreOffice, Gnumeric, etc. Ciò è molto comodo soprattutto quando dovete condividere questi dati con altre persone.</p></li>
+<li><p>Se dovete solo salvare tabelle di numeri, le soluzioni migliori
+sono probabilmente file CSV (di testo) o file Excel (binari). La
+libreria Python <a
+href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html">Pandas</a>
+li supporta entrambi.</p></li>
+<li><p>Formati più compatti che vanno bene per dati tabulari e
+matriciali sono <a href="https://en.wikipedia.org/wiki/FITS">FITS</a>
+(vecchio ma molto ben supportato) e <a
+href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format">HDF5</a>
+(più nuovo ed efficiente, meno supportato).</p></li>
+<li><p>Il vantaggio di formati esistenti è che sono leggibili anche da
+programmi diversi dal vostro: ad esempio, un file CSV è leggibile da
+Microsoft Excel, LibreOffice, Gnumeric, etc. Ciò è molto comodo
+soprattutto quando dovete condividere questi dati con altre
+persone.</p></li>
 </ul>
 </section>
 <section id="formati-più-complessi" class="slide level1">
 <h1>Formati più complessi</h1>
 <ul>
-<li><p>I formati CSV ed Excel vanno bene per <em>memorizzare</em> numeri organizzati in tabelle, ma spesso si devono applicare filtri complessi e calcoli a questi dati.</p></li>
-<li><p>Un ottimo formato per questo scopo è <a href="https://www.sqlite.org/index.html">sqlite3</a>: a differenza di CSV ed Excel, offre eccellenti funzioni per fare ricerche e calcoli sui dati, ed è ottimizzato per grandi volumi di dati (fino a terabytes).</p></li>
-<li><p>Se non è sufficiente un tipo tabellare, potete usare il formato <a href="https://en.wikipedia.org/wiki/JSON">JSON</a>, <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> (che avete già usato per le GitHub Actions) o <a href="https://en.wikipedia.org/wiki/XML">XML</a>: sono in grado di salvare tipi di dati molto diversi tra loro (persino liste e dizionari!).</p></li>
-<li><p>XML è il più complesso, ma implementa un sistema di controllo della «sintassi» nel file (detto <a href="https://en.wikipedia.org/wiki/XML_schema">XML schema</a>) che lo rende molto più robusto (anche se più difficile da scrivere).</p></li>
+<li><p>I formati CSV ed Excel vanno bene per <em>memorizzare</em> numeri
+organizzati in tabelle, ma spesso si devono applicare filtri complessi e
+calcoli a questi dati.</p></li>
+<li><p>Un ottimo formato per questo scopo è <a
+href="https://www.sqlite.org/index.html">sqlite3</a>: a differenza di
+CSV ed Excel, offre eccellenti funzioni per fare ricerche e calcoli sui
+dati, ed è ottimizzato per grandi volumi di dati (fino a
+terabytes).</p></li>
+<li><p>Se non è sufficiente un tipo tabellare, potete usare il formato
+<a href="https://en.wikipedia.org/wiki/JSON">JSON</a>, <a
+href="https://en.wikipedia.org/wiki/YAML">YAML</a> (che avete già usato
+per le GitHub Actions) o <a
+href="https://en.wikipedia.org/wiki/XML">XML</a>: sono in grado di
+salvare tipi di dati molto diversi tra loro (persino liste e
+dizionari!).</p></li>
+<li><p>XML è il più complesso, ma implementa un sistema di controllo
+della «sintassi» nel file (detto <a
+href="https://en.wikipedia.org/wiki/XML_schema">XML schema</a>) che lo
+rende molto più robusto (anche se più difficile da scrivere).</p></li>
 </ul>
 </section>
 <section class="slide level1">
 
 <p><asciinema-player src="cast/json-example-python-julia-78x20.cast" cols="78" rows="20" font-size="medium"></asciinema-player></p>
-<p>Il vantaggio di usare un formato diffuso come JSON è che sono a disposizioni molti strumenti per visualizzarlo e modificarlo: vedete ad esempio <a href="https://stedolan.github.io/jq/">jq</a>.</p>
+<p>Il vantaggio di usare un formato diffuso come JSON è che sono a
+disposizioni molti strumenti per visualizzarlo e modificarlo: vedete ad
+esempio <a href="https://stedolan.github.io/jq/">jq</a>.</p>
 </section>
 <section id="il-caso-del-nostro-ray-tracer" class="slide level1">
 <h1>Il caso del nostro ray-tracer</h1>
 <ul>
-<li><p>Nel caso del nostro programma avremmo potuto usare il formato JSON:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;camera&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<li><p>Nel caso del nostro programma avremmo potuto usare il formato
+JSON:</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;camera&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;projection&quot;</span><span class="fu">:</span> <span class="st">&quot;perspective&quot;</span><span class="fu">,</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;transformations&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">{</span> <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;rotation_z&quot;</span><span class="fu">,</span> <span class="dt">&quot;angle_deg&quot;</span><span class="fu">:</span> <span class="fl">30.0</span> <span class="fu">}</span><span class="ot">,</span></span>
@@ -739,7 +1053,9 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="er">...</span></span>
 <span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></li>
-<li><p>Non serve un <em>lexer</em> e un <em>parser</em>, ma bisogna comunque validare il contenuto (es., <code>camera</code> deve contenere <code>projection</code>).</p></li>
+<li><p>Non serve un <em>lexer</em> e un <em>parser</em>, ma bisogna
+comunque validare il contenuto (es., <code>camera</code> deve contenere
+<code>projection</code>).</p></li>
 </ul>
 </section>
 <section id="inventare-un-formato" class="slide level1">
@@ -748,13 +1064,17 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <section id="inventare-un-formato-1" class="slide level1">
 <h1>Inventare un formato</h1>
 <ul>
-<li><p>È la soluzione che abbiamo adottato per descrivere le scene tridimensionali nel nostro programma.</p></li>
+<li><p>È la soluzione che abbiamo adottato per descrivere le scene
+tridimensionali nel nostro programma.</p></li>
 <li><p>Attività molto creativa, ma ha alcuni potenziali problemi:</p>
 <ul>
 <li><p>Rischia di richiedere molto tempo allo sviluppatore…</p></li>
-<li><p>…e richiede che l’utente impari la sintassi e la semantica del vostro linguaggio</p></li>
+<li><p>…e richiede che l’utente impari la sintassi e la semantica del
+vostro linguaggio</p></li>
 </ul></li>
-<li><p>Non è solitamente una buona scelta: noi l’abbiamo adottata a lezione per la sua valenza didattica (comprensione del funzionamento dei compilatori, gestione degli errori, …).</p></li>
+<li><p>Non è solitamente una buona scelta: noi l’abbiamo adottata a
+lezione per la sua valenza didattica (comprensione del funzionamento dei
+compilatori, gestione degli errori, …).</p></li>
 </ul>
 </section>
 <section id="incorporare-un-linguaggio" class="slide level1">
@@ -763,15 +1083,35 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <section id="incorporare-un-linguaggio-1" class="slide level1">
 <h1>Incorporare un linguaggio</h1>
 <ul>
-<li><p>Una soluzione usata soprattutto per programmi vasti e complessi è quella di incorporare un interprete di un linguaggio «semplice» all’interno del proprio programma (questo tipo di interpreti è detto <em>embedded</em>).</p></li>
+<li><p>Una soluzione usata soprattutto per programmi vasti e complessi è
+quella di incorporare un interprete di un linguaggio «semplice»
+all’interno del proprio programma (questo tipo di interpreti è detto
+<em>embedded</em>).</p></li>
 <li><p>Esempi notevoli:</p>
 <ul>
-<li>Microsoft <a href="https://en.wikipedia.org/wiki/Visual_Basic_for_Applications">Visual Basic for Applications</a> (linguaggio BASIC incluso in Word, Excel e molte altre);</li>
-<li><a href="https://en.wikipedia.org/wiki/AutoLISP">AutoLISP</a> (interprete LISP usato in AutoCAD);</li>
-<li><a href="https://www.gnu.org/software/guile/">GNU Guile</a> (interprete Scheme usato in <a href="https://docs.gimp.org/en/gimp-concepts-script-fu.html">The Gimp</a>, <a href="https://lilypond.org/doc/v2.18/Documentation/extending/scheme-tutorial">Lilypond</a>, etc.)</li>
-<li>Python (usato in <a href="https://docs.blender.org/manual/en/latest/advanced/scripting/introduction.html">Blender</a>, <a href="https://wiki.inkscape.org/wiki/index.php/Python_modules_for_extensions">Inkscape</a>, <a href="https://www.gimp.org/docs/python/index.html">The Gimp</a>, <a href="https://projects.raspberrypi.org/en/projects/getting-started-with-minecraft-pi/4">Minecraft</a>).</li>
+<li>Microsoft <a
+href="https://en.wikipedia.org/wiki/Visual_Basic_for_Applications">Visual
+Basic for Applications</a> (linguaggio BASIC incluso in Word, Excel e
+molte altre);</li>
+<li><a href="https://en.wikipedia.org/wiki/AutoLISP">AutoLISP</a>
+(interprete LISP usato in AutoCAD);</li>
+<li><a href="https://www.gnu.org/software/guile/">GNU Guile</a>
+(interprete Scheme usato in <a
+href="https://docs.gimp.org/en/gimp-concepts-script-fu.html">The
+Gimp</a>, <a
+href="https://lilypond.org/doc/v2.18/Documentation/extending/scheme-tutorial">Lilypond</a>,
+etc.)</li>
+<li>Python (usato in <a
+href="https://docs.blender.org/manual/en/latest/advanced/scripting/introduction.html">Blender</a>,
+<a
+href="https://wiki.inkscape.org/wiki/index.php/Python_modules_for_extensions">Inkscape</a>,
+<a href="https://www.gimp.org/docs/python/index.html">The Gimp</a>, <a
+href="https://projects.raspberrypi.org/en/projects/getting-started-with-minecraft-pi/4">Minecraft</a>).</li>
 </ul></li>
-<li><p>Vedi <a href="https://dspace.mit.edu/handle/1721.1/5980"><em>Programmable Applications: Interpreter Meets Interface</em></a> (Eisenberg, 1995).</p></li>
+<li><p>Vedi <a
+href="https://dspace.mit.edu/handle/1721.1/5980"><em>Programmable
+Applications: Interpreter Meets Interface</em></a> (Eisenberg,
+1995).</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -779,23 +1119,34 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <center>
 <img data-src="media/blender-python.webp" height="620" />
 </center>
-<p>In Blender è possibile aprire un terminale Python in cui lanciare comandi per creare oggetti, modificarli, etc.</p>
+<p>In Blender è possibile aprire un terminale Python in cui lanciare
+comandi per creare oggetti, modificarli, etc.</p>
 </section>
 <section id="logica-di-funzionamento" class="slide level1">
 <h1>Logica di funzionamento</h1>
 <ul>
-<li><p>Il linguaggio incorporato nella applicazione è «esteso» con funzioni specifiche per manipolare gli oggetti gestiti dall’applicazione. Ad esempio, questo codice VBA può essere usato per modificare la cella <code>A1</code> di un foglio Excel:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode monobasic"><code class="sourceCode monobasic"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">Sub </span>Macro1()</span>
+<li><p>Il linguaggio incorporato nella applicazione è «esteso» con
+funzioni specifiche per manipolare gli oggetti gestiti
+dall’applicazione. Ad esempio, questo codice VBA può essere usato per
+modificare la cella <code>A1</code> di un foglio Excel:</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode monobasic"><code class="sourceCode monobasic"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">Sub </span>Macro1()</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Value = <span class="st">&quot;Wow!&quot;</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Borders.LineStyle = xlDouble</span>
 <span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="kw">End Sub</span></span></code></pre></div></li>
-<li><p>Comodo per automatizzare task ripetitivi (es. creare oggetti ripetuti in programmi grafici come Blender).</p></li>
-<li><p>Alcuni linguaggi (<a href="https://www.gnu.org/software/guile/">GNU Guile</a>, <a href="https://www.lua.org/">Lua</a>…) sono pensati principalmente per usi <em>embedded</em>.</p></li>
+<li><p>Comodo per automatizzare task ripetitivi (es. creare oggetti
+ripetuti in programmi grafici come Blender).</p></li>
+<li><p>Alcuni linguaggi (<a
+href="https://www.gnu.org/software/guile/">GNU Guile</a>, <a
+href="https://www.lua.org/">Lua</a>…) sono pensati principalmente per
+usi <em>embedded</em>.</p></li>
 </ul>
 </section>
 <section id="esempio-python" class="slide level1">
 <h1>Esempio Python</h1>
-<p>Questo programma C inizializza l’interprete Python ed esegue un semplice script. Nella realtà, questo script potrebbe essere stato digitato dall’utente in una finestra di dialogo del programma:</p>
+<p>Questo programma C inizializza l’interprete Python ed esegue un
+semplice script. Nella realtà, questo script potrebbe essere stato
+digitato dall’utente in una finestra di dialogo del programma:</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PY_SSIZE_T_CLEAN</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Python.h&gt;</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -821,7 +1172,10 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 </section>
 <section id="registrare-funzioni" class="slide level1">
 <h1>Registrare funzioni</h1>
-<p>Si può estendere l’interprete Python perché riconosca nuove funzioni: è in questo modo che si rendono disponibili le funzionalità del proprio programma attraverso Python. Ecco un <a href="https://docs.python.org/3/extending/embedding.html">esempio</a>:</p>
+<p>Si può estendere l’interprete Python perché riconosca nuove funzioni:
+è in questo modo che si rendono disponibili le funzionalità del proprio
+programma attraverso Python. Ecco un <a
+href="https://docs.python.org/3/extending/embedding.html">esempio</a>:</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> numargs<span class="op">=</span><span class="dv">0</span><span class="op">;</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">/* Return the number of arguments of the application command line */</span></span>
@@ -859,9 +1213,14 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <section id="il-caso-del-nostro-ray-tracer-1" class="slide level1">
 <h1>Il caso del nostro ray-tracer</h1>
 <ul>
-<li><p>In questo caso, avremmo potuto esportare nell’interprete Python funzioni come <code>create_sphere</code>, <code>create_brdf</code>, etc. che invocano le funzionalità del nostro codice C++/C#/…</p></li>
-<li><p>I file di input sarebbero stati normali script Python, che potevano impiegare tutte le potenzialità del linguaggio (variabili, funzioni, cicli <code>for</code>, etc.):</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>black <span class="op">=</span> color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)  <span class="co"># We can define variables of any type, not only floats!</span></span>
+<li><p>In questo caso, avremmo potuto esportare nell’interprete Python
+funzioni come <code>create_sphere</code>, <code>create_brdf</code>, etc.
+che invocano le funzionalità del nostro codice C++/C#/…</p></li>
+<li><p>I file di input sarebbero stati normali script Python, che
+potevano impiegare tutte le potenzialità del linguaggio (variabili,
+funzioni, cicli <code>for</code>, etc.):</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>black <span class="op">=</span> color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)  <span class="co"># We can define variables of any type, not only floats!</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>sphere_material <span class="op">=</span> create_material(</span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    brdf<span class="op">=</span>diffuse_brdf(uniform_pigment(color(<span class="fl">0.7</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>))),</span>
@@ -879,24 +1238,37 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <section id="creare-bindings-1" class="slide level1">
 <h1>Creare <em>bindings</em></h1>
 <ul>
-<li><p>Un approccio simile a quello degli interpreti <em>embedded</em> è quello di rendere il proprio codice invocabile da un linguaggio esterno (solitamente Python).</p></li>
-<li><p>La differenza con la soluzione precedente è che in questo caso si usa l’interprete Python installato nel sistema, e non un interprete dedicato.</p></li>
-<li><p>Il vantaggio è ovviamente che si possono combinare librerie già installate con la nostra: la soluzione è molto più versatile, ed è generalmente quella da preferire.</p></li>
-<li><p>Questa soluzione è facilmente praticabile con linguaggi come C++, Nim, Rust…; è decisamente più complessa per Julia, C# o Kotlin.</p></li>
+<li><p>Un approccio simile a quello degli interpreti <em>embedded</em> è
+quello di rendere il proprio codice invocabile da un linguaggio esterno
+(solitamente Python).</p></li>
+<li><p>La differenza con la soluzione precedente è che in questo caso si
+usa l’interprete Python installato nel sistema, e non un interprete
+dedicato.</p></li>
+<li><p>Il vantaggio è ovviamente che si possono combinare librerie già
+installate con la nostra: la soluzione è molto più versatile, ed è
+generalmente quella da preferire.</p></li>
+<li><p>Questa soluzione è facilmente praticabile con linguaggi come C++,
+Nim, Rust…; è decisamente più complessa per Julia, C# o Kotlin.</p></li>
 </ul>
 </section>
 <section id="il-caso-di-python-e-julia" class="slide level1">
 <h1>Il caso di Python e Julia</h1>
 <ul>
-<li><p>I gruppi che hanno impiegato Julia possono sin da subito creare semplici script e usare il proprio <em>package</em> come una libreria:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode julia"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> MyRaytracer</span>
+<li><p>I gruppi che hanno impiegato Julia possono sin da subito creare
+semplici script e usare il proprio <em>package</em> come una
+libreria:</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">MyRaytracer</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>mycam <span class="op">=</span> <span class="fu">OrthogonalCamera</span>(<span class="fl">16</span><span class="op">//</span><span class="fl">9</span><span class="op">,</span> <span class="fu">rotation_z</span>(<span class="fl">180.0</span>))</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>mycam <span class="op">=</span> <span class="fu">OrthogonalCamera</span>(<span class="fl">16</span><span class="op">//</span><span class="fl">9</span>, <span class="fu">rotation_z</span>(<span class="fl">180.0</span>))</span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>world <span class="op">=</span> <span class="fu">World</span>()</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">addshape</span>(world<span class="op">,</span> <span class="fu">Sphere</span>(<span class="fu">translation</span>(<span class="fu">Vec</span>(<span class="fl">10</span><span class="op">,</span> <span class="fl">0</span><span class="op">,</span> <span class="fl">0</span>))))</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>…</span></code></pre></div></li>
-<li><p>Ovviamente si hanno a disposizione tutte le potenzialità di Julia: cicli <code>for</code>, definizione di funzioni di supporto, etc.</p></li>
-<li><p>Questo codice può essere inserito anche direttamente nella REPL o in un notebook, ed è quindi particolarmente comodo!</p></li>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">addshape</span>(world, <span class="fu">Sphere</span>(<span class="fu">translation</span>(<span class="fu">Vec</span>(<span class="fl">10</span>, <span class="fl">0</span>, <span class="fl">0</span>))))</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="op">…</span></span></code></pre></div></li>
+<li><p>Ovviamente si hanno a disposizione tutte le potenzialità di
+Julia: cicli <code>for</code>, definizione di funzioni di supporto,
+etc.</p></li>
+<li><p>Questo codice può essere inserito anche direttamente nella REPL o
+in un notebook, ed è quindi particolarmente comodo!</p></li>
 </ul>
 </section>
 <section id="altre-estensioni" class="slide level1">
@@ -905,8 +1277,13 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <section id="metadati-di-output" class="slide level1">
 <h1>Metadati di output</h1>
 <ul>
-<li><p>L’output del nostro programma è un file PFM, che contiene l’immagine fotorealistica calcolata dal codice.</p></li>
-<li><p>Questo è sufficiente per un programma di <em>rendering</em>, ma in ambito scientifico non è sufficiente produrre un file che contiene solo il <em>risultato</em> di un calcolo: il risultato dipende infatti dagli input forniti, e più è complesso il calcolo, maggiore è il numero di input.</p></li>
+<li><p>L’output del nostro programma è un file PFM, che contiene
+l’immagine fotorealistica calcolata dal codice.</p></li>
+<li><p>Questo è sufficiente per un programma di <em>rendering</em>, ma
+in ambito scientifico non è sufficiente produrre un file che contiene
+solo il <em>risultato</em> di un calcolo: il risultato dipende infatti
+dagli input forniti, e più è complesso il calcolo, maggiore è il numero
+di input.</p></li>
 </ul>
 </section>
 <section id="parametri-del-ray-tracer" class="slide level1">
@@ -916,21 +1293,30 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 <ol>
 <li>Scena usata (dove erano collocate le forme? che BRDF avevano?)</li>
 <li>Osservatore (posizione, direzione, tipo di proiezione…)</li>
-<li>Tipo di algoritmo (<em>flat</em>, <em>path tracing</em>, <em>point-light tracing</em>);</li>
-<li>Numero massimo di raggi prodotti ad ogni iterazione (per il <em>path tracing</em>);</li>
+<li>Tipo di algoritmo (<em>flat</em>, <em>path tracing</em>,
+<em>point-light tracing</em>);</li>
+<li>Numero massimo di raggi prodotti ad ogni iterazione (per il <em>path
+tracing</em>);</li>
 <li>Parametri usati per la roulette russa;</li>
 <li>Presenza o meno di <em>anti-aliasing</em>;</li>
 <li>Etc.</li>
 </ol></li>
-<li><p>Sarebbe molto utile che il codice salvasse queste informazioni all’interno di un’immagine PFM! In questo modo potete capire anche a distanza di molto tempo come è stata generata una immagine.</p></li>
+<li><p>Sarebbe molto utile che il codice salvasse queste informazioni
+all’interno di un’immagine PFM! In questo modo potete capire anche a
+distanza di molto tempo come è stata generata una immagine.</p></li>
 </ul>
 </section>
 <section id="possibile-soluzione" class="slide level1">
 <h1>Possibile soluzione</h1>
 <ul>
-<li><p>Se si usasse un formato più versatile di PFM per le immagini, si potrebbero salvare queste informazioni nel file immagine stesso.</p></li>
-<li><p>Altrimenti, si può salvare un file JSON/YAML/XML associato al file PFM (es., <code>output.pfm.json</code>) che contenga queste informazioni:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<li><p>Se si usasse un formato più versatile di PFM per le immagini, si
+potrebbero salvare queste informazioni nel file immagine
+stesso.</p></li>
+<li><p>Altrimenti, si può salvare un file JSON/YAML/XML associato al
+file PFM (es., <code>output.pfm.json</code>) che contenga queste
+informazioni:</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;scene-file&quot;</span><span class="fu">:</span> <span class="st">&quot;/home/tomasi/Documents/raytracing/myworld.txt&quot;</span><span class="fu">,</span></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;rendering-algorithm&quot;</span><span class="fu">:</span> <span class="st">&quot;pathtracing&quot;</span><span class="fu">,</span></span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;projection&quot;</span><span class="fu">:</span> <span class="st">&quot;orthogonal&quot;</span><span class="fu">,</span></span>
@@ -981,7 +1367,7 @@ point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
 
         // Add the current slide number to the URL hash so that reloading the
         // page/copying the URL will return you to the same slide
-        hash: false,
+        hash: true,
 
         // Start with 1 for the hash rather than 0
         hashOneBasedIndex: false,
