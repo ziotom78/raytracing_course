@@ -145,8 +145,9 @@ concatenati i token: LL(n), LR(n), GLR(n), LALR(n), etc.</p></li>
 <li><p>Ciascuna di queste famiglie richiede algoritmi specifici per
 l’analisi sintattica, e purtroppo algoritmi che vanno bene per una
 famiglia non vanno bene per altre!</p></li>
-<li><p>Il nostro linguaggio è di tipo LL(1), e l’algoritmo
-corrispondente per analizzare la grammatica è tra i più
+<li><p>Il nostro linguaggio è di tipo LL(1), come il linguaggio <a
+href="https://en.wikipedia.org/wiki/Pascal_(programming_language)">Pascal</a>,
+e l’algoritmo corrispondente per analizzare la grammatica è tra i più
 semplici.</p></li>
 </ul>
 </section>
@@ -777,70 +778,6 @@ ci sono i file sorgente usati per i test del solo <em>lexer</em> di
 Clang!</p></li>
 </ul>
 </section>
-<section id="estensioni" class="slide level1">
-<h1>Estensioni</h1>
-</section>
-<section id="estensioni-alla-grammatica" class="slide level1">
-<h1>Estensioni alla grammatica</h1>
-<p>Il nostro linguaggio è abbastanza completo, ma potrebbe essere più
-versatile:</p>
-<ul>
-<li><p>Se avete implementato un <em>point-light tracer</em>, potreste
-estendere il linguaggio per specificare le sorgenti puntiformi, ad
-esempio con questa sintassi:</p>
-<pre class="text"><code># Specify the position and the color of the point light
-point_light([3.0, 2.0, 5.0], &lt;1.0, 1.0, 1.0&gt;)</code></pre></li>
-<li><p>Può accadere che i nomi di file contengano il carattere
-<code>"</code> (ad es.,
-<code>Incisione di Doré per la "Divina Commedia".jpg</code>), nel qual
-caso il nostro lexer fa cilecca. Potreste estendere il lexer in modo che
-accetti <code>\"</code> come un carattere <code>"</code> da includere
-nella stringa, in maniera analoga al C++ e al Python.</p></li>
-<li><p>Potreste implementare il supporto per espressioni
-matematiche!</p></li>
-</ul>
-</section>
-<section id="espressioni-matematiche" class="slide level1">
-<h1>Espressioni matematiche</h1>
-<ul>
-<li><p>Il nostro linguaggio permette variabili, ma non prevede calcoli
-aritmetici. Questo è molto limitante! Potrei voler muovere un oggetto
-lungo una retta e farne ruotare un altro:</p>
-<div class="sourceCode" id="cb23"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">float</span> speed_m_s<span class="er">(</span><span class="ex">1.0</span><span class="kw">);</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">float</span> freq_hz<span class="er">(</span><span class="ex">0.5</span><span class="kw">);</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># First sphere</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">sphere</span><span class="er">(</span><span class="ex">sphere_material,</span> translation<span class="er">(</span><span class="ex">[0,</span> 0, clock_s <span class="pp">*</span> speed_m_s]<span class="kw">))</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Second sphere (faster)</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="ex">sphere</span><span class="er">(</span><span class="ex">sphere_material,</span> rotation_x<span class="er">(</span><span class="ex">360</span> <span class="pp">*</span> freq_hz <span class="pp">*</span> clock_s<span class="kw">)</span> <span class="ex">*</span> translation<span class="er">(</span><span class="ex">[1,</span> 0, 0]<span class="kw">))</span></span></code></pre></div></li>
-<li><p>Implementare il calcolo di espressioni matematiche non è
-difficilissimo: basta riusare i concetti che abbiamo presentato
-oggi.</p></li>
-</ul>
-</section>
-<section id="grammatica-per-espressioni" class="slide level1">
-<h1>Grammatica per espressioni</h1>
-<ul>
-<li><p>Questa è una grammatica che implementa le quattro operazioni
-aritmetiche:</p>
-<div class="sourceCode" id="cb24"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>expression ::<span class="op">=</span> term <span class="st">&quot;+&quot;</span> expression <span class="op">|</span> term <span class="st">&quot;-&quot;</span> expression <span class="op">|</span> term <span class="op">|</span> <span class="st">&quot;-&quot;</span> term</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>term ::<span class="op">=</span> factor <span class="st">&quot;*&quot;</span> term <span class="op">|</span> factor <span class="st">&quot;/&quot;</span> term <span class="op">|</span> factor</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>factor ::<span class="op">=</span> <span class="st">&quot;(&quot;</span> expression <span class="st">&quot;)&quot;</span> <span class="op">|</span> LITERAL_NUMBER <span class="op">|</span> IDENTIFIER</span></code></pre></div></li>
-<li><p>La grammatica implementa le usuali regole di precedenza degli
-operatori: nell’espressione <code>a + b * c</code>, il termine
-<code>b * c</code> è valutato prima della somma.</p></li>
-<li><p>Notate che la regola per <code>expression</code> richiede un
-token di <em>look-ahead</em>.</p></li>
-<li><p>Non è troppo difficile aggiungere il supporto per chiamate a
-funzioni come <code>sin</code>, <code>cos</code>, etc. (Ben più
-difficile è permettere all’utente di definire nuove funzioni!)</p></li>
-</ul>
-</section>
 <section id="generazione-automatica" class="slide level1">
 <h1>Generazione automatica</h1>
 <ul>
@@ -915,7 +852,8 @@ proprio codice.</p></li>
 <li><p>Usare sistemi di controllo versione per monitorare i
 cambiamenti.</p></li>
 <li><p>Essere ordinati nell’uso di <em>issues</em> e <em>pull
-requests</em>, mantenendo aggiornato il <em>CHANGELOG</em>.</p></li>
+requests</em>, mantenendo aggiornato il file
+<code>CHANGELOG</code>.</p></li>
 <li><p>Fornire documentazione del proprio lavoro sotto forma di
 <code>README</code>, un manuale, e/o docstrings.</p></li>
 </ul>
@@ -924,9 +862,8 @@ requests</em>, mantenendo aggiornato il <em>CHANGELOG</em>.</p></li>
 <h1>Codici di simulazione</h1>
 <ul>
 <li><p>Nel caso specifico di codici di simulazione, scegliete bene il
-vostro <a
-href="tomasi-ray-tracing-11b-random-numbers-and-pigments.html#algoritmi">generatore
-di numeri casuali</a>!</p></li>
+vostro <a href="tomasi-ray-tracing-11b.html#algoritmi">generatore di
+numeri casuali</a>!</p></li>
 <li><p>È importante che l’utente del vostro codice possa specificare il
 <em>seed</em> e, se il generatore lo prevede, l’identificatore della
 sequenza: questo permette la ripetibilità delle simulazioni, e ciò aiuta
@@ -934,7 +871,7 @@ molto in fase di <em>debugging</em>.</p></li>
 <li><p>Se si devono fare tante simulazioni, usate la possibilità dei
 computer moderni di fare calcoli in parallelo. Nei casi più semplici è
 sufficiente usare <a
-href="tomasi-ray-tracing-11b-random-numbers-and-pigments.html#generare-animazioni">GNU
+href="tomasi-ray-tracing-11b.html#generare-animazioni">GNU
 Parallel</a>.</p></li>
 </ul>
 </section>
@@ -950,8 +887,8 @@ complesso da scrivere, e rischiate quindi di non arrivare mai a
 rilasciare la versione 1.0!)</p></li>
 </ul>
 </section>
-<section id="estendibilità-del-path-tracer" class="slide level1">
-<h1>Estendibilità del path-tracer</h1>
+<section id="io-usate-degli-standard" class="slide level1">
+<h1>I/O: usate degli standard!</h1>
 <ul>
 <li><p>Nel nostro progetto abbiamo implementato la possibilità di
 leggere la scena da un file. Questo è molto più versatile del semplice
@@ -959,11 +896,11 @@ comando <code>demo</code>!</p></li>
 <li><p>In maniera analoga, alcuni di voi hanno fatto in modo che il
 proprio programma salvasse immagini in più formati: non solo PFM, ma
 anche PNG, JPEG, etc.</p></li>
-<li><p>In un caso più generale, che esula dall’esempio specifico del
-nostro ray-tracer, come garantire questa versatilità in termini di
-lettura/scrittura dati da file?</p></li>
-<li><p>Siccome i fisici devono spesso leggere e scrivere grandi quantità
-di dati, è bene spendere qualche parola su questo.</p></li>
+<li><p>In generale, è bene fare affidamento su formati diffusi (PNG,
+JPEG) piuttosto che su formati oscuri (PFM) o addirittura inventati da
+soli! Quest’ultima opzione è percorribile solo se non esistono formati
+adatti (è il caso del linguaggio per le scene che abbiamo inventato
+noi).</p></li>
 </ul>
 </section>
 <section id="possibili-approcci" class="slide level1">
@@ -985,9 +922,37 @@ interpretato (es. Python).</li>
 <section id="usare-un-formato-esistente" class="slide level1">
 <h1>1. Usare un formato esistente</h1>
 </section>
+<section id="esempio-negativo" class="slide level1">
+<h1>Esempio negativo</h1>
+<ul>
+<li><p>Considerate un programma che fa una simulazione di un fenomeno
+fisico, e stampa risultati a video:</p>
+<pre><code>$ ./myprogram
+Calculating...
+Estimated temperature of the air: 296 K
+The speed of the particle is 8.156 m/s²
+Force: 156.0 N
+$</code></pre></li>
+<li><p>L’output del programma non è facilmente fruibile: i numeri non
+sono facilmente recuperabili. Un output migliore è il seguente:</p>
+<pre><code>$ ./myprogram
+&quot;Temperature [K]&quot;,296
+&quot;Speed [m/s²]&quot;,8.156
+&quot;Force [N]&quot;,156.0</code></pre></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p><asciinema-player src="cast/sc-im-84x19.cast" cols="84" rows="19" font-size="medium"></asciinema-player></p>
+</section>
 <section id="usare-un-formato-esistente-1" class="slide level1">
 <h1>Usare un formato esistente</h1>
 <ul>
+<li><p>Il vantaggio di formati esistenti è che sono leggibili anche da
+programmi diversi dal vostro: ad esempio, un file CSV è leggibile da
+Microsoft Excel, LibreOffice, Gnumeric, etc. Ciò è molto comodo
+soprattutto quando dovete condividere questi dati con altre
+persone.</p></li>
 <li><p>Se dovete solo salvare tabelle di numeri, le soluzioni migliori
 sono probabilmente file CSV (di testo) o file Excel (binari). La
 libreria Python <a
@@ -998,11 +963,6 @@ matriciali sono <a href="https://en.wikipedia.org/wiki/FITS">FITS</a>
 (vecchio ma molto ben supportato) e <a
 href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format">HDF5</a>
 (più nuovo ed efficiente, meno supportato).</p></li>
-<li><p>Il vantaggio di formati esistenti è che sono leggibili anche da
-programmi diversi dal vostro: ad esempio, un file CSV è leggibile da
-Microsoft Excel, LibreOffice, Gnumeric, etc. Ciò è molto comodo
-soprattutto quando dovete condividere questi dati con altre
-persone.</p></li>
 </ul>
 </section>
 <section id="formati-più-complessi" class="slide level1">
@@ -1041,18 +1001,18 @@ esempio <a href="https://stedolan.github.io/jq/">jq</a>.</p>
 <ul>
 <li><p>Nel caso del nostro programma avremmo potuto usare il formato
 JSON:</p>
-<div class="sourceCode" id="cb25"><pre
-class="sourceCode json"><code class="sourceCode json"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;camera&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;projection&quot;</span><span class="fu">:</span> <span class="st">&quot;perspective&quot;</span><span class="fu">,</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;transformations&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">{</span> <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;rotation_z&quot;</span><span class="fu">,</span> <span class="dt">&quot;angle_deg&quot;</span><span class="fu">:</span> <span class="fl">30.0</span> <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">{</span> <span class="dt">&quot;type:&quot;</span> <span class="dt">&quot;translation&quot;</span><span class="fu">,</span> <span class="dt">&quot;vector&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">-4</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">]</span> <span class="fu">}</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>        <span class="ot">]</span><span class="fu">,</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;distance&quot;</span><span class="fu">:</span> <span class="fl">1.0</span><span class="fu">,</span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;aspect_ratio&quot;</span><span class="fu">:</span> <span class="fl">1.0</span></span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="er">...</span></span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;camera&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;projection&quot;</span><span class="fu">:</span> <span class="st">&quot;perspective&quot;</span><span class="fu">,</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;transformations&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">{</span> <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;rotation_z&quot;</span><span class="fu">,</span> <span class="dt">&quot;angle_deg&quot;</span><span class="fu">:</span> <span class="fl">30.0</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">{</span> <span class="dt">&quot;type:&quot;</span> <span class="dt">&quot;translation&quot;</span><span class="fu">,</span> <span class="dt">&quot;vector&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">-4</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">]</span> <span class="fu">}</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>        <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;distance&quot;</span><span class="fu">:</span> <span class="fl">1.0</span><span class="fu">,</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;aspect_ratio&quot;</span><span class="fu">:</span> <span class="fl">1.0</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="er">...</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></li>
 <li><p>Non serve un <em>lexer</em> e un <em>parser</em>, ma bisogna
 comunque validare il contenuto (es., <code>camera</code> deve contenere
 <code>projection</code>).</p></li>
@@ -1072,9 +1032,10 @@ tridimensionali nel nostro programma.</p></li>
 <li><p>…e richiede che l’utente impari la sintassi e la semantica del
 vostro linguaggio</p></li>
 </ul></li>
-<li><p>Non è solitamente una buona scelta: noi l’abbiamo adottata a
-lezione per la sua valenza didattica (comprensione del funzionamento dei
-compilatori, gestione degli errori, …).</p></li>
+<li><p>Noi l’abbiamo adottata a lezione per la sua valenza didattica
+(comprensione del funzionamento dei compilatori, gestione degli errori,
+…), e perché non è comunque facile usare un formato generico come JSON
+in questo contesto particolare.</p></li>
 </ul>
 </section>
 <section id="incorporare-un-linguaggio" class="slide level1">
@@ -1129,11 +1090,11 @@ comandi per creare oggetti, modificarli, etc.</p>
 funzioni specifiche per manipolare gli oggetti gestiti
 dall’applicazione. Ad esempio, questo codice VBA può essere usato per
 modificare la cella <code>A1</code> di un foglio Excel:</p>
-<div class="sourceCode" id="cb26"><pre
-class="sourceCode monobasic"><code class="sourceCode monobasic"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">Sub </span>Macro1()</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Value = <span class="st">&quot;Wow!&quot;</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Borders.LineStyle = xlDouble</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="kw">End Sub</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode monobasic"><code class="sourceCode monobasic"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">Sub </span>Macro1()</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Value = <span class="st">&quot;Wow!&quot;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Borders.LineStyle = xlDouble</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="kw">End Sub</span></span></code></pre></div></li>
 <li><p>Comodo per automatizzare task ripetitivi (es. creare oggetti
 ripetuti in programmi grafici come Blender).</p></li>
 <li><p>Alcuni linguaggi (<a
@@ -1147,28 +1108,28 @@ usi <em>embedded</em>.</p></li>
 <p>Questo programma C inizializza l’interprete Python ed esegue un
 semplice script. Nella realtà, questo script potrebbe essere stato
 digitato dall’utente in una finestra di dialogo del programma:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PY_SSIZE_T_CLEAN</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Python.h&gt;</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">wchar_t</span> <span class="op">*</span>program <span class="op">=</span> Py_DecodeLocale<span class="op">(</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> NULL<span class="op">);</span></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>program <span class="op">==</span> NULL<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Fatal error: cannot decode argv[0]</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    Py_SetProgramName<span class="op">(</span>program<span class="op">);</span>  <span class="co">/* optional but recommended */</span></span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    Py_Initialize<span class="op">();</span></span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* Run a simple Python program that prints the current date */</span></span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    PyRun_SimpleString<span class="op">(</span><span class="st">&quot;from time import time,ctime</span><span class="sc">\n</span><span class="st">&quot;</span></span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;print(&#39;Today is&#39;, ctime(time()))</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>Py_FinalizeEx<span class="op">()</span> <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">120</span><span class="op">);</span></span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>    PyMem_RawFree<span class="op">(</span>program<span class="op">);</span></span>
-<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PY_SSIZE_T_CLEAN</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Python.h&gt;</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">wchar_t</span> <span class="op">*</span>program <span class="op">=</span> Py_DecodeLocale<span class="op">(</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> NULL<span class="op">);</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>program <span class="op">==</span> NULL<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Fatal error: cannot decode argv[0]</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    Py_SetProgramName<span class="op">(</span>program<span class="op">);</span>  <span class="co">/* optional but recommended */</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    Py_Initialize<span class="op">();</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* Run a simple Python program that prints the current date */</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    PyRun_SimpleString<span class="op">(</span><span class="st">&quot;from time import time,ctime</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;print(&#39;Today is&#39;, ctime(time()))</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>Py_FinalizeEx<span class="op">()</span> <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">120</span><span class="op">);</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    PyMem_RawFree<span class="op">(</span>program<span class="op">);</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="registrare-funzioni" class="slide level1">
 <h1>Registrare funzioni</h1>
@@ -1176,60 +1137,59 @@ digitato dall’utente in una finestra di dialogo del programma:</p>
 è in questo modo che si rendono disponibili le funzionalità del proprio
 programma attraverso Python. Ecco un <a
 href="https://docs.python.org/3/extending/embedding.html">esempio</a>:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> numargs<span class="op">=</span><span class="dv">0</span><span class="op">;</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">/* Return the number of arguments of the application command line */</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyObject<span class="op">*</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>emb_numargs<span class="op">(</span>PyObject <span class="op">*</span>self<span class="op">,</span> PyObject <span class="op">*</span>args<span class="op">)</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>PyArg_ParseTuple<span class="op">(</span>args<span class="op">,</span> <span class="st">&quot;:numargs&quot;</span><span class="op">))</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> NULL<span class="op">;</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> PyLong_FromLong<span class="op">(</span>numargs<span class="op">);</span></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co">/* This will enable the interpreter to understand the following script:</span></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co"> *     import emb</span></span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co"> *     print(emb.numargs())</span></span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyMethodDef EmbMethods<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="st">&quot;numargs&quot;</span><span class="op">,</span> emb_numargs<span class="op">,</span> METH_VARARGS<span class="op">,</span></span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>     <span class="st">&quot;Return the number of arguments received by the process.&quot;</span><span class="op">},</span></span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>NULL<span class="op">,</span> NULL<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> NULL<span class="op">}</span></span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyModuleDef EmbModule <span class="op">=</span> <span class="op">{</span></span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>    PyModuleDef_HEAD_INIT<span class="op">,</span> <span class="st">&quot;emb&quot;</span><span class="op">,</span> NULL<span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> EmbMethods<span class="op">,</span></span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>    NULL<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">,</span> NULL</span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyObject<span class="op">*</span></span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>PyInit_emb<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> PyModule_Create<span class="op">(&amp;</span>EmbModule<span class="op">);</span></span>
-<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> numargs<span class="op">=</span><span class="dv">0</span><span class="op">;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">/* Return the number of arguments of the application command line */</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyObject<span class="op">*</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>emb_numargs<span class="op">(</span>PyObject <span class="op">*</span>self<span class="op">,</span> PyObject <span class="op">*</span>args<span class="op">)</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>PyArg_ParseTuple<span class="op">(</span>args<span class="op">,</span> <span class="st">&quot;:numargs&quot;</span><span class="op">))</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> PyLong_FromLong<span class="op">(</span>numargs<span class="op">);</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co">/* This will enable the interpreter to understand the following script:</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="co"> *     import emb</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="co"> *     print(emb.numargs())</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyMethodDef EmbMethods<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="st">&quot;numargs&quot;</span><span class="op">,</span> emb_numargs<span class="op">,</span> METH_VARARGS<span class="op">,</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>     <span class="st">&quot;Return the number of arguments received by the process.&quot;</span><span class="op">},</span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>NULL<span class="op">,</span> NULL<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> NULL<span class="op">}</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyModuleDef EmbModule <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>    PyModuleDef_HEAD_INIT<span class="op">,</span> <span class="st">&quot;emb&quot;</span><span class="op">,</span> NULL<span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> EmbMethods<span class="op">,</span></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>    NULL<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">,</span> NULL</span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> PyObject<span class="op">*</span></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>PyInit_emb<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> PyModule_Create<span class="op">(&amp;</span>EmbModule<span class="op">);</span></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="il-caso-del-nostro-ray-tracer-1" class="slide level1">
 <h1>Il caso del nostro ray-tracer</h1>
 <ul>
-<li><p>In questo caso, avremmo potuto esportare nell’interprete Python
-funzioni come <code>create_sphere</code>, <code>create_brdf</code>, etc.
-che invocano le funzionalità del nostro codice C++/C#/…</p></li>
+<li><p>Avremmo potuto allora rendere disponibili in Python funzioni come
+<code>create_sphere</code>, <code>create_brdf</code>, etc.</p></li>
 <li><p>I file di input sarebbero stati normali script Python, che
 potevano impiegare tutte le potenzialità del linguaggio (variabili,
 funzioni, cicli <code>for</code>, etc.):</p>
-<div class="sourceCode" id="cb29"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>black <span class="op">=</span> color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)  <span class="co"># We can define variables of any type, not only floats!</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>sphere_material <span class="op">=</span> create_material(</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    brdf<span class="op">=</span>diffuse_brdf(uniform_pigment(color(<span class="fl">0.7</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>))),</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    emitted_radiance<span class="op">=</span>uniform_pigment(black),</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create many objects using a `for` loop</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> angle <span class="kw">in</span> [<span class="dv">0</span>, <span class="dv">90</span>, <span class="dv">180</span>, <span class="dv">270</span>]:</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    create_sphere(sphere_material, rotation_x(angle) <span class="op">*</span> translation(vec(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">0</span>)))</span></code></pre></div></li>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>black <span class="op">=</span> color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)  <span class="co"># We can define variables of any type, not only floats!</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>sphere_material <span class="op">=</span> create_material(</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    brdf<span class="op">=</span>diffuse_brdf(uniform_pigment(color(<span class="fl">0.7</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>))),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    emitted_radiance<span class="op">=</span>uniform_pigment(black),</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create many objects using a `for` loop</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> angle <span class="kw">in</span> [<span class="dv">0</span>, <span class="dv">90</span>, <span class="dv">180</span>, <span class="dv">270</span>]:</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    create_sphere(sphere_material, rotation_x(angle) <span class="op">*</span> translation(vec(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">0</span>)))</span></code></pre></div></li>
 </ul>
 </section>
 <section id="creare-bindings" class="slide level1">
@@ -1249,26 +1209,6 @@ installate con la nostra: la soluzione è molto più versatile, ed è
 generalmente quella da preferire.</p></li>
 <li><p>Questa soluzione è facilmente praticabile con linguaggi come C++,
 Nim, Rust…; è decisamente più complessa per Julia, C# o Kotlin.</p></li>
-</ul>
-</section>
-<section id="il-caso-di-python-e-julia" class="slide level1">
-<h1>Il caso di Python e Julia</h1>
-<ul>
-<li><p>I gruppi che hanno impiegato Julia possono sin da subito creare
-semplici script e usare il proprio <em>package</em> come una
-libreria:</p>
-<div class="sourceCode" id="cb30"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">MyRaytracer</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>mycam <span class="op">=</span> <span class="fu">OrthogonalCamera</span>(<span class="fl">16</span><span class="op">//</span><span class="fl">9</span>, <span class="fu">rotation_z</span>(<span class="fl">180.0</span>))</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>world <span class="op">=</span> <span class="fu">World</span>()</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">addshape</span>(world, <span class="fu">Sphere</span>(<span class="fu">translation</span>(<span class="fu">Vec</span>(<span class="fl">10</span>, <span class="fl">0</span>, <span class="fl">0</span>))))</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="op">…</span></span></code></pre></div></li>
-<li><p>Ovviamente si hanno a disposizione tutte le potenzialità di
-Julia: cicli <code>for</code>, definizione di funzioni di supporto,
-etc.</p></li>
-<li><p>Questo codice può essere inserito anche direttamente nella REPL o
-in un notebook, ed è quindi particolarmente comodo!</p></li>
 </ul>
 </section>
 <section id="altre-estensioni" class="slide level1">
@@ -1315,16 +1255,16 @@ stesso.</p></li>
 <li><p>Altrimenti, si può salvare un file JSON/YAML/XML associato al
 file PFM (es., <code>output.pfm.json</code>) che contenga queste
 informazioni:</p>
-<div class="sourceCode" id="cb31"><pre
-class="sourceCode json"><code class="sourceCode json"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;scene-file&quot;</span><span class="fu">:</span> <span class="st">&quot;/home/tomasi/Documents/raytracing/myworld.txt&quot;</span><span class="fu">,</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;rendering-algorithm&quot;</span><span class="fu">:</span> <span class="st">&quot;pathtracing&quot;</span><span class="fu">,</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;projection&quot;</span><span class="fu">:</span> <span class="st">&quot;orthogonal&quot;</span><span class="fu">,</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;russian-roulette-limit&quot;</span><span class="fu">:</span> <span class="dv">5</span><span class="fu">,</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;max_depth&quot;</span><span class="fu">:</span> <span class="dv">5</span><span class="fu">,</span></span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;rendering_time_s&quot;</span><span class="fu">:</span> <span class="fl">1676.7</span><span class="fu">,</span></span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="er">...</span></span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;scene-file&quot;</span><span class="fu">:</span> <span class="st">&quot;/home/tomasi/Documents/raytracing/myworld.txt&quot;</span><span class="fu">,</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;rendering-algorithm&quot;</span><span class="fu">:</span> <span class="st">&quot;pathtracing&quot;</span><span class="fu">,</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;projection&quot;</span><span class="fu">:</span> <span class="st">&quot;orthogonal&quot;</span><span class="fu">,</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;russian-roulette-limit&quot;</span><span class="fu">:</span> <span class="dv">5</span><span class="fu">,</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;max_depth&quot;</span><span class="fu">:</span> <span class="dv">5</span><span class="fu">,</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;rendering_time_s&quot;</span><span class="fu">:</span> <span class="fl">1676.7</span><span class="fu">,</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="er">...</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></li>
 </ul>
 </section>
     </div>

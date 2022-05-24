@@ -20,7 +20,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Ciascuna di queste famiglie richiede algoritmi specifici per l'analisi sintattica, e purtroppo algoritmi che vanno bene per una famiglia non vanno bene per altre!
 
--   Il nostro linguaggio è di tipo LL(1), e l'algoritmo corrispondente per analizzare la grammatica è tra i più semplici.
+-   Il nostro linguaggio è di tipo LL(1), come il linguaggio [Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)), e l'algoritmo corrispondente per analizzare la grammatica è tra i più semplici.
 
 # Come affrontare il problema
 
@@ -567,58 +567,6 @@ vector ::= "[" number "," number "," number "]"
 
 -   Se siete curiosi, nella directory [`clang/test/Lexer`](https://github.com/llvm/llvm-project/tree/main/clang/test/Lexer) ci sono i file sorgente usati per i test del solo *lexer* di Clang!
 
-# Estensioni
-
-# Estensioni alla grammatica
-
-Il nostro linguaggio è abbastanza completo, ma potrebbe essere più versatile:
-
--   Se avete implementato un *point-light tracer*, potreste estendere il linguaggio per specificare le sorgenti puntiformi, ad esempio con questa sintassi:
-
-    ```text
-    # Specify the position and the color of the point light
-    point_light([3.0, 2.0, 5.0], <1.0, 1.0, 1.0>)
-    ```
-    
--   Può accadere che i nomi di file contengano il carattere `"` (ad es., `Incisione di Doré per la "Divina Commedia".jpg`), nel qual caso il nostro lexer fa cilecca. Potreste estendere il lexer in modo che accetti `\"` come un carattere `"` da includere nella stringa, in maniera analoga al C++ e al Python.
-
--   Potreste implementare il supporto per espressioni matematiche!
-
-# Espressioni matematiche
-
--   Il nostro linguaggio permette variabili, ma non prevede calcoli aritmetici. Questo è molto limitante! Potrei voler muovere un oggetto lungo una retta e farne ruotare un altro:
-
-    ```bash
-    float speed_m_s(1.0);
-    float freq_hz(0.5);
-    
-    # First sphere
-    sphere(sphere_material, translation([0, 0, clock_s * speed_m_s]))
-    
-    # Second sphere (faster)
-    sphere(sphere_material, rotation_x(360 * freq_hz * clock_s) * translation([1, 0, 0]))
-    ```
-    
--   Implementare il calcolo di espressioni matematiche non è difficilissimo: basta riusare i concetti che abbiamo presentato oggi.
-
-# Grammatica per espressioni
-
--   Questa è una grammatica che implementa le quattro operazioni aritmetiche:
-
-    ```python
-    expression ::= term "+" expression | term "-" expression | term | "-" term
-
-    term ::= factor "*" term | factor "/" term | factor
-
-    factor ::= "(" expression ")" | LITERAL_NUMBER | IDENTIFIER
-    ```
-    
--   La grammatica implementa le usuali regole di precedenza degli operatori: nell'espressione `a + b * c`, il termine `b * c` è valutato prima della somma.
-
--   Notate che la regola per `expression` richiede un token di *look-ahead*.
-
--   Non è troppo difficile aggiungere il supporto per chiamate a funzioni come `sin`, `cos`, etc. (Ben più difficile è permettere all'utente di definire nuove funzioni!)
-
 
 # Generazione automatica
 
@@ -662,18 +610,18 @@ Il nostro linguaggio è abbastanza completo, ma potrebbe essere più versatile:
 
 -   Usare sistemi di controllo versione per monitorare i cambiamenti.
 
--   Essere ordinati nell'uso di *issues* e *pull requests*, mantenendo aggiornato il *CHANGELOG*.
+-   Essere ordinati nell'uso di *issues* e *pull requests*, mantenendo aggiornato il file `CHANGELOG`.
 
 -   Fornire documentazione del proprio lavoro sotto forma di `README`, un manuale, e/o docstrings.
 
 
 # Codici di simulazione
 
--   Nel caso specifico di codici di simulazione, scegliete bene il vostro [generatore di numeri casuali](tomasi-ray-tracing-11b-random-numbers-and-pigments.html#algoritmi)!
+-   Nel caso specifico di codici di simulazione, scegliete bene il vostro [generatore di numeri casuali](tomasi-ray-tracing-11b.html#algoritmi)!
 
 -   È importante che l'utente del vostro codice possa specificare il *seed* e, se il generatore lo prevede, l'identificatore della sequenza: questo permette la ripetibilità delle simulazioni, e ciò aiuta molto in fase di *debugging*.
 
--   Se si devono fare tante simulazioni, usate la possibilità dei computer moderni di fare calcoli in parallelo. Nei casi più semplici è sufficiente usare [GNU Parallel](tomasi-ray-tracing-11b-random-numbers-and-pigments.html#generare-animazioni).
+-   Se si devono fare tante simulazioni, usate la possibilità dei computer moderni di fare calcoli in parallelo. Nei casi più semplici è sufficiente usare [GNU Parallel](tomasi-ray-tracing-11b.html#generare-animazioni).
 
 
 # Estendibilità
@@ -684,15 +632,13 @@ Il nostro linguaggio è abbastanza completo, ma potrebbe essere più versatile:
 
 -   (Non bisogna però esagerare: più un programma è versatile, più e complesso da scrivere, e rischiate quindi di non arrivare mai a rilasciare la versione 1.0!)
 
-# Estendibilità del path-tracer
+# I/O: usate degli standard!
 
 -   Nel nostro progetto abbiamo implementato la possibilità di leggere la scena da un file. Questo è molto più versatile del semplice comando `demo`!
 
 -   In maniera analoga, alcuni di voi hanno fatto in modo che il proprio programma salvasse immagini in più formati: non solo PFM, ma anche PNG, JPEG, etc.
 
--   In un caso più generale, che esula dall'esempio specifico del nostro ray-tracer, come garantire questa versatilità in termini di lettura/scrittura dati da file?
-
--   Siccome i fisici devono spesso leggere e scrivere grandi quantità di dati, è bene spendere qualche parola su questo.
+-   In generale, è bene fare affidamento su formati diffusi (PNG, JPEG) piuttosto che su formati oscuri (PFM) o addirittura inventati da soli! Quest'ultima opzione è percorribile solo se non esistono formati adatti (è il caso del linguaggio per le scene che abbiamo inventato noi).
 
 
 # Possibili approcci
@@ -708,13 +654,41 @@ Il nostro linguaggio è abbastanza completo, ma potrebbe essere più versatile:
 
 # 1. Usare un formato esistente
 
+# Esempio negativo
+
+-   Considerate un programma che fa una simulazione di un fenomeno fisico, e stampa risultati a video:
+
+    ```
+    $ ./myprogram
+    Calculating...
+    Estimated temperature of the air: 296 K
+    The speed of the particle is 8.156 m/s²
+    Force: 156.0 N
+    $
+    ```
+
+-   L'output del programma non è facilmente fruibile: i numeri non sono facilmente recuperabili. Un output migliore è il seguente:
+
+    ```
+    $ ./myprogram
+    "Temperature [K]",296
+    "Speed [m/s²]",8.156
+    "Force [N]",156.0
+    ```
+
+---
+
+<asciinema-player src="cast/sc-im-84x19.cast" cols="84" rows="19" font-size="medium"></asciinema-player>
+
+
 # Usare un formato esistente
+
+-   Il vantaggio di formati esistenti è che sono leggibili anche da programmi diversi dal vostro: ad esempio, un file CSV è leggibile da Microsoft Excel, LibreOffice, Gnumeric, etc. Ciò è molto comodo soprattutto quando dovete condividere questi dati con altre persone.
 
 -   Se dovete solo salvare tabelle di numeri, le soluzioni migliori sono probabilmente file CSV (di testo) o file Excel (binari). La libreria Python [Pandas](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html) li supporta entrambi.
 
 -   Formati più compatti che vanno bene per dati tabulari e matriciali sono [FITS](https://en.wikipedia.org/wiki/FITS) (vecchio ma molto ben supportato) e [HDF5](https://en.wikipedia.org/wiki/Hierarchical_Data_Format) (più nuovo ed efficiente, meno supportato).
 
--   Il vantaggio di formati esistenti è che sono leggibili anche da programmi diversi dal vostro: ad esempio, un file CSV è leggibile da Microsoft Excel, LibreOffice, Gnumeric, etc. Ciò è molto comodo soprattutto quando dovete condividere questi dati con altre persone.
 
 # Formati più complessi
 
@@ -764,7 +738,7 @@ Il vantaggio di usare un formato diffuso come JSON è che sono a disposizioni mo
     
     -   …e richiede che l'utente impari la sintassi e la semantica del vostro linguaggio
     
--   Non è solitamente una buona scelta: noi l'abbiamo adottata a lezione per la sua valenza didattica (comprensione del funzionamento dei compilatori, gestione degli errori, …).
+-   Noi l'abbiamo adottata a lezione per la sua valenza didattica (comprensione del funzionamento dei compilatori, gestione degli errori, …), e perché non è comunque facile usare un formato generico come JSON in questo contesto particolare.
 
 
 # 3. Incorporare un linguaggio
@@ -874,7 +848,7 @@ PyInit_emb(void)
 
 # Il caso del nostro ray-tracer
 
--   In questo caso, avremmo potuto esportare nell'interprete Python funzioni come `create_sphere`, `create_brdf`, etc. che invocano le funzionalità del nostro codice C++/C\#/…
+-   Avremmo potuto allora rendere disponibili in Python funzioni come `create_sphere`, `create_brdf`, etc.
 
 -   I file di input sarebbero stati normali script Python, che potevano impiegare tutte le potenzialità del linguaggio (variabili, funzioni, cicli `for`, etc.):
 
@@ -902,23 +876,6 @@ PyInit_emb(void)
 -   Il vantaggio è ovviamente che si possono combinare librerie già installate con la nostra: la soluzione è molto più versatile, ed è generalmente quella da preferire.
 
 -   Questa soluzione è facilmente praticabile con linguaggi come C++, Nim, Rust…; è decisamente più complessa per Julia, C\# o Kotlin.
-
-# Il caso di Python e Julia
-
--   I gruppi che hanno impiegato Julia possono sin da subito creare semplici script e usare il proprio *package* come una libreria:
-
-    ```julia
-    using MyRaytracer
-    
-    mycam = OrthogonalCamera(16//9, rotation_z(180.0))
-    world = World()
-    addshape(world, Sphere(translation(Vec(10, 0, 0))))
-    …
-    ```
-    
--   Ovviamente si hanno a disposizione tutte le potenzialità di Julia: cicli `for`, definizione di funzioni di supporto, etc.
-
--   Questo codice può essere inserito anche direttamente nella REPL o in un notebook, ed è quindi particolarmente comodo!
 
 # Altre estensioni
 
