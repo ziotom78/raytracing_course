@@ -29,6 +29,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 11a     | 2022/05/16 | [Path tracing (2/2)](tomasi-ray-tracing-11a.html)                                  |
 | 11b     | 2022/05/18 | [Basi ortonormali e path tracing](tomasi-ray-tracing-11b.html)                     |
 | 12a     | 2022/05/23 | [Teoria dei compilatori (1/2)](tomasi-ray-tracing-12a.html)                        |
+| 12b     | 2022/05/25 | [Implementazione di un *lexer*](tomasi-ray-tracing-12b.html)                       |
 
 # Scelta del linguaggio
 

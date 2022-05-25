@@ -654,7 +654,7 @@ vector ::= "[" number "," number "," number "]"
 
 # 1. Usare un formato esistente
 
-# Esempio negativo
+# Esempio
 
 -   Considerate un programma che fa una simulazione di un fenomeno fisico, e stampa risultati a video:
 
