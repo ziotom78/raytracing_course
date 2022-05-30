@@ -44,7 +44,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   La definizione di `sky_material` è però semplice da analizzare se suddividiamo il problema in tante funzioni, ciascuna delle quali analizza *un elemento soltanto*.
 
--   Definiamo quindi una funzione `parse_color` che si occupa di interpretare un colore e di restituire l'oggetto `Color` corrispondente, una funzione `parse_pigment`, una funzione `parse_brdf`, etc.
+-   Definiamo quindi una funzione `parse_color` che si occupa di interpretare una sequenza di *token* come un colore e di restituire l'oggetto `Color` corrispondente, una funzione `parse_pigment`, una funzione `parse_brdf`, etc.
 
 -   Queste funzioni avranno il compito di chiamarsi a vicenda, una dentro l'altra, in modo che quelle più ad alto livello come `parse_material` possano contare su quelle via via più semplici come `parse_color`.
 
@@ -61,14 +61,19 @@ def expect_symbol(stream: InputStream, symbol: str):
 
 
 def expect_number(stream: InputStream) -> float:
-    """Read a token from `stream` and check that it is a literal number.
+    """Read a token from `stream` and check that it is either a literal number or a variable.
 
     Return the number as a ``float``."""
-    token = stream.read_token()
-    if not isinstance(token, LiteralNumberToken):
-        raise parser_error(token, f"got '{token}' instead of a number")
-        
-    return token.value
+    token = input_file.read_token()
+    if isinstance(token, LiteralNumberToken):
+        return token.value
+    elif isinstance(token, IdentifierToken):
+        variable_name = token.identifier
+        if variable_name not in scene.float_variables:
+            raise GrammarError(token.location, f"unknown variable '{token}'")
+        return scene.float_variables[variable_name]
+
+    raise GrammarError(token.location, f"got '{token}' instead of a number")
 
 
 # This parses a list of tokens like "<0.7, 0.5, 1>". Note that functions
@@ -131,121 +136,6 @@ def parse_pigment(stream: InputStream) -> Pigment:
 -   Compilatori più complessi creano in memoria una AST (Abstract Syntax Tree), che  è una rappresentazione del contenuto del file sorgente molto comoda per fare un'analisi *semantica*. (Nel nostro caso, analisi sintattica e semantica sono fuse insieme).
 
 -   La AST viene poi passata come input alle fasi successive del compilatore (ottimizzatore, generatore di codice, etc.); sono loro a preoccuparsi di creare oggetti in memoria o salvare istruzioni in linguaggio macchina su file.
-
-# Perché una AST?
-
--   Consideriamo questo codice C++:
-
-    ```c++
-    #include <iostream>
-    #include <cstdlib>
-
-    struct Color { float r, g, b; }
-    
-    int main(int argc, const char *argv[]) {
-        Color col{1.0, 0.0, 0.5};
-
-        std::cout << "<" << col.r << ", " << col.g << ", " << col.b << ">\n";
-    }
-    ```
-
--   A differenza del nostro parser, il compilatore C++ **non può** creare in memoria la variabile `col` mentre fa il *parsing*, perché quelle variabili «vivono» solo in fase di esecuzione.
-
-# Ruolo della AST
-
--   Un programma come quello dell'esempio precedente «vive» nella memoria del computer due volte:
-
-    1.  Quando viene compilato (`g++ -o myprog main.cpp`);
-    2.  Quando viene eseguito (`./myprog 150.0`)
-    
--   La AST viene prodotta durante la compilazione (punto 1), mentre l'allocazione della memoria necessaria per le variabili `a` e `b` avviene durante l'esecuzione (punto 2).
-
--   Il nostro interprete di scene 3D non opera questa distinzione tra due fasi, perché descrive una scena ma non la «esegue»: ecco perché non serve una AST.
-    
-
-
-# Esempio di AST
-
-```{.graphviz im_fmt="svg" im_out="img" im_fname="ast-example"}
-graph "" {
-    scene [label="scene" shape=ellipse];
-    
-    float_def [label="float" shape=ellipse];
-    float_id [label="shade" shape=box];
-    float_val [label="0.4" shape=box];
-    
-    material_def [label="material" shape=ellipse];
-    material_id [label="'sky_material'" shape=box];
-    brdf_def [label="diffuse" shape=ellipse];
-    brdf_color [label="color" shape=ellipse];
-    brdf_red [label="shade" shape=box];
-    brdf_green [label="0" shape=box];
-    brdf_blue [label="0" shape=box];
-    
-    emission_def [label="uniform" shape=ellipse];
-    emission_red [label="0.7" shape=box];
-    emission_green [label="0.5" shape=box];
-    emission_blue [label="1" shape=box];
-
-    scene -- float_def;
-    float_def -- float_id;
-    float_def -- float_val;
-    
-    scene -- material_def;
-    material_def -- material_id;
-    material_def -- brdf_def;
-    brdf_def -- brdf_color;
-    brdf_color -- brdf_red;
-    brdf_color -- brdf_green;
-    brdf_color -- brdf_blue;
-    
-    material_def -- emission_def;
-    emission_def -- emission_red;
-    emission_def -- emission_green;
-    emission_def -- emission_blue;
-}
-```
-
-Le AST sono studiate come degli alberi, ma la loro struttura in memoria non deve necessariamente essere implementata esattamente così.
-
----
-
--   In Python, la AST precedente potrebbe essere definita così:
-
-    ```python
-    scene = [
-        FloatAst(
-            identifier="shade", 
-            value=NumberLiteral(0.4),
-        ),
-        MaterialAst(
-            identifier="sky_material",
-            brdf=UniformAst(
-                color=ColorAst(
-                    red=Identifier("shade"),
-                    green=NumberLiteral(0.0),
-                    blue=NumberLiteral(0.0),
-                ),
-            ),
-            emission=ColorAst(
-                red=NumberLiteral(0.7),
-                green=NumberLiteral(0.5),
-                blue=NumberLiteral(1),
-            ),
-        ),
-    ]
-    ```
-
--   Il nostro caso è più semplice, e costruiamo `scene` man mano che procede l'analisi sintattica!
-
-
-# Manipolazione di AST
-
--   Linguaggi come [Julia](https://docs.julialang.org/en/v1/manual/metaprogramming/), [Nim](https://livebook.manning.com/book/nim-in-action/chapter-9/7),  [Rust](https://doc.rust-lang.org/book/ch19-06-macros.html) consentono di scrivere programmi che manipolano la propria AST. (Sembra incredibile, ma il primo linguaggio a permetterlo, il [LISP](https://en.wikipedia.org/wiki/Lisp_(programming_language)), fu proposto da McCarty nel 1958!)
-
--   Le operazioni di modifica della AST sono compiute al momento della *compilazione* del programma (fase 1), non durante la sua esecuzione (fase 2).
-
--   Questa possibilità, denominata *metaprogrammazione*, è fondamentale per definire DSL all'interno del linguaggio: lo sviluppatore può istruire il compilatore perché una sequenza di token altrimenti invalida produca una AST corretta (LISP), oppure la AST prodotta dal compilatore venga modificata (Rust, Nim, Julia, D).
 
 # Tipi di grammatiche
 
@@ -363,7 +253,7 @@ while True:
 
 -   La notazione che vedremo è detta *Extended Backus-Naur Form* (EBNF), ed è il risultato del lavoro di molte persone, tra cui Niklaus Wirth (il creatore del linguaggio Pascal).
 
--   Non descriveremo EBNF in modo completo, ma la presenteremo solo nella misura in cui serve ai nostri scopi.
+-   Non descriveremo EBNF in modo completo, ma la presenteremo solo nella misura in cui serve ai nostri scopi. È utile comprenderla perché spesso la documentazione dei linguaggi di programmazione contiene la loro grammatica (ad esempio [Nim](https://nim-lang.org/docs/manual.html#syntax-grammar), [C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/lexical-structure) e [Kotlin](https://kotlinlang.org/docs/reference/grammar.html); per Rust [ci stanno lavorando](https://github.com/rust-lang/wg-grammar), mentre [il manuale di D](https://dlang.org/spec/grammar.html) usa una sintassi diversa).
 
 -   Nella slide successiva è mostrata l'intera struttura sintattica della nostra grammatica in formato EBNF.
 
@@ -426,7 +316,7 @@ vector ::= "[" number "," number "," number "]"
 
 -   Il simbolo `|` rappresenta una serie di alternative (*or* logico).
 
--   Il simbolo `*` denota zero o più ripetizioni:
+-   Il simbolo `*` denota zero o più ripetizioni (`+` ne indica una o più):
 
     ```
     scene ::= declaration*
@@ -440,7 +330,7 @@ vector ::= "[" number "," number "," number "]"
     transformation ::= basic_transformation | basic_transformation "*" transformation
     ```
 
-# Gestione degli errori
+# Gestione degli errori di un compilatore
 
 # Gestione degli errori
 
@@ -465,6 +355,8 @@ vector ::= "[" number "," number "," number "]"
     
 -   In un linguaggio come il nostro non è semplice individuare un *termination token*; la cosa migliore sarebbe richiedere la presenza di `;` alla fine di ogni *statement*, come nel C++, oppure obbligare a concludere le definizioni con un ritorno a capo (che sia codificato come un token `TOKEN_NEWLINE`).
 
+# Linguaggi a confronto
+
 # Velocità di un compilatore
 
 -   La produzione di *liste* di errori anziché di un solo errore alla volta è importante soprattutto in quei casi in cui il compilatore è molto lento da eseguire. Questo è il caso del C++ e di Rust.
@@ -480,7 +372,7 @@ vector ::= "[" number "," number "," number "]"
 -   Considerate questa definizione, che mostra la difficoltà di interpretare `>>`:
 
     ```c++
-    std::vector<std::vector<int>> matrix = identity(3); // >> are *two* tokens
+    std::vector<std::vector<double>> matrix = identity(3); // >> are *two* tokens
     std::cin >> matrix[0][0]; // Here >> is *one* token
     ```
     
@@ -491,7 +383,7 @@ vector ::= "[" number "," number "," number "]"
 -   I template C++ rendono complessa anche l'analisi sintattica:
 
     ```c++
-    template<bool amd64> struct MyStruct;
+    template<bool x86_64> struct MyStruct;
     template<> struct MyStruct<false> { /* Fields valid on 32-bit machines */ };
     template<> struct MyStruct<true> { /* Fields valid on 64-bit machines */ };
     ```
@@ -555,7 +447,7 @@ vector ::= "[" number "," number "," number "]"
     
 -   Anche questa sintassi è molto semplice da interpretare; il Pascal è infatti progettato per essere veloce da compilare.
 
--   Idee simili sono usate nei linguaggi Modula-2 e Modula-3, Oberon, Ada, Nim, Kotlin e Rust (è vero che quest'ultimo è lentissimo da compilare, ma ciò è a causa della complessità della sua semantica).
+-   Idee simili sono usate nei linguaggi Modula, Oberon, Ada, Nim e Kotlin.
 
 # Testing di compilatori
 
@@ -567,6 +459,8 @@ vector ::= "[" number "," number "," number "]"
 
 -   Se siete curiosi, nella directory [`clang/test/Lexer`](https://github.com/llvm/llvm-project/tree/main/clang/test/Lexer) ci sono i file sorgente usati per i test del solo *lexer* di Clang!
 
+
+# Generazione automatica di compilatori
 
 # Generazione automatica
 
@@ -604,15 +498,17 @@ vector ::= "[" number "," number "," number "]"
 
 -   Scrivere test, test, test e ancora test: ogni funzionalità deve avere un test automatico che ne verifichi la consistenza!
 
--   Progettate funzioni e classi in modo che siano facili da testare (es., passare in input *stream* anziché nomi di file).
-
--   Decidere sin da subito quale licenza usare per rilasciare il proprio codice.
+-   Progettate funzioni e classi in modo che siano facili da testare (es., passare in input *stream* anziché nomi di file) e automatizzare i test mediante *CI builds*.
 
 -   Usare sistemi di controllo versione per monitorare i cambiamenti.
 
--   Essere ordinati nell'uso di *issues* e *pull requests*, mantenendo aggiornato il file `CHANGELOG`.
+-   Essere ordinati nell'uso di *issues*, *pull requests*, file `CHANGELOG`, etc.
 
--   Fornire documentazione del proprio lavoro sotto forma di `README`, un manuale, e/o docstrings.
+-   Decidere sin da subito quale licenza usare per rilasciare il proprio codice.
+
+-   Documentare il proprio lavoro (`README`, docstrings…)
+
+-   Imparare a usare una IDE!
 
 
 # Codici di simulazione
@@ -667,7 +563,7 @@ vector ::= "[" number "," number "," number "]"
     $
     ```
 
--   L'output del programma non è facilmente fruibile: i numeri non sono facilmente recuperabili. Un output migliore è il seguente:
+-   L'output del programma non è facilmente fruibile: i numeri sono difficili da recuperare in mezzo al testo. Un output migliore è il seguente:
 
     ```
     $ ./myprogram
@@ -877,42 +773,4 @@ PyInit_emb(void)
 
 -   Questa soluzione è facilmente praticabile con linguaggi come C++, Nim, Rust…; è decisamente più complessa per Julia, C\# o Kotlin.
 
-# Altre estensioni
-
-# Metadati di output
-
--   L'output del nostro programma è un file PFM, che contiene l'immagine fotorealistica calcolata dal codice.
-
--   Questo è sufficiente per un programma di *rendering*, ma in ambito scientifico non è sufficiente produrre un file che contiene solo il *risultato* di un calcolo: il risultato dipende infatti dagli input forniti, e più è complesso il calcolo, maggiore è il numero di input.
-
-# Parametri del ray-tracer
-
--   Nel nostro caso gli input sono:
-
-    #.   Scena usata (dove erano collocate le forme? che BRDF avevano?)
-    #.   Osservatore (posizione, direzione, tipo di proiezione…)
-    #.   Tipo di algoritmo (*flat*, *path tracing*, *point-light tracing*);
-    #.   Numero massimo di raggi prodotti ad ogni iterazione (per il *path tracing*);
-    #.   Parametri usati per la roulette russa;
-    #.   Presenza o meno di *anti-aliasing*;
-    #.   Etc.
-    
--   Sarebbe molto utile che il codice salvasse queste informazioni all'interno di un'immagine PFM! In questo modo potete capire anche a distanza di molto tempo come è stata generata una immagine.
-
-# Possibile soluzione
-
--   Se si usasse un formato più versatile di PFM per le immagini, si potrebbero salvare queste informazioni nel file immagine stesso.
-
--   Altrimenti, si può salvare un file JSON/YAML/XML associato al file PFM (es., `output.pfm.json`) che contenga queste informazioni:
-
-    ```json
-    {
-        "scene-file": "/home/tomasi/Documents/raytracing/myworld.txt",
-        "rendering-algorithm": "pathtracing",
-        "projection": "orthogonal",
-        "russian-roulette-limit": 5,
-        "max_depth": 5,
-        "rendering_time_s": 1676.7,
-        ...
-    }
-    ```
+# Fine!

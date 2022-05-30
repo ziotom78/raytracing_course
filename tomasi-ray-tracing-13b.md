@@ -258,30 +258,18 @@ class InputStream:
     #.   Marcare le variabili definite da linea di comando con un flag Booleano; quando nel file della scena si ridefiniscono queste variabile, non viene prodotto un errore se questo flag è `True`.
     #.   In fase di definizione di una variabile, si controlla se il valore è già stato letto da linea di comando: se sì, si ignora il valore letto nel file e si usa quello fornito dall'utente. ([Questo è quanto fa pytracer](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L595-L601)).
 
-# Alcune richieste
+# Una richiesta
 
-# Prima richiesta
+# Una richiesta
 
--   Di solito capisco come migliorare i miei insegnamenti facendo riferimento ai risultati dei questionari sulla didattica, in particolare alle risposte libere.
-
--   Temo però che per questo corso ci siano *troppi* possibili suggerimenti.
-
--   Vi chiedo quindi se potete scrivere un commento di una paginetta in cui esprimete il vostro giudizio sul corso? Mi interessano questi punti:
-
-    #.   Quali sono stati gli argomenti che pensate siano più/meno utili?
-    #.   Quali sono stati gli argomenti spiegati meglio/peggio?
-    #.   Qual è la vostra opinione sul carico di lavoro, distinta tra parte teorica (da studiare) e di laboratorio (codice da scrivere)? Era troppo? Troppo poco? Troppo facile? Troppo difficile?
-
-# Seconda richiesta
-
--   Sarebbe molto utile per gli studenti dei prossimi anni conoscere le vostre impressioni sul linguaggio che avete scelto:
+-   È utile per gli studenti futuri conoscere le vostre impressioni sul linguaggio che avete scelto:
 
     #.  Perché avete scelto questo linguaggio? Quali altre alternative avevate valutato, e perché le avete scartate?
     #.  Indipendentemente dal linguaggio scelto, quali sono stati i criteri che vi hanno aiutato a decidere? Come li giudicate col senno di poi?
     #.  Alla luce del lavoro di questo semestre, pensate sia stata una buona scelta?
     #.  Se tornaste indietro, rifareste questa scelta? Perché?
     
--   Vi chiedo un secondo breve testo che risponda a queste domande. Vorrei rendere disponibili (anonimamente?) le vostre risposte ai futuri studenti, quindi scrivete immaginando che siano *loro*, non io, il vostro uditorio.
+-   Vi chiedo un breve testo che risponda a queste domande, che renderò disponibile (anonimamente, se preferite) ai futuri studenti; quindi scrivete immaginando che siano *loro*, non io, il vostro uditorio.
 
 # Guida per l'esercitazione
 
