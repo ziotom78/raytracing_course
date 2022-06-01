@@ -31,6 +31,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 | 12a     | 2022/05/23 | [Teoria dei compilatori (1/2)](tomasi-ray-tracing-12a.html)                        |
 | 12b     | 2022/05/25 | [Implementazione di un *lexer*](tomasi-ray-tracing-12b.html)                       |
 | 13a     | 2022/05/30 | [Teoria dei compilatori (2/2)](tomasi-ray-tracing-13a.html)                        |
+| 13b     | 2022/06/01 | [Implementazione di un *parser*](tomasi-ray-tracing-13b.html)                      |
 
 # Scelta del linguaggio
 
