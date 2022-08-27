@@ -315,7 +315,7 @@ La Bidirectional Reflectance Distribution Function (BRDF) è il rapporto $f_r(x,
 
 $$
 \begin{aligned}
-f_r(x, \Psi \rightarrow \Theta) &= \frac{\mathrm{d}L (x \rightarrow \Theta)}{\mathrm{d}E(x \leftarrow \Psi)} = \\
+f_r(x, \Psi \rightarrow \Theta) &= \frac{\mathrm{d}L (x \rightarrow \Theta)}{\mathrm{d}I(x \leftarrow \Psi)} = \\
 &= \frac{\mathrm{d}L (x \rightarrow \Theta)}{
     L(x \leftarrow \Psi) \cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi
 },
@@ -348,7 +348,7 @@ Si può dimostrare questa proprietà usando le equazioni di Maxwell, ma la dimos
 
 # Più angoli di incidenza
 
-Grazie al principio di sovrapposizione dei campi e.m., se si hanno più sorgenti luminose $i=1\ldots N$ che insostono su una superficie, è sufficiente sommare le componenti:
+Grazie al principio di sovrapposizione dei campi e.m., se si hanno più sorgenti luminose $i=1\ldots N$ che insistono su una superficie, è sufficiente sommare le componenti:
 
 $$
 \begin{aligned}

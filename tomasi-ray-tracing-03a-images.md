@@ -449,7 +449,7 @@ Code page 866 (cirillica)
 
 -   Nella scorsa esercitazione abbiamo implementato il tipo `HdrImage`.
 -   Questa settimana implementeremo le funzioni per scrivere e leggere file PFM.
--   Legge e scrivere file è un'attività che è facilmente soggetta ad errori:
+-   Leggere e scrivere file è un'attività che è facilmente soggetta ad errori:
     -   La directory in cui salvare il file non esiste, oppure è protetta da scrittura
     -   Il file specificato dall'utente non esiste
     -   Il file è danneggiato

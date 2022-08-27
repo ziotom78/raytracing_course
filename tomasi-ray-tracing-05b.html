@@ -11,6 +11,9 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
+    .reveal .sourceCode {  /* see #7635 */
+      /* overflow: visible; */
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     span.underline{text-decoration: underline;}
@@ -84,22 +87,24 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
   </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -107,17 +112,23 @@
 
 <section id="title-slide">
   <h1 class="title">Esercitazione 5</h1>
-  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
-  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini
+fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a
+href="mailto:maurizio.tomasi@unimi.it"
+class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
 <section id="il-nostro-programma" class="slide level1">
 <h1>Il nostro programma</h1>
 <ul>
-<li><p>Con l’aggiunta delle funzionalità di settimana scorsa, siamo pronti per rilasciare la prima versione del nostro programma!</p></li>
-<li><p>Al momento il programma converte un file PFM in un file LDR (PNG, JPEG, etc.)</p></li>
+<li><p>Con l’aggiunta delle funzionalità di settimana scorsa, siamo
+pronti per rilasciare la prima versione del nostro programma!</p></li>
+<li><p>Al momento il programma converte un file PFM in un file LDR (PNG,
+JPEG, etc.)</p></li>
 <li><p>Rilasceremo quindi la versione 0.1.0.</p></li>
-<li><p>GitHub permette di rilasciare versioni tramite una specifica funzionalità.</p></li>
+<li><p>GitHub permette di rilasciare versioni tramite una specifica
+funzionalità.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -144,20 +155,27 @@
 <section id="come-funziona-git" class="slide level1">
 <h1>Come funziona Git</h1>
 <ul>
-<li><p>Stiamo usando Git da alcune settimane, e dovremmo aver imparato come funziona.</p></li>
-<li><p>Abbiamo visto in particolare che Git salva ogni modifica del codice (il <em>commit</em>) legandola alla modifica precedente:</p>
+<li><p>Stiamo usando Git da alcune settimane, e dovremmo aver imparato
+come funziona.</p></li>
+<li><p>Abbiamo visto in particolare che Git salva ogni modifica del
+codice (il <em>commit</em>) legandola alla modifica precedente:</p>
 <center>
 <p><img data-src="./media/git-commit.svg" /></p>
 </center></li>
-<li><p>Oggi vedremo che questa struttura lineare può in realtà essere più complicata.</p></li>
+<li><p>Oggi vedremo che questa struttura lineare può in realtà essere
+più complicata.</p></li>
 </ul>
 </section>
 <section id="modifiche-complesse" class="slide level1">
 <h1>Modifiche complesse</h1>
 <ul>
-<li><p>Nelle scorse lezioni abbiamo implementato il codice per leggere e scrivere file PFM.</p></li>
-<li><p>Ciascuno dei gruppi ha implementato questa funzionalità tramite una serie di commit.</p></li>
-<li><p>Questi commit erano <em>logicamente</em> legati tra loro, ma ciò non appare quando si apre la pagina dei commit di uno qualsiasi dei vostri repository (v. slide seguente).</p></li>
+<li><p>Nelle scorse lezioni abbiamo implementato il codice per leggere e
+scrivere file PFM.</p></li>
+<li><p>Ciascuno dei gruppi ha implementato questa funzionalità tramite
+una serie di commit.</p></li>
+<li><p>Questi commit erano <em>logicamente</em> legati tra loro, ma ciò
+non appare quando si apre la pagina dei commit di uno qualsiasi dei
+vostri repository (v. slide seguente).</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -169,12 +187,17 @@
 <section id="branch" class="slide level1">
 <h1>Branch</h1>
 <ul>
-<li><p>Git implementa il concetto di <em>branch</em> («ramo»), che è un modo di separare una sequenza di commit dal «tronco» principale del <em>master</em>:</p>
+<li><p>Git implementa il concetto di <em>branch</em> («ramo»), che è un
+modo di separare una sequenza di commit dal «tronco» principale del
+<em>master</em>:</p>
 <center>
 <p><img data-src="./media/git-branch.svg" /></p>
 </center></li>
-<li><p>Tramite il comando <code>git branch NOME</code> si cambia il branch attivo; <code>git commit</code> aggiunge sempre in coda a questo branch.</p></li>
-<li><p><code>HEAD</code> punta sempre all’ultimo commit del branch attivo.</p></li>
+<li><p>Tramite il comando <code>git branch NOME</code> si cambia il
+branch attivo; <code>git commit</code> aggiunge sempre in coda a questo
+branch.</p></li>
+<li><p><code>HEAD</code> punta sempre all’ultimo commit del branch
+attivo.</p></li>
 </ul>
 </section>
 <section id="esempio-di-branch" class="slide level1">
@@ -184,31 +207,47 @@
 <section id="comandi-per-branch" class="slide level1">
 <h1>Comandi per branch</h1>
 <ul>
-<li><p><code>git branch</code> elenca i branch (di default, all’inizio c’è solo <code>master</code>).</p></li>
-<li><p><code>git checkout -b NOME</code> crea un nuovo branch e lo rende attivo.</p></li>
-<li><p><code>git checkout NOME</code> rende attivo il branch <code>NOME</code>, già esistente.</p></li>
-<li><p><code>git merge NOME1 NOME2</code> incorpora le modifiche al branch <code>NOME1</code> dentro il branch <code>NOME2</code>; di solito <code>NOME2</code> è <code>master</code>.</p></li>
+<li><p><code>git branch</code> elenca i branch (di default, all’inizio
+c’è solo <code>master</code>).</p></li>
+<li><p><code>git checkout -b NOME</code> crea un nuovo branch e lo rende
+attivo.</p></li>
+<li><p><code>git checkout NOME</code> rende attivo il branch
+<code>NOME</code>, già esistente.</p></li>
+<li><p><code>git merge NOME1 NOME2</code> incorpora le modifiche al
+branch <code>NOME1</code> dentro il branch <code>NOME2</code>; di solito
+<code>NOME2</code> è <code>master</code>.</p></li>
 <li><p><code>git branch -d NOME</code> cancella un branch.</p></li>
-<li><p>Quando eseguite <code>git fetch</code> o <code>git pull</code> per scaricare nuovi commit da GitHub, vengono importati tutti i branch.</p></li>
+<li><p>Quando eseguite <code>git fetch</code> o <code>git pull</code>
+per scaricare nuovi commit da GitHub, vengono importati tutti i
+branch.</p></li>
 </ul>
 </section>
 <section id="branch-in-github" class="slide level1">
 <h1>Branch in GitHub</h1>
 <ul>
-<li><p>GitHub permette di navigare all’interno dei branch tramite un bottone dedicato:</p>
+<li><p>GitHub permette di navigare all’interno dei branch tramite un
+bottone dedicato:</p>
 <center>
 <p><img data-src="./media/github-branches-list.png" height="440" /></p>
 </center></li>
-<li><p>La vera potenza dei branch sta però nei <em>pull request</em>.</p></li>
+<li><p>La vera potenza dei branch sta però nei <em>pull
+request</em>.</p></li>
 </ul>
 </section>
 <section id="pull-request-in-github" class="slide level1">
 <h1>Pull request in GitHub</h1>
 <ul>
-<li><p>Un <em>pull request</em> è una richiesta di eseguire un comando <code>git merge</code> all’interno di <code>master</code>.</p></li>
-<li><p>GitHub attiva un forum per ogni pull request, in modo che gli sviluppatori possano commentare l’opportunità o meno di eseguire <code>git merge</code>.</p></li>
-<li><p>Nel momento in cui si fa il <em>merging</em>, è possibile (e consigliato) applicare lo <em>squashing</em>, che consiste nel fondere insieme tutti i commit in uno solo.</p></li>
-<li><p>Lo <em>squashing</em> è utilissimo per levare di mezzo i tanti commit con messaggi «<em>Small fixes</em>», «<em>Oops I forgot to add this</em>», etc.</p></li>
+<li><p>Un <em>pull request</em> è una richiesta di eseguire un comando
+<code>git merge</code> all’interno di <code>master</code>.</p></li>
+<li><p>GitHub attiva un forum per ogni pull request, in modo che gli
+sviluppatori possano commentare l’opportunità o meno di eseguire
+<code>git merge</code>.</p></li>
+<li><p>Nel momento in cui si fa il <em>merging</em>, è possibile (e
+consigliato) applicare lo <em>squashing</em>, che consiste nel fondere
+insieme tutti i commit in uno solo.</p></li>
+<li><p>Lo <em>squashing</em> è utilissimo per levare di mezzo i tanti
+commit con messaggi «<em>Small fixes</em>», «<em>Oops I forgot to add
+this</em>», etc.</p></li>
 </ul>
 </section>
 <section id="esempio-di-pull-request" class="slide level1">
@@ -225,12 +264,18 @@
 <section id="come-usarli-in-pratica" class="slide level1">
 <h1>Come usarli in pratica</h1>
 <ul>
-<li><p>Se uno di voi crea un pull request su GitHub, gli altri possono aggiungere commit a quel pull request con i comandi</p>
+<li><p>Se uno di voi crea un pull request su GitHub, gli altri possono
+aggiungere commit a quel pull request con i comandi</p>
 <pre class="text"><code>git fetch
 git checkout NOME_PULL_REQUEST</code></pre>
-<p>come se fosse un branch creato da loro stessi (<code>git fetch</code> scarica da GitHub tutti i nuovi branch, inclusi i pull request).</p></li>
-<li><p>I pull request sono una delle caratteristiche fondamentali di GitHub!</p></li>
-<li><p>Abituatevi ad usarli per ogni modifica «seria» del vostro codice (no, correggere un errore grammaticale nel <code>README.md</code> non rientra nella casistica).</p></li>
+<p>come se fosse un branch creato da loro stessi (<code>git fetch</code>
+scarica da GitHub tutti i nuovi branch, inclusi i pull
+request).</p></li>
+<li><p>I pull request sono una delle caratteristiche fondamentali di
+GitHub!</p></li>
+<li><p>Abituatevi ad usarli per ogni modifica «seria» del vostro codice
+(no, correggere un errore grammaticale nel <code>README.md</code> non
+rientra nella casistica).</p></li>
 </ul>
 </section>
 <section id="guida-per-lesercitazione" class="slide level1">
@@ -239,9 +284,16 @@ git checkout NOME_PULL_REQUEST</code></pre>
 <section id="guida-per-lesercitazione-1" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
 <ul>
-<li><p>Iniziate col «rilasciare» la <em>release</em> 0.1.0 di quanto avete scritto sinora, e inviate il link del repository GitHub a <a href="mailto:maurizio.tomasi@unimi.it">maurizio.tomasi@unimi.it</a></p></li>
-<li><p>Uno di voi crei un nuovo pull request chiamato <code>geometry</code>, e gli altri invochino <code>git fetch</code> seguito da <code>git checkout geometry</code>.</p></li>
-<li><p>Nel branch <code>geometry</code> implementate questi tipi (seguendo il <a href="https://www.pbr-book.org/3ed-2018/Geometry_and_Transformations">Capitolo 2</a> di Pharr, Jakobs &amp; Humphreys)):</p>
+<li><p>Iniziate col «rilasciare» la <em>release</em> 0.1.0 di quanto
+avete scritto sinora, e inviate il link del repository GitHub a <a
+href="mailto:maurizio.tomasi@unimi.it">maurizio.tomasi@unimi.it</a></p></li>
+<li><p>Uno di voi crei un nuovo pull request chiamato
+<code>geometry</code>, e gli altri invochino <code>git fetch</code>
+seguito da <code>git checkout geometry</code>.</p></li>
+<li><p>Nel branch <code>geometry</code> implementate questi tipi
+(seguendo il <a
+href="https://www.pbr-book.org/3ed-2018/Geometry_and_Transformations">Capitolo
+2</a> di Pharr, Jakobs &amp; Humphreys)):</p>
 <ol>
 <li><code>Vec</code> (un vettore tridimensionale).</li>
 <li><code>Point</code> (un punto tridimensionale).</li>
@@ -253,69 +305,108 @@ git checkout NOME_PULL_REQUEST</code></pre>
 <section id="perché-tre-tipi" class="slide level1">
 <h1>Perché tre tipi?</h1>
 <ul>
-<li><p>Potrebbe sembrare sciocco dover definire tre tipi <code>Vec</code>, <code>Point</code>, <code>Normal</code>: dopotutto le loro strutture sono identiche!</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// C++ code</span></span>
+<li><p>Potrebbe sembrare sciocco dover definire tre tipi
+<code>Vec</code>, <code>Point</code>, <code>Normal</code>: dopotutto le
+loro strutture sono identiche!</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// C++ code</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Vec <span class="op">{</span> <span class="dt">float</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span> <span class="op">};</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Point <span class="op">{</span> <span class="dt">float</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span> <span class="op">};</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Normal <span class="op">{</span> <span class="dt">float</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span> <span class="op">};</span></span></code></pre></div></li>
-<li><p>In alcuni ray-tracer in effetti si usa un solo tipo <code>Vec</code> per codificare vettori, punti e normali (e anche colori RGB!), ma l’uso di tipi distinti renderà il nostro codice più robusto e chiaro.</p></li>
+<li><p>In alcuni ray-tracer in effetti si usa un solo tipo
+<code>Vec</code> per codificare vettori, punti e normali (e anche colori
+RGB!), ma l’uso di tipi distinti renderà il nostro codice più robusto e
+chiaro.</p></li>
 </ul>
 </section>
 <section id="metodi-per-vec" class="slide level1">
 <h1>Metodi per <code>Vec</code></h1>
 <ol>
-<li>Conversione a stringa, es., <code>Vec(x=0.4, y=1.3, z=0.7)</code>;</li>
-<li>Confronto tra vettori (per i test), usando funzioni come <code>are_close</code>;</li>
+<li>Conversione a stringa, es.,
+<code>Vec(x=0.4, y=1.3, z=0.7)</code>;</li>
+<li>Confronto tra vettori (per i test), usando funzioni come
+<code>are_close</code>;</li>
 <li>Somma e differenza tra vettori;</li>
-<li>Prodotto per uno scalare e negazione (<code>Vec.neg()</code> restituisce <span class="math inline">-v</span>);</li>
+<li>Prodotto per uno scalare e negazione (<code>Vec.neg()</code>
+restituisce <span class="math inline">-v</span>);</li>
 <li>Prodotto scalare tra due vettori e prodotto vettoriale;</li>
-<li>Calcolo di <span class="math inline">\left\|v\right\|^2</span> (<code>squared_norm</code>) e di <span class="math inline">\left\|v\right\|</span> (<code>norm</code>);</li>
-<li>Funzione che normalizza il vettore: <span class="math inline">v \rightarrow v / \left\|v\right\|</span>;</li>
-<li>Funzione che converte un <code>Vec</code> in una <code>Normal</code>.</li>
+<li>Calcolo di <span class="math inline">\left\|v\right\|^2</span>
+(<code>squared_norm</code>) e di <span
+class="math inline">\left\|v\right\|</span> (<code>norm</code>);</li>
+<li>Funzione che normalizza il vettore: <span class="math inline">v
+\rightarrow v / \left\|v\right\|</span>;</li>
+<li>Funzione che converte un <code>Vec</code> in una
+<code>Normal</code>.</li>
 </ol>
-<p>Fate riferimento ai test nel progetto <a href="https://github.com/ziotom78/pytracer"><code>pytracer</code></a> (file <code>test_all.py</code>).</p>
+<p>Fate riferimento ai test nel progetto <a
+href="https://github.com/ziotom78/pytracer"><code>pytracer</code></a>
+(file <code>test_all.py</code>).</p>
 </section>
 <section id="metodi-per-point" class="slide level1">
 <h1>Metodi per <code>Point</code></h1>
 <ol>
-<li>Conversione a stringa, es., <code>Point(x=0.4, y=1.3, z=0.7)</code>;</li>
+<li>Conversione a stringa, es.,
+<code>Point(x=0.4, y=1.3, z=0.7)</code>;</li>
 <li>Confronto tra punti (per i test);</li>
-<li>Somma tra <code>Point</code> e <code>Vec</code>, restituendo un <code>Point</code>;</li>
-<li>Differenza tra due <code>Point</code>, restituendo un <code>Vec</code>;</li>
-<li>Differenza tra <code>Point</code> e <code>Vec</code>, restituendo un <code>Point</code>;</li>
-<li>Conversione da <code>Point</code> a <code>Vec</code> (<code>Point.to_vec()</code>).</li>
+<li>Somma tra <code>Point</code> e <code>Vec</code>, restituendo un
+<code>Point</code>;</li>
+<li>Differenza tra due <code>Point</code>, restituendo un
+<code>Vec</code>;</li>
+<li>Differenza tra <code>Point</code> e <code>Vec</code>, restituendo un
+<code>Point</code>;</li>
+<li>Conversione da <code>Point</code> a <code>Vec</code>
+(<code>Point.to_vec()</code>).</li>
 </ol>
-<p>Fate riferimento ai test nel progetto <a href="https://github.com/ziotom78/pytracer"><code>pytracer</code></a> (file <code>test_all.py</code>).</p>
+<p>Fate riferimento ai test nel progetto <a
+href="https://github.com/ziotom78/pytracer"><code>pytracer</code></a>
+(file <code>test_all.py</code>).</p>
 </section>
 <section id="metodi-per-normal" class="slide level1">
 <h1>Metodi per <code>Normal</code></h1>
 <ol>
-<li>Conversione a stringa, es., <code>Normal(x=0.4, y=1.3, z=0.7)</code>;</li>
+<li>Conversione a stringa, es.,
+<code>Normal(x=0.4, y=1.3, z=0.7)</code>;</li>
 <li>Confronto tra normali (per i test);</li>
-<li>Negazione di una normale (<span class="math inline">-\vec n</span>);</li>
+<li>Negazione di una normale (<span class="math inline">-\vec
+n</span>);</li>
 <li>Moltiplicazione per uno scalare;</li>
-<li>Prodotto scalare <code>Vec·Normal</code> e prodotto vettore <code>Vec×Normal</code> e <code>Normal×Normal</code>;</li>
-<li>Calcolo di <span class="math inline">\left\|n\right\|^2</span> (<code>squared_norm</code>) e di <span class="math inline">\left\|n\right\|</span> (<code>norm</code>);</li>
-<li>Funzione che normalizza la normale: <span class="math inline">n \rightarrow n / \left\|n\right\|</span>.</li>
+<li>Prodotto scalare <code>Vec·Normal</code> e prodotto vettore
+<code>Vec×Normal</code> e <code>Normal×Normal</code>;</li>
+<li>Calcolo di <span class="math inline">\left\|n\right\|^2</span>
+(<code>squared_norm</code>) e di <span
+class="math inline">\left\|n\right\|</span> (<code>norm</code>);</li>
+<li>Funzione che normalizza la normale: <span class="math inline">n
+\rightarrow n / \left\|n\right\|</span>.</li>
 </ol>
-<p>Fate riferimento ai test nel progetto <a href="https://github.com/ziotom78/pytracer"><code>pytracer</code></a> (file <code>test_all.py</code>).</p>
+<p>Fate riferimento ai test nel progetto <a
+href="https://github.com/ziotom78/pytracer"><code>pytracer</code></a>
+(file <code>test_all.py</code>).</p>
 </section>
 <section id="implementazione-python" class="slide level1">
 <h1>Implementazione Python</h1>
 <ul>
-<li><p>Mostrerò ora brevemente come implementare le operazioni matematiche su <code>Point</code>, <code>Vec</code> e <code>Normal</code></p></li>
-<li><p>Attenzione però: Python è un linguaggio <em>dinamico</em>, e permette di fare cose che non sono direttamente traducibili in altri linguaggi.</p></li>
-<li><p>Questo è evidente nell’implementazione di metodi che sono molto simili tra <code>Point</code> e <code>Vec</code>, come la somma di due elementi:</p>
+<li><p>Mostrerò ora brevemente come implementare le operazioni
+matematiche su <code>Point</code>, <code>Vec</code> e
+<code>Normal</code></p></li>
+<li><p>Attenzione però: Python è un linguaggio <em>dinamico</em>, e
+permette di fare cose che non sono direttamente traducibili in altri
+linguaggi.</p></li>
+<li><p>Questo è evidente nell’implementazione di metodi che sono molto
+simili tra <code>Point</code> e <code>Vec</code>, come la somma di due
+elementi:</p>
 <ol>
 <li><code>Point</code> + <code>Vec</code> → <code>Point</code>;</li>
 <li><code>Vec</code> + <code>Vec</code> → <code>Vec</code>.</li>
 </ol></li>
-<li><p>Potete fare riferimento al codice completo di <a href="https://github.com/ziotom78/pytracer"><code>pytracer</code></a> (che useremo anche nelle prossime settimane).</p></li>
+<li><p>Potete fare riferimento al codice completo di <a
+href="https://github.com/ziotom78/pytracer"><code>pytracer</code></a>
+(che useremo anche nelle prossime settimane).</p></li>
 </ul>
 </section>
 <section id="implementazione-python-1" class="slide level1">
 <h1>Implementazione Python</h1>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _are_xyz_close(a, b):   <span class="co"># No need to tell if it&#39;s a Point, Vec, Normal…</span></span>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _are_xyz_close(a, b):   <span class="co"># No need to tell if it&#39;s a Point, Vec, Normal…</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This works thanks to Python&#39;s duck typing. In C++ and other languages</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># you should probably rely on function templates or similar tools</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> are_close(a.x, b.x) <span class="kw">and</span> are_close(a.y, b.y) <span class="kw">and</span> are_close(a.z, b.z)</span>
@@ -330,7 +421,8 @@ git checkout NOME_PULL_REQUEST</code></pre>
 </section>
 <section id="implementazione-python-2" class="slide level1">
 <h1>Implementazione Python</h1>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Vec:</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    x: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    y: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
@@ -353,7 +445,8 @@ git checkout NOME_PULL_REQUEST</code></pre>
 </section>
 <section id="altre-operazioni-su-vec" class="slide level1">
 <h1>Altre operazioni su <code>Vec</code></h1>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dot(<span class="va">self</span>, other):</span>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dot(<span class="va">self</span>, other):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.x <span class="op">*</span> other.x <span class="op">+</span> <span class="va">self</span>.y <span class="op">*</span> other.y <span class="op">+</span> <span class="va">self</span>.z <span class="op">*</span> other.z</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> squared_norm(<span class="va">self</span>):</span>
@@ -376,9 +469,13 @@ git checkout NOME_PULL_REQUEST</code></pre>
 <section id="trasformazioni" class="slide level1">
 <h1>Trasformazioni</h1>
 <ul>
-<li><p>Bisogna implementare anche il tipo <code>Transformation</code>, che codifica una trasformazione.</p></li>
-<li><p>Noi considereremo solo traslazioni, rotazioni attorno ai tre assi coordinati e trasformazioni di scala: questo ci semplificherà molto il lavoro!</p></li>
-<li><p>Le trasformazioni possono essere applicate a tre oggetti matematici:</p>
+<li><p>Bisogna implementare anche il tipo <code>Transformation</code>,
+che codifica una trasformazione.</p></li>
+<li><p>Noi considereremo solo traslazioni, rotazioni attorno ai tre assi
+coordinati e trasformazioni di scala: questo ci semplificherà molto il
+lavoro!</p></li>
+<li><p>Le trasformazioni possono essere applicate a tre oggetti
+matematici:</p>
 <ol>
 <li>Punti (oggetti di tipo <code>Point</code>);</li>
 <li>Vettori (oggetti di tipo <code>Vec</code>);</li>
@@ -389,32 +486,49 @@ git checkout NOME_PULL_REQUEST</code></pre>
 <section id="il-tipo-transformation" class="slide level1">
 <h1>Il tipo <code>Transformation</code></h1>
 <ul>
-<li><p>È spesso necessario avere a portata di mano sia la matrice <span class="math inline">M</span> (che implementa la trasformazione) che la sua inversa <span class="math inline">M^{-1}</span>.</p></li>
-<li><p>Il nostro tipo <code>Transformation</code> dovrà quindi tenere in memoria <em>entrambe</em> le matrici:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Transformation:</span>
+<li><p>È spesso necessario avere a portata di mano sia la matrice <span
+class="math inline">M</span> (che implementa la trasformazione) che la
+sua inversa <span class="math inline">M^{-1}</span>.</p></li>
+<li><p>Il nostro tipo <code>Transformation</code> dovrà quindi tenere in
+memoria <em>entrambe</em> le matrici:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Transformation:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, m<span class="op">=</span>IDENTITY_MATR4x4, invm<span class="op">=</span>IDENTITY_MATR4x4):</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.m <span class="op">=</span> m</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.invm <span class="op">=</span> invm</span></code></pre></div>
-<p>dove <code>IDENTITY_MATR4x4</code> è una costante uguale alla matrice identità di dimensioni 4×4.</p></li>
+<p>dove <code>IDENTITY_MATR4x4</code> è una costante uguale alla matrice
+identità di dimensioni 4×4.</p></li>
 </ul>
 </section>
 <section id="consistenza" class="slide level1">
 <h1>Consistenza</h1>
 <ul>
-<li><p>Ovviamente, il fatto che dobbiamo passare sia <span class="math inline">M</span> che <span class="math inline">M^{-1}</span> pone un problema di consistenza! Come facciamo a sapere che i due parametri del costruttore siano corretti?</p></li>
-<li><p>Implementiamo un metodo che verifica che il prodotto delle due matrici dia la matrice identità 4×4 (utile nei test!):</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_consistent(<span class="va">self</span>):</span>
+<li><p>Ovviamente, il fatto che dobbiamo passare sia <span
+class="math inline">M</span> che <span class="math inline">M^{-1}</span>
+pone un problema di consistenza! Come facciamo a sapere che i due
+parametri del costruttore siano corretti?</p></li>
+<li><p>Implementiamo un metodo che verifica che il prodotto delle due
+matrici dia la matrice identità 4×4 (utile nei test!):</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_consistent(<span class="va">self</span>):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    prod <span class="op">=</span> _matr_prod(<span class="va">self</span>.m, <span class="va">self</span>.invm)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> _are_matr_close(prod, IDENTITY_MATR4x4)</span></code></pre></div>
-<p>dove <code>_matr_prod</code> e <code>_are_matr_close</code> sono semplici metodi che operano su matrici 4×4.</p></li>
+<p>dove <code>_matr_prod</code> e <code>_are_matr_close</code> sono
+semplici metodi che operano su matrici 4×4.</p></li>
 </ul>
 </section>
 <section id="trasformazioni-standard" class="slide level1">
 <h1>Trasformazioni standard</h1>
 <ul>
-<li><p>Definiamo una serie di funzioni che costruiscono oggetti <code>Transformation</code> preoccupandosi di inizializzare correttamente <span class="math inline">M</span> e <span class="math inline">M^{-1}</span>.</p></li>
-<li><p>Ad esempio, questa è l’implementazione di <code>translation</code> (traslazione per un vettore <span class="math inline">\vec v</span>):</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> translation(vec: Vec):</span>
+<li><p>Definiamo una serie di funzioni che costruiscono oggetti
+<code>Transformation</code> preoccupandosi di inizializzare
+correttamente <span class="math inline">M</span> e <span
+class="math inline">M^{-1}</span>.</p></li>
+<li><p>Ad esempio, questa è l’implementazione di
+<code>translation</code> (traslazione per un vettore <span
+class="math inline">\vec v</span>):</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> translation(vec: Vec):</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Transformation(</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        m<span class="op">=</span>[[<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, vec.x],</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>           [<span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>, vec.y],</span>
@@ -430,9 +544,13 @@ git checkout NOME_PULL_REQUEST</code></pre>
 <section id="inversa" class="slide level1">
 <h1>Inversa</h1>
 <ul>
-<li><p>Vedremo che è spesso necessario accedere anche all’inversa di una trasformazione.</p></li>
-<li><p>Fortunatamente, dato che manteniamo in memoria sia <span class="math inline">M</span> che <span class="math inline">M^{-1}</span>, questo compito è molto facile:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Transformation:</span>
+<li><p>Vedremo che è spesso necessario accedere anche all’inversa di una
+trasformazione.</p></li>
+<li><p>Fortunatamente, dato che manteniamo in memoria sia <span
+class="math inline">M</span> che <span
+class="math inline">M^{-1}</span>, questo compito è molto facile:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Transformation:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># …</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> inverse(<span class="va">self</span>):</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Transformation(m<span class="op">=</span><span class="va">self</span>.invm, invm<span class="op">=</span><span class="va">self</span>.m)</span></code></pre></div></li>
@@ -441,10 +559,14 @@ git checkout NOME_PULL_REQUEST</code></pre>
 <section id="prodotti" class="slide level1">
 <h1>Prodotti</h1>
 <ul>
-<li><p>È particolarmente critico implementare le funzioni per applicare una trasformazione a un oggetto geometrico.!</p></li>
-<li><p>Occorrerà implementare gli operatori di prodotto sui tipi <code>Point</code>, <code>Vec</code>, <code>Normal</code>:</p>
+<li><p>È particolarmente critico implementare le funzioni per applicare
+una trasformazione a un oggetto geometrico.!</p></li>
+<li><p>Occorrerà implementare gli operatori di prodotto sui tipi
+<code>Point</code>, <code>Vec</code>, <code>Normal</code>:</p>
 <ol>
-<li><code>Transformation * Transformation → Transformation</code>; nel calcolare <code>invm</code>, ricordate che <span class="math inline">(AB)^{-1} = B^{-1}A^{-1}</span>.</li>
+<li><code>Transformation * Transformation → Transformation</code>; nel
+calcolare <code>invm</code>, ricordate che <span
+class="math inline">(AB)^{-1} = B^{-1}A^{-1}</span>.</li>
 <li><code>Transformation * Point → Point</code>.</li>
 <li><code>Transformation * Vec → Vec</code>.</li>
 <li><code>Transformation * Normal → Normal</code>.</li>
@@ -454,7 +576,8 @@ git checkout NOME_PULL_REQUEST</code></pre>
 <section id="punti-e-vettori" class="slide level1">
 <h1>Punti e vettori</h1>
 <ul>
-<li><p>La differenza tra punti e vettori sta nell’ultimo coefficiente della rappresentazione:</p>
+<li><p>La differenza tra punti e vettori sta nell’ultimo coefficiente
+della rappresentazione:</p>
 <p><span class="math display">
 P = \begin{pmatrix}
 p_x\\
@@ -469,12 +592,17 @@ v_z\\
 0
 \end{pmatrix}.
 </span></p></li>
-<li><p>Dal punto di vista del codice, è meglio implementare <em>due</em> funzioni distinte per il prodotto: quella relativa ai vettori può risparmiare di iterare sull’ultima colonna delle matrici <span class="math inline">M</span> e <span class="math inline">M^{-1}</span>.</p></li>
+<li><p>Dal punto di vista del codice, è meglio implementare <em>due</em>
+funzioni distinte per il prodotto: quella relativa ai vettori può
+risparmiare di iterare sull’ultima colonna delle matrici <span
+class="math inline">M</span> e <span
+class="math inline">M^{-1}</span>.</p></li>
 </ul>
 </section>
 <section id="trasformazione-di-un-punto" class="slide level1">
 <h1>Trasformazione di un punto</h1>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>row0, row1, row2, row3 <span class="op">=</span> <span class="va">self</span>.m</span>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>row0, row1, row2, row3 <span class="op">=</span> <span class="va">self</span>.m</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>newp <span class="op">=</span> Point(x<span class="op">=</span>p.x <span class="op">*</span> row0[<span class="dv">0</span>] <span class="op">+</span> p.y <span class="op">*</span> row0[<span class="dv">1</span>] <span class="op">+</span> p.z <span class="op">*</span> row0[<span class="dv">2</span>] <span class="op">+</span> row0[<span class="dv">3</span>],</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>             y<span class="op">=</span>p.x <span class="op">*</span> row1[<span class="dv">0</span>] <span class="op">+</span> p.y <span class="op">*</span> row1[<span class="dv">1</span>] <span class="op">+</span> p.z <span class="op">*</span> row1[<span class="dv">2</span>] <span class="op">+</span> row1[<span class="dv">3</span>],</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>             z<span class="op">=</span>p.x <span class="op">*</span> row2[<span class="dv">0</span>] <span class="op">+</span> p.y <span class="op">*</span> row2[<span class="dv">1</span>] <span class="op">+</span> p.z <span class="op">*</span> row2[<span class="dv">2</span>] <span class="op">+</span> row2[<span class="dv">3</span>])</span>
@@ -488,7 +616,8 @@ v_z\\
 <section id="normalizzazione" class="slide level1">
 <h1>Normalizzazione</h1>
 <ul>
-<li><p>Nel caso in cui l’ultimo coefficiente del risultato non sia uguale a 1, è necessario normalizzare gli altri termini:</p>
+<li><p>Nel caso in cui l’ultimo coefficiente del risultato non sia
+uguale a 1, è necessario normalizzare gli altri termini:</p>
 <p><span class="math display">
 \begin{pmatrix}
 p_x\\
@@ -503,66 +632,93 @@ p_z / \lambda\\
 1
 \end{pmatrix}
 </span></p></li>
-<li><p>(Nessuna delle trasformazioni che implementiamo porta a <span class="math inline">\lambda \not= 1</span>, ma trasformazioni più generali possono farlo: implementare questa normalizzazione nel nostro codice lo rende <em>future-proof</em>).</p></li>
+<li><p>(Nessuna delle trasformazioni che implementiamo porta a <span
+class="math inline">\lambda \not= 1</span>, ma trasformazioni più
+generali possono farlo: implementare questa normalizzazione nel nostro
+codice lo rende <em>future-proof</em>).</p></li>
 </ul>
 </section>
 <section id="normali" class="slide level1">
 <h1>Normali</h1>
 <ul>
-<li><p>Abbiamo detto che dobbiamo implementare anche <code>Normal</code>, che ha struttura identica a <code>Vec</code> ma che richiederà meno operazioni:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<li><p>Abbiamo detto che dobbiamo implementare anche
+<code>Normal</code>, che ha struttura identica a <code>Vec</code> ma che
+richiederà meno operazioni:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Normal:</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    x: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    y: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    z: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span></span></code></pre></div></li>
-<li><p>Una trasformazione applicata a una normale è identica all’applicazione di un vettore, ma bisogna usare la <em>trasposta</em> dell’<em>inversa</em>. Vediamo come si fa il calcolo.</p></li>
+<li><p>Una trasformazione applicata a una normale è identica
+all’applicazione di un vettore, ma bisogna usare la <em>trasposta</em>
+dell’<em>inversa</em>. Vediamo come si fa il calcolo.</p></li>
 </ul>
 </section>
 <section id="inversa-trasposta" class="slide level1">
 <h1>Inversa trasposta</h1>
 <ul>
-<li><p>La matrice omogenea <span class="math inline">M</span> può essere rappresentata a blocchi:</p>
+<li><p>La matrice omogenea <span class="math inline">M</span> può essere
+rappresentata a blocchi:</p>
 <p><span class="math display">
 M = \begin{pmatrix}
 \textcolor{#3434AD}{A}&amp; \textcolor{#34AD34}{\vec v}\\
 \mathbf{0}&amp; 1,
 \end{pmatrix}
 </span></p>
-<p>dove <span class="math inline">\textcolor{#3434AD}{A}</span> è una matrice 3×3.</p></li>
-<li><p>Si può <a href="https://en.wikipedia.org/wiki/Invertible_matrix#Blockwise_inversion">dimostrare facilmente</a> che l’inversa di una matrice omogenea è ancora una matrice omogenea.</p></li>
+<p>dove <span class="math inline">\textcolor{#3434AD}{A}</span> è una
+matrice 3×3.</p></li>
+<li><p>Si può <a
+href="https://en.wikipedia.org/wiki/Invertible_matrix#Blockwise_inversion">dimostrare
+facilmente</a> che l’inversa di una matrice omogenea è ancora una
+matrice omogenea.</p></li>
 </ul>
 </section>
 <section id="inversa-trasposta-1" class="slide level1">
 <h1>Inversa trasposta</h1>
 <ul>
-<li><p>La trasposta di una matrice omogenea non è però più omogenea, perché compaiono valori non nulli nell’ultima riga:</p>
+<li><p>La trasposta di una matrice omogenea non è però più omogenea,
+perché compaiono valori non nulli nell’ultima riga:</p>
 <p><span class="math display">
 M^t = \begin{pmatrix}
-\textcolor{#3434AD}{m_{11}}&amp; \textcolor{#3434AD}{m_{21}}&amp; \textcolor{#3434AD}{m_{31}}&amp; 0\\
-\textcolor{#3434AD}{m_{12}}&amp; \textcolor{#3434AD}{m_{22}}&amp; \textcolor{#3434AD}{m_{32}}&amp; 0\\
-\textcolor{#3434AD}{m_{13}}&amp; \textcolor{#3434AD}{m_{23}}&amp; \textcolor{#3434AD}{m_{33}}&amp; 0\\
-\textcolor{#34AD34}{v_1}&amp; \textcolor{#34AD34}{v_2}&amp; \textcolor{#34AD34}{v_3}&amp; 1\\
+\textcolor{#3434AD}{m_{11}}&amp; \textcolor{#3434AD}{m_{21}}&amp;
+\textcolor{#3434AD}{m_{31}}&amp; 0\\
+\textcolor{#3434AD}{m_{12}}&amp; \textcolor{#3434AD}{m_{22}}&amp;
+\textcolor{#3434AD}{m_{32}}&amp; 0\\
+\textcolor{#3434AD}{m_{13}}&amp; \textcolor{#3434AD}{m_{23}}&amp;
+\textcolor{#3434AD}{m_{33}}&amp; 0\\
+\textcolor{#34AD34}{v_1}&amp; \textcolor{#34AD34}{v_2}&amp;
+\textcolor{#34AD34}{v_3}&amp; 1\\
 \end{pmatrix}.
 </span></p></li>
-<li><p>Esplicitando il prodotto tra l’inversa trasposta e un vettore, si vede che l’ultimo coefficiente (omogeneo) non è più 0!</p></li>
-<li><p>Questo però <strong>non influisce</strong> su <span class="math inline">\hat n&#39;</span>, e possiamo quindi ignorare il problema.</p></li>
+<li><p>Esplicitando il prodotto tra l’inversa trasposta e un vettore, si
+vede che l’ultimo coefficiente (omogeneo) non è più 0!</p></li>
+<li><p>Questo però <strong>non influisce</strong> su <span
+class="math inline">\hat n&#39;</span>, e possiamo quindi ignorare il
+problema.</p></li>
 </ul>
 </section>
 <section id="implementazione" class="slide level1">
 <h1>Implementazione</h1>
 <ul>
-<li><p>In Python si può implementare il prodotto tra matrice e normale nel modo più diretto possibile:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>row0, row1, row2, _ <span class="op">=</span> <span class="va">self</span>.invm</span>
+<li><p>In Python si può implementare il prodotto tra matrice e normale
+nel modo più diretto possibile:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>row0, row1, row2, _ <span class="op">=</span> <span class="va">self</span>.invm</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> Normal(x<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">0</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">0</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">0</span>],</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>              y<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">1</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">1</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">1</span>],</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>              z<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">2</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">2</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">2</span>])</span></code></pre></div></li>
-<li><p>È inutile infatti costruire la matrice trasposta di <code>self.invm</code> e calcolare il prodotto di questa con la normale.</p></li>
+<li><p>È inutile infatti costruire la matrice trasposta di
+<code>self.invm</code> e calcolare il prodotto di questa con la
+normale.</p></li>
 </ul>
 </section>
 <section id="test" class="slide level1">
 <h1>Test</h1>
 <ul>
-<li><p>Il set completo di test si trova nel repository <a href="https://github.com/ziotom78/pytracer">pytracer</a>, nel file <a href="https://github.com/ziotom78/pytracer/blob/41878248890338e62aa38c928c17561490c901b6/test_all.py#L202-L232">test_all.py</a>.</p></li>
+<li><p>Il set completo di test si trova nel repository <a
+href="https://github.com/ziotom78/pytracer">pytracer</a>, nel file <a
+href="https://github.com/ziotom78/pytracer/blob/41878248890338e62aa38c928c17561490c901b6/test_all.py#L202-L232">test_all.py</a>.</p></li>
 <li><p>Implementate gli stessi test presenti in quel file.</p></li>
 </ul>
 </section>
@@ -570,8 +726,11 @@ M^t = \begin{pmatrix}
 <h1>Lavoro di gruppo</h1>
 <ol>
 <li>Uno di voi crea la <em>release</em> 0.1.0;</li>
-<li>Uno di voi crea un branch <code>geometry</code> e fa un <em>pull request</em>, che gli altri scaricano;</li>
-<li>Uno di voi implementa il tipo <code>Vec</code> (senza metodi o operatori!), uno <code>Point</code>, uno <code>Normal</code> e uno <code>Transformation</code>;</li>
+<li>Uno di voi crea un branch <code>geometry</code> e fa un <em>pull
+request</em>, che gli altri scaricano;</li>
+<li>Uno di voi implementa il tipo <code>Vec</code> (senza metodi o
+operatori!), uno <code>Point</code>, uno <code>Normal</code> e uno
+<code>Transformation</code>;</li>
 <li>Sincronizzatevi tra voi facendo un <em>merge</em>;</li>
 <li>Dividetevi l’implementazione dei vari metodi ed operatori.</li>
 </ol>
@@ -579,21 +738,54 @@ M^t = \begin{pmatrix}
 <section id="indicazioni-per-dnimrust" class="slide level1">
 <h1>Indicazioni per D/Nim/Rust</h1>
 </section>
+<section id="matrici-e-trasformazioni" class="slide level1">
+<h1>Matrici e trasformazioni</h1>
+<ul>
+<li><p>Può essere utile definire un tipo <code>HomMatrix</code> che
+implementi una matrice omogenea 4×4 insieme alle operazioni basilari su
+di essa</p></li>
+<li><p>Il tipo <code>Transformation</code> conterrà quindi due campi
+<code>HomMatrix</code>, contenenti rispettivamente la matrice della
+trasformazione e la sua inversa</p></li>
+<li><p>Attenzione a definire <code>HomMatrix</code> in modo da evitare
+l’allocazione di memoria nello <em>heap</em>: essendo un tipo di dati
+che verrà usato moltissimo, deve essere veloce da usare:</p>
+<ul>
+<li><p>Evitate di usare costrutti come
+<code>vector&lt;vector&lt;float&gt;&gt;</code> (C++) o
+<code>seq[seq[float]]</code> (Nim), perché i dati non sarebbero contigui
+in memoria</p></li>
+<li><p>Anzi, evitate del tutto <code>vector</code> (C++),
+<code>seq[]</code> (Nim) e simili, che internamente usano lo heap, e
+definite un semplice array di 16 elementi.</p></li>
+</ul></li>
+</ul>
+</section>
 <section id="definizione-dei-tipi" class="slide level1">
 <h1>Definizione dei tipi</h1>
 <ul>
-<li><p>Potete prendere spunto dalle implementazioni nel documento <a href="https://ziotom78.github.io/raytracing_course/language-comparison.html"><em>A comparison between a few programming languages</em></a></p></li>
-<li><p>Può essere una buona occasione per ridurre la duplicazione del codice mediante le potenzialità di metaprogrammazione del vostro linguaggio…</p></li>
-<li><p>…ma se trovate difficoltà nell’usarle, non state ad impazzire e accontentatevi di usare codice duplicato! (In futuro, quando avrete studiato bene il linguaggio LISP, potrete rimediare 😀)</p></li>
-<li><p>Mostro un esempio con Nim: è possibile ottenere risultati simili con Rust e con D</p></li>
+<li><p>Potete prendere spunto dalle implementazioni nel documento <a
+href="https://ziotom78.github.io/raytracing_course/language-comparison.html"><em>A
+comparison between a few programming languages</em></a></p></li>
+<li><p>Può essere una buona occasione per ridurre la duplicazione del
+codice mediante le potenzialità di metaprogrammazione del vostro
+linguaggio…</p></li>
+<li><p>…ma se trovate difficoltà nell’usarle, non state ad impazzire e
+accontentatevi di usare codice duplicato! (In futuro, quando avrete
+studiato bene il linguaggio LISP, potrete rimediare 😀)</p></li>
+<li><p>Mostro un esempio con Nim: è possibile ottenere risultati simili
+con Rust e con D</p></li>
 </ul>
 </section>
 <section id="definire-i-tipi-con-nim" class="slide level1">
 <h1>Definire i tipi con Nim</h1>
 <ul>
-<li><p>Vogliamo implementare una serie di operazioni sui tipi <code>Vec</code>, <code>Point</code>, <code>Normal</code></p></li>
-<li><p>Nim ammette l’overloading degli operatori, quindi potremmo scrivere:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode nim"><code class="sourceCode nim"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> <span class="st">`+`</span><span class="kw">(</span>a<span class="kw">:</span> <span class="at">Point</span><span class="kw">,</span> b<span class="kw">:</span> <span class="at">Vec</span><span class="kw">):</span> <span class="at">Point</span> <span class="co">=</span>   <span class="co"># Point + Vec → Point</span></span>
+<li><p>Vogliamo implementare una serie di operazioni sui tipi
+<code>Vec</code>, <code>Point</code>, <code>Normal</code></p></li>
+<li><p>Nim ammette l’overloading degli operatori, quindi potremmo
+scrivere:</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode nim"><code class="sourceCode nim"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> <span class="st">`+`</span><span class="kw">(</span>a<span class="kw">:</span> <span class="at">Point</span><span class="kw">,</span> b<span class="kw">:</span> <span class="at">Vec</span><span class="kw">):</span> <span class="at">Point</span> <span class="co">=</span>   <span class="co"># Point + Vec → Point</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">result</span><span class="kw">.</span><span class="at">x</span> <span class="co">=</span> a<span class="kw">.</span><span class="at">x</span> <span class="co">+</span> b<span class="kw">.</span><span class="at">x</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">result</span><span class="kw">.</span><span class="at">y</span> <span class="co">=</span> a<span class="kw">.</span><span class="at">y</span> <span class="co">+</span> b<span class="kw">.</span><span class="at">y</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">result</span><span class="kw">.</span><span class="at">z</span> <span class="co">=</span> a<span class="kw">.</span><span class="at">z</span> <span class="co">+</span> b<span class="kw">.</span><span class="at">z</span></span>
@@ -609,58 +801,88 @@ M^t = \begin{pmatrix}
 <section id="metaprogrammazione" class="slide level1">
 <h1>Metaprogrammazione</h1>
 <ul>
-<li><p>Per risparmiare le ripetizioni nella definizione di <code>+</code> possiamo usare la metaprogrammazione, ossia codice che non viene eseguito quando il programma viene avviato, ma mentre il programma viene compilato.</p></li>
-<li><p>Nim ammette tre costrutti diversi che implementano la metaprogrammazione:</p>
+<li><p>Per risparmiare le ripetizioni nella definizione di
+<code>+</code> possiamo usare la metaprogrammazione, ossia codice che
+non viene eseguito quando il programma viene avviato, ma mentre il
+programma viene compilato.</p></li>
+<li><p>Nim ammette tre costrutti diversi che implementano la
+metaprogrammazione:</p>
 <ol>
-<li><a href="https://nim-lang.org/docs/tut2.html#generics"><em>funzioni generiche</em></a>;</li>
-<li><a href="https://nim-lang.org/docs/tut2.html#templates"><em>template</em></a>;</li>
-<li><a href="https://nim-lang.org/docs/tut3.html"><em>macro</em></a>.</li>
+<li><a href="https://nim-lang.org/docs/tut2.html#generics"><em>funzioni
+generiche</em></a>;</li>
+<li><a
+href="https://nim-lang.org/docs/tut2.html#templates"><em>template</em></a>;</li>
+<li><a
+href="https://nim-lang.org/docs/tut3.html"><em>macro</em></a>.</li>
 </ol></li>
-<li><p>Vediamo in cosa consistono: in questo modo potrete poi cercare nella documentazione del vostro linguaggio se vengono supportati paradigmi simili</p></li>
+<li><p>Vediamo in cosa consistono: in questo modo potrete poi cercare
+nella documentazione del vostro linguaggio se vengono supportati
+paradigmi simili</p></li>
 </ul>
 </section>
 <section id="funzioni-generiche" class="slide level1">
 <h1>Funzioni generiche</h1>
 <ul>
-<li><p>Una funzione generica non specifica un tipo preciso per i suoi dati</p></li>
-<li><p>È utile quando le operazioni che volete fare devono potersi adattare a un tipo qualunque (come le <em>template function</em> in C++):</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode nim"><code class="sourceCode nim"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> <span class="st">mysum</span><span class="kw">[</span><span class="at">T</span><span class="kw">](</span>a<span class="kw">:</span> <span class="at">T</span><span class="kw">,</span> b<span class="kw">:</span> <span class="at">T</span><span class="kw">):</span> <span class="at">T</span> <span class="co">=</span></span>
+<li><p>Una funzione generica non specifica un tipo preciso per i suoi
+dati</p></li>
+<li><p>È utile quando le operazioni che volete fare devono potersi
+adattare a un tipo qualunque (come le <em>template function</em> in
+C++):</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode nim"><code class="sourceCode nim"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> <span class="st">mysum</span><span class="kw">[</span><span class="at">T</span><span class="kw">](</span>a<span class="kw">:</span> <span class="at">T</span><span class="kw">,</span> b<span class="kw">:</span> <span class="at">T</span><span class="kw">):</span> <span class="at">T</span> <span class="co">=</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">result</span> <span class="co">=</span> a <span class="co">+</span> a <span class="co">+</span> b</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">echo</span> <span class="fu">mysum</span><span class="kw">(</span><span class="dv">1</span><span class="kw">,</span> <span class="dv">2</span><span class="kw">)</span>       <span class="co"># Works on integers…</span></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">echo</span> <span class="fu">mysum</span><span class="kw">(</span><span class="bn">0x1</span><span class="kw">,</span> <span class="bn">0x2</span><span class="kw">)</span>   <span class="co"># …and on unsigned integers…</span></span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="cf">echo</span> <span class="fu">mysum</span><span class="kw">(</span><span class="fl">1.0</span><span class="kw">,</span> <span class="fl">2.0</span><span class="kw">)</span>   <span class="co"># …and on floats!</span></span></code></pre></div></li>
-<li><p>Non è indicato nel nostro caso, perché noi vogliamo specificare dei <em>vincoli</em> (ad esempio, non si può sommare un vettore a una normale!)</p></li>
+<li><p>Non è indicato nel nostro caso, perché noi vogliamo specificare
+dei <em>vincoli</em> (ad esempio, non si può sommare un vettore a una
+normale!)</p></li>
 </ul>
 </section>
 <section id="template" class="slide level1">
 <h1>Template</h1>
 <ul>
-<li><p>Un template è un pezzo di codice in cui alcune parti non sono specificate, e possono venire sostituite in seguito a seconda del bisogno</p></li>
+<li><p>Un template è un pezzo di codice in cui alcune parti non sono
+specificate, e possono venire sostituite in seguito a seconda del
+bisogno</p></li>
 <li><p>Ecco un esempio:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode nim"><code class="sourceCode nim"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span> <span class="st">define_double_proc</span><span class="kw">(</span>fname<span class="kw">:</span> <span class="at">untyped</span><span class="kw">,</span> t<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">)</span> <span class="co">=</span></span>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode nim"><code class="sourceCode nim"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span> <span class="st">define_double_proc</span><span class="kw">(</span>fname<span class="kw">:</span> <span class="at">untyped</span><span class="kw">,</span> t<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">)</span> <span class="co">=</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">proc</span> <span class="st">fname</span><span class="kw">(</span>arg<span class="kw">:</span> t<span class="kw">):</span> t <span class="co">=</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">result</span> <span class="co">=</span> arg <span class="co">+</span> arg</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">define_double_proc</span><span class="kw">(</span>double_int<span class="kw">,</span> <span class="at">int</span><span class="kw">)</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">define_double_proc</span><span class="kw">(</span>double_float32<span class="kw">,</span> <span class="at">float32</span><span class="kw">)</span></span></code></pre></div>
-<p>Ho definito due nuove funzioni <code>double_int</code> e <code>double_float32</code>, ma non ho specificato un’equivalente per <code>float32</code> o per <code>uint</code></p></li>
+<p>Ho definito due nuove funzioni <code>double_int</code> e
+<code>double_float32</code>, ma non ho specificato un’equivalente per
+<code>float32</code> o per <code>uint</code></p></li>
 </ul>
 </section>
 <section id="macro" class="slide level1">
 <h1>Macro</h1>
 <ul>
-<li><p>Una macro è una sequenza di istruzioni che generano codice pezzo per pezzo</p></li>
-<li><p>È il paradigma di metaprogrammazione più sofisticato che sia disponibile in Nim</p></li>
-<li><p>Può essere usato per fare cose strabilianti (ad esempio, <a href="https://nim-by-example.github.io/macros/">modificare il linguaggio per supportare più costrutti OOP</a>)</p></li>
-<li><p>Vi consiglio però di andarci cauti, perché è difficile fare il debug di macro, e il codice prodotto può essere illeggibile</p></li>
-<li><p>Un buon modo per capire come usare le macro è fare prima pratica con un linguaggio LISP (<a href="https://racket-lang.org/">Racket</a>, <a href="https://clojure.org/">Clojure</a>, <a href="https://www.scheme.com/tspl4/">Scheme</a>…)</p></li>
+<li><p>Una macro è una sequenza di istruzioni che generano codice pezzo
+per pezzo</p></li>
+<li><p>È il paradigma di metaprogrammazione più sofisticato che sia
+disponibile in Nim</p></li>
+<li><p>Può essere usato per fare cose strabilianti (ad esempio, <a
+href="https://nim-by-example.github.io/macros/">modificare il linguaggio
+per supportare più costrutti OOP</a>)</p></li>
+<li><p>Vi consiglio però di andarci cauti, perché è difficile fare il
+debug di macro, e il codice prodotto può essere illeggibile</p></li>
+<li><p>Un buon modo per capire come usare le macro è fare prima pratica
+con un linguaggio LISP (<a href="https://racket-lang.org/">Racket</a>,
+<a href="https://clojure.org/">Clojure</a>, <a
+href="https://www.scheme.com/tspl4/">Scheme</a>…)</p></li>
 </ul>
 </section>
 <section id="template-in-nim" class="slide level1">
 <h1><em>Template</em> in Nim</h1>
-<p>Quello che serve per definire velocemente operazioni matematiche su più tipi sono ovviamente i template:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode nim"><code class="sourceCode nim"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span> <span class="st">define_sum</span><span class="kw">(</span>type1<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">,</span> type2<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">,</span> rettype<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">)</span> <span class="co">=</span></span>
+<p>Quello che serve per definire velocemente operazioni matematiche su
+più tipi sono ovviamente i template:</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode nim"><code class="sourceCode nim"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span> <span class="st">define_sum</span><span class="kw">(</span>type1<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">,</span> type2<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">,</span> rettype<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">)</span> <span class="co">=</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">proc</span> <span class="st">`+`</span><span class="co">*</span><span class="kw">(</span>a<span class="kw">:</span> type1<span class="kw">,</span> b<span class="kw">:</span> type2<span class="kw">):</span> rettype <span class="co">=</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">result</span><span class="kw">.</span><span class="at">x</span> <span class="co">=</span> a<span class="kw">.</span><span class="at">x</span> <span class="co">+</span> b<span class="kw">.</span><span class="at">x</span></span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="ot">result</span><span class="kw">.</span><span class="at">y</span> <span class="co">=</span> a<span class="kw">.</span><span class="at">y</span> <span class="co">+</span> b<span class="kw">.</span><span class="at">y</span></span>
@@ -673,8 +895,11 @@ M^t = \begin{pmatrix}
 </section>
 <section id="template-in-nim-22" class="slide level1">
 <h1><em>Template</em> in Nim (2/2)</h1>
-<p>Possiamo spingerci oltre e rendere l’approccio estendibile anche al tipo di operazione, in modo che si possa usare il template anche per la sottrazione:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode nim"><code class="sourceCode nim"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span> <span class="st">define_3dop</span><span class="kw">(</span>fname<span class="kw">:</span> <span class="at">untyped</span><span class="kw">,</span> type1<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">,</span> type2<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">,</span> rettype<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">)</span> <span class="co">=</span></span>
+<p>Possiamo spingerci oltre e rendere l’approccio estendibile anche al
+tipo di operazione, in modo che si possa usare il template anche per la
+sottrazione:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode nim"><code class="sourceCode nim"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span> <span class="st">define_3dop</span><span class="kw">(</span>fname<span class="kw">:</span> <span class="at">untyped</span><span class="kw">,</span> type1<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">,</span> type2<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">,</span> rettype<span class="kw">:</span> <span class="at">typedesc</span><span class="kw">)</span> <span class="co">=</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">proc</span> <span class="st">fname</span><span class="co">*</span><span class="kw">(</span>a<span class="kw">:</span> type1<span class="kw">,</span> b<span class="kw">:</span> type2<span class="kw">):</span> rettype <span class="co">=</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">result</span><span class="kw">.</span><span class="at">x</span> <span class="co">=</span> <span class="fu">fname</span><span class="kw">(</span>a<span class="kw">.</span><span class="at">x</span><span class="kw">,</span> b<span class="kw">.</span><span class="at">x</span><span class="kw">)</span>  <span class="co"># This works because &quot;a + b&quot; is interpreted as `+`(a, b)</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="ot">result</span><span class="kw">.</span><span class="at">y</span> <span class="co">=</span> <span class="fu">fname</span><span class="kw">(</span>a<span class="kw">.</span><span class="at">y</span><span class="kw">,</span> b<span class="kw">.</span><span class="at">y</span><span class="kw">)</span></span>
@@ -690,7 +915,9 @@ M^t = \begin{pmatrix}
 </section>
 <section id="uso-in-d" class="slide level1">
 <h1>Uso in D</h1>
-<p>In D i <em>mixin template</em> permettono di evitare la definizione duplicata di tanti metodi dentro <code>Vec</code>, <code>Point</code> e <code>Normal</code>;</p>
+<p>In D i <em>mixin template</em> permettono di evitare la definizione
+duplicata di tanti metodi dentro <code>Vec</code>, <code>Point</code> e
+<code>Normal</code>;</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mixin</span> <span class="ot">template</span> defSumDiff<span class="op">(</span>T<span class="op">,</span> Ret<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  Ret opBinary<span class="op">(</span><span class="bu">string</span> op<span class="op">)(</span>T other<span class="op">)</span> <span class="fu">const</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>       <span class="kw">if</span> <span class="op">(</span>op <span class="op">==</span> <span class="st">&quot;+&quot;</span> <span class="op">||</span> op <span class="op">==</span> <span class="st">&quot;-&quot;</span><span class="op">)</span> <span class="op">{</span></span>
@@ -712,9 +939,13 @@ M^t = \begin{pmatrix}
 <section id="uso-in-rust" class="slide level1">
 <h1>Uso in Rust</h1>
 <ul>
-<li><p>Purtroppo Rust non ha l’equivalente dei <em>template</em> di Nim e dei <em>template mixin</em> di D: dovrete usare per forza le macro!</p></li>
-<li><p>Non complicatevi troppo la vita cercando di combinare <code>Add</code> e <code>Sub</code>!</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="pp">macro_rules!</span> implement_sum(</span>
+<li><p>Purtroppo Rust non ha l’equivalente dei <em>template</em> di Nim
+e dei <em>template mixin</em> di D: dovrete usare per forza le
+macro!</p></li>
+<li><p>Non complicatevi troppo la vita cercando di combinare
+<code>Add</code> e <code>Sub</code>!</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="pp">macro_rules!</span> implement_sum(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    (<span class="op">$</span>type1<span class="op">:</span>ty<span class="op">,</span> <span class="op">$</span>type2<span class="op">:</span>ty<span class="op">,</span> <span class="op">$</span>return_type<span class="op">:</span>tt) <span class="op">=&gt;</span> <span class="op">{</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">impl</span> <span class="pp">ops::</span><span class="bu">Add</span><span class="op">&lt;$</span>type2<span class="op">&gt;</span> <span class="cf">for</span> <span class="op">$</span>type1 <span class="op">{</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>            <span class="kw">type</span> Output <span class="op">=</span> <span class="op">$</span>return_type<span class="op">;</span></span>
@@ -737,9 +968,15 @@ M^t = \begin{pmatrix}
 <section id="definizione-dei-tipi-1" class="slide level1">
 <h1>Definizione dei tipi</h1>
 <ul>
-<li>Siccome <code>Vec</code>, <code>Point</code>, <code>Normal</code> e <code>Transformation</code> saranno molto utilizzati nei calcoli, è importante che siano classi estremamente efficienti.</li>
-<li>Questo è quindi un caso in cui è meglio definire i tipi come <em>value types</em> usando <code>struct</code> anziché <code>class</code>.</li>
-<li>Purtroppo C# non implementa funzionalità di metaprogrammazione, quindi dovrete definire due volte le operazioni comuni tra <code>Point</code> e <code>Vec</code>, come la somma.</li>
+<li>Siccome <code>Vec</code>, <code>Point</code>, <code>Normal</code> e
+<code>Transformation</code> saranno molto utilizzati nei calcoli, è
+importante che siano classi estremamente efficienti.</li>
+<li>Questo è quindi un caso in cui è meglio definire i tipi come
+<em>value types</em> usando <code>struct</code> anziché
+<code>class</code>.</li>
+<li>Purtroppo C# non implementa funzionalità di metaprogrammazione,
+quindi dovrete definire due volte le operazioni comuni tra
+<code>Point</code> e <code>Vec</code>, come la somma.</li>
 </ul>
 </section>
 <section id="indicazioni-per-kotlin" class="slide level1">
@@ -748,14 +985,22 @@ M^t = \begin{pmatrix}
 <section id="indicazioni-per-kotlin-1" class="slide level1">
 <h1>Indicazioni per Kotlin</h1>
 <ul>
-<li>Nessuna indicazione in particolare per <code>Point</code>, <code>Vec</code>, <code>Normal</code>: l’implementazione dovrebbe essere abbastanza semplice.</li>
-<li>Come il C#, neppure Kotlin supporta la metaprogrammazione, quindi dovrete duplicare un po’ di funzioni, come quelle che calcolano <code>Point + Vec</code> e <code>Vec + Vec</code>.</li>
+<li>Nessuna indicazione in particolare per <code>Point</code>,
+<code>Vec</code>, <code>Normal</code>: l’implementazione dovrebbe essere
+abbastanza semplice.</li>
+<li>Come il C#, neppure Kotlin supporta la metaprogrammazione, quindi
+dovrete duplicare un po’ di funzioni, come quelle che calcolano
+<code>Point + Vec</code> e <code>Vec + Vec</code>.</li>
 </ul>
 </section>
 <section id="trasformazioni-1" class="slide level1">
 <h1>Trasformazioni</h1>
-<p>Per semplificare <code>Transformation</code>, Vi consiglio di definire un tipo <code>HomMatrix</code> che implementi una matrice omogenea 4×4; usate internamente un array di 16 elementi come avevate fatto con <code>HdrImage</code>:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HomMatrix<span class="op">(</span><span class="kw">var</span> <span class="va">elements</span><span class="op">:</span> <span class="dt">FloatArray</span><span class="op">)</span> <span class="op">{</span></span>
+<p>Per semplificare <code>Transformation</code>, Vi consiglio di
+definire un tipo <code>HomMatrix</code> che implementi una matrice
+omogenea 4×4; usate internamente un array di 16 elementi come avevate
+fatto con <code>HdrImage</code>:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HomMatrix<span class="op">(</span><span class="kw">var</span> <span class="va">elements</span><span class="op">:</span> <span class="dt">FloatArray</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    init <span class="op">{</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        require<span class="op">(</span>elements<span class="op">.</span>size <span class="op">==</span> <span class="dv">16</span><span class="op">)</span> <span class="op">{</span> <span class="st">&quot;A homogeneous matrix must be 4×4&quot;</span> <span class="op">}</span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
@@ -809,7 +1054,7 @@ M^t = \begin{pmatrix}
 
         // Add the current slide number to the URL hash so that reloading the
         // page/copying the URL will return you to the same slide
-        hash: false,
+        hash: true,
 
         // Start with 1 for the hash rather than 0
         hashOneBasedIndex: false,

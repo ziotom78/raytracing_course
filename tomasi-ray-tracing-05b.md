@@ -497,6 +497,18 @@ else:
 
 # Indicazioni per D/Nim/Rust
 
+# Matrici e trasformazioni
+
+-   Può essere utile definire un tipo `HomMatrix` che implementi una matrice omogenea 4×4 insieme alle operazioni basilari su di essa
+
+-   Il tipo `Transformation` conterrà quindi due campi `HomMatrix`, contenenti rispettivamente la matrice della trasformazione e la sua inversa
+
+-   Attenzione a definire `HomMatrix` in modo da evitare l'allocazione di memoria nello *heap*: essendo un tipo di dati che verrà usato moltissimo, deve essere veloce da usare:
+
+    -   Evitate di usare costrutti come `vector<vector<float>>` (C++) o `seq[seq[float]]` (Nim), perché i dati non sarebbero contigui in memoria
+    
+    -   Anzi, evitate del tutto `vector` (C++), `seq[]` (Nim) e simili, che internamente usano lo heap, e definite un semplice array di 16 elementi.
+
 # Definizione dei tipi
 
 -   Potete prendere spunto dalle implementazioni nel documento [*A comparison between a few programming languages*](https://ziotom78.github.io/raytracing_course/language-comparison.html)

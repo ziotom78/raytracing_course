@@ -11,6 +11,9 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
+    .reveal .sourceCode {  /* see #7635 */
+      /* overflow: visible; */
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     span.underline{text-decoration: underline;}
@@ -21,22 +24,24 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
   </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -44,8 +49,11 @@
 
 <section id="title-slide">
   <h1 class="title">Lezione 1: l’equazione del rendering</h1>
-  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
-  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini
+fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a
+href="mailto:maurizio.tomasi@unimi.it"
+class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
 <section id="introduzione-al-corso" class="slide level1">
@@ -66,20 +74,24 @@
 <li>Come scrivere codice ben strutturato e documentato?</li>
 <li>Come generare immagini fotorealistiche?</li>
 </ol>
-<p>È un corso multidisciplinare: <strong>non</strong> riservato a cosmologi e astrofisici!</p>
+<p>È un corso multidisciplinare: <strong>non</strong> riservato a
+cosmologi e astrofisici!</p>
 </section>
 <section id="obbiettivi-del-corso-1" class="slide level1">
 <h1>Obbiettivi del corso</h1>
 <ol type="1">
-<li><strong>Come tradurre un modello fisico in un codice numerico?</strong></li>
+<li><strong>Come tradurre un modello fisico in un codice
+numerico?</strong></li>
 <li>Come scrivere codice ben strutturato e documentato?</li>
 <li>Come generare immagini fotorealistiche?</li>
 </ol>
-<p>È un corso multidisciplinare: <strong>non</strong> riservato a cosmologi e astrofisici!</p>
+<p>È un corso multidisciplinare: <strong>non</strong> riservato a
+cosmologi e astrofisici!</p>
 </section>
 <section id="soluzioni-numeriche" class="slide level1">
 <h1>Soluzioni numeriche</h1>
-<p><img data-src="./media/numerical-model-schema.png" height="560" /></p>
+<p><img data-src="./media/numerical-model-schema.png"
+height="560" /></p>
 </section>
 <section id="utilità-delle-simulazioni" class="slide level1">
 <h1>Utilità delle simulazioni</h1>
@@ -88,22 +100,27 @@
 </section>
 <section id="utilità-delle-simulazioni-1" class="slide level1">
 <h1>Utilità delle simulazioni</h1>
-<p><img data-src="./media/Planck_satellite_s_mirrors_pillars.jpg" height="520" /></p>
+<p><img data-src="./media/Planck_satellite_s_mirrors_pillars.jpg"
+height="520" /></p>
 <p>Assemblaggio della sonda nei laboratori ESA</p>
 </section>
 <section id="utilità-delle-simulazioni-2" class="slide level1">
 <h1>Utilità delle simulazioni</h1>
-<p><img data-src="./media/2006%20Reinecke%20-%20A%20simulation%20pipeline%20for%20the%20Planck%20mission.png" height="520" /></p>
+<p><img
+data-src="./media/2006%20Reinecke%20-%20A%20simulation%20pipeline%20for%20the%20Planck%20mission.png"
+height="520" /></p>
 </section>
 <section id="utilità-delle-simulazioni-3" class="slide level1">
 <h1>Utilità delle simulazioni</h1>
-<p><img data-src="./media/2010%20Burigana%20-%20Forecast%20for%20Planck.png" /></p>
+<p><img
+data-src="./media/2010%20Burigana%20-%20Forecast%20for%20Planck.png" /></p>
 </section>
 <section id="obbiettivi-del-corso-2" class="slide level1">
 <h1>Obbiettivi del corso</h1>
 <ol type="1">
 <li>Come tradurre un modello fisico in un codice numerico?</li>
-<li><strong>Come scrivere codice ben strutturato e documentato?</strong></li>
+<li><strong>Come scrivere codice ben strutturato e
+documentato?</strong></li>
 <li>Come generare immagini fotorealistiche?</li>
 </ol>
 </section>
@@ -144,11 +161,13 @@
 
 <iframe src="https://player.vimeo.com/video/517979969?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1934" height="810" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Moana (Clements, Musker, Hall, Williams) Beach scene (no sound)">
 </iframe>
-<p><span style="float:right"><em>Oceania</em> (R. Clements, J. Musker, D. Hall, C. Williams, 2016)</span></p>
+<p><span style="float:right"><em>Oceania</em> (R. Clements, J. Musker,
+D. Hall, C. Williams, 2016)</span></p>
 </section>
 <section id="cornell-box" class="slide level1">
 <h1>«Cornell box»</h1>
-<p><img data-src="./media/cornell_box_physical_model_image11.jpg" height="560" /></p>
+<p><img data-src="./media/cornell_box_physical_model_image11.jpg"
+height="560" /></p>
 </section>
 <section id="cornell-box-1" class="slide level1">
 <h1>«Cornell box»</h1>
@@ -157,9 +176,15 @@
 <section id="bibliografia" class="slide level1">
 <h1>Bibliografia</h1>
 <ul>
-<li><a href="http://www.pbr-book.org/"><em>Physically Based Rendering: from Theory to Implementation</em></a> (M. Pharr, W. Jakob, G. Humphreys, terza ed.): molto complesso e completo, è il testo di riferimento in materia. È disponibile online.</li>
-<li><em>Advanced Global Illumination</em> (P. Dutré, K. Bala, P. Bekaert, seconda ed.): lo useremo soprattutto per le parti più «fisiche».</li>
-<li><em>Realistic Ray Tracing</em> (P. Shirley, R. K. Morley, seconda ed.): molto antiquato, è utile soprattutto come testo introduttivo.</li>
+<li><a href="http://www.pbr-book.org/"><em>Physically Based Rendering:
+from Theory to Implementation</em></a> (M. Pharr, W. Jakob,
+G. Humphreys, terza ed.): molto complesso e completo, è il testo di
+riferimento in materia. È disponibile online.</li>
+<li><em>Advanced Global Illumination</em> (P. Dutré, K. Bala,
+P. Bekaert, seconda ed.): lo useremo soprattutto per le parti più
+«fisiche».</li>
+<li><em>Realistic Ray Tracing</em> (P. Shirley, R. K. Morley, seconda
+ed.): molto antiquato, è utile soprattutto come testo introduttivo.</li>
 </ul>
 </section>
 <section id="radiometria" class="slide level1">
@@ -179,44 +204,62 @@
 <ul>
 <li>La luce si propaga lungo linee rette (geodesiche)</li>
 <li>La velocità della luce è assunta infinita</li>
-<li>Propagazione non influenzata da effetti gravitazionali o magnetici</li>
+<li>Propagazione non influenzata da effetti gravitazionali o
+magnetici</li>
 </ul>
 </section>
 <section id="perché-ci-serve-la-radiometria" class="slide level1">
 <h1>Perché ci serve la radiometria?</h1>
 <ul>
-<li>In questo corso dovremo trattare la <em>radiometria</em>, ossia la scienza che studia come la radiazione si propaga in un mezzo.</li>
-<li>Ciò che è importante è avere quantità che caratterizzano la <em>radiazione</em> in maniera il più possibile indipendente da strumenti che la misurano.</li>
+<li>In questo corso dovremo trattare la <em>radiometria</em>, ossia la
+scienza che studia come la radiazione si propaga in un mezzo.</li>
+<li>Ciò che è importante è avere quantità che caratterizzano la
+<em>radiazione</em> in maniera il più possibile indipendente da
+strumenti che la misurano.</li>
 </ul>
 </section>
 <section id="quantità-radiometriche" class="slide level1">
 <h1>Quantità radiometriche</h1>
 <ul>
 <li>Energia emessa (Joule)</li>
-<li>Potenza radiante, o <em>flusso</em> (Energia che attraversa una superficie nell’unità di tempo)</li>
-<li>Irradianza, emettenza radiante (flusso normalizzato sulla superficie)</li>
+<li>Potenza radiante, o <em>flusso</em> (Energia che attraversa una
+superficie nell’unità di tempo)</li>
+<li>Irradianza, emettenza radiante (flusso normalizzato sulla
+superficie)</li>
 <li><strong>Radianza</strong> (← il cuore del corso!)</li>
-<li>Le definizioni che useremo saranno quelle usate nella <em>computer graphics</em>, ma possono essere diverse in altri campi della fisica! (Es., in astronomia l’irradianza è chiamata <em>flusso</em>).</li>
+<li>Le definizioni che useremo saranno quelle usate nella <em>computer
+graphics</em>, ma possono essere diverse in altri campi della fisica!
+(Es., in astronomia l’irradianza è chiamata <em>flusso</em>).</li>
 </ul>
 </section>
 <section id="flusso" class="slide level1">
 <h1>Flusso</h1>
 <ul>
-<li>Energia che attraversa una superficie <span class="math inline">A</span> nell’unità di tempo: <span class="math inline">\Phi</span></li>
-<li><span class="math inline">[\Phi] = \mathrm{W}</span> (in fisica, il flusso si misura invece come <span class="math inline">\mathrm{W}/\mathrm{m}^2</span>!).</li>
-<li>Esempio: <span class="math inline">A</span> è la superficie di un rivelatore, come la pupilla umana o l’obbiettivo di una fotocamera.</li>
-<li>Più è grande la superficie <span class="math inline">A</span>, maggiore è <span class="math inline">\Phi</span>.</li>
+<li>Energia che attraversa una superficie <span
+class="math inline">A</span> nell’unità di tempo: <span
+class="math inline">\Phi</span></li>
+<li><span class="math inline">[\Phi] = \mathrm{W}</span> (in fisica, il
+flusso si misura invece come <span
+class="math inline">\mathrm{W}/\mathrm{m}^2</span>!).</li>
+<li>Esempio: <span class="math inline">A</span> è la superficie di un
+rivelatore, come la pupilla umana o l’obbiettivo di una fotocamera.</li>
+<li>Più è grande la superficie <span class="math inline">A</span>,
+maggiore è <span class="math inline">\Phi</span>.</li>
 </ul>
 <p><img data-src="./media/flux.svg" height="260" /></p>
 </section>
 <section id="irradianzaemettenza" class="slide level1">
 <h1>Irradianza/emettenza</h1>
 <ul>
-<li><p>Flusso <span class="math inline">\Phi</span> normalizzato sulla superficie: <span class="math display">
+<li><p>Flusso <span class="math inline">\Phi</span> normalizzato sulla
+superficie: <span class="math display">
 I, E = \frac{\mathrm{d}\Phi}{\mathrm{d}A},
 \qquad [I] = \mathrm{W}/\mathrm{m}^2.
 </span></p></li>
-<li><p>Irradianza <span class="math inline">I</span>: ciò che <em>cade</em> su <span class="math inline">\mathrm{d}A</span>; emettenza <span class="math inline">E</span>: ciò che <em>abbandona</em> <span class="math inline">\mathrm{d}A</span></p></li>
+<li><p>Irradianza <span class="math inline">I</span>: ciò che
+<em>cade</em> su <span class="math inline">\mathrm{d}A</span>; emettenza
+<span class="math inline">E</span>: ciò che <em>abbandona</em> <span
+class="math inline">\mathrm{d}A</span></p></li>
 </ul>
 <p><img data-src="./media/flux.svg" height="260" /></p>
 </section>
@@ -224,12 +267,16 @@ I, E = \frac{\mathrm{d}\Phi}{\mathrm{d}A},
 <h1>Radianza</h1>
 <ul>
 <li>Ciò che ci interessa!</li>
-<li>Flusso <span class="math inline">\Phi</span> normalizzato sulla superficie <strong>proiettata</strong> per unità di angolo solido: <span class="math display">
+<li>Flusso <span class="math inline">\Phi</span> normalizzato sulla
+superficie <strong>proiettata</strong> per unità di angolo solido: <span
+class="math display">
 L = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A^\perp}
   = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A\,\cos\theta},
 \qquad [L] = \mathrm{W}/\mathrm{m}^2/\mathrm{sr}.
 </span></li>
-<li>Come l’irradianza e l’emettenza, la radianza è funzione del punto <span class="math inline">\mathbf{x}</span> della superficie <span class="math inline">\mathrm{d}A</span>: <span class="math display">
+<li>Come l’irradianza e l’emettenza, la radianza è funzione del punto
+<span class="math inline">\mathbf{x}</span> della superficie <span
+class="math inline">\mathrm{d}A</span>: <span class="math display">
 L = L(\mathbf{x}).
 </span></li>
 </ul>
@@ -238,17 +285,26 @@ L = L(\mathbf{x}).
 <h1>Angoli solidi e distanza</h1>
 <p><img data-src="./media/radiance-distance.svg" height="320" /></p>
 <ul>
-<li>Dato che <span class="math inline">I \propto A^{-1} \propto d^{-2}</span>, l’irradianza su <span class="math inline">\mathrm{d}A</span> a <span class="math inline">3d</span> è 1/9 di quella a <span class="math inline">d</span></li>
-<li>Ma <span class="math inline">\mathrm{d}\Omega = dA/d^2 \propto d^{-2}</span></li>
-<li>Quindi <span class="math inline">L \propto I/\mathrm{d}\Omega</span> non dipende da <span class="math inline">d</span></li>
+<li>Dato che <span class="math inline">I \propto A^{-1} \propto
+d^{-2}</span>, l’irradianza su <span
+class="math inline">\mathrm{d}A</span> a <span
+class="math inline">3d</span> è 1/9 di quella a <span
+class="math inline">d</span></li>
+<li>Ma <span class="math inline">\mathrm{d}\Omega = dA/d^2 \propto
+d^{-2}</span></li>
+<li>Quindi <span class="math inline">L \propto I/\mathrm{d}\Omega</span>
+non dipende da <span class="math inline">d</span></li>
 </ul>
 </section>
 <section id="radianza-1" class="slide level1">
 <h1>Radianza</h1>
 <p><img data-src="./media/radiance.svg" /></p>
 <ul>
-<li>Il rapporto sull’angolo solido rimuove la dipendenza dalla distanza</li>
-<li>La presenza di <span class="math inline">\cos\theta</span> rimuove la dipendenza dall’orientamento di <span class="math inline">\mathrm{d}A</span>.</li>
+<li>Il rapporto sull’angolo solido rimuove la dipendenza dalla
+distanza</li>
+<li>La presenza di <span class="math inline">\cos\theta</span> rimuove
+la dipendenza dall’orientamento di <span
+class="math inline">\mathrm{d}A</span>.</li>
 </ul>
 </section>
 <section id="notazione-per-la-radianza" class="slide level1">
@@ -256,57 +312,92 @@ L = L(\mathbf{x}).
 <ul>
 <li><p>Useremo spesso la notazione <span class="math display">
 L(\mathbf{x} \rightarrow \Theta)
-</span> per indicare la radianza che abbandona una superficie nel punto <span class="math inline">\mathbf{x}</span> verso la direzione <span class="math inline">\Theta</span>, a cui è associato un angolo solido <span class="math inline">\mathrm{d}\Omega</span>.</p></li>
+</span> per indicare la radianza che abbandona una superficie nel punto
+<span class="math inline">\mathbf{x}</span> verso la direzione <span
+class="math inline">\Theta</span>, a cui è associato un angolo solido
+<span class="math inline">\mathrm{d}\Omega</span>.</p></li>
 <li><p>Analogamente, <span class="math display">
 L(\mathbf{x} \leftarrow \Theta)
-</span> è la radianza proveniente dalla direzione <span class="math inline">\Theta</span> che incide sulla superficie in <span class="math inline">\mathbf{x}</span>.</p></li>
+</span> è la radianza proveniente dalla direzione <span
+class="math inline">\Theta</span> che incide sulla superficie in <span
+class="math inline">\mathbf{x}</span>.</p></li>
 </ul>
 </section>
 <section id="spettri-di-emissione" class="slide level1">
 <h1>Spettri di emissione</h1>
-<p>Ciascuna delle quantità viste finora può essere riferita a un intervallo di lunghezze d’onda. Diverse sorgenti luminose hanno infatti spettri differenti:</p>
+<p>Ciascuna delle quantità viste finora può essere riferita a un
+intervallo di lunghezze d’onda. Diverse sorgenti luminose hanno infatti
+spettri differenti:</p>
 <p><img data-src="./media/led-lighting-2.jpg" /></p>
 </section>
 <section id="radianza-spettrale" class="slide level1">
 <h1>Radianza spettrale</h1>
-<p>Dalla radianza <span class="math inline">L(\mathbf{x} \leftrightarrow \Theta)</span> si può definire la <strong>radianza spettrale</strong> <span class="math inline">L_\lambda(\mathbf{x} \leftrightarrow \Theta),</span> che fa riferimento all’intervallo di lunghezze d’onda <span class="math inline">[\lambda, \lambda + \mathrm{d}\lambda]</span> e indichiamo con la stessa lettera <span class="math inline">L</span> per comodità. È definita tramite l’equazione <span class="math display">
-L(\mathbf{x} \leftrightarrow \Theta) = 
-\int_0^\infty L_\lambda(\mathbf{x} \leftrightarrow \Theta)\,\mathrm{d}\lambda,
+<p>Dalla radianza <span class="math inline">L(\mathbf{x} \leftrightarrow
+\Theta)</span> si può definire la <strong>radianza spettrale</strong>
+<span class="math inline">L_\lambda(\mathbf{x} \leftrightarrow
+\Theta),</span> che fa riferimento all’intervallo di lunghezze d’onda
+<span class="math inline">[\lambda, \lambda + \mathrm{d}\lambda]</span>
+e indichiamo con la stessa lettera <span class="math inline">L</span>
+per comodità. È definita tramite l’equazione <span class="math display">
+L(\mathbf{x} \leftrightarrow \Theta) =
+\int_0^\infty L_\lambda(\mathbf{x} \leftrightarrow
+\Theta)\,\mathrm{d}\lambda,
 \quad
-[L_\lambda(\mathbf{x} \leftrightarrow \Theta, \lambda)] = \mathrm{W}/\mathrm{m}^2/\mathrm{sr}/\mathrm{m}.
+[L_\lambda(\mathbf{x} \leftrightarrow \Theta, \lambda)] =
+\mathrm{W}/\mathrm{m}^2/\mathrm{sr}/\mathrm{m}.
 </span></p>
 </section>
 <section id="proprietà-di-l" class="slide level1">
 <h1>Proprietà di <span class="math inline">L</span></h1>
 <ol type="1">
-<li><p>Da <span class="math inline">L</span> si possono ricavare <span class="math inline">\Phi</span>, <span class="math inline">I</span>, <span class="math inline">E</span>. Ad esempio:</p>
+<li><p>Da <span class="math inline">L</span> si possono ricavare <span
+class="math inline">\Phi</span>, <span class="math inline">I</span>,
+<span class="math inline">E</span>. Ad esempio:</p>
 <p><span class="math display">
 \Phi = \iint_{A, \Omega} L(\mathbf{x} \rightarrow \Theta)\,
        \cos\theta\,\mathrm{d}\Omega\,\mathrm{d}A_\mathbf{x},
 </span></p></li>
-<li><p>In assenza di attenuazione vale che <span class="math inline">L(\mathbf{x} \rightarrow \mathbf{y}) = L(\mathbf{x} \rightarrow \mathbf{z}),</span> se <span class="math inline">\mathbf{x}</span>, <span class="math inline">\mathbf{y}</span>, <span class="math inline">\mathbf{z}</span> sono sulla stessa retta; vale lo stesso per <span class="math inline">L_\lambda</span>, ovviamente.</p></li>
-<li><p>Il fatto che <span class="math inline">L</span> e <span class="math inline">L_\lambda</span> non dipendano dalla distanza implica che il colore percepito di un oggetto alla distanza <span class="math inline">d</span> non cambia al variare di <span class="math inline">d</span>.</p></li>
+<li><p>In assenza di attenuazione vale che <span
+class="math inline">L(\mathbf{x} \rightarrow \mathbf{y}) = L(\mathbf{x}
+\rightarrow \mathbf{z}),</span> se <span
+class="math inline">\mathbf{x}</span>, <span
+class="math inline">\mathbf{y}</span>, <span
+class="math inline">\mathbf{z}</span> sono sulla stessa retta; vale lo
+stesso per <span class="math inline">L_\lambda</span>,
+ovviamente.</p></li>
+<li><p>Il fatto che <span class="math inline">L</span> e <span
+class="math inline">L_\lambda</span> non dipendano dalla distanza
+implica che il colore percepito di un oggetto alla distanza <span
+class="math inline">d</span> non cambia al variare di <span
+class="math inline">d</span>.</p></li>
 </ol>
 </section>
 <section id="utilità-di-l" class="slide level1">
 <h1>Utilità di <span class="math inline">L</span></h1>
-<p><span class="math inline">L</span> è ciò che viene misurato da qualsiasi sensore (telecamera, occhio umano) sensibile alla luce.</p>
+<p><span class="math inline">L</span> è ciò che viene misurato da
+qualsiasi sensore (telecamera, occhio umano) sensibile alla luce.</p>
 <p><img data-src="./media/moana-frame-value.jpg" /></p>
 </section>
 <section id="utilità-di-l_lambda" class="slide level1">
 <h1>Utilità di <span class="math inline">L_\lambda</span></h1>
-<p>Il comportamento di <span class="math inline">L_\lambda</span> al variare di <span class="math inline">\lambda</span> permette di stimare il colore (<em>hue</em>):</p>
+<p>Il comportamento di <span class="math inline">L_\lambda</span> al
+variare di <span class="math inline">\lambda</span> permette di stimare
+il colore (<em>hue</em>):</p>
 <p><img data-src="./media/moana-frame-hue.jpg" /></p>
-<p>(Esiste anche un terzo parametro, la <em>saturazione</em>, che tratteremo a breve.)</p>
+<p>(Esiste anche un terzo parametro, la <em>saturazione</em>, che
+tratteremo a breve.)</p>
 </section>
 <section id="creazione-di-immagini" class="slide level1">
 <h1>Creazione di immagini</h1>
-<p>Stimare <span class="math inline">L</span> e <span class="math inline">L_\lambda</span> insieme consente di produrre un’immagine a colori:</p>
+<p>Stimare <span class="math inline">L</span> e <span
+class="math inline">L_\lambda</span> insieme consente di produrre
+un’immagine a colori:</p>
 <p><img data-src="./media/moana-frame.jpg" /></p>
 </section>
 <section id="esempio" class="slide level1">
 <h1>Esempio</h1>
-<p>Consideriamo un <em>emettitore diffuso</em>, un oggetto che emette luce uniformemente in tutte le direzioni:</p>
+<p>Consideriamo un <em>emettitore diffuso</em>, un oggetto che emette
+luce uniformemente in tutte le direzioni:</p>
 <p><img data-src="./media/diffuse-emitter.svg" /></p>
 <p>In questo caso, <span class="math display">
 L(\mathbf{x} \rightarrow \Theta) = L_e\qquad\text{(costante)}.
@@ -316,10 +407,14 @@ L(\mathbf{x} \rightarrow \Theta) = L_e\qquad\text{(costante)}.
 <h1>Calcolo del flusso</h1>
 <p><span class="math display">
 \begin{aligned}
-\Phi &amp;= \iint_{A, \Omega} L(\mathbf{x} \rightarrow \Theta)\,\cos\theta\,\mathrm{d}\Omega\,\mathrm{d}A =\\
-     &amp;= \iint_{A, \Omega} L_e\,\cos\theta\,\mathrm{d}\Omega\,\mathrm{d}A =\\
-     &amp;= L_e \int_A \mathrm{d}A \int_\Omega \cos\theta\,\mathrm{d}\Omega =\\
-     &amp;= L_e \int_A \mathrm{d}A \int_0^{2\pi}\mathrm{d}\phi \int_0^{\pi/2}\mathrm{d}\theta \cos\theta\,\sin\theta =\\
+\Phi &amp;= \iint_{A, \Omega} L(\mathbf{x} \rightarrow
+\Theta)\,\cos\theta\,\mathrm{d}\Omega\,\mathrm{d}A =\\
+     &amp;= \iint_{A, \Omega}
+L_e\,\cos\theta\,\mathrm{d}\Omega\,\mathrm{d}A =\\
+     &amp;= L_e \int_A \mathrm{d}A \int_\Omega
+\cos\theta\,\mathrm{d}\Omega =\\
+     &amp;= L_e \int_A \mathrm{d}A \int_0^{2\pi}\mathrm{d}\phi
+\int_0^{\pi/2}\mathrm{d}\theta \cos\theta\,\sin\theta =\\
      &amp;= \pi A L_e.\\
 \end{aligned}
 </span></p>
@@ -333,15 +428,24 @@ L(\mathbf{x} \rightarrow \Theta) = L_e\qquad\text{(costante)}.
 </section>
 <section id="la-brdf" class="slide level1">
 <h1>La BRDF</h1>
-<p>La Bidirectional Reflectance Distribution Function (BRDF) è il rapporto <span class="math inline">f_r(x, \Psi \rightarrow \Theta)</span> tra la <em>radianza</em> che abbandona una superficie lungo <span class="math inline">\Theta</span> e l’<em>irradianza</em> (flusso normalizzato su <span class="math inline">A</span>, <span class="math inline">\mathrm{W}/\mathrm{m}^2</span>) ricevuta da una direzione <span class="math inline">\Psi</span>:</p>
+<p>La Bidirectional Reflectance Distribution Function (BRDF) è il
+rapporto <span class="math inline">f_r(x, \Psi \rightarrow
+\Theta)</span> tra la <em>radianza</em> che abbandona una superficie
+lungo <span class="math inline">\Theta</span> e l’<em>irradianza</em>
+(flusso normalizzato su <span class="math inline">A</span>, <span
+class="math inline">\mathrm{W}/\mathrm{m}^2</span>) ricevuta da una
+direzione <span class="math inline">\Psi</span>:</p>
 <p><span class="math display">
 \begin{aligned}
-f_r(x, \Psi \rightarrow \Theta) &amp;= \frac{\mathrm{d}L (x \rightarrow \Theta)}{\mathrm{d}E(x \leftarrow \Psi)} = \\
+f_r(x, \Psi \rightarrow \Theta) &amp;= \frac{\mathrm{d}L (x \rightarrow
+\Theta)}{\mathrm{d}I(x \leftarrow \Psi)} = \\
 &amp;= \frac{\mathrm{d}L (x \rightarrow \Theta)}{
     L(x \leftarrow \Psi) \cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi
 },
 \end{aligned}
-</span> dove <span class="math inline">\cos(N_x, \Psi)</span> è l’angolo tra la normale a <span class="math inline">\mathrm{d}A</span> e la direzione incidente <span class="math inline">\Psi</span>.</p>
+</span> dove <span class="math inline">\cos(N_x, \Psi)</span> è l’angolo
+tra la normale a <span class="math inline">\mathrm{d}A</span> e la
+direzione incidente <span class="math inline">\Psi</span>.</p>
 </section>
 <section id="la-brdf-1" class="slide level1">
 <h1>La BRDF</h1>
@@ -351,28 +455,50 @@ f_r(x, \Psi \rightarrow \Theta) &amp;= \frac{\mathrm{d}L (x \rightarrow \Theta)}
 <h1>Significato della BRDF</h1>
 <ul>
 <li>Descrive come una superficie interagisce con la luce;</li>
-<li><span class="math inline">f_r \propto \cos^{-1}(N_x, \Psi)</span>: si tiene conto dell’inclinazione della sorgente luminosa rispetto a <span class="math inline">\mathrm{d}A</span>.</li>
-<li><span class="math inline">f_r : \mathbb{R}^2 \times \mathbb{R}^2 \rightarrow \mathbb{R}</span> (per codificare una direzione sono necessari due numeri), ma nel caso più generale dipende anche da <span class="math inline">\lambda</span> e dal tempo <span class="math inline">t</span>;</li>
-<li>È una funzione positiva: <span class="math inline">f_r \geq 0</span>, e la sua unità di misura è <span class="math inline">1/\mathrm{sr}</span>;</li>
-<li>Si considera tutto l’angolo solido <span class="math inline">4\pi</span>, perché la BRDF si usa anche per superfici (semi-)trasparenti.</li>
-<li>Assume che la luce abbandoni la superficie dallo stesso punto <span class="math inline">x</span> in cui l’ha incontrata (non vero per <em>subsurface scattering</em>!).</li>
+<li><span class="math inline">f_r \propto \cos^{-1}(N_x, \Psi)</span>:
+si tiene conto dell’inclinazione della sorgente luminosa rispetto a
+<span class="math inline">\mathrm{d}A</span>.</li>
+<li><span class="math inline">f_r : \mathbb{R}^2 \times \mathbb{R}^2
+\rightarrow \mathbb{R}</span> (per codificare una direzione sono
+necessari due numeri), ma nel caso più generale dipende anche da <span
+class="math inline">\lambda</span> e dal tempo <span
+class="math inline">t</span>;</li>
+<li>È una funzione positiva: <span class="math inline">f_r \geq
+0</span>, e la sua unità di misura è <span
+class="math inline">1/\mathrm{sr}</span>;</li>
+<li>Si considera tutto l’angolo solido <span
+class="math inline">4\pi</span>, perché la BRDF si usa anche per
+superfici (semi-)trasparenti.</li>
+<li>Assume che la luce abbandoni la superficie dallo stesso punto <span
+class="math inline">x</span> in cui l’ha incontrata (non vero per
+<em>subsurface scattering</em>!).</li>
 </ul>
 </section>
 <section id="reciprocità-di-helmholtz" class="slide level1">
 <h1>Reciprocità di Helmholtz</h1>
-<p>Per la BRDF vale la <em>reprocità di Helmholtz</em>: <span class="math display">
+<p>Per la BRDF vale la <em>reprocità di Helmholtz</em>: <span
+class="math display">
 f_r(x, \Psi\rightarrow\Theta) = f_r(x, \Theta\rightarrow\Psi),
-</span> ossia, la BRDF non cambia se si scambiano la direzione entrante con quella uscente.</p>
-<p>Si può dimostrare questa proprietà usando le equazioni di Maxwell, ma la dimostrazione è lunga e non particolarmente interessante per i nostri scopi.</p>
+</span> ossia, la BRDF non cambia se si scambiano la direzione entrante
+con quella uscente.</p>
+<p>Si può dimostrare questa proprietà usando le equazioni di Maxwell, ma
+la dimostrazione è lunga e non particolarmente interessante per i nostri
+scopi.</p>
 </section>
 <section id="più-angoli-di-incidenza" class="slide level1">
 <h1>Più angoli di incidenza</h1>
-<p>Grazie al principio di sovrapposizione dei campi e.m., se si hanno più sorgenti luminose <span class="math inline">i=1\ldots N</span> che insostono su una superficie, è sufficiente sommare le componenti:</p>
+<p>Grazie al principio di sovrapposizione dei campi e.m., se si hanno
+più sorgenti luminose <span class="math inline">i=1\ldots N</span> che
+insistono su una superficie, è sufficiente sommare le componenti:</p>
 <p><span class="math display">
 \begin{aligned}
-\mathrm{d}L_i(x \rightarrow \Theta) &amp;= f_r(x, \Psi_i \rightarrow \Theta) \mathrm{d}E(x \leftarrow \Psi_i) =\\
-&amp;= f_r(x, \Psi_i \rightarrow \Theta) L(x \leftarrow \Psi_i)\,\cos(N_x, \Psi_i)\,\mathrm{d}\omega_{\Psi_i},\\
-L_\text{tot}(x \rightarrow \Theta) &amp;= \int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta) L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
+\mathrm{d}L_i(x \rightarrow \Theta) &amp;= f_r(x, \Psi_i \rightarrow
+\Theta) \mathrm{d}E(x \leftarrow \Psi_i) =\\
+&amp;= f_r(x, \Psi_i \rightarrow \Theta) L(x \leftarrow
+\Psi_i)\,\cos(N_x, \Psi_i)\,\mathrm{d}\omega_{\Psi_i},\\
+L_\text{tot}(x \rightarrow \Theta) &amp;= \int_{\Omega_x} f_r(x, \Psi
+\rightarrow \Theta) L(x \leftarrow \Psi)\,\cos(N_x,
+\Psi)\,\mathrm{d}\omega_\Psi.
 \end{aligned}
 </span></p>
 </section>
@@ -382,23 +508,35 @@ L_\text{tot}(x \rightarrow \Theta) &amp;= \int_{\Omega_x} f_r(x, \Psi \rightarro
 </section>
 <section id="superficie-diffusiva-ideale" class="slide level1">
 <h1>Superficie diffusiva ideale</h1>
-<p>Tutta la radiazione incidente viene distribuita sulla semisfera <span class="math inline">2\pi</span>, così la BRDF è costante: <span class="math display">
+<p>Tutta la radiazione incidente viene distribuita sulla semisfera <span
+class="math inline">2\pi</span>, così la BRDF è costante: <span
+class="math display">
 f_r(x, \Psi \rightarrow \Theta) = \frac{\rho_d}\pi,
-</span> dove <span class="math inline">0 \leq \rho_d \leq 1</span> è la frazione di energia incidente che viene riflessa.</p>
+</span> dove <span class="math inline">0 \leq \rho_d \leq 1</span> è la
+frazione di energia incidente che viene riflessa.</p>
 </section>
 <section id="superficie-riflettente" class="slide level1">
 <h1>Superficie riflettente</h1>
-<p>In questo caso <span class="math inline">f_r</span> è una Delta di Dirac, ossia identicamente nulla tranne nella direzione uscente <span class="math inline">R</span> data dalla legge di riflessione: <span class="math display">
+<p>In questo caso <span class="math inline">f_r</span> è una Delta di
+Dirac, ossia identicamente nulla tranne nella direzione uscente <span
+class="math inline">R</span> data dalla legge di riflessione: <span
+class="math display">
 R = 2(N \cdot \Psi) N - \Psi,
-</span> dove <span class="math inline">N</span> è il vettore normale (tangente) alla superficie.</p>
+</span> dove <span class="math inline">N</span> è il vettore normale
+(tangente) alla superficie.</p>
 </section>
 <section id="altre-brdf" class="slide level1">
 <h1>Altre BRDF</h1>
 <ul>
-<li><p>Superficie rifrattiva: si tratta in modo simile alla superficie riflettente.</p></li>
-<li><p>Superficie di Fresnel: parte della luce viene riflessa e parte rifratta, secondo le <em>equazioni di Fresnel</em>.</p></li>
-<li><p>Superficie di Phong: cerca di modellare una superficie in maniera semi-empirica. Molto popolare in passato, non è molto usata oggi perché non plausibile fisicamente (non conserva l’energia).</p></li>
-<li><p>Esistono online librerie di BRDF, solitamente ricavate da misure in laboratorio.</p></li>
+<li><p>Superficie rifrattiva: si tratta in modo simile alla superficie
+riflettente.</p></li>
+<li><p>Superficie di Fresnel: parte della luce viene riflessa e parte
+rifratta, secondo le <em>equazioni di Fresnel</em>.</p></li>
+<li><p>Superficie di Phong: cerca di modellare una superficie in maniera
+semi-empirica. Molto popolare in passato, non è molto usata oggi perché
+non plausibile fisicamente (non conserva l’energia).</p></li>
+<li><p>Esistono online librerie di BRDF, solitamente ricavate da misure
+in laboratorio.</p></li>
 </ul>
 </section>
 <section id="lequazione-del-rendering" class="slide level1">
@@ -406,12 +544,16 @@ R = 2(N \cdot \Psi) N - \Psi,
 </section>
 <section id="formulazione-dellequazione" class="slide level1">
 <h1>Formulazione dell’equazione</h1>
-<p>L’equazione che studieremo durante il corso è la seguente: <span class="math display">
+<p>L’equazione che studieremo durante il corso è la seguente: <span
+class="math display">
 \begin{aligned}
 L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
-&amp;\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
+&amp;\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
+\Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
 \end{aligned}
-</span> dove <span class="math inline">L_e</span> è la radianza emessa dalla superficie nel punto <span class="math inline">x</span> lungo la direzione <span class="math inline">\Theta</span>.</p>
+</span> dove <span class="math inline">L_e</span> è la radianza emessa
+dalla superficie nel punto <span class="math inline">x</span> lungo la
+direzione <span class="math inline">\Theta</span>.</p>
 </section>
     </div>
   </div>
@@ -453,7 +595,7 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 
         // Add the current slide number to the URL hash so that reloading the
         // page/copying the URL will return you to the same slide
-        hash: false,
+        hash: true,
 
         // Start with 1 for the hash rather than 0
         hashOneBasedIndex: false,

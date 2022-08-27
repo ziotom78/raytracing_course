@@ -244,7 +244,7 @@ $$
     $$
     \begin{aligned}
     \vec c(x \rightarrow \Theta) = &\vec c_{e}(x \rightarrow \Theta) +\\
-        &\int_{\Omega_x} f_{r,R}(x, \Psi \rightarrow \Theta)\,\vec c(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
+        &\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,\vec c(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
     \end{aligned}
     $$
     

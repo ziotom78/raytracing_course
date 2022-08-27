@@ -77,6 +77,8 @@ Nel nostro caso dovremo definire un DSL e implementare un compilatore per esso. 
     INSERT INTO measurement VALUES ('2021-06-07', 'LKS-0001', 1.46, 1);
     SELECT time, value FROM measurement WHERE sensor = 'LKS-0001' AND value > 1.50;
     ```
+    
+    (Anche se SQL è pensato per gestire tabelle, c'è gente che l'ha usato per [scrivere un raytracer](https://www.pouet.net/prod.php?which=83222)…)
 
 -   La libreria [sqlite3](https://www.sqlite.org/index.html) implementa un interprete SQL e un formato di dati, consentendo di salvare/leggere questi database da file. È una delle librerie più usate al mondo, ed è usata in Linux, Mac OS X, Android e iOS.
 

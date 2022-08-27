@@ -184,7 +184,7 @@ echo "File \"$filename\" created successfully"
     intero!
 -   (Ci sono in giro file «molto lunghi», di decine di migliaia di
     linee di codice.
-    L'[amalgamatron](https://www.sqlite.org/amalgamation.html) di
+    L'[amalgamation](https://www.sqlite.org/amalgamation.html) di
     SQLite3 è un file in linguaggio C di 220.000 righe.)
 
 # Problemi del nostro VCS (3/4)
@@ -356,7 +356,7 @@ Quando si esegue `git commit`, avvengono queste cose:
     build/
     ```
 -   Il file `.gitignore` va aggiunto al repository (`git add .gitignore`, seguito da `git commit`).
-
+-   Potete generare questo file usando il sito [gitignore.io](https://gitignore.io/), oppure la vostra IDE.
 
 # GitHub
 

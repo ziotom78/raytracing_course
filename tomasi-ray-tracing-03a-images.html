@@ -11,6 +11,9 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
+    .reveal .sourceCode {  /* see #7635 */
+      /* overflow: visible; */
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     span.underline{text-decoration: underline;}
@@ -55,7 +58,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -68,7 +71,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -84,22 +87,24 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
   </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -107,8 +112,11 @@
 
 <section id="title-slide">
   <h1 class="title">Lezione 3</h1>
-  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
-  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini
+fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a
+href="mailto:maurizio.tomasi@unimi.it"
+class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
 <section id="file-binari-e-di-testo" class="slide level1">
@@ -117,12 +125,18 @@
 <section id="file-binari" class="slide level1">
 <h1>File binari</h1>
 <ul>
-<li><p>I file binari sono il tipo più semplice: consistono di una sequenza di byte (ossia, 8 bit scritti in sequenza).</p></li>
-<li><p>Ogni byte può contenere un valore intero nell’intervallo 0–255</p></li>
-<li><p>Per stampare il contenuto di un file binario potete usare il comando <code>xxd</code> (sotto Ubuntu, installatelo con <code>sudo apt install xxd</code>):</p>
+<li><p>I file binari sono il tipo più semplice: consistono di una
+sequenza di byte (ossia, 8 bit scritti in sequenza).</p></li>
+<li><p>Ogni byte può contenere un valore intero nell’intervallo
+0–255</p></li>
+<li><p>Per stampare il contenuto di un file binario potete usare il
+comando <code>xxd</code> (sotto Ubuntu, installatelo con
+<code>sudo apt install xxd</code>):</p>
 <pre class="text"><code>$ xxd file.bin</code></pre>
-<p>(Su altri sistemi operativi potreste avere <code>hexdump</code> anziché <code>xxd</code>).</p></li>
-<li><p>Salvare dati in un file binario vuol dire scrivere una sequenza di numeri binari sul disco fisso, memorizzati come byte.</p></li>
+<p>(Su altri sistemi operativi potreste avere <code>hexdump</code>
+anziché <code>xxd</code>).</p></li>
+<li><p>Salvare dati in un file binario vuol dire scrivere una sequenza
+di numeri binari sul disco fisso, memorizzati come byte.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -132,35 +146,49 @@
 <section id="da-binario-a-decimale" class="slide level1">
 <h1>Da binario a decimale</h1>
 <ul>
-<li><p>Per ragionare sui valori dei byte si usa la numerazione binaria, che ovviamente usa come base il numero 2:</p>
+<li><p>Per ragionare sui valori dei byte si usa la numerazione binaria,
+che ovviamente usa come base il numero 2:</p>
 <pre><code>0  → 0
 1  → 1
 2  → 10
 3  → 11
 4  → 100
 …</code></pre></li>
-<li><p>Per un numero <code>dcba</code> espresso in una base <span class="math inline">B</span>, il suo valore è</p>
+<li><p>Per un numero <code>dcba</code> espresso in una base <span
+class="math inline">B</span>, il suo valore è</p>
 <p><span class="math display">
-\text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times B^3.
+\text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times
+B^3.
 </span></p>
-<p>Quindi il valore binario <code>100</code> corrisponde a <span class="math inline">0 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 4.</span></p></li>
+<p>Quindi il valore binario <code>100</code> corrisponde a <span
+class="math inline">0 \times 2^0 + 0 \times 2^1 + 1\times 2^2 =
+4.</span></p></li>
 </ul>
 </section>
 <section id="notazione-esadecimale" class="slide level1">
 <h1>Notazione esadecimale</h1>
 <ul>
-<li><p>La notazione binaria è però scomoda, perché i numeri richiedono rapidamente molte cifre (8 cifre per un byte!).</p></li>
-<li><p>In alternativa alla notazione binaria si usa molto la notazione esadecimale (16), che usa le cifre</p>
+<li><p>La notazione binaria è però scomoda, perché i numeri richiedono
+rapidamente molte cifre (8 cifre per un byte!).</p></li>
+<li><p>In alternativa alla notazione binaria si usa molto la notazione
+esadecimale (16), che usa le cifre</p>
 <pre><code>0 1 2 3 4 5 6 7 8 9 A B C D E F</code></pre></li>
-<li><p>La notazione esadecimale richiede 4 bit per cifra, perché <span class="math inline">2^4 = 16</span>. Siccome un byte è composto da 8 bit, il valore di un byte è sempre codificabile usando solo due cifre esadecimali (<code>0xFF = 255</code>).</p></li>
-<li><p>In C/C++/D/Nim/Rust/Julia/C#/Kotlin, i numeri esadecimali si scrivono con <code>0x</code>, ad es. <code>0x1F67 = 8039</code> (in alcuni linguaggi <code>0b</code> introduce un numero binario).</p></li>
+<li><p>La notazione esadecimale richiede 4 bit per cifra, perché <span
+class="math inline">2^4 = 16</span>. Siccome un byte è composto da 8
+bit, il valore di un byte è sempre codificabile usando solo due cifre
+esadecimali (<code>0xFF = 255</code>).</p></li>
+<li><p>In C/C++/D/Nim/Rust/Julia/C#/Kotlin, i numeri esadecimali si
+scrivono con <code>0x</code>, ad es. <code>0x1F67 = 8039</code> (in
+alcuni linguaggi <code>0b</code> introduce un numero binario).</p></li>
 </ul>
 </section>
 <section id="ordine-dei-bit-in-un-byte" class="slide level1">
 <h1>Ordine dei bit in un byte</h1>
 <ul>
-<li><p>C’è sempre un’ambiguità di fondo nel raggruppamento dei bit in byte, e sta nel loro ordine.</p></li>
-<li><p>Se un byte è formato dalla sequenza di bit <code>0011 0101</code>, esistono due modi per interpretarlo:</p>
+<li><p>C’è sempre un’ambiguità di fondo nel raggruppamento dei bit in
+byte, e sta nel loro ordine.</p></li>
+<li><p>Se un byte è formato dalla sequenza di bit
+<code>0011 0101</code>, esistono due modi per interpretarlo:</p>
 <p><span class="math display">
 \begin{aligned}
 2^0 + 2^2 + 2^4 + 2^5 &amp;= 53,\\
@@ -172,21 +200,33 @@
 <section id="endianness-dei-bit" class="slide level1">
 <h1>«Endianness» dei bit</h1>
 <ul>
-<li><p>L’ordine dei bit in un byte è detto in gergo <em>bit-endianness</em>, termine tratto dai <em>Viaggi di Gulliver</em> (1726), di J. Swift:</p>
+<li><p>L’ordine dei bit in un byte è detto in gergo
+<em>bit-endianness</em>, termine tratto dai <em>Viaggi di Gulliver</em>
+(1726), di J. Swift:</p>
 <ol type="1">
-<li>La codifica <em>big-endian</em> parte dalla potenza <em>maggiore</em> («big»);</li>
-<li>La codifica <em>little-endian</em> parte dalla potenza <em>minore</em> («little»).</li>
+<li>La codifica <em>big-endian</em> parte dalla potenza
+<em>maggiore</em> («big»);</li>
+<li>La codifica <em>little-endian</em> parte dalla potenza
+<em>minore</em> («little»).</li>
 </ol></li>
-<li><p>Le CPU Intel e AMD oggi usate nei personal computer usano tutte la codifica <em>little-endian</em>. La codifica <em>big-endian</em> è invece lo standard per le trasmissioni via rete (ed oggi è ancora impiegata in alcune CPU ARM).</p></li>
-<li><p>Fortunatamente, la <em>bit endianness</em> non sarà qualcosa di cui dovremo preoccuparci nel nostro codice, ma dovremo invece affrontare la <em>byte endianness</em>!</p></li>
+<li><p>Le CPU Intel e AMD oggi usate nei personal computer usano tutte
+la codifica <em>little-endian</em>. La codifica <em>big-endian</em> è
+invece lo standard per le trasmissioni via rete (ed oggi è ancora
+impiegata in alcune CPU ARM).</p></li>
+<li><p>Fortunatamente, la <em>bit endianness</em> non sarà qualcosa di
+cui dovremo preoccuparci nel nostro codice, ma dovremo invece affrontare
+la <em>byte endianness</em>!</p></li>
 </ul>
 </section>
 <section id="usare-più-di-8-bit" class="slide level1">
 <h1>Usare più di 8 bit</h1>
 <ul>
 <li><p>Un numero a 8 bit può assumere valori da 0 a 255</p></li>
-<li><p>È un intervallo molto ridotto! Ma si possono combinare insieme più bytes</p></li>
-<li><p>In C++ esistono i tipi <code>int16_t</code> (16 bit → 2 byte), <code>int32_t</code> (32 bit → 4 byte), <code>int64_t</code> (64 bit → 8 byte)</p>
+<li><p>È un intervallo molto ridotto! Ma si possono combinare insieme
+più bytes</p></li>
+<li><p>In C++ esistono i tipi <code>int16_t</code> (16 bit → 2 byte),
+<code>int32_t</code> (32 bit → 4 byte), <code>int64_t</code> (64 bit →
+8 byte)</p>
 <center>
 <p><img data-src="media/bytes-and-data-types.svg" height="280" /></p>
 </center></li>
@@ -195,24 +235,34 @@
 <section id="endianness-dei-byte" class="slide level1">
 <h1>Endianness dei byte</h1>
 <ul>
-<li><p>Se si combinano insieme più byte, c’è di nuovo il problema della <em>endianness</em>!</p></li>
-<li><p>Ad esempio, il numero esadecimale a 16 bit 1F3D (2 byte) si codifica con la coppia di byte <code>1F 3D</code> (<em>big endian</em>) oppure <code>3D 1F</code> (<em>little endian</em>)?</p></li>
-<li><p>Si parla anche in questo caso di codifica di byte <em>big endian</em> o <em>little endian</em></p></li>
-<li><p>A differenza della <em>bit endianness</em>, dovremo preoccuparci della <em>byte endianness</em> nella gestione dei file PFM ☹</p></li>
+<li><p>Se si combinano insieme più byte, c’è di nuovo il problema della
+<em>endianness</em>!</p></li>
+<li><p>Ad esempio, il numero esadecimale a 16 bit 1F3D (2 byte) si
+codifica con la coppia di byte <code>1F 3D</code> (<em>big endian</em>)
+oppure <code>3D 1F</code> (<em>little endian</em>)?</p></li>
+<li><p>Si parla anche in questo caso di codifica di byte <em>big
+endian</em> o <em>little endian</em></p></li>
+<li><p>A differenza della <em>bit endianness</em>, dovremo preoccuparci
+della <em>byte endianness</em> nella gestione dei file PFM ☹</p></li>
 </ul>
 </section>
 <section id="dati-binari-e-testuali" class="slide level1">
 <h1>Dati binari e testuali</h1>
 <ul>
-<li><p>Oltre al problema della <em>endianness</em>, bisogna anche capire come il proprio linguaggio gestisce i file binari. Guardate questo esempio in C++:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fstream&gt;</span></span>
+<li><p>Oltre al problema della <em>endianness</em>, bisogna anche capire
+come il proprio linguaggio gestisce i file binari. Guardate questo
+esempio in C++:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fstream&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> x<span class="op">{</span><span class="dv">138</span><span class="op">};</span>  <span class="co">// 138 &lt; 256, so the value fits in *one* byte</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>ofstream<span class="op"> </span>outf<span class="op">{</span><span class="st">&quot;file.bin&quot;</span><span class="op">};</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  outf <span class="op">&lt;&lt;</span> x<span class="op">;</span> <span class="co">// Ouch! It writes *three* bytes: &#39;1&#39;, &#39;3&#39;, &#39;8&#39;</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>Il valore <code>138</code> è stato salvato in <em>forma testuale</em>! (Se invece usate il tipo <code>uint8_t</code>, il C++ userà l’usuale <em>forma binaria</em>)</p></li>
+<p>Il valore <code>138</code> è stato salvato in <em>forma
+testuale</em>! (Se invece usate il tipo <code>uint8_t</code>, il C++
+userà l’usuale <em>forma binaria</em>)</p></li>
 <li><p>Vediamo dunque ora i segreti della codifica testuale.</p></li>
 </ul>
 </section>
@@ -252,20 +302,30 @@
 <section id="codifica-testuale-1" class="slide level1">
 <h1>Codifica testuale</h1>
 <ul>
-<li><p>I caratteri del computer vengono codificati tramite numeri; la più usata è la codifica ASCII:</p>
+<li><p>I caratteri del computer vengono codificati tramite numeri; la
+più usata è la codifica ASCII:</p>
 <ul>
-<li>La lettera <code>A</code> è codificata dal numero 65, <code>B</code> da 66, <code>C</code> da 67, etc.;</li>
-<li>La lettera <code>a</code> è codificata dal numero 97, <code>b</code> da 98, etc.;</li>
-<li>La cifra <code>0</code> è codificata dal numero 48, <code>1</code> da 49, etc.</li>
+<li>La lettera <code>A</code> è codificata dal numero 65, <code>B</code>
+da 66, <code>C</code> da 67, etc.;</li>
+<li>La lettera <code>a</code> è codificata dal numero 97, <code>b</code>
+da 98, etc.;</li>
+<li>La cifra <code>0</code> è codificata dal numero 48, <code>1</code>
+da 49, etc.</li>
 </ul></li>
-<li><p>Codificare una parola come <code>Casa</code> vuol dire rappresentare la parola con la sequenza di valori <code>67 97 115 97 = 0x43 0x61 0x73 0x61</code>.</p></li>
-<li><p>Questi codici numerici fanno parte dello standard ASCII, che specifica 128 caratteri. (<a href="https://garbagecollected.org/2017/01/31/four-column-ascii/">Qui c’è la tabella completa</a>, spiegata bene).</p></li>
+<li><p>Codificare una parola come <code>Casa</code> vuol dire
+rappresentare la parola con la sequenza di valori
+<code>67 97 115 97 = 0x43 0x61 0x73 0x61</code>.</p></li>
+<li><p>Questi codici numerici fanno parte dello standard ASCII, che
+specifica 128 caratteri. (<a
+href="https://garbagecollected.org/2017/01/31/four-column-ascii/">Qui
+c’è la tabella completa</a>, spiegata bene).</p></li>
 </ul>
 </section>
 <section id="codifica-di-testi" class="slide level1">
 <h1>Codifica di testi</h1>
 <ul>
-<li><p>Lo standard ASCII è semplicissimo, eppure sufficiente per codificare testi:</p>
+<li><p>Lo standard ASCII è semplicissimo, eppure sufficiente per
+codificare testi:</p>
 <pre class="text"><code>Beauty - be not caused - It Is -
 Chase it, and it ceases -
 Chase it not, and it abides -
@@ -278,34 +338,51 @@ Deity will see to it
 That You never do it -
 
 (Emily Dickinson, 1863)</code></pre></li>
-<li><p>Ma come si codifica la fine della riga in ogni verso della poesia?</p></li>
-<li><p>In 128 valori è possibile codificare <em>tutti</em> i caratteri?</p></li>
+<li><p>Ma come si codifica la fine della riga in ogni verso della
+poesia?</p></li>
+<li><p>In 128 valori è possibile codificare <em>tutti</em> i
+caratteri?</p></li>
 </ul>
 </section>
 <section id="ritorno-a-capo" class="slide level1">
 <h1>Ritorno a capo</h1>
 <ul>
-<li><p>Il modo per indicare un ritorno a capo dipende dal sistema operativo!</p></li>
-<li><p>Nelle macchine da scrivere c’erano due operazioni da fare per iniziare una nuova riga (vedi <a href="https://www.youtube.com/watch?v=r97JHr13T98">questo video YouTube</a>):</p>
+<li><p>Il modo per indicare un ritorno a capo dipende dal sistema
+operativo!</p></li>
+<li><p>Nelle macchine da scrivere c’erano due operazioni da fare per
+iniziare una nuova riga (vedi <a
+href="https://www.youtube.com/watch?v=r97JHr13T98">questo video
+YouTube</a>):</p>
 <ol type="1">
-<li>Spostarsi verso il bordo sinistro/destro del foglio (<em>carriage return</em>, movimento orizzontale);</li>
-<li>Muoversi alla riga successiva (<em>line feed</em>, movimento verticale).</li>
+<li>Spostarsi verso il bordo sinistro/destro del foglio (<em>carriage
+return</em>, movimento orizzontale);</li>
+<li>Muoversi alla riga successiva (<em>line feed</em>, movimento
+verticale).</li>
 </ol></li>
-<li><p>Nella codifica ASCII c’è un carattere per ciascuno dei due comandi, che corrispondono a <code>13</code> (<em>carriage return</em>, indicato anche come <code>\r</code>) e <code>10</code> (<em>line feed</em>, indicato con <code>\n</code>). Questi erano indispensabili per i terminali <em>teletype</em>.</p></li>
+<li><p>Nella codifica ASCII c’è un carattere per ciascuno dei due
+comandi, che corrispondono a <code>13</code> (<em>carriage return</em>,
+indicato anche come <code>\r</code>) e <code>10</code> (<em>line
+feed</em>, indicato con <code>\n</code>). Questi erano indispensabili
+per i terminali <em>teletype</em>.</p></li>
 </ul>
 </section>
 <section id="terminale-teletype-asr-33" class="slide level1">
-<h1>Terminale teletype <a href="http://bytecollector.com/asr_33.htm">ASR-33</a></h1>
+<h1>Terminale teletype <a
+href="http://bytecollector.com/asr_33.htm">ASR-33</a></h1>
 <center>
 <img data-src="media/asr-33_vcf_02.jpg" height="520" />
 </center>
-<p>Vedete questo <a href="https://www.howtogeek.com/727213/what-are-teletypes-and-why-were-they-used-with-computers/">link</a> per un po’ di storia su questo tipo di terminali.</p>
+<p>Vedete questo <a
+href="https://www.howtogeek.com/727213/what-are-teletypes-and-why-were-they-used-with-computers/">link</a>
+per un po’ di storia su questo tipo di terminali.</p>
 </section>
 <section id="tipi-di-ritorno-a-capo" class="slide level1">
 <h1>Tipi di ritorno a capo</h1>
 <ul>
-<li><p>Oggi non si usano più terminali teletype, ma <code>\n</code> e <code>\r</code> sono ancora usati</p></li>
-<li><p>Il tipo di ritorno a capo dipende dal sistema operativo utilizzato:</p>
+<li><p>Oggi non si usano più terminali teletype, ma <code>\n</code> e
+<code>\r</code> sono ancora usati</p></li>
+<li><p>Il tipo di ritorno a capo dipende dal sistema operativo
+utilizzato:</p>
 <table>
 <thead>
 <tr class="header">
@@ -332,16 +409,23 @@ That You never do it -
 </tr>
 </tbody>
 </table></li>
-<li><p>Git si aspetta il formato Linux (<code>\n</code>) nei file aggiunti con <code>git add</code></p></li>
+<li><p>Git si aspetta il formato Linux (<code>\n</code>) nei file
+aggiunti con <code>git add</code></p></li>
 </ul>
 </section>
 <section id="oltre-i-127-caratteri" class="slide level1">
 <h1>Oltre i 127 caratteri</h1>
 <ul>
-<li><p>Anche se ASCII nacque per computer con 7 bit per byte, ben presto i produttori di computer si uniformarono per usare 8 bit in ogni byte</p></li>
-<li><p>Siccome <span class="math inline">2^8 = 256</span>, questo vuol dire che i numeri 128–255 sono inutilizzati in ASCII: uno spreco!</p></li>
-<li><p>Per venire incontro alle esigenze degli utenti di lingua non inglese, si inventarono le <em>code page</em></p></li>
-<li><p>Una <em>code page</em> è una tabella di corrispondenze tra i numeri 128–255 e dei caratteri</p></li>
+<li><p>Anche se ASCII nacque per computer con 7 bit per byte, ben presto
+i produttori di computer si uniformarono per usare 8 bit in ogni
+byte</p></li>
+<li><p>Siccome <span class="math inline">2^8 = 256</span>, questo vuol
+dire che i numeri 128–255 sono inutilizzati in ASCII: uno
+spreco!</p></li>
+<li><p>Per venire incontro alle esigenze degli utenti di lingua non
+inglese, si inventarono le <em>code page</em></p></li>
+<li><p>Una <em>code page</em> è una tabella di corrispondenze tra i
+numeri 128–255 e dei caratteri</p></li>
 </ul>
 </section>
 <section id="esempi-di-code-page" class="slide level1">
@@ -357,12 +441,15 @@ That You never do it -
 <section id="problemi-delle-code-page" class="slide level1">
 <h1>Problemi delle <em>code page</em></h1>
 <ul>
-<li><p>Se si esegue questo comando sotto un sistema MS-DOS che usa la <em>code page</em> 850:</p>
+<li><p>Se si esegue questo comando sotto un sistema MS-DOS che usa la
+<em>code page</em> 850:</p>
 <pre><code>c:\&gt; echo è &gt; file.txt</code></pre>
-<p>il primo byte del file avrebbe valore <code>130</code>, e verrebbe rappresentato correttamente:</p>
+<p>il primo byte del file avrebbe valore <code>130</code>, e verrebbe
+rappresentato correttamente:</p>
 <pre><code>c:\&gt; type file.txt
 è</code></pre></li>
-<li><p>Copiando però il file su un computer con <em>code page</em> 866, si otterrebbe questo:</p>
+<li><p>Copiando però il file su un computer con <em>code page</em> 866,
+si otterrebbe questo:</p>
 <pre><code>c:\&gt; type file.txt
 ѓ</code></pre></li>
 </ul>
@@ -370,22 +457,34 @@ That You never do it -
 <section id="limiti-delle-code-page" class="slide level1">
 <h1>Limiti delle <em>code page</em></h1>
 <ul>
-<li><p>Abbiamo visto che ASCII è un sistema centrato sul sistema di scrittura usato negli USA, e non include caratteri accentati come «è», «é», «ü», «â», etc.</p></li>
-<li><p>Il sistema delle <em>code page</em> ha mostrato ben presto i suoi limiti: come scrivere testi in cui si richiedono più scritture contemporaneamente?</p>
+<li><p>Abbiamo visto che ASCII è un sistema centrato sul sistema di
+scrittura usato negli USA, e non include caratteri accentati come «è»,
+«é», «ü», «â», etc.</p></li>
+<li><p>Il sistema delle <em>code page</em> ha mostrato ben presto i suoi
+limiti: come scrivere testi in cui si richiedono più scritture
+contemporaneamente?</p>
 <center>
 <p><img data-src="media/narratological-commentary-to-odissey.png" /></p>
 </center></li>
-<li><p>Oltre agli accenti sulle lettere latine, sono esistenti nel mondo molti altri alfabeti e simboli, sia contemporanei (greco, cirillico, cinese, i simboli matematici, etc.) che antichi (geroglifici egizi, caratteri cuneiformi sumerici)</p></li>
+<li><p>Oltre agli accenti sulle lettere latine, sono esistenti nel mondo
+molti altri alfabeti e simboli, sia contemporanei (greco, cirillico,
+cinese, i simboli matematici, etc.) che antichi (geroglifici egizi,
+caratteri cuneiformi sumerici)</p></li>
 </ul>
 </section>
 <section id="lo-standard-unicode" class="slide level1">
 <h1>Lo standard Unicode</h1>
 <ul>
-<li><p>Standard internazionale nato nel 1991, che copre praticamente tutti i sistemi di scrittura oggi esistenti al mondo.</p></li>
+<li><p>Standard internazionale nato nel 1991, che copre praticamente
+tutti i sistemi di scrittura oggi esistenti al mondo.</p></li>
 <li><p>Oggi è supportato quasi universalmente.</p></li>
-<li><p>Viene aggiornato periodicamente, circa una volta all’anno.</p></li>
-<li><p>Supporta sia scritture moderne (latino, cirillico, ebraico, arabo…) che antiche (geroglifici egizi: 𓀃, scrittura sumerico-accadica: 𒀄)</p></li>
-<li><p>Ha un ottimo supporto anche per caratteri matematici (∞, ∈, ∀), emoticons (😀, 😉), simboli musicali (♭, ♯, 𝄞), etc.</p></li>
+<li><p>Viene aggiornato periodicamente, circa una volta
+all’anno.</p></li>
+<li><p>Supporta sia scritture moderne (latino, cirillico, ebraico,
+arabo…) che antiche (geroglifici egizi: 𓀃, scrittura sumerico-accadica:
+𒀄)</p></li>
+<li><p>Ha un ottimo supporto anche per caratteri matematici (∞, ∈, ∀),
+emoticons (😀, 😉), simboli musicali (♭, ♯, 𝄞), etc.</p></li>
 </ul>
 </section>
 <section id="versioni-unicode" class="slide level1">
@@ -453,29 +552,51 @@ That You never do it -
 <section id="codifica-unicode" class="slide level1">
 <h1>Codifica Unicode</h1>
 <ul>
-<li><p>Ogni carattere Unicode è associato a un valore numerico, chiamato <em>code point</em>.</p></li>
-<li><p>Si possono <a href="https://en.wikipedia.org/wiki/Combining_character">combinare insieme caratteri</a>: unendo <code>a</code> e <code>^</code> per formare <code>â</code>.</p></li>
-<li><p>Le lettere accentate più comuni hanno però una <a href="https://en.wikipedia.org/wiki/Precomposed_character">codifica dedicata</a>. Queste lettere sono quindi codificabili in <strong>più modi</strong> secondo lo standard Unicode. (Questo rende complicato confrontare due stringhe!)</p></li>
-<li><p>Un <em>grafema</em> è il risultato di una combinazione di uno o più code point. Quindi la parola <code>così</code> è composta da quattro grafemi: <code>c</code>, <code>o</code>, <code>s</code> ed <code>ì</code> (che può essere il <em>code point</em> 236, oppure la combinazione dei code point <code>i</code> e `).</p></li>
-<li><p>La combinazione di caratteri diversi è molto importante in certe scritture come il cinese.</p></li>
+<li><p>Ogni carattere Unicode è associato a un valore numerico, chiamato
+<em>code point</em>.</p></li>
+<li><p>Si possono <a
+href="https://en.wikipedia.org/wiki/Combining_character">combinare
+insieme caratteri</a>: unendo <code>a</code> e <code>^</code> per
+formare <code>â</code>.</p></li>
+<li><p>Le lettere accentate più comuni hanno però una <a
+href="https://en.wikipedia.org/wiki/Precomposed_character">codifica
+dedicata</a>. Queste lettere sono quindi codificabili in <strong>più
+modi</strong> secondo lo standard Unicode. (Questo rende complicato
+confrontare due stringhe!)</p></li>
+<li><p>Un <em>grafema</em> è il risultato di una combinazione di uno o
+più code point. Quindi la parola <code>così</code> è composta da quattro
+grafemi: <code>c</code>, <code>o</code>, <code>s</code> ed
+<code>ì</code> (che può essere il <em>code point</em> 236, oppure la
+combinazione dei code point <code>i</code> e `).</p></li>
+<li><p>La combinazione di caratteri diversi è molto importante in certe
+scritture come il cinese.</p></li>
 </ul>
 </section>
 <section id="codificare-i-code-point" class="slide level1">
 <h1>Codificare i <em>code point</em></h1>
 <ul>
-<li><p>Lo standard Unicode possiede molti <em>code point</em>, e a ogni versione se ne aggiungono di nuovi.</p></li>
-<li><p>Questo pone un problema nella codifica dei <em>code point</em> su file: ASCII usava un byte per carattere perché il set era limitato. Ma per Unicode quanti byte per <em>code point</em> usare? 1? 2? 100?</p>
+<li><p>Lo standard Unicode possiede molti <em>code point</em>, e a ogni
+versione se ne aggiungono di nuovi.</p></li>
+<li><p>Questo pone un problema nella codifica dei <em>code point</em> su
+file: ASCII usava un byte per carattere perché il set era limitato. Ma
+per Unicode quanti byte per <em>code point</em> usare? 1? 2? 100?</p>
 <ul>
-<li>Se si scegliesse un valore basso, si limiterebbe l’estendibilità di Unicode.</li>
-<li>Se si scegliesse un valore molto alto, i file di testo aumenterebbero di dimensione inutilmente: la poesia di E. Dickinson richiede 232 byte in codifica ASCII (un byte per carattere). Usare 4 byte per carattere quadruplicherebbe lo spazio.</li>
+<li>Se si scegliesse un valore basso, si limiterebbe l’estendibilità di
+Unicode.</li>
+<li>Se si scegliesse un valore molto alto, i file di testo
+aumenterebbero di dimensione inutilmente: la poesia di E. Dickinson
+richiede 232 byte in codifica ASCII (un byte per carattere). Usare 4
+byte per carattere quadruplicherebbe lo spazio.</li>
 </ul></li>
 </ul>
 </section>
 <section id="codifiche-oggi-usate" class="slide level1">
 <h1>Codifiche oggi usate</h1>
 <ul>
-<li><p>Storicamente sono state proposte varie codifiche per Unicode.</p></li>
-<li><p>Le più usate oggi sono le codifiche UTF (Unicode Transformation Format), che esistono in tre versioni:</p>
+<li><p>Storicamente sono state proposte varie codifiche per
+Unicode.</p></li>
+<li><p>Le più usate oggi sono le codifiche UTF (Unicode Transformation
+Format), che esistono in tre versioni:</p>
 <ul>
 <li>UTF8 (usata nei sistemi Linux e Mac OS X);</li>
 <li>UTF16 (usata in Windows);</li>
@@ -486,15 +607,27 @@ That You never do it -
 <section id="utf-8" class="slide level1">
 <h1>UTF-8</h1>
 <ul>
-<li><p>È oggi la codifica più usata in assoluto (tranne che sotto Windows 😢).</p></li>
-<li><p>Il numero di byte usati per un <em>code point</em> è variabile da 1 a 4.</p></li>
-<li><p>È compatibile con la codifica ASCII: un file ASCII è automaticamente anche un file UTF-8 valido</p></li>
-<li><p>Sfrutta il fatto che la codifica ASCII usa solo 7 degli 8 bit in un byte, e che i primi 127 <em>code point</em> Unicode sono uguali ai valori ASCII.</p></li>
+<li><p>È oggi la codifica più usata in assoluto (tranne che sotto
+Windows 😢).</p></li>
+<li><p>Il numero di byte usati per un <em>code point</em> è variabile da
+1 a 4.</p></li>
+<li><p>È compatibile con la codifica ASCII: un file ASCII è
+automaticamente anche un file UTF-8 valido</p></li>
+<li><p>Sfrutta il fatto che la codifica ASCII usa solo 7 degli 8 bit in
+un byte, e che i primi 127 <em>code point</em> Unicode sono uguali ai
+valori ASCII.</p></li>
 </ul>
 </section>
 <section id="codifica-utf-8" class="slide level1">
 <h1>Codifica UTF-8</h1>
 <table>
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Code point</th>
@@ -539,62 +672,109 @@ That You never do it -
 <section id="codifica-utf-16" class="slide level1">
 <h1>Codifica UTF-16</h1>
 <ul>
-<li><p>Funziona come la codifica UTF-8, ma si usano coppie di byte (<span class="math inline">8 + 8 = 16</span>).</p></li>
-<li><p>Un <em>code point</em> può essere codificato da due oppure quattro byte.</p></li>
-<li><p>C’è qui però un problema di <em>endianness</em>: il valore <code>0x2A6C</code> si scrive come la coppia di byte <code>0x2A 0x6C</code> (<em>big endian</em>) oppure <code>0x6C 0x2A</code> (<em>little endian</em>)?</p></li>
-<li><p>Nei file di testo codificati con UTF-16 si inserisce all’inizio del file il cosiddetto BOM (<em>byte-order marker</em>) che corrisponde al <em>code point</em> <code>0xFEFF</code>. Se i primi due byte di un file sono <code>0xFE 0xFF</code>, allora è chiaro che il file usa <em>big endian</em>, se sono <code>0xFF 0xFE</code> usa <em>little endian</em>. (Anche UTF-8 ha un BOM, <code>0xEF 0xBB 0xBF</code>).</p></li>
-<li><p>UTF-16 è usato da Windows e nei linguaggi basati su Java (Kotlin, Scala, etc.).</p></li>
+<li><p>Funziona come la codifica UTF-8, ma si usano coppie di byte
+(<span class="math inline">8 + 8 = 16</span>).</p></li>
+<li><p>Un <em>code point</em> può essere codificato da due oppure
+quattro byte.</p></li>
+<li><p>C’è qui però un problema di <em>endianness</em>: il valore
+<code>0x2A6C</code> si scrive come la coppia di byte
+<code>0x2A 0x6C</code> (<em>big endian</em>) oppure
+<code>0x6C 0x2A</code> (<em>little endian</em>)?</p></li>
+<li><p>Nei file di testo codificati con UTF-16 si inserisce all’inizio
+del file il cosiddetto BOM (<em>byte-order marker</em>) che corrisponde
+al <em>code point</em> <code>0xFEFF</code>. Se i primi due byte di un
+file sono <code>0xFE 0xFF</code>, allora è chiaro che il file usa
+<em>big endian</em>, se sono <code>0xFF 0xFE</code> usa <em>little
+endian</em>. (Anche UTF-8 ha un BOM,
+<code>0xEF 0xBB 0xBF</code>).</p></li>
+<li><p>UTF-16 è usato da Windows e nei linguaggi basati su Java (Kotlin,
+Scala, etc.).</p></li>
 </ul>
 </section>
 <section id="codifica-utf-32" class="slide level1">
 <h1>Codifica UTF-32</h1>
 <ul>
 <li><p>Ovviamente, usa 32 bit per <em>code point</em>.</p></li>
-<li><p>In questo caso non c’è ambiguità: ogni code point usa esattamente quattro byte.</p></li>
-<li><p>È ovviamente la codifica più inefficiente dal punto di vista dello spazio occupato: la poesia di Emily Dickinson occuperebbe 928 byte in UTF-32, e solo 232 byte in ASCII/UTF-8 (quattro volte tanto!)</p></li>
-<li><p>È però la codifica più semplice: ogni code point occupa sempre lo spazio di un tipo <code>uint32_t</code> in C/C++.</p></li>
+<li><p>In questo caso non c’è ambiguità: ogni code point usa esattamente
+quattro byte.</p></li>
+<li><p>È ovviamente la codifica più inefficiente dal punto di vista
+dello spazio occupato: la poesia di Emily Dickinson occuperebbe 928 byte
+in UTF-32, e solo 232 byte in ASCII/UTF-8 (quattro volte
+tanto!)</p></li>
+<li><p>È però la codifica più semplice: ogni code point occupa sempre lo
+spazio di un tipo <code>uint32_t</code> in C/C++.</p></li>
 </ul>
 </section>
 <section id="file-binari-e-testuali" class="slide level1">
 <h1>File binari e testuali</h1>
 <ul>
-<li><p>Quanto detto oggi spiega perché è spesso più vantaggioso usare <em>file binari</em> anziché testuali: è molto più facile per un programma leggerli e scriverli!</p></li>
-<li><p>Quasi tutti i formati grafici oggi usati (PNG, JPEG, GIF, etc.) si basano su codifiche binarie.</p></li>
+<li><p>Quanto detto oggi spiega perché è spesso più vantaggioso usare
+<em>file binari</em> anziché testuali: è molto più facile per un
+programma leggerli e scriverli!</p></li>
+<li><p>Quasi tutti i formati grafici oggi usati (PNG, JPEG, GIF, etc.)
+si basano su codifiche binarie.</p></li>
 <li><p>I file testuali hanno però alcuni vantaggi significativi:</p>
 <ul>
-<li><p>Sono più facili da leggere e da scrivere per un essere umano;</p></li>
+<li><p>Sono più facili da leggere e da scrivere per un essere
+umano;</p></li>
 <li><p>Non hanno problemi di <em>endianness</em>.</p></li>
 </ul></li>
-<li><p>Inoltre, c’è un tipo importante di file di testo che avete già iniziato ad usare: i vostri <strong>codici sorgente</strong>!</p></li>
+<li><p>Inoltre, c’è un tipo importante di file di testo che avete già
+iniziato ad usare: i vostri <strong>codici sorgente</strong>!</p></li>
 </ul>
 </section>
 <section id="codifica-di-file-sorgente" class="slide level1">
 <h1>Codifica di file sorgente</h1>
 <ul>
-<li><p>Quasi tutti i linguaggi richiedono parole chiave e simboli che si limitano ad usare caratteri ASCII (alcuni consentono anche caratteri Unicode nei nomi di variabili e di funzioni, come Julia e Python)</p></li>
-<li><p>Però nelle slide mostrate prima abbiamo visto che nei programmi si possono inserire anche stringhe letterali:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;The calculation completed successfully! 😀&quot;</span>)</span></code></pre></div></li>
-<li><p>Come assicurarsi che il codice sia interpretato correttamente?</p></li>
+<li><p>Quasi tutti i linguaggi richiedono parole chiave e simboli che si
+limitano ad usare caratteri ASCII (alcuni consentono anche caratteri
+Unicode nei nomi di variabili e di funzioni, come Julia e
+Python)</p></li>
+<li><p>Però nelle slide mostrate prima abbiamo visto che nei programmi
+si possono inserire anche stringhe letterali:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;The calculation completed successfully! 😀&quot;</span>)</span></code></pre></div></li>
+<li><p>Come assicurarsi che il codice sia interpretato
+correttamente?</p></li>
 </ul>
 </section>
 <section id="codifiche-di-file-sorgente" class="slide level1">
 <h1>Codifiche di file sorgente</h1>
 <ul>
-<li><p>Alcuni linguaggi (<a href="https://nim-lang.org/docs/manual.html#lexical-analysis-encoding">Nim</a>, <a href="https://doc.rust-lang.org/reference/input-format.html">Rust</a>…) impongono la codifica UTF-8</p></li>
-<li><p><a href="https://dlang.org/spec/lex.html#source_text">D</a> supporta tutte le codifiche Unicode (UTF-8, UTF-16, UTF-32, con qualsiasi <em>endianness</em>)</p></li>
-<li><p>Python permette in linea di principio <a href="https://peps.python.org/pep-0263/">qualsiasi codifica</a>, indicata con un commento all’inizio del file:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<li><p>Alcuni linguaggi (<a
+href="https://nim-lang.org/docs/manual.html#lexical-analysis-encoding">Nim</a>,
+<a
+href="https://doc.rust-lang.org/reference/input-format.html">Rust</a>…)
+impongono la codifica UTF-8</p></li>
+<li><p><a href="https://dlang.org/spec/lex.html#source_text">D</a>
+supporta tutte le codifiche Unicode (UTF-8, UTF-16, UTF-32, con
+qualsiasi <em>endianness</em>)</p></li>
+<li><p>Python permette in linea di principio <a
+href="https://peps.python.org/pep-0263/">qualsiasi codifica</a>,
+indicata con un commento all’inizio del file:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># -*- encoding: utf-8 -*-</span></span></code></pre></div></li>
-<li><p>Il rapporto del C++ con Unicode è complicato! <code>clang</code> usa UTF-8, GCC la ammette da linea di comando (<code>-finput-charset=</code>)…</p></li>
+<li><p>Il rapporto del C++ con Unicode è complicato! <code>clang</code>
+usa UTF-8, GCC la ammette da linea di comando
+(<code>-finput-charset=</code>)…</p></li>
 </ul>
 </section>
 <section id="codifiche-di-file-sorgente-1" class="slide level1">
 <h1>Codifiche di file sorgente</h1>
 <ul>
-<li><p>Ma questo risolve solo parte del problema, perché se il programma stampa una stringa UTF-8, bisogna assicurarsi che il sistema su cui gira il programma riconosca UTF-8 (Vedi le schermate all’inizio di questa sezione).</p></li>
-<li><p>Fate attenzione alla codifica usata dal vostro editor; di solito inserire la stringa <code>encoding: utf-8</code> in un commento all’inizio del file aiuta (è riconosciuta sia da Emacs che da Vim)</p></li>
-<li><p>Tutti gli editor moderni consentono comunque di cambiare la codifica di un file</p></li>
-<li><p>Da linea di comando potete usare il programma <a href="https://en.wikipedia.org/wiki/Iconv"><code>iconv</code></a></p></li>
+<li><p>Ma questo risolve solo parte del problema, perché se il programma
+stampa una stringa UTF-8, bisogna assicurarsi che il sistema su cui gira
+il programma riconosca UTF-8 (Vedi le schermate all’inizio di questa
+sezione).</p></li>
+<li><p>Fate attenzione alla codifica usata dal vostro editor; di solito
+inserire la stringa <code>encoding: utf-8</code> in un commento
+all’inizio del file aiuta (è riconosciuta sia da Emacs che da
+Vim)</p></li>
+<li><p>Tutti gli editor moderni consentono comunque di cambiare la
+codifica di un file</p></li>
+<li><p>Da linea di comando potete usare il programma <a
+href="https://en.wikipedia.org/wiki/Iconv"><code>iconv</code></a></p></li>
 </ul>
 </section>
 <section id="gestione-degli-errori" class="slide level1">
@@ -603,14 +783,20 @@ That You never do it -
 <section id="errori" class="slide level1">
 <h1>Errori</h1>
 <ul>
-<li>Nella scorsa esercitazione abbiamo implementato il tipo <code>HdrImage</code>.</li>
-<li>Questa settimana implementeremo le funzioni per scrivere e leggere file PFM.</li>
-<li>Legge e scrivere file è un’attività che è facilmente soggetta ad errori:
+<li>Nella scorsa esercitazione abbiamo implementato il tipo
+<code>HdrImage</code>.</li>
+<li>Questa settimana implementeremo le funzioni per scrivere e leggere
+file PFM.</li>
+<li>Leggere e scrivere file è un’attività che è facilmente soggetta ad
+errori:
 <ul>
-<li>La directory in cui salvare il file non esiste, oppure è protetta da scrittura</li>
+<li>La directory in cui salvare il file non esiste, oppure è protetta da
+scrittura</li>
 <li>Il file specificato dall’utente non esiste</li>
 <li>Il file è danneggiato</li>
-<li>Il file è in un formato valido ma che il nostro codice non è in grado di caricare (es., un file è codificato in <em>big endian</em>, ma noi abbiamo previsto solo <em>little endian</em>)</li>
+<li>Il file è in un formato valido ma che il nostro codice non è in
+grado di caricare (es., un file è codificato in <em>big endian</em>, ma
+noi abbiamo previsto solo <em>little endian</em>)</li>
 </ul></li>
 </ul>
 </section>
@@ -622,7 +808,8 @@ That You never do it -
 <li>Errori di pertinenza del programmatore</li>
 <li>Errori di pertinenza dell’utente</li>
 </ul></li>
-<li><p>A seconda del tipo di errore in cui vi imbattete, la sua gestione è diversa.</p></li>
+<li><p>A seconda del tipo di errore in cui vi imbattete, la sua gestione
+è diversa.</p></li>
 </ul>
 </section>
 <section id="errori-del-programmatore" class="slide level1">
@@ -630,12 +817,14 @@ That You never do it -
 <ul>
 <li>Si tratta di un errore logico del programma.</li>
 <li>Un programma «perfetto» non dovrebbe mai avere errori logici.</li>
-<li>Se si ha l’evidenza che è avvenuto un errore logico, sarebbe meglio segnalarlo <strong>nel modo più rumoroso possibile</strong>.</li>
+<li>Se si ha l’evidenza che è avvenuto un errore logico, sarebbe meglio
+segnalarlo <strong>nel modo più rumoroso possibile</strong>.</li>
 </ul>
 </section>
 <section id="esempio" class="slide level1">
 <h1>Esempio</h1>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>my_list <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">9</span>]</span>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>my_list <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">9</span>]</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">sorted</span> <span class="op">=</span> my_sort_function(my_list)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> (<span class="bu">len</span>(my_list) <span class="op">==</span> <span class="bu">len</span>(<span class="bu">sorted</span>)):</span>
@@ -649,7 +838,8 @@ That You never do it -
 </section>
 <section id="esempio-migliorato" class="slide level1">
 <h1>Esempio migliorato</h1>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>my_list <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">9</span>]</span>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>my_list <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">9</span>]</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">sorted</span> <span class="op">=</span> my_sort_function(my_list)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># If any &quot;assert&quot;, the program will crash and will print details</span></span>
@@ -664,23 +854,37 @@ That You never do it -
 <section id="gestione-errori-del-programmatore" class="slide level1">
 <h1>Gestione errori del programmatore</h1>
 <ul>
-<li>Tutti i linguaggi implementano funzioni che consentono di mandare in crash un programma (es., <code>assert</code> e <code>abort</code> in C/C++).</li>
-<li>Queste istruzioni solitamente stampano a video una serie di dettagli sulla causa dell’errore, e sono pensate per essere usate insieme a un debugger.</li>
-<li>Eseguire un debugger è sensato: se l’errore è logico, è il programmatore che deve mettere mano al codice, non l’utente!</li>
-<li>Attenzione al fatto che alcune di queste funzioni potrebbero non essere compilate in modalità <em>release</em> (es., <a href="https://nim-lang.org/docs/assertions.html#assert.t,untyped,string"><code>assert</code></a> vs <a href="https://nim-lang.org/docs/assertions.html#doAssert.t%2Cuntyped%2Cstring"><code>doAssert</code></a> in Nim).</li>
+<li>Tutti i linguaggi implementano funzioni che consentono di mandare in
+crash un programma (es., <code>assert</code> e <code>abort</code> in
+C/C++).</li>
+<li>Queste istruzioni solitamente stampano a video una serie di dettagli
+sulla causa dell’errore, e sono pensate per essere usate insieme a un
+debugger.</li>
+<li>Eseguire un debugger è sensato: se l’errore è logico, è il
+programmatore che deve mettere mano al codice, non l’utente!</li>
+<li>Attenzione al fatto che alcune di queste funzioni potrebbero non
+essere compilate in modalità <em>release</em> (es., <a
+href="https://nim-lang.org/docs/assertions.html#assert.t,untyped,string"><code>assert</code></a>
+vs <a
+href="https://nim-lang.org/docs/assertions.html#doAssert.t%2Cuntyped%2Cstring"><code>doAssert</code></a>
+in Nim).</li>
 </ul>
 </section>
 <section id="errori-dellutente" class="slide level1">
 <h1>Errori dell’utente</h1>
 <ul>
-<li>Sono errori causati da un input o un contesto sbagliato, e non per colpa di un errore nel programma:
+<li>Sono errori causati da un input o un contesto sbagliato, e non per
+colpa di un errore nel programma:
 <ul>
 <li>L’utente chiede di leggere un file che non esiste;</li>
-<li>L’utente chiede di scrivere un file su un supporto che non ha più spazio libero;</li>
+<li>L’utente chiede di scrivere un file su un supporto che non ha più
+spazio libero;</li>
 <li>L’utente specifica un input scorretto;</li>
-<li>L’utente chiede di usare una periferica (stampante?) non connessa al computer oppure spenta.</li>
+<li>L’utente chiede di usare una periferica (stampante?) non connessa al
+computer oppure spenta.</li>
 </ul></li>
-<li>Vanno gestiti in modo molto diverso dagli errori del programmatore: non vogliamo che il programma vada in crash in questi casi!</li>
+<li>Vanno gestiti in modo molto diverso dagli errori del programmatore:
+non vogliamo che il programma vada in crash in questi casi!</li>
 </ul>
 </section>
 <section id="esempio-1" class="slide level1">
@@ -691,18 +895,26 @@ That You never do it -
 <h1>Gestire errori dell’utente</h1>
 <ul>
 <li>Gli errori dell’utente sono <strong>inevitabili</strong>.</li>
-<li>Se si ha evidenza che l’utente ha commesso un errore, ci sono diversi modi di reagire:
+<li>Se si ha evidenza che l’utente ha commesso un errore, ci sono
+diversi modi di reagire:
 <ol type="1">
-<li><p>Stampare un messaggio di errore, il più chiaro possibile;</p></li>
-<li><p>Chiedere all’utente di inserire di nuovo il dato scorretto;</p></li>
-<li><p>In certi contesti il codice può decidere autonomamente come correggere l’errore.</p>
-<p>Ad esempio, se si chiede un valore numerico entro un certo intervallo <span class="math inline">[a, b]</span> e il valore fornito è <span class="math inline">x &gt; b</span>, si può porre <span class="math inline">x = b</span> e continuare.</p></li>
+<li><p>Stampare un messaggio di errore, il più chiaro
+possibile;</p></li>
+<li><p>Chiedere all’utente di inserire di nuovo il dato
+scorretto;</p></li>
+<li><p>In certi contesti il codice può decidere autonomamente come
+correggere l’errore.</p>
+<p>Ad esempio, se si chiede un valore numerico entro un certo intervallo
+<span class="math inline">[a, b]</span> e il valore fornito è <span
+class="math inline">x &gt; b</span>, si può porre <span
+class="math inline">x = b</span> e continuare.</p></li>
 </ol></li>
 </ul>
 </section>
 <section id="correzione-errori-12" class="slide level1">
 <h1>Correzione errori (1/2)</h1>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert another number: &quot;</span>))</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> y <span class="op">!=</span> <span class="fl">0.0</span>:</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;The ratio </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span>
@@ -711,7 +923,8 @@ That You never do it -
 </section>
 <section id="correzione-errori-22" class="slide level1">
 <h1>Correzione errori (2/2)</h1>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert another number: &quot;</span>))</span>
@@ -729,22 +942,29 @@ That You never do it -
 <section id="messaggi-derrore" class="slide level1">
 <h1>Messaggi d’errore</h1>
 <ul>
-<li><p>Gli studenti hanno spesso la tendenza a stampare messaggi di errore.</p></li>
+<li><p>Gli studenti hanno spesso la tendenza a stampare messaggi di
+errore.</p></li>
 <li><p>Esempio (sbagliato) preso da un tema d’esame TNDS:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> Bisezione<span class="op">::</span>CercaZeri<span class="op">(</span><span class="dt">double</span> a<span class="op">,</span> <span class="dt">double</span> b<span class="op">)</span> <span class="op">{</span></span>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> Bisezione<span class="op">::</span>CercaZeri<span class="op">(</span><span class="dt">double</span> a<span class="op">,</span> <span class="dt">double</span> b<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>f<span class="op">-&gt;</span>Eval<span class="op">(</span>a<span class="op">)</span> <span class="op">*</span> f<span class="op">-&gt;</span>Eval<span class="op">(</span>b<span class="op">)</span> <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        cout <span class="op">&lt;&lt;</span> <span class="st">&quot;Errore, teorema degli zeri non soddisfatto</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Etc.</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>Non c’è un <code>return</code> in corrispondenza dell’<code>if</code>, e l’esercizio chiedeva di calcolare lo zero di una funzione in un intervallo in cui lo zero <strong>doveva esserci</strong>. Se il teorema degli zeri non è soddisfatto, vuol dire che c’è un errore in <code>a</code> oppure <code>b</code>.</p></li>
+<p>Non c’è un <code>return</code> in corrispondenza
+dell’<code>if</code>, e l’esercizio chiedeva di calcolare lo zero di una
+funzione in un intervallo in cui lo zero <strong>doveva
+esserci</strong>. Se il teorema degli zeri non è soddisfatto, vuol dire
+che c’è un errore in <code>a</code> oppure <code>b</code>.</p></li>
 </ul>
 </section>
 <section id="visibilità-dei-messaggi-di-errore" class="slide level1">
 <h1>Visibilità dei messaggi di errore</h1>
 <ul>
-<li><p>Se una funzione stampa un messaggio quando capita un errore, è molto probabile che quel messaggio si perda all’interno dell’output:</p>
+<li><p>Se una funzione stampa un messaggio quando capita un errore, è
+molto probabile che quel messaggio si perda all’interno dell’output:</p>
 <pre class="text"><code>$ python3 my-beautiful-program.py
 Initializing the program...
 Now I am reading data from the device
@@ -757,16 +977,27 @@ Done, time elapsed: 164.96 seconds
 Producing the plots...
 Done, the results are saved in &quot;output.pdf&quot;
 $</code></pre></li>
-<li><p>Meglio rendere l’errore più visibile, ad esempio con i colori, oppure (meglio!) fermare del tutto l’esecuzione del programma appena l’errore si verifica.</p></li>
+<li><p>Meglio rendere l’errore più visibile, ad esempio con i colori,
+oppure (meglio!) fermare del tutto l’esecuzione del programma appena
+l’errore si verifica.</p></li>
 </ul>
 </section>
 <section id="errori-dellutente-nelle-funzioni" class="slide level1">
 <h1>Errori dell’utente nelle funzioni</h1>
 <ul>
-<li>È solitamente molto semplice come gestire gli errori dell’utente nel <code>main</code> di un programma.</li>
-<li>È invece meno chiaro come gestire gli errori nell’input passato a una funzione o un metodo, come ad esempio <code>Bisezione::CercaZeri</code> (gli estremi erano un input dell’utente, o erano stati calcolati automaticamente dal programma?).</li>
-<li>Nessuna funzione o metodo dovrebbe <strong>mai</strong> fare qualcosa di catastrofico (mandare in crash il programma) o <strong>visibile</strong> (stampare un messaggio d’errore a video).</li>
-<li>La <strong>regola aurea</strong> è che la funzione restituisca un valore di ritorno che segnali l’errore, oppure che sollevi un’eccezione.</li>
+<li>È solitamente molto semplice come gestire gli errori dell’utente nel
+<code>main</code> di un programma.</li>
+<li>È invece meno chiaro come gestire gli errori nell’input passato a
+una funzione o un metodo, come ad esempio
+<code>Bisezione::CercaZeri</code> (gli estremi erano un input
+dell’utente, o erano stati calcolati automaticamente dal
+programma?).</li>
+<li>Nessuna funzione o metodo dovrebbe <strong>mai</strong> fare
+qualcosa di catastrofico (mandare in crash il programma) o
+<strong>visibile</strong> (stampare un messaggio d’errore a video).</li>
+<li>La <strong>regola aurea</strong> è che la funzione restituisca un
+valore di ritorno che segnali l’errore, oppure che sollevi
+un’eccezione.</li>
 </ul>
 </section>
 <section id="eccezioni" class="slide level1">
@@ -775,11 +1006,15 @@ $</code></pre></li>
 <section id="eccezioni-1" class="slide level1">
 <h1>Eccezioni</h1>
 <ul>
-<li><p>Una eccezione serve per «mandare in crash» un programma in modo controllato:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> my_function(...):</span>
+<li><p>Una eccezione serve per «mandare in crash» un programma in modo
+controllato:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> my_function(...):</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> something_wrong:</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">&quot;Error!&quot;</span>)</span></code></pre></div></li>
-<li><p>A differenza di funzioni come <code>abort</code>, il crash può essere sospeso o interrotto (in gergo, «catturato»), e l’eccezione può segnalare il tipo di errore che ne ha causato la creazione.</p></li>
+<li><p>A differenza di funzioni come <code>abort</code>, il crash può
+essere sospeso o interrotto (in gergo, «catturato»), e l’eccezione può
+segnalare il tipo di errore che ne ha causato la creazione.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -789,9 +1024,12 @@ $</code></pre></li>
 <section id="tipi-per-eccezioni" class="slide level1">
 <h1>Tipi per eccezioni</h1>
 <ul>
-<li><p>Una eccezione è un tipo di <em>crash</em> che è <strong>tipizzato</strong> (es., <code>ValueError</code>)</p></li>
-<li><p>Questi tipi possono avere al loro interno informazioni aggiuntive:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> WrongNumber(<span class="pp">Exception</span>):</span>
+<li><p>Una eccezione è un tipo di <em>crash</em> che è
+<strong>tipizzato</strong> (es., <code>ValueError</code>)</p></li>
+<li><p>Questi tipi possono avere al loro interno informazioni
+aggiuntive:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> WrongNumber(<span class="pp">Exception</span>):</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num):</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num <span class="op">=</span> num</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -809,9 +1047,11 @@ $</code></pre></li>
 <section id="propagare-eccezioni" class="slide level1">
 <h1>Propagare eccezioni</h1>
 <ul>
-<li><p>Una eccezione che non viene catturata si diffonde lungo tutta la catena dei chiamanti</p></li>
+<li><p>Una eccezione che non viene catturata si diffonde lungo tutta la
+catena dei chiamanti</p></li>
 <li><p>Essa può essere catturata a qualsiasi livello:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f():</span>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f():</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">&quot;Error!&quot;</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> g():</span>
@@ -827,13 +1067,21 @@ $</code></pre></li>
 <section id="prestazioni" class="slide level1">
 <h1>Prestazioni</h1>
 <ul>
-<li><p>Le eccezioni rallentano i programmi, perché il compilatore deve inserire all’interno delle funzioni del codice «nascosto» che possa gestirle</p></li>
-<li><p>Per questo alcuni linguaggi (Rust, Go…) non le supportano, e in altri si possono disabilitare all’interno di specifiche funzioni/metodi (<code>nothrow</code> in C++)</p></li>
-<li><p>Nel programma che svilupperemo useremo il seguente approccio, che non causerà alcun rallentamento significativo:</p>
+<li><p>Le eccezioni rallentano i programmi, perché il compilatore deve
+inserire all’interno delle funzioni del codice «nascosto» che possa
+gestirle</p></li>
+<li><p>Per questo alcuni linguaggi (Rust, Go…) non le supportano, e in
+altri si possono disabilitare all’interno di specifiche funzioni/metodi
+(<code>nothrow</code> in C++)</p></li>
+<li><p>Nel programma che svilupperemo useremo il seguente approccio, che
+non causerà alcun rallentamento significativo:</p>
 <ul>
-<li>Leggeremo input dall’utente, usando eccezioni per segnalare errori</li>
-<li>Calcoleremo la soluzione dell’equazione del rendering, evitando eccezioni: questa sarà la parte più lenta</li>
-<li>Salveremo il risultato in un file, usando nuovamente le eccezioni</li>
+<li>Leggeremo input dall’utente, usando eccezioni per segnalare
+errori</li>
+<li>Calcoleremo la soluzione dell’equazione del rendering, evitando
+eccezioni: questa sarà la parte più lenta</li>
+<li>Salveremo il risultato in un file, usando nuovamente le
+eccezioni</li>
 </ul></li>
 </ul>
 </section>
@@ -843,8 +1091,10 @@ $</code></pre></li>
 <section id="parametri-derrore" class="slide level1">
 <h1>Parametri d’errore</h1>
 <ul>
-<li><p>Si può accettare un parametro addizionale che segnali l’errore:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> my_function<span class="op">(...,</span> <span class="dt">bool</span> <span class="op">&amp;</span> error<span class="op">)</span> <span class="op">{</span></span>
+<li><p>Si può accettare un parametro addizionale che segnali
+l’errore:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> my_function<span class="op">(...,</span> <span class="dt">bool</span> <span class="op">&amp;</span> error<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    error <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>something_wrong<span class="op">)</span> <span class="op">{</span></span>
@@ -855,14 +1105,19 @@ $</code></pre></li>
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>Al posto di un <code>bool</code> potete usare una <code>enum class</code> per registrare il tipo di errore, o addirittura una <code>struct</code> per racchiudere informazioni complesse.</p></li>
+<li><p>Al posto di un <code>bool</code> potete usare una
+<code>enum class</code> per registrare il tipo di errore, o addirittura
+una <code>struct</code> per racchiudere informazioni complesse.</p></li>
 </ul>
 </section>
 <section id="tipi-nullable" class="slide level1">
 <h1>Tipi <em>nullable</em></h1>
 <ul>
-<li><p>Linguaggi come C# e Kotlin definiscono il tipo <em>nullable</em>, che può essere usato con qualsiasi tipo, e ne indica l’<em>assenza</em>:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode csharp"><code class="sourceCode cs"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">// C# example</span></span>
+<li><p>Linguaggi come C# e Kotlin definiscono il tipo <em>nullable</em>,
+che può essere usato con qualsiasi tipo, e ne indica
+l’<em>assenza</em>:</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">// C# example</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Note the &quot;?&quot; after &quot;double&quot;: this is the same syntax as in Kotlin</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span><span class="op">?</span> result <span class="op">=</span> <span class="fu">my_function</span><span class="op">(...);</span></span>
@@ -871,15 +1126,25 @@ $</code></pre></li>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Something wrong happened, my_function didn&#39;t compute the result</span></span>
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>In alternativa, può esserci un tipo definito nella libreria standard che implementa questa funzionalità (<a href="https://en.cppreference.com/w/cpp/utility/optional"><code>std::optional</code></a> in C++, <a href="https://nim-lang.org/docs/options.html">Option</a> in Nim)</p></li>
+<li><p>In alternativa, può esserci un tipo definito nella libreria
+standard che implementa questa funzionalità (<a
+href="https://en.cppreference.com/w/cpp/utility/optional"><code>std::optional</code></a>
+in C++, <a href="https://nim-lang.org/docs/options.html">Option</a> in
+Nim)</p></li>
 </ul>
 </section>
 <section id="tipi-result" class="slide level1">
 <h1>Tipi <code>Result</code></h1>
 <ul>
-<li><p>In Rust esiste il tipo <code>Result</code>, che è una versione più versatile del tipo <code>std::optional</code> in C++ (ma c’è una proposta per <a href="il%20prohttp://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0323r10.html"><code>std::expected</code></a>…)</p></li>
-<li><p>Il tipo <code>Result</code> è un <em>sum type</em> (li vedremo meglio più avanti), e permette di associare un tipo <code>A</code> in caso di successo, e un tipo <code>B</code> in caso di fallimento:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> OutputData <span class="op">{</span></span>
+<li><p>In Rust esiste il tipo <code>Result</code>, che è una versione
+più versatile del tipo <code>std::optional</code> in C++ (ma c’è una
+proposta per <a
+href="il%20prohttp://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0323r10.html"><code>std::expected</code></a>…)</p></li>
+<li><p>Il tipo <code>Result</code> è un <em>sum type</em> (li vedremo
+meglio più avanti), e permette di associare un tipo <code>A</code> in
+caso di successo, e un tipo <code>B</code> in caso di fallimento:</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> OutputData <span class="op">{</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> mass<span class="op">:</span> <span class="dt">f32</span><span class="op">;</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> charge<span class="op">:</span> <span class="dt">f32</span><span class="op">;</span></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
@@ -931,7 +1196,7 @@ $</code></pre></li>
 
         // Add the current slide number to the URL hash so that reloading the
         // page/copying the URL will return you to the same slide
-        hash: false,
+        hash: true,
 
         // Start with 1 for the hash rather than 0
         hashOneBasedIndex: false,
