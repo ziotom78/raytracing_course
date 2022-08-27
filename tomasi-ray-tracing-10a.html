@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
     .reveal .sourceCode {  /* see #7635 */
-      overflow: visible;
+      /* overflow: visible; */
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -58,7 +58,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -71,7 +71,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -414,9 +414,9 @@ x)</span>, allora</p>
 <p><span class="math display">
 P^{-1}(y) = \arccos(1 - 2y).
 </span></p></li>
-<li><p>Se quindi <span class="math inline">X_i</span> è distribuito
+<li><p>Se quindi <span class="math inline">Y_i</span> è distribuito
 uniformemente su <span class="math inline">[0, 1]</span>, allora <span
-class="math inline">P^{-1}(X_i) = Y_i</span> è distribuito secondo <span
+class="math inline">P^{-1}(Y_i) = X_i</span> è distribuito secondo <span
 class="math inline">p(x)</span>. (Vedremo tra poco come dimostrarlo
 rigorosamente).</p></li>
 <li><p>Implementiamo ora un codice Python che calcoli l’integrale col
@@ -592,7 +592,7 @@ class="math inline">Y_i</span>?</p></li>
 class="math inline">p_Y</span>. Il più semplice consiste nel calcolare
 direttamente la CDF degli <span class="math inline">Y</span>:</p>
 <p><span class="math display">
-P_Y(y) = \mathrm{Pr}(Y \leq y) = P\bigl(f(X) \leq y\bigr).
+P_Y(y) = \mathrm{Pr}(Y \leq y) = \mathrm{Pr}\bigl(f(X) \leq y\bigr).
 </span></p>
 <p>A questo punto possiamo applicare <span
 class="math inline">f^{-1}</span> ad entrambi i membri della
@@ -647,8 +647,7 @@ P_Y(y) = \text{Pr}\bigl(X \geq f^{-1}(y)\bigr) = 1 - \text{Pr}\bigl(X
 otteniamo che</p>
 <p><span class="math display">
 p_Y(y) = P_Y&#39;(y) = \frac{\mathrm{d}
-P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} =
--p_X&#39;\bigl(f^{-1}(y)\bigr)\cdot
+P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} = -p_X\bigl(f^{-1}(y)\bigr)\cdot
 \frac{\mathrm{d}f^{-1}}{\mathrm{d}y}(y).
 </span></p></li>
 <li><p>Notiamo però che la derivata di <span
@@ -686,7 +685,7 @@ conseguenza:</p>
 class="math inline">f^{-1}(Y) = Y - 1</span>, allora <span
 class="math inline">p_Y(y) = \chi_{[1, 2]}(y)</span>.</p></li>
 <li><p>Se <span class="math inline">f(X) = 2X</span> e <span
-class="math inline">f^{-1}(Y) = X / 2</span>, allora <span
+class="math inline">f^{-1}(Y) = Y / 2</span>, allora <span
 class="math inline">p_Y(y) = \frac12 \chi_{[0, 2]}(y)</span>.</p></li>
 <li><p>Se <span class="math inline">f(X) = X^2</span> e <span
 class="math inline">f^{-1}(Y) = \sqrt{Y}</span>, allora <span
@@ -694,7 +693,7 @@ class="math inline">p_Y(y) = \frac{\chi_{[0,
 1]}(y)}{2\sqrt{y}}</span>.</p></li>
 <li><p>Se <span class="math inline">f(X) = e^{X - 1}</span> e <span
 class="math inline">f^{-1}(Y) = 1 + \log Y</span>, allora <span
-class="math inline">p_Y(y) = \frac{\chi_{[1, e]}(y)}y</span>.</p></li>
+class="math inline">p_Y(y) = \frac{\chi_{[1/e, 1]}(y)}y</span>.</p></li>
 </ol>
 </section>
 <section id="verifica-in-python" class="slide level1">
@@ -778,8 +777,8 @@ r\cdot p(x, y)</span>.</p></li>
 <ul>
 <li><p>Nel caso delle coordinate sferiche, vale che</p>
 <p><span class="math display">
-x = \sin\theta\cos\varphi, \quad y = \sin\theta\sin\varphi, \quad z =
-\cos\theta,
+x = r \sin\theta\cos\varphi, \quad y = r \sin\theta\sin\varphi, \quad z
+= r \cos\theta,
 </span></p>
 <p>e si ricava che <span class="math inline">\det J = r^2
 \sin\theta</span>.</p></li>
@@ -926,10 +925,8 @@ p(\theta, \varphi) = \frac{\sin\theta}{2\pi}.
 <li><p>La densità marginale <span class="math inline">p(\theta)</span> è
 data da</p>
 <p><span class="math display">
-p(\theta) = \int_0^{2\pi} p(\theta,
-\varphi)\,\mathrm{d}\theta\,\mathrm{d}\varphi = \int_0^{2\pi}
-\frac{\sin\theta}{2\pi}\,\mathrm{d}\theta\,\mathrm{d}\varphi =
-\sin\theta.
+p(\theta) = \int_0^{2\pi} p(\theta, \varphi)\,\mathrm{d}\varphi =
+\int_0^{2\pi} \frac{\sin\theta}{2\pi}\,\mathrm{d}\varphi = \sin\theta.
 </span></p></li>
 <li><p>La densità condizionale <span class="math inline">p(\varphi |
 \theta)</span> è</p>
@@ -957,7 +954,7 @@ P_\varphi(\varphi | \theta) &amp;= \int_0^\varphi
 distribuite su <span class="math inline">[0, 1]</span>, le variabili θ e
 φ che corrispondono alle CDF appena calcolate sono</p>
 <p><span class="math display">
-\theta = P_\theta^{-1}(X_1) = \arccos X_1,\quad
+\theta = P_\theta^{-1}(X_1) = \arccos (1 - X_1) = \arccos X&#39;_1,\quad
 \varphi = P_\varphi^{-1}(X_2) = 2\pi X_2.
 </span></p></li>
 </ul>

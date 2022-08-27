@@ -23,7 +23,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Per stimare l'integrale in due dimensioni abbiamo dapprima discusso il caso del semplice metodo della media, **senza** usare l'*importance sampling*.
 
--   In questo caso, la valutazione dell'integrale richiede di scegliere $N$ direzioni casuali $\Psi$ e calcolare il valore dell'integranda. La PDF delle direzione è definita tramite il loro angolo solido $\omega$, e abbiamo visto che
+-   In questo caso, la valutazione dell'integrale richiede di scegliere $N$ direzioni casuali $\Psi$ e calcolare il valore dell'integranda. La PDF delle direzioni è definita tramite il loro angolo solido $\omega$, e abbiamo visto che
 
     $$
     p(\omega) = \frac1{2\pi}.

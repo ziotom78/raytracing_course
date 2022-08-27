@@ -531,7 +531,7 @@ graph "" {
     
 -   L'analisi sintattica verifica che le concordanze siano corrette (articolo/nome, nome/verbo…)
 
--   Determine quale è il soggetto e quale il complemento oggetto
+-   Determina quale è il soggetto e quale il complemento oggetto
 
 
 # Esempio: analisi sintattica

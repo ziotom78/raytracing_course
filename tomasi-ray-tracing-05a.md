@@ -205,7 +205,7 @@ Dato uno spazio vettoriale $V$ su $F$, il prodotto interno è un'operazione $\le
 #.  $\left<u, v\right> = \overline{\left<v, u\right>}$;
 #.  $\left<u, u\right> > 0$ se $u \not= 0$.
 
-Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\right\|\,\left\|v\right\|\,\cos\theta$ su $\mathbb{R}^n$.
+Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\right\|\,\left\|\vec v\right\|\,\cos\theta$ su $\mathbb{R}^n$.
 
 # Norma e ortogonalità
 

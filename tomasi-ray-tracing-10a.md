@@ -242,7 +242,7 @@ $$
     P^{-1}(y) = \arccos(1 - 2y).
     $$
     
--   Se quindi $X_i$ è distribuito uniformemente su $[0, 1]$, allora $P^{-1}(X_i) = Y_i$ è distribuito secondo $p(x)$. (Vedremo tra poco come dimostrarlo rigorosamente).
+-   Se quindi $Y_i$ è distribuito uniformemente su $[0, 1]$, allora $P^{-1}(Y_i) = X_i$ è distribuito secondo $p(x)$. (Vedremo tra poco come dimostrarlo rigorosamente).
 
 -   Implementiamo ora un codice Python che calcoli l'integrale col metodo della media **senza** e **con** l'*importance sampling*, per verificare effettivamente quale sia il vantaggio.
 
@@ -379,7 +379,7 @@ plt.ylabel("Estimated value for the integral")
 -   Ci sono molti modi per calcolare $p_Y$. Il più semplice consiste nel calcolare direttamente la CDF degli $Y$:
 
     $$
-    P_Y(y) = \mathrm{Pr}(Y \leq y) = P\bigl(f(X) \leq y\bigr).
+    P_Y(y) = \mathrm{Pr}(Y \leq y) = \mathrm{Pr}\bigl(f(X) \leq y\bigr).
     $$
     
     A questo punto possiamo applicare $f^{-1}$ ad entrambi i membri della disequazione $f(X) \leq y$, ma con un'accortezza.
@@ -425,7 +425,7 @@ plt.ylabel("Estimated value for the integral")
 -   Applicando di nuovo la derivata come nel caso precedente, otteniamo che
 
     $$
-    p_Y(y) = P_Y'(y) = \frac{\mathrm{d} P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} = -p_X'\bigl(f^{-1}(y)\bigr)\cdot \frac{\mathrm{d}f^{-1}}{\mathrm{d}y}(y).
+    p_Y(y) = P_Y'(y) = \frac{\mathrm{d} P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} = -p_X\bigl(f^{-1}(y)\bigr)\cdot \frac{\mathrm{d}f^{-1}}{\mathrm{d}y}(y).
     $$
     
 -   Notiamo però che la derivata di $f^{-1}$ in questo caso è *negativa*.
@@ -450,11 +450,11 @@ Supponiamo che le variabili $X$ siano distribuite uniformemente su $[0, 1]$, in 
 
 #.   Se $f(X) = X + 1$ e $f^{-1}(Y) = Y - 1$, allora $p_Y(y) = \chi_{[1, 2]}(y)$.
 
-#.   Se $f(X) = 2X$ e $f^{-1}(Y) = X / 2$, allora $p_Y(y) = \frac12 \chi_{[0, 2]}(y)$.
+#.   Se $f(X) = 2X$ e $f^{-1}(Y) = Y / 2$, allora $p_Y(y) = \frac12 \chi_{[0, 2]}(y)$.
 
 #.   Se $f(X) = X^2$ e $f^{-1}(Y) = \sqrt{Y}$, allora $p_Y(y) = \frac{\chi_{[0, 1]}(y)}{2\sqrt{y}}$.
 
-#.   Se $f(X) = e^{X - 1}$ e $f^{-1}(Y) = 1 + \log Y$, allora $p_Y(y) = \frac{\chi_{[1, e]}(y)}y$.
+#.   Se $f(X) = e^{X - 1}$ e $f^{-1}(Y) = 1 + \log Y$, allora $p_Y(y) = \frac{\chi_{[1/e, 1]}(y)}y$.
 
 # Verifica in Python
 
@@ -525,7 +525,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
 -   Nel caso delle coordinate sferiche, vale che
 
     $$
-    x = \sin\theta\cos\varphi, \quad y = \sin\theta\sin\varphi, \quad z = \cos\theta,
+    x = r \sin\theta\cos\varphi, \quad y = r \sin\theta\sin\varphi, \quad z = r \cos\theta,
     $$
     
     e si ricava che $\det J = r^2 \sin\theta$.
@@ -619,7 +619,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
 -   La densità marginale $p(\theta)$ è data da
 
     $$
-    p(\theta) = \int_0^{2\pi} p(\theta, \varphi)\,\mathrm{d}\theta\,\mathrm{d}\varphi = \int_0^{2\pi} \frac{\sin\theta}{2\pi}\,\mathrm{d}\theta\,\mathrm{d}\varphi = \sin\theta.
+    p(\theta) = \int_0^{2\pi} p(\theta, \varphi)\,\mathrm{d}\varphi = \int_0^{2\pi} \frac{\sin\theta}{2\pi}\,\mathrm{d}\varphi = \sin\theta.
     $$
 
 -   La densità condizionale $p(\varphi | \theta)$ è
@@ -644,7 +644,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
 -   Date due variabili $X_1, X_2$ distribuite su $[0, 1]$, le variabili θ e φ che corrispondono alle CDF appena calcolate sono
 
     $$
-    \theta = P_\theta^{-1}(X_1) = \arccos X_1,\quad
+    \theta = P_\theta^{-1}(X_1) = \arccos (1 - X_1) = \arccos X'_1,\quad
     \varphi = P_\varphi^{-1}(X_2) = 2\pi X_2.
     $$
 
