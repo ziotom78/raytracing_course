@@ -15,6 +15,7 @@ colorlinks: true
 
 | Date       | Comment                                                    |
 |------------|------------------------------------------------------------|
+| 2022-09-30 | Add a section about Crystal, fix some references           |
 | 2021-12-17 | Add a description of how to «learn» a language             |
 | 2021-12-08 | Add a description of the D language, plus a few more fixes |
 | 2021-01-02 | Fix a few typos                                            |
@@ -78,7 +79,7 @@ The purpose of this document is to provide students with a general
 idea of some languages, but it is surely not meant to be exhaustive!
 Other languages that are not covered here might still be well suited
 for the course (e.g., [Chapel](https://chapel-lang.org/),
-[OCaml](https://ocaml.org/), [Crystal](https://crystal-lang.org/)):
+[OCaml](https://ocaml.org/)):
 contact the teacher if you are interested in any of those.
 
 
@@ -105,8 +106,8 @@ language should follow these steps:
     more effective at this stage, because the presenter shows how to
     set up Visual Studio Code and use plugins to develop in Julia more
     efficiently. (Please do **not** assume that Vim or Gedit are «all
-    you need» for this course: this is a mistake that some students
-    did last year!)
+    you need» for this course: this is a mistake that students have
+    done in the past!)
 
 3.  Go to the [Project Euler website](https://projecteuler.net/) and
     use your newly-learned skills to implement solutions for the first
@@ -115,7 +116,8 @@ language should follow these steps:
     need anything else other than `int`/`float` variables and a few
     statements (`if`, `while`, `for`) to solve them. (But as you
     progress through the problems, they quickly become *mathematically
-    hard* to solve!)
+    hard* to solve, so please do not go beyond the first 10–20
+    problems.)
 
 4.  Once you have successfully solved a few problems in Project Euler,
     try to solve a few problems from the past editions of [Advent of
@@ -255,9 +257,9 @@ However, the language has its warts:
 -   No standard way to download and install external libraries, as
     many students who have tried to install ROOT on their own
     computers already know. (Unlike other languages like Rust, C\#,
-    Julia, Nim, there is no standard package manager for C++.) During
-    the last year, this has proven to be the biggest pain points for
-    students who picked C++.
+    Julia, Nim, there is no standard package manager for C++.) In the
+    past, this has proven to be the biggest pain points for students
+    who picked C++.
 
 -   No standard unit testing library. As we will rely heavily on unit
     tests, this point is particularly relevant for the course.
@@ -330,12 +332,11 @@ However, the language has its warts:
         files depending on that header might fail to be recompiled in
         a `.o` file, leading to potential disasters.
 
-The experience of the last year showed that people that picked C++
-because they felt the course would have been «easier» to follow have
-had to tackle several problems that were non-existent in other
-languages. If you want to pick an easy language to use, you should
-avoid C++ and choose something else; good choices are Nim and
-C\#.
+Past experience has shown that people that picked C++ because they
+felt the course would have been «easier» to follow have had to tackle
+several problems that were non-existent in other languages. If you
+want to pick an easy language to use, you should avoid C++ and choose
+something else; good choices are C\#, Nim, or Crystal.
 
 On the other hand, people that already had a strong interest in C++
 were satisfied to have used it, as they felt they significantly
@@ -348,7 +349,7 @@ Nim ([nim-lang.org](https://nim-lang.org/)) is not as widespread and
 used as C\#, Kotlin, etc. However, it is extremely well designed and
 performant. It was created by Andreas Rumpf in 2008, and it is deeply
 inspired by the Pascal language. (In fact, the very first Nim compiler
-was written in FreePascal.)
+was written in [FreePascal](https://www.freepascal.org/).)
 
 Nim is the language I used to prepare both the HTML version of the
 course slides and the course notes. I picked it because it can either
@@ -468,9 +469,9 @@ Nim has several advantages over other languages:
 
 -   It has a clean syntax, with no `;` characters;
 
--   The code runs very fast: in fact, together with FreeBASIC, it is
-    the only language able to consistently reach C++ speeds in the
-    codes I have written for this course.
+-   The code runs very fast: in fact, together with FreeBASIC and
+    Crystal, it is the only language able to consistently reach C++
+    speeds in the codes I have written for this course.
 
 -   Internally, Nim produces a C program that is then compiled by
     `gcc` or `clang`. (A switch forces the Nim compiler to generate a
@@ -479,10 +480,10 @@ Nim has several advantages over other languages:
     libraries[^root] within a Nim program, using the two pragmas
     `{.importc.}` and `{.importcpp.}`.
 
--   Similarly to C\#, Rust, and Julia, it has a standard package
-    manager, `nimble`, which provides the ability to quickly create
-    and run empty «Hello world!» projects, as well as downloading and
-    installing libraries from the web.
+-   Similarly to C\#, Rust, Crystal, and Julia, it has a standard
+    package manager, `nimble`, which provides the ability to quickly
+    create and run empty «Hello world!» projects, as well as
+    downloading and installing libraries from the web.
 
     The following command creates a new Nim program in the directory
     `myproj`:
@@ -540,17 +541,331 @@ Disadvantages:
 
 -   The quality of the documentation is not as high as for other
     languages (e.g., C\#). This is partly mitigated by the existence
-    of two good books about Nim: [*Nim in
+    of three books about Nim: [*Nim in
     action*](https://www.manning.com/books/nim-in-action), by Dominik
-    Picheta (Manning, 2017), and [Computer programming with the Nim
-    programming language](http://ssalewski.de/nimprogramming.html), by
-    Stefan Salewski, which is an e-book available for free.
+    Picheta (Manning, 2017), [*Computer programming with the Nim
+    programming language*](http://ssalewski.de/nimprogramming.html), by
+    Stefan Salewski, which is an e-book available for free, and
+    [*Mastering
+    Nim*](https://www.amazon.com/Mastering-Nim-complete-programming-language/dp/B0B4R7B9YX),
+    by Nim's creator, Andreas Rumpf. (However, I have never read the
+    latter, so I cannot comment about its quality.)
 
 
 The opinion of the teacher is that Nim is one of the best language to
 use for this course: it is easy to learn, extremely performant, and it
 provides all the tools needed to implement the tasks required in the
 curse. Moreover, it is extremely elegant and well-designed.
+
+
+# Crystal
+
+The Crystal language is one of the youngest languages considered in
+this document. The history that leads to Crystal is interesting and
+worth to be told. Crystal is a reboot of the famous [Ruby
+language](https://www.ruby-lang.org/en/), which in turns is a take
+over the old [Perl language](https://en.wikipedia.org/wiki/Perl). Perl
+is a language created by [Larry
+Wall](https://en.wikipedia.org/wiki/Larry_Wall), whose name was
+originally «Pearl» (a reference to the [*pearl of great
+price*](https://en.wikipedia.org/wiki/Parable_of_the_Pearl) in
+Matthew's Gospel) and indicated the aim to produce a useful tool to
+administer servers. Perl was used to create the
+[autoconf](https://www.gnu.org/software/autoconf/) tool, which is well
+known to any Linux programmer; moreover, it backs up websites like
+[Booking.com](https://www.booking.com/). However, despite being very
+famous, Perl is also known for its lack of readability; consider this
+example, taken from a [Perl
+tutorial](https://www.tutorialspoint.com/perl/perl_special_variables.htm#):
+
+```perl
+# Save this in a file "test.pl" and run it using
+#
+#    perl test.pl
+
+foreach ('hickory','dickory','doc') {
+   print;
+   print "\n";
+}
+```
+
+The program is very simple to read and more lightweight than it would
+have been in C++ (with its `#include <iostream>`, and `using namespace
+std`, and stuff like that). However, the output of the program is a
+surprise:
+
+```
+hickory
+dickory
+doc
+```
+
+This happens because within the `foreach` loop the hidden variable
+`$_` is set to the value of the three elements in the list, and the
+`print` command outputs the value of `$_` if nothing else is passed.
+Perl is full of hidden parameters and shortcuts that can make source
+code very hard to understand.
+
+For this reason, in the mid-1990s a Japanese programmer, Yukihiro
+Matsumoto, created
+[Ruby](https://en.wikipedia.org/wiki/Ruby_(programming_language)),
+whose name is of course a reference to «pearl», Perl's original name.
+Ruby's aim is to be as versatile as Perl but far easier to read. It
+achieved huge success in early 2000s and was fundamental for the
+spread of modern websites, thanks to its famous web framework [Ruby on
+rails](https://rubyonrails.org/), which powers sites like
+[GitHub](https://github.com/) (we'll use it a lot in this course!) and
+[Airbnb](https://www.airbnb.com/). Ruby programs read like English and
+are easy to understand even by people that are not proficient with the
+language. Here is the Perl program shown above translated to Ruby; as
+you can see, there are no hidden variables, yet the program is very
+simple and free of noise:
+
+```ruby
+# Save this in a file "test.rb" and run it using
+#
+#    ruby test.rb
+
+['hickory','dickory','doc'].each do |x|
+  puts x
+end
+```
+
+The problem with Ruby is its slowness, as it is an interpreted
+language much like Perl and Python: programs written in Ruby can be
+orders of magnitude slower than C++ programs!
+
+In 2014, a team of developers released the [Crystal
+language](https://crystal-lang.org/): again, a pun to «pearls» and
+«rubies»! The syntax of Crystal programs is very similar to Ruby's,
+but its creators added ahead-of-time compilation through the LLVM
+framework: this means that programs must be compiled into an
+executable before being executed. (It's the same in C and C++, where
+you must call `gcc` or `g++` to build an executable, but unlike Perl,
+Python, or Ruby.) The usage of LLVM enables Crystal programs to be as
+fast as programs written in C++, Julia, or Rust.
+
+Let's show how to define a new type, `Vec`, using Crystal:
+
+```ruby
+# A "struct" is like a "class", but it has fewer features and enables
+# the compiler to produce more efficient code
+struct Vec
+  # These would be called member variables; their type is
+  # deduced by the constructor `initialize` (see below)
+  property x, y, z
+
+  # `Initialize` is the name of the constructor; in C++ you would
+  # have written `Vec::Vec`. Note that using `@` in front of the
+  # parameters mean that they must be used to initialize the
+  # properties with the same name. Here we declare that `x`, `y`,
+  # and `z` are 64-bit floating point values.
+  def initialize(@x : Float64, @y : Float64, @z : Float64)
+  end
+
+  # Operator overloading is very simple to do in Crystal!
+  #
+  #                   +------+     This means that the result is of
+  #                   |      |  <- the same type as the class, `Vec`
+  def +(other : self) : self
+    # Like in Julia, if it's the last line before a `end`,
+    # you can avoid writing `return` explicitly
+    Vec.new(@x + other.x, @y + other.y, @z + other.z)
+  end
+
+  def -(other : self) : self
+    Vec.new(@x - other.x, @y - other.y, @z - other.z)
+  end
+
+  # Specifying the return type is not mandatory, the compiler is smart
+  # enough to figure it out. If you want to be explicit, you can write
+  #
+  #     def *(other : self) : Float64
+  #
+  def *(other : self)
+    @x * other.x + @y * other.y + @z * other.z
+  end
+
+  # `to_s` means: «convert this type into a string»
+  def to_s : String
+    "<#@x, #@y, #@z>"  # In strings, writing @variable means:
+                       # «put here the value of the variable»
+  end
+end
+```
+
+The weird variable names with `@` refer to *member variables*; in
+Python, you would write `self.x` instead of `@x`. As you can see,
+operator overloading is extremely easy in Crystal. The method
+`initialize` is the constructor; in C++ it would have been named
+`Vec::Vec`.
+
+Defining `Ray` and `Sphere` is equally simple:
+
+```ruby
+struct Ray
+  property m_o, m_d, m_tmin, m_tmax
+  
+  def initialize(@m_o : Vec, @m_d : Vec, @m_tmin = 1e-10, @m_tmax = 1e+10)
+  end
+end
+
+class Sphere
+  property m_r, m_p
+  def initialize(@m_r : Float64, @m_p : Vec)
+  end
+
+  def intersect(ray : Ray) : Bool
+    op = @m_p - ray.m_o
+    dop = ray.m_d * op
+    d = dop ** 2 - op * op + @m_r ** 2
+
+    # This kind of "if" syntax makes the code very readable like English!
+    # But you can write plain "if" statements like Python and C++, if you want.
+    return false if 0 > d
+
+    sqrtd = Math.sqrt(d)
+    tmin = dop - sqrtd
+    return true if (ray.m_tmin < tmin) && (tmin < ray.m_tmax)
+
+    tmax = dop + sqrtd
+    
+    ((ray.m_tmin < tmax) && (tmax < ray.m_tmax))
+  end
+end
+```
+
+The performance of the code is extremely good and perfectly comparable
+with C++ or Rust.
+
+Here are a few highlights from the language:
+
+-   The `crystal` compiler supports a web-based interactive editor
+    that is very handy when you are learning the language. Just start
+    `crystal play` and open your web browser to the local address
+    [http://127.0.0.1:8080/](http://127.0.0.1:8080/).
+
+-   The most notable feature of Crystal is its heavy inspiration on
+    the Ruby syntax: simple scripts can be either interpreted as
+    written in Ruby and Crystal. This means that when you look for
+    information about how to do something in Crystal, there are
+    chances that you might reuse some StackOverflow answer about Ruby
+    (which is far more widely used than Crystal).
+
+    For instance, consider the following program, which prints the
+    numbers from 1 to 4:
+
+    ```ruby
+    # Save this in file "test.rb"
+    (1..4).each do |value|
+        puts value
+    end
+    ```
+
+    This is valid code in Ruby, but also in Crystal, and you can run it
+    using either the `ruby` interpreted or the `crystal` compiler:
+
+    ```
+    $ ruby test.rb
+    1
+    2
+    3
+    4
+    $ crystal run test.rb
+    1
+    2
+    3
+    4
+    ```
+
+-   Crystal is an OOP language, much more object-oriented than C++. In
+    C++, you can call class methods using the dot `.`:
+    
+    ```c++
+    int main() {
+      std::string s = "Hello";
+      
+      // Call the method "size" of the object "s"
+      std::cout << s.size() << "\n";  // This prints "5"
+    }
+    ```
+    
+    In Crystal, a syntax like `s.size()` is extended to *any* value,
+    including literals (and you can avoid empty parenthesis):
+    
+    ```ruby
+    # Since "Hello" is an object, you can call the method "size"
+    # directly on it
+    puts "Hello".size    # This prints "5"
+    ```
+    
+    This characteristic has been mutuated by Ruby, whose design strive
+    to achieve the maximum elegance. In fact, instead of having `for`
+    loops, Crystal (and Ruby) define the method `each` on container
+    objects, i.e., variables that contain collections of objects:
+    
+    ```ruby
+    # The method "each" is called on the list of strings
+    ["Strong force", "Weak force"].each do |value|
+      puts value
+    end
+    ```
+    
+    This way of writing code is used pervasively in Ruby and Crystal,
+    and it lets to produce very compact and elegant programs.
+
+-   A nice introduction to the language is available in the [online
+    manual](https://crystal-lang.org/reference/1.5/getting_started/).
+    If you prefer to learn Crystal using a textbook, [*Crystal
+    Programming*](https://www.packtpub.com/product/crystal-programming/9781801818674),
+    by G. Dietrich and G. Bernal (Packt) is a more in-depth
+    explanation of the way Crystal works.
+    
+-   If you pick Crystal consider that it is a young and not widespread
+    language; this implies that editor support is not as good as for
+    other mainstream languages (C++, C\#, Java, Kotlin…) and that
+    you're less likely to find help using Google or
+    [StackOverflow](https://stackoverflow.com/). But you can rely on
+    the [Crystal forum](https://forum.crystal-lang.org/) if you need
+    help!
+    
+-   The Crystal compiler comes with
+    [Shards](https://crystal-lang.org/reference/1.5/man/shards/index.html),
+    a tool that lets to compile programs and download and install
+    libraries automatically. There is no need to use makefiles if you
+    use Crystal!
+    
+    For instance, to create a new application you write
+    
+    ```sh
+    $ crystal init app myapp
+    ```
+    
+    and a new folder `myapp` is populated with a number of files. To
+    compile all the files in the `myapp` folder and run the
+    executable, you just write
+    
+    ```sh
+    $ cd myapp
+    $ shards run
+    ```
+    
+    and all the source files will be compiled to build an executable,
+    which is then automatically run without the need to write a
+    `Makefile`.
+
+-   Till today, Crystal is not [fully functional on
+    Windows](https://crystal-lang.org/install/on_windows/). You can
+    check the progress on [this
+    page](https://github.com/crystal-lang/crystal/projects/6#card-16297567):
+    at the time of writing, it seems that things are converging, but
+    full support is not here yet. However, you can probably circumvent
+    this limitation if you use the [Windows
+    WSL](https://learn.microsoft.com/en-us/windows/wsl/install).
+
+The teacher believes that Crystal is a nearly perfect language to be
+used for this course. However, like Nim you must be prepared to cope
+with the parcity of documentation and the lack of a full IDE.
 
 
 # C\#
@@ -563,7 +878,7 @@ C++ languages, which explains the multiple puns in the name:
 -   The sharp sign `#` can be seen as two `++` one atop the other,
     suggesting that C\# is an improvement over C++;
 -   In anglophone countries, C\# is the note immediately above C.
--   «Sharp» can be used as a synonym for «cool», «fashionable», etc.
+-   «Sharp» can be used as a synonym for «cool», «smart», etc.
 
 Unlike C++, C\# adopts a OOP-centered approach. It does not aim to be
 100% compatible with C++, which has enabled its designers to get rid
@@ -755,21 +1070,25 @@ Here are a few advantages of C\# over C++:
     have been developed using it.
 
 
-The experience of students using C\# during the previous academic year
-was extremely positive.
+The experience of students using C\# for this course has been
+extremely positive so far.
 
 
 # D
 
-The D language is the creation of Walter Bright, which authored one of
-the most famous C++ compilers available in the '90: the Digital Mars
-C++ compiler. Bright was dissatisfied with the direction taken by the
-C++ committee, and he decided to develop a new language that was based
-on C but did not strive to maintain compatibility with it (unlike
-C++). The result is a more «modern» and elegant language, which
-however has not reached the same level of adoption as C++.
+The D language is the creation of [Walter
+Bright](https://en.wikipedia.org/wiki/Walter_Bright), which authored
+one of the most famous C++ compilers available in the '90: the Zortech
+C++ compiler (later called the [Digital
+Mars](https://en.wikipedia.org/wiki/Digital_Mars) C++ compiler).
+Bright was dissatisfied with the direction taken by the C++ committee,
+and he decided to develop a new language that was based on C but did
+not strive to maintain compatibility with it (unlike C++). The result
+is a more «modern» and elegant language, which however has not reached
+the same level of adoption as C++.
 
-Unlike C++, D does not uses header files, as these are notoriously error-prone; rather, it use /modules/, which work similarly to Python:
+Unlike C++, D does not uses header files, as these are notoriously
+error-prone; rather, it use *modules*, which work similarly to Python:
 
 ```d
 import std.stdio;
@@ -1025,13 +1344,27 @@ Here are a few advantages of D:
 
 There are a few disadvantages too:
 
+-   The amount of on-line resources is far more scarce than for C++.
+
 -   The language has evolved a lot in the last years, and it is still
     evolving. Many pages in the documentation refers to old practices
     and conventions, and you should probably refer to the [D language
     forum](https://forum.dlang.org/) to learn if there is some better
-    way to implement what you have in mind.
-
--   The amount of on-line resources is far more scarce than for C++.
+    way to implement what you have in mind. (Unfortunately, the D
+    community itself is often not sure about what language features
+    are the best ones to use depending on the problem. This has been a
+    cause of confusion for students!)
+    
+-   In the last year, my own students have stumbled upon bugs in the D
+    compiler itself, which refused to compile perfectly valid code.
+    
+-   A quite important library needed for the course, `std.stream`,
+    [has been
+    deprecated](https://forum.dlang.org/thread/qpilvmprtyqxmyladkdq@forum.dlang.org),
+    but no alternative still exist to cope with this deficiency. In
+    past years, students using D had to develop their own stream
+    routines or force the compiler to use the deprecated library
+    (which is however risky!).
 
 A few good resources to learn D:
 
@@ -1045,6 +1378,11 @@ A few good resources to learn D:
     book not only for the D language but in general: Alexandrescu is a
     gifted writer, and the book is full of intriguing examples.
     Despite its age, it is a real gem.
+
+D could be the perfect language for this course, because it's
+significantly better than C++ and easier to use. However, the
+scattered and sometimes contradictory documentation can be a barrier
+for students willing to use it.
 
 
 # Free Pascal
@@ -1224,7 +1562,7 @@ There are a few disadvantages as well:
 
 -   The quality of the documentation available on the FreePascal site
     is not fantastic.
-
+    
 -   Although much faster than interpreted languages like Python and
     Ruby, FreePascal produces executables that are $\sim 10\,\%$
     slower than those produced by other compilers.
@@ -1442,6 +1780,8 @@ FreeBASIC has a few disadvantages too:
     plain editor. (I use Emacs and
     [`freebasic-mode`](https://github.com/z80lives/freebasic-mode);
     probably there are other good alternative available on the web.)
+    This means that you'll lack more advanced features like variable
+    renaming, code browsing, refactoring tools, etc.
 
 -   There are only a few online resources to learn the language.
     However, as said above, the documentation of the FreeBASIC
@@ -1455,8 +1795,7 @@ FreeBASIC has a few disadvantages too:
 
 # Julia
 
-Julia is one of the most modern languages presented in this document:
-the first version of the language appeared in 2012. It is heavily
+Julia is a modern language for scientific computing. It is heavily
 inspired by the Scheme language, a LISP dialect that introduced
 several interesting programming paradigms like hygienic macros and
 functional patterns.
@@ -1565,8 +1904,8 @@ However, Julia has a few disadvantages:
     students using Julia for this course to quickly learn how to adapt
     the way the code is described during the classes to the way Julia
     works: Julia code is usually not executed from the command line as
-    it is the case in C++. Often, students from the last year
-    found counterintuitive to do this.
+    it is the case in C++. Past students often found counterintuitive
+    to do this.
 
 -   It uses *multiple dispatch* instead of traditional OOP constructs.
     Although in my opinion multiple dispatch is superior to OOP,
@@ -1578,18 +1917,32 @@ However, Julia has a few disadvantages:
     take full advantage of its capabilities.
 
 -   Apart from the [official
-    documentation](https://docs.julialang.org/en/v1/), there are no
-    good books (alas!) to learn the language, but some material on
-    YouTube is good: [A Gentle Introduction to
+    documentation](https://docs.julialang.org/en/v1/), a **great**
+    book to learn Julia is [Hands-On Design Patterns and Best
+    Practices with
+    Julia](https://www.packtpub.com/product/hands-on-design-patterns-and-best-practices-with-julia/9781838648817),
+    by Tom Kwong. It describes with many practical examples how to
+    properly use Julia, and what are the best strategies to optimize
+    code for maximum performance. Manning is going to publish a new
+    book about Julia, [Julia as a second
+    language](https://www.manning.com/books/julia-as-a-second-language)
+    by Erik Engheim, which is another great introduction to the
+    language; although it is not completed yet, you can already buy a
+    draft copy for a discounted price and receive the full copy once
+    it will be finished. (Disclaimer: I'm the technical reviewer of
+    this book.)
+    
+    There is also some good material on YouTube: [A Gentle
+    Introduction to
     Julia](https://www.youtube.com/watch?v=4igzy3bGVkQ) (syntax) and
     [Getting Started with Julia (for Experienced
     Programmers)](https://www.youtube.com/watch?v=-lJK92bEKow)
     (development environment) are two examples.
 
-During the last year, several students picked Julia. The satisfaction
-was quite high, but some of them lamented that it required substantial
-effort to «un-learn» how to do some tasks in C++ and to understand the
-different approach required by Julia.
+In the past, the satisfaction of students who picked Julia was quite
+high, but some of them lamented that it required substantial effort to
+«un-learn» how to do some tasks in C++ and to understand the different
+approach required by Julia.
 
 
 # Kotlin
@@ -1920,6 +2273,9 @@ A few disadvantages of Rust are the following:
     algorithms required in the course will require more pain than for
     other languages, but the resulting code will not necessarily be
     more robust.
+    
+-   Handling errors (an important topic in this course) is really
+    hard!
 
 -   The compiler can be **extremely slow** in compiling programs.
 
