@@ -31,7 +31,7 @@ all: \
 	tomasi-ray-tracing-02a-colors.html \
 	tomasi-ray-tracing-01b-github.html \
 	tomasi-ray-tracing-01a-rendering-equation.html \
-	giudizi-linguaggio-aa2021.html \
+	giudizi-linguaggio.html \
 	language-comparison.html \
 	index.html
 
@@ -41,7 +41,7 @@ index.html: index.md ${JS_FILES}
 language-comparison.html: language-comparison.md
 	$(PANDOC) --toc --standalone -o $@ $<
 
-giudizi-linguaggio-aa2021.html: giudizi-linguaggio-aa2021.md
+giudizi-linguaggio.html: giudizi-linguaggio.md
 	$(PANDOC) --toc --standalone -o $@ $<
 
 %.js: %.nim
