@@ -425,9 +425,27 @@ vector ::= "[" number "," number "," number "]"
     let x:    foo::Foo<Bar>     =     foo::Foo::<Bar>();
     ```
 
+# Esempio: dichiarazioni di variabili
+
+-   Nel linguaggio Pascal le variabili si elencano dentro una clausola
+    `var`. Il nome della variabile viene per primo ed è chiaramente
+    separato dal tipo:
+
+    ```pascal
+    var
+        myvar : Array [1..100] of Integer;
+        other : String;
+        x     : Real;
+    ```
+    
+-   Questa sintassi è molto facile da interpretare: il Pascal è infatti progettato per essere semplice e nel contempo veloce da compilare.
+
+-   Idee simili sono usate nei linguaggi Modula, Oberon, Ada, Nim e Kotlin.
+
+
 # Dichiarazioni in C++
 
--   Oltre ad essere semplice da interpretare dal compilatore, un linguaggio dovrebbe essere semplice anche per l'utente. Consideriamo questa dichiarazione C/C++:
+-   In C/C++ invece le dichiarazioni di variabili sono complicate, perché l'identificatore che contiene il nome della variabile è messo in mezzo al tipo:
 
     ```c
     int myvar[100];  /* More complicated: static const int * myvar[100] */
@@ -439,7 +457,7 @@ vector ::= "[" number "," number "," number "]"
 
 # Il caso di Go
 
--   Il linguaggio [Go](https://golang.org/), che è fortemente ispirato al C, rende più semplici le dichiarazioni usando una notazione diversa:
+-   Il linguaggio [Go](https://golang.org/), che è fortemente ispirato al C, rende più semplici le dichiarazioni usando una notazione diversa, più simile al Pascal:
 
     ```go
     var myvar [100]int
@@ -450,21 +468,6 @@ vector ::= "[" number "," number "," number "]"
 -   I token che definiscono il tipo sono riportati tutti insieme, *dopo* l'identificatore che rappresenta il nome della variabile.
     
 -   La scrittura `[100]int` segue l'ordine naturale delle parole: «un array di 100 valori `int`», ed è più facile da leggere per il programmatore (in C bisogna leggere a ritroso, da destra a sinistra).
-
-# Altri esempi
-
--   Nel linguaggio Pascal le variabili si elencano dentro una clausola `var`, e come in Go il nome viene per primo ed è chiaramente separato dal tipo:
-
-    ```pascal
-    var
-        myvar : Array [1..100] of Integer;
-        other : String;
-        x     : Real;
-    ```
-    
--   Anche questa sintassi è molto semplice da interpretare; il Pascal è infatti progettato per essere veloce da compilare.
-
--   Idee simili sono usate nei linguaggi Modula, Oberon, Ada, Nim e Kotlin.
 
 # Testing di compilatori
 

@@ -58,7 +58,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -71,7 +71,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -646,13 +646,31 @@ class="sourceCode rust"><code class="sourceCode rust"><span id="cb17-1"><a href=
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> x<span class="op">:</span>    <span class="pp">foo::</span>Foo<span class="op">&lt;</span>Bar<span class="op">&gt;</span>     <span class="op">=</span>     <span class="pp">foo::Foo::</span><span class="op">&lt;</span>Bar<span class="op">&gt;</span>()<span class="op">;</span></span></code></pre></div></li>
 </ul>
 </section>
+<section id="esempio-dichiarazioni-di-variabili" class="slide level1">
+<h1>Esempio: dichiarazioni di variabili</h1>
+<ul>
+<li><p>Nel linguaggio Pascal le variabili si elencano dentro una
+clausola <code>var</code>. Il nome della variabile viene per primo ed è
+chiaramente separato dal tipo:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    myvar : <span class="kw">Array</span> [<span class="dv">1</span>..<span class="dv">100</span>] <span class="kw">of</span> <span class="dt">Integer</span>;</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    other : <span class="dt">String</span>;</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    x     : <span class="dt">Real</span>;</span></code></pre></div></li>
+<li><p>Questa sintassi è molto facile da interpretare: il Pascal è
+infatti progettato per essere semplice e nel contempo veloce da
+compilare.</p></li>
+<li><p>Idee simili sono usate nei linguaggi Modula, Oberon, Ada, Nim e
+Kotlin.</p></li>
+</ul>
+</section>
 <section id="dichiarazioni-in-c" class="slide level1">
 <h1>Dichiarazioni in C++</h1>
 <ul>
-<li><p>Oltre ad essere semplice da interpretare dal compilatore, un
-linguaggio dovrebbe essere semplice anche per l’utente. Consideriamo
-questa dichiarazione C/C++:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> myvar<span class="op">[</span><span class="dv">100</span><span class="op">];</span>  <span class="co">/* More complicated: static const int * myvar[100] */</span></span></code></pre></div>
+<li><p>In C/C++ invece le dichiarazioni di variabili sono complicate,
+perché l’identificatore che contiene il nome della variabile è messo in
+mezzo al tipo:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> myvar<span class="op">[</span><span class="dv">100</span><span class="op">];</span>  <span class="co">/* More complicated: static const int * myvar[100] */</span></span></code></pre></div>
 <p>che dichiara un array di 100 variabili di tipo
 <code>int</code>.</p></li>
 <li><p>I token che definiscono il tipo sono <code>int</code>,
@@ -667,9 +685,9 @@ per il programmatore è complicato! (Provate a interpretare il caso
 <ul>
 <li><p>Il linguaggio <a href="https://golang.org/">Go</a>, che è
 fortemente ispirato al C, rende più semplici le dichiarazioni usando una
-notazione diversa:</p>
-<div class="sourceCode" id="cb19"><pre
-class="sourceCode go"><code class="sourceCode go"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> myvar <span class="op">[</span><span class="dv">100</span><span class="op">]</span><span class="dt">int</span></span></code></pre></div></li>
+notazione diversa, più simile al Pascal:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> myvar <span class="op">[</span><span class="dv">100</span><span class="op">]</span><span class="dt">int</span></span></code></pre></div></li>
 <li><p>La keyword <code>var</code> segnala al <em>parser</em> che si sta
 dichiarando una variabile.</p></li>
 <li><p>I token che definiscono il tipo sono riportati tutti insieme,
@@ -679,23 +697,6 @@ variabile.</p></li>
 parole: «un array di 100 valori <code>int</code>», ed è più facile da
 leggere per il programmatore (in C bisogna leggere a ritroso, da destra
 a sinistra).</p></li>
-</ul>
-</section>
-<section id="altri-esempi" class="slide level1">
-<h1>Altri esempi</h1>
-<ul>
-<li><p>Nel linguaggio Pascal le variabili si elencano dentro una
-clausola <code>var</code>, e come in Go il nome viene per primo ed è
-chiaramente separato dal tipo:</p>
-<div class="sourceCode" id="cb20"><pre
-class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    myvar : <span class="kw">Array</span> [<span class="dv">1</span>..<span class="dv">100</span>] <span class="kw">of</span> <span class="dt">Integer</span>;</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    other : <span class="dt">String</span>;</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    x     : <span class="dt">Real</span>;</span></code></pre></div></li>
-<li><p>Anche questa sintassi è molto semplice da interpretare; il Pascal
-è infatti progettato per essere veloce da compilare.</p></li>
-<li><p>Idee simili sono usate nei linguaggi Modula, Oberon, Ada, Nim e
-Kotlin.</p></li>
 </ul>
 </section>
 <section id="testing-di-compilatori" class="slide level1">
