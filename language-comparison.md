@@ -15,6 +15,7 @@ colorlinks: true
 
 | Date       | Comment                                                    |
 |------------|------------------------------------------------------------|
+| 2022-12-05 | Add a few more information about Pascal                    |
 | 2022-09-30 | Add a section about Crystal, fix some references           |
 | 2021-12-17 | Add a description of how to «learn» a language             |
 | 2021-12-08 | Add a description of the D language, plus a few more fixes |
@@ -1393,11 +1394,16 @@ widespread use only when in the 1980s Borland International produced
 and commercialized the Turbo Pascal[^borlandtp] compiler. Wirth
 developed the Pascal language as a tool to teach programming to
 students, which means that the language is meant to be easy to learn
-and teaches good programming practices.
+and teaches good programming practices. It was used to develop
+Apple Mac OS[^macos] at least until version 6 (after that, Pascal
+fell out of fashion and Apple slowly rewrote parts of it in C).
 
 [^borlandtp]: It is interesting to note that one of the lead
     developers of the Turbo Pascal compiler was Anders Hejlsberg, the
     creator of C\#.
+
+[^macos]: If you are curious, you can test how Mac OS looked like in
+    your browser by going to <https://macos9.app/>.
 
 Today one of the most used Pascal compilers is FreePascal
 ([freepascal.org](https://freepascal.org/)), which implements several
