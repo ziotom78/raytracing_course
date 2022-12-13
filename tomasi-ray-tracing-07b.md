@@ -14,7 +14,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     #.  Il tipo `Camera` rappresenta l'osservatore/telecamera;
     #.  Il tipo `ImageTracer` invia raggi dall'osservatore allo schermo.
     
--   Il tipo `Ray` deve essere molto efficiente, quindi è meglio che sia un *value type* come `Color`, `Vec`, etc. (vedi [lezione 02b](./tomasi-ray-tracing-02b-tests.html#uso-della-memoria)).
+-   Il tipo `Ray` deve essere molto efficiente, quindi è meglio che sia un *value type* come `Color`, `Vec`, etc. (vedi [lezione 02b](./tomasi-ray-tracing-02b.html#uso-della-memoria)).
 
 -   I tipi `Camera` e `ImageTracer` non sono critici, e non serve che siano particolarmente ottimizzati.
 

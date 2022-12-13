@@ -23,14 +23,14 @@ all: \
 	tomasi-ray-tracing-06a.html \
 	tomasi-ray-tracing-05b.html \
 	tomasi-ray-tracing-05a.html \
-	tomasi-ray-tracing-04b-ldr-images.html \
-	tomasi-ray-tracing-04a-documentation.html \
-	tomasi-ray-tracing-03b-image-files.html \
-	tomasi-ray-tracing-03a-images.html \
-	tomasi-ray-tracing-02b-tests.html \
-	tomasi-ray-tracing-02a-colors.html \
-	tomasi-ray-tracing-01b-github.html \
-	tomasi-ray-tracing-01a-rendering-equation.html \
+	tomasi-ray-tracing-04b.html \
+	tomasi-ray-tracing-04a.html \
+	tomasi-ray-tracing-03b.html \
+	tomasi-ray-tracing-03a.html \
+	tomasi-ray-tracing-02b.html \
+	tomasi-ray-tracing-02a.html \
+	tomasi-ray-tracing-01b.html \
+	tomasi-ray-tracing-01a.html \
 	giudizi-linguaggio.html \
 	language-comparison.html \
 	index.html

@@ -171,7 +171,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ![](./media/surface-normals-wikipedia.svg)
 </center>
 
-Il modo in cui un raggio di luce interagisce con una superficie dipende dalla BRDF, che [è espressa in termini dell'angolo](tomasi-ray-tracing-01a-rendering-equation.html#/la-brdf) $\theta = N_x \cdot \Psi$ tra la direzione di incidenza $\Psi$ e la normale $N_x$ alla superficie nel punto $x$.
+Il modo in cui un raggio di luce interagisce con una superficie dipende dalla BRDF, che [è espressa in termini dell'angolo](tomasi-ray-tracing-01a.html#/la-brdf) $\theta = N_x \cdot \Psi$ tra la direzione di incidenza $\Psi$ e la normale $N_x$ alla superficie nel punto $x$.
 
 # Codifica della geometria
 

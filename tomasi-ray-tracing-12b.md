@@ -178,7 +178,7 @@ class InputStream:
     #.  In presenza di `\t` (tabulazione) si incrementa `col_num` di un valore convenzionale (solitamente 4 oppure 8);
     #.  In tutti gli altri casi si incrementa `col_num` e si lascia intatto `line_num`.
     
--   Questo approccio richiederebbe accorgimenti aggiuntivi per i [caratteri Unicode](./tomasi-ray-tracing-03a-images.html#lo-standard-unicode), ma il nostro formato ammette solo caratteri ASCII (per fortuna!).
+-   Questo approccio richiederebbe accorgimenti aggiuntivi per i [caratteri Unicode](./tomasi-ray-tracing-03a.html#lo-standard-unicode), ma il nostro formato ammette solo caratteri ASCII (per fortuna!).
 
 ---
 

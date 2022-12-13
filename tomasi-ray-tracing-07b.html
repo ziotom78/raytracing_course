@@ -11,12 +11,20 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
+    .reveal .sourceCode {  /* see #7635 */
+      /* overflow: visible; */
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -55,7 +63,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -68,7 +76,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -84,22 +92,24 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
-   var mathElements = document.getElementsByClassName("math");
-   var macros = [];
-   for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-     katex.render(texText.data, mathElements[i], {
-      displayMode: mathElements[i].classList.contains('display'),
-      throwOnError: false,
-      macros: macros,
-      fleqn: false
-     });
-  }}});
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
   </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -107,8 +117,11 @@
 
 <section id="title-slide">
   <h1 class="title">Esercitazione 7</h1>
-  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
-  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini
+fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a
+href="mailto:maurizio.tomasi@unimi.it"
+class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
 <section id="codice-da-implementare" class="slide level1">
@@ -120,12 +133,22 @@
 <li><p>Oggi implementeremo tre tipi molto semplici:</p>
 <ol>
 <li>Il tipo <code>Ray</code> rappresenta un raggio di luce;</li>
-<li>Il tipo <code>Camera</code> rappresenta l’osservatore/telecamera;</li>
-<li>Il tipo <code>ImageTracer</code> invia raggi dall’osservatore allo schermo.</li>
+<li>Il tipo <code>Camera</code> rappresenta
+l’osservatore/telecamera;</li>
+<li>Il tipo <code>ImageTracer</code> invia raggi dall’osservatore allo
+schermo.</li>
 </ol></li>
-<li><p>Il tipo <code>Ray</code> deve essere molto efficiente, quindi è meglio che sia un <em>value type</em> come <code>Color</code>, <code>Vec</code>, etc. (vedi <a href="./tomasi-ray-tracing-02b-tests.html#uso-della-memoria">lezione 02b</a>).</p></li>
-<li><p>I tipi <code>Camera</code> e <code>ImageTracer</code> non sono critici, e non serve che siano particolarmente ottimizzati.</p></li>
-<li><p>Come al solito, potete fare riferimento al repository <a href="https://github.com/ziotom78/pytracer">pytracer</a> per una implementazione in Python (ma non implementate i test nel modo usato lì!).</p></li>
+<li><p>Il tipo <code>Ray</code> deve essere molto efficiente, quindi è
+meglio che sia un <em>value type</em> come <code>Color</code>,
+<code>Vec</code>, etc. (vedi <a
+href="./tomasi-ray-tracing-02b.html#uso-della-memoria">lezione
+02b</a>).</p></li>
+<li><p>I tipi <code>Camera</code> e <code>ImageTracer</code> non sono
+critici, e non serve che siano particolarmente ottimizzati.</p></li>
+<li><p>Come al solito, potete fare riferimento al repository <a
+href="https://github.com/ziotom78/pytracer">pytracer</a> per una
+implementazione in Python (ma non implementate i test nel modo usato
+lì!).</p></li>
 </ul>
 </section>
 <section id="la-classe-ray" class="slide level1">
@@ -133,19 +156,27 @@
 <ul>
 <li><p>Deve contenere i campi seguenti:</p>
 <ol>
-<li><code>origin</code>: oggetto di tipo <code>Point</code> (origine del raggio);</li>
-<li><code>dir</code>: oggetto di tipo <code>Vec</code> (direzione del raggio);</li>
+<li><code>origin</code>: oggetto di tipo <code>Point</code> (origine del
+raggio);</li>
+<li><code>dir</code>: oggetto di tipo <code>Vec</code> (direzione del
+raggio);</li>
 <li><code>tmin</code>: numero floating-point (distanza minima);</li>
 <li><code>tmax</code>: numero floating-point (distanza massima);</li>
 <li><code>depth</code>: intero.</li>
 </ol></li>
-<li><p>Potete fare in modo che gli ultimi tre campi abbiano come valori di default <code>tmin = 1e-5</code>, <code>tmax = +∞</code>, <code>depth = 0</code>.</p></li>
-<li><p>Definite un metodo <code>at</code> che calcoli un punto lungo il raggio per un dato <span class="math inline">t</span>, e un metodo <code>is_close</code> che verifichi se due raggi hanno <code>origin</code> e <code>dir</code> simili.</p></li>
+<li><p>Potete fare in modo che gli ultimi tre campi abbiano come valori
+di default <code>tmin = 1e-5</code>, <code>tmax = +∞</code>,
+<code>depth = 0</code>.</p></li>
+<li><p>Definite un metodo <code>at</code> che calcoli un punto lungo il
+raggio per un dato <span class="math inline">t</span>, e un metodo
+<code>is_close</code> che verifichi se due raggi hanno
+<code>origin</code> e <code>dir</code> simili.</p></li>
 </ul>
 </section>
 <section id="implementazione-di-ray" class="slide level1">
 <h1>Implementazione di <code>Ray</code></h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> inf</span>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> inf</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Ray:</span>
@@ -164,7 +195,8 @@
 </section>
 <section id="test-per-ray" class="slide level1">
 <h1>Test per <code>Ray</code></h1>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TestRays(unittest.TestCase):</span>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TestRays(unittest.TestCase):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> test_is_close(<span class="va">self</span>):</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        ray1 <span class="op">=</span> Ray(origin<span class="op">=</span>Point(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>), <span class="bu">dir</span><span class="op">=</span>Vec(<span class="fl">5.0</span>, <span class="fl">4.0</span>, <span class="op">-</span><span class="fl">1.0</span>))</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        ray2 <span class="op">=</span> Ray(origin<span class="op">=</span>Point(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>), <span class="bu">dir</span><span class="op">=</span>Vec(<span class="fl">5.0</span>, <span class="fl">4.0</span>, <span class="op">-</span><span class="fl">1.0</span>))</span>
@@ -182,34 +214,44 @@
 <section id="losservatore" class="slide level1">
 <h1>L’osservatore</h1>
 <ul>
-<li><p>Vogliamo implementare due tipi di proiezioni nel nostro codice:</p>
+<li><p>Vogliamo implementare due tipi di proiezioni nel nostro
+codice:</p>
 <ol type="1">
 <li>Proiezione ortogonale</li>
 <li>Proiezione prospettica</li>
 </ol></li>
-<li><p>Questa è una buona occasione per implementare il <em>polimorfismo</em>, ossia il fatto che il nome di una funzione corrisponda ad implementazioni diverse a seconda del tipo dell’oggetto</p></li>
+<li><p>Questa è una buona occasione per implementare il
+<em>polimorfismo</em>, ossia il fatto che il nome di una funzione
+corrisponda ad implementazioni diverse a seconda del tipo
+dell’oggetto</p></li>
 </ul>
 </section>
 <section id="esempio" class="slide level1">
 <h1>Esempio</h1>
 <ul>
-<li><p>L’esempio più semplice (ma forse inatteso!) di polimorfismo è l’overloading:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print<span class="op">(</span><span class="dt">int</span> i<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;Integer: &quot;</span> <span class="op">&lt;&lt;</span> i <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="op">}</span></span>
+<li><p>L’esempio più semplice (ma forse inatteso!) di polimorfismo è
+l’overloading:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print<span class="op">(</span><span class="dt">int</span> i<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;Integer: &quot;</span> <span class="op">&lt;&lt;</span> i <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="op">}</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print<span class="op">(</span><span class="dt">float</span> f<span class="op">)</span> <span class="op">{</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;Float: &quot;</span> <span class="op">&lt;&lt;</span> f <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="op">}</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    print<span class="op">(</span><span class="dv">1</span><span class="op">);</span>    <span class="co">// &quot;Integer: 1&quot;</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    print<span class="op">(</span><span class="fl">1.0</span><span class="bu">f</span><span class="op">);</span> <span class="co">// &quot;Float: 1&quot;</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>La funzione <code>print</code> assume due <em>forme</em> a seconda che l’argomento sia un intero o un floating-point</p></li>
-<li><p>La decisione di quale chiamata usare viene decisa dal compilatore in fase di compilazione</p></li>
+<li><p>La funzione <code>print</code> assume due <em>forme</em> a
+seconda che l’argomento sia un intero o un floating-point</p></li>
+<li><p>La decisione di quale chiamata usare viene decisa dal compilatore
+in fase di compilazione</p></li>
 </ul>
 </section>
 <section id="proiezioni-e-polimorfismo" class="slide level1">
 <h1>Proiezioni e polimorfismo</h1>
 <ul>
-<li><p>Potremmo allora usare l’overloading per implementare le due proiezioni (ortogonale e prospettica):</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> OrthogonalCamera <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">};</span></span>
+<li><p>Potremmo allora usare l’overloading per implementare le due
+proiezioni (ortogonale e prospettica):</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> OrthogonalCamera <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">};</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> PerspectiveCamera <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">};</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> fire_ray<span class="op">(</span><span class="at">const</span> OrthogonalCamera <span class="op">&amp;</span> cam<span class="op">,</span> <span class="op">...);</span></span>
@@ -219,13 +261,18 @@
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>string<span class="op"> </span>kind_of_camera <span class="op">=</span> input_camera<span class="op">();</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ?</span></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>Ma che tipo stabiliamo per la variabile <code>cam</code>? <code>OrthogonalCamera</code> oppure <code>PerspectiveCamera</code>?</p></li>
+<li><p>Ma che tipo stabiliamo per la variabile <code>cam</code>?
+<code>OrthogonalCamera</code> oppure
+<code>PerspectiveCamera</code>?</p></li>
 </ul>
 </section>
 <section id="polimorfismo-dinamico" class="slide level1">
 <h1>Polimorfismo dinamico</h1>
-<p>La programmazione OOP consente di salvarsi da questo pasticcio introducendo un <strong>terzo</strong> tipo oltre a <code>OrthogonalCamera</code> oppure <code>PerspectiveCamera</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Camera <span class="op">{</span> <span class="kw">virtual</span> <span class="dt">void</span> fire_ray<span class="op">(...)</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="op">};</span></span>
+<p>La programmazione OOP consente di salvarsi da questo pasticcio
+introducendo un <strong>terzo</strong> tipo oltre a
+<code>OrthogonalCamera</code> oppure <code>PerspectiveCamera</code>:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Camera <span class="op">{</span> <span class="kw">virtual</span> <span class="dt">void</span> fire_ray<span class="op">(...)</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="op">};</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> OrthogonalCamera <span class="op">:</span> <span class="kw">public</span> Camera <span class="op">{</span> <span class="dt">void</span> fire_ray<span class="op">(...)</span> <span class="kw">override</span><span class="op">;</span> <span class="op">};</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> PerspectiveCamera <span class="op">:</span> <span class="kw">public</span> Camera <span class="op">{</span> <span class="dt">void</span> fire_ray<span class="op">(...)</span> <span class="kw">override</span><span class="op">;</span> <span class="op">};</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -241,18 +288,29 @@
 <ul>
 <li><p>Ci sono due tipi di polimorfismo:</p>
 <ol type="1">
-<li><p>Polimorfismo statico (ossia in fase di compilazione): è il caso dell’<em>overloading</em>.</p></li>
-<li><p>Polimorfismo dinamico: è il caso della gerarchia di classi.</p></li>
+<li><p>Polimorfismo statico (ossia in fase di compilazione): è il caso
+dell’<em>overloading</em>.</p></li>
+<li><p>Polimorfismo dinamico: è il caso della gerarchia di
+classi.</p></li>
 </ol></li>
-<li><p>Esistono tipi di polimorfismo più sofisticati, come il <em>multiple dispatch</em> che è un concetto cardine del linguaggio Julia ed è implementato in modo sperimentale anche in Nim, ma a noi non interessa.</p></li>
+<li><p>Esistono tipi di polimorfismo più sofisticati, come il
+<em>multiple dispatch</em> che è un concetto cardine del linguaggio
+Julia ed è implementato in modo sperimentale anche in Nim, ma a noi non
+interessa.</p></li>
 </ul>
 </section>
 <section id="interfacce-e-traits" class="slide level1">
 <h1>Interfacce e <em>traits</em></h1>
 <ul>
-<li><p>Un caso molto comune è quello in cui la classe base è solo un <em>escamotage</em> per avere un tipo base, ma tutti i metodi sono virtuali</p></li>
-<li><p>Per questo motivo alcuni linguaggi moderni offrono meccanismi più leggeri chiamati <em>interfacce</em> (Go, C#) o <em>traits</em> (Rust). Una <em>interfaccia</em> è l’analogo di una classe in cui tutti i metodi sono vuoti; ecco un esempio in Go:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> camera <span class="kw">interface</span> <span class="op">{</span> fire_ray<span class="op">(...)</span> void <span class="op">}</span></span>
+<li><p>Un caso molto comune è quello in cui la classe base è solo un
+<em>escamotage</em> per avere un tipo base, ma tutti i metodi sono
+virtuali</p></li>
+<li><p>Per questo motivo alcuni linguaggi moderni offrono meccanismi più
+leggeri chiamati <em>interfacce</em> (Go, C#) o <em>traits</em> (Rust).
+Una <em>interfaccia</em> è l’analogo di una classe in cui tutti i metodi
+sono vuoti; ecco un esempio in Go:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> camera <span class="kw">interface</span> <span class="op">{</span> fire_ray<span class="op">(...)</span> void <span class="op">}</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> orthogonal_camera <span class="kw">struct</span> <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> perspective_camera <span class="kw">struct</span> <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -263,44 +321,82 @@
 <section id="le-classi-camera" class="slide level1">
 <h1>Le classi <code>*Camera</code></h1>
 <ul>
-<li><p>In linguaggi che implementano l’ereditarietà, <code>Camera</code> sarà il tipo da cui sono derivati i nuovi tipi <code>OrthogonalCamera</code> e <code>PerspectiveCamera</code>.</p></li>
-<li><p>L’idea è proprio di implementare la gerarchia di tipi che abbiamo visto:</p>
+<li><p>In linguaggi che implementano l’ereditarietà, <code>Camera</code>
+sarà il tipo da cui sono derivati i nuovi tipi
+<code>OrthogonalCamera</code> e <code>PerspectiveCamera</code>.</p></li>
+<li><p>L’idea è proprio di implementare la gerarchia di tipi che abbiamo
+visto:</p>
 <center>
-<p><img data-src="pd-images/cbea9322804844d441255573d434cfd0b9e51a6e.svg" data-im_fname="camera-hierarchy" /></p>
+<p><img
+data-src="pd-images/cbea9322804844d441255573d434cfd0b9e51a6e.svg"
+data-im_fname="camera-hierarchy" /></p>
 </center></li>
-<li><p>Usate quanto il vostro linguaggio permette per implementare il polimorfismo: gerarchia di classi in C#/D/Kotlin, <a href="https://doc.rust-lang.org/book/ch10-02-traits.html"><em>traits</em></a> in Rust, <a href="https://nim-lang.org/docs/tut2.html#object-oriented-programming-dynamic-dispatch"><em>dynamic dispatch</em></a> in Nim</p></li>
+<li><p>Usate quanto il vostro linguaggio permette per implementare il
+polimorfismo: gerarchia di classi in C#/D/Kotlin, <a
+href="https://doc.rust-lang.org/book/ch10-02-traits.html"><em>traits</em></a>
+in Rust, <a
+href="https://nim-lang.org/docs/tut2.html#object-oriented-programming-dynamic-dispatch"><em>dynamic
+dispatch</em></a> in Nim</p></li>
 </ul>
 </section>
 <section class="slide level1">
 
-<p><embed width="640px" height="640px" src="pd-images/fb86f8a5d2fad3484519e07f4d3f0c63127ddfb3.html" data-im_fname="camera-reference-frame" /></p>
+<p><embed width="640px" height="640px" src="pd-images/fb86f8a5d2fad3484519e07f4d3f0c63127ddfb3.html"
+data-im_fname="camera-reference-frame" /></p>
 <p><span class="math display">
-P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
+P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0,
+-a, 0).
 </span></p>
 </section>
 <section id="orientare-camera" class="slide level1">
 <h1>Orientare <code>Camera</code></h1>
 <ul>
-<li><p>Gli unici parametri aggiustabili di <code>Camera</code> sono <code>d</code> (distanza schermo-osservatore) e <code>a</code> (<em>aspect ratio</em> dell’immagine).</p></li>
-<li><p>Il sistema di riferimento della slide precedente è rigido: è quindi molto facile da implementare, perché non serve memorizzare i vettori <span class="math inline">\vec d</span>, <span class="math inline">\vec u</span> e <span class="math inline">\vec v</span>.</p></li>
-<li><p>Per orientare una <code>Camera</code>, possiamo usare il tipo <code>Transformation</code> che abbiamo implementato settimana scorsa.</p></li>
-<li><p>Sugli oggetti di tipo <code>*Camera</code> deve essere possibile invocare un metodo <code>fire_ray</code> che accetta in input una coordinata <span class="math inline">(u, v)</span> e restituisce un oggetto <code>Ray</code>.</p></li>
+<li><p>Gli unici parametri aggiustabili di <code>Camera</code> sono
+<code>d</code> (distanza schermo-osservatore) e <code>a</code>
+(<em>aspect ratio</em> dell’immagine).</p></li>
+<li><p>Il sistema di riferimento della slide precedente è rigido: è
+quindi molto facile da implementare, perché non serve memorizzare i
+vettori <span class="math inline">\vec d</span>, <span
+class="math inline">\vec u</span> e <span class="math inline">\vec
+v</span>.</p></li>
+<li><p>Per orientare una <code>Camera</code>, possiamo usare il tipo
+<code>Transformation</code> che abbiamo implementato settimana
+scorsa.</p></li>
+<li><p>Sugli oggetti di tipo <code>*Camera</code> deve essere possibile
+invocare un metodo <code>fire_ray</code> che accetta in input una
+coordinata <span class="math inline">(u, v)</span> e restituisce un
+oggetto <code>Ray</code>.</p></li>
 </ul>
 </section>
 <section id="trasformazioni" class="slide level1">
 <h1>Trasformazioni</h1>
 <ul>
-<li><p>Se associamo una trasformazione <span class="math inline">T</span> all’osservatore, potremmo applicarla ai punti/vettori che definiscono l’osservatore, ossia <span class="math inline">P</span>, <span class="math inline">\vec d</span>, <span class="math inline">\vec u</span> e <span class="math inline">\vec r</span>, e spostare/orientare l’osservatore.</p></li>
-<li><p>Ma così è complicato calcolare le direzioni dei raggi che attraversano lo schermo nella funzione <code>fire_ray</code>!</p></li>
-<li><p>È meglio creare i raggi nel sistema di riferimento originale, e <strong>poi</strong> applicare la trasformazione al raggio: è più semplice e si fanno meno calcoli.</p></li>
-<li><p>Serve quindi implementare l’operatore <code>Transformation * Ray</code>, che applicherà la trasformazione <span class="math inline">T</span> sia a <span class="math inline">O</span> (origine) che a <span class="math inline">\vec d</span> (direzione del raggio).</p></li>
+<li><p>Se associamo una trasformazione <span
+class="math inline">T</span> all’osservatore, potremmo applicarla ai
+punti/vettori che definiscono l’osservatore, ossia <span
+class="math inline">P</span>, <span class="math inline">\vec d</span>,
+<span class="math inline">\vec u</span> e <span class="math inline">\vec
+r</span>, e spostare/orientare l’osservatore.</p></li>
+<li><p>Ma così è complicato calcolare le direzioni dei raggi che
+attraversano lo schermo nella funzione <code>fire_ray</code>!</p></li>
+<li><p>È meglio creare i raggi nel sistema di riferimento originale, e
+<strong>poi</strong> applicare la trasformazione al raggio: è più
+semplice e si fanno meno calcoli.</p></li>
+<li><p>Serve quindi implementare l’operatore
+<code>Transformation * Ray</code>, che applicherà la trasformazione
+<span class="math inline">T</span> sia a <span
+class="math inline">O</span> (origine) che a <span
+class="math inline">\vec d</span> (direzione del raggio).</p></li>
 </ul>
 </section>
 <section id="trasformare-ray" class="slide level1">
 <h1>Trasformare <code>Ray</code></h1>
 <ul>
-<li><p>Questa è l’applicazione di una trasformazione a un raggio; potreste in alternativa ridefinire l’operatore <code>*</code> nel caso <code>Transform * Ray</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Ray:</span>
+<li><p>Questa è l’applicazione di una trasformazione a un raggio;
+potreste in alternativa ridefinire l’operatore <code>*</code> nel caso
+<code>Transform * Ray</code>:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Ray:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    …</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> transform(<span class="va">self</span>, transformation: Transformation):</span>
@@ -309,12 +405,14 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                   tmin<span class="op">=</span><span class="va">self</span>.tmin,</span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                   tmax<span class="op">=</span><span class="va">self</span>.tmax,</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                   depth<span class="op">=</span><span class="va">self</span>.depth)</span></code></pre></div></li>
-<li><p>Non è necessario trasformare <code>tmin</code> e <code>tmax</code>.</p></li>
+<li><p>Non è necessario trasformare <code>tmin</code> e
+<code>tmax</code>.</p></li>
 </ul>
 </section>
 <section id="test-per-transform" class="slide level1">
 <h1>Test per <code>transform</code></h1>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_transform():</span>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_transform():</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    ray <span class="op">=</span> Ray(origin<span class="op">=</span>Point(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>), <span class="bu">dir</span><span class="op">=</span>Vec(<span class="fl">6.0</span>, <span class="fl">5.0</span>, <span class="fl">4.0</span>))</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    transformation <span class="op">=</span> translation(Vec(<span class="fl">10.0</span>, <span class="fl">11.0</span>, <span class="fl">12.0</span>)) <span class="op">*</span> rotation_x(<span class="fl">90.0</span>)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    transformed <span class="op">=</span> ray.transform(transformation)</span>
@@ -331,19 +429,27 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <section id="coordinate-dello-schermo" class="slide level1">
 <h1>Coordinate dello schermo</h1>
 <ul>
-<li><p>Per evitare confusione tra coordinate spaziali <span class="math inline">(x, y, z)</span> e coordinate 2D dello schermo, useremo le lettere <span class="math inline">(u, v)</span> per indicare punti dello schermo:</p>
+<li><p>Per evitare confusione tra coordinate spaziali <span
+class="math inline">(x, y, z)</span> e coordinate 2D dello schermo,
+useremo le lettere <span class="math inline">(u, v)</span> per indicare
+punti dello schermo:</p>
 <center>
 <p><img data-src="./media/screen-coordinates.svg" /></p>
 </center>
-<p>Ad esempio, un raggio sparato verso <span class="math inline">(u, v) = (0, 1)</span> deve passare per il punto <span class="math inline">P + \vec d - \vec r + \vec u</span>.</p></li>
+<p>Ad esempio, un raggio sparato verso <span class="math inline">(u, v)
+= (0, 1)</span> deve passare per il punto <span class="math inline">P +
+\vec d - \vec r + \vec u</span>.</p></li>
 </ul>
 </section>
 <section id="orthogonalcamera" class="slide level1">
 <h1><code>OrthogonalCamera</code></h1>
 <ul>
-<li><p>Per costruirla serve il parametro <code>aspect_ratio</code> (un floating point, o un razionale come <code>16//9</code> in Julia) e <code>transformation</code>.</p></li>
+<li><p>Per costruirla serve il parametro <code>aspect_ratio</code> (un
+floating point, o un razionale come <code>16//9</code> in Julia) e
+<code>transformation</code>.</p></li>
 <li><p>Questa è una possibile implementazione in Python:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> OrthogonalCamera(Camera):</span>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> OrthogonalCamera(Camera):</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, aspect_ratio<span class="op">=</span><span class="fl">1.0</span>, transformation<span class="op">=</span>Transformation()):</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.aspect_ratio <span class="op">=</span> aspect_ratio</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
@@ -357,14 +463,20 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <section id="test-per-losservatore" class="slide level1">
 <h1>Test per l’osservatore</h1>
 <ul>
-<li><p>È importante verificare che i quattro angoli dell’immagine siano proiettati in modo corretto. Scegliamo anche un <em>aspect ratio</em> diverso da 1.</p></li>
-<li><p>Per <code>OrthogonalCamera</code> verifichiamo che i raggi siano paralleli tra loro: lo facciamo calcolandone il prodotto scalare e verificando che coincida col vettore nullo.</p></li>
-<li><p>(Per <code>PerspectiveCamera</code> verificheremo invece che tutti i raggi abbiano la medesima origine).</p></li>
+<li><p>È importante verificare che i quattro angoli dell’immagine siano
+proiettati in modo corretto. Scegliamo anche un <em>aspect ratio</em>
+diverso da 1.</p></li>
+<li><p>Per <code>OrthogonalCamera</code> verifichiamo che i raggi siano
+paralleli tra loro: lo facciamo calcolandone il prodotto scalare e
+verificando che coincida col vettore nullo.</p></li>
+<li><p>(Per <code>PerspectiveCamera</code> verificheremo invece che
+tutti i raggi abbiano la medesima origine).</p></li>
 </ul>
 </section>
 <section id="test-per-orthogonalcamera" class="slide level1">
 <h1>Test per <code>OrthogonalCamera</code></h1>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_orthogonal_camera(<span class="va">self</span>):</span>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_orthogonal_camera(<span class="va">self</span>):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    cam <span class="op">=</span> OrthogonalCamera(aspect_ratio<span class="op">=</span><span class="fl">2.0</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    ray1 <span class="op">=</span> cam.fire_ray(<span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
@@ -387,20 +499,25 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <h1>Test per l’osservatore</h1>
 <ul>
 <li><p>Verifichiamo anche l’applicazione di una trasformazione:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_orthogonal_camera_transform():</span>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_orthogonal_camera_transform():</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    cam <span class="op">=</span> OrthogonalCamera(transformation<span class="op">=</span>translation(<span class="op">-</span>VEC_Y <span class="op">*</span> <span class="fl">2.0</span>) <span class="op">*</span> rotation_z(angle_deg<span class="op">=</span><span class="dv">90</span>))</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    ray <span class="op">=</span> cam.fire_ray(<span class="fl">0.5</span>, <span class="fl">0.5</span>)</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="fl">0.0</span>))</span></code></pre></div></li>
-<li><p>Per <code>PerspectiveCamera</code> il test sarà molto simile.</p></li>
+<li><p>Per <code>PerspectiveCamera</code> il test sarà molto
+simile.</p></li>
 </ul>
 </section>
 <section id="perspectivecamera" class="slide level1">
 <h1><code>PerspectiveCamera</code></h1>
 <ul>
-<li><p>Oltre all’<em>aspect ratio</em> e alla trasformazione, la proiezione prospettica richiede anche la distanza <span class="math inline">d</span> tra lo schermo e l’osservatore.</p></li>
+<li><p>Oltre all’<em>aspect ratio</em> e alla trasformazione, la
+proiezione prospettica richiede anche la distanza <span
+class="math inline">d</span> tra lo schermo e l’osservatore.</p></li>
 <li><p>Questa è l’implementazione in Python:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PerspectiveCamera(Camera):</span>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PerspectiveCamera(Camera):</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, distance<span class="op">=</span><span class="fl">1.0</span>, aspect_ratio<span class="op">=</span><span class="fl">1.0</span>, transformation<span class="op">=</span>Transformation()):</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.distance <span class="op">=</span> distance</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.aspect_ratio <span class="op">=</span> aspect_ratio</span>
@@ -414,7 +531,8 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 </section>
 <section id="test-per-perspectivecamera" class="slide level1">
 <h1>Test per <code>PerspectiveCamera</code></h1>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_perspective_camera(<span class="va">self</span>):</span>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_perspective_camera(<span class="va">self</span>):</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    cam <span class="op">=</span> PerspectiveCamera(screen_distance<span class="op">=</span><span class="fl">1.0</span>, aspect_ratio<span class="op">=</span><span class="fl">2.0</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    ray1 <span class="op">=</span> cam.fire_ray(<span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
@@ -436,36 +554,64 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <section id="imagetracer" class="slide level1">
 <h1><code>ImageTracer</code></h1>
 <ul>
-<li><p>Ci manca ora l’ultimo tassello: una funzionalità che leghi il tipo <code>HdrImage</code> a uno dei tipi derivati da <code>Camera</code>.</p></li>
-<li><p>Il nuovo tipo <code>ImageTracer</code> si occuperà di inviare raggi ai pixel corrispondenti in un’immagine, facendo la conversione tra l’indice <code>(column, row)</code> di un pixel usati da <code>HdrImage</code> e i valori <code>(u, v)</code> che usa <code>Camera</code>.</p></li>
-<li><p>Per comodità, definiamo due funzioni associate a <code>ImageTracer</code>:</p>
+<li><p>Ci manca ora l’ultimo tassello: una funzionalità che leghi il
+tipo <code>HdrImage</code> a uno dei tipi derivati da
+<code>Camera</code>.</p></li>
+<li><p>Il nuovo tipo <code>ImageTracer</code> si occuperà di inviare
+raggi ai pixel corrispondenti in un’immagine, facendo la conversione tra
+l’indice <code>(column, row)</code> di un pixel usati da
+<code>HdrImage</code> e i valori <code>(u, v)</code> che usa
+<code>Camera</code>.</p></li>
+<li><p>Per comodità, definiamo due funzioni associate a
+<code>ImageTracer</code>:</p>
 <ol>
-<li>Una funzione <code>fire_ray</code> che invia un raggio verso un pixel specificato;</li>
-<li>Una funzione <code>fire_all_rays</code> che itera su tutti i pixel dell’immagine la chiamata a <code>fire_ray</code>.</li>
+<li>Una funzione <code>fire_ray</code> che invia un raggio verso un
+pixel specificato;</li>
+<li>Una funzione <code>fire_all_rays</code> che itera su tutti i pixel
+dell’immagine la chiamata a <code>fire_ray</code>.</li>
 </ol></li>
 </ul>
 </section>
 <section id="fire_ray" class="slide level1">
 <h1><code>fire_ray</code></h1>
 <ul>
-<li><p>La funzione <code>fire_ray</code> deve inviare un raggio verso un pixel dell’immagine.</p></li>
-<li><p>A parte convertire le coordinate dallo spazio <code>(u, v)</code> allo spazio dei pixel, c’è il problema della <em>superficie</em> del pixel.</p></li>
-<li><p>Un pixel non è infatti un punto, perché ha una certa area: in quale punto all’interno del pixel deve passare il raggio?</p></li>
-<li><p>Per il momento faremo passare il raggio nel centro del pixel, ma facciamo in modo che si possa specificare una posizione <em>relativa</em> tramite due coordinate <code>(u_pixel, v_pixel)</code>, simili alle coordinate <code>(u, v)</code> ma riferite alla superficie del pixel anziché dell’immagine.</p></li>
+<li><p>La funzione <code>fire_ray</code> deve inviare un raggio verso un
+pixel dell’immagine.</p></li>
+<li><p>A parte convertire le coordinate dallo spazio <code>(u, v)</code>
+allo spazio dei pixel, c’è il problema della <em>superficie</em> del
+pixel.</p></li>
+<li><p>Un pixel non è infatti un punto, perché ha una certa area: in
+quale punto all’interno del pixel deve passare il raggio?</p></li>
+<li><p>Per il momento faremo passare il raggio nel centro del pixel, ma
+facciamo in modo che si possa specificare una posizione
+<em>relativa</em> tramite due coordinate
+<code>(u_pixel, v_pixel)</code>, simili alle coordinate
+<code>(u, v)</code> ma riferite alla superficie del pixel anziché
+dell’immagine.</p></li>
 </ul>
 </section>
 <section id="fire_all_rays" class="slide level1">
 <h1><code>fire_all_rays</code></h1>
 <ul>
-<li><p>Una volta «lanciato» un raggio verso un pixel, la funzione <code>fire_all_rays</code> dovrebbe calcolare la soluzione dell’equazione del rendering</p></li>
-<li><p>Implementeremo più metodi risolutivi, alcuni accurati ma lenti e altri grossolani ma velocissimi: quindi anche qui potremmo usare il polimorfismo. <strong>Ma</strong>…</p></li>
-<li><p>…quello che invece facciamo per ora è accettare come argomento di <code>fire_all_rays</code> una <strong>funzione</strong> che venga invocata per ogni pixel/raggio dell’immagine e restituisca un oggetto di tipo <code>Color</code>.</p></li>
-<li><p>Questo è un approccio alternativo al polimorfismo, e vi consiglio di provarlo! Potrete poi cambiarlo se vedete che nel vostro linguaggio porta a codice poco naturale.</p></li>
+<li><p>Una volta «lanciato» un raggio verso un pixel, la funzione
+<code>fire_all_rays</code> dovrebbe calcolare la soluzione
+dell’equazione del rendering</p></li>
+<li><p>Implementeremo più metodi risolutivi, alcuni accurati ma lenti e
+altri grossolani ma velocissimi: quindi anche qui potremmo usare il
+polimorfismo. <strong>Ma</strong>…</p></li>
+<li><p>…quello che invece facciamo per ora è accettare come argomento di
+<code>fire_all_rays</code> una <strong>funzione</strong> che venga
+invocata per ogni pixel/raggio dell’immagine e restituisca un oggetto di
+tipo <code>Color</code>.</p></li>
+<li><p>Questo è un approccio alternativo al polimorfismo, e vi consiglio
+di provarlo! Potrete poi cambiarlo se vedete che nel vostro linguaggio
+porta a codice poco naturale.</p></li>
 </ul>
 </section>
 <section id="imagetracer-in-python" class="slide level1">
 <h1><code>ImageTracer</code> in Python</h1>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ImageTracer:</span>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ImageTracer:</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, image: HdrImage, camera: Camera):</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.image <span class="op">=</span> image</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.camera <span class="op">=</span> camera</span>
@@ -485,7 +631,8 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 </section>
 <section id="test-per-imagetracer" class="slide level1">
 <h1>Test per <code>ImageTracer</code></h1>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_image_tracer(<span class="va">self</span>):</span>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_image_tracer(<span class="va">self</span>):</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> HdrImage(width<span class="op">=</span><span class="dv">4</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    camera <span class="op">=</span> PerspectiveCamera(aspect_ratio<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    tracer <span class="op">=</span> ImageTracer(image<span class="op">=</span>image, camera<span class="op">=</span>camera)</span>
@@ -505,14 +652,18 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 <section id="guida-per-lesercitazione-1" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
 <ul>
-<li><p>Create un <em>branch</em> per il lavoro di oggi, che chiamerete <code>cameras</code>.</p></li>
+<li><p>Create un <em>branch</em> per il lavoro di oggi, che chiamerete
+<code>cameras</code>.</p></li>
 <li><p>Implementate questi tipi:</p>
 <ol>
 <li><code>Ray</code>;</li>
-<li><code>Camera</code>, <code>OrthogonalCamera</code> e <code>PerspectiveCamera</code>;</li>
+<li><code>Camera</code>, <code>OrthogonalCamera</code> e
+<code>PerspectiveCamera</code>;</li>
 <li><code>ImageTracer</code>.</li>
 </ol></li>
-<li><p>Implementate tutti i test. Quando avete terminato l’implementazione e i test passano con successo, chiudete il PR.</p></li>
+<li><p>Implementate tutti i test. Quando avete terminato
+l’implementazione e i test passano con successo, chiudete il
+PR.</p></li>
 </ul>
 </section>
     </div>
@@ -555,7 +706,7 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 
         // Add the current slide number to the URL hash so that reloading the
         // page/copying the URL will return you to the same slide
-        hash: false,
+        hash: true,
 
         // Start with 1 for the hash rather than 0
         hashOneBasedIndex: false,

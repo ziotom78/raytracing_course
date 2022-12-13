@@ -530,7 +530,7 @@ Dimensioni dei file contenenti l'immagine di «*Campo di grano con volo di corvi
 
 -   Gli algoritmi di compressione solitamente si basano sulla rappresentazione in bit dei numeri interi (in tipi come quelli del C++: `int`, `uint8_t`, `uint32_t`, etc.)
 
--   Abbiamo già visto di sfuggita l'importanza di esplorare i bit all'interno dei byte quando abbiamo descritto il formato [UTF-8](./tomasi-ray-tracing-03a-images.html#/codifica-utf-8).
+-   Abbiamo già visto di sfuggita l'importanza di esplorare i bit all'interno dei byte quando abbiamo descritto il formato [UTF-8](./tomasi-ray-tracing-03a.html#/codifica-utf-8).
 
 -   Vi lascio come riferimento una serie di slide che mostrano come manipolare i singoli bit all'interno di un byte; non ci serviranno però durante le esercitazioni.
 
