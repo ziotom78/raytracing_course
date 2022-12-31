@@ -6,11 +6,19 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Introduzione al corso
 
-# Chi sono
+# Indicazioni generali
 
--   Professore presso il dipartimento di Fisica
--   Mi occupo di cosmologia osservativa (CMB)
--   Metodi computazionali e machine learning
+-   Lezioni di teoria del lunedì videoregistrate e caricate su [Ariel](https://mtomasicngif.ariel.ctu.unimi.it)
+
+-   Richiesta la presenza alle esercitazioni (firma)
+
+-   Domande:
+
+    - Durante le lezioni, o alla fine
+
+    - Se su argomenti di teoria, o comunque di interesse generale, sul forum di Ariel
+
+    - Se specifiche sul proprio codice, contattate il docente ([maurizio.tomasi@unimi.it](mailto:maurizio.tomasi@unimi.it))
 
 # Obbiettivi del corso
 
