@@ -449,9 +449,9 @@ A prescindere dal linguaggio scelto, il corso in generale è molto utile:
 -   non avevo mai scritto codice collaborando veramente con qualcun
     altro;
 -   è importante scrivere codice fruibile da altri - ora che sto
-lavorando alla tesi mi accorgo che spesso il codice in ambito di
-ricerca è poco documentato e/o testato e per questo difficile da
-utilizzare.
+    lavorando alla tesi mi accorgo che spesso il codice in ambito di
+    ricerca è poco documentato e/o testato e per questo difficile da
+    utilizzare.
 
 Esprimo anche un giudizio del tutto personale, ma credo anche
 condiviso dagli altri studenti che hanno frequentato il corso. Si
