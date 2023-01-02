@@ -1387,8 +1387,8 @@ There are a few disadvantages too:
     are the best ones to use depending on the problem. This has been a
     cause of confusion for students!)
     
--   In the last year, my own students have stumbled upon bugs in the D
-    compiler itself, which refused to compile perfectly valid code.
+-   Last year, my own students have stumbled upon bugs in the D compiler
+    itself, which refused to compile perfectly valid code.
     
 -   A quite important library needed for the course, `std.stream`,
     [has been
