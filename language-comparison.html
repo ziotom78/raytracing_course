@@ -128,26 +128,30 @@ programming language</a></li>
 </thead>
 <tbody>
 <tr class="odd">
+<td>2023-01-02</td>
+<td>Show a more interesting comparison between Ruby and Crystal</td>
+</tr>
+<tr class="even">
 <td>2022-12-05</td>
 <td>Add a few more information about Pascal</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>2022-09-30</td>
 <td>Add a section about Crystal, fix some references</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>2021-12-17</td>
 <td>Add a description of how to «learn» a language</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>2021-12-08</td>
 <td>Add a description of the D language, plus a few more fixes</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>2021-01-02</td>
 <td>Fix a few typos</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>2020-12-29</td>
 <td>First release</td>
 </tr>
@@ -779,54 +783,78 @@ href="http://127.0.0.1:8080/">http://127.0.0.1:8080/</a>.</p></li>
 the Ruby syntax: simple scripts can be either interpreted as written in
 Ruby and Crystal. This means that when you look for information about
 how to do something in Crystal, there are chances that you might reuse
-some StackOverflow answer about Ruby (which is far more widely used than
-Crystal).</p>
-<p>For instance, consider the following program, which prints the
-numbers from 1 to 4:</p>
+some StackOverflow answer about Ruby, which is far more widely used than
+Crystal. (Of course, Crystal is <strong>not</strong> Ruby, and anything
+but the simplest Ruby scripts won’t compile as Crystal programs.)</p>
+<p>As an example, consider the following program, which calculates the
+sum of the first 100 000 000 numbers:</p>
 <div class="sourceCode" id="cb17"><pre
 class="sourceCode ruby"><code class="sourceCode ruby"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save this in file &quot;test.rb&quot;</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>(<span class="dv">1</span><span class="kw">..</span><span class="dv">4</span>)<span class="at">.each</span> <span class="cf">do</span> <span class="kw">|</span>value<span class="kw">|</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">puts</span> value</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>maxnum <span class="kw">=</span> <span class="dv">100_000_000</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>sum <span class="kw">=</span> <span class="fl">0.0</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>(<span class="dv">1</span><span class="kw">..</span>maxnum)<span class="at">.each</span> <span class="cf">do</span> <span class="kw">|</span>num<span class="kw">|</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    sum <span class="kw">+=</span> num</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">puts</span> <span class="st">&quot;The sum of the first </span><span class="sc">#{</span>maxnum<span class="sc">}</span><span class="st"> numbers is </span><span class="sc">#{</span>sum<span class="sc">}</span><span class="st">&quot;</span></span></code></pre></div>
 <p>This is valid code in Ruby, but also in Crystal, and you can run it
 using either the <code>ruby</code> interpreted or the
 <code>crystal</code> compiler:</p>
 <pre><code>$ ruby test.rb
-1
-2
-3
-4
+The sum of the first 100000000 numbers is 5.00000005e+15
+
 $ crystal run test.rb
-1
-2
-3
-4</code></pre></li>
+The sum of the first 100000000 numbers is 5.00000005e+15</code></pre>
+<p>However, the big difference between the two ways of running the code
+is that the former is <em>interpreted</em> by Ruby, while the second is
+<em>compiled</em> to optimized machine code. In fact, if we compile the
+program using <code>crystal build --release</code> and time the
+execution, we can see the huge difference in the time required to
+produce the output:</p>
+<pre><code>$ time ruby test.rb
+The sum of the first 100000000 numbers is 5.00000005e+15
+
+real    0m7,504s
+user    0m7,436s
+sys     0m0,034s
+
+$ crystal build --release -o ./test test.rb
+
+$ time ./test
+The sum of the first 100000000 numbers is 5.00000005e+15
+
+real    0m0,105s
+user    0m0,103s
+sys     0m0,000s</code></pre>
+<p>The program compiled by Crystal took just 0.1 s, while the one
+interpreted by Ruby was 75 times slower!</p></li>
 <li><p>Crystal is an OOP language, much more object-oriented than C++.
 In C++, you can call class methods using the dot <code>.</code>:</p>
-<div class="sourceCode" id="cb19"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>string<span class="op"> </span>s <span class="op">=</span> <span class="st">&quot;Hello&quot;</span><span class="op">;</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Call the method &quot;size&quot; of the object &quot;s&quot;</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> s<span class="op">.</span>size<span class="op">()</span> <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span>  <span class="co">// This prints &quot;5&quot;</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>string<span class="op"> </span>s <span class="op">=</span> <span class="st">&quot;Hello&quot;</span><span class="op">;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Call the method &quot;size&quot; of the object &quot;s&quot;</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> s<span class="op">.</span>size<span class="op">()</span> <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span>  <span class="co">// This prints &quot;5&quot;</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>In Crystal, a syntax like <code>s.size()</code> is extended to
 <em>any</em> value, including literals (and you can avoid empty
 parenthesis):</p>
-<div class="sourceCode" id="cb20"><pre
-class="sourceCode ruby"><code class="sourceCode ruby"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Since &quot;Hello&quot; is an object, you can call the method &quot;size&quot;</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># directly on it</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">puts</span> <span class="st">&quot;Hello&quot;</span><span class="at">.size</span>    <span class="co"># This prints &quot;5&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode ruby"><code class="sourceCode ruby"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Since &quot;Hello&quot; is an object, you can call the method &quot;size&quot;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># directly on it</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">puts</span> <span class="st">&quot;Hello&quot;</span><span class="at">.size</span>    <span class="co"># This prints &quot;5&quot;</span></span></code></pre></div>
 <p>This characteristic has been mutuated by Ruby, whose design strive to
 achieve the maximum elegance. In fact, instead of having
 <code>for</code> loops, Crystal (and Ruby) define the method
 <code>each</code> on container objects, i.e., variables that contain
 collections of objects:</p>
-<div class="sourceCode" id="cb21"><pre
-class="sourceCode ruby"><code class="sourceCode ruby"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The method &quot;each&quot; is called on the list of strings</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="st">&quot;Strong force&quot;</span>, <span class="st">&quot;Weak force&quot;</span><span class="kw">]</span><span class="at">.each</span> <span class="cf">do</span> <span class="kw">|</span>value<span class="kw">|</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">puts</span> value</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode ruby"><code class="sourceCode ruby"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The method &quot;each&quot; is called on the list of strings</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="st">&quot;Strong force&quot;</span>, <span class="st">&quot;Weak force&quot;</span><span class="kw">]</span><span class="at">.each</span> <span class="cf">do</span> <span class="kw">|</span>value<span class="kw">|</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">puts</span> value</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div>
 <p>This way of writing code is used pervasively in Ruby and Crystal, and
 it lets to produce very compact and elegant programs.</p></li>
 <li><p>A nice introduction to the language is available in the <a
@@ -847,14 +875,14 @@ href="https://crystal-lang.org/reference/1.5/man/shards/index.html">Shards</a>,
 a tool that lets to compile programs and download and install libraries
 automatically. There is no need to use makefiles if you use Crystal!</p>
 <p>For instance, to create a new application you write</p>
-<div class="sourceCode" id="cb22"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> crystal init app myapp</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> crystal init app myapp</span></code></pre></div>
 <p>and a new folder <code>myapp</code> is populated with a number of
 files. To compile all the files in the <code>myapp</code> folder and run
 the executable, you just write</p>
-<div class="sourceCode" id="cb23"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd myapp</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> shards run</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd myapp</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> shards run</span></code></pre></div>
 <p>and all the source files will be compiled to build an executable,
 which is then automatically run without the need to write a
 <code>Makefile</code>.</p></li>
@@ -909,28 +937,28 @@ produce programs whose performance was always very close to C++’s.</p>
 <p>Here is an example showing how to implement a basic <code>Vec</code>
 class in C#. Note that, despite a few differences, the syntax looks very
 similar to C++’s:</p>
-<div class="sourceCode" id="cb24"><pre
-class="sourceCode cs"><code class="sourceCode cs"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">struct</span> Vec <span class="op">{</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Vec</span><span class="op">(</span><span class="dt">double</span> _x<span class="op">,</span> <span class="dt">double</span> _y<span class="op">,</span> <span class="dt">double</span> _z<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">x</span> <span class="op">=</span> _x<span class="op">;</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">y</span> <span class="op">=</span> _y<span class="op">;</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">z</span> <span class="op">=</span> _z<span class="op">;</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">implicit</span> <span class="kw">operator</span> <span class="dt">string</span> <span class="op">(</span>Vec v<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="dt">string</span><span class="op">.</span><span class="fu">Format</span><span class="op">(</span><span class="st">&quot;&lt;{0}, {1}, {2}&gt;&quot;</span><span class="op">,</span> v<span class="op">.</span><span class="fu">x</span><span class="op">,</span> v<span class="op">.</span><span class="fu">y</span><span class="op">,</span> v<span class="op">.</span><span class="fu">z</span><span class="op">);</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">static</span> Vec <span class="kw">operator</span> <span class="op">*(</span><span class="dt">double</span> t<span class="op">,</span> Vec v<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">new</span> <span class="fu">Vec</span><span class="op">(</span>t <span class="op">*</span> v<span class="op">.</span><span class="fu">x</span><span class="op">,</span> t <span class="op">*</span> v<span class="op">.</span><span class="fu">y</span><span class="op">,</span> t <span class="op">*</span> v<span class="op">.</span><span class="fu">z</span><span class="op">);</span></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">static</span> <span class="dt">double</span> <span class="kw">operator</span> <span class="op">*(</span>Vec a<span class="op">,</span> Vec b<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> a<span class="op">.</span><span class="fu">x</span> <span class="op">*</span> b<span class="op">.</span><span class="fu">x</span> <span class="op">+</span> a<span class="op">.</span><span class="fu">y</span> <span class="op">*</span> b<span class="op">.</span><span class="fu">y</span> <span class="op">+</span> a<span class="op">.</span><span class="fu">z</span> <span class="op">*</span> b<span class="op">.</span><span class="fu">z</span><span class="op">;</span></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode cs"><code class="sourceCode cs"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">struct</span> Vec <span class="op">{</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Vec</span><span class="op">(</span><span class="dt">double</span> _x<span class="op">,</span> <span class="dt">double</span> _y<span class="op">,</span> <span class="dt">double</span> _z<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">x</span> <span class="op">=</span> _x<span class="op">;</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">y</span> <span class="op">=</span> _y<span class="op">;</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">z</span> <span class="op">=</span> _z<span class="op">;</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">implicit</span> <span class="kw">operator</span> <span class="dt">string</span> <span class="op">(</span>Vec v<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="dt">string</span><span class="op">.</span><span class="fu">Format</span><span class="op">(</span><span class="st">&quot;&lt;{0}, {1}, {2}&gt;&quot;</span><span class="op">,</span> v<span class="op">.</span><span class="fu">x</span><span class="op">,</span> v<span class="op">.</span><span class="fu">y</span><span class="op">,</span> v<span class="op">.</span><span class="fu">z</span><span class="op">);</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">static</span> Vec <span class="kw">operator</span> <span class="op">*(</span><span class="dt">double</span> t<span class="op">,</span> Vec v<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">new</span> <span class="fu">Vec</span><span class="op">(</span>t <span class="op">*</span> v<span class="op">.</span><span class="fu">x</span><span class="op">,</span> t <span class="op">*</span> v<span class="op">.</span><span class="fu">y</span><span class="op">,</span> t <span class="op">*</span> v<span class="op">.</span><span class="fu">z</span><span class="op">);</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">static</span> <span class="dt">double</span> <span class="kw">operator</span> <span class="op">*(</span>Vec a<span class="op">,</span> Vec b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> a<span class="op">.</span><span class="fu">x</span> <span class="op">*</span> b<span class="op">.</span><span class="fu">x</span> <span class="op">+</span> a<span class="op">.</span><span class="fu">y</span> <span class="op">*</span> b<span class="op">.</span><span class="fu">y</span> <span class="op">+</span> a<span class="op">.</span><span class="fu">z</span> <span class="op">*</span> b<span class="op">.</span><span class="fu">z</span><span class="op">;</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>C# provides a few high-level functionalities with respect to C++. One
 of these is first-class string support, which means that converting a
 vector into a string can make use of the handy
@@ -942,43 +970,43 @@ closing brace <code>}</code>.</p>
 them using <code>this</code>; this is similar to the <code>self</code>
 parameter in the Python language.</p>
 <p>Defining rays and spheres is similar:</p>
-<div class="sourceCode" id="cb25"><pre
-class="sourceCode cs"><code class="sourceCode cs"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">struct</span> Ray <span class="op">{</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Vec m_o<span class="op">,</span> m_d<span class="op">;</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> m_tmin<span class="op">,</span> m_tmax<span class="op">;</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Ray</span><span class="op">(</span>Vec _o<span class="op">,</span> Vec _d<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">m_o</span> <span class="op">=</span> _o<span class="op">;</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">m_d</span> <span class="op">=</span> _d<span class="op">;</span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>        m_tmin <span class="op">=</span> <span class="fl">1e-10</span><span class="op">;</span></span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>        m_tmax <span class="op">=</span> <span class="fl">1e10</span><span class="op">;</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">struct</span> Sphere <span class="op">{</span></span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Vec m_p<span class="op">;</span></span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> m_r<span class="op">;</span></span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Sphere</span><span class="op">(</span>Vec _p<span class="op">,</span> <span class="dt">double</span> _r<span class="op">)</span> <span class="op">{</span> <span class="kw">this</span><span class="op">.</span><span class="fu">m_p</span> <span class="op">=</span> _p<span class="op">;</span> <span class="kw">this</span><span class="op">.</span><span class="fu">m_r</span> <span class="op">=</span> _r<span class="op">;</span> <span class="op">}</span></span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">bool</span> <span class="fu">Intersect</span><span class="op">(</span>Ray r<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>        Vec op <span class="op">=</span> <span class="kw">this</span><span class="op">.</span><span class="fu">m_p</span> <span class="op">-</span> r<span class="op">.</span><span class="fu">m_o</span><span class="op">;</span></span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> dop <span class="op">=</span> r<span class="op">.</span><span class="fu">m_d</span> <span class="op">*</span> op<span class="op">;</span></span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> D <span class="op">=</span> dop <span class="op">*</span> dop <span class="op">-</span> op <span class="op">*</span> op <span class="op">+</span> m_r <span class="op">*</span> m_r<span class="op">;</span></span>
-<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(</span><span class="fl">0.0</span> <span class="op">&gt;</span> D<span class="op">)</span></span>
-<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> sqrtD <span class="op">=</span> Math<span class="op">.</span><span class="fu">Sqrt</span><span class="op">(</span>D<span class="op">);</span></span>
-<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> tmin <span class="op">=</span> dop <span class="op">-</span> sqrtD<span class="op">;</span></span>
-<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span><span class="op">(</span>r<span class="op">.</span><span class="fu">m_tmin</span> <span class="op">&lt;</span> tmin <span class="op">&amp;&amp;</span> tmin <span class="op">&lt;</span> r<span class="op">.</span><span class="fu">m_tmax</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> tmax <span class="op">=</span> dop <span class="op">+</span> sqrtD<span class="op">;</span></span>
-<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> r<span class="op">.</span><span class="fu">m_tmin</span> <span class="op">&lt;</span> tmax <span class="op">&amp;&amp;</span> tmax <span class="op">&lt;</span> r<span class="op">.</span><span class="fu">m_tmax</span><span class="op">;</span></span>
-<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode cs"><code class="sourceCode cs"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">struct</span> Ray <span class="op">{</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Vec m_o<span class="op">,</span> m_d<span class="op">;</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> m_tmin<span class="op">,</span> m_tmax<span class="op">;</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Ray</span><span class="op">(</span>Vec _o<span class="op">,</span> Vec _d<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">m_o</span> <span class="op">=</span> _o<span class="op">;</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">m_d</span> <span class="op">=</span> _d<span class="op">;</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>        m_tmin <span class="op">=</span> <span class="fl">1e-10</span><span class="op">;</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        m_tmax <span class="op">=</span> <span class="fl">1e10</span><span class="op">;</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">struct</span> Sphere <span class="op">{</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Vec m_p<span class="op">;</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> m_r<span class="op">;</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Sphere</span><span class="op">(</span>Vec _p<span class="op">,</span> <span class="dt">double</span> _r<span class="op">)</span> <span class="op">{</span> <span class="kw">this</span><span class="op">.</span><span class="fu">m_p</span> <span class="op">=</span> _p<span class="op">;</span> <span class="kw">this</span><span class="op">.</span><span class="fu">m_r</span> <span class="op">=</span> _r<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">bool</span> <span class="fu">Intersect</span><span class="op">(</span>Ray r<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>        Vec op <span class="op">=</span> <span class="kw">this</span><span class="op">.</span><span class="fu">m_p</span> <span class="op">-</span> r<span class="op">.</span><span class="fu">m_o</span><span class="op">;</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> dop <span class="op">=</span> r<span class="op">.</span><span class="fu">m_d</span> <span class="op">*</span> op<span class="op">;</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> D <span class="op">=</span> dop <span class="op">*</span> dop <span class="op">-</span> op <span class="op">*</span> op <span class="op">+</span> m_r <span class="op">*</span> m_r<span class="op">;</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(</span><span class="fl">0.0</span> <span class="op">&gt;</span> D<span class="op">)</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> sqrtD <span class="op">=</span> Math<span class="op">.</span><span class="fu">Sqrt</span><span class="op">(</span>D<span class="op">);</span></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> tmin <span class="op">=</span> dop <span class="op">-</span> sqrtD<span class="op">;</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span><span class="op">(</span>r<span class="op">.</span><span class="fu">m_tmin</span> <span class="op">&lt;</span> tmin <span class="op">&amp;&amp;</span> tmin <span class="op">&lt;</span> r<span class="op">.</span><span class="fu">m_tmax</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> tmax <span class="op">=</span> dop <span class="op">+</span> sqrtD<span class="op">;</span></span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> r<span class="op">.</span><span class="fu">m_tmin</span> <span class="op">&lt;</span> tmax <span class="op">&amp;&amp;</span> tmax <span class="op">&lt;</span> r<span class="op">.</span><span class="fu">m_tmax</span><span class="op">;</span></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>Here are a few advantages of C# over C++:</p>
 <ul>
 <li><p>It is similar to C++, yet it is considerably easier:</p>
@@ -1056,64 +1084,64 @@ reached the same level of adoption as C++.</p>
 <p>Unlike C++, D does not uses header files, as these are notoriously
 error-prone; rather, it use <em>modules</em>, which work similarly to
 Python:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.stdio</span><span class="op">;</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.format</span><span class="op">;</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.array</span><span class="op">;</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.algorithm.searching</span><span class="op">;</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.math</span><span class="op">;</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.random</span><span class="op">;</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.datetime.stopwatch</span><span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.stdio</span><span class="op">;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.format</span><span class="op">;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.array</span><span class="op">;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.algorithm.searching</span><span class="op">;</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.math</span><span class="op">;</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.random</span><span class="op">;</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="pp">import</span><span class="im"> std.datetime.stopwatch</span><span class="op">;</span></span></code></pre></div>
 <p>Constants can be defined exactly like in C++:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">const</span> <span class="dt">double</span> DEFAULT_TMIN <span class="op">=</span> <span class="fl">1e-10</span><span class="op">;</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">const</span> <span class="dt">double</span> DEFAULT_TMAX <span class="op">=</span> <span class="fl">1e+10</span><span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">const</span> <span class="dt">double</span> DEFAULT_TMIN <span class="op">=</span> <span class="fl">1e-10</span><span class="op">;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">const</span> <span class="dt">double</span> DEFAULT_TMAX <span class="op">=</span> <span class="fl">1e+10</span><span class="op">;</span></span></code></pre></div>
 <p>Things get interesting when you define a new <code>struct</code> or
 <code>class</code>:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="wa">struct</span> Vec <span class="op">{</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> x<span class="op">;</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> y<span class="op">;</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> z<span class="op">;</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// This is a template over the type W</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> toString<span class="op">(</span>W<span class="op">)(</span><span class="fu">ref</span> W writer<span class="op">,</span> <span class="fu">scope</span> <span class="fu">const</span> <span class="fu">ref</span> FormatSpec<span class="op">!</span><span class="dt">char</span> f<span class="op">)</span> <span class="fu">const</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>       <span class="kw">if</span> <span class="op">(</span>isOutputRange<span class="op">!(</span>W<span class="op">,</span> <span class="dt">char</span><span class="op">))</span> <span class="co">// Template constraint</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>         <span class="op">{</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>           put<span class="op">(</span>writer<span class="op">,</span> <span class="st">&quot;&lt;&quot;</span><span class="op">);</span></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>           formatValue<span class="op">(</span>writer<span class="op">,</span> x<span class="op">,</span> f<span class="op">);</span></span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>           put<span class="op">(</span>writer<span class="op">,</span> <span class="st">&quot;, &quot;</span><span class="op">);</span></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>           formatValue<span class="op">(</span>writer<span class="op">,</span> y<span class="op">,</span> f<span class="op">);</span></span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>           put<span class="op">(</span>writer<span class="op">,</span> <span class="st">&quot;, &quot;</span><span class="op">);</span></span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>           formatValue<span class="op">(</span>writer<span class="op">,</span> z<span class="op">,</span> f<span class="op">);</span></span>
-<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>           put<span class="op">(</span>writer<span class="op">,</span> <span class="st">&quot;&gt;&quot;</span><span class="op">);</span></span>
-<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>         <span class="op">}</span></span>
-<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Another template</span></span>
-<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> opBinary<span class="op">(</span><span class="bu">string</span> op<span class="op">)(</span><span class="fu">const</span> <span class="fu">ref</span> Vec other<span class="op">)</span> <span class="fu">const</span></span>
-<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>       <span class="kw">if</span><span class="op">(</span>op <span class="op">==</span> <span class="st">&quot;*&quot;</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>         <span class="kw">return</span> x <span class="op">*</span> other.x <span class="op">+</span> y <span class="op">*</span> other.y <span class="op">+</span> z <span class="op">*</span> other.z<span class="op">;</span></span>
-<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>       <span class="op">}</span></span>
-<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>  Vec opBinary<span class="op">(</span><span class="bu">string</span> op<span class="op">)(</span><span class="dt">double</span> t<span class="op">)</span> <span class="fu">const</span></span>
-<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>       <span class="kw">if</span><span class="op">(</span>op <span class="op">==</span> <span class="st">&quot;*&quot;</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>         <span class="kw">return</span> Vec<span class="op">(</span>t <span class="op">*</span> x<span class="op">,</span> t <span class="op">*</span> y<span class="op">,</span> t <span class="op">*</span> z<span class="op">);</span></span>
-<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>       <span class="op">}</span></span>
-<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Here we use a &quot;mixin&quot;: a string that is interpreted at compile</span></span>
-<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>  <span class="co">// time and substituted as a line of code. The &quot;~&quot; operator</span></span>
-<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a>  <span class="co">// concatenates strings.</span></span>
-<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>  Vec opBinary<span class="op">(</span><span class="bu">string</span> op<span class="op">)(</span><span class="fu">const</span> <span class="fu">ref</span> Vec other<span class="op">)</span> <span class="fu">const</span></span>
-<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>       <span class="kw">if</span> <span class="op">(</span>op <span class="op">==</span> <span class="st">&quot;+&quot;</span> <span class="op">||</span> op <span class="op">==</span> <span class="st">&quot;-&quot;</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>         <span class="kw">return</span> <span class="kw">mixin</span><span class="op">(</span><span class="st">&quot;Vec(x &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.x, &quot;</span> <span class="op">~</span></span>
-<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;y &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.y, &quot;</span> <span class="op">~</span></span>
-<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;z &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.z)&quot;</span><span class="op">);</span></span>
-<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>       <span class="op">}</span></span>
-<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="wa">struct</span> Vec <span class="op">{</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> x<span class="op">;</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> y<span class="op">;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> z<span class="op">;</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// This is a template over the type W</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> toString<span class="op">(</span>W<span class="op">)(</span><span class="fu">ref</span> W writer<span class="op">,</span> <span class="fu">scope</span> <span class="fu">const</span> <span class="fu">ref</span> FormatSpec<span class="op">!</span><span class="dt">char</span> f<span class="op">)</span> <span class="fu">const</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>       <span class="kw">if</span> <span class="op">(</span>isOutputRange<span class="op">!(</span>W<span class="op">,</span> <span class="dt">char</span><span class="op">))</span> <span class="co">// Template constraint</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>         <span class="op">{</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>           put<span class="op">(</span>writer<span class="op">,</span> <span class="st">&quot;&lt;&quot;</span><span class="op">);</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>           formatValue<span class="op">(</span>writer<span class="op">,</span> x<span class="op">,</span> f<span class="op">);</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>           put<span class="op">(</span>writer<span class="op">,</span> <span class="st">&quot;, &quot;</span><span class="op">);</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>           formatValue<span class="op">(</span>writer<span class="op">,</span> y<span class="op">,</span> f<span class="op">);</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>           put<span class="op">(</span>writer<span class="op">,</span> <span class="st">&quot;, &quot;</span><span class="op">);</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>           formatValue<span class="op">(</span>writer<span class="op">,</span> z<span class="op">,</span> f<span class="op">);</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>           put<span class="op">(</span>writer<span class="op">,</span> <span class="st">&quot;&gt;&quot;</span><span class="op">);</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>         <span class="op">}</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Another template</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> opBinary<span class="op">(</span><span class="bu">string</span> op<span class="op">)(</span><span class="fu">const</span> <span class="fu">ref</span> Vec other<span class="op">)</span> <span class="fu">const</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>       <span class="kw">if</span><span class="op">(</span>op <span class="op">==</span> <span class="st">&quot;*&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>         <span class="kw">return</span> x <span class="op">*</span> other.x <span class="op">+</span> y <span class="op">*</span> other.y <span class="op">+</span> z <span class="op">*</span> other.z<span class="op">;</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>       <span class="op">}</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>  Vec opBinary<span class="op">(</span><span class="bu">string</span> op<span class="op">)(</span><span class="dt">double</span> t<span class="op">)</span> <span class="fu">const</span></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>       <span class="kw">if</span><span class="op">(</span>op <span class="op">==</span> <span class="st">&quot;*&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>         <span class="kw">return</span> Vec<span class="op">(</span>t <span class="op">*</span> x<span class="op">,</span> t <span class="op">*</span> y<span class="op">,</span> t <span class="op">*</span> z<span class="op">);</span></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>       <span class="op">}</span></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Here we use a &quot;mixin&quot;: a string that is interpreted at compile</span></span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>  <span class="co">// time and substituted as a line of code. The &quot;~&quot; operator</span></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a>  <span class="co">// concatenates strings.</span></span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a>  Vec opBinary<span class="op">(</span><span class="bu">string</span> op<span class="op">)(</span><span class="fu">const</span> <span class="fu">ref</span> Vec other<span class="op">)</span> <span class="fu">const</span></span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a>       <span class="kw">if</span> <span class="op">(</span>op <span class="op">==</span> <span class="st">&quot;+&quot;</span> <span class="op">||</span> op <span class="op">==</span> <span class="st">&quot;-&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a>         <span class="kw">return</span> <span class="kw">mixin</span><span class="op">(</span><span class="st">&quot;Vec(x &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.x, &quot;</span> <span class="op">~</span></span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;y &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.y, &quot;</span> <span class="op">~</span></span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;z &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.z)&quot;</span><span class="op">);</span></span>
+<span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a>       <span class="op">}</span></span>
+<span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>The syntax <code>struct Vec...</code> is clearly derived from C++,
 but templates use a different syntax: instead of writing</p>
-<div class="sourceCode" id="cb31"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> W<span class="op">&gt;</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> toString<span class="op">(</span>W <span class="op">&amp;</span> writer<span class="op">,</span> <span class="at">const</span> FormatSpec<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;</span> <span class="op">&amp;</span> f<span class="op">)</span> <span class="at">const</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> W<span class="op">&gt;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> toString<span class="op">(</span>W <span class="op">&amp;</span> writer<span class="op">,</span> <span class="at">const</span> FormatSpec<span class="op">&lt;</span><span class="dt">char</span><span class="op">&gt;</span> <span class="op">&amp;</span> f<span class="op">)</span> <span class="at">const</span></span></code></pre></div>
 <p>in D you write this</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> toString<span class="op">(</span>W<span class="op">)(</span><span class="fu">ref</span> W writer<span class="op">,</span> <span class="fu">scope</span> <span class="fu">const</span> <span class="fu">ref</span> FormatSpec<span class="op">!</span><span class="dt">char</span> f<span class="op">)</span> <span class="fu">const</span></span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> toString<span class="op">(</span>W<span class="op">)(</span><span class="fu">ref</span> W writer<span class="op">,</span> <span class="fu">scope</span> <span class="fu">const</span> <span class="fu">ref</span> FormatSpec<span class="op">!</span><span class="dt">char</span> f<span class="op">)</span> <span class="fu">const</span></span></code></pre></div>
 <p>When you <em>declare</em> a template, you put the template names
 within parentheses, like <code>(W)</code>, but when you <em>use</em> an
 existing template, you put the template parameters after the
@@ -1123,35 +1151,35 @@ convenient to parse, but at the moment you should just accept this
 difference.</p>
 <p>Operator overloading works differently from C++, because it does not
 force you to re-define several operators that all look alike:</p>
-<div class="sourceCode" id="cb33"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This is the same C++ code we saw before</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="op">[[</span><span class="at">nodiscard</span><span class="op">]]</span> <span class="kw">constexpr</span> Vec <span class="kw">operator</span><span class="op">+(</span><span class="at">const</span> Vec <span class="op">&amp;</span>a<span class="op">,</span> <span class="at">const</span> Vec <span class="op">&amp;</span>b<span class="op">)</span> <span class="kw">noexcept</span> <span class="op">{</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Vec<span class="op">(</span>a<span class="op">.</span>x <span class="op">+</span> b<span class="op">.</span>x<span class="op">,</span> a<span class="op">.</span>y <span class="op">+</span> b<span class="op">.</span>y<span class="op">,</span> a<span class="op">.</span>z <span class="op">+</span> b<span class="op">.</span>z<span class="op">);</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co">// This is almost the same as operator+: boring!</span></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="op">[[</span><span class="at">nodiscard</span><span class="op">]]</span> <span class="kw">constexpr</span> Vec <span class="kw">operator</span><span class="op">-(</span><span class="at">const</span> Vec <span class="op">&amp;</span>a<span class="op">,</span> <span class="at">const</span> Vec <span class="op">&amp;</span>b<span class="op">)</span> <span class="kw">noexcept</span> <span class="op">{</span></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Vec<span class="op">(</span>a<span class="op">.</span>x <span class="op">-</span> b<span class="op">.</span>x<span class="op">,</span> a<span class="op">.</span>y <span class="op">-</span> b<span class="op">.</span>y<span class="op">,</span> a<span class="op">.</span>z <span class="op">-</span> b<span class="op">.</span>z<span class="op">);</span></span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This is the same C++ code we saw before</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="op">[[</span><span class="at">nodiscard</span><span class="op">]]</span> <span class="kw">constexpr</span> Vec <span class="kw">operator</span><span class="op">+(</span><span class="at">const</span> Vec <span class="op">&amp;</span>a<span class="op">,</span> <span class="at">const</span> Vec <span class="op">&amp;</span>b<span class="op">)</span> <span class="kw">noexcept</span> <span class="op">{</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Vec<span class="op">(</span>a<span class="op">.</span>x <span class="op">+</span> b<span class="op">.</span>x<span class="op">,</span> a<span class="op">.</span>y <span class="op">+</span> b<span class="op">.</span>y<span class="op">,</span> a<span class="op">.</span>z <span class="op">+</span> b<span class="op">.</span>z<span class="op">);</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co">// This is almost the same as operator+: boring!</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="op">[[</span><span class="at">nodiscard</span><span class="op">]]</span> <span class="kw">constexpr</span> Vec <span class="kw">operator</span><span class="op">-(</span><span class="at">const</span> Vec <span class="op">&amp;</span>a<span class="op">,</span> <span class="at">const</span> Vec <span class="op">&amp;</span>b<span class="op">)</span> <span class="kw">noexcept</span> <span class="op">{</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Vec<span class="op">(</span>a<span class="op">.</span>x <span class="op">-</span> b<span class="op">.</span>x<span class="op">,</span> a<span class="op">.</span>y <span class="op">-</span> b<span class="op">.</span>y<span class="op">,</span> a<span class="op">.</span>z <span class="op">-</span> b<span class="op">.</span>z<span class="op">);</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>In D, binary operators like <span class="math inline">+</span> and
 <span class="math inline">−</span> are overloaded by the same template
 function <code>opBinary(string op)</code>; in C++, this would probably
 look like the following:</p>
-<div class="sourceCode" id="cb34"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span>std<span class="op">:</span>string op<span class="op">&gt;</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="kw">constexpr</span> Vec opBinary<span class="op">(</span><span class="at">const</span> Vec <span class="op">&amp;</span>a<span class="op">,</span> <span class="at">const</span> Vec <span class="op">&amp;</span>b<span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span>std<span class="op">:</span>string op<span class="op">&gt;</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="kw">constexpr</span> Vec opBinary<span class="op">(</span><span class="at">const</span> Vec <span class="op">&amp;</span>a<span class="op">,</span> <span class="at">const</span> Vec <span class="op">&amp;</span>b<span class="op">)</span></span></code></pre></div>
 <p>If C++ worked like D, the C++ compiler would translate
 <code>a + b</code> into <code>opBinary&lt;"+"&gt;(a, b)</code> (still
 using the C++ syntax) instead of the usual <code>operator+(a, b)</code>.
 The approach followed by D reveals its strengths when used with
 <em>mixins</em>, which is a way to tell the compiler to generate source
 code using string interpolation functions:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>Vec opBinary<span class="op">(</span><span class="bu">string</span> op<span class="op">)(</span><span class="fu">const</span> <span class="fu">ref</span> Vec other<span class="op">)</span> <span class="fu">const</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>     <span class="kw">if</span> <span class="op">(</span>op <span class="op">==</span> <span class="st">&quot;+&quot;</span> <span class="op">||</span> op <span class="op">==</span> <span class="st">&quot;-&quot;</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>       <span class="kw">return</span> <span class="kw">mixin</span><span class="op">(</span><span class="st">&quot;Vec(x &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.x, &quot;</span> <span class="op">~</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;y &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.y, &quot;</span> <span class="op">~</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;z &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.z)&quot;</span><span class="op">);</span></span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>     <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>Vec opBinary<span class="op">(</span><span class="bu">string</span> op<span class="op">)(</span><span class="fu">const</span> <span class="fu">ref</span> Vec other<span class="op">)</span> <span class="fu">const</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>     <span class="kw">if</span> <span class="op">(</span>op <span class="op">==</span> <span class="st">&quot;+&quot;</span> <span class="op">||</span> op <span class="op">==</span> <span class="st">&quot;-&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>       <span class="kw">return</span> <span class="kw">mixin</span><span class="op">(</span><span class="st">&quot;Vec(x &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.x, &quot;</span> <span class="op">~</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;y &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.y, &quot;</span> <span class="op">~</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;z &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.z)&quot;</span><span class="op">);</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>     <span class="op">}</span></span></code></pre></div>
 <p>The strange-looking <code>if</code> placed <em>before</em> the braces
 (<code>{}</code>, which is something not admitted in C++) is a
 <em>template constraint</em>: it tells that the template should not be
@@ -1160,22 +1188,22 @@ the string is either <code>"+"</code> or <code>"-"</code>. The
 <code>~</code> operator means string concatenation (this is unlike C++,
 where you concatenate <code>std::string</code> objects using
 <code>+</code>), and the code</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mixin</span><span class="op">(</span><span class="st">&quot;Vec(x &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.x, &quot;</span> <span class="op">~</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;y &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.y, &quot;</span> <span class="op">~</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;z &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.z)&quot;</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mixin</span><span class="op">(</span><span class="st">&quot;Vec(x &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.x, &quot;</span> <span class="op">~</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;y &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.y, &quot;</span> <span class="op">~</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;z &quot;</span> <span class="op">~</span> op <span class="op">~</span> <span class="st">&quot; other.z)&quot;</span><span class="op">);</span></span></code></pre></div>
 <p>tells the compiler to do the following steps:</p>
 <ol type="1">
 <li><p>Calculate the concatenation of the strings; if
 <code>op == "+"</code>, the result is</p>
-<div class="sourceCode" id="cb37"><pre
-class="sourceCode d"><code class="sourceCode d"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;Vec(x + other.x, y + other.y, z + other.z)&quot;</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode d"><code class="sourceCode d"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;Vec(x + other.x, y + other.y, z + other.z)&quot;</span></span></code></pre></div></li>
 <li><p>Put the string as if it were a true line of code at the spot
 where the <code>mixin</code> was used; again, if <code>op == "+"</code>
 then the result is</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>Vec opBinary<span class="op">(</span><span class="bu">string</span> op<span class="op">)(</span><span class="fu">const</span> <span class="fu">ref</span> Vec other<span class="op">)</span> <span class="fu">const</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>     <span class="kw">if</span> <span class="op">(</span>op <span class="op">==</span> <span class="st">&quot;+&quot;</span> <span class="op">||</span> op <span class="op">==</span> <span class="st">&quot;-&quot;</span><span class="op">)</span> <span class="op">{</span> <span class="co">// We assume now that op == &quot;+&quot;</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>       <span class="kw">return</span> Vec<span class="op">(</span>x <span class="op">+</span> other.x<span class="op">,</span> y <span class="op">+</span> other.y<span class="op">,</span> z <span class="op">+</span> other.z<span class="op">);</span></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>     <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>Vec opBinary<span class="op">(</span><span class="bu">string</span> op<span class="op">)(</span><span class="fu">const</span> <span class="fu">ref</span> Vec other<span class="op">)</span> <span class="fu">const</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>     <span class="kw">if</span> <span class="op">(</span>op <span class="op">==</span> <span class="st">&quot;+&quot;</span> <span class="op">||</span> op <span class="op">==</span> <span class="st">&quot;-&quot;</span><span class="op">)</span> <span class="op">{</span> <span class="co">// We assume now that op == &quot;+&quot;</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>       <span class="kw">return</span> Vec<span class="op">(</span>x <span class="op">+</span> other.x<span class="op">,</span> y <span class="op">+</span> other.y<span class="op">,</span> z <span class="op">+</span> other.z<span class="op">);</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>     <span class="op">}</span></span></code></pre></div>
 <p>but of course this is done in the same way if
 <code>op == "-"</code>.</p></li>
 </ol>
@@ -1185,53 +1213,53 @@ number of unary/binary operations on data types. Doing this in C++ is
 quite boring, but in D the task is much simplified.</p>
 <p>The definition of <code>Sphere</code>, <code>Ray</code>, and
 <code>intersect</code> should be trivial to follow:</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="wa">struct</span> Ray <span class="op">{</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  Vec origin<span class="op">;</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  Vec dir<span class="op">;</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> tmin<span class="op">;</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> tmax<span class="op">;</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Constructors in D are named as &quot;this&quot;; in C++ this should</span></span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// have been</span></span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">//</span></span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">//     Ray(Vec or, Vec d…)</span></span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">//</span></span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">this</span><span class="op">(</span>Vec or<span class="op">,</span> Vec d<span class="op">,</span> <span class="dt">double</span> tmin <span class="op">=</span> DEFAULT_TMIN<span class="op">,</span> <span class="dt">double</span> tmax <span class="op">=</span> DEFAULT_TMAX<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">this</span>.origin <span class="op">=</span> or<span class="op">;</span></span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">this</span>.dir <span class="op">=</span> d<span class="op">;</span></span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">this</span>.tmin <span class="op">=</span> tmin<span class="op">;</span></span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">this</span>.tmax <span class="op">=</span> tmax<span class="op">;</span></span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a><span class="wa">struct</span> Sphere <span class="op">{</span></span>
-<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>  Vec center<span class="op">;</span></span>
-<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> radius<span class="op">;</span></span>
-<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> intersect<span class="op">(</span><span class="fu">ref</span> Sphere sphere<span class="op">,</span> <span class="fu">ref</span> Ray ray<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> Vec op <span class="op">=</span> sphere.center <span class="op">-</span> ray.origin<span class="op">;</span></span>
-<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">double</span> dop <span class="op">=</span> ray.dir <span class="op">*</span> op<span class="op">;</span></span>
-<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">double</span> D <span class="op">=</span> dop <span class="op">*</span> dop <span class="op">-</span> op <span class="op">*</span> op <span class="op">+</span> sphere.radius <span class="op">*</span> sphere.radius<span class="op">;</span></span>
-<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> <span class="op">(</span><span class="dv">0</span> <span class="op">&gt;</span> D<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="at">false</span><span class="op">;</span></span>
-<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">double</span> sqrtD <span class="op">=</span> sqrt<span class="op">(</span>D<span class="op">);</span></span>
-<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">double</span> tmin <span class="op">=</span> dop <span class="op">-</span> sqrtD<span class="op">;</span></span>
-<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> <span class="op">(</span>ray.tmin <span class="op">&lt;</span> tmin <span class="op">&amp;&amp;</span> tmin <span class="op">&lt;</span> ray.tmax<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="at">true</span><span class="op">;</span></span>
-<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">double</span> tmax <span class="op">=</span> dop <span class="op">+</span> sqrtD<span class="op">;</span></span>
-<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> <span class="op">(</span>ray.tmin <span class="op">&lt;</span> tmax <span class="op">&amp;&amp;</span> tmax <span class="op">&lt;</span> ray.tmin<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="at">true</span><span class="op">;</span></span>
-<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a>  <span class="kw">return</span> <span class="at">false</span><span class="op">;</span></span>
-<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="wa">struct</span> Ray <span class="op">{</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  Vec origin<span class="op">;</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  Vec dir<span class="op">;</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> tmin<span class="op">;</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> tmax<span class="op">;</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Constructors in D are named as &quot;this&quot;; in C++ this should</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// have been</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">//</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">//     Ray(Vec or, Vec d…)</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">//</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">this</span><span class="op">(</span>Vec or<span class="op">,</span> Vec d<span class="op">,</span> <span class="dt">double</span> tmin <span class="op">=</span> DEFAULT_TMIN<span class="op">,</span> <span class="dt">double</span> tmax <span class="op">=</span> DEFAULT_TMAX<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">this</span>.origin <span class="op">=</span> or<span class="op">;</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">this</span>.dir <span class="op">=</span> d<span class="op">;</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">this</span>.tmin <span class="op">=</span> tmin<span class="op">;</span></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">this</span>.tmax <span class="op">=</span> tmax<span class="op">;</span></span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a><span class="wa">struct</span> Sphere <span class="op">{</span></span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>  Vec center<span class="op">;</span></span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> radius<span class="op">;</span></span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> intersect<span class="op">(</span><span class="fu">ref</span> Sphere sphere<span class="op">,</span> <span class="fu">ref</span> Ray ray<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> Vec op <span class="op">=</span> sphere.center <span class="op">-</span> ray.origin<span class="op">;</span></span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">double</span> dop <span class="op">=</span> ray.dir <span class="op">*</span> op<span class="op">;</span></span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">double</span> D <span class="op">=</span> dop <span class="op">*</span> dop <span class="op">-</span> op <span class="op">*</span> op <span class="op">+</span> sphere.radius <span class="op">*</span> sphere.radius<span class="op">;</span></span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> <span class="op">(</span><span class="dv">0</span> <span class="op">&gt;</span> D<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="at">false</span><span class="op">;</span></span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb40-33"><a href="#cb40-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-34"><a href="#cb40-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">double</span> sqrtD <span class="op">=</span> sqrt<span class="op">(</span>D<span class="op">);</span></span>
+<span id="cb40-35"><a href="#cb40-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-36"><a href="#cb40-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">double</span> tmin <span class="op">=</span> dop <span class="op">-</span> sqrtD<span class="op">;</span></span>
+<span id="cb40-37"><a href="#cb40-37" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> <span class="op">(</span>ray.tmin <span class="op">&lt;</span> tmin <span class="op">&amp;&amp;</span> tmin <span class="op">&lt;</span> ray.tmax<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb40-38"><a href="#cb40-38" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="at">true</span><span class="op">;</span></span>
+<span id="cb40-39"><a href="#cb40-39" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb40-40"><a href="#cb40-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-41"><a href="#cb40-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">double</span> tmax <span class="op">=</span> dop <span class="op">+</span> sqrtD<span class="op">;</span></span>
+<span id="cb40-42"><a href="#cb40-42" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> <span class="op">(</span>ray.tmin <span class="op">&lt;</span> tmax <span class="op">&amp;&amp;</span> tmax <span class="op">&lt;</span> ray.tmin<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb40-43"><a href="#cb40-43" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="at">true</span><span class="op">;</span></span>
+<span id="cb40-44"><a href="#cb40-44" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb40-45"><a href="#cb40-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-46"><a href="#cb40-46" aria-hidden="true" tabindex="-1"></a>  <span class="kw">return</span> <span class="at">false</span><span class="op">;</span></span>
+<span id="cb40-47"><a href="#cb40-47" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>Here are a few advantages of D:</p>
 <ul>
 <li><p>If you know C++, most of the syntax of D will look
@@ -1331,37 +1359,37 @@ requires <code>begin</code> and <code>end</code>, and instead of
 <p>To define new data types, you must start with the <code>type</code>
 keyword; a C++ <code>struct</code> corresponds to a <code>record</code>
 in Pascal. Here is the implementation of the <code>Vec</code> class:</p>
-<div class="sourceCode" id="cb40"><pre
-class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">uses</span> strutils;   <span class="co">(* This imports the &quot;Format&quot; function *)</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>   Vec = <span class="kw">record</span></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>      x, y, z: <span class="dt">Real</span>;</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>   <span class="kw">end</span>;</span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> FormatVec(<span class="kw">const</span> v : Vec) : <span class="dt">String</span>;</span>
-<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="kw">begin</span></span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>   result := Format(<span class="st">&#39;&lt;%.2f, %.2f, %.2f&gt;&#39;</span>, [v.x, v.y, v.z]);</span>
-<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span>
-<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> * (t : <span class="dt">Real</span>; <span class="kw">const</span> v : Vec) : Vec; <span class="kw">inline</span>;</span>
-<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a><span class="kw">begin</span></span>
-<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>   result.x := t * v.x;</span>
-<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>   result.y := t * v.y;</span>
-<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>   result.z := t * v.z;</span>
-<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span>
-<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> * (<span class="kw">const</span> a, b : Vec) : <span class="dt">Real</span>; <span class="kw">inline</span>;</span>
-<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a><span class="kw">begin</span></span>
-<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>   result := a.x * b.x + a.y * b.y + a.z * b.z;</span>
-<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span>
-<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> * (a : <span class="dt">Real</span>; <span class="kw">const</span> v : Vec) : <span class="dt">Real</span>; <span class="kw">inline</span>;</span>
-<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a><span class="kw">begin</span></span>
-<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>   result.x := a * v.x;</span>
-<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>   result.y := a * v.y;</span>
-<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a>   result.z := a * v.z;</span>
-<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">uses</span> strutils;   <span class="co">(* This imports the &quot;Format&quot; function *)</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>   Vec = <span class="kw">record</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>      x, y, z: <span class="dt">Real</span>;</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>   <span class="kw">end</span>;</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> FormatVec(<span class="kw">const</span> v : Vec) : <span class="dt">String</span>;</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="kw">begin</span></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>   result := Format(<span class="st">&#39;&lt;%.2f, %.2f, %.2f&gt;&#39;</span>, [v.x, v.y, v.z]);</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> * (t : <span class="dt">Real</span>; <span class="kw">const</span> v : Vec) : Vec; <span class="kw">inline</span>;</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="kw">begin</span></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>   result.x := t * v.x;</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>   result.y := t * v.y;</span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>   result.z := t * v.z;</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> * (<span class="kw">const</span> a, b : Vec) : <span class="dt">Real</span>; <span class="kw">inline</span>;</span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a><span class="kw">begin</span></span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>   result := a.x * b.x + a.y * b.y + a.z * b.z;</span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> * (a : <span class="dt">Real</span>; <span class="kw">const</span> v : Vec) : <span class="dt">Real</span>; <span class="kw">inline</span>;</span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a><span class="kw">begin</span></span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>   result.x := a * v.x;</span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>   result.y := a * v.y;</span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a>   result.z := a * v.z;</span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span></code></pre></div>
 <p>Unlike C++, Pascal uses the <code>:=</code> operator to mark an
 assignment; because of its didactic nature, Wirth wanted a language that
 marked the difference in roles between the left and right sides of
@@ -1385,44 +1413,44 @@ will complain that the same variable is defined twice!)</p>
 FreePascal compiler; the original Pascal language did not have this
 feature.</p>
 <p>The code to intersect rays and spheres is defined similarly:</p>
-<div class="sourceCode" id="cb41"><pre
-class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>   Ray = <span class="kw">record</span></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>      m_o : Vec;</span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>      m_d : Vec;</span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>      m_tmin : <span class="dt">Real</span>;</span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>      m_tmax : <span class="dt">Real</span>;</span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>   <span class="kw">end</span>;</span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>   Sphere = <span class="kw">record</span></span>
-<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>      m_p : Vec;</span>
-<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>      m_r : <span class="dt">Real</span>;</span>
-<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>   <span class="kw">end</span>;</span>
-<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> intersect(sphere: Sphere; ray: Ray) : <span class="dt">Boolean</span>;</span>
-<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span></span>
-<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>   op : Vec;</span>
-<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>   dop : <span class="dt">Real</span>;</span>
-<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a>   D : <span class="dt">Real</span>;</span>
-<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>   sqrtD : <span class="dt">Real</span>;</span>
-<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a>   tmin, tmax : <span class="dt">Real</span>;</span>
-<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a><span class="kw">begin</span></span>
-<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a>   op := sphere.m_p - ray.m_o;</span>
-<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a>   dop := ray.m_d * op;</span>
-<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a>   D := dop * dop - op * op + sphere.m_r * sphere.m_r;</span>
-<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>   <span class="kw">if</span> <span class="dv">0</span> &gt; D <span class="kw">then</span></span>
-<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>      <span class="kw">Exit</span>(<span class="kw">False</span>);</span>
-<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a>   sqrtD := sqrt(D);</span>
-<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a>   tmin := dop - sqrtD;</span>
-<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a>   <span class="kw">if</span> (ray.m_tmin &lt; tmin) <span class="kw">and</span> (tmin &lt; ray.m_tmax) <span class="kw">then</span></span>
-<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a>      <span class="kw">Exit</span>(<span class="kw">True</span>);</span>
-<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a>   tmax := dop + sqrtD;</span>
-<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a>   result := (ray.m_tmin &lt; tmax) <span class="kw">and</span> (tmax &lt; ray.m_tmax);</span>
-<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>   Ray = <span class="kw">record</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>      m_o : Vec;</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>      m_d : Vec;</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>      m_tmin : <span class="dt">Real</span>;</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>      m_tmax : <span class="dt">Real</span>;</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>   <span class="kw">end</span>;</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>   Sphere = <span class="kw">record</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>      m_p : Vec;</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>      m_r : <span class="dt">Real</span>;</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>   <span class="kw">end</span>;</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> intersect(sphere: Sphere; ray: Ray) : <span class="dt">Boolean</span>;</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span></span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>   op : Vec;</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>   dop : <span class="dt">Real</span>;</span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>   D : <span class="dt">Real</span>;</span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>   sqrtD : <span class="dt">Real</span>;</span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>   tmin, tmax : <span class="dt">Real</span>;</span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a><span class="kw">begin</span></span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a>   op := sphere.m_p - ray.m_o;</span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a>   dop := ray.m_d * op;</span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a>   D := dop * dop - op * op + sphere.m_r * sphere.m_r;</span>
+<span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a>   <span class="kw">if</span> <span class="dv">0</span> &gt; D <span class="kw">then</span></span>
+<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a>      <span class="kw">Exit</span>(<span class="kw">False</span>);</span>
+<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-30"><a href="#cb42-30" aria-hidden="true" tabindex="-1"></a>   sqrtD := sqrt(D);</span>
+<span id="cb42-31"><a href="#cb42-31" aria-hidden="true" tabindex="-1"></a>   tmin := dop - sqrtD;</span>
+<span id="cb42-32"><a href="#cb42-32" aria-hidden="true" tabindex="-1"></a>   <span class="kw">if</span> (ray.m_tmin &lt; tmin) <span class="kw">and</span> (tmin &lt; ray.m_tmax) <span class="kw">then</span></span>
+<span id="cb42-33"><a href="#cb42-33" aria-hidden="true" tabindex="-1"></a>      <span class="kw">Exit</span>(<span class="kw">True</span>);</span>
+<span id="cb42-34"><a href="#cb42-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-35"><a href="#cb42-35" aria-hidden="true" tabindex="-1"></a>   tmax := dop + sqrtD;</span>
+<span id="cb42-36"><a href="#cb42-36" aria-hidden="true" tabindex="-1"></a>   result := (ray.m_tmin &lt; tmax) <span class="kw">and</span> (tmax &lt; ray.m_tmax);</span>
+<span id="cb42-37"><a href="#cb42-37" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span>;</span></code></pre></div>
 <p>Unlike C++, Pascal requires to list the variables used in a function
 in a <code>var</code> section before the <code>begin</code>, as shown in
 the function <code>intersect</code>. The return value of a function can
@@ -1548,27 +1576,27 @@ teacher must have a way to recompile your code to test it.</p>
 <p>Here is an example showing how to implement a <code>Vec</code> data
 structure similar to the one implemented in C++; the code assumes you
 are using FreeBASIC:</p>
-<div class="sourceCode" id="cb42"><pre
-class="sourceCode monobasic"><code class="sourceCode monobasic"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>type Vec</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> <span class="dt">double</span> x, y, z</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">&#39; This converts a Vec into a printable string</span></span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">declare</span> operator cast() <span class="kw">as</span> <span class="dt">string</span></span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>end type</span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>operator Vec.cast() <span class="kw">as</span> <span class="dt">string</span></span>
-<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="st">&quot;&lt;&quot;</span> + str(x) + <span class="st">&quot;, &quot;</span> + str(y) + <span class="st">&quot;, &quot;</span> + str(z) + <span class="st">&quot;&gt;&quot;</span></span>
-<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>end operator</span>
-<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="co">&#39; Dot product</span></span>
-<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>operator*(<span class="kw">byval</span> v1 <span class="kw">as</span> Vec, <span class="kw">byval</span> v2 <span class="kw">as</span> Vec) <span class="kw">as</span> <span class="dt">double</span></span>
-<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> v1.x * v2.x + v1.y * v2.y + v1.z * v2.z</span>
-<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>end operator</span>
-<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a><span class="co">&#39; Scalar-vector product</span></span>
-<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>operator*(t <span class="kw">as</span> <span class="dt">double</span>, <span class="kw">byval</span> v <span class="kw">as</span> Vec) <span class="kw">as</span> Vec</span>
-<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> type&lt;Vec&gt;(t * v.x, t * v.y, t * v.z)</span>
-<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>end operator</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode monobasic"><code class="sourceCode monobasic"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>type Vec</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> <span class="dt">double</span> x, y, z</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">&#39; This converts a Vec into a printable string</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">declare</span> operator cast() <span class="kw">as</span> <span class="dt">string</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>end type</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>operator Vec.cast() <span class="kw">as</span> <span class="dt">string</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="st">&quot;&lt;&quot;</span> + str(x) + <span class="st">&quot;, &quot;</span> + str(y) + <span class="st">&quot;, &quot;</span> + str(z) + <span class="st">&quot;&gt;&quot;</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>end operator</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a><span class="co">&#39; Dot product</span></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>operator*(<span class="kw">byval</span> v1 <span class="kw">as</span> Vec, <span class="kw">byval</span> v2 <span class="kw">as</span> Vec) <span class="kw">as</span> <span class="dt">double</span></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> v1.x * v2.x + v1.y * v2.y + v1.z * v2.z</span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>end operator</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a><span class="co">&#39; Scalar-vector product</span></span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>operator*(t <span class="kw">as</span> <span class="dt">double</span>, <span class="kw">byval</span> v <span class="kw">as</span> Vec) <span class="kw">as</span> Vec</span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> type&lt;Vec&gt;(t * v.x, t * v.y, t * v.z)</span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>end operator</span></code></pre></div>
 <p>As this example shows, the syntax of the BASIC language is very
 lightweight:</p>
 <ul>
@@ -1589,33 +1617,33 @@ possible—but discouraged!—in C++.</p></li>
 <p>Here is the implementation of the <code>ray</code> and
 <code>sphere</code> types, as well as the code to check the intersection
 between a ray and a sphere:</p>
-<div class="sourceCode" id="cb43"><pre
-class="sourceCode monobasic"><code class="sourceCode monobasic"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>type ray</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> Vec m_o</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> Vec m_d</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> <span class="dt">double</span> m_tmin</span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> <span class="dt">double</span> m_tmax</span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>end type</span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>type sphere</span>
-<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> Vec m_p</span>
-<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> <span class="dt">double</span> m_r</span>
-<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>end type</span>
-<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a><span class="kw">function </span>intersect(<span class="kw">byval</span> s <span class="kw">as</span> sphere, <span class="kw">byval</span> r <span class="kw">as</span> ray) <span class="kw">as</span> <span class="dt">boolean</span></span>
-<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> op <span class="kw">as</span> Vec = s.m_p - r.m_o</span>
-<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> dop <span class="kw">as</span> <span class="dt">double</span> = r.m_d * op</span>
-<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> d <span class="kw">as</span> <span class="dt">double</span> = dop * dop - op * op + s.m_r * s.m_r</span>
-<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if </span>0.0 &gt; d <span class="kw">then</span> <span class="kw">return</span> <span class="kw">false</span></span>
-<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> sqrtd <span class="kw">as</span> <span class="dt">double</span> = sqr(d)</span>
-<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> tmin <span class="kw">as</span> <span class="dt">double</span> = dop - sqrtd</span>
-<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if </span>(r.m_tmin &lt; tmin) <span class="kw">and</span> (tmin &lt; r.m_tmax) <span class="kw">then</span> <span class="kw">return</span> <span class="kw">true</span></span>
-<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-24"><a href="#cb43-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> tmax <span class="kw">as</span> <span class="dt">double</span> = dop + sqrtd</span>
-<span id="cb43-25"><a href="#cb43-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> (r.m_tmin &lt; tmax) <span class="kw">and</span> (tmax &lt; r.m_tmax)</span>
-<span id="cb43-26"><a href="#cb43-26" aria-hidden="true" tabindex="-1"></a><span class="kw">end function</span></span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode monobasic"><code class="sourceCode monobasic"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>type ray</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> Vec m_o</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> Vec m_d</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> <span class="dt">double</span> m_tmin</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> <span class="dt">double</span> m_tmax</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>end type</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>type sphere</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> Vec m_p</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">as</span> <span class="dt">double</span> m_r</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>end type</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a><span class="kw">function </span>intersect(<span class="kw">byval</span> s <span class="kw">as</span> sphere, <span class="kw">byval</span> r <span class="kw">as</span> ray) <span class="kw">as</span> <span class="dt">boolean</span></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> op <span class="kw">as</span> Vec = s.m_p - r.m_o</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> dop <span class="kw">as</span> <span class="dt">double</span> = r.m_d * op</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> d <span class="kw">as</span> <span class="dt">double</span> = dop * dop - op * op + s.m_r * s.m_r</span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if </span>0.0 &gt; d <span class="kw">then</span> <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> sqrtd <span class="kw">as</span> <span class="dt">double</span> = sqr(d)</span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> tmin <span class="kw">as</span> <span class="dt">double</span> = dop - sqrtd</span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if </span>(r.m_tmin &lt; tmin) <span class="kw">and</span> (tmin &lt; r.m_tmax) <span class="kw">then</span> <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">dim</span> tmax <span class="kw">as</span> <span class="dt">double</span> = dop + sqrtd</span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> (r.m_tmin &lt; tmax) <span class="kw">and</span> (tmax &lt; r.m_tmax)</span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a><span class="kw">end function</span></span></code></pre></div>
 <p>In FreeBASIC, variables are declared using the keyword
 <code>dim</code> (which originally stood for <code>dimension</code>,
 because in the old Microsoft BASIC it was used primarily to initialize
@@ -1635,16 +1663,16 @@ href="https://www.freebasic.net/wiki/TblComparisonC">www.freebasic.net/wiki/TblC
 <li><p>The language is quite safe, as every variable is automatically
 initialized to zero. Not initializing variables is a very common bug in
 C++, as the following example shows:</p>
-<div class="sourceCode" id="cb44"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> sum<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> <span class="op">&amp;</span>list<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> sum<span class="op">;</span>  <span class="co">// Oh no, I forgot to initialize this variable!</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span><span class="kw">auto</span> elem <span class="op">:</span> list<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>        sum <span class="op">+=</span> list<span class="op">;</span></span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sum<span class="op">;</span></span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> sum<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> <span class="op">&amp;</span>list<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> sum<span class="op">;</span>  <span class="co">// Oh no, I forgot to initialize this variable!</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span><span class="kw">auto</span> elem <span class="op">:</span> list<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>        sum <span class="op">+=</span> list<span class="op">;</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sum<span class="op">;</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>These bugs are impossible in FreeBASIC.</p></li>
 <li><p>The compiler is extremely fast.</p></li>
 <li><p>The standard library provides the possibility to open a window
@@ -1684,52 +1712,52 @@ model is significantly different from any other language listed in this
 document.</p>
 <p>To see how Julia helps in writing scientific code, here is the
 implementation of the vector data structure:</p>
-<div class="sourceCode" id="cb45"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LinearAlgebra</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StaticArrays</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> Vec <span class="op">=</span> SVector{<span class="fl">3</span>,<span class="dt">Float64</span>}</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">LinearAlgebra</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StaticArrays</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> Vec <span class="op">=</span> SVector{<span class="fl">3</span>,<span class="dt">Float64</span>}</span></code></pre></div>
 <p>There is no need to define any operator for <code>Vec</code> class,
 as Julia has native support for vector operations: addition, dot product
 and scalar-product multiplication are already available.</p>
 <p>The following code implements the <code>Ray</code> and
 <code>Sphere</code> data structures, as well as the
 <code>intersect</code> method:</p>
-<div class="sourceCode" id="cb46"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Ray</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    o<span class="op">::</span><span class="dt">Vec</span></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    d<span class="op">::</span><span class="dt">Vec</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    tmin<span class="op">::</span><span class="dt">Float64</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    tmax<span class="op">::</span><span class="dt">Float64</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We provide three constructors using overloading</span></span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Ray</span>(o, d, tmin, tmax) <span class="op">=</span> <span class="fu">new</span>(o, d, tmin, tmax)</span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Ray</span>(o, d, tmin) <span class="op">=</span> <span class="fu">new</span>(o, d, tmin, DEFAULT_TMAX)</span>
-<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Ray</span>(o, d) <span class="op">=</span> <span class="fu">new</span>(o, d, DEFAULT_TMIN, DEFAULT_TMAX)</span>
-<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Sphere</span>
-<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>    r<span class="op">::</span><span class="dt">Float64</span></span>
-<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>    p<span class="op">::</span><span class="dt">Vec</span></span>
-<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">intersect</span>(s<span class="op">::</span><span class="dt">Sphere</span>, ray<span class="op">::</span><span class="dt">Ray</span>)</span>
-<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>    op <span class="op">=</span> s.p <span class="op">-</span> ray.o</span>
-<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a>    dop <span class="op">=</span> ray.d • op</span>
-<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> dop<span class="op">^</span><span class="fl">2</span> <span class="op">-</span> op • op <span class="op">+</span> s.r<span class="op">^</span><span class="fl">2</span></span>
-<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.0</span> <span class="op">&gt;</span> d <span class="op">&amp;&amp;</span> <span class="cf">return</span> <span class="cn">false</span></span>
-<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a>    sqrtD <span class="op">=</span> √d</span>
-<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a>    tmin <span class="op">=</span> dop <span class="op">-</span> sqrtD</span>
-<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The «Julia way» to write &quot;if … then return true&quot;</span></span>
-<span id="cb46-30"><a href="#cb46-30" aria-hidden="true" tabindex="-1"></a>    (ray.tmin <span class="op">&lt;</span> tmin <span class="op">&lt;</span> ray.tmax) <span class="op">&amp;&amp;</span> <span class="cf">return</span> <span class="cn">true</span></span>
-<span id="cb46-31"><a href="#cb46-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a>    tmax <span class="op">=</span> dop <span class="op">+</span> sqrtD</span>
-<span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a>    ray.tmin <span class="op">&lt;</span> tmax <span class="op">&lt;</span> ray.tmax</span>
-<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Ray</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    o<span class="op">::</span><span class="dt">Vec</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    d<span class="op">::</span><span class="dt">Vec</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    tmin<span class="op">::</span><span class="dt">Float64</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    tmax<span class="op">::</span><span class="dt">Float64</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We provide three constructors using overloading</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Ray</span>(o, d, tmin, tmax) <span class="op">=</span> <span class="fu">new</span>(o, d, tmin, tmax)</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Ray</span>(o, d, tmin) <span class="op">=</span> <span class="fu">new</span>(o, d, tmin, DEFAULT_TMAX)</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Ray</span>(o, d) <span class="op">=</span> <span class="fu">new</span>(o, d, DEFAULT_TMIN, DEFAULT_TMAX)</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Sphere</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>    r<span class="op">::</span><span class="dt">Float64</span></span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>    p<span class="op">::</span><span class="dt">Vec</span></span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">intersect</span>(s<span class="op">::</span><span class="dt">Sphere</span>, ray<span class="op">::</span><span class="dt">Ray</span>)</span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>    op <span class="op">=</span> s.p <span class="op">-</span> ray.o</span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>    dop <span class="op">=</span> ray.d • op</span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> dop<span class="op">^</span><span class="fl">2</span> <span class="op">-</span> op • op <span class="op">+</span> s.r<span class="op">^</span><span class="fl">2</span></span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>    <span class="fl">0.0</span> <span class="op">&gt;</span> d <span class="op">&amp;&amp;</span> <span class="cf">return</span> <span class="cn">false</span></span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a>    sqrtD <span class="op">=</span> √d</span>
+<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a>    tmin <span class="op">=</span> dop <span class="op">-</span> sqrtD</span>
+<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The «Julia way» to write &quot;if … then return true&quot;</span></span>
+<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a>    (ray.tmin <span class="op">&lt;</span> tmin <span class="op">&lt;</span> ray.tmax) <span class="op">&amp;&amp;</span> <span class="cf">return</span> <span class="cn">true</span></span>
+<span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a>    tmax <span class="op">=</span> dop <span class="op">+</span> sqrtD</span>
+<span id="cb47-33"><a href="#cb47-33" aria-hidden="true" tabindex="-1"></a>    ray.tmin <span class="op">&lt;</span> tmax <span class="op">&lt;</span> ray.tmax</span>
+<span id="cb47-34"><a href="#cb47-34" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div>
 <p>Even if you do not understand the mathematics used in the
 <code>intersect</code> method, the sequence of mathematical operations
 should be clear. The dot operator <code>•</code> is provided by the
@@ -1820,54 +1848,54 @@ IDE with stellar support for Kotlin through IntelliJ IDEA. If you pick
 Kotlin, you should install IDEA and do not look for anything else.</p>
 <p>Here is a possible implementation for the <code>Vec</code> class,
 which implements a 3D vector:</p>
-<div class="sourceCode" id="cb47"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> Vec<span class="op">(</span><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">z</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">toString</span><span class="op">():</span> <span class="dt">String</span> <span class="op">{</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="st">&quot;&lt;</span><span class="ss">$x</span><span class="st">, </span><span class="ss">$y</span><span class="st">, </span><span class="ss">$z</span><span class="st">&gt;&quot;</span></span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">times</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Vec</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">{</span></span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> x <span class="op">*</span> other<span class="op">.</span>x <span class="op">+</span> y <span class="op">*</span> other<span class="op">.</span>y <span class="op">+</span> z <span class="op">*</span> other<span class="op">.</span>z</span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">times</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Vec</span> <span class="op">{</span></span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> Vec<span class="op">(</span>t <span class="op">*</span> x<span class="op">,</span> t <span class="op">*</span> y<span class="op">,</span> t <span class="op">*</span> z<span class="op">)</span></span>
-<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> Vec<span class="op">(</span><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">z</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">toString</span><span class="op">():</span> <span class="dt">String</span> <span class="op">{</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="st">&quot;&lt;</span><span class="ss">$x</span><span class="st">, </span><span class="ss">$y</span><span class="st">, </span><span class="ss">$z</span><span class="st">&gt;&quot;</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">times</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Vec</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> x <span class="op">*</span> other<span class="op">.</span>x <span class="op">+</span> y <span class="op">*</span> other<span class="op">.</span>y <span class="op">+</span> z <span class="op">*</span> other<span class="op">.</span>z</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">times</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Vec</span> <span class="op">{</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> Vec<span class="op">(</span>t <span class="op">*</span> x<span class="op">,</span> t <span class="op">*</span> y<span class="op">,</span> t <span class="op">*</span> z<span class="op">)</span></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>Kotlin’s syntax is clearly inspired by C++, but it avoids using
 <code>;</code>. However, unlike C++, the variable members are listed
 <em>before</em> the curly braces: similarly to Pascal but unlike C++,
 types are specified after parameter names.</p>
 <p>Here is the implementation of the <code>Ray</code> and
 <code>Sphere</code> classes:</p>
-<div class="sourceCode" id="cb48"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">kotlin</span><span class="op">.</span><span class="im">math</span><span class="op">.</span><span class="im">sqrt</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> Ray<span class="op">(</span><span class="kw">val</span> <span class="va">m_o</span><span class="op">:</span> <span class="dt">Vec</span><span class="op">,</span></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>               <span class="kw">val</span> <span class="va">m_d</span><span class="op">:</span> <span class="dt">Vec</span><span class="op">,</span></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>               <span class="kw">val</span> <span class="va">m_tmin</span><span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> <span class="fl">1e-10</span><span class="op">,</span></span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>               <span class="kw">val</span> <span class="va">m_tmax</span><span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> <span class="fl">1e+10</span><span class="op">)</span></span>
-<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> Sphere<span class="op">(</span><span class="kw">val</span> <span class="va">m_r</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">m_p</span><span class="op">:</span> <span class="dt">Vec</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">intersect</span><span class="op">(</span><span class="va">ray</span><span class="op">:</span> <span class="dt">Ray</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Boolean</span> <span class="op">{</span></span>
-<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">op</span> <span class="op">=</span> m_p <span class="op">-</span> ray<span class="op">.</span>m_o</span>
-<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">dop</span> <span class="op">=</span> ray<span class="op">.</span>m_d <span class="op">*</span> op</span>
-<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">D</span> <span class="op">=</span> dop <span class="op">*</span> dop <span class="op">-</span> op <span class="op">*</span> op <span class="op">+</span> m_r <span class="op">*</span> m_r</span>
-<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="dv">0</span> <span class="op">&gt;</span> D<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
-<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">sqrtD</span> <span class="op">=</span> sqrt<span class="op">(</span>D<span class="op">)</span></span>
-<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">tmin</span> <span class="op">=</span> dop <span class="op">-</span> sqrtD</span>
-<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>ray<span class="op">.</span>m_tmin <span class="op">&lt;</span> tmin <span class="op">&amp;&amp;</span> tmin <span class="op">&lt;</span> ray<span class="op">.</span>m_tmax<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">true</span></span>
-<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">tmax</span> <span class="op">=</span> dop <span class="op">+</span> sqrtD</span>
-<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="op">(</span>ray<span class="op">.</span>m_tmin <span class="op">&lt;</span> tmax <span class="op">&amp;&amp;</span> tmax <span class="op">&lt;</span> ray<span class="op">.</span>m_tmax<span class="op">)</span></span>
-<span id="cb48-26"><a href="#cb48-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb48-27"><a href="#cb48-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">kotlin</span><span class="op">.</span><span class="im">math</span><span class="op">.</span><span class="im">sqrt</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> Ray<span class="op">(</span><span class="kw">val</span> <span class="va">m_o</span><span class="op">:</span> <span class="dt">Vec</span><span class="op">,</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>               <span class="kw">val</span> <span class="va">m_d</span><span class="op">:</span> <span class="dt">Vec</span><span class="op">,</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>               <span class="kw">val</span> <span class="va">m_tmin</span><span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> <span class="fl">1e-10</span><span class="op">,</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>               <span class="kw">val</span> <span class="va">m_tmax</span><span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> <span class="fl">1e+10</span><span class="op">)</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> Sphere<span class="op">(</span><span class="kw">val</span> <span class="va">m_r</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">m_p</span><span class="op">:</span> <span class="dt">Vec</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">intersect</span><span class="op">(</span><span class="va">ray</span><span class="op">:</span> <span class="dt">Ray</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Boolean</span> <span class="op">{</span></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">op</span> <span class="op">=</span> m_p <span class="op">-</span> ray<span class="op">.</span>m_o</span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">dop</span> <span class="op">=</span> ray<span class="op">.</span>m_d <span class="op">*</span> op</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">D</span> <span class="op">=</span> dop <span class="op">*</span> dop <span class="op">-</span> op <span class="op">*</span> op <span class="op">+</span> m_r <span class="op">*</span> m_r</span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="dv">0</span> <span class="op">&gt;</span> D<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">sqrtD</span> <span class="op">=</span> sqrt<span class="op">(</span>D<span class="op">)</span></span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">tmin</span> <span class="op">=</span> dop <span class="op">-</span> sqrtD</span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>ray<span class="op">.</span>m_tmin <span class="op">&lt;</span> tmin <span class="op">&amp;&amp;</span> tmin <span class="op">&lt;</span> ray<span class="op">.</span>m_tmax<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">tmax</span> <span class="op">=</span> dop <span class="op">+</span> sqrtD</span>
+<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="op">(</span>ray<span class="op">.</span>m_tmin <span class="op">&lt;</span> tmax <span class="op">&amp;&amp;</span> tmax <span class="op">&lt;</span> ray<span class="op">.</span>m_tmax<span class="op">)</span></span>
+<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>A few advantages of Kotlin are the following:</p>
 <ul>
 <li><p>If you are interested in learning a modern language that can be
@@ -1961,77 +1989,77 @@ difficulty of the language, as the <code>Vec3</code> type is a <em>value
 type</em> (allocated on the stack and not on the heap). The code that
 implements the data type <code>Vec3</code> thus looks deceivingly
 trivial:</p>
-<div class="sourceCode" id="cb49"><pre
-class="sourceCode rust"><code class="sourceCode rust"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::</span>ops<span class="op">;</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co">// The ability to print Vec3 variables is automatically enabled</span></span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co">// by &quot;Debug&quot;</span></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Copy</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Debug</span><span class="at">)]</span></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Vec3 <span class="op">{</span></span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    x<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>    y<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>    z<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a><span class="co">// Dot product</span></span>
-<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="pp">ops::</span><span class="bu">Mul</span><span class="op">&lt;</span>Vec3<span class="op">&gt;</span> <span class="cf">for</span> Vec3 <span class="op">{</span></span>
-<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span> Output <span class="op">=</span> <span class="dt">f64</span><span class="op">;</span></span>
-<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> mul(<span class="kw">self</span><span class="op">,</span> other<span class="op">:</span> Vec3) <span class="op">-&gt;</span> <span class="dt">f64</span> <span class="op">{</span></span>
-<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>x <span class="op">*</span> other<span class="op">.</span>x <span class="op">+</span> <span class="kw">self</span><span class="op">.</span>y <span class="op">*</span> other<span class="op">.</span>y <span class="op">+</span> <span class="kw">self</span><span class="op">.</span>z <span class="op">*</span> other<span class="op">.</span>z</span>
-<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a><span class="co">// Scalar-vector product</span></span>
-<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="pp">ops::</span><span class="bu">Mul</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span> <span class="cf">for</span> Vec3 <span class="op">{</span></span>
-<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span> Output <span class="op">=</span> Vec3<span class="op">;</span></span>
-<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> mul(<span class="kw">self</span><span class="op">:</span> Vec3<span class="op">,</span> other<span class="op">:</span> <span class="dt">f64</span>) <span class="op">-&gt;</span> Vec3 <span class="op">{</span></span>
-<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a>        Vec3 <span class="op">{</span></span>
-<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a>            x<span class="op">:</span> other <span class="op">*</span> <span class="kw">self</span><span class="op">.</span>x<span class="op">,</span></span>
-<span id="cb49-28"><a href="#cb49-28" aria-hidden="true" tabindex="-1"></a>            y<span class="op">:</span> other <span class="op">*</span> <span class="kw">self</span><span class="op">.</span>y<span class="op">,</span></span>
-<span id="cb49-29"><a href="#cb49-29" aria-hidden="true" tabindex="-1"></a>            z<span class="op">:</span> other <span class="op">*</span> <span class="kw">self</span><span class="op">.</span>z<span class="op">,</span></span>
-<span id="cb49-30"><a href="#cb49-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb49-31"><a href="#cb49-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb49-32"><a href="#cb49-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::</span>ops<span class="op">;</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="co">// The ability to print Vec3 variables is automatically enabled</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co">// by &quot;Debug&quot;</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Copy</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Debug</span><span class="at">)]</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Vec3 <span class="op">{</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    x<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    y<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    z<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a><span class="co">// Dot product</span></span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="pp">ops::</span><span class="bu">Mul</span><span class="op">&lt;</span>Vec3<span class="op">&gt;</span> <span class="cf">for</span> Vec3 <span class="op">{</span></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span> Output <span class="op">=</span> <span class="dt">f64</span><span class="op">;</span></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> mul(<span class="kw">self</span><span class="op">,</span> other<span class="op">:</span> Vec3) <span class="op">-&gt;</span> <span class="dt">f64</span> <span class="op">{</span></span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>x <span class="op">*</span> other<span class="op">.</span>x <span class="op">+</span> <span class="kw">self</span><span class="op">.</span>y <span class="op">*</span> other<span class="op">.</span>y <span class="op">+</span> <span class="kw">self</span><span class="op">.</span>z <span class="op">*</span> other<span class="op">.</span>z</span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a><span class="co">// Scalar-vector product</span></span>
+<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> <span class="pp">ops::</span><span class="bu">Mul</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span> <span class="cf">for</span> Vec3 <span class="op">{</span></span>
+<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span> Output <span class="op">=</span> Vec3<span class="op">;</span></span>
+<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> mul(<span class="kw">self</span><span class="op">:</span> Vec3<span class="op">,</span> other<span class="op">:</span> <span class="dt">f64</span>) <span class="op">-&gt;</span> Vec3 <span class="op">{</span></span>
+<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a>        Vec3 <span class="op">{</span></span>
+<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a>            x<span class="op">:</span> other <span class="op">*</span> <span class="kw">self</span><span class="op">.</span>x<span class="op">,</span></span>
+<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a>            y<span class="op">:</span> other <span class="op">*</span> <span class="kw">self</span><span class="op">.</span>y<span class="op">,</span></span>
+<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>            z<span class="op">:</span> other <span class="op">*</span> <span class="kw">self</span><span class="op">.</span>z<span class="op">,</span></span>
+<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>Here is the implementation of the <code>Ray</code> and
 <code>Sphere</code> data types, as well as the ray/sphere intersection
 code. Again, the complexity of the Rust memory model does not appear
 here because we are still using value types:</p>
-<div class="sourceCode" id="cb50"><pre
-class="sourceCode rust"><code class="sourceCode rust"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Copy</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Debug</span><span class="at">)]</span></span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Ray <span class="op">{</span></span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    m_o<span class="op">:</span> Vec3<span class="op">,</span></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    m_d<span class="op">:</span> Vec3<span class="op">,</span></span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    m_tmin<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    m_tmax<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Copy</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Debug</span><span class="at">)]</span></span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Sphere <span class="op">{</span></span>
-<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    m_r<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
-<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>    m_p<span class="op">:</span> Vec3<span class="op">,</span></span>
-<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> intersect(sphere<span class="op">:</span> Sphere<span class="op">,</span> ray<span class="op">:</span> Ray) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
-<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> op <span class="op">=</span> sphere<span class="op">.</span>m_p <span class="op">-</span> ray<span class="op">.</span>m_o<span class="op">;</span></span>
-<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> dop <span class="op">=</span> ray<span class="op">.</span>m_d <span class="op">*</span> op<span class="op">;</span></span>
-<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> d <span class="op">=</span> dop <span class="op">*</span> dop <span class="op">-</span> op <span class="op">*</span> op <span class="op">+</span> sphere<span class="op">.</span>m_r <span class="op">*</span> sphere<span class="op">.</span>m_r<span class="op">;</span></span>
-<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="dv">0.0</span> <span class="op">&gt;</span> d <span class="op">{</span></span>
-<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="cn">false</span><span class="op">;</span></span>
-<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> sqrtd <span class="op">=</span> d<span class="op">.</span>sqrt()<span class="op">;</span></span>
-<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> tmin <span class="op">=</span> dop <span class="op">-</span> sqrtd<span class="op">;</span></span>
-<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (ray<span class="op">.</span>m_tmin <span class="op">&lt;</span> tmin) <span class="op">&amp;&amp;</span> (tmin <span class="op">&lt;</span> ray<span class="op">.</span>m_tmax) <span class="op">{</span></span>
-<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="cn">true</span><span class="op">;</span></span>
-<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> tmax <span class="op">=</span> dop <span class="op">+</span> sqrtd<span class="op">;</span></span>
-<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a>    (ray<span class="op">.</span>m_tmin <span class="op">&lt;</span> tmax) <span class="op">&amp;&amp;</span> (tmax <span class="op">&lt;</span> ray<span class="op">.</span>m_tmax)<span class="op">;</span></span>
-<span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Copy</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Debug</span><span class="at">)]</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Ray <span class="op">{</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    m_o<span class="op">:</span> Vec3<span class="op">,</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    m_d<span class="op">:</span> Vec3<span class="op">,</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    m_tmin<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    m_tmax<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Copy</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Debug</span><span class="at">)]</span></span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Sphere <span class="op">{</span></span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>    m_r<span class="op">:</span> <span class="dt">f64</span><span class="op">,</span></span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>    m_p<span class="op">:</span> Vec3<span class="op">,</span></span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> intersect(sphere<span class="op">:</span> Sphere<span class="op">,</span> ray<span class="op">:</span> Ray) <span class="op">-&gt;</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> op <span class="op">=</span> sphere<span class="op">.</span>m_p <span class="op">-</span> ray<span class="op">.</span>m_o<span class="op">;</span></span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> dop <span class="op">=</span> ray<span class="op">.</span>m_d <span class="op">*</span> op<span class="op">;</span></span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> d <span class="op">=</span> dop <span class="op">*</span> dop <span class="op">-</span> op <span class="op">*</span> op <span class="op">+</span> sphere<span class="op">.</span>m_r <span class="op">*</span> sphere<span class="op">.</span>m_r<span class="op">;</span></span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="dv">0.0</span> <span class="op">&gt;</span> d <span class="op">{</span></span>
+<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="cn">false</span><span class="op">;</span></span>
+<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> sqrtd <span class="op">=</span> d<span class="op">.</span>sqrt()<span class="op">;</span></span>
+<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> tmin <span class="op">=</span> dop <span class="op">-</span> sqrtd<span class="op">;</span></span>
+<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (ray<span class="op">.</span>m_tmin <span class="op">&lt;</span> tmin) <span class="op">&amp;&amp;</span> (tmin <span class="op">&lt;</span> ray<span class="op">.</span>m_tmax) <span class="op">{</span></span>
+<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="cn">true</span><span class="op">;</span></span>
+<span id="cb51-29"><a href="#cb51-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb51-30"><a href="#cb51-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-31"><a href="#cb51-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> tmax <span class="op">=</span> dop <span class="op">+</span> sqrtd<span class="op">;</span></span>
+<span id="cb51-32"><a href="#cb51-32" aria-hidden="true" tabindex="-1"></a>    (ray<span class="op">.</span>m_tmin <span class="op">&lt;</span> tmax) <span class="op">&amp;&amp;</span> (tmax <span class="op">&lt;</span> ray<span class="op">.</span>m_tmax)<span class="op">;</span></span>
+<span id="cb51-33"><a href="#cb51-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>The code above does not show the mechanism of borrowing, nor data
 ownership or lifetime, mainly because of the <code>Copy</code> and
 <code>Clone</code> specifications, which elegantly avoid the issue in

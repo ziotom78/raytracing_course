@@ -13,14 +13,15 @@ colorlinks: true
 
 # Change history
 
-| Date       | Comment                                                    |
-|------------|------------------------------------------------------------|
-| 2022-12-05 | Add a few more information about Pascal                    |
-| 2022-09-30 | Add a section about Crystal, fix some references           |
-| 2021-12-17 | Add a description of how to «learn» a language             |
-| 2021-12-08 | Add a description of the D language, plus a few more fixes |
-| 2021-01-02 | Fix a few typos                                            |
-| 2020-12-29 | First release                                              |
+| Date       | Comment                                                     |
+|------------|-------------------------------------------------------------|
+| 2023-01-02 | Show a more interesting comparison between Ruby and Crystal |
+| 2022-12-05 | Add a few more information about Pascal                     |
+| 2022-09-30 | Add a section about Crystal, fix some references            |
+| 2021-12-17 | Add a description of how to «learn» a language              |
+| 2021-12-08 | Add a description of the D language, plus a few more fixes  |
+| 2021-01-02 | Fix a few typos                                             |
+| 2020-12-29 | First release                                               |
 
 # Introduction
 
@@ -750,17 +751,24 @@ Here are a few highlights from the language:
     the Ruby syntax: simple scripts can be either interpreted as
     written in Ruby and Crystal. This means that when you look for
     information about how to do something in Crystal, there are
-    chances that you might reuse some StackOverflow answer about Ruby
-    (which is far more widely used than Crystal).
+    chances that you might reuse some StackOverflow answer about Ruby,
+    which is far more widely used than Crystal. (Of course, Crystal is
+    **not** Ruby, and anything but the simplest Ruby scripts won't
+    compile as Crystal programs.)
 
-    For instance, consider the following program, which prints the
-    numbers from 1 to 4:
+    As an example, consider the following program, which calculates
+    the sum of the first 100 000 000 numbers:
 
     ```ruby
     # Save this in file "test.rb"
-    (1..4).each do |value|
-        puts value
+    maxnum = 100_000_000
+    sum = 0.0
+
+    (1..maxnum).each do |num|
+        sum += num
     end
+
+    puts "The sum of the first #{maxnum} numbers is #{sum}"
     ```
 
     This is valid code in Ruby, but also in Crystal, and you can run it
@@ -768,17 +776,40 @@ Here are a few highlights from the language:
 
     ```
     $ ruby test.rb
-    1
-    2
-    3
-    4
+    The sum of the first 100000000 numbers is 5.00000005e+15
+    
     $ crystal run test.rb
-    1
-    2
-    3
-    4
+    The sum of the first 100000000 numbers is 5.00000005e+15
     ```
+    
+    However, the big difference between the two ways of running the
+    code is that the former is *interpreted* by Ruby, while the second
+    is *compiled* to optimized machine code. In fact, if we compile
+    the program using `crystal build --release` and time the
+    execution, we can see the huge difference in the time required to
+    produce the output:
+    
+    ```
+    $ time ruby test.rb
+    The sum of the first 100000000 numbers is 5.00000005e+15
 
+    real    0m7,504s
+    user    0m7,436s
+    sys     0m0,034s
+
+    $ crystal build --release -o ./test test.rb
+    
+    $ time ./test
+    The sum of the first 100000000 numbers is 5.00000005e+15
+    
+    real    0m0,105s
+    user    0m0,103s
+    sys     0m0,000s
+    ```
+    
+    The program compiled by Crystal took just 0.1 s, while the one
+    interpreted by Ruby was 75 times slower!
+    
 -   Crystal is an OOP language, much more object-oriented than C++. In
     C++, you can call class methods using the dot `.`:
     
