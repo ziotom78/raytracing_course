@@ -353,9 +353,7 @@ sviluppatori.
 
 Cheers and may the 🦀 be with you!
 
-¹ [di recente Linus ha comunicato all'
-OSS](https://www.theregister.com/2022/06/23/linus_torvalds_rust_linux_kernel/)
-che la prima "vera" merge window è molto vicina
+¹ [first merge inside linux kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8aebac82933ff1a7c8eede18cab11e1115e2062b), where all began ...
 
 ² senza troppo contare i dispositivi **android**
 
