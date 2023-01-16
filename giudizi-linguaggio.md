@@ -286,8 +286,6 @@ mi sono divertito molto nell'impararlo.
 
 ## Andrea Rossoni (Rust, 2022-07-25)
 
-### Feeback language
-
 Premesso che, opinione personale, lo spirito del corso è trasmettere
 tutte quelle metodologie per costruire, collaborare, mantenere codice
 sicuro e condiviso aka insegnare al fisico medio un po' di **devops**
@@ -295,7 +293,7 @@ skills. E **non** risolvere un problema complesso numericamente o
 imparare un nuovo linguaggio di programmazione, che saranno comunque
 sia due piacevolissime conseguenze.
 
-### `rust` è la scelta per ascendere a tale spirito (ed oltre)!
+**`rust` è la scelta per ascendere a tale spirito (ed oltre)!**
 
 Potrei avvalorare la mia tesi pedantemente, elencando tutti i pregi
 del linguaggio, toolchain e progetti/servizi associati. Ma così
