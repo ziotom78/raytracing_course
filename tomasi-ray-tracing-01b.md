@@ -328,9 +328,22 @@ Quando si esegue `git commit`, avvengono queste cose:
 3.   Crea una nuova hash per il commit;
 4.   Modifica `HEAD` in modo da puntare alla nuova hash.
 
-# Come funziona git
+# Esempio {data-transition="none"}
 
-![](./media/git-commit-anim.svg)
+<!-- Immagini create con git-sim https://github.com/initialcommit-com/git-sim -->
+![](./media/git-process-01.jpg){height=600px}
+
+# Esempio {data-transition="none"}
+
+![](./media/git-process-02.jpg){height=600px}
+
+# Esempio {data-transition="none"}
+
+![](./media/git-process-03.jpg){height=600px}
+
+# Esempio {data-transition="none"}
+
+![](./media/git-process-04.jpg){height=600px}
 
 # Il nostro esempio con git
 
