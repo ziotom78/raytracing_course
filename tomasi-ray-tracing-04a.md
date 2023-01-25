@@ -506,7 +506,7 @@ $endif$
 
 -   Anche se avete pubblicato codice su GitHub, voi restate i proprietari del codice.
 
--   Ma date ovviamente  a GitHub il diritto di mantenere sul loro server una copia del codice (in legalese si chiama «content», perché include anche altri tipi di file, come immagini e testo Markdown).
+-   Ma date ovviamente a GitHub il diritto di mantenere sul loro server una copia del codice (in legalese si chiama «content», perché include anche altri tipi di file, come immagini e testo Markdown).
 
 -   Date anche l'autorizzazione di GitHub a **visualizzare** il vostro *content*, e a permettere agli utenti di scaricarlo.
 
@@ -566,7 +566,6 @@ Copyleft
 
 -   L'unico requisito esplicito è che venga mantenuta l'attribuzione del codice: non posso prendere il codice di Tizio e pubblicarlo dicendo che è mio.
 
-
 # *Copyleft licenses*
 
 -   È un tipo di *Permissive license* che però pone vincoli importanti al modo in cui il codice viene redistribuito.
@@ -586,7 +585,7 @@ Copyleft
     -   Se il vostro codice usa una *copyleft license*, dovete verificarne la compatibilità con quella della libreria;
     -   Se il vostro codice usa una *permissive license*, in generale non potete usare librerie con licenza *copyleft* a meno di non cambiare la vostra licenza.
 
--   Se non sapete cosa usare, la scelta più sicura è probabilmente la GPL.
+-   Potete usare i siti [TLDRLegal](https://tldrlegal.com/) e [Choose an open source license](https://choosealicense.com/) per decidere. Se proprio non sapete cosa usare, la scelta più sicura è probabilmente la GPL.
 
 # Come «usare» una licenza?
 
