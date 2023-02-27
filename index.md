@@ -9,7 +9,13 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [A comparison between a few programming languages](language-comparison.html)
 -   [Giudizi degli studenti sui linguaggi usati negli anni passati](giudizi-linguaggio.html)
 
-# Argomenti per l'esame (A.A. 2021/2022)
+# Lezioni
+
+| Settimana | Slides teoria                                   | Slides esercitazioni |
+|----------:|:-----------------------------------------------:|:--------------------:|
+| 1         | [27 Febbraio 2023](tomasi-ray-tracing-01a.html) |                      |
+
+# Argomenti per l'esame (A.A. 2022/2023)
 
 ## Parti richieste per l'esame
 
@@ -18,6 +24,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Emettitori diffusi ideali](tomasi-ray-tracing-01a.html#/esempio)
 -   [BRDF](tomasi-ray-tracing-01a.html#/la-brdf)
 -   [Equazione del rendering](tomasi-ray-tracing-01a.html#/lequazione-del-rendering)
+<!--
 -   [Sistemi di controllo delle versioni](tomasi-ray-tracing-01b.html#/sistemi-di-controllo-delle-versioni)
 -   [Git](tomasi-ray-tracing-01b.html#git)
 -   [GitHub](tomasi-ray-tracing-01b.html#github)
@@ -83,3 +90,4 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/linguaggi-a-confronto)
 -   [Testing di compilatori](tomasi-ray-tracing-13a.html#/testing-di-compilatori)
 -   [Generazione automatica di compilatori](tomasi-ray-tracing-13a.html#/generazione-automatica-di-compilatori)
+-->
