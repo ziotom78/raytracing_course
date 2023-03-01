@@ -11,9 +11,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Lezioni
 
-| Settimana | Slides teoria                                   | Slides esercitazioni |
-|----------:|:-----------------------------------------------:|:--------------------:|
-| 1         | [27 Febbraio 2023](tomasi-ray-tracing-01a.html) |                      |
+| Settimana | Slides teoria                                   | Slides esercitazioni                            |
+|----------:|:-----------------------------------------------:|:-----------------------------------------------:|
+|         1 | [27 Febbraio 2023](tomasi-ray-tracing-01a.html) | [29 Febbraio 2023](tomasi-ray-tracing-01b.html) |
 
 # Argomenti per l'esame (A.A. 2022/2023)
 
