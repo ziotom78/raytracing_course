@@ -4,7 +4,7 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-# Variea
+# Varie
 
 -   Comunicate al docente la composizione del vostro gruppo e il linguaggio scelto
 
