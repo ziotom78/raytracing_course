@@ -4,6 +4,14 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
+# Varie
+
+-   Comunicate al docente la composizione del vostro gruppo e il linguaggio scelto
+
+-   Dal prossimo lunedì, le lezioni di teoria inizieranno alle 14,45 anziché alle 14,30
+
+-   Come recuperare le lezioni del 24 aprile e del 1 maggio?
+
 # Gestione di progetti
 
 # Panoramica
