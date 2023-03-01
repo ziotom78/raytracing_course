@@ -437,7 +437,7 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
 # Uso di IDE
 
 -   Se possibile, iniziate già oggi ad impratichirvi con un ambiente di sviluppo integrato (IDE) appropriato per il vostro linguaggio
--   Personalmente sono un ammiratore delle IDE sviluppate da [JetBrains](https://www.jetbrains.com/)
+-   Personalmente sono un ammiratore delle IDE sviluppate da [JetBrains](https://www.jetbrains.com/); sono a pagamento, ma esistono [licenze gratuite per studenti](https://www.jetbrains.com/community/education/#students).
 -   Ho realizzato un video che mostra come usare [Rider](https://www.jetbrains.com/rider/); è utile che lo guardino anche coloro che usano altri linguaggi, in modo da sapere quali caratteristiche cercare nelle IDE
 
 ---
@@ -483,6 +483,89 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
     $ dotnet tool install -g dotnet-format
     ```
 
+
+# Indicazioni per C++
+
+# Istruzioni
+
+-   Installare CMake; sotto Linux Debian/Ubuntu/Mint basta eseguire
+
+    ```
+    sudo apt install cmake
+    ```
+
+-   Creare un'applicazione che produca un eseguibile. Strutturare il codice in questo modo:
+
+    -   Un file `CMakeLists.txt` nella directory principale
+    -   Una directory `src` che contiene il file `main.cpp`
+
+-   In `.gitignore` elencate `*.o`, il nome dell'eseguibile (es. `hello_world`), eventuali file di backup (`*.bak`, `*~` a seconda dell'editor che usate) e la directory `build` (oppure usate [gitignore.io](https://gitignore.io/) indicando `c++` e `cmake`).
+
+# Esempio di CMake per C++
+
+```cmake
+cmake_minimum_required(VERSION 3.12)
+
+# Define a "project", providing a description and a programming language
+project(hello_world
+    VERSION 1.0
+    DESCRIPTION "Hello world in C++"
+    LANGUAGES CXX
+)
+
+# Our "project" will be able to build an executable out of a C++ source file
+add_executable(hello_world
+    src/main.cpp
+)
+
+# Force the compiler to use the C++17 standard
+target_compile_features(hello_world PUBLIC cxx_std_17)
+```
+
+# Esempio d'uso di CMake
+
+<asciinema-player src="cast/cmake-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
+
+# Riferimenti per CMake
+
+- [Documentazione ufficiale](https://cmake.org/documentation/) (abbastanza illeggibile, ma è la più aggiornata per definizione)
+- [*Professional CMake*](https://crascit.com/professional-cmake/) (C. Scott)
+- [*An Introduction to Modern CMake*](https://cliutils.gitlab.io/modern-cmake/)
+
+# Formattazione
+
+-   Se usate [CLion](https://www.jetbrains.com/clion/) (consigliatissimo!), potete formattare il codice usando il comando *Code*/*Reformat code* (Shift+Alt+L)
+
+-   Altrimenti, esiste il programma da linea di comando `clang-format`; installatelo con
+
+    ```sh
+    sudo apt install clang-format
+    ```
+    
+-   Se scrivete questo:
+
+    ```c++
+    int sum  ( int a,int b    )    {    return a+ b;}
+    ```
+    
+    la formattazione automatica lo trasforma in
+    ```c++
+    int sum(int a, int b) { return a + b; }
+    ```
+
+# Formattazione
+
+-   Il programma `clang-format` si usa da linea di comando:
+
+    ```sh
+    clang-format -i main.cpp
+    ```
+    
+-   Se **non** usate CLion, dovrebbe essere possibile configurare il vostro editor perché invochi automaticamente `clang-format` ad ogni salvataggio (ad esempio, per VSCode esiste il package [clang-format](https://github.com/xaverh/vscode-clang-format-provider))
+
+-   Questi strumenti sono utilissimi per mantenere il codice pulito e chiaro da leggere: cercate di configurarli al meglio e di imparare ad usarli sin da subito.
+
+
 # Indicazioni per Nim/D/Rust
 
 # Suggerimenti (1/2)
@@ -520,13 +603,13 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
 
 -   Sia per [D](https://intellij-dlanguage.github.io/) che per [Nim](https://plugins.jetbrains.com/plugin/15128-nim) esistono dei plugin per IntelliJ IDEA, l'IDE Java di JetBrains. Per Rust, potete usare CLion con il plugin [Rust](https://plugins.jetbrains.com/plugin/8182-rust/docs).
 
-# Suggerimenti per Kotlin
+# Suggerimenti per Java/Kotlin
 
 # Suggerimenti
 
--   Creare un'applicazione Kotlin in IntelliJ IDEA:
+-   Creare un'applicazione Java oppure Kotlin in [IntelliJ IDEA](https://www.jetbrains.com/idea/):
 
-    -   Come *Build system* scegliete «Gradle Kotlin»
+    -   Se usate Kotlin, come *Build system* scegliete «Gradle Kotlin»
     
     -   Come JDK, se non ne avete di installati scegliete il numero (versione) 17
     
@@ -554,6 +637,6 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
 
 # Suggerimenti
 
--   In Kotlin (come in Java) si fa grande affidamento sull'ambiente di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!
+-   In Java e in Kotlin si fa grande affidamento sull'ambiente di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!
 
 -   Abituatevi a invocare regolarmente il comando «Code | Reformat code» (Ctrl+Alt+L).

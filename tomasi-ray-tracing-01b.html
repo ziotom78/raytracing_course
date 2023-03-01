@@ -648,7 +648,10 @@ class="sourceCode sh"><code class="sourceCode bash"><span id="cb16-1"><a href="#
 <li>Se possibile, iniziate già oggi ad impratichirvi con un ambiente di
 sviluppo integrato (IDE) appropriato per il vostro linguaggio</li>
 <li>Personalmente sono un ammiratore delle IDE sviluppate da <a
-href="https://www.jetbrains.com/">JetBrains</a></li>
+href="https://www.jetbrains.com/">JetBrains</a>; sono a pagamento, ma
+esistono <a
+href="https://www.jetbrains.com/community/education/#students">licenze
+gratuite per studenti</a>.</li>
 <li>Ho realizzato un video che mostra come usare <a
 href="https://www.jetbrains.com/rider/">Rider</a>; è utile che lo
 guardino anche coloro che usano altri linguaggi, in modo da sapere quali
@@ -698,6 +701,101 @@ href="https://code.visualstudio.com/docs/languages/csharp">C#</a>.</p></li>
 class="sourceCode sh"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> dotnet tool install <span class="at">-g</span> dotnet-format</span></code></pre></div></li>
 </ul>
 </section>
+<section id="indicazioni-per-c" class="slide level1">
+<h1>Indicazioni per C++</h1>
+</section>
+<section id="istruzioni" class="slide level1">
+<h1>Istruzioni</h1>
+<ul>
+<li><p>Installare CMake; sotto Linux Debian/Ubuntu/Mint basta
+eseguire</p>
+<pre><code>sudo apt install cmake</code></pre></li>
+<li><p>Creare un’applicazione che produca un eseguibile. Strutturare il
+codice in questo modo:</p>
+<ul>
+<li>Un file <code>CMakeLists.txt</code> nella directory principale</li>
+<li>Una directory <code>src</code> che contiene il file
+<code>main.cpp</code></li>
+</ul></li>
+<li><p>In <code>.gitignore</code> elencate <code>*.o</code>, il nome
+dell’eseguibile (es. <code>hello_world</code>), eventuali file di backup
+(<code>*.bak</code>, <code>*~</code> a seconda dell’editor che usate) e
+la directory <code>build</code> (oppure usate <a
+href="https://gitignore.io/">gitignore.io</a> indicando <code>c++</code>
+e <code>cmake</code>).</p></li>
+</ul>
+</section>
+<section id="esempio-di-cmake-per-c" class="slide level1">
+<h1>Esempio di CMake per C++</h1>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">cmake_minimum_required</span>(<span class="ot">VERSION</span> <span class="dt">3.12</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a &quot;project&quot;, providing a description and a programming language</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="kw">project</span>(hello_world</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">VERSION</span> <span class="dt">1.0</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">DESCRIPTION</span> <span class="st">&quot;Hello world in C++&quot;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">LANGUAGES</span> <span class="ot">CXX</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Our &quot;project&quot; will be able to build an executable out of a C++ source file</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(<span class="bn">hello_world</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    src/main.cpp</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Force the compiler to use the C++17 standard</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="kw">target_compile_features</span>(<span class="bn">hello_world</span> <span class="ot">PUBLIC</span> <span class="ot">cxx_std_17</span>)</span></code></pre></div>
+</section>
+<section id="esempio-duso-di-cmake" class="slide level1">
+<h1>Esempio d’uso di CMake</h1>
+<p><asciinema-player src="cast/cmake-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player></p>
+</section>
+<section id="riferimenti-per-cmake" class="slide level1">
+<h1>Riferimenti per CMake</h1>
+<ul>
+<li><a href="https://cmake.org/documentation/">Documentazione
+ufficiale</a> (abbastanza illeggibile, ma è la più aggiornata per
+definizione)</li>
+<li><a href="https://crascit.com/professional-cmake/"><em>Professional
+CMake</em></a> (C. Scott)</li>
+<li><a href="https://cliutils.gitlab.io/modern-cmake/"><em>An
+Introduction to Modern CMake</em></a></li>
+</ul>
+</section>
+<section id="formattazione-1" class="slide level1">
+<h1>Formattazione</h1>
+<ul>
+<li><p>Se usate <a href="https://www.jetbrains.com/clion/">CLion</a>
+(consigliatissimo!), potete formattare il codice usando il comando
+<em>Code</em>/<em>Reformat code</em> (Shift+Alt+L)</p></li>
+<li><p>Altrimenti, esiste il programma da linea di comando
+<code>clang-format</code>; installatelo con</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install clang-format</span></code></pre></div></li>
+<li><p>Se scrivete questo:</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sum  <span class="op">(</span> <span class="dt">int</span> a<span class="op">,</span><span class="dt">int</span> b    <span class="op">)</span>    <span class="op">{</span>    <span class="cf">return</span> a<span class="op">+</span> b<span class="op">;}</span></span></code></pre></div>
+<p>la formattazione automatica lo trasforma in</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sum<span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span> <span class="op">}</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="formattazione-2" class="slide level1">
+<h1>Formattazione</h1>
+<ul>
+<li><p>Il programma <code>clang-format</code> si usa da linea di
+comando:</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">clang-format</span> <span class="at">-i</span> main.cpp</span></code></pre></div></li>
+<li><p>Se <strong>non</strong> usate CLion, dovrebbe essere possibile
+configurare il vostro editor perché invochi automaticamente
+<code>clang-format</code> ad ogni salvataggio (ad esempio, per VSCode
+esiste il package <a
+href="https://github.com/xaverh/vscode-clang-format-provider">clang-format</a>)</p></li>
+<li><p>Questi strumenti sono utilissimi per mantenere il codice pulito e
+chiaro da leggere: cercate di configurarli al meglio e di imparare ad
+usarli sin da subito.</p></li>
+</ul>
+</section>
 <section id="indicazioni-per-nimdrust" class="slide level1">
 <h1>Indicazioni per Nim/D/Rust</h1>
 </section>
@@ -734,15 +832,17 @@ Rust, potete usare CLion con il plugin <a
 href="https://plugins.jetbrains.com/plugin/8182-rust/docs">Rust</a>.</p></li>
 </ul>
 </section>
-<section id="suggerimenti-per-kotlin" class="slide level1">
-<h1>Suggerimenti per Kotlin</h1>
+<section id="suggerimenti-per-javakotlin" class="slide level1">
+<h1>Suggerimenti per Java/Kotlin</h1>
 </section>
 <section id="suggerimenti-1" class="slide level1">
 <h1>Suggerimenti</h1>
 <ul>
-<li><p>Creare un’applicazione Kotlin in IntelliJ IDEA:</p>
+<li><p>Creare un’applicazione Java oppure Kotlin in <a
+href="https://www.jetbrains.com/idea/">IntelliJ IDEA</a>:</p>
 <ul>
-<li><p>Come <em>Build system</em> scegliete «Gradle Kotlin»</p></li>
+<li><p>Se usate Kotlin, come <em>Build system</em> scegliete «Gradle
+Kotlin»</p></li>
 <li><p>Come JDK, se non ne avete di installati scegliete il numero
 (versione) 17</p></li>
 <li><p>Usate «Console application» come template</p></li>
@@ -775,8 +875,8 @@ e usarla.</p></li>
 <section id="suggerimenti-2" class="slide level1">
 <h1>Suggerimenti</h1>
 <ul>
-<li><p>In Kotlin (come in Java) si fa grande affidamento sull’ambiente
-di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!</p></li>
+<li><p>In Java e in Kotlin si fa grande affidamento sull’ambiente di
+sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!</p></li>
 <li><p>Abituatevi a invocare regolarmente il comando «Code | Reformat
 code» (Ctrl+Alt+L).</p></li>
 </ul>
