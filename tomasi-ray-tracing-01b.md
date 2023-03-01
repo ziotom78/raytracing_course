@@ -4,9 +4,11 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-# Varie
+# Variea
 
 -   Comunicate al docente la composizione del vostro gruppo e il linguaggio scelto
+
+-   Le esercitazioni terminano alle 12,30, ma se completate il lavoro in anticipo potete andare via prima
 
 -   Dal prossimo lunedì, le lezioni di teoria inizieranno alle 14,45 anziché alle 14,30
 
