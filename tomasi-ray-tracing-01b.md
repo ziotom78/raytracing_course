@@ -412,7 +412,7 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
 
 # Git
 
-![](./media/git-coffee-mug.jpg){height=560}
+[![](./media/git-coffee-mug.jpg){height=560}](https://remembertheapi.com/products/git-cheat-sheet-black-mugs)
 
 
 
