@@ -16,10 +16,16 @@
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -255,8 +261,8 @@ colori si dicono <em>metamerici</em></p></li>
 fluorescenza, luce laser, etc.)</p></li>
 </ul>
 </section>
-<section id="xyz-e-rgb" class="slide level1">
-<h1>XYZ e RGB</h1>
+<section id="la-codifica-rgb" class="slide level1">
+<h1>La codifica RGB</h1>
 <ul>
 <li><p>Esistono varie codifiche di colore, basate su terne di quantità
 scalari: XYZ, HSV, HSL, RGB…</p></li>
@@ -414,18 +420,21 @@ L_X(x \rightarrow \Theta) = &amp;L_{X,e}(x \rightarrow \Theta) +\\
 class="math inline">G</span> e <span class="math inline">B</span> la
 radianza integrata e convertita nel sistema RGB, l’equazione del
 rendering si traduce in un sistema di tre equazioni identiche, che si
-possono riscrivere come una equazione vettoriale su <span
+possono riscrivere come una equazione «vettoriale» su <span
 class="math inline">\vec c = (R, G, B)</span>: <span
 class="math display">
 \begin{aligned}
 \vec c(x \rightarrow \Theta) = &amp;\vec c_{e}(x \rightarrow \Theta) +\\
-    &amp;\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,\vec c(x
-\leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
+    &amp;\int_{\Omega_x} \vec f_r(x, \Psi \rightarrow \Theta)\otimes
+\vec c(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
 \end{aligned}
-</span></p></li>
-<li><p>Questo ovviamente vale solo se la BRDF <span
-class="math inline">f_r</span> è una funzione costante all’interno delle
-tre risposte in banda!</p></li>
+</span></p>
+<p>dove <span class="math inline">\vec v \otimes \vec w</span> indica un
+«vettore» dato dal prodotto delle componenti di <span
+class="math inline">\vec v</span> e <span class="math inline">\vec
+w</span>.</p></li>
+<li><p>Notate che così assumiamo che la BRDF <span
+class="math inline">f_r</span> sia costante nelle tre bande!</p></li>
 </ul>
 </section>
 <section id="visualizzazione-su-dispositivi" class="slide level1">
@@ -550,8 +559,8 @@ linearmente.</p></li>
 class="math inline">I</span> e il flusso <span
 class="math inline">\Phi</span> effettivamente emesso da un pixel è di
 solito nella forma <span class="math display">
-\Phi \propto \left(\frac{I}{I_\text{max}}\right)^\gamma\ \text{per
-ciascuna delle bande R, G, B},
+\Phi = \Phi_\text{max} \left(\frac{I}{I_\text{max}}\right)^\gamma\
+\text{per ciascuna delle bande R, G, B},
 </span></p>
 <p>dove <span class="math inline">I \in [0, I_\text{max}]</span>, e
 <span class="math inline">\gamma</span> è un parametro caratteristico
@@ -877,106 +886,6 @@ di testo e parzialmente binari.</p></li>
 essere scritte come sequenze di numeri a 32 bit (quindi
 <strong>non</strong> testo!), da sinistra a destra e dal <strong>basso
 all’alto</strong> (diverso da PPM!).</p></li>
-</ul>
-</section>
-<section id="codifica-binaria" class="slide level1">
-<h1>Codifica binaria</h1>
-</section>
-<section id="codifica-binaria-1" class="slide level1">
-<h1>Codifica binaria</h1>
-<ul>
-<li><p>I file binari sono il tipo più semplice: consistono di una
-sequenza di byte (ossia, 8 bit scritti in sequenza).</p></li>
-<li><p>Ogni byte può contenere un valore intero nell’intervallo
-0–255</p></li>
-<li><p>Per stampare il contenuto di un file binario potete usare il
-comando <code>xxd</code> (sotto Ubuntu, installatelo con
-<code>sudo apt install xxd</code>):</p>
-<pre class="text"><code>$ xxd file.bin</code></pre>
-<p>(Su altri sistemi operativi potreste avere <code>hexdump</code>
-anziché <code>xxd</code>).</p></li>
-<li><p>Salvare dati in un file binario vuol dire scrivere una sequenza
-di numeri binari sul disco fisso, memorizzati come byte.</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<p><asciinema-player src="./cast/binary-files-73x19.cast" cols="73" rows="19" font-size="medium"></asciinema-player></p>
-</section>
-<section id="da-binario-a-decimale" class="slide level1">
-<h1>Da binario a decimale</h1>
-<ul>
-<li><p>Per ragionare sui valori dei byte si usa la numerazione binaria,
-che ovviamente usa come base il numero 2:</p>
-<pre><code>0  → 0
-1  → 1
-2  → 10
-3  → 11
-4  → 100
-…</code></pre></li>
-<li><p>Per un numero <code>dcba</code> espresso in una base <span
-class="math inline">B</span>, il suo valore è</p>
-<p><span class="math display">
-\text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times
-B^3.
-</span></p>
-<p>Quindi il valore binario <code>100</code> corrisponde a <span
-class="math inline">0 \times 2^0 + 0 \times 2^1 + 1\times 2^2 =
-4.</span></p></li>
-</ul>
-</section>
-<section id="ordine-dei-bit-in-un-byte" class="slide level1">
-<h1>Ordine dei bit in un byte</h1>
-<ul>
-<li><p>C’è sempre un’ambiguità di fondo nel raggruppamento dei bit in
-byte, e sta nel loro ordine.</p></li>
-<li><p>Se un byte è formato dalla sequenza di bit
-<code>0011 0101</code>, esistono due modi per interpretarlo:</p>
-<p><span class="math display">
-\begin{aligned}
-2^2 + 2^3 + 2^5 + 2^7 &amp;= 172,\\
-2^5 + 2^4 + 2^2 + 2^0 &amp;= 53.
-\end{aligned}
-</span></p></li>
-</ul>
-</section>
-<section id="endianness-dei-bit" class="slide level1">
-<h1>«Endianness» dei bit</h1>
-<ul>
-<li><p>L’ordine dei bit in un byte è detto in gergo
-<em>bit-endianness</em>, termine tratto dai <em>Viaggi di Gulliver</em>
-(1726), di J. Swift:</p>
-<ol type="1">
-<li>La codifica <em>big-endian</em> parte dalla potenza
-<em>maggiore</em> («big»);</li>
-<li>La codifica <em>little-endian</em> parte dalla potenza
-<em>minore</em> («little»).</li>
-</ol></li>
-<li><p>Le CPU Intel e AMD oggi usate nei personal computer usano tutte
-la codifica <em>little-endian</em>.</p></li>
-<li><p>La codifica <em>big-endian</em> è stata molto usata in passato;
-oggi è impiegata in alcune CPU ARM.</p></li>
-</ul>
-</section>
-<section id="salvare-dati-in-binario" class="slide level1">
-<h1>Salvare dati in binario</h1>
-<ul>
-<li><p>Salvare una variabile in forma binaria non è in generale
-semplice!</p></li>
-<li><p>In C++ ad esempio, il programma seguente <em>non</em> salva il
-valore di <code>x</code> in binario:</p>
-<div class="sourceCode" id="cb8"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fstream&gt;</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> x<span class="op">{</span><span class="dv">138</span><span class="op">};</span>  <span class="co">// 138 &lt; 256, so the value fits in *one* byte</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>ofstream<span class="op"> </span>outf<span class="op">{</span><span class="st">&quot;file.bin&quot;</span><span class="op">};</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  outf <span class="op">&lt;&lt;</span> x<span class="op">;</span> <span class="co">// Ouch! It writes *three* bytes: &#39;1&#39;, &#39;3&#39;, &#39;8&#39;</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>Il valore <code>138</code> è stato salvato in <em>forma
-testuale</em>. (Se includete <code>&lt;cstdint&gt;</code> e cambiate il
-tipo di <code>x</code> da <code>int</code> a <code>uint8_t</code>, il
-valore viene salvato come binario!)</p></li>
 </ul>
 </section>
     </div>

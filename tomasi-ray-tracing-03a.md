@@ -303,10 +303,10 @@ Code page 866 (cirillica)
 |----------|----------------|-----------|-----------|
 | 1.0      | Ottobre 1991   | 24        | 7,129     |
 | …        |                |           |           |
-| 11.0     | Giugno 2018    | 146       | 137,374   |
 | 12.0     | Marzo 2019     | 150       | 137,928   |
 | 13.0     | Marzo 2020     | 154       | 143,859   |
 | 14.0     | Settembre 2021 | 159       | 144,697   |
+| 15.0     | Settembre 2022 | 161       | 149,186   |
 
 # Esempi di caratteri Unicode
 
@@ -336,7 +336,7 @@ Code page 866 (cirillica)
 -   Questo pone un problema nella codifica dei *code point* su file: ASCII usava un byte per carattere perché il set era limitato. Ma per Unicode quanti byte per *code point* usare? 1? 2? 100?
 
     -   Se si scegliesse un valore basso, si limiterebbe l'estendibilità di Unicode.
-    -   Se si scegliesse un valore molto alto, i file di testo aumenterebbero di dimensione inutilmente: la poesia di E. Dickinson richiede 232 byte in codifica ASCII (un byte per carattere). Usare 4 byte per carattere quadruplicherebbe lo spazio.
+    -   Se si scegliesse un valore molto alto, i file di testo aumenterebbero inutilmente di dimensione.
 
 # Codifiche oggi usate
 
@@ -603,7 +603,7 @@ print(f"The ratio {x} / {y} is {x / y}")
 
 # Errori dell'utente nelle funzioni
 
--   È solitamente molto semplice come gestire gli errori dell'utente nel `main` di un programma.
+-   È solitamente molto semplice decidere come gestire gli errori dell'utente nel `main` di un programma.
 -   È invece meno chiaro come gestire gli errori nell'input passato a una funzione o un metodo, come ad esempio `Bisezione::CercaZeri` (gli estremi erano un input dell'utente, o erano stati calcolati automaticamente dal programma?).
 -   Nessuna funzione o metodo dovrebbe **mai** fare qualcosa di catastrofico (mandare in crash il programma) o **visibile** (stampare un messaggio d'errore a video).
 -   La **regola aurea** è che la funzione restituisca un valore di ritorno che segnali l'errore, oppure che sollevi un'eccezione.

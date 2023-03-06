@@ -119,7 +119,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Il metamerismo dipende dal tipo di illuminazione (sole, lampada a fluorescenza, luce laser, etc.)
 
-# XYZ e RGB
+# La codifica RGB
 
 -   Esistono varie codifiche di colore, basate su terne di quantità scalari: XYZ, HSV, HSL, RGB… 
 
@@ -240,15 +240,17 @@ $$
 
 # Equazione del rendering
 
--   Se indichiamo con $R$, $G$ e $B$ la radianza integrata e convertita nel sistema RGB, l'equazione del rendering si traduce in un sistema di tre equazioni identiche, che si possono riscrivere come una equazione vettoriale su $\vec c = (R, G, B)$:
+-   Se indichiamo con $R$, $G$ e $B$ la radianza integrata e convertita nel sistema RGB, l'equazione del rendering si traduce in un sistema di tre equazioni identiche, che si possono riscrivere come una equazione «vettoriale» su $\vec c = (R, G, B)$:
     $$
     \begin{aligned}
     \vec c(x \rightarrow \Theta) = &\vec c_{e}(x \rightarrow \Theta) +\\
-        &\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,\vec c(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
+        &\int_{\Omega_x} \vec f_r(x, \Psi \rightarrow \Theta)\otimes \vec c(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
     \end{aligned}
     $$
     
--   Questo ovviamente vale solo se la BRDF $f_r$ è una funzione costante all'interno delle tre risposte in banda!
+    dove $\vec v \otimes \vec w$ indica un «vettore» dato dal prodotto delle componenti di $\vec v$ e $\vec w$.
+    
+-   Notate che così assumiamo che la BRDF $f_r$ sia costante nelle tre bande!
 
 
 # Visualizzazione su dispositivi
@@ -348,7 +350,7 @@ document.addEventListener('rgb-colors', function() {
 
 -   La relazione tra il livello di emissione richiesto $I$ e il flusso $\Phi$ effettivamente emesso da un pixel è di solito nella forma
     $$
-    \Phi \propto \left(\frac{I}{I_\text{max}}\right)^\gamma\ \text{per ciascuna delle bande R, G, B},
+    \Phi = \Phi_\text{max} \left(\frac{I}{I_\text{max}}\right)^\gamma\ \text{per ciascuna delle bande R, G, B},
     $$
 
     dove $I \in [0, I_\text{max}]$, e $\gamma$ è un parametro caratteristico del dispositivo.
@@ -632,90 +634,3 @@ P3
     3. Il valore `-1.0`, seguito da `0x0a`.
 
 -   **Matrice dei colori**: le terne R, G, B devono essere scritte come sequenze di numeri a 32 bit (quindi **non** testo!), da sinistra a destra e dal **basso all'alto** (diverso da PPM!).
-
-# Codifica binaria
-
-# Codifica binaria
-
--   I file binari sono il tipo più semplice: consistono di una sequenza di byte (ossia, 8 bit scritti in sequenza).
-
--   Ogni byte può contenere un valore intero nell'intervallo 0–255
-
--   Per stampare il contenuto di un file binario potete usare il comando `xxd` (sotto Ubuntu, installatelo con `sudo apt install xxd`):
-
-    ```text
-    $ xxd file.bin
-    ```
-    
-    (Su altri sistemi operativi potreste avere `hexdump` anziché `xxd`).
-    
--   Salvare dati in un file binario vuol dire scrivere una sequenza di numeri binari sul disco fisso, memorizzati come byte.
-
-
----
-
-<asciinema-player src="./cast/binary-files-73x19.cast" cols="73" rows="19" font-size="medium"></asciinema-player>
-
-
-# Da binario a decimale
-
--   Per ragionare sui valori dei byte si usa la numerazione binaria, che ovviamente usa come base il numero 2:
-
-    ```
-    0  → 0
-    1  → 1
-    2  → 10
-    3  → 11
-    4  → 100
-    …
-    ```
-    
--   Per un numero `dcba` espresso in una base $B$, il suo valore è
-
-    $$
-    \text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times B^3.
-    $$
-    
-    Quindi il valore binario `100` corrisponde a $0 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 4.$
-
-# Ordine dei bit in un byte
-
--   C'è sempre un'ambiguità di fondo nel raggruppamento dei bit in byte, e sta nel loro ordine.
-
--   Se un byte è formato dalla sequenza di bit `0011 0101`, esistono due modi per interpretarlo:
-
-    $$
-    \begin{aligned}
-    2^2 + 2^3 + 2^5 + 2^7 &= 172,\\
-    2^5 + 2^4 + 2^2 + 2^0 &= 53.
-    \end{aligned}
-    $$
-
-# «Endianness» dei bit
-
--   L'ordine dei bit in un byte è detto in gergo *bit-endianness*, termine tratto dai *Viaggi di Gulliver* (1726), di J. Swift:
-
-    1.  La codifica *big-endian* parte dalla potenza *maggiore* («big»);
-    2.  La codifica *little-endian* parte dalla potenza *minore* («little»).
-
--   Le CPU Intel e AMD oggi usate nei personal computer usano tutte la codifica *little-endian*.
-
--   La codifica *big-endian* è stata molto usata in passato; oggi è impiegata in alcune CPU ARM.
-
-# Salvare dati in binario
-
--   Salvare una variabile in forma binaria non è in generale semplice!
-
--   In C++ ad esempio, il programma seguente *non* salva il valore di `x` in binario:
-
-    ```c++
-    #include <fstream>
-    
-    int main() {
-      int x{138};  // 138 < 256, so the value fits in *one* byte
-      std::ofstream outf{"file.bin"};
-      outf << x; // Ouch! It writes *three* bytes: '1', '3', '8'
-    }
-    ```
-    
--   Il valore `138` è stato salvato in *forma testuale*. (Se includete `<cstdint>` e cambiate il tipo di `x` da `int` a `uint8_t`, il valore viene salvato come binario!)
