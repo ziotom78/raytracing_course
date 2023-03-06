@@ -25,7 +25,6 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Emettitori diffusi ideali](tomasi-ray-tracing-01a.html#/esempio)
 -   [BRDF](tomasi-ray-tracing-01a.html#/la-brdf)
 -   [Equazione del rendering](tomasi-ray-tracing-01a.html#/lequazione-del-rendering)
-<!--
 -   [Sistemi di controllo delle versioni](tomasi-ray-tracing-01b.html#/sistemi-di-controllo-delle-versioni)
 -   [Git](tomasi-ray-tracing-01b.html#git)
 -   [GitHub](tomasi-ray-tracing-01b.html#github)
@@ -33,6 +32,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Relazione tra radianza spettrale e colori RGB](tomasi-ray-tracing-02a.html#/da-l_lambda-a-rgb)
 -   [Visualizzazione su dispositivi](tomasi-ray-tracing-02a.html#/visualizzazione-su-dispositivi)
 -   [Comportamento dei monitor](tomasi-ray-tracing-02a.html#/comportamento-dei-monitor)
+<!--
 -   [Gestione dei colori](tomasi-ray-tracing-02b.html#/gestione-dei-colori)
 -   [Test automatici](tomasi-ray-tracing-02b.html#/verifica-del-codice)
 -   [Conflitti e *merging*](tomasi-ray-tracing-02b.html#/lavoro-in-gruppo)
