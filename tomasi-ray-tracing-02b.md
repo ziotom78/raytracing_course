@@ -37,9 +37,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Operazioni su `Color`
 
--   Somma/differenza tra due colori (analogo di $L_\lambda^{(1)} + L_\lambda^{(2)}$)
+-   Somma tra due colori (analogo di $L_\lambda^{(1)} + L_\lambda^{(2)}$)
 -   Prodotto per uno scalare ($\alpha L_\lambda$)
--   Prodotto tra due colori ($f_{r,\lambda} \times L_\lambda$ nell'equazione del rendering)
+-   Prodotto tra due colori ($f_{r,\lambda} \otimes L_\lambda$ nell'equazione del rendering)
 -   Livello di somiglianza tra due colori (da usare nei test)
 
 # Esempio in Python
@@ -532,7 +532,6 @@ In Python, qualsiasi variabile (anche le variabili intere come `x = 1`) è alloc
     col2 = Color(5.0, 7.0, 9.0)  # it's better to define it again here
 
     assert (col1 + col2).is_close(Color(6.0, 9.0, 12.0))
-    assert (col1 - col2).is_close(Color(-4.0, -5.0, -6.0))
     assert (col1 * col2).is_close(Color(5.0, 14.0, 27.0))
     ```
 
@@ -811,7 +810,7 @@ Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, 
 -   Consultate la [guida di Rust](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html); una trattazione più approfondita si trova nel [capitolo 11](https://doc.rust-lang.org/book/ch11-00-testing.html) di *The Rust Programming Language* (Klabnik & Nichols)
 
 
-# Suggerimenti per Kotlin
+# Suggerimenti per Java/Kotlin
 
 # Gestione di progetti
 
@@ -819,7 +818,7 @@ Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, 
 
 -   Gradle può essere programmato in Groovy (un linguaggio basato su Java) o in Kotlin.
 
--   Siccome Kotlin (come Java) permette un'ottima modularità, per questo corso non è necessario differenziare tra libreria ed eseguibile.
+-   Siccome Java e Kotlin permettono un'ottima modularità, per questo corso non è necessario differenziare tra libreria ed eseguibile.
 
 -   Create quindi un nuovo progetto esattamente come avete fatto la volta scorsa.
 
@@ -833,7 +832,7 @@ In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):
 
 # Creazione di `Color`
 
--   Usate le *data classes* per definire la classe `Color`: sono molto veloci da usare!
+-   In Kotlin, usate le *data classes* per definire la classe `Color`: sono molto veloci da usare!
 
     ```kotlin
     /** A RGB color
