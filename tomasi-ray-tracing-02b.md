@@ -80,9 +80,9 @@ class Color:
 
 -   Gli array bidimensionali non sono supportati in tutti i linguaggi (Kotlin ad esempio non li supporta), e se usati male possono essere molto inefficienti:
 
-    ```c++
-    // You do not want to implement a 2D matrix in C++ in this way!!
-    vector<vector<double>> matrix;
+    ```java
+    // This is valid Java, but it's sub-optimal!
+    int[][] myNumbers = { {1, 2, 3, 4}, {5, 6, 7} };
     ```
 
 # Struttura di `HdrImage`
