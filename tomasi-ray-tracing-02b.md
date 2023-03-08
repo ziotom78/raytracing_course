@@ -407,7 +407,7 @@ def set_pixel(self, x: int, y: int, new_color: Color):
 
 -   Pensate a un modo per suddividere il lavoro tra membri del vostro gruppo; ad esempio, per `Color`:
 
-    1.  Somma/differenza di due colori;
+    1.  Somma di due colori;
     2.  Prodotto tra due colori, e prodotto colore-scalare;
     3.  Funzione `are_colors_close`;
     4.  Test.
@@ -434,7 +434,7 @@ def set_pixel(self, x: int, y: int, new_color: Color):
 -   Tre campi `r`, `g`, `b` di tipo floating-point a **32 bit**: non servono 64 bit, e anzi ci farebbero sprecare memoria e tempo
 -   Se usate linguaggi OOP, non perdete tempo a definire `GetR`/`SetR` e simili: sono lunghe da scrivere, facili da sbagliare, rendono il codice difficile da leggere e più lento da compilare
 -   Metodo `Color.is_close` o funzione `are_close`/`are_colors_close` per verificare se due colori sono simili (utile nei test);
--   Somma e differenza tra colori;
+-   Somma tra colori;
 -   Prodotti colore-colore e colore-scalare
 -   Se è il caso, implementate anche una funzione che converta un numero in una stringa (es., `<r:1.0, g:3.0, b:4.0>`): sarà comodo per fare debug
 
@@ -525,7 +525,7 @@ In Python, qualsiasi variabile (anche le variabili intere come `x = 1`) è alloc
 
 # Test (2)
 
--   Somma/differenza/prodotto di colori:
+-   Somma/prodotto di colori:
 
     ```python
     col1 = Color(1.0, 2.0, 3.0)  # Do not use the previous definition,
