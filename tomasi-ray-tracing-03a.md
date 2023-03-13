@@ -4,6 +4,329 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
+# Gestione degli errori
+
+# Errori
+
+-   Nella scorsa esercitazione abbiamo implementato il tipo `HdrImage`.
+-   Questa settimana implementeremo le funzioni per scrivere e leggere file PFM.
+-   Leggere e scrivere file è un'attività che è facilmente soggetta ad errori:
+    -   La directory in cui salvare il file non esiste, oppure è protetta da scrittura
+    -   Il file specificato dall'utente non esiste
+    -   Il file è danneggiato
+    -   Il file è in un formato valido ma che il nostro codice non è in grado di caricare (es., un file è codificato con colori XYZ, ma il nostro codice supporta solo RGB)
+
+# Tipi di errore
+
+-   Gli errori possono essere suddivisi in due classi:
+
+    #.   Errori di pertinenza del programmatore
+    #.   Errori di pertinenza dell'utente
+    
+-   Un errore andrebbe gestito in funzione del suo tipo (primo o secondo).
+
+# Errori del programmatore
+
+-   Si tratta di un errore logico del programma.
+-   Un programma «perfetto» non dovrebbe mai avere errori logici.
+-   Se si ha l'evidenza che è avvenuto un errore logico, sarebbe meglio segnalarlo **nel modo più rumoroso possibile**.
+
+# Esempio
+
+```python
+my_list = [5, 3, 8, 4, 1, 9]
+sorted_list = my_sort_function(my_list)
+
+if not (len(my_list) == len(sorted_list)):
+    print("Error, mismatch in the length of the sorted list")
+
+# The program continues
+...
+```
+
+---
+
+<asciinema-player src="./cast/error_example1_83x23.asciinema" cols="83" rows="23" font-size="medium"></asciinema-player>
+
+
+# Esempio migliorato
+
+```python
+my_list = [5, 3, 8, 4, 1, 9]
+sorted_list = my_sort_function(my_list)
+
+# If any "assert", the program will crash and will print details
+# about what the code was doing. If PDB support is turned on,
+# a debugger will be fired automatically.
+assert len(my_list) == len(sorted_list)
+
+# The program continues
+...
+```
+
+---
+
+<asciinema-player src="./cast/error_example2_83x23.asciinema" cols="83" rows="23" font-size="medium"></asciinema-player>
+
+# Errori del programmatore
+
+-   Tutti i linguaggi implementano funzioni che consentono di mandare in crash un programma (es., `assert` e `abort` in C/C++).
+-   Queste istruzioni solitamente stampano a video una serie di dettagli sulla causa dell'errore, e sono pensate per essere usate insieme a un debugger.
+-   Eseguire un debugger è sensato: se l'errore è logico, è il programmatore che deve mettere mano al codice, non l'utente!
+-   Attenzione al fatto che alcune di queste funzioni potrebbero non essere compilate in modalità *release* (es., [`assert`](https://nim-lang.org/docs/assertions.html#assert.t,untyped,string) vs [`doAssert`](https://nim-lang.org/docs/assertions.html#doAssert.t%2Cuntyped%2Cstring) in Nim).
+
+# Errori dell'utente
+
+-   Sono errori causati da un input o un contesto sbagliato, e non per colpa di un errore nel programma:
+    -   L'utente chiede di leggere un file che non esiste;
+    -   L'utente chiede di scrivere un file su un supporto che non ha più spazio libero;
+    -   L'utente specifica un input scorretto;
+    -   L'utente chiede di usare una periferica (stampante?) non connessa al computer oppure spenta.
+-   Vanno gestiti in modo molto diverso dagli errori del programmatore: non vogliamo che il programma vada in crash in questi casi!
+
+# Esempio
+
+<asciinema-player src="./cast/user-error-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
+
+# Gestire errori dell'utente
+
+-   Gli errori dell'utente sono **inevitabili**.
+-   Se si ha evidenza che l'utente ha commesso un errore, ci sono diversi modi di reagire:
+    1.  Stampare un messaggio di errore, il più chiaro possibile;
+    2.  Chiedere all'utente di inserire di nuovo il dato scorretto;
+    3.  In certi contesti il codice può decidere autonomamente come correggere l'errore.
+    
+        Ad esempio, se si chiede un valore numerico entro un certo intervallo $[a, b]$ e il valore fornito è $x > b$, si può porre $x = b$ e continuare.
+
+# Correzione errori (1/2)
+
+```python
+x = float(input("Insert a number: "))
+y = float(input("Insert another number: "))
+if y != 0.0:
+    print(f"The ratio {x} / {y} is {x / y}")
+else:
+    print("Error, the second number cannot be zero!")
+```
+
+# Correzione errori (2/2)
+
+```python
+x = float(input("Insert a number: "))
+
+while True:
+    y = float(input("Insert another number: "))
+    if y == 0.0:
+        print("Error, the second number cannot be zero!")
+    else:
+        break
+        
+print(f"The ratio {x} / {y} is {x / y}")
+```
+
+# Programma corretto
+
+<asciinema-player src="./cast/user-error-corrected-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
+
+
+# Errori dell'utente nelle funzioni
+
+-   È solitamente molto semplice decidere come gestire gli errori dell'utente nel `main` di un programma.
+-   È invece meno chiaro come gestire gli errori nell'input passato a una funzione o un metodo: chi è stato a passare l'input sbagliato, il programma chiamante o l'utente?
+
+# Due possibilità
+
+<table width="90%">
+<thead>
+<tr>
+<th>Primo caso</th>
+<th>Secondo caso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+```c++
+double a, b;
+// The program calculates its own
+// values for a and b: if they are
+// wrong, blame the programmer!
+a = sin(3 * nu / 4 * k);
+b = cos(3 * nu + psi);
+bis.CercaZeri(a, b);
+```
+
+</td>
+<td>
+
+```c++
+double a, b;
+// The program asks the user for the
+// values for a and b: if they are
+// wrong, blame the user!
+cout << "Enter a: ";
+cin << a;
+cout << "Enter b: ";
+cin << b;
+bis.CercaZeri(a, b);
+```
+</td>
+</tr>
+</tbody>
+</table>
+
+
+# Due possibilità
+
+```c++
+double Bisezione::CercaZeri(double a, double b) {
+    if(f->Eval(a) * f->Eval(b) >= 0) {
+        // Il teorema degli zeri non è soddisfatto. Ma che faccio ora?
+    } else {
+        // Il teorema è soddisfatto, continuo l'esecuzione
+    }
+}
+```
+
+
+# Regola generale
+
+-   Nessuna funzione o metodo dovrebbe fare qualcosa di catastrofico (mandare in crash il programma) o **visibile** (stampare un messaggio d'errore a video), solo il `main` dovrebbe.
+-   La **regola aurea** è che la funzione restituisca un valore di ritorno che segnali l'errore, oppure che sollevi un'eccezione.
+
+# Eccezioni
+
+# Eccezioni
+
+-   Una eccezione serve per «mandare in crash» un programma in modo controllato:
+
+    ```python
+    def my_function(...):
+        if something_wrong:
+            raise Exception("Error!")
+    ```
+
+-   A differenza di funzioni come `abort`, il crash può essere sospeso o interrotto (in gergo, «catturato»), e l'eccezione può segnalare il tipo di errore che ne ha causato la creazione.
+
+---
+
+<asciinema-player src="./cast/exceptions-100x23.cast" cols="100" rows="23" font-size="18"></asciinema-player>
+
+# Tipi per eccezioni
+
+-   Una eccezione è un tipo di *crash* che è **tipizzato** (es., `ValueError`)
+
+-   Questi tipi possono avere al loro interno informazioni aggiuntive:
+
+    ```python
+    class WrongNumber(Exception):
+        def __init__(self, num):
+            self.num = num
+
+    try:
+        x = float(input("Enter some number: "))
+        if x > 3:
+            raise WrongNumber(num=x)
+    except WrongNumber as e:
+        print("You entered a number that is too large: ", e.num)
+
+    # Enter some number: 5
+    # You entered a number that is too large: 5
+    ```
+
+# Propagare eccezioni
+
+-   Una eccezione che non viene catturata si diffonde lungo tutta la catena dei chiamanti
+
+-   Essa può essere catturata a qualsiasi livello:
+
+    ```python
+    def f():
+        raise Exception("Error!")
+        
+    def g():
+        f()
+        
+    def h():
+        try:      # You can capture exceptions within functions, of course
+            g()   # g doesn't raise exceptions, but f() does
+        except:
+            print("Got an exception!")
+    ```
+
+# Prestazioni
+
+-   Le eccezioni rallentano i programmi, perché il compilatore deve inserire all'interno delle funzioni del codice «nascosto» che possa gestirle
+
+-   Per questo alcuni linguaggi (Rust, Go…) non le supportano, e in altri si possono disabilitare all'interno di specifiche funzioni/metodi (`nothrow` in C++)
+
+-   Nel programma che svilupperemo useremo il seguente approccio, che non causerà alcun rallentamento significativo:
+
+    -   Leggeremo input dall'utente, usando eccezioni per segnalare errori
+    -   Calcoleremo la soluzione dell'equazione del rendering, evitando eccezioni: questa sarà la parte più lenta
+    -   Salveremo il risultato in un file, usando nuovamente le eccezioni
+
+# Alternative alle eccezioni
+
+# Parametri d'errore
+
+-   Si può accettare un parametro addizionale che segnali l'errore:
+
+    ```c++
+    double Bisezione::CercaZeri(double a, double b, bool & error) {
+        error = false;
+        
+        if (m_f->Eval(a) * m_f->Eval(b) > 0.0) {
+            error = true;
+            return 0.0;
+        }
+
+        // ...
+        return result;
+    }
+    ```
+
+-   Al posto di un `bool` potete usare una classe per registrare il tipo di errore e informazioni complesse.
+
+# Tipi *nullable*
+
+-   Linguaggi come C\# e Kotlin definiscono il tipo *nullable*, che può essere usato con qualsiasi tipo, e ne indica l'*assenza*:
+
+    ```csharp
+    // C# example
+
+    // Note the "?" after "double": this is the same syntax as in Kotlin
+    double? result = my_function(...);
+
+    if (! result.HasValue)
+    {
+        // Something wrong happened, my_function didn't compute the result
+    }
+    ```
+
+-   In alternativa, può esserci un tipo definito nella libreria standard che implementa questa funzionalità ([`std::optional`](https://en.cppreference.com/w/cpp/utility/optional) in C++, [Option](https://nim-lang.org/docs/options.html) in Nim)
+
+# Tipi `Result`
+
+-   In Rust esiste il tipo `Result`, che è una versione più versatile del tipo `std::optional` in C++ (dal C++23 c'è [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected))
+
+-   Il tipo `Result` è un *sum type* (li vedremo meglio più avanti), e permette di associare un tipo `A` in caso di successo, e un tipo `B` in caso di fallimento:
+
+    ```rust
+    pub struct OutputData {
+        pub mass: f32;
+        pub charge: f32;
+    };
+    
+    pub struct SomeError {
+        pub message: String;
+    };
+    
+    fn compute_quantities(…) -> Result<OutputData, SomeError> { … }
+    ```
+
+
+
 # File binari e di testo
 
 # File binari
@@ -129,6 +452,19 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Codifica testuale
 
+# Codifica testuale
+
+-   Il formato PFM è composto da una parte testuale e da una binaria
+
+-   Voi però avete già avuto a che fare con file di testo: sono i vostri codici sorgente!
+
+-   Alcuni di voi hanno anche avuto messaggi d'errore da Git a proposito di strane conversioni di caratteri `CRLF`
+
+-   Vediamo ora nel dettaglio la codifica testuale dei file, vi sarà molto utile soprattutto in questi due ambiti:
+
+    1. Commenti nel codice;
+    2. Scrittura di messaggi all'utente.
+    
 ---
 
 <center>
@@ -224,7 +560,7 @@ Vedete questo [link](https://www.howtogeek.com/727213/what-are-teletypes-and-why
 
     | Sistema operativo  | Codifica         |
     |--------------------|------------------|
-    | Windows, DOS       | `13 10` (`\r\n`) |
+    | MS-DOS, Windows    | `13 10` (`\r\n`) |
     | RISC OS            | `10 13` (`\n\r`) |
     | C64, macOS classic | `13` (`\r`)      |
     | Linux, Mac OS X    | `10` (`\n`)      |
@@ -386,7 +722,7 @@ Code page 866 (cirillica)
 
 -   In questo caso non c'è ambiguità: ogni code point usa esattamente quattro byte.
 
--   È ovviamente la codifica più inefficiente dal punto di vista dello spazio occupato: la poesia di Emily Dickinson occuperebbe 928 byte in UTF-32, e solo 232 byte in ASCII/UTF-8 (quattro volte tanto!)
+-   È ovviamente la codifica più inefficiente dal punto di vista dello spazio occupato: la poesia di Emily Dickinson occupa 232 byte in ASCII/UTF-8, ma ne occuperebbe 928 byte in UTF-32 (quattro volte tanto!)
 
 -   È però la codifica più semplice: ogni code point occupa sempre lo spazio di un tipo `uint32_t` in C/C++.
 
@@ -419,9 +755,9 @@ Code page 866 (cirillica)
 
 # Codifiche di file sorgente
 
--   Alcuni linguaggi ([Nim](https://nim-lang.org/docs/manual.html#lexical-analysis-encoding), [Rust](https://doc.rust-lang.org/reference/input-format.html)…) impongono la codifica UTF-8
+-   Alcuni linguaggi impongono una codifica (UTF-8 per [Nim](https://nim-lang.org/docs/manual.html#lexical-analysis-encoding) e  [Rust](https://doc.rust-lang.org/reference/input-format.html)…), UTF-16 per C# e Java/Kotlin)
 
--   [D](https://dlang.org/spec/lex.html#source_text) supporta tutte le codifiche Unicode (UTF-8, UTF-16, UTF-32, con qualsiasi *endianness*)
+-   [D](https://dlang.org/spec/lex.html#source_text) supporta tutto: UTF-8, UTF-16, UTF-32, con qualsiasi *endianness*
 
 -   Python permette in linea di principio [qualsiasi codifica](https://peps.python.org/pep-0263/), indicata con un commento all'inizio del file:
 
@@ -441,300 +777,3 @@ Code page 866 (cirillica)
 -   Tutti gli editor moderni consentono comunque di cambiare la codifica di un file
 
 -   Da linea di comando potete usare il programma [`iconv`](https://en.wikipedia.org/wiki/Iconv)
-
-
-# Gestione degli errori
-
-# Errori
-
--   Nella scorsa esercitazione abbiamo implementato il tipo `HdrImage`.
--   Questa settimana implementeremo le funzioni per scrivere e leggere file PFM.
--   Leggere e scrivere file è un'attività che è facilmente soggetta ad errori:
-    -   La directory in cui salvare il file non esiste, oppure è protetta da scrittura
-    -   Il file specificato dall'utente non esiste
-    -   Il file è danneggiato
-    -   Il file è in un formato valido ma che il nostro codice non è in grado di caricare (es., un file è codificato in *big endian*, ma noi abbiamo previsto solo *little endian*)
-
-# Tipi di errore
-
--   Gli errori possono essere suddivisi in due classi:
-
-    -   Errori di pertinenza del programmatore
-    -   Errori di pertinenza dell'utente
-    
--   A seconda del tipo di errore in cui vi imbattete, la sua gestione è diversa.
-
-# Errori del programmatore
-
--   Si tratta di un errore logico del programma.
--   Un programma «perfetto» non dovrebbe mai avere errori logici.
--   Se si ha l'evidenza che è avvenuto un errore logico, sarebbe meglio segnalarlo **nel modo più rumoroso possibile**.
-
-# Esempio
-
-```python
-my_list = [5, 3, 8, 4, 1, 9]
-sorted = my_sort_function(my_list)
-
-if not (len(my_list) == len(sorted)):
-    print("Error, mismatch in the length of the sorted list")
-    
-if not (sorted[0] <= sorted[1]):
-    print("Error, the array is not sorted")
-
-# The program continues
-...
-```
-
-# Esempio migliorato
-
-```python
-my_list = [5, 3, 8, 4, 1, 9]
-sorted = my_sort_function(my_list)
-
-# If any "assert", the program will crash and will print details
-# about what the code was doing. If PDB support is turned on,
-# a debugger will be fired automatically.
-assert len(my_list) == len(sorted)
-assert sorted[0] <= sorted[1]
-
-# The program continues
-...
-```
-
-# Gestione errori del programmatore
-
--   Tutti i linguaggi implementano funzioni che consentono di mandare in crash un programma (es., `assert` e `abort` in C/C++).
--   Queste istruzioni solitamente stampano a video una serie di dettagli sulla causa dell'errore, e sono pensate per essere usate insieme a un debugger.
--   Eseguire un debugger è sensato: se l'errore è logico, è il programmatore che deve mettere mano al codice, non l'utente!
--   Attenzione al fatto che alcune di queste funzioni potrebbero non essere compilate in modalità *release* (es., [`assert`](https://nim-lang.org/docs/assertions.html#assert.t,untyped,string) vs [`doAssert`](https://nim-lang.org/docs/assertions.html#doAssert.t%2Cuntyped%2Cstring) in Nim).
-
-# Errori dell'utente
-
--   Sono errori causati da un input o un contesto sbagliato, e non per colpa di un errore nel programma:
-    -   L'utente chiede di leggere un file che non esiste;
-    -   L'utente chiede di scrivere un file su un supporto che non ha più spazio libero;
-    -   L'utente specifica un input scorretto;
-    -   L'utente chiede di usare una periferica (stampante?) non connessa al computer oppure spenta.
--   Vanno gestiti in modo molto diverso dagli errori del programmatore: non vogliamo che il programma vada in crash in questi casi!
-
-# Esempio
-
-<asciinema-player src="./cast/user-error-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
-
-# Gestire errori dell'utente
-
--   Gli errori dell'utente sono **inevitabili**.
--   Se si ha evidenza che l'utente ha commesso un errore, ci sono diversi modi di reagire:
-    1.  Stampare un messaggio di errore, il più chiaro possibile;
-    2.  Chiedere all'utente di inserire di nuovo il dato scorretto;
-    3.  In certi contesti il codice può decidere autonomamente come correggere l'errore.
-    
-        Ad esempio, se si chiede un valore numerico entro un certo intervallo $[a, b]$ e il valore fornito è $x > b$, si può porre $x = b$ e continuare.
-
-# Correzione errori (1/2)
-
-```python
-x = float(input("Insert a number: "))
-y = float(input("Insert another number: "))
-if y != 0.0:
-    print(f"The ratio {x} / {y} is {x / y}")
-else:
-    print("Error, the second number cannot be zero!")
-```
-
-# Correzione errori (2/2)
-
-```python
-x = float(input("Insert a number: "))
-
-while True:
-    y = float(input("Insert another number: "))
-    if y == 0.0:
-        print("Error, the second number cannot be zero!")
-    else:
-        break
-        
-print(f"The ratio {x} / {y} is {x / y}")
-```
-
-# Programma corretto
-
-<asciinema-player src="./cast/user-error-corrected-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
-
-# Messaggi d'errore
-
--   Gli studenti hanno spesso la tendenza a stampare messaggi di errore.
-
--   Esempio (sbagliato) preso da un tema d'esame TNDS:
-
-    ```c++
-    double Bisezione::CercaZeri(double a, double b) {
-        if(f->Eval(a) * f->Eval(b) >= 0) {
-            cout << "Errore, teorema degli zeri non soddisfatto\n";
-        } else {
-            // Etc.
-        }
-    }
-    ```
-
-    Non c'è un `return` in corrispondenza dell'`if`, e l'esercizio chiedeva di calcolare lo zero di una funzione in un intervallo in cui lo zero **doveva esserci**. Se il teorema degli zeri non è soddisfatto, vuol dire che c'è un errore in `a` oppure `b`.
-
-# Visibilità dei messaggi di errore
-
--   Se una funzione stampa un messaggio quando capita un errore, è molto probabile che quel messaggio si perda all'interno dell'output:
-
-    ```text
-    $ python3 my-beautiful-program.py
-    Initializing the program...
-    Now I am reading data from the device
-    The device has sent 163421 samples
-    Computing statistics on the samples
-    Error, some samples are negative
-    Sorting the samples
-    Running a Monte Carlo simulations, please wait...
-    Done, time elapsed: 164.96 seconds
-    Producing the plots...
-    Done, the results are saved in "output.pdf"
-    $
-    ```
-    
--   Meglio rendere l'errore più visibile, ad esempio con i colori, oppure (meglio!) fermare del tutto l'esecuzione del programma appena l'errore si verifica.
-
-# Errori dell'utente nelle funzioni
-
--   È solitamente molto semplice decidere come gestire gli errori dell'utente nel `main` di un programma.
--   È invece meno chiaro come gestire gli errori nell'input passato a una funzione o un metodo, come ad esempio `Bisezione::CercaZeri` (gli estremi erano un input dell'utente, o erano stati calcolati automaticamente dal programma?).
--   Nessuna funzione o metodo dovrebbe **mai** fare qualcosa di catastrofico (mandare in crash il programma) o **visibile** (stampare un messaggio d'errore a video).
--   La **regola aurea** è che la funzione restituisca un valore di ritorno che segnali l'errore, oppure che sollevi un'eccezione.
-
-# Eccezioni
-
-# Eccezioni
-
--   Una eccezione serve per «mandare in crash» un programma in modo controllato:
-
-    ```python
-    def my_function(...):
-        if something_wrong:
-            raise Exception("Error!")
-    ```
-
--   A differenza di funzioni come `abort`, il crash può essere sospeso o interrotto (in gergo, «catturato»), e l'eccezione può segnalare il tipo di errore che ne ha causato la creazione.
-
----
-
-<asciinema-player src="./cast/exceptions-100x23.cast" cols="100" rows="23" font-size="18"></asciinema-player>
-
-# Tipi per eccezioni
-
--   Una eccezione è un tipo di *crash* che è **tipizzato** (es., `ValueError`)
-
--   Questi tipi possono avere al loro interno informazioni aggiuntive:
-
-    ```python
-    class WrongNumber(Exception):
-        def __init__(self, num):
-            self.num = num
-
-    try:
-        x = float(input("Enter some number: "))
-        if x > 3:
-            raise WrongNumber(num=x)
-    except WrongNumber as e:
-        print("You entered a number that is too large: ", e.num)
-
-    # Enter some number: 5
-    # You entered a number that is too large: 5
-    ```
-
-# Propagare eccezioni
-
--   Una eccezione che non viene catturata si diffonde lungo tutta la catena dei chiamanti
-
--   Essa può essere catturata a qualsiasi livello:
-
-    ```python
-    def f():
-        raise Exception("Error!")
-        
-    def g():
-        f()
-        
-    def h():
-        try:      # You can capture exceptions within functions, of course
-            g()   # g doesn't raise exceptions, but f() does
-        except:
-            print("Got an exception!")
-    ```
-
-# Prestazioni
-
--   Le eccezioni rallentano i programmi, perché il compilatore deve inserire all'interno delle funzioni del codice «nascosto» che possa gestirle
-
--   Per questo alcuni linguaggi (Rust, Go…) non le supportano, e in altri si possono disabilitare all'interno di specifiche funzioni/metodi (`nothrow` in C++)
-
--   Nel programma che svilupperemo useremo il seguente approccio, che non causerà alcun rallentamento significativo:
-
-    -   Leggeremo input dall'utente, usando eccezioni per segnalare errori
-    -   Calcoleremo la soluzione dell'equazione del rendering, evitando eccezioni: questa sarà la parte più lenta
-    -   Salveremo il risultato in un file, usando nuovamente le eccezioni
-
-# Alternative alle eccezioni
-
-# Parametri d'errore
-
--   Si può accettare un parametro addizionale che segnali l'errore:
-
-    ```c++
-    double my_function(..., bool & error) {
-        error = false;
-        
-        if (something_wrong) {
-            error = true;
-            return 0.0;
-        }
-
-        // ...
-        return result;
-    }
-    ```
-
--   Al posto di un `bool` potete usare una `enum class` per registrare il tipo di errore, o addirittura una `struct` per racchiudere informazioni complesse.
-
-# Tipi *nullable*
-
--   Linguaggi come C\# e Kotlin definiscono il tipo *nullable*, che può essere usato con qualsiasi tipo, e ne indica l'*assenza*:
-
-    ```csharp
-    // C# example
-
-    // Note the "?" after "double": this is the same syntax as in Kotlin
-    double? result = my_function(...);
-
-    if (! result.HasValue)
-    {
-        // Something wrong happened, my_function didn't compute the result
-    }
-    ```
-
--   In alternativa, può esserci un tipo definito nella libreria standard che implementa questa funzionalità ([`std::optional`](https://en.cppreference.com/w/cpp/utility/optional) in C++, [Option](https://nim-lang.org/docs/options.html) in Nim)
-
-# Tipi `Result`
-
--   In Rust esiste il tipo `Result`, che è una versione più versatile del tipo `std::optional` in C++ (ma c'è una proposta per [`std::expected`](il prohttp://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0323r10.html)…)
-
--   Il tipo `Result` è un *sum type* (li vedremo meglio più avanti), e permette di associare un tipo `A` in caso di successo, e un tipo `B` in caso di fallimento:
-
-    ```rust
-    pub struct OutputData {
-        pub mass: f32;
-        pub charge: f32;
-    };
-    
-    pub struct SomeError {
-        pub message: String;
-    };
-    
-    fn compute_quantities(…) -> Result<OutputData, SomeError> { … }
-    ```
