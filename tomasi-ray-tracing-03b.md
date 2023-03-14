@@ -823,18 +823,18 @@ def test_pfm_read_wrong(self):
     }
     ```
 
-# Suggerimenti per Kotlin
+# Suggerimenti per Java/Kotlin
 
    
 # File e stream
 
--   Kotlin (e Java) hanno le classi [`InputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html) e [`OutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html) (in `java.io`) per rappresentare uno stream. Queste vanno bene per i prototipi di `writeFloat` e `writePfm`.
+-   Java e Kotlin hanno le classi [`InputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html) e [`OutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html) (in `java.io`) per rappresentare uno stream. Queste vanno bene per i prototipi di `writeFloat` e `writePfm`.
 
 -   Per aprire un file in scrittura c'è [`FileOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/FileOutputStream.html), che restituisce direttamente uno stream.
 
 -   Stream in memoria si creano con [`ByteArrayOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/ByteArrayOutputStream.html).
 
--   Per aprire un file, operare su esso e chiuderlo c'è [`use`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/use.html), simile a `using` in C\#:
+-   Per aprire un file, operare su esso e chiuderlo, Kotlin offre il comodissimo [`use`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/use.html), simile a `using` in C\#:
 
     ```kotlin
     FileOutputStream("out.pfm").use {
@@ -844,9 +844,9 @@ def test_pfm_read_wrong(self):
 
 # Scrittura di file binari
 
--   La *endianness* è identificata dal tipo [`ByteOrder`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteOrder.html) in `java.nio` (una classe Java: in Kotlin si possono usare nativamente librerie Java)
+-   La *endianness* è identificata dal tipo [`ByteOrder`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteOrder.html) in `java.nio` (una classe Java, ma in Kotlin si possono usare nativamente librerie Java)
 
--   Per scrivere/leggere valori in formato binario c'è la classe [`ByteBuffer`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html), sempre in `java.nio`:
+-   Per scrivere/leggere valori in formato binario c'è la classe [`ByteBuffer`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html), sempre in `java.nio`. Esempio in Kotlin:
 
     ```kotlin
     fun writeFloatToStream(stream: OutputStream, value: Float, order: ByteOrder) {
@@ -889,9 +889,9 @@ Fate lo stesso con `reference_le.pfm`.
 
 # Scrittura di testo
 
--   Kotlin rappresenta internamente le stringhe di caratteri usando la codifica UTF-16 (come Java).
+-   Java e Kotlin rappresentano internamente le stringhe di caratteri usando la codifica UTF-16.
 
--   Per trasformare la codifica in ASCII e poterla salvare in un file binario, si può invocare il metodo `toByteArray()`:
+-   Per trasformare la codifica in ASCII e poterla salvare in un file binario, Kotlin offre il comodissimo metodo `toByteArray()`:
 
     ```kotlin
     val header = "PF\n$width $height\n$endianness\n"

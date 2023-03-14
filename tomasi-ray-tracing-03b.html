@@ -1101,13 +1101,13 @@ class="sourceCode d"><code class="sourceCode d"><span id="cb39-1"><a href="#cb39
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
-<section id="suggerimenti-per-kotlin" class="slide level1">
-<h1>Suggerimenti per Kotlin</h1>
+<section id="suggerimenti-per-javakotlin" class="slide level1">
+<h1>Suggerimenti per Java/Kotlin</h1>
 </section>
 <section id="file-e-stream-2" class="slide level1">
 <h1>File e stream</h1>
 <ul>
-<li><p>Kotlin (e Java) hanno le classi <a
+<li><p>Java e Kotlin hanno le classi <a
 href="https://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html"><code>InputStream</code></a>
 e <a
 href="https://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html"><code>OutputStream</code></a>
@@ -1119,7 +1119,8 @@ href="https://docs.oracle.com/javase/7/docs/api/java/io/FileOutputStream.html"><
 che restituisce direttamente uno stream.</p></li>
 <li><p>Stream in memoria si creano con <a
 href="https://docs.oracle.com/javase/7/docs/api/java/io/ByteArrayOutputStream.html"><code>ByteArrayOutputStream</code></a>.</p></li>
-<li><p>Per aprire un file, operare su esso e chiuderlo c’è <a
+<li><p>Per aprire un file, operare su esso e chiuderlo, Kotlin offre il
+comodissimo <a
 href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/use.html"><code>use</code></a>,
 simile a <code>using</code> in C#:</p>
 <div class="sourceCode" id="cb40"><pre
@@ -1133,11 +1134,11 @@ class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb40-1"><a h
 <ul>
 <li><p>La <em>endianness</em> è identificata dal tipo <a
 href="https://docs.oracle.com/javase/7/docs/api/java/nio/ByteOrder.html"><code>ByteOrder</code></a>
-in <code>java.nio</code> (una classe Java: in Kotlin si possono usare
+in <code>java.nio</code> (una classe Java, ma in Kotlin si possono usare
 nativamente librerie Java)</p></li>
 <li><p>Per scrivere/leggere valori in formato binario c’è la classe <a
 href="https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>,
-sempre in <code>java.nio</code>:</p>
+sempre in <code>java.nio</code>. Esempio in Kotlin:</p>
 <div class="sourceCode" id="cb41"><pre
 class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">writeFloatToStream</span><span class="op">(</span><span class="va">stream</span><span class="op">:</span> <span class="dt">OutputStream</span><span class="op">,</span> <span class="va">value</span><span class="op">:</span> <span class="dt">Float</span><span class="op">,</span> <span class="va">order</span><span class="op">:</span> <span class="dt">ByteOrder</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">bytes</span> <span class="op">=</span> ByteBuffer<span class="op">.</span>allocate<span class="op">(</span><span class="dv">4</span><span class="op">).</span>putFloat<span class="op">(</span>value<span class="op">).</span>array<span class="op">()</span> <span class="co">// Big endian</span></span>
@@ -1179,10 +1180,11 @@ class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb43-1"><a h
 <section id="scrittura-di-testo-1" class="slide level1">
 <h1>Scrittura di testo</h1>
 <ul>
-<li><p>Kotlin rappresenta internamente le stringhe di caratteri usando
-la codifica UTF-16 (come Java).</p></li>
+<li><p>Java e Kotlin rappresentano internamente le stringhe di caratteri
+usando la codifica UTF-16.</p></li>
 <li><p>Per trasformare la codifica in ASCII e poterla salvare in un file
-binario, si può invocare il metodo <code>toByteArray()</code>:</p>
+binario, Kotlin offre il comodissimo metodo
+<code>toByteArray()</code>:</p>
 <div class="sourceCode" id="cb44"><pre
 class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">header</span> <span class="op">=</span> <span class="st">&quot;PF</span><span class="sc">\n</span><span class="ss">$width</span><span class="st"> </span><span class="ss">$height</span><span class="sc">\n</span><span class="ss">$endianness</span><span class="sc">\n</span><span class="st">&quot;</span></span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>stream<span class="op">.</span>write<span class="op">(</span>header<span class="op">.</span>toByteArray<span class="op">())</span></span></code></pre></div></li>
