@@ -15,7 +15,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 |----------:|:-----------------------------------------------:|:-----------------------------------------------:|
 |         1 | [27 Febbraio 2023](tomasi-ray-tracing-01a.html) | [29 Febbraio 2023](tomasi-ray-tracing-01b.html) |
 |         2 | [6 Marzo 2023](tomasi-ray-tracing-02a.html)     | [8 Marzo 2023](tomasi-ray-tracing-02b.html)     |
-|         3 | [13 Marzo 2023](tomasi-ray-tracing-03a.html)    |                                                 |
+|         3 | [13 Marzo 2023](tomasi-ray-tracing-03a.html)    | [15 Marzo 2023](tomasi-ray-tracing-03b.html)    |
 
 # Argomenti per l'esame (A.A. 2022/2023)
 
@@ -62,6 +62,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [*Antialiasing*](tomasi-ray-tracing-11a.html#/aliasing-e-antialiasing)
 -   [Test della fornace](tomasi-ray-tracing-11b.html#/test-1)
 -   [Terminologia nella teoria dei compilatori](tomasi-ray-tracing-12a.html#/terminologia): lessico, sintassi, semantica, *token*, [*look-ahead*](tomasi-ray-tracing-12a.html#/tornare-indietro)
+-->
 
 
 ## Parti non richieste per l'esame
@@ -70,6 +71,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [File di testo e file binari](tomasi-ray-tracing-03a.html#/file-binari-e-di-testo)
 -   [Lo standard Unicode](tomasi-ray-tracing-03a.html#/lo-standard-unicode)
 -   [File e stream](tomasi-ray-tracing-03b.html#/file-e-stream)
+<!--
 -   [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
 -   [Numeri complessi e quaternioni](tomasi-ray-tracing-06a.html#/numeri-complessi-e-quaternioni)
 -   [Algebre di Clifford](tomasi-ray-tracing-06a.html#/algebre-di-clifford)
