@@ -704,6 +704,25 @@ Code page 866 (cirillica)
 | `0x0800`–`0xFFFF`    | `1110xxxx` | `10xxxxxx` | `10xxxxxx` | —          |
 | `0x10000`–`0x10FFFF` | `11110xxx` | `10xxxxxx` | `10xxxxxx` | `10xxxxxx` |
 
+---
+
+<center>
+![](media/windows-linux-encoding-nim-terminal.png)
+</center>
+
+---
+
+<center>
+![](media/utf8-smile-encoding.svg)
+</center>
+
+---
+
+<center>
+![](media/wikipedia-emoticons.webp)
+</center>
+
+
 # Codifica UTF-16
 
 -   Funziona come la codifica UTF-8, ma si usano coppie di byte ($8 + 8 = 16$). 
