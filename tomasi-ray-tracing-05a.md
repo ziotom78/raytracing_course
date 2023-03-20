@@ -4,118 +4,6 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-# Numeri di versione
-
-# Scopo dei numeri di versione
-
--   Ogni programma dovrebbe avere un **numero di versione** associato, che dice quanto sia aggiornato un programma.
--   Un utente può confrontare un numero di versione sul sito ufficiale del programma con quello del programma installato sul proprio computer.
--   Molti diversi approcci ai numeri di versione.
-
-# Esempio I: data di rilascio
-
--   Ubuntu Linux: distribuzione Linux.
--   Il numero di versione è la data di rilascio nella forma `anno.mese`, a cui si associa un soprannome come «Focal fossa» (20.04).
--   Associato a un rigido calendario di rilascio (ogni 6 mesi).
--   Gli standard ISO del C++ seguono uno schema simile, usando solo l'anno: C++11, C++14, C++17, C++20, …
--   Utile soprattutto se si segue un calendario rigido e regolare.
-
-# Esempio II: numero irrazionale
-
--   TeX: programma di tipografia digitale creato da Donald Knuth (per digitare *The art of computer programming*, 1962–2019).
--   La versione è l'arrotondamento del valore di $\pi$, dove ogni versione successiva aggiunge una cifra:
-
-    -   3
-    -   3.1
-    -   3.14
-    -   3.141…
-
--   METAFONT, il programma che gestisce i font di TeX, usa $e = 2.71828\ldots$
--   Matematicamente affascinante, ma poco pratico!
-
-# Esempio III: versioni pari/dispari
-
--   Versioni indicate con `X.Y`, dove `X` è la «major version» e `Y` la «minor version».
--   Se `Y` è pari, la versione è **stabile** (es., `2.0`, `2.2`, `2.4`, …); altrimenti è una versione di **sviluppo** (es., `2.1`, `2.3`, `2.5` …), non pronta per essere usata dal pubblico generico ma solo dagli utenti più smaliziati.
--   [Nim](https://nim-lang.org/), [Gtk+](https://www.gtk.org/), [GNOME](https://www.gnome.org/), [Lilypond](http://lilypond.org/) seguono questo approccio.
--   Molto usato in passato, ora tende ad essere abbandonato: l'esperienza ha dimostrato che le versioni dispari tendono spesso a diventare «eterne».
-
-# Esempio IV: *semantic versioning*
-
--   Lo schema che useremo nel corso è il cosiddetto [*semantic versioning*](https://semver.org/), usato ad esempio da Julia e Python, che usa lo schema `X.Y.Z`:
-    -   `X` è la «major version»
-    -   `Y` è la «minor version»
-    -   `Z` è la «patch version»
--   Le regole per assegnare valori a `X`, `Y` e `Z` sono rigide, e consentono agli utenti di decidere se valga la pena aggiornare un software o no.
-
-# Semantic versioning (1/2)
-
--   Si parte dalla versione `0.1.0`.
--   Ad ogni rilascio di una nuova versione, si segue una di queste regole:
-    -   Si incrementa `Z` («patch number») se si sono solo corretti dei bug;
-    -   Si incrementa `Y` («minor number») e si resetta `Z` se si sono aggiunte funzionalità nuove;
-    -   Si incrementa `X` («major number») e si resettano `Y` e `Z` se si sono aggiunte funzionalità che rendono il programma **incompatibile** con l'ultima versione rilasciata.
-
-# Semantic versioning (2/2)
-
--   Nelle prime fasi di vita di un progetto, si rilasciano rapidamente nuove versioni che sono usate da «beta testers»; non è importante indicare quando si introducono incompatibilità, perché queste sono frequenti ma gli utenti sono ancora pochi.
--   La versione `1.0.0` va rilasciata quando il programma è pronto per essere usato da utenti generici.
--   Di conseguenza, le versioni precedenti alla `1.0.0` seguono regole diverse:
-    -   Si incrementa `Z` se si correggono bug;
-    -   Si incrementa `Y` e si resetta `Z` in tutti gli altri casi.
-
-# Esempio (1/3)
-
--   Abbiamo scritto un programma che stampa `Hello, world!`:
-
-    ```
-    $ ./hello
-    Hello, wold!
-    ```
-
--   La prima versione «ufficiale» che rilasciamo, dopo numerose versioni beta (è un progetto complesso!), è ovviamente la `1.0.0`
-
--   Ci accorgiamo che il programma stampa `Hello, wold!`, così correggiamo il problema e rilasciamo la versione `1.0.1` (correzione di un bug).
-
-# Esempio (2/3)
-
--   Aggiungiamo una nuova funzionalità: se si passa un nome come `Paperino` da riga di comando, il programma stampa `Hello, Paperino!`. Senza argomenti, il programma scrive ancora `Hello, world!`:
-
-    ```
-    $ ./hello
-    Hello, world!
-
-    $ ./hello Paperino
-    Hello, Paperino!
-    ```
-
--   Abbiamo aggiunto una funzionalità ma abbiamo preservato la compatibilità (senza argomenti, il programma funziona ugualmente come la versione `1.0.1`), quindi la nuova versione sarà la `1.1.0`.
-
-
-# Esempio (3/3)
-
--   Decidiamo che è giunto il momento di introdurre l'internazionalizzazione nel nostro codice (*internationalization*, abbreviato in I18N)
-
--   Il codice verifica il valore della variabile d'ambiente `$LANG` (usato sui sistemi Unix) e decide in che lingua stampare il messaggio:
-
-    ```
-    $ ./hello Paperino     # …when I run it on a english-talking machine
-    Hello, Paperino!
-    $ LANG=it_IT.UTF-8 ./hello Pippo
-    Salve, Pippo!
-    ```
-
--   Il programma **non è compatibile** con la versione `1.1.0`, perché su una macchina italiana ora stampa `Salve, mondo!` anziché `Hello, world!`
-
--   Devo quindi rilasciare la versione `2.0.0`
-
-
-# Punto di vista di un utente
-
-1.  Se viene rilasciata una nuova «patch release» della versione che si sta usando (es., `1.3.4` → `1.3.5`), l'utente dovrebbe **sempre** aggiornare.
-2.  Se viene rilasciata una nuova «minor release» della versione che si sta usando (es., `1.3.4` → `1.4.0`), l'utente dovrebbe aggiornare solo se ritiene utili le nuove caratteristiche.
-3.  Una nuova «major release» (es., `1.3.4` → `2.0.0`) dovrebbe essere installata solo da nuovi utenti, o da chi è intenzionato ad aggiornare il modo in cui si usa il programma.
-
 
 # Modellizzazione di oggetti
 
@@ -706,3 +594,116 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     </center>
 
 -   Si può verificare che le matrici omogenee implementano correttamente questo comportamento.
+
+
+# Numeri di versione
+
+# Scopo dei numeri di versione
+
+-   Ogni programma dovrebbe avere un **numero di versione** associato, che dice quanto sia aggiornato un programma.
+-   Un utente può confrontare un numero di versione sul sito ufficiale del programma con quello del programma installato sul proprio computer.
+-   Molti diversi approcci ai numeri di versione.
+
+# Esempio I: data di rilascio
+
+-   Ubuntu Linux: distribuzione Linux.
+-   Il numero di versione è la data di rilascio nella forma `anno.mese`, a cui si associa un soprannome come «Focal fossa» (20.04).
+-   Associato a un rigido calendario di rilascio (ogni 6 mesi).
+-   Gli standard ISO del C++ seguono uno schema simile, usando solo l'anno: C++11, C++14, C++17, C++20, …
+-   Utile soprattutto se si segue un calendario rigido e regolare.
+
+# Esempio II: numero irrazionale
+
+-   TeX: programma di tipografia digitale creato da Donald Knuth (per digitare *The art of computer programming*, 1962–2019).
+-   La versione è l'arrotondamento del valore di $\pi$, dove ogni versione successiva aggiunge una cifra:
+
+    -   3
+    -   3.1
+    -   3.14
+    -   3.141…
+
+-   METAFONT, il programma che gestisce i font di TeX, usa $e = 2.71828\ldots$
+-   Matematicamente affascinante, ma poco pratico!
+
+# Esempio III: versioni pari/dispari
+
+-   Versioni indicate con `X.Y`, dove `X` è la «major version» e `Y` la «minor version».
+-   Se `Y` è pari, la versione è **stabile** (es., `2.0`, `2.2`, `2.4`, …); altrimenti è una versione di **sviluppo** (es., `2.1`, `2.3`, `2.5` …), non pronta per essere usata dal pubblico generico ma solo dagli utenti più smaliziati.
+-   [Nim](https://nim-lang.org/), [Gtk+](https://www.gtk.org/), [GNOME](https://www.gnome.org/), [Lilypond](http://lilypond.org/) seguono questo approccio.
+-   Molto usato in passato, ora tende ad essere abbandonato: l'esperienza ha dimostrato che le versioni dispari tendono spesso a diventare «eterne».
+
+# Esempio IV: *semantic versioning*
+
+-   Lo schema che useremo nel corso è il cosiddetto [*semantic versioning*](https://semver.org/), usato ad esempio da Julia e Python, che usa lo schema `X.Y.Z`:
+    -   `X` è la «major version»
+    -   `Y` è la «minor version»
+    -   `Z` è la «patch version»
+-   Le regole per assegnare valori a `X`, `Y` e `Z` sono rigide, e consentono agli utenti di decidere se valga la pena aggiornare un software o no.
+
+# Semantic versioning (1/2)
+
+-   Si parte dalla versione `0.1.0`.
+-   Ad ogni rilascio di una nuova versione, si segue una di queste regole:
+    -   Si incrementa `Z` («patch number») se si sono solo corretti dei bug;
+    -   Si incrementa `Y` («minor number») e si resetta `Z` se si sono aggiunte funzionalità nuove;
+    -   Si incrementa `X` («major number») e si resettano `Y` e `Z` se si sono aggiunte funzionalità che rendono il programma **incompatibile** con l'ultima versione rilasciata.
+
+# Semantic versioning (2/2)
+
+-   Nelle prime fasi di vita di un progetto, si rilasciano rapidamente nuove versioni che sono usate da «beta testers»; non è importante indicare quando si introducono incompatibilità, perché queste sono frequenti ma gli utenti sono ancora pochi.
+-   La versione `1.0.0` va rilasciata quando il programma è pronto per essere usato da utenti generici.
+-   Di conseguenza, le versioni precedenti alla `1.0.0` seguono regole diverse:
+    -   Si incrementa `Z` se si correggono bug;
+    -   Si incrementa `Y` e si resetta `Z` in tutti gli altri casi.
+
+# Esempio (1/3)
+
+-   Abbiamo scritto un programma che stampa `Hello, world!`:
+
+    ```
+    $ ./hello
+    Hello, wold!
+    ```
+
+-   La prima versione «ufficiale» che rilasciamo, dopo numerose versioni beta (è un progetto complesso!), è ovviamente la `1.0.0`
+
+-   Ci accorgiamo che il programma stampa `Hello, wold!`, così correggiamo il problema e rilasciamo la versione `1.0.1` (correzione di un bug).
+
+# Esempio (2/3)
+
+-   Aggiungiamo una nuova funzionalità: se si passa un nome come `Paperino` da riga di comando, il programma stampa `Hello, Paperino!`. Senza argomenti, il programma scrive ancora `Hello, world!`:
+
+    ```
+    $ ./hello
+    Hello, world!
+
+    $ ./hello Paperino
+    Hello, Paperino!
+    ```
+
+-   Abbiamo aggiunto una funzionalità ma abbiamo preservato la compatibilità (senza argomenti, il programma funziona ugualmente come la versione `1.0.1`), quindi la nuova versione sarà la `1.1.0`.
+
+
+# Esempio (3/3)
+
+-   Decidiamo che è giunto il momento di introdurre l'internazionalizzazione nel nostro codice (*internationalization*, abbreviato in I18N)
+
+-   Il codice verifica il valore della variabile d'ambiente `$LANG` (usato sui sistemi Unix) e decide in che lingua stampare il messaggio:
+
+    ```
+    $ ./hello Paperino     # …when I run it on a english-talking machine
+    Hello, Paperino!
+    $ LANG=it_IT.UTF-8 ./hello Pippo
+    Salve, Pippo!
+    ```
+
+-   Il programma **non è compatibile** con la versione `1.1.0`, perché su una macchina italiana ora stampa `Salve, mondo!` anziché `Hello, world!`
+
+-   Devo quindi rilasciare la versione `2.0.0`
+
+
+# Punto di vista di un utente
+
+1.  Se viene rilasciata una nuova «patch release» della versione che si sta usando (es., `1.3.4` → `1.3.5`), l'utente dovrebbe **sempre** aggiornare.
+2.  Se viene rilasciata una nuova «minor release» della versione che si sta usando (es., `1.3.4` → `1.4.0`), l'utente dovrebbe aggiornare solo se ritiene utili le nuove caratteristiche.
+3.  Una nuova «major release» (es., `1.3.4` → `2.0.0`) dovrebbe essere installata solo da nuovi utenti, o da chi è intenzionato ad aggiornare il modo in cui si usa il programma.
