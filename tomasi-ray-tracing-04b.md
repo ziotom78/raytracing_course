@@ -200,45 +200,6 @@ Capita però spesso che si debbano usare librerie *incompatibili* nei propri cod
     
 -   Sta per uscire la versione 4.0, ancora più potente, ma non supporterà più uno dei miei vecchi oscilloscopi, che mi è ancora indispensabile.
 
-# Possibili soluzioni
-
--   Il modo più primitivo di risolvere il problema è di tenere svariati computer in laboratorio, ciascuno con la propria versione di `oscilloscope`
-
--   Un modo un po' più comodo consiste nel creare varie *virtual machine*
-
--   Ormai da una decina d'anni hanno preso piede i *container* (es. [Docker](https://www.docker.com/), [Podman](https://podman.io/), [Singularity](https://sylabs.io/singularity)), che sono macchine virtuali «leggere»: sono meno versatili, ma il tempo di avvio è praticamente zero
-
--   Ciascuna di queste soluzioni rende però complicato scambiare dati tra programmi che usano librerie diverse (ad esempio, per sovrapporre il plot di una curva di un oscilloscopio con quella di un altro) ed installare nuove versioni
-
-# Esempio
-
-```
-# Install GCC 10 and the C++ library Healpix version 3.70
-Bootstrap: docker
-From: ubuntu:20.04
-
-%runscript
-        exec /usr/bin/g++-10 "$@"
-
-%post
-
-        apt-get update
-        DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
-        apt-get install -y build-essential gcc-10 g++-10 cmake curl libcfitsio-dev
-
-        echo "export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH" >> $SINGULARITY_ENVIRONMENT
-
-        curl -L "https://downloads.sourceforge.net/project/healpix/Healpix_3.70/Healpix_3.70_2020Jul23.tar.gz" > healpix.tar.gz
-        tar xvf healpix.tar.gz
-        (cd Healpix_3.70 && ./configure --auto=cxx && make -j 4)
-```
-
-Questo file viene «compilato» dall'eseguibile `singularity`, che produce un file eseguibile di ~200 MB contenente il comando `g++-10` insieme al sistema operativo Ubuntu Linux 20.04.
-
----
-
-<asciinema-player src="cast/singularity-90x19.cast" cols="90" rows="19" font-size="medium"></asciinema-player>
-
 
 # Librerie locali
 
@@ -252,7 +213,7 @@ Le librerie locali risolvono questi problemi perché non vengono installate a li
 
 # Gestione di dipendenze
 
--   Tutti i linguaggi moderni supportano una gestione di librerie «locali»
+-   Quasi tutti i linguaggi supportano una gestione di librerie «locali» (sigh! non il C++)
 
 -   Queste funzionalità sono solitamente implementate nei programmi che avete usato sinora per creare progetti (`dotnet`, `dub`, `nimble`, `cargo`…)
 
@@ -271,14 +232,14 @@ Le librerie locali risolvono questi problemi perché non vengono installate a li
 
 # Conversione a LDR (2/3)
 
-| Linguaggio | Librerie                                                                                               |
-|------------|--------------------------------------------------------------------------------------------------------|
-| C\#        | [ImageSharp](https://docs.sixlabors.com/articles/imagesharp/?tabs=tabid-1)                             |
-| D          | [imageformats](https://code.dlang.org/packages/imageformats)                                           |
-| Kotlin     | [javax.imageio](https://docs.oracle.com/javase/8/docs/api/javax/imageio/ImageIO.html) (già installato) |
-| Nim        | [simplepng](https://github.com/jrenner/nim-simplepng)                                                  |
-| Python     | [Pillow](https://pillow.readthedocs.io/en/stable/)                                                     |
-| Rust       | [image](https://crates.io/crates/image)                                                                |
+| Linguaggio  | Librerie                                                                                               |
+|-------------|--------------------------------------------------------------------------------------------------------|
+| C\#         | [ImageSharp](https://docs.sixlabors.com/articles/imagesharp/?tabs=tabid-1)                             |
+| D           | [imageformats](https://code.dlang.org/packages/imageformats)                                           |
+| Java/Kotlin | [javax.imageio](https://docs.oracle.com/javase/8/docs/api/javax/imageio/ImageIO.html) (già installato) |
+| Nim         | [simplepng](https://github.com/jrenner/nim-simplepng)                                                  |
+| Python      | [Pillow](https://pillow.readthedocs.io/en/stable/)                                                     |
+| Rust        | [image](https://crates.io/crates/image)                                                                |
 
 Potete scegliere altre librerie, ma attenzione a scegliere quelle pixel-based!
 
@@ -380,7 +341,7 @@ def main(argv):
 #.  Definire una funzione che applichi la correzione per le sorgenti luminose;
 #.  Implementare il `main` nel codice dell'applicazione, in modo che accetti 4 argomenti: il file PFM da leggere, il valore di $a$, il valore di γ, e il nome del file PNG/JPEG/etc. da creare.
 #.  Aggiungete *docstrings* a quelle classi, metodi, funzioni, tipi, etc. che vi sembrano bisognose di ciò, ma preoccupatevi che ciascun commento **non sia pedante**.
-#.  Scegliete insieme una licenza, provando a leggerla insieme per capire cosa essa conceda e cosa vieti.
+#.  Scegliete insieme una [licenza d'uso](./tomasi-ray-tracing-04a.html#/licenze-duso).
 
 # Immagini di riferimento
 
@@ -430,11 +391,11 @@ using (Stream fileStream = File.OpenWrite("output.png")) {
     
 -   Queste librerie saranno installate come dipendenze del vostro programma, e non a livello di sistema.
 
-# Indicazioni per Kotlin
+# Indicazioni per Java/Kotlin
 
-# Indicazioni per Kotlin
+# Indicazioni per Java/Kotlin
 
--   A differenza di Python, C++, C\# e Julia, il linguaggio Kotlin fornisce supporto per immagini PNG, JPEG, BMP e GIF tramite le librerie standard Java.
+-   A differenza di Python, C++, C\# e Julia, sia Java che Kotlin forniscono supporto per immagini PNG, JPEG, BMP e GIF tramite le librerie standard Java.
 
 -   A voi servono le classi `java.awt.image.BufferedImage` (immagine LDR) e `javax.imageio.ImageIO` (la classe che implementa i metodi per leggere/scrivere immagini LDR su file).
 
@@ -473,15 +434,17 @@ fun main(args: Array<String>) {
 
 # Linea di comando
 
--   Kotlin deriva da Java, ed ha ereditato il suo modo un po' «barocco» di gestire i parametri da linea di comando.
+-   Java e Kotlin hanno un modo un po' «barocco» di gestire i parametri da linea di comando.
 
--   Il vostro eseguibile Kotlin **non può** essere eseguito come un normale eseguibile Python/C++/C\#:
+-   Il vostro eseguibile *non può** essere eseguito come un normale eseguibile Python/C++/C\#:
 
     ```text
     $ ./main.py input_file.pfm 0.3 1.0 output_file.png
     ```
 
-    perché bisogna passare da `gradlew`, che richiede che i parametri siano passati attraverso `--args`:
+    perché è compilato per la JVM.
+    
+-   Se usate Kotlin, bisogna passare da `gradlew`, che richiede che i parametri siano passati attraverso `--args`:
 
     ```text
     ./gradlew run --args="input_file.pfm 0.3 1.0 output_file.png"

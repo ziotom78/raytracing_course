@@ -61,6 +61,18 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 Il modo in cui un raggio di luce interagisce con una superficie dipende dalla BRDF, che [è espressa in termini dell'angolo](tomasi-ray-tracing-01a.html#/la-brdf) $\theta = N_x \cdot \Psi$ tra la direzione di incidenza $\Psi$ e la normale $N_x$ alla superficie nel punto $x$.
 
+# Uso della geometria
+
+Il nostro codice dovrà simulare la propagazione di raggi luminosi nell'ambiente:
+
+-   Ogni raggio partirà da un **punto**…
+
+-   …e si propagherà lungo la direzione codificata da un **vettore**…
+
+-   …finché non colpirà la superficie di un oggetto; a quel punto dovrà calcolar l'angolo tra la direzione di arrivo e la **normale**.
+
+Ogni oggetto avrà la sua orientazione nello spazio.
+
 # Codifica della geometria
 
 Per risolvere l'equazione del rendering numericamente, il nostro codice deve trattare correttamente una serie di quantità:
