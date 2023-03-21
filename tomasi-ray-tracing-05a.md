@@ -71,11 +71,11 @@ Il nostro codice dovrà simulare la propagazione di raggi luminosi nell'ambiente
 
 -   …finché non colpirà la superficie di un oggetto; a quel punto dovrà calcolar l'angolo tra la direzione di arrivo e la **normale**.
 
-Ogni oggetto avrà la sua orientazione nello spazio.
+Tutto ciò è complicato dal fatto che ogni oggetto avrà la sua orientazione nello spazio, codificata da una trasformazione (traslazione, rotazione…).
 
 # Codifica della geometria
 
-Per risolvere l'equazione del rendering numericamente, il nostro codice deve trattare correttamente una serie di quantità:
+Per risolvere l'equazione del rendering numericamente, il nostro codice deve trattare correttamente tutte le quantità nominate nella slide precedente:
 
 -   **Punti** nello spazio tridimensionale (posizioni dei vertici del comodino);
 -   **Vettori** 3D (direzioni di propagazione della luce);
@@ -85,6 +85,20 @@ Per risolvere l'equazione del rendering numericamente, il nostro codice deve tra
 Ripassiamo quindi le proprietà di questi oggetti geometrici.
 
 # Ripasso di algebra lineare
+
+# Punti e vettori
+
+-   Un **punto** codifica una posizione nello spazio tridimensionale. Esempio: la posizione $P(t)$ di una particella all'istante $t$
+
+-   Un **vettore** codifica una direzione, e non è associato ad un punto specifico dello spazio. Esempio: la velocità $\vec v(t)$ di una particella
+
+-   La differenza tra due punti è un vettore. Esempio:
+
+    \[
+        \vec v(t) = \lim_{\delta t \rightarrow 0} \frac{P(t + \delta t) - P(t)}{\delta t}.
+    \]
+    
+-   I vettori servono anche per definire le **basi** (sistemi di riferimento), quindi approfondiamoli.
 
 # Spazi vettoriali
 
