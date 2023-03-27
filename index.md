@@ -17,6 +17,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 |         2 | [6 Marzo 2023](tomasi-ray-tracing-02a.html)     | [8 Marzo 2023](tomasi-ray-tracing-02b.html)     |
 |         3 | [13 Marzo 2023](tomasi-ray-tracing-03a.html)    | [15 Marzo 2023](tomasi-ray-tracing-03b.html)    |
 |         4 | [20 Marzo 2023](tomasi-ray-tracing-04a.html)    | [22 Marzo 2023](tomasi-ray-tracing-04b.html)    |
+|         5 | [27 Marzo 2023](tomasi-ray-tracing-05a.html)    | <!-- [29 Marzo 2023](tomasi-ray-tracing-05b.html) --> |
 
 # Argomenti per l'esame (A.A. 2022/2023)
 
@@ -40,10 +41,10 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Gestione degli errori](tomasi-ray-tracing-03a.html#/gestione-degli-errori)
 -   [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenze-duso)
 -   [Tone mapping](tomasi-ray-tracing-04a.html#/tone-mapping)
-<!--
 -   [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modellizzazione-di-oggetti)
 -   [Trasformazioni](tomasi-ray-tracing-05a.html#/trasformazioni): [di scala](tomasi-ray-tracing-05a.html#/trasformazioni-di-scala), [applicate a normali](tomasi-ray-tracing-05a.html#/trasformazioni-e-normali), [rotazioni](tomasi-ray-tracing-05a.html#/rotazioni), [traslazioni](tomasi-ray-tracing-05a.html#/traslazioni)
 -   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/numeri-di-versione)
+<!--
 -   [*Branch* e *pull requests*](tomasi-ray-tracing-05b.html#/pull-requests)
 -   [*CI builds*](tomasi-ray-tracing-06b.html#/ci-builds)
 -   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-07a.html#/soluzione-dellequazione)
