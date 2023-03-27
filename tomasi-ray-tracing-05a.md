@@ -69,7 +69,7 @@ Il nostro codice dovrà simulare la propagazione di raggi luminosi nell'ambiente
 
 -   …e si propagherà lungo la direzione codificata da un **vettore**…
 
--   …finché non colpirà la superficie di un oggetto; a quel punto dovrà calcolar l'angolo tra la direzione di arrivo e la **normale**.
+-   …finché non colpirà la superficie di un oggetto; a quel punto il codice dovrà calcolare l'angolo tra la direzione di arrivo e la **normale**.
 
 Tutto ciò è complicato dal fatto che ogni oggetto avrà la sua orientazione nello spazio, codificata da una trasformazione (traslazione, rotazione…).
 
@@ -77,10 +77,10 @@ Tutto ciò è complicato dal fatto che ogni oggetto avrà la sua orientazione ne
 
 Per risolvere l'equazione del rendering numericamente, il nostro codice deve trattare correttamente tutte le quantità nominate nella slide precedente:
 
--   **Punti** nello spazio tridimensionale (posizioni dei vertici del comodino);
+-   **Punti** nello spazio tridimensionale (sorgenti dei raggi luminosi, vertici del comodino);
 -   **Vettori** 3D (direzioni di propagazione della luce);
--   **Normali** (rappresentano l'inclinazione della superficie in un punto);
--   **Matrici** (codificano le trasformazioni).
+-   **Normali** (l'inclinazione della superficie in un punto);
+-   **Matrici** (trasformazioni applicate ad oggetti e ad osservatore).
 
 Ripassiamo quindi le proprietà di questi oggetti geometrici.
 
@@ -112,16 +112,18 @@ Uno spazio vettoriale $V$ su un campo $F$ è un insieme non vuoto $V$ di element
 
 # Prodotto interno
 
-Dato uno spazio vettoriale $V$ su $F$, il prodotto interno è un'operazione $\left<\cdot, \cdot\right>: V \times V \rightarrow F$ che gode delle seguenti proprietà $\forall u, v, w \in V, \forall \alpha \in F$:
+-   Dato uno spazio vettoriale $V$ su $F$, il prodotto interno è un'operazione $\left<\cdot, \cdot\right>: V \times V \rightarrow F$ che gode delle seguenti proprietà $\forall u, v, w \in V, \forall \alpha \in F$:
 
-#.  $\left<\alpha u, v\right> = \alpha \left<u, v\right>$;
-#.  $\left<u + v, w\right> = \left<u, w\right> + \left<v, w\right>$;
-#.  $\left<u, v\right> = \overline{\left<v, u\right>}$;
-#.  $\left<u, u\right> > 0$ se $u \not= 0$.
+    #.  $\left<\alpha u, v\right> = \alpha \left<u, v\right>$;
+    #.  $\left<u + v, w\right> = \left<u, w\right> + \left<v, w\right>$;
+    #.  $\left<u, v\right> = \overline{\left<v, u\right>}$;
+    #.  $\left<u, u\right> > 0$ se $u \not= 0$.
 
-Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\right\|\,\left\|\vec v\right\|\,\cos\theta$ su $\mathbb{R}^n$.
+-   Prodotto scalare su $\mathbb{R}^3$: $\vec u \cdot \vec v = \left\|\vec u\right\|\,\left\|\vec v\right\|\,\cos\theta$.
 
-# Norma e ortogonalità
+-   Si definiscono *ortogonali* due vettori $u$ e $v$ se vale che $\left<u, v\right> = 0$.
+
+# Norma di un vettore
 
 -   Dato un prodotto interno, si può definire la *norma* $\left\|\cdot\right\|: V \rightarrow F$ in questo modo:
 
@@ -131,8 +133,6 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
 
     che è positiva definita, e si annulla solo se $u = 0$.
 
--   Si definiscono *ortogonali* due vettori $u$ e $v$ se vale che $\left<u, v\right> = 0$.
-
 -   Un vettore $u$ tale che $\left\|u\right\| = 1$ si dice *normalizzato*.
 
 # Generatori
@@ -140,7 +140,7 @@ Un esempio è il classico prodotto scalare $\vec u \cdot \vec v = \left\|\vec u\
 -   Lo spazio generato da un insieme di vettori $\{v_i\}_{i=1}^N$ è l'insieme
 
     $$
-    \mathrm{Span}\left(\{v_i\}_{i=1}^N\right) = \left\{\sum_{i=1}^N \alpha_i v_i \forall \alpha_i \in F\right\}.
+    \mathrm{Span}\left(\{v_i\}_{i=1}^N\right) = \left\{\sum_{i=1}^N \alpha_i v_i,\ \forall \alpha_i \in F\right\}.
     $$
 
 -   Nel caso di $\mathbb{R}^3$:
@@ -203,7 +203,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 
     dove $\alpha_i \in F$. (Conseguenza del fatto che la base genera lo spazio $V$).
 
--   Tale rappresentazione è sempre unica; se la base è ortonormale, allora
+-   Tale rappresentazione è sempre unica; **se la base è ortonormale** vale che
 
     $$\alpha_i = \left<v, e_i\right>.$$
 
@@ -329,12 +329,11 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 
 # Tipi di trasformazioni
 
--   Con l'eccezione delle trasformazioni 3D→2D, implementeremo t. **invertibili**.
+Nel nostro codice implementeremo solo trasformazioni **invertibili**:
 
--   Le trasformazioni che implementeremo saranno le seguenti:
-    #.  Trasformazione di scala (ingrandimento/rimpicciolimento);
-    #.  Rotazione attorno ad un asse;
-    #.  Traslazione (spostamento).
+#.  Trasformazione di scala (ingrandimento/rimpicciolimento);
+#.  Rotazione attorno ad un asse;
+#.  Traslazione (spostamento).
 
     <center>
     ![](./media/transformations.svg)

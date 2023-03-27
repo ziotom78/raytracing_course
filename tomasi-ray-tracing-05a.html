@@ -140,8 +140,8 @@ nell’ambiente:</p>
 <li><p>Ogni raggio partirà da un <strong>punto</strong>…</p></li>
 <li><p>…e si propagherà lungo la direzione codificata da un
 <strong>vettore</strong>…</p></li>
-<li><p>…finché non colpirà la superficie di un oggetto; a quel punto
-dovrà calcolar l’angolo tra la direzione di arrivo e la
+<li><p>…finché non colpirà la superficie di un oggetto; a quel punto il
+codice dovrà calcolare l’angolo tra la direzione di arrivo e la
 <strong>normale</strong>.</p></li>
 </ul>
 <p>Tutto ciò è complicato dal fatto che ogni oggetto avrà la sua
@@ -154,13 +154,14 @@ orientazione nello spazio, codificata da una trasformazione
 codice deve trattare correttamente tutte le quantità nominate nella
 slide precedente:</p>
 <ul>
-<li><strong>Punti</strong> nello spazio tridimensionale (posizioni dei
-vertici del comodino);</li>
+<li><strong>Punti</strong> nello spazio tridimensionale (sorgenti dei
+raggi luminosi, vertici del comodino);</li>
 <li><strong>Vettori</strong> 3D (direzioni di propagazione della
 luce);</li>
-<li><strong>Normali</strong> (rappresentano l’inclinazione della
-superficie in un punto);</li>
-<li><strong>Matrici</strong> (codificano le trasformazioni).</li>
+<li><strong>Normali</strong> (l’inclinazione della superficie in un
+punto);</li>
+<li><strong>Matrici</strong> (trasformazioni applicate ad oggetti e ad
+osservatore).</li>
 </ul>
 <p>Ripassiamo quindi le proprietà di questi oggetti geometrici.</p>
 </section>
@@ -212,7 +213,8 @@ class="math inline">1u = u</span>.</li>
 </section>
 <section id="prodotto-interno" class="slide level1">
 <h1>Prodotto interno</h1>
-<p>Dato uno spazio vettoriale <span class="math inline">V</span> su
+<ul>
+<li><p>Dato uno spazio vettoriale <span class="math inline">V</span> su
 <span class="math inline">F</span>, il prodotto interno è un’operazione
 <span class="math inline">\left&lt;\cdot, \cdot\right&gt;: V \times V
 \rightarrow F</span> che gode delle seguenti proprietà <span
@@ -227,14 +229,19 @@ w\right&gt; + \left&lt;v, w\right&gt;</span>;</li>
 \overline{\left&lt;v, u\right&gt;}</span>;</li>
 <li><span class="math inline">\left&lt;u, u\right&gt; &gt; 0</span> se
 <span class="math inline">u \not= 0</span>.</li>
-</ol>
-<p>Un esempio è il classico prodotto scalare <span
-class="math inline">\vec u \cdot \vec v = \left\|\vec
-u\right\|\,\left\|\vec v\right\|\,\cos\theta</span> su <span
-class="math inline">\mathbb{R}^n</span>.</p>
+</ol></li>
+<li><p>Prodotto scalare su <span
+class="math inline">\mathbb{R}^3</span>: <span class="math inline">\vec
+u \cdot \vec v = \left\|\vec u\right\|\,\left\|\vec
+v\right\|\,\cos\theta</span>.</p></li>
+<li><p>Si definiscono <em>ortogonali</em> due vettori <span
+class="math inline">u</span> e <span class="math inline">v</span> se
+vale che <span class="math inline">\left&lt;u, v\right&gt; =
+0</span>.</p></li>
+</ul>
 </section>
-<section id="norma-e-ortogonalità" class="slide level1">
-<h1>Norma e ortogonalità</h1>
+<section id="norma-di-un-vettore" class="slide level1">
+<h1>Norma di un vettore</h1>
 <ul>
 <li><p>Dato un prodotto interno, si può definire la <em>norma</em> <span
 class="math inline">\left\|\cdot\right\|: V \rightarrow F</span> in
@@ -244,10 +251,6 @@ questo modo:</p>
 </span></p>
 <p>che è positiva definita, e si annulla solo se <span
 class="math inline">u = 0</span>.</p></li>
-<li><p>Si definiscono <em>ortogonali</em> due vettori <span
-class="math inline">u</span> e <span class="math inline">v</span> se
-vale che <span class="math inline">\left&lt;u, v\right&gt; =
-0</span>.</p></li>
 <li><p>Un vettore <span class="math inline">u</span> tale che <span
 class="math inline">\left\|u\right\| = 1</span> si dice
 <em>normalizzato</em>.</p></li>
@@ -260,7 +263,7 @@ class="math inline">\left\|u\right\| = 1</span> si dice
 class="math inline">\{v_i\}_{i=1}^N</span> è l’insieme</p>
 <p><span class="math display">
 \mathrm{Span}\left(\{v_i\}_{i=1}^N\right) = \left\{\sum_{i=1}^N \alpha_i
-v_i \forall \alpha_i \in F\right\}.
+v_i,\ \forall \alpha_i \in F\right\}.
 </span></p></li>
 <li><p>Nel caso di <span class="math inline">\mathbb{R}^3</span>:</p>
 <ol>
@@ -329,8 +332,8 @@ v = \sum_{i=1}^N \alpha_i e_i,
 <p>dove <span class="math inline">\alpha_i \in F</span>. (Conseguenza
 del fatto che la base genera lo spazio <span
 class="math inline">V</span>).</p></li>
-<li><p>Tale rappresentazione è sempre unica; se la base è ortonormale,
-allora</p>
+<li><p>Tale rappresentazione è sempre unica; <strong>se la base è
+ortonormale</strong> vale che</p>
 <p><span class="math display">\alpha_i = \left&lt;v,
 e_i\right&gt;.</span></p></li>
 <li><p>I vettori si rappresentano come matrici a una colonna: <span
@@ -511,19 +514,17 @@ pseudovettore.</p></li>
 </section>
 <section id="tipi-di-trasformazioni" class="slide level1">
 <h1>Tipi di trasformazioni</h1>
-<ul>
-<li><p>Con l’eccezione delle trasformazioni 3D→2D, implementeremo
-t. <strong>invertibili</strong>.</p></li>
-<li><p>Le trasformazioni che implementeremo saranno le seguenti:</p>
+<p>Nel nostro codice implementeremo solo trasformazioni
+<strong>invertibili</strong>:</p>
 <ol>
-<li>Trasformazione di scala (ingrandimento/rimpicciolimento);</li>
-<li>Rotazione attorno ad un asse;</li>
-<li>Traslazione (spostamento).</li>
-</ol>
+<li><p>Trasformazione di scala
+(ingrandimento/rimpicciolimento);</p></li>
+<li><p>Rotazione attorno ad un asse;</p></li>
+<li><p>Traslazione (spostamento).</p>
 <center>
 <p><img data-src="./media/transformations.svg" /></p>
 </center></li>
-</ul>
+</ol>
 </section>
 <section id="trasformazioni-di-scala" class="slide level1">
 <h1>Trasformazioni di scala</h1>
