@@ -707,16 +707,18 @@ problema.</p></li>
 <section id="implementazione" class="slide level1">
 <h1>Implementazione</h1>
 <ul>
-<li><p>In Python si può implementare il prodotto tra matrice e normale
-nel modo più diretto possibile:</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>row0, row1, row2, _ <span class="op">=</span> <span class="va">self</span>.invm</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> Normal(x<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">0</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">0</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">0</span>],</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>              y<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">1</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">1</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">1</span>],</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>              z<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">2</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">2</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">2</span>])</span></code></pre></div></li>
-<li><p>È inutile infatti costruire la matrice trasposta di
+<li><p>È inutile costruire la matrice trasposta di
 <code>self.invm</code> e calcolare il prodotto di questa con la
 normale.</p></li>
+<li><p>Vi consiglio di implementare il prodotto tra matrice e normale
+nel modo più diretto possibile:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>row0, row1, row2, _ <span class="op">=</span> <span class="va">self</span>.invm  <span class="co"># Take the *inverse*!</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># This multiplies the *transpose* of `self.invm` by `n`</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> Normal(x<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">0</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">0</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">0</span>],</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>              y<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">1</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">1</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">1</span>],</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>              z<span class="op">=</span>n.x <span class="op">*</span> row0[<span class="dv">2</span>] <span class="op">+</span> n.y <span class="op">*</span> row1[<span class="dv">2</span>] <span class="op">+</span> n.z <span class="op">*</span> row2[<span class="dv">2</span>])</span></code></pre></div></li>
 </ul>
 </section>
 <section id="test" class="slide level1">
@@ -754,8 +756,8 @@ di essa</p></li>
 <code>HomMatrix</code>, contenenti rispettivamente la matrice della
 trasformazione e la sua inversa</p></li>
 <li><p>Attenzione a definire <code>HomMatrix</code> in modo da evitare
-l’allocazione di memoria nello <em>heap</em>: essendo un tipo di dati
-che verrà usato moltissimo, deve essere veloce da usare:</p>
+l’allocazione di memoria nello <em>heap</em>, perché deve essere veloce
+da allocare:</p>
 <ul>
 <li><p>Evitate di usare costrutti come
 <code>vector&lt;vector&lt;float&gt;&gt;</code> (C++) o
@@ -985,40 +987,44 @@ quindi dovrete definire due volte le operazioni comuni tra
 <code>Point</code> e <code>Vec</code>, come la somma.</li>
 </ul>
 </section>
-<section id="indicazioni-per-kotlin" class="slide level1">
-<h1>Indicazioni per Kotlin</h1>
+<section id="indicazioni-per-javakotlin" class="slide level1">
+<h1>Indicazioni per Java/Kotlin</h1>
 </section>
-<section id="indicazioni-per-kotlin-1" class="slide level1">
-<h1>Indicazioni per Kotlin</h1>
+<section id="indicazioni-per-javakotlin-1" class="slide level1">
+<h1>Indicazioni per Java/Kotlin</h1>
 <ul>
 <li>Nessuna indicazione in particolare per <code>Point</code>,
 <code>Vec</code>, <code>Normal</code>: l’implementazione dovrebbe essere
 abbastanza semplice.</li>
-<li>Come il C#, neppure Kotlin supporta la metaprogrammazione, quindi
-dovrete duplicare un po’ di funzioni, come quelle che calcolano
+<li>Né Java né Kotlin supportano la metaprogrammazione, quindi dovrete
+duplicare un po’ di funzioni, come quelle che calcolano
 <code>Point + Vec</code> e <code>Vec + Vec</code>.</li>
 </ul>
 </section>
 <section id="trasformazioni-1" class="slide level1">
 <h1>Trasformazioni</h1>
-<p>Per semplificare <code>Transformation</code>, Vi consiglio di
+<p>Per semplificare <code>Transformation</code>, vi consiglio di
 definire un tipo <code>HomMatrix</code> che implementi una matrice
 omogenea 4×4; usate internamente un array di 16 elementi come avevate
 fatto con <code>HdrImage</code>:</p>
 <div class="sourceCode" id="cb20"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HomMatrix<span class="op">(</span><span class="kw">var</span> <span class="va">elements</span><span class="op">:</span> <span class="dt">FloatArray</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    init <span class="op">{</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        require<span class="op">(</span>elements<span class="op">.</span>size <span class="op">==</span> <span class="dv">16</span><span class="op">)</span> <span class="op">{</span> <span class="st">&quot;A homogeneous matrix must be 4×4&quot;</span> <span class="op">}</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">constructor</span><span class="op">()</span> <span class="op">:</span> <span class="kw">this</span><span class="op">(</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        floatArrayOf<span class="op">(</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>            <span class="fl">1.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">1.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">1.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">1.0f</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">)</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Etc.</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Kotlin</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HomMatrix<span class="op">(</span><span class="kw">var</span> <span class="va">elements</span><span class="op">:</span> <span class="dt">FloatArray</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    init <span class="op">{</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        require<span class="op">(</span>elements<span class="op">.</span>size <span class="op">==</span> <span class="dv">16</span><span class="op">)</span> <span class="op">{</span> <span class="st">&quot;A homogeneous matrix must be 4×4&quot;</span> <span class="op">}</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">constructor</span><span class="op">()</span> <span class="op">:</span> <span class="kw">this</span><span class="op">(</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        floatArrayOf<span class="op">(</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>            <span class="fl">1.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>            <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">1.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>            <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">1.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>            <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">1.0f</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">)</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Etc.</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
     </div>
   </div>

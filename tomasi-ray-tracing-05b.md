@@ -469,16 +469,18 @@ else:
 
 # Implementazione
 
--   In Python si può implementare il prodotto tra matrice e normale nel modo più diretto possibile:
+-   È inutile costruire la matrice trasposta di `self.invm` e calcolare il prodotto di questa con la normale.
+
+-   Vi consiglio di implementare il prodotto tra matrice e normale nel modo più diretto possibile:
 
     ```python
-    row0, row1, row2, _ = self.invm
+    row0, row1, row2, _ = self.invm  # Take the *inverse*!
+
+    # This multiplies the *transpose* of `self.invm` by `n`
     return Normal(x=n.x * row0[0] + n.y * row1[0] + n.z * row2[0],
                   y=n.x * row0[1] + n.y * row1[1] + n.z * row2[1],
                   z=n.x * row0[2] + n.y * row1[2] + n.z * row2[2])
     ```
-
--   È inutile infatti costruire la matrice trasposta di `self.invm` e calcolare il prodotto di questa con la normale.
 
 # Test
 
@@ -503,7 +505,7 @@ else:
 
 -   Il tipo `Transformation` conterrà quindi due campi `HomMatrix`, contenenti rispettivamente la matrice della trasformazione e la sua inversa
 
--   Attenzione a definire `HomMatrix` in modo da evitare l'allocazione di memoria nello *heap*: essendo un tipo di dati che verrà usato moltissimo, deve essere veloce da usare:
+-   Attenzione a definire `HomMatrix` in modo da evitare l'allocazione di memoria nello *heap*, perché deve essere veloce da allocare:
 
     -   Evitate di usare costrutti come `vector<vector<float>>` (C++) o `seq[seq[float]]` (Nim), perché i dati non sarebbero contigui in memoria
     
@@ -692,18 +694,19 @@ struct Point {
 -   Purtroppo C\# non implementa funzionalità di metaprogrammazione, quindi dovrete definire due volte le operazioni comuni tra `Point` e `Vec`, come la somma.
 
 
-# Indicazioni per Kotlin
+# Indicazioni per Java/Kotlin
 
-# Indicazioni per Kotlin
+# Indicazioni per Java/Kotlin
 
 -   Nessuna indicazione in particolare per `Point`, `Vec`, `Normal`: l'implementazione dovrebbe essere abbastanza semplice.
--   Come il C\#, neppure Kotlin supporta la metaprogrammazione, quindi dovrete duplicare un po' di funzioni, come quelle che calcolano `Point + Vec` e `Vec + Vec`.
+-   Né Java né Kotlin supportano la metaprogrammazione, quindi dovrete duplicare un po' di funzioni, come quelle che calcolano `Point + Vec` e `Vec + Vec`.
 
 # Trasformazioni
 
-Per semplificare `Transformation`, Vi consiglio di definire un tipo `HomMatrix` che implementi una matrice omogenea 4×4; usate internamente un array di 16 elementi come avevate fatto con `HdrImage`:
+Per semplificare `Transformation`, vi consiglio di definire un tipo `HomMatrix` che implementi una matrice omogenea 4×4; usate internamente un array di 16 elementi come avevate fatto con `HdrImage`:
 
 ```kotlin
+// Kotlin
 class HomMatrix(var elements: FloatArray) {
     init {
         require(elements.size == 16) { "A homogeneous matrix must be 4×4" }
@@ -711,7 +714,10 @@ class HomMatrix(var elements: FloatArray) {
 
     constructor() : this(
         floatArrayOf(
-            1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
         )
     )
 
