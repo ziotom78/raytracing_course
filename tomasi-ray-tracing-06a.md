@@ -35,13 +35,13 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Il prodotto si definisce come
 
     $$
-    z_1 \times z_2 = (\Re z_1\,\Re z_2 - \Im z_1\,\Im z_2, \Re z_1\,\Im z_2 + \Im z_1\,\Re z_2).
+    z_1 \cdot z_2 = (\Re z_1\,\Re z_2 - \Im z_1\,\Im z_2, \Re z_1\,\Im z_2 + \Im z_1\,\Re z_2).
     $$
     
 -   Introducendo $i$ tale che $i^2 = -1$ e scrivendo i numeri complessi nella forma $z = x + i y$, la formula del prodotto è più semplice da ricordare:
 
     $$
-    (x_1 + i y_1) \times (x_2 + i y_2) = x_1 x_2 - y_1 y_2 + i \bigl(x_1 y_2 + x_2 y_1\bigr).
+    (x_1 + i y_1) \cdot (x_2 + i y_2) = x_1 x_2 - y_1 y_2 + i \bigl(x_1 y_2 + x_2 y_1\bigr).
     $$
 
 # Rotazioni e numeri complessi
@@ -76,7 +76,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     
 # Prodotto di quaternioni
 
--   I numeri complessi rappresentano una rotazione tramite il prodotto tra complessi; il prodotto su ℂ soddisfa le proprietà di un'algebra associativa.
+-   I numeri complessi rappresentano una rotazione 2D con il prodotto tra complessi, che soddisfa le proprietà di un'algebra associativa.
 
 -   Il prodotto $p q$ tra due quaternioni è definito così:
 
@@ -151,7 +151,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     dove $(0, \vec v)$ rappresenta il quaternione associato a $\vec v$.
     
--   Intuitivamente, $r(\theta, \hat n)$ compare **due** volte nella formula perché dipende dall'angolo $\theta/2$.
+-   Intuitivamente, $r(\theta, \hat n)$ compare **due** volte nella formula perché dipende dall'angolo $\theta/2$, e non semplicemente dall'angolo $\theta$.
 
 -   Dalla formula è evidente che $r(\theta, \hat n)$ e $-r(\theta, \hat n)$ rappresentano la medesima rotazione.
 
@@ -188,7 +188,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     m_{31}&m_{32}&m_{33}
     \end{pmatrix},\quad
     $$
-    in modo da ottenere $R(t)$ per $0 < t < 1$, perché non è garantito che le matrici siano ortogonali ($R R^t = I$).
+    in modo da ottenere $R(t)$ per $0 < t < 1$, perché non è garantito che l'interpolazione sia ancora ortogonale ($R(t) R(t)^t = I$).
     
 -   Non è possibile fare questa operazione in modo semplice tramite le matrici di rotazione…
 
