@@ -838,7 +838,16 @@ $$
     \end{aligned}
     $$
     
--   $\vec E$ è un vettore, ma $\vec B$ è un bivettore: questo risolve il problema della riflessione nella [legge di Ampère](tomasi-ray-tracing-05a.html#pseudovettori-1)
+-   $\vec E$ è un vettore, ma $\vec B$ è un bivettore!
+
+---
+
+<center>
+![](./media/B-pseudovector.svg){height=380px}
+</center>
+
+Il problema della riflessione nella [legge di Ampère](tomasi-ray-tracing-05a.html#pseudovettori-1) è così risolto!
+
 
 # Equazione di Maxwell
 
