@@ -11,12 +11,21 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
+    .reveal .sourceCode {  /* see #7635 */
+      /* overflow: visible; */
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -55,7 +64,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -68,7 +77,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -91,56 +100,78 @@
 
 <section id="title-slide">
   <h1 class="title">Esercitazione 6</h1>
-  <p class="subtitle">Calcolo numerico per la generazione di immagini fotorealistiche</p>
-  <p class="author">Maurizio Tomasi <a href="mailto:maurizio.tomasi@unimi.it" class="email">maurizio.tomasi@unimi.it</a></p>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini
+fotorealistiche</p>
+  <p class="author">Maurizio Tomasi <a
+href="mailto:maurizio.tomasi@unimi.it"
+class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="conferenze-lcm" class="slide level1">
-<h1>Conferenze LCM</h1>
-<ul>
-<li><p>Quest’anno il Laboratorio Calcolo e Multimedia ripropone le conferenze OpenLab su temi informatici, in presenza ed online (<a href="https://zoom.us/my/aula.x">aula X</a>)</p></li>
-<li><p>L’elenco degli incontri è disponibile al sito <a href="https://lcm.mi.infn.it/">https://lcm.mi.infn.it/</a></p></li>
-<li><p>Oggi pomeriggio (ore 16) è prevista la conferenza <em>Strumenti avanzati per progetti in Python</em> (Gabriele Bozzola)</p></li>
-</ul>
-</section>
 <section id="ci-builds" class="slide level1">
 <h1>CI builds</h1>
 </section>
 <section id="ci-builds-1" class="slide level1">
 <h1>CI builds</h1>
 <ul>
-<li><p>Nel momento in cui si gestiscono <em>pull request</em>, è necessario essere sicuri che la modifica non peggiori il codice.</p></li>
-<li><p>Un requisito basilare è che tutti i test continuino a passare una volta che viene incorporato il <em>pull request</em>.</p></li>
-<li><p>GitHub consente di verificare automaticamente questo requisito, tramite i <em>Continuous Integration builds</em>.</p></li>
+<li><p>Nel momento in cui si gestiscono <em>pull request</em>, è
+necessario essere sicuri che la modifica non peggiori il
+codice.</p></li>
+<li><p>Un requisito basilare è che tutti i test continuino a passare una
+volta che viene incorporato il <em>pull request</em>.</p></li>
+<li><p>GitHub consente di verificare automaticamente questo requisito,
+tramite i <em>Continuous Integration builds</em>.</p></li>
 </ul>
 </section>
 <section id="continuous-integration-ci" class="slide level1">
 <h1>Continuous Integration (CI)</h1>
 <ul>
-<li><p>È un termine che indica un metodo di lavoro in cui miglioramenti e modifiche al codice vengono incorporate il prima possibile nel branch <code>master</code>.</p></li>
-<li><p>Perché possano essere incorporati, occorre essere certi della loro qualità!</p></li>
-<li><p>Un CI build consiste nel creare una macchina virtuale su cui si installa un sistema operativo «pulito» e su cui si installa il codice, lo si compila e si eseguono i test.</p></li>
-<li><p>Al termine dell’esecuzione dei test, la macchina virtuale viene cancellata; se si esegue di nuovo il CI build, si ricomincia da capo.</p></li>
+<li><p>È un termine che indica un metodo di lavoro in cui miglioramenti
+e modifiche al codice vengono incorporate il prima possibile nel branch
+<code>master</code>.</p></li>
+<li><p>Perché possano essere incorporati, occorre essere certi della
+loro qualità!</p></li>
+<li><p>Un CI build consiste nel creare una macchina virtuale su cui si
+installa un sistema operativo «pulito» e su cui si installa il codice,
+lo si compila e si eseguono i test.</p></li>
+<li><p>Al termine dell’esecuzione dei test, la macchina virtuale viene
+cancellata; se si esegue di nuovo il CI build, si ricomincia da
+capo.</p></li>
 </ul>
 </section>
 <section id="vantaggi-dei-ci-build" class="slide level1">
 <h1>Vantaggi dei CI build</h1>
 <ul>
-<li><p>Installano il codice su una macchina virtuale: più difficile combinare guai.</p></li>
-<li><p>La macchina virtuale viene creata sempre da zero: più facile scoprire quali sono le dipendenze del codice. (Esempio: è stata installato il compilatore C++? È stata installata la libreria <code>libgd</code>?)</p></li>
-<li><p>Si possono creare macchine virtuali che installano diversi sistemi operativi (Linux, Windows, Mac OS X, FreeBSD, etc.): il codice viene verificato su ciascuna di esse.</p></li>
-<li><p>I CI builds possono venire eseguiti automaticamente da GitHub ogni volta che si apre un pull request, ogni volta che si fa un commit, etc.</p></li>
+<li><p>Installano il codice su una macchina virtuale: più difficile
+combinare guai.</p></li>
+<li><p>La macchina virtuale viene creata sempre da zero: più facile
+scoprire quali sono le dipendenze del codice. (Esempio: è stata
+installato il compilatore C++? È stata installata la libreria
+<code>libgd</code>?)</p></li>
+<li><p>Si possono creare macchine virtuali che installano diversi
+sistemi operativi (Linux, Windows, Mac OS X, FreeBSD, etc.): il codice
+viene verificato su ciascuna di esse.</p></li>
+<li><p>I CI builds possono venire eseguiti automaticamente da GitHub
+ogni volta che si apre un pull request, ogni volta che si fa un commit,
+etc.</p></li>
 </ul>
 </section>
 <section id="ci-builds-in-github" class="slide level1">
 <h1>CI builds in GitHub</h1>
 <ul>
-<li><p>Un CI build può essere creato ed eseguito in GitHub tramite <a href="https://docs.github.com/en/actions">GitHub Actions</a>, un servizio che include una serie di possibilità che vanno oltre i semplici CI build.</p></li>
-<li><p>Per attivare un CI build è sufficiente create una directory nascosta <code>.github/workflows</code> nel proprio repository, che contenga un file di testo in formato <a href="https://en.wikipedia.org/wiki/YAML">YAML</a>, che contenga queste informazioni:</p>
+<li><p>Un CI build può essere creato ed eseguito in GitHub tramite <a
+href="https://docs.github.com/en/actions">GitHub Actions</a>, un
+servizio che include una serie di possibilità che vanno oltre i semplici
+CI build.</p></li>
+<li><p>Per attivare un CI build è sufficiente create una directory
+nascosta <code>.github/workflows</code> nel proprio repository, che
+contenga un file di testo in formato <a
+href="https://en.wikipedia.org/wiki/YAML">YAML</a>, che contenga queste
+informazioni:</p>
 <ol>
 <li>Quando eseguire l’azione (a ogni pull request? a ogni commit?)</li>
 <li>Quale sistema operativo usare (Linux? Windows? quale versione?)</li>
-<li>Quali pacchetti aggiuntivi installare (compilatore C++? Python?)</li>
+<li>Quali pacchetti aggiuntivi installare (compilatore C++?
+Python?)</li>
 <li>Come compilare il codice ed eseguire i test?</li>
 </ol></li>
 </ul>
@@ -148,9 +179,14 @@
 <section id="il-marketplace" class="slide level1">
 <h1>Il «Marketplace»</h1>
 <ul>
-<li><p>GitHub Actions ha un «marketplace» che consente di configurare automaticamente con pochi click del mouse un CI build in funzione del linguaggio che usate.</p></li>
-<li><p>Sono disponibili azioni pre-configurate per molti linguaggi ed ambienti di sviluppo.</p></li>
-<li><p>Non è drammatico se non trovate un’azione che fa al caso vostro: è abbastanza semplice creare nuove azioni su misura, una volta che capite come fare a descriverle.</p></li>
+<li><p>GitHub Actions ha un «marketplace» che consente di configurare
+automaticamente con pochi click del mouse un CI build in funzione del
+linguaggio che usate.</p></li>
+<li><p>Sono disponibili azioni pre-configurate per molti linguaggi ed
+ambienti di sviluppo.</p></li>
+<li><p>Non è drammatico se non trovate un’azione che fa al caso vostro:
+è abbastanza semplice creare nuove azioni su misura, una volta che
+capite come fare a descriverle.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -162,7 +198,8 @@
 <section class="slide level1">
 
 <center>
-<img data-src="./media/github-action-run-tests-detail.png" height="720" />
+<img data-src="./media/github-action-run-tests-detail.png"
+height="720" />
 </center>
 </section>
 <section id="guida-per-lesercitazione" class="slide level1">
@@ -171,15 +208,21 @@
 <section id="workflow-in-github" class="slide level1">
 <h1>Workflow in GitHub</h1>
 <ul>
-<li><p>Aggiungete un <em>workflow</em> al vostro repository GitHub.</p></li>
-<li><p>Ci sono molti template disponibili in GitHub: scegliete il più appropriato.</p></li>
+<li><p>Aggiungete un <em>workflow</em> al vostro repository
+GitHub.</p></li>
+<li><p>Ci sono molti template disponibili in GitHub: scegliete il più
+appropriato.</p></li>
 <li><p>Il workflow deve eseguire le seguenti azioni:</p>
 <ol type="1">
-<li>Scaricare il codice dal repository GitHub (verifica che non manchino file);</li>
-<li>Compilare il codice (verifica che non ci siano errori di sintassi);</li>
+<li>Scaricare il codice dal repository GitHub (verifica che non manchino
+file);</li>
+<li>Compilare il codice (verifica che non ci siano errori di
+sintassi);</li>
 <li>Eseguire i test (verifica che il codice funzioni a dovere).</li>
 </ol></li>
-<li><p>Modificate un test in modo che fallisca e verificate che quando fate il commit ciò vi venga segnalato. (Poi rimettete a posto il test).</p></li>
+<li><p>Modificate un test in modo che fallisca e verificate che quando
+fate il commit ciò vi venga segnalato. (Poi rimettete a posto il
+test).</p></li>
 </ul>
 </section>
 <section id="indicazioni-per-c" class="slide level1">
@@ -188,8 +231,10 @@
 <section id="github-actions" class="slide level1">
 <h1>GitHub Actions</h1>
 <ul>
-<li><p>Aggiungete una Action al repository GitHub, una volta che avete fatto il commit ed eseguito <code>git push</code>.</p></li>
-<li><p>Il modello è «.NET» (evitate il modello «.NET desktop», a noi serve quello per i programmi che funzionano da linea di comando):</p>
+<li><p>Aggiungete una Action al repository GitHub, una volta che avete
+fatto il commit ed eseguito <code>git push</code>.</p></li>
+<li><p>Il modello è «.NET» (evitate il modello «.NET desktop», a noi
+serve quello per i programmi che funzionano da linea di comando):</p>
 <center>
 <p><img data-src="./media/dotnet-github-action.png" /></p>
 </center></li>
@@ -201,32 +246,41 @@
 <section id="github-actions-1" class="slide level1">
 <h1>GitHub Actions</h1>
 <ul>
-<li><p>Per D, potete usare <a href="https://github.com/dlang-community/setup-dlang">setup-dlang</a></p></li>
-<li><p>Per Nim, esiste <a href="https://github.com/marketplace/actions/setup-nim-environment">Setup Nim Environment</a></p></li>
-<li><p>Chi usa Rust ha già configurato una action, quindi tutto ok!</p></li>
+<li><p>Per D, potete usare <a
+href="https://github.com/dlang-community/setup-dlang">setup-dlang</a></p></li>
+<li><p>Per Nim, esiste <a
+href="https://github.com/marketplace/actions/setup-nim-environment">Setup
+Nim Environment</a></p></li>
+<li><p>Chi usa Rust ha già configurato una action, quindi tutto
+ok!</p></li>
 </ul>
 </section>
-<section id="indicazioni-per-kotlin" class="slide level1">
-<h1>Indicazioni per Kotlin</h1>
+<section id="indicazioni-per-javakotlin" class="slide level1">
+<h1>Indicazioni per Java/Kotlin</h1>
 </section>
 <section id="github-actions-2" class="slide level1">
 <h1>GitHub Actions</h1>
 <ul>
-<li><p>Selezionate «Java with Gradle»:</p>
+<li><p>Sia che usiate Java sia che usiate Kotlin, selezionate «Java with
+Gradle»:</p>
 <center>
 <p><img data-src="./media/gradle-github-action.png" /></p>
 </center>
-<p>Gradle scaricherà automaticamente il supporto Kotlin.</p></li>
-<li><p>Il processo proverà a compilare il codice e a eseguire <em>tutti</em> i test nel repository</p></li>
+<p>Se usate Kotlin, Gradle scaricherà automaticamente quanto serve per
+supportarlo.</p></li>
+<li><p>Il processo proverà a compilare il codice e a eseguire
+<em>tutti</em> i test nel repository</p></li>
 </ul>
 </section>
 <section id="risoluzione-dei-problemi" class="slide level1">
 <h1>Risoluzione dei problemi</h1>
 <ul>
-<li><p>Ricordatevi di aggiungere al commit i file in <code>gradle/wrapper/</code></p></li>
-<li><p>Se avete problemi a causa della versione di Gradle, rigenerate <code>gradlew</code> da linea di comando così:</p>
+<li><p>Ricordatevi di aggiungere al commit i file in
+<code>gradle/wrapper/</code></p></li>
+<li><p>Se in Kotlin avete problemi a causa della versione di Gradle,
+rigenerate <code>gradlew</code> da linea di comando così:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> wrapper <span class="at">--gradle-version</span> 5.3</span></code></pre></div>
-<p>(Gradle supporta Kotlin a partire dalla versione 5.3).</p></li>
+<p>(Gradle supporta Kotlin solo a partire dalla versione 5.3).</p></li>
 </ul>
 </section>
     </div>
@@ -269,7 +323,7 @@
 
         // Add the current slide number to the URL hash so that reloading the
         // page/copying the URL will return you to the same slide
-        hash: false,
+        hash: true,
 
         // Start with 1 for the hash rather than 0
         hashOneBasedIndex: false,

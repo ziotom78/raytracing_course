@@ -4,14 +4,6 @@ subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-# Conferenze LCM
-
--   Quest'anno il Laboratorio Calcolo e Multimedia ripropone le conferenze OpenLab su temi informatici, in presenza ed online ([aula X](https://zoom.us/my/aula.x))
-
--   L'elenco degli incontri è disponibile al sito [https://lcm.mi.infn.it/](https://lcm.mi.infn.it/)
-
--   Oggi pomeriggio (ore 16) è prevista la conferenza *Strumenti avanzati per progetti in Python* (Gabriele Bozzola)
-
 # CI builds
 
 # CI builds
@@ -113,17 +105,17 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Chi usa Rust ha già configurato una action, quindi tutto ok!
 
-# Indicazioni per Kotlin
+# Indicazioni per Java/Kotlin
 
 # GitHub Actions
 
--   Selezionate «Java with Gradle»:
+-   Sia che usiate Java sia che usiate Kotlin, selezionate «Java with Gradle»:
 
     <center>
     ![](./media/gradle-github-action.png)
     </center>
     
-    Gradle scaricherà automaticamente il supporto Kotlin.
+    Se usate Kotlin, Gradle scaricherà automaticamente quanto serve per supportarlo.
 
 -   Il processo proverà a compilare il codice e a eseguire *tutti* i test nel repository
 
@@ -131,10 +123,10 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Ricordatevi di aggiungere al commit i file in `gradle/wrapper/`
 
--   Se avete problemi a causa della versione di Gradle, rigenerate `gradlew` da linea di comando così:
+-   Se in Kotlin avete problemi a causa della versione di Gradle, rigenerate `gradlew` da linea di comando così:
 
     ```sh
     gradle wrapper --gradle-version 5.3
     ```
     
-    (Gradle supporta Kotlin a partire dalla versione 5.3).
+    (Gradle supporta Kotlin solo a partire dalla versione 5.3).
