@@ -19,6 +19,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 |         4 | [20 Marzo 2023](tomasi-ray-tracing-04a.html)    | [22 Marzo 2023](tomasi-ray-tracing-04b.html)    |
 |         5 | [27 Marzo 2023](tomasi-ray-tracing-05a.html) | [29 Marzo 2023](tomasi-ray-tracing-05b.html) |
 |         6 | [3 Aprile 2023](tomasi-ray-tracing-06a.html) | [5 Aprile 2023](tomasi-ray-tracing-06b.html) |
+|         7 | [17 Aprile 2023](tomasi-ray-tracing-07a.html) | [19 Aprile 2023](tomasi-ray-tracing-07b.html) |
 
 # Argomenti per l'esame (A.A. 2022/2023)
 
@@ -47,12 +48,12 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/numeri-di-versione)
 -   [*Branch* e *pull requests*](tomasi-ray-tracing-05b.html#/pull-requests)
 -   [*CI builds*](tomasi-ray-tracing-06b.html#/ci-builds)
-<!--
 -   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-07a.html#/soluzione-dellequazione)
 -   [Algoritmi *image order*](tomasi-ray-tracing-07a.html#/algoritmi-image-order)
 -   [Schermi virtuali e osservatori](tomasi-ray-tracing-07a.html#/schermo-e-osservatore)
 -   [Proiezioni prospettiche ed ortogonali](tomasi-ray-tracing-07a.html#/tipi-di-proiezione)
 -   [*Aspect ratio*](tomasi-ray-tracing-07a.html#/aspect-ratio)
+<!--
 -   [Forma alternativa dell'equazione del rendering e funzione di visibilità](tomasi-ray-tracing-08a.html#/equazione-del-rendering)
 -   [Intersezioni tra raggi e forme geometriche](tomasi-ray-tracing-08a.html#/intersezioni-tra-raggi-e-forme-geometriche): [sfere](tomasi-ray-tracing-08a.html#/sfere), [piani](tomasi-ray-tracing-08a.html#/piani)
 -   [Algoritmo di path tracing](tomasi-ray-tracing-10a.html#/path-tracing)
@@ -75,9 +76,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Lo standard Unicode](tomasi-ray-tracing-03a.html#/lo-standard-unicode)
 -   [File e stream](tomasi-ray-tracing-03b.html#/file-e-stream)
 -   [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
-<!--
 -   [Numeri complessi e quaternioni](tomasi-ray-tracing-06a.html#/numeri-complessi-e-quaternioni)
 -   [Algebre di Clifford](tomasi-ray-tracing-06a.html#/algebre-di-clifford)
+<!--
 -   [Constructive Solid Geometry](tomasi-ray-tracing-08a.html#/constructive-solid-geometry)
 -   [*Issues*](tomasi-ray-tracing-08b.html#/issues)
 -   [*Change log*](tomasi-ray-tracing-08b.html#/changelog)
