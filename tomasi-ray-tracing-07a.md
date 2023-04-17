@@ -208,7 +208,7 @@ Come si tratta questo caso?
 <center>
 ![](./media/leon-battista-alberti-piramide-visuale.webp)
 </center>
-[Leon Battista Alberti, *De pictura* (1435)]{style="float:right"}
+[[Leon Battista Alberti](https://it.wikipedia.org/wiki/Leon_Battista_Alberti), *De pictura* (1435)]{style="float:right"}
 
 # Descrizione generale
 
@@ -258,7 +258,7 @@ Come si tratta questo caso?
 
 -   In questo corso implementeremo algoritmo di *backward* ray-tracing, ma questa non è sempre la scelta migliore!
 
--   Il *forward* ray-tracing può essere vantaggioso quando si generano animazioni:
+-   Il *forward* ray-tracing (combinato con l'approccio *object order*) è utile nelle animazioni:
 
     #.  Si risolve l'equazione del rendering per tutte le superfici della scena.
     #.  Si generano $N$ fotogrammi dell'animazione senza dover ricalcolare la soluzione $N$ volte.
@@ -272,7 +272,7 @@ Come si tratta questo caso?
 
 # Discretizzazione dello schermo
 
--   Alberti considerava uno schermo come una superficie disegnabile; la stessa idea si ritrova in alcune stampe di Dürer (XVI secolo).
+-   Alberti considerava uno schermo come una superficie disegnabile; la stessa idea si ritrova in [alcune stampe di Dürer](https://www.metmuseum.org/art/collection/search/366555) (XVI secolo).
 
 -   Nella *computer graphics* si usa la stessa idea, con l'accortezza però di rappresentare lo schermo come una matrice discreta di punti.
 
@@ -424,9 +424,9 @@ Come si tratta questo caso?
 ---
 
 <center>
-![](./media/klondike-adventures-screenshot.webp){height=600px}
+![](./media/populous2.png){height=600px}
 </center>
-[*Klondike adventures* (proiezione ortogonale)]{style="float:right"}
+[*Populous 2* (proiezione ortogonale)]{style="float:right"}
 
 ---
 
@@ -441,7 +441,7 @@ Come si tratta questo caso?
 ![](./media/orthogonal-perspective-cube.svg)
 </center>
 
--   La proiezione ortogonale preserva il parallelismo: rette parallele nello spazio 3D restano parallele nel disegno.
+-   La proiezione ortogonale preserva il parallelismo e le lunghezze: segmenti congruenti e paralleli nello spazio 3D restano congruenti e paralleli nel disegno.
 
 -   La proiezione prospettica rende gli oggetti lontani più piccoli: è più verosimile.
 
