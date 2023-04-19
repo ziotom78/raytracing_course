@@ -180,7 +180,7 @@ int main() {
     ```
     </center>
     
--   Usate quanto il vostro linguaggio permette per implementare il polimorfismo: gerarchia di classi in C\#/D/Kotlin, [*traits*](https://doc.rust-lang.org/book/ch10-02-traits.html) in Rust, [*dynamic dispatch*](https://nim-lang.org/docs/tut2.html#object-oriented-programming-dynamic-dispatch) in Nim
+-   Usate quanto il vostro linguaggio permette per implementare il polimorfismo: gerarchia di classi in C\#/D/Java/Kotlin, [*traits*](https://doc.rust-lang.org/book/ch10-02-traits.html) in Rust, [*dynamic dispatch*](https://nim-lang.org/docs/tut2.html#object-oriented-programming-dynamic-dispatch) in Nim
 
 ---
 
