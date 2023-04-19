@@ -299,7 +299,7 @@ def test_transform():
         def fire_ray(self, u: float, v: float):
             origin = Point(-1.0, (1.0 - 2 * u) * self.aspect_ratio, 2 * v - 1)
             direction = VEC_X
-            return Ray(origin=origin, dir=direction, tmin=1.0).transform(self.transformation)
+            return Ray(origin=origin, dir=direction, tmin=1.0e-5).transform(self.transformation)
     ```
 
 # Test per l'osservatore
@@ -364,7 +364,7 @@ def test_orthogonal_camera(self):
         def fire_ray(self, u: float, v: float):
             origin = Point(-self.distance, 0.0, 0.0)
             direction = Vec(self.distance, (1.0 - 2 * u) * self.aspect_ratio, 2 * v - 1)
-            return Ray(origin=origin, dir=direction, tmin=1.0).transform(self.transformation)
+            return Ray(origin=origin, dir=direction, tmin=1.0e-5).transform(self.transformation)
     ```
 
 
