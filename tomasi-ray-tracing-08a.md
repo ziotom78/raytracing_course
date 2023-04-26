@@ -112,7 +112,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     x^2 + y^2 + z^2 = 1.
     $$
 
--   Diventa difficile applicare una trasformazione $T$ a una forma nel caso generale, perché noi sappiamo come applicare $T$ solo a punti, a vettori e a normali, non a equazioni implicite.
+-   Però noi sappiamo come applicare una trasformazione $T$ solo a punti, a vettori e a normali, non a equazioni implicite.
 
 -   È più conveniente applicare ai raggi luminosi la trasformazione **inversa**: se $T$ trasforma il sistema di riferimento «privilegiato» di una forma nel sistema reale del mondo, $T^{-1}$ può trasformare un raggio $O + t \vec d$ nel sistema reale del mondo in quello privilegiato della forma.
 
@@ -130,13 +130,11 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde t\,T^{-1} \vec d = \tilde x,
     $$
     
-    che equivale a formulare il problema dell'intersezione nel sistema di riferimento della superficie $S$.
-    
--   Notate che $\tilde t$ **non cambia** tra le due formulazioni!
+    che equivale a formulare il problema dell'intersezione nel sistema di riferimento di $S$. Notate che $\tilde t$ **non cambia** tra le due formulazioni!
     
 # Tipi di forme
 
--   Ci sono alcune forme geometriche particolarmente semplici da implementare eppure versatili; in questo corso discuteremo le seguenti:
+-   In questo corso discuteremo le seguenti forme geometriche:
 
     #.   Sfere;
     #.   Piani;
@@ -156,15 +154,15 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     (x - c_x)^2 + (y - c_y)^2 + (z - c_z)^2 = R^2,
     $$
     
-    e deriva dalla definizione geometrica di sfera. Ma la presenza di $C$ ed $R$ è inutile, perché come detto useremo le trasformazioni.
+    e deriva dalla definizione geometrica di sfera.
 
--   Ci limitiamo quindi a considerare la sfera unitaria centrata nell'origine:
+-   Ci limitiamo però a considerare solo la sfera unitaria centrata nell'origine:
 
     $$
     x^2 + y^2 + z^2 = 1\ \rightarrow\ \left\|P - 0\right\|^2 = (P - 0) \cdot (P - 0) = 1,
     $$
     
-    dove $0$ è l'origine degli assi e $P$ è il generico punto della sfera.
+    dove $0$ è l'origine degli assi e $P$ è il generico punto della sfera. Potremo poi traslarla e trasformarla in un ellissoide mediante una trasformazione $T$.
 
 # Intersezione raggio-sfera
 
@@ -177,11 +175,11 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     \end{cases}
     $$
     
--   L'incognita è il valore $t$ che dice a che distanza dall'origine del raggio avviene l'intersezione con la sfera.
+-   Le incognite sono $P$ e $t$; quest'ultimo dice a che distanza dall'origine del raggio avviene l'intersezione con la sfera.
     
 # Soluzione dell'equazione
 
--   Si tratta quindi di sostituire banalmente la seconda equazione nella prima:
+-   Possiamo trovare $t$ sostituendo la seconda equazione nella prima:
 
     $$
     (O + t\vec d - 0) \cdot (O + t\vec d - 0) - 1 = 0.
@@ -260,10 +258,11 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Inoltre in generale la BRDF di una superficie dipende dal punto esatto di intersezione, che per una superficie è solitamente indicato come un punto **bidimensionale** $(u, v)$.
 
+-   Vediamo questi due aspetti nel dettaglio, iniziando dalla normale.
 
 # Normale di una sfera
 
--   Fortunatamente la sfera è una forma geometrica regolare. Dato un punto $P$, la normale alla superficie è il raggio:
+-   Dato un punto $P$, ogni raggio è sempre normale alla superficie della sfera, quindi è semplice determinare la normale al punto $P$:
 
     $$
     \hat n_P = P - C,
@@ -271,7 +270,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     
     dove $C$ è il centro della sfera.
     
--   C'è però una ambiguità: la normale dovrebbe essere *entrante* o *uscente*?
+-   C'è però una ambiguità nel segno: sia $P - C$ che $C - P$ sono normali alla superficie. Ma la normale dovrebbe essere *entrante* o *uscente*?
 
 ---
 
@@ -296,15 +295,23 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Una volta determinato il punto di intersezione $P$ tra la sfera e il raggio, bisogna solitamente stimare la BRDF in $P$.
 
--   Ma è scomodo farlo se $P$ è un punto nello spazio tridimensionale; occorre piuttosto conoscerne la posizione in termini della superficie della sfera.
-
--   Nel caso specifico della sfera si può usare la coppia latitudine-longitudine; nel caso generico di una superficie $S$ si cerca comunque una parametrizzazione bidimensionale $(u, v)$.
+-   Ma è scomodo farlo se $P$ è espresso in coordinate 3D!
 
 ---
 
 <center>
 ![](./media/earth-from-space.webp){height=680px}
 </center>
+
+---
+
+# Punto di intersezione
+
+-   Più che il punto $P$, occorre piuttosto conoscere la posizione in coordinate bidimensionali sulla superficie della sfera.
+
+-   Nel caso specifico della sfera si può usare la coppia latitudine-longitudine; nel caso generico di una superficie $S$ si cerca comunque una parametrizzazione bidimensionale $(u, v)$.
+
+---
 
 
 # Superficie della sfera

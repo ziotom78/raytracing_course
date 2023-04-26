@@ -209,10 +209,9 @@ equazione implicita:</p>
 <p><span class="math display">
 x^2 + y^2 + z^2 = 1.
 </span></p></li>
-<li><p>Diventa difficile applicare una trasformazione <span
-class="math inline">T</span> a una forma nel caso generale, perché noi
-sappiamo come applicare <span class="math inline">T</span> solo a punti,
-a vettori e a normali, non a equazioni implicite.</p></li>
+<li><p>Però noi sappiamo come applicare una trasformazione <span
+class="math inline">T</span> solo a punti, a vettori e a normali, non a
+equazioni implicite.</p></li>
 <li><p>È più conveniente applicare ai raggi luminosi la trasformazione
 <strong>inversa</strong>: se <span class="math inline">T</span>
 trasforma il sistema di riferimento «privilegiato» di una forma nel
@@ -239,18 +238,15 @@ O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde
 t\,T^{-1} \vec d = \tilde x,
 </span></p>
 <p>che equivale a formulare il problema dell’intersezione nel sistema di
-riferimento della superficie <span
-class="math inline">S</span>.</p></li>
-<li><p>Notate che <span class="math inline">\tilde t</span> <strong>non
-cambia</strong> tra le due formulazioni!</p></li>
+riferimento di <span class="math inline">S</span>. Notate che <span
+class="math inline">\tilde t</span> <strong>non cambia</strong> tra le
+due formulazioni!</p></li>
 </ul>
 </section>
 <section id="tipi-di-forme" class="slide level1">
 <h1>Tipi di forme</h1>
 <ul>
-<li><p>Ci sono alcune forme geometriche particolarmente semplici da
-implementare eppure versatili; in questo corso discuteremo le
-seguenti:</p>
+<li><p>In questo corso discuteremo le seguenti forme geometriche:</p>
 <ol>
 <li>Sfere;</li>
 <li>Piani;</li>
@@ -275,18 +271,17 @@ class="math inline">C</span> e raggio <span class="math inline">R</span>
 <p><span class="math display">
 (x - c_x)^2 + (y - c_y)^2 + (z - c_z)^2 = R^2,
 </span></p>
-<p>e deriva dalla definizione geometrica di sfera. Ma la presenza di
-<span class="math inline">C</span> ed <span class="math inline">R</span>
-è inutile, perché come detto useremo le trasformazioni.</p></li>
-<li><p>Ci limitiamo quindi a considerare la sfera unitaria centrata
+<p>e deriva dalla definizione geometrica di sfera.</p></li>
+<li><p>Ci limitiamo però a considerare solo la sfera unitaria centrata
 nell’origine:</p>
 <p><span class="math display">
 x^2 + y^2 + z^2 = 1\ \rightarrow\ \left\|P - 0\right\|^2 = (P - 0) \cdot
 (P - 0) = 1,
 </span></p>
 <p>dove <span class="math inline">0</span> è l’origine degli assi e
-<span class="math inline">P</span> è il generico punto della
-sfera.</p></li>
+<span class="math inline">P</span> è il generico punto della sfera.
+Potremo poi traslarla e trasformarla in un ellissoide mediante una
+trasformazione <span class="math inline">T</span>.</p></li>
 </ul>
 </section>
 <section id="intersezione-raggio-sfera" class="slide level1">
@@ -300,16 +295,16 @@ risolvere contemporaneamente le equazioni</p>
 P = O + t \vec d,
 \end{cases}
 </span></p></li>
-<li><p>L’incognita è il valore <span class="math inline">t</span> che
-dice a che distanza dall’origine del raggio avviene l’intersezione con
-la sfera.</p></li>
+<li><p>Le incognite sono <span class="math inline">P</span> e <span
+class="math inline">t</span>; quest’ultimo dice a che distanza
+dall’origine del raggio avviene l’intersezione con la sfera.</p></li>
 </ul>
 </section>
 <section id="soluzione-dellequazione" class="slide level1">
 <h1>Soluzione dell’equazione</h1>
 <ul>
-<li><p>Si tratta quindi di sostituire banalmente la seconda equazione
-nella prima:</p>
+<li><p>Possiamo trovare <span class="math inline">t</span> sostituendo
+la seconda equazione nella prima:</p>
 <p><span class="math display">
 (O + t\vec d - 0) \cdot (O + t\vec d - 0) - 1 = 0.
 </span></p></li>
@@ -408,21 +403,25 @@ class="math inline">\hat n</span> alla superficie.</p></li>
 esatto di intersezione, che per una superficie è solitamente indicato
 come un punto <strong>bidimensionale</strong> <span
 class="math inline">(u, v)</span>.</p></li>
+<li><p>Vediamo questi due aspetti nel dettaglio, iniziando dalla
+normale.</p></li>
 </ul>
 </section>
 <section id="normale-di-una-sfera" class="slide level1">
 <h1>Normale di una sfera</h1>
 <ul>
-<li><p>Fortunatamente la sfera è una forma geometrica regolare. Dato un
-punto <span class="math inline">P</span>, la normale alla superficie è
-il raggio:</p>
+<li><p>Dato un punto <span class="math inline">P</span>, ogni raggio è
+sempre normale alla superficie della sfera, quindi è semplice
+determinare la normale al punto <span class="math inline">P</span>:</p>
 <p><span class="math display">
 \hat n_P = P - C,
 </span></p>
 <p>dove <span class="math inline">C</span> è il centro della
 sfera.</p></li>
-<li><p>C’è però una ambiguità: la normale dovrebbe essere
-<em>entrante</em> o <em>uscente</em>?</p></li>
+<li><p>C’è però una ambiguità nel segno: sia <span class="math inline">P
+- C</span> che <span class="math inline">C - P</span> sono normali alla
+superficie. Ma la normale dovrebbe essere <em>entrante</em> o
+<em>uscente</em>?</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -452,13 +451,8 @@ anziché <span class="math inline">\hat n</span>.</p></li>
 class="math inline">P</span> tra la sfera e il raggio, bisogna
 solitamente stimare la BRDF in <span
 class="math inline">P</span>.</p></li>
-<li><p>Ma è scomodo farlo se <span class="math inline">P</span> è un
-punto nello spazio tridimensionale; occorre piuttosto conoscerne la
-posizione in termini della superficie della sfera.</p></li>
-<li><p>Nel caso specifico della sfera si può usare la coppia
-latitudine-longitudine; nel caso generico di una superficie <span
-class="math inline">S</span> si cerca comunque una parametrizzazione
-bidimensionale <span class="math inline">(u, v)</span>.</p></li>
+<li><p>Ma è scomodo farlo se <span class="math inline">P</span> è
+espresso in coordinate 3D!</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -466,6 +460,18 @@ bidimensionale <span class="math inline">(u, v)</span>.</p></li>
 <center>
 <img data-src="./media/earth-from-space.webp" height="680" />
 </center>
+</section>
+<section id="punto-di-intersezione-1" class="slide level1">
+<h1>Punto di intersezione</h1>
+<ul>
+<li><p>Più che il punto <span class="math inline">P</span>, occorre
+piuttosto conoscere la posizione in coordinate bidimensionali sulla
+superficie della sfera.</p></li>
+<li><p>Nel caso specifico della sfera si può usare la coppia
+latitudine-longitudine; nel caso generico di una superficie <span
+class="math inline">S</span> si cerca comunque una parametrizzazione
+bidimensionale <span class="math inline">(u, v)</span>.</p></li>
+</ul>
 </section>
 <section id="superficie-della-sfera" class="slide level1">
 <h1>Superficie della sfera</h1>
