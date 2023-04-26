@@ -21,7 +21,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     \end{aligned}
     $$
 
--   L'integrale è calcolato sull'angolo solido, e non è molto agevole per la risoluzione numerica del problema.
+-   L'integrale è calcolato sull'angolo solido, e non è molto agevole per la risoluzione numerica del problema: noi avremo una lista di **oggetti**, non di angoli solidi, su cui iterare.
 
 -   Cerchiamo dunque una formulazione alternativa che renda le cose più semplici.
 
@@ -112,7 +112,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     x^2 + y^2 + z^2 = 1.
     $$
 
--   Diventa difficile applicare una trasformazione $T$ a una forma nel caso generale. (Sono facili da applicare solo a punti e a vettori!)
+-   Diventa difficile applicare una trasformazione $T$ a una forma nel caso generale, perché noi sappiamo come applicare $T$ solo a punti, a vettori e a normali, non a equazioni implicite.
 
 -   È più conveniente applicare ai raggi luminosi la trasformazione **inversa**: se $T$ trasforma il sistema di riferimento «privilegiato» di una forma nel sistema reale del mondo, $T^{-1}$ può trasformare un raggio $O + t \vec d$ nel sistema reale del mondo in quello privilegiato della forma.
 
@@ -130,7 +130,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde t\,T^{-1} \vec d = \tilde x,
     $$
     
-    ossia l'intersezione tra raggio e superficie *trasformata* $T\cdot S$ è lo stesso punto di intersezione del raggio *antitrasformato* con la superficie $S$, e $\tilde t$ non cambia.
+    che equivale a formulare il problema dell'intersezione nel sistema di riferimento della superficie $S$.
+    
+-   Notate che $\tilde t$ **non cambia** tra le due formulazioni!
     
 # Tipi di forme
 

@@ -12,14 +12,19 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
     .reveal .sourceCode {  /* see #7635 */
-      overflow: visible;
+      /* overflow: visible; */
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
   </style>
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/white.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
@@ -77,7 +82,8 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 \end{aligned}
 </span></p></li>
 <li><p>L’integrale è calcolato sull’angolo solido, e non è molto agevole
-per la risoluzione numerica del problema.</p></li>
+per la risoluzione numerica del problema: noi avremo una lista di
+<strong>oggetti</strong>, non di angoli solidi, su cui iterare.</p></li>
 <li><p>Cerchiamo dunque una formulazione alternativa che renda le cose
 più semplici.</p></li>
 </ul>
@@ -204,8 +210,9 @@ equazione implicita:</p>
 x^2 + y^2 + z^2 = 1.
 </span></p></li>
 <li><p>Diventa difficile applicare una trasformazione <span
-class="math inline">T</span> a una forma nel caso generale. (Sono facili
-da applicare solo a punti e a vettori!)</p></li>
+class="math inline">T</span> a una forma nel caso generale, perché noi
+sappiamo come applicare <span class="math inline">T</span> solo a punti,
+a vettori e a normali, non a equazioni implicite.</p></li>
 <li><p>È più conveniente applicare ai raggi luminosi la trasformazione
 <strong>inversa</strong>: se <span class="math inline">T</span>
 trasforma il sistema di riferimento «privilegiato» di una forma nel
@@ -231,11 +238,11 @@ class="math inline">t = \tilde t</span>, allora</p>
 O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde
 t\,T^{-1} \vec d = \tilde x,
 </span></p>
-<p>ossia l’intersezione tra raggio e superficie <em>trasformata</em>
-<span class="math inline">T\cdot S</span> è lo stesso punto di
-intersezione del raggio <em>antitrasformato</em> con la superficie <span
-class="math inline">S</span>, e <span class="math inline">\tilde
-t</span> non cambia.</p></li>
+<p>che equivale a formulare il problema dell’intersezione nel sistema di
+riferimento della superficie <span
+class="math inline">S</span>.</p></li>
+<li><p>Notate che <span class="math inline">\tilde t</span> <strong>non
+cambia</strong> tra le due formulazioni!</p></li>
 </ul>
 </section>
 <section id="tipi-di-forme" class="slide level1">
