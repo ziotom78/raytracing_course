@@ -93,7 +93,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Dalla definizione segue che la probabilità che $X$ cada nell'intervallo $[a, b]$ è
 
     $$
-    P\bigl(X \in [a, b]\bigr) = \int_a^b p(x)\,\mathrm{d}x.
+    P\bigl(X \in [a, b]\bigr) = P(b) - P(a) = \int_a^b p(x)\,\mathrm{d}x.
     $$
     
     
