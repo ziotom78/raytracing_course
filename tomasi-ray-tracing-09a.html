@@ -12,14 +12,20 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
     .reveal .sourceCode {  /* see #7635 */
-      overflow: visible;
+      /* overflow: visible; */
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -58,7 +64,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -71,7 +77,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -179,13 +185,10 @@ punto del piano perpendicolare alla direzione <span
 class="math inline">i</span>-esima (sei piani in tutto), che avrà
 coordinate</p>
 <p><span class="math display">
-F_0 = (f_0^{\text{min}/\text{max}}, u, v), \quad F_1 = (u,
-f_1^{\text{min}/\text{max}}, v), \quad F_2 = (u, v,
+F_0 = (f_0^{\text{min}/\text{max}}, ?, ?), \quad F_1 = (?,
+f_1^{\text{min}/\text{max}}, ?), \quad F_2 = (?, ?,
 f_2^{\text{min}/\text{max}}).
-</span></p>
-<p>dove <span class="math inline">u</span> e <span
-class="math inline">v</span> indicano una generica posizione sul piano
-scelto.</p></li>
+</span></p></li>
 <li><p>Lungo la coordinata <span class="math inline">i</span>-esima si
 intersecano <em>due</em> piani:</p>
 <p><span class="math display">
@@ -352,26 +355,6 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <img data-src="./media/3d-scanners.webp" />
 </center>
 </section>
-<section id="scanner-3d-1" class="slide level1">
-<h1>Scanner 3D</h1>
-<center>
-<img data-src="./media/difficult-shapes-for-scanners.webp" />
-</center>
-</section>
-<section id="scanner-3d-a-liquidi" class="slide level1">
-<h1><a href="https://doi.org/10.1145/3072959.3073693">Scanner 3D a
-liquidi</a></h1>
-<center>
-<img data-src="./media/dip-scanner.webp" />
-</center>
-</section>
-<section id="scanner-3d-a-liquidi-1" class="slide level1">
-<h1><a href="https://doi.org/10.1145/3072959.3073693">Scanner 3D a
-liquidi</a></h1>
-<center>
-<img data-src="./media/elephant-sinogram.webp" height="560" />
-</center>
-</section>
 <section id="stanford-bunny-1994" class="slide level1">
 <h1>Stanford bunny (1994)</h1>
 <center>
@@ -494,7 +477,7 @@ d</span> e il punto generico <span class="math inline">P(\beta,
 <p><span class="math display">
 A + \beta (B - A) + \gamma (C - A) = O + t \vec d,
 </span></p>
-<p>con il vincolo <span class="math inline">0 \leq \beta, \gamma \leq
+<p>con il vincolo <span class="math inline">0 \leq (\beta, \gamma) \leq
 1</span>.</p></li>
 <li><p>Riordiniamo l’equazione in modo da spostare le tre incognite
 <span class="math inline">\beta</span>, <span
@@ -590,13 +573,15 @@ island scene</em></a></h1>
 <img data-src="./media/moana-island-scene-website.png" />
 </center>
 </section>
-<section id="tamstorf-pritchett-egsr-2019" class="slide level1">
-<h1><a
-href="https://disneyanimation.com/publications/the-challenges-of-releasing-the-moana-island-scene/"><em>Tamstorf
-&amp; Pritchett (EGSR 2019)</em></a></h1>
+<section class="slide level1">
+
 <center>
 <img data-src="./media/moana-ironwood-tree.png" height="640" />
 </center>
+<p><small> <a
+href="https://disneyanimation.com/publications/the-challenges-of-releasing-the-moana-island-scene/">The
+challenges of Releasing the <em>Moana</em> Island Scene (Tamstorf &amp;
+Pritchett, EGSR 2019)</a> </small></p>
 </section>
 <section id="mesh-di-triangoli-1" class="slide level1">
 <h1><em>Mesh</em> di triangoli</h1>
@@ -792,223 +777,121 @@ di triangoli.</p></li>
 complesso, e in questo caso gli AABB non portano alcun vantaggio (è il
 caso dell’immagine precedente).</p></li>
 <li><p>È però possibile basarsi sull’idea degli AABB per implementare
-ottimizzazioni più sofisticate.</p></li>
-<li><p>Vedremo ora i KD-tree, una tecnica particolarmente
-efficiente.</p></li>
+ottimizzazioni più sofisticate: quella più usata impiega i <a
+href="https://en.wikipedia.org/wiki/K-d_tree">KD-tree</a>. C’è una
+spiegazione dettagliata e un’implementazione in C++ nel <a
+href="https://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Kd-Tree_Accelerator">libro
+di Pharr, Jakob &amp; Humphreys</a>.</p></li>
 </ul>
 </section>
-<section id="kd-tree" class="slide level1">
-<h1>KD-tree</h1>
+<section id="debugging" class="slide level1">
+<h1>Debugging</h1>
+</section>
+<section id="introduzione-al-debugging" class="slide level1">
+<h1>Introduzione al debugging</h1>
 <ul>
-<li><p>I KD-tree sono un’applicazione particolare di una famiglia più
-ampia di algoritmi, chiamati <em>Binary Space Partitions</em>
-(BSP).</p></li>
-<li><p>Gli algoritmi BSP sono usati per effettuare ricerche su domini
-spazio/temporali; nel nostro caso, il problema è quello di ricercare
-l’eventuale triangolo nella <em>mesh</em> che intersechi un raggio
-dato.</p></li>
-<li><p>I metodi BSP sono iterativi, e a ogni iterazione dimezzano il
-volume dello spazio da ricercare.</p></li>
+<li><p>Settimana scorsa avete corretto il vostro primo bug, che
+riguardava l’errato orientamento delle immagini salvate dal vostro
+codice.</p></li>
+<li><p>In generale un <em>bug</em> è un problema nel programma che lo fa
+funzionare in modo diverso da come ci si aspetta</p></li>
+<li><p>È molto importante avere un approccio scientifico alla gestione
+dei bug! Nelle prossime slide vi darò alcune indicazioni
+generali</p></li>
 </ul>
 </section>
-<section id="metodo-di-bisezione" class="slide level1">
-<h1>Metodo di bisezione</h1>
+<section id="difetto-infezione-e-fallimento" class="slide level1">
+<h1>Difetto, infezione e fallimento</h1>
 <ul>
-<li><p>Richiamiamo il metodo di bisezione con cui si ricercano gli zeri
-di una funzione, che si spiega nel corso di TNDS (II anno della
-triennale).</p></li>
-<li><p>Data una funzione continua <span class="math inline">f: [a, b]
-\rightarrow \mathbb{R}</span> tale che <span class="math inline">f(a)
-\cdot f(b) \leq 0</span>, il teorema degli zeri garantisce che <span
-class="math inline">\exists x \in [a, b]: f(x) = 0</span>.</p></li>
-<li><p>Il metodo di bisezione consiste nel dividere l’intervallo <span
-class="math inline">[a, b]</span> in due parti <span
-class="math inline">[a, c]</span> e <span class="math inline">[c,
-b]</span>, con <span class="math inline">c = (a + b)/2</span>, e
-applicare il metodo al sottointervallo in cui il teorema degli zeri vale
-ancora.</p></li>
-<li><p>Si può dimostrare che per ottenere una precisione <span
-class="math inline">\epsilon</span> nella stima dello zero servono <span
-class="math inline">N = \log_2 (b - a)/\epsilon</span> passaggi, ossia
-<span class="math inline">O(\log N)</span>: è molto efficiente!</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<p style="text-align:center">
-<img data-src="media/bisection-method.svg" height="520" />
-</p>
-<p>Se lo zero <span class="math inline">x_0</span> è noto con precisione
-<span class="math inline">\pm 1</span>, bastano 20 passaggi per
-raggiungere una precisione <span class="math inline">\pm 2^{-20} = \pm
-10^{-6}</span>.</p>
-</section>
-<section id="metodi-bsp" class="slide level1">
-<h1>Metodi BSP</h1>
-<ul>
-<li><p>I metodi BSP racchiudono tutte le forme di un mondo in un
-bounding box, quindi lo dividono in due regioni, partizionando le forme
-nell’una o nell’altra metà (o in entrambe, se sono lungo la
-suddivisione).</p></li>
-<li><p>Questa suddivisione viene ripetuta ricorsivamente fino a una
-certa profondità: idealmente, finché le bounding box non contengono un
-certo numero (piccolo) di oggetti.</p></li>
-<li><p>I KD-tree sono un tipo di BSP in cui i bounding box sono i ben
-noti AABB.</p></li>
-<li><p>I KD-tree sono spiegati (e implementati!) nella <a
-href="https://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Kd-Tree_Accelerator">sezione
-4.4 di <em>Physically based rendering</em></a> (Pharr, Jakob, Humphreys,
-terza ed.)</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/kd-tree.svg" height="640" />
-</center>
-<p><span style="float:right">Figura 4.14 da <em>Physically based
-rendering</em> (Pharr, Jakob, Humphreys, terza ed.)</span></p>
-</section>
-<section id="kd-tree-e-mesh" class="slide level1">
-<h1>KD-tree e <em>mesh</em></h1>
-<ul>
-<li><p>Questa è la procedura per costruire in memoria un KD-tree:</p>
-<ol>
-<li><p>Si calcola l’AABB della <em>mesh</em>;</p></li>
-<li><p>Si decide lungo quale direzione (x/y/z) effettuare la
-divisione;</p></li>
-<li><p>Si partizionano i triangoli tra le due metà dell’AABB; quei
-triangoli che cadono lungo la linea di divisione vengono riportati in
-<strong>entrambe</strong> le metà;</p></li>
-<li><p>Si ripete la procedura per ciascuna delle due metà finché il
-numero di triangoli in ogni comparto è inferiore a una certa soglia (per
-es., tra 1 e 10).</p></li>
+<li><p>Il bellissimo libro di Zeller <a
+href="https://www.whyprogramsfail.com/"><em>Why programs fail: a guide
+to systematic debugging</em></a> spiega la scoperta di un <em>bug</em>
+come la combinazione di tre fattori:</p>
+<ol type="1">
+<li><strong>Difetto</strong>: un errore nel modo in cui è scritto il
+codice</li>
+<li><strong>Infezione</strong>: un certo input “attiva” il difetto ed
+altera il valore di alcune variabili rispetto al caso atteso</li>
+<li><strong>Fallimento</strong>: l’esito del programma è sbagliato, o
+perché i risultati sono errati, o perché il programma va in crash</li>
 </ol></li>
-<li><p>Tale procedura va fatta <strong>una volta sola</strong>, prima di
-risolvere l’equazione del rendering.</p></li>
+<li><p>Il <em>bug</em> sta nel difetto iniziale, ma se non c’è infezione
+o non c’è fallimento è difficile accorgersene!</p></li>
 </ul>
 </section>
-<section id="kd-tree-in-memoria" class="slide level1">
-<h1>KD-tree in memoria</h1>
+<section id="un-esempio-da-tnds" class="slide level1">
+<h1>Un esempio da TNDS</h1>
 <ul>
-<li><p>Un KD-tree può essere memorizzato in modo efficiente usando una
-struttura ad albero, che viene costruita in fase di caricamento della
-<em>mesh</em>.</p></li>
-<li><p>Per rappresentare le suddivisioni si può definire un tipo
-<code>KdTreeSplit</code>:</p>
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> KdTreeSplit:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    axis: <span class="bu">int</span>     <span class="co"># Index of the axis; 0: x, 1: y, 2: z</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    split: <span class="bu">float</span>  <span class="co"># Location of the split along the axis</span></span></code></pre></div></li>
-<li><p>Il nodo generico dell’albero si rappresenta così:</p>
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> KdTreeNode:</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    entry: Union[KdTreeSplit, List[<span class="bu">int</span>]]  <span class="co"># List[int]: List of indexes to triangles</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    left: Union[KdTreeNode, <span class="va">None</span>]</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    right: Union[KdTreeNode, <span class="va">None</span>]</span></code></pre></div></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/kd-tree-structure.svg" height="640" />
-</center>
-</section>
-<section id="intersezione-con-raggi-2" class="slide level1">
-<h1>Intersezione con raggi</h1>
-<ul>
-<li><p>Per determinare se un raggio interseca una <em>mesh</em>
-ottimizzata con un KD-tree, basta seguire questa procedura:</p>
-<ol>
-<li>Si verifica se il raggio interseca l’AABB; se non lo fa, il ciclo
-termina.</li>
-<li>Si determina quale delle due metà viene attraversata per prima dal
-raggio:
-<ol>
-<li>Se solo una metà viene attraversata, si analizza solo quella;</li>
-<li>Se entrambe, si analizza prima quella intersecata per valori minori
-di <span class="math inline">t</span>.</li>
-</ol></li>
-<li>Il processo continua finché non si arriva in un nodo terminale: a
-quel punto si analizzano tutti i triangoli nel nodo usando l’algoritmo
-lineare.</li>
-</ol></li>
-<li><p>Per l’albero di Oceania, nel caso di un <em>KD-tree</em>
-perfettamente bilanciato (50%–50%), ci vogliono meno di 25 confronti per
-determinare l’intersezione con un raggio.</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/kd-tree-traversal.svg" height="640" />
-</center>
-<p><span style="float:right">Figura 4.17 da <em>Physically based
-rendering</em> (Pharr, Jakob, Humphreys, terza ed.)</span></p>
-</section>
-<section id="dettagli" class="slide level1">
-<h1>Dettagli</h1>
-<ul>
-<li><p>Per costruire un KD-tree occorre rispondere ad alcuni
-quesiti:</p>
-<ol>
-<li>A ogni suddivisione, lungo quale asse è meglio effettuare la
-suddivisione? (L’asse lungo cui AABB è più esteso?)</li>
-<li>In quale punto dell’asse conviene suddividere? (Il punto
-medio?)</li>
-<li>Quando è meglio fermarsi? (Quando un nodo ha meno di <em>N</em>
-forme?)</li>
-</ol></li>
-<li><p>Rispondere a queste domande non è banale, ma è importante trovare
-una soluzione <em>efficiente</em>!</p></li>
-</ul>
-</section>
-<section id="irregolarità-delle-mesh" class="slide level1">
-<h1>Irregolarità delle <em>mesh</em></h1>
-<center>
-<img data-src="./media/toy-story-woody-mesh.webp" />
-</center>
-</section>
-<section id="costo-di-un-kd-tree" class="slide level1">
-<h1>«Costo» di un KD-tree</h1>
-<ul>
-<li><p>Per costruire un KD-tree efficiente occorre valutare il <em>costo
-computazionale</em> dell’albero, che è dato da</p>
+<li><p>Nel corso di TNDS si deve implementare un codice che calcoli il
+valore di</p>
 <p><span class="math display">
-C(t) = C_\text{trav} + P_L \cdot C(L) + P_R \cdot C(R),
+\int_0^\pi \sin x\,\mathrm{d}x
 </span></p>
-<p>dove</p>
-<ol>
-<li><span class="math inline">C_\text{trav}</span> è il <em>costo di
-attraversamento</em>: quanto tempo serve per scendere di un livello
-nell’albero (costante);</li>
-<li><span class="math inline">P_L, P_R</span> sono le probabilità che il
-raggio colpisca un triangolo dentro il ramo;</li>
-<li><span class="math inline">C(L), C(R)</span> è il costo del
-sottonodo, ossia il tempo necessario per analizzare il lato
-sinistro/destro.</li>
-</ol></li>
+<p>usando la formula di Simpson:</p>
+<p><span class="math display">
+\int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[f(a) +
+4\sum_{i=1}^{n/2} f\bigl(x_{2i-1}\bigr) + 2\sum_{i=1}^{n/2 - 1}
+f\bigl(x_{2i}\bigr) + f(b)\right].
+</span></p></li>
+<li><p>Spesso l’implementazione è errata nonostante il risultato sia
+corretto (<span class="math inline">\int = 2</span>)!</p></li>
 </ul>
 </section>
-<section id="costruzione-ottimizzata" class="slide level1">
-<h1>Costruzione ottimizzata</h1>
+<section class="slide level1">
+
+<p><span class="math display">
+\int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[f(a)+
+{\color{red}{4}}\sum_{i=1}^{n/2} f\bigl(x_{2i-1}\bigr) +
+{\color{red}{2}}\sum_{i=1}^{n/2 - 1} f\bigl(x_{2i}\bigr) + f(b)\right].
+</span></p>
 <ul>
-<li><p>Si possono fare queste assunzioni:</p>
+<li><p>Spesso gli studenti scambiano il 4 con il 2.</p></li>
+<li><p>Questo porta a una <em>infezione</em>: il valore dell’espressione
+tra parentesi quadre è sbagliato.</p></li>
+<li><p>Ciò porta a un <em>fallimento</em>: il risultato dell’integrale è
+sbagliato.</p></li>
+<li><p>Di tutti i casi, questo è il più semplice: è immediato accorgersi
+del problema!</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p><span class="math display">
+\int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[f(a)+
+4\sum_{i=1}^{\color{red}{n/2}} f\bigl(x_{2i-1}\bigr) +
+2\sum_{i=1}^{\color{red}{n/2 - 1}} f\bigl(x_{2i}\bigr) + f(b)\right].
+</span></p>
 <ul>
-<li>Assumere che <span class="math inline">P_L</span> e <span
-class="math inline">P_R</span> (probabilità che il raggio colpisca una
-forma) siano proporzionali alla superficie totale dei triangoli nella
-sottocella;</li>
-<li>Calcolare <span class="math inline">C(L)</span> e <span
-class="math inline">C(R)</span> ricorsivamente, assumendo che per nodi
-terminali sia proporzionale al numero di triangoli.</li>
-</ul></li>
-<li><p>Un algoritmo robusto tenta varie suddivisioni dell’albero,
-calcolando il costo di ciascuna, e sceglie la suddivisione che porta al
-costo minore.</p></li>
-<li><p>I benefici in termini di velocità possono andare da un fattore 10
-a un fattore 100 rispetto a un KD-tree costruito con assunzioni
-semplici.</p></li>
+<li><p>A volte gli studenti terminano una delle due sommatorie troppo
+presto (dimenticano l’ultimo termine) oppure troppo tardi (aggiungono un
+termine in più).</p></li>
+<li><p>Nel caso di <span class="math inline">\int_0^\pi \sin
+x\,\mathrm{d}x</span>, l’ultimo termine della sommatoria è per <span
+class="math inline">x \approx \pi</span>, quindi è molto piccolo: c’è
+una <em>infezione</em>, ma se si stampano poche cifre significative a
+video può essere che il risultato è arrotondato al valore giusto, e non
+ci sia quindi un <em>fallimento</em>.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p><span class="math display">
+\int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[{\color{red}{f(a)}}+
+4\sum_{i=1}^{n/2} f\bigl(x_{2i-1}\bigr) + 2\sum_{i=1}^{n/2 - 1}
+f\bigl(x_{2i}\bigr) + {\color{red}{f(b)}}\right].
+</span></p>
+<ul>
+<li><p>A volte gli studenti dimenticano di sommare <span
+class="math inline">f(a)</span> e/o <span
+class="math inline">f(b)</span>, o li moltiplicano per 2 o per
+4.</p></li>
+<li><p>Nel caso però di <span class="math inline">\int_0^\pi \sin
+x\,\mathrm{d}x</span>, il valore dell’espressione tra parentesi quadre è
+comunque giusto perché <span class="math inline">f(0) = f(\pi) =
+0</span>.</p></li>
+<li><p>In questo caso c’è un <em>difetto</em> ma non c’è una
+<em>infezione</em> né un <em>fallimento</em>: è il caso più difficile da
+individuare!</p></li>
 </ul>
 </section>
     </div>

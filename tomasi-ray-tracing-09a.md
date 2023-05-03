@@ -40,10 +40,8 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Scriviamo con $F_i$ il generico punto del piano perpendicolare alla direzione $i$-esima (sei piani in tutto), che avrà coordinate
     
     $$
-    F_0 = (f_0^{\text{min}/\text{max}}, u, v), \quad F_1 = (u, f_1^{\text{min}/\text{max}}, v), \quad F_2 = (u, v, f_2^{\text{min}/\text{max}}).
+    F_0 = (f_0^{\text{min}/\text{max}}, ?, ?), \quad F_1 = (?, f_1^{\text{min}/\text{max}}, ?), \quad F_2 = (?, ?, f_2^{\text{min}/\text{max}}).
     $$
-    
-    dove $u$ e $v$ indicano una generica posizione sul piano scelto.
     
 -   Lungo la coordinata $i$-esima si intersecano *due* piani:
 
@@ -163,18 +161,6 @@ Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è st
 
 <center>![](./media/3d-scanners.webp)</center>
 
-# Scanner 3D
-
-<center> ![](./media/difficult-shapes-for-scanners.webp) </center>
-
-# [Scanner 3D a liquidi](https://doi.org/10.1145/3072959.3073693)
-
-<center> ![](./media/dip-scanner.webp) </center>
-
-# [Scanner 3D a liquidi](https://doi.org/10.1145/3072959.3073693)
-
-<center>![](./media/elephant-sinogram.webp){height=560px}</center>
-
 # Stanford bunny (1994)
 
 <center>![](./media/stanford-bunny-triangles.png)</center>
@@ -263,7 +249,7 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
     A + \beta (B - A) + \gamma (C - A) = O + t \vec d,
     $$
     
-    con il vincolo $0 \leq \beta, \gamma \leq 1$.
+    con il vincolo $0 \leq (\beta, \gamma) \leq 1$.
     
 -   Riordiniamo l'equazione in modo da spostare le tre incognite $\beta$, $\gamma$ e $t$ sulla sinistra:
 
@@ -349,11 +335,15 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
 ![](./media/moana-island-scene-website.png)
 </center>
 
-# [*Tamstorf & Pritchett (EGSR 2019)*](https://disneyanimation.com/publications/the-challenges-of-releasing-the-moana-island-scene/)
+---
 
 <center>
 ![](./media/moana-ironwood-tree.png){height=640px}
 </center>
+
+<small>
+[The challenges of Releasing the *Moana* Island Scene (Tamstorf & Pritchett, EGSR 2019)](https://disneyanimation.com/publications/the-challenges-of-releasing-the-moana-island-scene/)
+</small>
 
 # *Mesh* di triangoli
 
@@ -484,145 +474,81 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 -   Sovente le scene sono occupate quasi completamente da un oggetto complesso, e in questo caso gli AABB non portano alcun vantaggio (è il caso dell'immagine precedente).
 
--   È però possibile basarsi sull'idea degli AABB per implementare ottimizzazioni più sofisticate.
+-   È però possibile basarsi sull'idea degli AABB per implementare ottimizzazioni più sofisticate: quella più usata impiega i [KD-tree](https://en.wikipedia.org/wiki/K-d_tree). C'è una spiegazione dettagliata e un'implementazione in C++ nel [libro di Pharr, Jakob & Humphreys](https://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Kd-Tree_Accelerator).
 
--   Vedremo ora i KD-tree, una tecnica particolarmente efficiente.
 
-# KD-tree
+# Debugging
 
--   I KD-tree sono un'applicazione particolare di una famiglia più ampia di algoritmi, chiamati *Binary Space Partitions* (BSP).
+# Introduzione al debugging
 
--   Gli algoritmi BSP sono usati per effettuare ricerche su domini spazio/temporali; nel nostro caso, il problema è quello di ricercare l'eventuale triangolo nella *mesh* che intersechi un raggio dato.
+-   Settimana scorsa avete corretto il vostro primo bug, che riguardava l'errato orientamento delle immagini salvate dal vostro codice.
 
--   I metodi BSP sono iterativi, e a ogni iterazione dimezzano il volume dello spazio da ricercare.
+-   In generale un *bug* è un problema nel programma che lo fa funzionare in modo diverso da come ci si aspetta
 
-# Metodo di bisezione
+-   È molto importante avere un approccio scientifico alla gestione dei bug! Nelle prossime slide vi darò alcune indicazioni generali
 
--   Richiamiamo il metodo di bisezione con cui si ricercano gli zeri di una funzione, che si spiega nel corso di TNDS (II anno della triennale).
 
--   Data una funzione continua $f: [a, b] \rightarrow \mathbb{R}$ tale che $f(a) \cdot f(b) \leq 0$, il teorema degli zeri garantisce che $\exists x \in [a, b]: f(x) = 0$.
+# Difetto, infezione e fallimento
 
--   Il metodo di bisezione consiste nel dividere l'intervallo $[a, b]$ in due parti $[a, c]$ e $[c, b]$, con $c = (a + b)/2$, e applicare il metodo al sottointervallo in cui il teorema degli zeri vale ancora.
+-   Il bellissimo libro di Zeller [*Why programs fail: a guide to systematic debugging*](https://www.whyprogramsfail.com/) spiega la scoperta di un *bug* come la combinazione di tre fattori:
 
--   Si può dimostrare che per ottenere una precisione $\epsilon$ nella stima dello zero servono $N = \log_2 (b - a)/\epsilon$ passaggi, ossia $O(\log N)$: è molto efficiente!
+    1. **Difetto**: un errore nel modo in cui è scritto il codice
+    2. **Infezione**: un certo input “attiva” il difetto ed altera il valore di alcune variabili rispetto al caso atteso
+    3. **Fallimento**: l'esito del programma è sbagliato, o perché i risultati sono errati, o perché il programma va in crash
+    
+-   Il *bug* sta nel difetto iniziale, ma se non c'è infezione o non c'è fallimento è difficile accorgersene!
+
+
+# Un esempio da TNDS
+
+-   Nel corso di TNDS si deve implementare un codice che calcoli il valore di
+
+    \[
+    \int_0^\pi \sin x\,\mathrm{d}x
+    \]
+    
+    usando la formula di Simpson:
+    
+    \[
+    \int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[f(a) + 4\sum_{i=1}^{n/2} f\bigl(x_{2i-1}\bigr) + 2\sum_{i=1}^{n/2 - 1} f\bigl(x_{2i}\bigr) + f(b)\right].
+    \]
+    
+-   Spesso l'implementazione è errata nonostante il risultato sia corretto ($\int = 2$)!
+
 
 ---
 
-<p style="text-align:center">![](media/bisection-method.svg){height=520px}</p>
+\[
+\int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[f(a)+ {\color{red}{4}}\sum_{i=1}^{n/2} f\bigl(x_{2i-1}\bigr) + {\color{red}{2}}\sum_{i=1}^{n/2 - 1} f\bigl(x_{2i}\bigr) + f(b)\right].
+\]
 
-Se lo zero $x_0$ è noto con precisione $\pm 1$, bastano 20 passaggi per raggiungere una precisione $\pm 2^{-20} = \pm 10^{-6}$.
+-   Spesso gli studenti scambiano il 4 con il 2.
 
-# Metodi BSP
+-   Questo porta a una *infezione*: il valore dell'espressione tra parentesi quadre è sbagliato.
 
--   I metodi BSP racchiudono tutte le forme di un mondo in un bounding box, quindi lo dividono in due regioni, partizionando le forme nell'una o nell'altra metà (o in entrambe, se sono lungo la suddivisione).
+-   Ciò porta a un *fallimento*: il risultato dell'integrale è sbagliato.
 
--   Questa suddivisione viene ripetuta ricorsivamente fino a una certa profondità: idealmente, finché le bounding box non contengono un certo numero (piccolo) di oggetti.
-
--   I KD-tree sono un tipo di BSP in cui i bounding box sono i ben noti AABB.
-
--   I KD-tree sono spiegati (e implementati!) nella [sezione 4.4 di *Physically based rendering*](https://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Kd-Tree_Accelerator) (Pharr, Jakob, Humphreys, terza ed.)
+-   Di tutti i casi, questo è il più semplice: è immediato accorgersi del problema!
 
 ---
 
-<center>![](./media/kd-tree.svg){height=640px}</center>
-[Figura 4.14 da *Physically based rendering* (Pharr, Jakob, Humphreys, terza ed.)]{style="float:right"}
+\[
+\int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[f(a)+ 4\sum_{i=1}^{\color{red}{n/2}} f\bigl(x_{2i-1}\bigr) + 2\sum_{i=1}^{\color{red}{n/2 - 1}} f\bigl(x_{2i}\bigr) + f(b)\right].
+\]
 
-# KD-tree e *mesh*
+-   A volte gli studenti terminano una delle due sommatorie troppo presto (dimenticano l'ultimo termine) oppure troppo tardi (aggiungono un termine in più).
 
--   Questa è la procedura per costruire in memoria un KD-tree:
-
-    #.  Si calcola l'AABB della *mesh*;
-
-    #.  Si decide lungo quale direzione (x/y/z) effettuare la divisione;
-    
-    #.  Si partizionano i triangoli tra le due metà dell'AABB; quei triangoli che cadono lungo la linea di divisione vengono riportati in **entrambe** le metà;
-    
-    #.  Si ripete la procedura per ciascuna delle due metà finché il numero di triangoli in ogni comparto è inferiore a una certa soglia (per es., tra 1 e 10).
-
--   Tale procedura va fatta **una volta sola**, prima di risolvere l'equazione del rendering.
-
-
-# KD-tree in memoria
-
--   Un KD-tree può essere memorizzato in modo efficiente usando una struttura ad albero, che viene costruita in fase di caricamento della *mesh*.
-
--   Per rappresentare le suddivisioni si può definire un tipo `KdTreeSplit`:
-
-    ```python
-    class KdTreeSplit:
-        axis: int     # Index of the axis; 0: x, 1: y, 2: z
-        split: float  # Location of the split along the axis
-    ```
-    
--   Il nodo generico dell'albero si rappresenta così:
-
-    ```python
-    class KdTreeNode:
-        entry: Union[KdTreeSplit, List[int]]  # List[int]: List of indexes to triangles
-        left: Union[KdTreeNode, None]
-        right: Union[KdTreeNode, None]
-    ```
+-   Nel caso di $\int_0^\pi \sin x\,\mathrm{d}x$, l'ultimo termine della sommatoria è per $x \approx \pi$, quindi è molto piccolo: c'è una *infezione*, ma se si stampano poche cifre significative a video può essere che il risultato è arrotondato al valore giusto, e non ci sia quindi un *fallimento*.
 
 ---
 
-<center>![](./media/kd-tree-structure.svg){height=640px}</center>
 
+\[
+\int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[{\color{red}{f(a)}}+ 4\sum_{i=1}^{n/2} f\bigl(x_{2i-1}\bigr) + 2\sum_{i=1}^{n/2 - 1} f\bigl(x_{2i}\bigr) + {\color{red}{f(b)}}\right].
+\]
 
-# Intersezione con raggi
+-   A volte gli studenti dimenticano di sommare $f(a)$ e/o $f(b)$, o li moltiplicano per 2 o per 4.
 
--   Per determinare se un raggio interseca una *mesh* ottimizzata con un KD-tree, basta seguire questa procedura:
+-   Nel caso però di $\int_0^\pi \sin x\,\mathrm{d}x$, il valore dell'espressione tra parentesi quadre è comunque giusto perché $f(0) = f(\pi) = 0$.
 
-    #.  Si verifica se il raggio interseca l'AABB; se non lo fa, il ciclo termina.
-    #.  Si determina quale delle due metà viene attraversata per prima dal raggio:
-        #.  Se solo una metà viene attraversata, si analizza solo quella;
-        #.  Se entrambe, si analizza prima quella intersecata per valori minori di $t$.
-    #.  Il processo continua finché non si arriva in un nodo terminale: a quel punto si analizzano tutti i triangoli nel nodo usando l'algoritmo lineare.
-
--   Per l'albero di Oceania, nel caso di un *KD-tree* perfettamente bilanciato (50%–50%), ci vogliono meno di 25 confronti per determinare l'intersezione con un raggio.
-
----
-
-<center>![](./media/kd-tree-traversal.svg){height=640px}</center>
-[Figura 4.17 da *Physically based rendering* (Pharr, Jakob, Humphreys, terza ed.)]{style="float:right"}
-
-
-# Dettagli
-
--   Per costruire un KD-tree occorre rispondere ad alcuni quesiti:
-
-    #.  A ogni suddivisione, lungo quale asse è meglio effettuare la suddivisione? (L'asse lungo cui AABB è più esteso?)
-    #.  In quale punto dell'asse conviene suddividere? (Il punto medio?)
-    #.  Quando è meglio fermarsi? (Quando un nodo ha meno di *N* forme?)
-    
--   Rispondere a queste domande non è banale, ma è importante trovare una soluzione *efficiente*!
-
-# Irregolarità delle *mesh*
-
-<center>![](./media/toy-story-woody-mesh.webp)</center>
-
-
-# «Costo» di un KD-tree
-
--   Per costruire un KD-tree efficiente occorre valutare il *costo computazionale* dell'albero, che è dato da
-
-    $$
-    C(t) = C_\text{trav} + P_L \cdot C(L) + P_R \cdot C(R),
-    $$
-    
-    dove
-    
-    #.  $C_\text{trav}$ è il *costo di attraversamento*: quanto tempo serve per scendere di un livello nell'albero (costante);
-    #.  $P_L, P_R$ sono le probabilità che il raggio colpisca un triangolo dentro il ramo;
-    #.  $C(L), C(R)$ è il costo del sottonodo, ossia il tempo necessario per analizzare il lato sinistro/destro.
-
-# Costruzione ottimizzata
-
--   Si possono fare queste assunzioni:
-
-    -   Assumere che $P_L$ e $P_R$ (probabilità che il raggio colpisca una forma) siano proporzionali alla superficie totale dei triangoli nella sottocella;
-    -   Calcolare $C(L)$ e $C(R)$ ricorsivamente, assumendo che per nodi terminali sia proporzionale al numero di triangoli.
-    
--   Un algoritmo robusto tenta varie suddivisioni dell'albero, calcolando il costo di ciascuna, e sceglie la suddivisione che porta al costo minore.
-
--   I benefici in termini di velocità possono andare da un fattore 10 a un fattore 100 rispetto a un KD-tree costruito con assunzioni semplici.
-
+-   In questo caso c'è un *difetto* ma non c'è una *infezione* né un *fallimento*: è il caso più difficile da individuare!
