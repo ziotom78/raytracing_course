@@ -15,7 +15,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     v = (row + v_pixel) / (self.image.height - 1)
     ```
 
--   L'errore sta nel fatto che le righe in `HdrImage` sono numerate dall'*alto*, non dal *basso*. Nella seconda riga invece, `v` cresce quando cresce `row`.
+-   L'errore sta nel fatto che le righe in `HdrImage` sono numerate dall'*alto*, non dal *basso*, mentre la coordinata $v$ cresce verso l'*alto*. Nella seconda riga invece, la variabile `v` cresce quando cresce `row`.
 
 # Cosa fare con i bug
 
@@ -49,11 +49,11 @@ for row in range(image.height):
 
 # Test incompleti
 
--   Ci rendiamo conto che i nostri test non verificavano il corretto orientamento dell'immagine!
+-   I nostri test non verificavano il corretto orientamento dell'immagine: erano **incompleti**
 
--   Questo genere di problemi è **molto** comune, anche in progetti professionali: c'è una potenziale condizione di errore che i test non coprono, e che non viene quindi scoperta durante l'implementazione.
+-   Questo genere di problemi è comune anche in progetti professionali: c'è una potenziale condizione di errore che i test non coprono, che non viene quindi scoperta durante l'implementazione.
 
--   Vediamo ora qual è il modo giusto di correggere l'errore.
+-   Oggi vediamo qual è il modo giusto di correggere l'errore; nella prossima lezione di teoria discuteremo di “debugging” a un livello più alto.
 
 
 # Correggere un bug
@@ -66,7 +66,7 @@ Correzioni in un repository pubblico come GitHub richiedono questi passaggi:
 
 #.   Modificare i test in modo che evidenzino l'errore: una volta implementati, questi nuovi test devono ovviamente fallire.
 
-#.   Solo una volta che i nuovi test sono implementati si può correggere il bug.
+#.   Solo una volta che i nuovi test sono implementati si può correggere il bug (**non invertite l'ordine!**)
 
 #.   Quando i nuovi test passano, aprire una PR legata al branch, e se tutto funziona (inclusi i *CI builds*) si aggiorna il `CHANGELOG`, si fa il *merge*, e si chiude la *issue*.
 
@@ -126,7 +126,7 @@ def test_image_coverage():
 
 -   L'ineleganza sta nel fatto che dobbiamo creare in ogni test gli oggetti `image`, `camera` e `tracer`.
 
--   I framework di test (non tutti) forniscono di solito la possibilità di invocare procedure di *set-up* per creare gli oggetti su cui si eseguono poi i test.
+-   I framework di test (non tutti ☹) forniscono di solito la possibilità di invocare procedure di *set-up* per creare gli oggetti su cui si eseguono poi i test.
 
 -   (Analogamente, questi framework implementano anche la possibilità di invocare procedure di *tear-down* alla fine dei test, con lo scopo ad esempio di cancellare file temporanei creati durante i test stessi).
 
@@ -189,7 +189,7 @@ class TestImageTracer(unittest.TestCase):
 
 -   È molto importante però prima dare un'occhiata complessiva alla PR, per verificare che sia chiaramente leggibile. In particolare, selezionate il tab *Files changed* e leggetelo con occhio critico:
 
-    1.  I file che vengono modificati sono quelli che mi aspetto, o è presente qualche altra modifica a cui stavo lavorando quando il bug è stato scoperto?
+    1.  I file che vengono modificati sono quelli che mi aspetto, o è presente qualche altra modifica a cui stavo lavorando quando il bug è stato scoperto? (Vedi [questo esempio](https://github.com/litebird/litebird_sim/pull/232)).
     
     2.  Chi vedrà queste modifiche, sarà in grado di capirle senza leggere l'intero codice?
     
@@ -217,9 +217,7 @@ Esempio preso da un PR di [pytracer](https://github.com/ziotom78/pytracer/pull/1
 
 -   Tutti i repository pubblici dovrebbero avere un file `CHANGELOG`/`NEWS`/`HISTORY`/…, che elenca i bug corretti e le nuove caratteristiche del codice elencati in funzione del numero di versione.
 
--   Questo è il file `HISTORY.md` di Julia:
-
-    <center>![](./media/julia-release-notes.png){height=320px}</center>
+-   Vedete ad esempio il file [`HISTORY.md`](https://github.com/JuliaLang/julia/blob/master/HISTORY.md) del compilatore Julia
 
 # CHANGELOG
 
@@ -511,8 +509,10 @@ L'asimmetria nella disposizione delle sfere consente di individuare errori nell'
 # Possibili interfacce
 
 -   *Actions* esattamente come Click (se la vostra libreria li supporta);
+
 -   Due eseguibili separati: `demo` e `pfm2png`
--   Richiesta di input da terminale:
+
+-   Richiesta di input da terminale (sconsigliato):
 
     ```python
     print("What do you want to do? (demo/pfm2png)")

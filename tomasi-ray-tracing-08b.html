@@ -12,14 +12,20 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
     .reveal .sourceCode {  /* see #7635 */
-      overflow: visible;
+      /* overflow: visible; */
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -58,7 +64,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -71,7 +77,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -132,8 +138,10 @@ errore nell’implementazione del metodo
 class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> (<span class="va">self</span>.image.width <span class="op">-</span> <span class="dv">1</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> (<span class="va">self</span>.image.height <span class="op">-</span> <span class="dv">1</span>)</span></code></pre></div></li>
 <li><p>L’errore sta nel fatto che le righe in <code>HdrImage</code> sono
-numerate dall’<em>alto</em>, non dal <em>basso</em>. Nella seconda riga
-invece, <code>v</code> cresce quando cresce <code>row</code>.</p></li>
+numerate dall’<em>alto</em>, non dal <em>basso</em>, mentre la
+coordinata <span class="math inline">v</span> cresce verso
+l’<em>alto</em>. Nella seconda riga invece, la variabile <code>v</code>
+cresce quando cresce <code>row</code>.</p></li>
 </ul>
 </section>
 <section id="cosa-fare-con-i-bug" class="slide level1">
@@ -167,14 +175,15 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <section id="test-incompleti" class="slide level1">
 <h1>Test incompleti</h1>
 <ul>
-<li><p>Ci rendiamo conto che i nostri test non verificavano il corretto
-orientamento dell’immagine!</p></li>
-<li><p>Questo genere di problemi è <strong>molto</strong> comune, anche
-in progetti professionali: c’è una potenziale condizione di errore che i
-test non coprono, e che non viene quindi scoperta durante
+<li><p>I nostri test non verificavano il corretto orientamento
+dell’immagine: erano <strong>incompleti</strong></p></li>
+<li><p>Questo genere di problemi è comune anche in progetti
+professionali: c’è una potenziale condizione di errore che i test non
+coprono, che non viene quindi scoperta durante
 l’implementazione.</p></li>
-<li><p>Vediamo ora qual è il modo giusto di correggere
-l’errore.</p></li>
+<li><p>Oggi vediamo qual è il modo giusto di correggere l’errore; nella
+prossima lezione di teoria discuteremo di “debugging” a un livello più
+alto.</p></li>
 </ul>
 </section>
 <section id="correggere-un-bug" class="slide level1">
@@ -190,7 +199,7 @@ assegnato un numero unico, ad es. #156.</p></li>
 <li><p>Modificare i test in modo che evidenzino l’errore: una volta
 implementati, questi nuovi test devono ovviamente fallire.</p></li>
 <li><p>Solo una volta che i nuovi test sono implementati si può
-correggere il bug.</p></li>
+correggere il bug (<strong>non invertite l’ordine!</strong>)</p></li>
 <li><p>Quando i nuovi test passano, aprire una PR legata al branch, e se
 tutto funziona (inclusi i <em>CI builds</em>) si aggiorna il
 <code>CHANGELOG</code>, si fa il <em>merge</em>, e si chiude la
@@ -265,7 +274,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <li><p>L’ineleganza sta nel fatto che dobbiamo creare in ogni test gli
 oggetti <code>image</code>, <code>camera</code> e
 <code>tracer</code>.</p></li>
-<li><p>I framework di test (non tutti) forniscono di solito la
+<li><p>I framework di test (non tutti ☹) forniscono di solito la
 possibilità di invocare procedure di <em>set-up</em> per creare gli
 oggetti su cui si eseguono poi i test.</p></li>
 <li><p>(Analogamente, questi framework implementano anche la possibilità
@@ -340,7 +349,9 @@ critico:</p>
 <ol type="1">
 <li><p>I file che vengono modificati sono quelli che mi aspetto, o è
 presente qualche altra modifica a cui stavo lavorando quando il bug è
-stato scoperto?</p></li>
+stato scoperto? (Vedi <a
+href="https://github.com/litebird/litebird_sim/pull/232">questo
+esempio</a>).</p></li>
 <li><p>Chi vedrà queste modifiche, sarà in grado di capirle senza
 leggere l’intero codice?</p></li>
 </ol></li>
@@ -381,10 +392,9 @@ documentazione.</p></li>
 <code>CHANGELOG</code>/<code>NEWS</code>/<code>HISTORY</code>/…, che
 elenca i bug corretti e le nuove caratteristiche del codice elencati in
 funzione del numero di versione.</p></li>
-<li><p>Questo è il file <code>HISTORY.md</code> di Julia:</p>
-<center>
-<p><img data-src="./media/julia-release-notes.png" height="320" /></p>
-</center></li>
+<li><p>Vedete ad esempio il file <a
+href="https://github.com/JuliaLang/julia/blob/master/HISTORY.md"><code>HISTORY.md</code></a>
+del compilatore Julia</p></li>
 </ul>
 </section>
 <section id="changelog-1" class="slide level1">
@@ -716,7 +726,7 @@ opzionalmente da parametri:</p>
 supporta);</p></li>
 <li><p>Due eseguibili separati: <code>demo</code> e
 <code>pfm2png</code></p></li>
-<li><p>Richiesta di input da terminale:</p>
+<li><p>Richiesta di input da terminale (sconsigliato):</p>
 <div class="sourceCode" id="cb15"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;What do you want to do? (demo/pfm2png)&quot;</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>choice <span class="op">=</span> <span class="bu">input</span>(choice)</span>
