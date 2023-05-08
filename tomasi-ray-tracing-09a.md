@@ -1,6 +1,6 @@
 ---
 title: "Lezione 9"
-subtitle: "Ottimizzazione delle forme"
+subtitle: "Forme avanzate, debugging"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
@@ -14,7 +14,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
     #.   Non ci limiteremo al cubo di lato unitario con vertice nell'origine…
     #.   …ma assumeremo che le facce siano parallele ai piani coordinati.
-    
+
 -   Queste assunzioni sono indicate in letteratura col termine *axis-aligned box* (AAB).
 
 # Rappresentazione in memoria
@@ -24,7 +24,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     #. Il valore minimo e massimo delle $x$;
     #. Il valore minimo e massimo delle $y$;
     #. Il valore minimo e massimo delle $z$.
-    
+
 -   Equivalentemente, si possono memorizzare due vertici opposti del parallelepipedo, $P_m$ (valori minimi di $x$, $y$ e $z$) e $P_M$ (valori massimi).
 
 # Intersezione raggio-AAB
@@ -38,11 +38,11 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 # Intersezione raggio-AAB
 
 -   Scriviamo con $F_i$ il generico punto del piano perpendicolare alla direzione $i$-esima (sei piani in tutto), che avrà coordinate
-    
+
     $$
     F_0 = (f_0^{\text{min}/\text{max}}, ?, ?), \quad F_1 = (?, f_1^{\text{min}/\text{max}}, ?), \quad F_2 = (?, ?, f_2^{\text{min}/\text{max}}).
     $$
-    
+
 -   Lungo la coordinata $i$-esima si intersecano *due* piani:
 
     $$
@@ -146,7 +146,7 @@ Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è st
             inv_ray = ray.transform(self.transformation.inverse())
             if not self.aabb.quickRayIntersection(inv_ray):
                 return None
-                
+
             # etc.
     ```
 
@@ -184,9 +184,9 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
     $$
     P(\alpha, \beta, \gamma) = \alpha A + \beta B + \gamma C,
     $$
-    
+
     dove $\alpha, \beta, \gamma \in \mathbb{R}$ sono le *coordinate baricentriche*.
-    
+
 -   Le coordinate baricentriche risultano molto utili per caratterizzare il triangolo di vertici $A, B, C$: il punto $P$ è interno al triangolo se e solo se
 
     $$
@@ -194,9 +194,9 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
     $$
 
 # Coordinate nei triangoli
-    
+
 -   La condizione $\alpha + \beta + \gamma = 1$ fa sì che i punti di un triangolo siano caratterizzati da due gradi di libertà, come dev'essere per una superficie bidimensionale.
-    
+
 -   L'uguaglianza nelle prime tre disequazioni vale per i punti lungo il bordo del triangolo.
 
 -   Usando l'ultima uguaglianza, si ottiene una forma più significativa:
@@ -204,7 +204,7 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
     $$
     P(\beta, \gamma) = A + \beta(B - A) + \gamma(C - A) = A + \beta \vec v_{AB} + \gamma \vec v_{AC},
     $$
-    
+
     che esprime $P$ come $A$ più uno spostamento verso $B$ e uno verso $C$.
 
 ---
@@ -218,9 +218,9 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
     $$
     \alpha = \frac{\sigma_1}\sigma = 1 - \frac{\sigma_2 + \sigma_3}\sigma, \quad \beta = \frac{\sigma_2}\sigma, \quad \gamma = \frac{\sigma_3}\sigma.
     $$
-    
+
 -   Se si assegna segno negativo alle aree che sono fuori dal triangolo, queste equazioni valgono per qualsiasi punto sul piano in cui giace il triangolo.
-    
+
 # Esempio interattivo { data-state="barycentric-coordinates-demo" }
 
 <center>
@@ -248,9 +248,9 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
     $$
     A + \beta (B - A) + \gamma (C - A) = O + t \vec d,
     $$
-    
+
     con il vincolo $0 \leq (\beta, \gamma) \leq 1$.
-    
+
 -   Riordiniamo l'equazione in modo da spostare le tre incognite $\beta$, $\gamma$ e $t$ sulla sinistra:
 
     $$
@@ -265,11 +265,11 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
     $$
     \beta (B - A) + \gamma (C - A) - t \vec d = O - A,
     $$
-    
+
     che è un'equazione vettoriale nelle tre componenti $x, y, z$.
-    
+
 -   In forma matriciale, il sistema si riscrive così:
-    
+
     $$
     \begin{pmatrix}
     b_x - a_x& c_x - a_x& d_x\\
@@ -297,27 +297,27 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
     b_z - a_z& c_z - a_z& d_z\\
     \end{pmatrix},
     $$
-    
+
     che deve essere diverso da zero, altrimenti il raggio è parallelo al piano del triangolo.
-    
+
 -   La soluzione si ottiene facilmente con la [regola di Cramer](https://en.wikipedia.org/wiki/Cramer%27s_rule), che è inefficiente nel caso generale ma adeguata per matrici 3×3 come è il caso qui.
 
 # Soluzione analitica
 
--   Ovviamente, una volta ottenuta la soluzione è necessario verificare che 
+-   Ovviamente, una volta ottenuta la soluzione è necessario verificare che
 
     $$
     t_\text{min} < t < t_\text{max}, \quad 0 \leq \beta \leq 1, \quad 0 \leq \gamma \leq 1.
     $$
-    
+
 -   La normale del triangolo si può ottenere facilmente dal prodotto vettoriale tra i due vettori allineati con i lati:
 
     $$
     \hat n = \pm (B - A) \times (C - A),
     $$
-    
+
     dove il segno è determinato dalla direzione del raggio.
-    
+
 -   Le coordinate $(u, v)$ possono essere poste uguali a $(\beta, \gamma)$.
 
 
@@ -390,7 +390,7 @@ Modello: 44.000 vertici, 80.000 triangoli.
 -   Un triangolo è una superficie piana, ed ogni punto della sua superficie possiede quindi la medesima normale $\hat n$.
 
 -   Nel caso di *mesh* di triangoli, si possono usare le coordinate baricentriche del triangolo per simulare una superficie liscia: ciò è utile soprattutto quando la *mesh* è ottenuta dalla discretizzazione di una superficie liscia.
-    
+
 # Smooth shading
 
 <p style="text-align:center">![](media/triangle-normals.png){height=240px}</p>
@@ -495,7 +495,7 @@ Modello: 44.000 vertici, 80.000 triangoli.
     1. **Difetto**: un errore nel modo in cui è scritto il codice
     2. **Infezione**: un certo input “attiva” il difetto ed altera il valore di alcune variabili rispetto al caso atteso
     3. **Fallimento**: l'esito del programma è sbagliato, o perché i risultati sono errati, o perché il programma va in crash
-    
+
 -   Il *bug* sta nel difetto iniziale, ma se non c'è infezione o non c'è fallimento è difficile accorgersene!
 
 
@@ -506,13 +506,13 @@ Modello: 44.000 vertici, 80.000 triangoli.
     \[
     \int_0^\pi \sin x\,\mathrm{d}x
     \]
-    
+
     usando la formula di Simpson:
-    
+
     \[
     \int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[f(a) + 4\sum_{i=1}^{n/2} f\bigl(x_{2i-1}\bigr) + 2\sum_{i=1}^{n/2 - 1} f\bigl(x_{2i}\bigr) + f(b)\right].
     \]
-    
+
 -   Spesso l'implementazione è errata nonostante il risultato sia corretto ($\int = 2$)!
 
 
@@ -552,3 +552,39 @@ Modello: 44.000 vertici, 80.000 triangoli.
 -   Nel caso però di $\int_0^\pi \sin x\,\mathrm{d}x$, il valore dell'espressione tra parentesi quadre è comunque giusto perché $f(0) = f(\pi) = 0$.
 
 -   In questo caso c'è un *difetto* ma non c'è una *infezione* né un *fallimento*: è il caso più difficile da individuare!
+
+
+# *Issue* duplicate
+
+-   È molto comune che un medesimo *difetto* porti a *fallimenti* diversi: ciò dipende infatti dai dati di input, dal tipo di azione che si esegue col programma, etc.
+
+-   È quindi molto comune che gli utenti aprano *issue* diverse che però sono causate dal medesimo *difetto*.
+
+-   Esempio: [un crash in Julia](https://github.com/JuliaLang/julia/issues/48332) è causato dalla combinazione di due issue già segnalate in precedenza, che però a prima vista non sembravano correlate.
+
+-   GitHub consente di assegnare l'etichetta *Duplicated* alle *issue*: <img style="vertical-align:middle" src="media/github-duplicate.png"/>
+
+
+# Come segnalare *issue*
+
+-   Quando si osserva un *fallimento* e si vuole aprire una *issue*, bisogna indicare:
+
+    1.   Lista di azioni che hanno portato al fallimento (inclusi tutti gli input!)
+    2.   Output del programma
+    3.   Descrizione del comportamento atteso e di quello invece osservato
+
+    Questo perché lo sviluppatore deve poter **riprodurre** il *fallimento* per individuare poi il *difetto* che l'ha causato.
+
+-   Se un utente vi segnala una issue senza che alcune di queste cose siano chiare, non fatevi scrupoli a chiedere maggiori dettagli.
+
+-   GitHub consente di configurare un [modello per le *issue*](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository)
+
+# Individuare *difetti* scientificamente (Zeller)
+
+1.   Osservare/riprodurre un *fallimento*
+2.   Formulare un'ipotesi sul *difetto* che ha causato il *fallimento*
+3.   Usare l'ipotesi per fare una predizione
+4.   Verificare l'ipotesi con esperimenti e ulteriori osservazioni:
+     -   Se l'ipotesi è confermata, raffinare la predizione
+     -   Se l'ipotesi è invalidata, cercarne una alternativa
+5.   Ripetere i passi 3 e 4 finché l'ipotesi non può più essere migliorata
