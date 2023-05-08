@@ -21,6 +21,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 |         6 | [3 Aprile 2023](tomasi-ray-tracing-06a.html) | [5 Aprile 2023](tomasi-ray-tracing-06b.html) |
 |         7 | [17 Aprile 2023](tomasi-ray-tracing-07a.html) | [19 Aprile 2023](tomasi-ray-tracing-07b.html) |
 |         8 | [26 Aprile 2023](tomasi-ray-tracing-08a.html) | [3 Maggio 2023](tomasi-ray-tracing-08b.html) |
+|         9 | [8 Maggio 2023](tomasi-ray-tracing-09a.html) | [10 Maggio 2023](tomasi-ray-tracing-09b.html) |
 
 # Argomenti per l'esame (A.A. 2022/2023)
 
@@ -56,6 +57,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [*Aspect ratio*](tomasi-ray-tracing-07a.html#/aspect-ratio)
 -   [Forma alternativa dell'equazione del rendering e funzione di visibilità](tomasi-ray-tracing-08a.html#/equazione-del-rendering)
 -   [Intersezioni tra raggi e forme geometriche](tomasi-ray-tracing-08a.html#/intersezioni-tra-raggi-e-forme-geometriche): [sfere](tomasi-ray-tracing-08a.html#/sfere), [piani](tomasi-ray-tracing-08a.html#/piani)
+-   [Debugging: difetto, infezione, fallimento](tomasi-ray-tracing-09a.html#/debugging)
 <!--
 -   [Algoritmo di path tracing](tomasi-ray-tracing-10a.html#/path-tracing)
 -   [Probabilità e Monte Carlo](tomasi-ray-tracing-10a.html#/probabilit%C3%A0-e-monte-carlo): CDF, PDF, valore di aspettazione, varianza, deviazione standard, metodo della media, *importance sampling*, densità marginale e condizionale
