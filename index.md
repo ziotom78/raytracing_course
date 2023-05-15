@@ -22,6 +22,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 |         7 | [17 Aprile 2023](tomasi-ray-tracing-07a.html) | [19 Aprile 2023](tomasi-ray-tracing-07b.html) |
 |         8 | [26 Aprile 2023](tomasi-ray-tracing-08a.html) | [3 Maggio 2023](tomasi-ray-tracing-08b.html) |
 |         9 | [8 Maggio 2023](tomasi-ray-tracing-09a.html) | — |
+|        10 | [15 Maggio 2023](tomasi-ray-tracing-10a.html) | [17 Maggio 2023](tomasi-ray-tracing-10b.html) |
 
 # Argomenti per l'esame (A.A. 2022/2023)
 
@@ -58,12 +59,12 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Forma alternativa dell'equazione del rendering e funzione di visibilità](tomasi-ray-tracing-08a.html#/equazione-del-rendering)
 -   [Intersezioni tra raggi e forme geometriche](tomasi-ray-tracing-08a.html#/intersezioni-tra-raggi-e-forme-geometriche): [sfere](tomasi-ray-tracing-08a.html#/sfere), [piani](tomasi-ray-tracing-08a.html#/piani)
 -   [Debugging: difetto, infezione, fallimento](tomasi-ray-tracing-09a.html#/debugging)
-<!--
 -   [Algoritmo di path tracing](tomasi-ray-tracing-10a.html#/path-tracing)
 -   [Probabilità e Monte Carlo](tomasi-ray-tracing-10a.html#/probabilit%C3%A0-e-monte-carlo): CDF, PDF, valore di aspettazione, varianza, deviazione standard, metodo della media, *importance sampling*, densità marginale e condizionale
 -   [Direzioni casuali](tomasi-ray-tracing-10a.html#/direzioni-casuali): distribuzione uniforme e distribuzione di Phong
 -   [BRDF e pigmenti](tomasi-ray-tracing-10a.html#/brdf)
 -   [Generazione di numeri pseudo-casuali](tomasi-ray-tracing-10b.html#/generazione-di-numeri-pseudocasuali)
+<!--
 -   [*Importance sampling* nell'equazione del rendering](tomasi-ray-tracing-11a.html#/integrale-mc)
 -   [Roulette russa](tomasi-ray-tracing-11a.html#/roulette-russa)
 -   [*Antialiasing*](tomasi-ray-tracing-11a.html#/aliasing-e-antialiasing)
@@ -84,10 +85,10 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Constructive Solid Geometry](tomasi-ray-tracing-08a.html#/constructive-solid-geometry)
 -   [*Issues*](tomasi-ray-tracing-08b.html#/issues)
 -   [*Change log*](tomasi-ray-tracing-08b.html#/changelog)
-<!--
 -   [*Axis-aligned boxes*](tomasi-ray-tracing-09a.html#/axis-aligned-boxes)
 -   [Triangoli e *mesh* di triangoli](tomasi-ray-tracing-09a.html#/triangoli-e-mesh-di-triangoli)
 -   [Generatore PCG](tomasi-ray-tracing-10b.html#/lalgoritmo-pcg)
+<!--
 -   [Basi ortonormali arbitrarie](tomasi-ray-tracing-11a.html#/basi-ortonormali-onb-arbitrarie)
 -   [BRDF riflettente](tomasi-ray-tracing-11a.html#/brdf-riflettente)
 -   [Algoritmi di illuminazione diretta](tomasi-ray-tracing-11a.html#/illuminazione-diretta)
