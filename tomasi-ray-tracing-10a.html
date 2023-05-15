@@ -293,20 +293,25 @@ V_p[f] = E_p\bigl[f^2(x)\bigr] - E_p\bigl[f(x)\bigr]^2.
 <section id="integrazione-monte-carlo-1" class="slide level1">
 <h1>Integrazione Monte Carlo</h1>
 <ul>
-<li><p>Nell’algoritmo di <em>path tracing</em> si calcolano gli
-integrali con metodi Monte Carlo</p></li>
-<li><p>Ciò richiede la generazione di numeri pseudo-casuali</p></li>
-<li><p>Siccome si tratta di integrali molto complessi (infiniti!), è
-spesso necessario implementare ottimizzazioni: una di queste
-ottimizzazioni (<em>importance sampling</em>) richiede di estrarre
-numeri pseudo-casuali con distribuzioni di probabilità
-arbitrarie</p></li>
-<li><p>Vediamo un esempio semplice di integrale Monte Carlo e di
-<em>importance sampling</em></p></li>
+<li><p>Nell’algoritmo di <em>path tracing</em> si devono calcolare gli
+integrali che figurano nell’equazione del rendering</p></li>
+<li><p>È un integrale ricorsivo, quindi a dimensione infinita: sono
+necessari metodi Monte Carlo.</p></li>
+<li><p>Nei metodi Monte Carlo occorre controllare attentamente la
+varianza, perché se è eccessiva la qualità dell’immagine ne
+risente.</p></li>
 </ul>
 </section>
-<section id="esempio" class="slide level1">
-<h1>Esempio</h1>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/rough-path-tracing.webp" />
+</center>
+<p>Se la varianza nella stima degli integrali è eccessiva, viene creata
+un’immagine sgranata.</p>
+</section>
+<section id="varianza-nei-metodi-mc" class="slide level1">
+<h1>Varianza nei metodi MC</h1>
 <ul>
 <li><p>Supponiamo di voler calcolare numericamente il valore
 dell’integrale</p>
@@ -357,7 +362,7 @@ sommatoria è costante (k) e uguale all’integrale, quindi basta <span
 class="math inline">N = 1</span> per stimarlo!</p></li>
 </ul>
 </section>
-<section id="esempio-1" class="slide level1">
+<section id="esempio" class="slide level1">
 <h1>Esempio</h1>
 <ul>
 <li><p>Vediamo un esempio pratico nel calcolo dell’integrale di <span
@@ -393,7 +398,7 @@ data-im_fname="importance-sampling-demo1" /></p>
 class="math inline">f(x)</span>.</p></li>
 </ul>
 </section>
-<section id="esempio-2" class="slide level1">
+<section id="esempio-1" class="slide level1">
 <h1>Esempio</h1>
 <ul>
 <li><p>Normalizzando <span class="math inline">p(x) \propto \sin
@@ -412,7 +417,7 @@ x).
 </span></p></li>
 </ul>
 </section>
-<section id="esempio-3" class="slide level1">
+<section id="esempio-2" class="slide level1">
 <h1>Esempio</h1>
 <ul>
 <li><p>Siccome <span class="math inline">P(x) = \frac12 (1 - \cos
@@ -519,8 +524,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <img data-src="media/importance-sampling-demo2.svg" />
 </center>
 </section>
-<section id="monte-carlo-e-ray-tracing" class="slide level1">
-<h1>Monte Carlo e ray-tracing</h1>
+<section id="implementazione-del-path-tracing" class="slide level1">
+<h1>Implementazione del path tracing</h1>
 </section>
 <section id="applicazione-al-ray-tracing" class="slide level1">
 <h1>Applicazione al ray-tracing</h1>
@@ -841,7 +846,7 @@ height="560" /></p>
 <h1>Schema del «Cornell box»</h1>
 <p><img data-src="./media/cornell-box-schema.svg" height="560" /></p>
 </section>
-<section id="esempio-4" class="slide level1">
+<section id="esempio-3" class="slide level1">
 <h1>Esempio</h1>
 <ul>
 <li><p>Facciamo un semplice esempio in cui <span
@@ -863,7 +868,7 @@ raggio colpisca lo stesso cubo ma <strong>non</strong> sia partito dalla
 lampada.</p></li>
 </ul>
 </section>
-<section id="esempio-5" class="slide level1">
+<section id="esempio-4" class="slide level1">
 <h1>Esempio</h1>
 <ul>
 <li><p>La densità marginale <span class="math inline">p(x) = \int p(x,
@@ -1143,7 +1148,7 @@ riflettente</a>.</li>
 generatore di numeri casuali.</p></li>
 </ul>
 </section>
-<section id="esempio-6" class="slide level1">
+<section id="esempio-5" class="slide level1">
 <h1>Esempio</h1>
 <center>
 <img data-src="media/brdf-examples.webp" />

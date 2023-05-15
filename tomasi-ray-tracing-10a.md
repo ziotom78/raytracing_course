@@ -138,15 +138,22 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Integrazione Monte Carlo
 
--   Nell'algoritmo di *path tracing* si calcolano gli integrali con metodi Monte Carlo
+-   Nell'algoritmo di *path tracing* si devono calcolare gli integrali che figurano nell'equazione del rendering
 
--   Ciò richiede la generazione di numeri pseudo-casuali
+-   È un integrale ricorsivo, quindi a dimensione infinita: sono necessari metodi Monte Carlo.
 
--   Siccome si tratta di integrali molto complessi (infiniti!), è spesso necessario implementare ottimizzazioni: una di queste ottimizzazioni (*importance sampling*) richiede di estrarre numeri pseudo-casuali con distribuzioni di probabilità arbitrarie
+-   Nei metodi Monte Carlo occorre controllare attentamente la varianza, perché se è eccessiva la qualità dell'immagine ne risente.
 
--   Vediamo un esempio semplice di integrale Monte Carlo e di *importance sampling*
+---
 
-# Esempio
+<center>
+![](./media/rough-path-tracing.webp)
+</center>
+
+Se la varianza nella stima degli integrali è eccessiva, viene creata un'immagine sgranata.
+
+
+# Varianza nei metodi MC
 
 -   Supponiamo di voler calcolare numericamente il valore dell'integrale
 
@@ -332,7 +339,8 @@ plt.ylabel("Estimated value for the integral")
 
 <center>![](media/importance-sampling-demo2.svg)</center>
 
-# Monte Carlo e ray-tracing
+
+# Implementazione del path tracing
 
 # Applicazione al ray-tracing
 
