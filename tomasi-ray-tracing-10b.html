@@ -12,14 +12,20 @@
   <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
   <style>
     .reveal .sourceCode {  /* see #7635 */
-      overflow: visible;
+      /* overflow: visible; */
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -58,7 +64,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -71,7 +77,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -397,7 +403,9 @@ i linguaggi che state usando 😀.</p></li>
 memorizzare al suo interno due numeri interi <code>unsigned</code> a 64
 bit.</p></li>
 <li><p>Familiarizzatevi con i tipi di interi senza segno forniti dal
-vostro linguaggio.</p></li>
+vostro linguaggio. (Java non ha interi senza segno, quindi dovrete
+cavarvela con quelli con segno ☹. Ricordate che il bitshift senza segno
+è <code>&gt;&gt;&gt;</code>, non <code>&gt;&gt;</code>)</p></li>
 </ul>
 </section>
 <section id="pcg-in-python" class="slide level1">
@@ -408,8 +416,8 @@ costruttore:</p>
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PCG:</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    state: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    inc: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    state: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span>   <span class="co"># 64-bit unsigned integer</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    inc: <span class="bu">int</span> <span class="op">=</span> <span class="dv">0</span>     <span class="co"># 64-bit unsigned integer</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, init_state<span class="op">=</span><span class="dv">42</span>, init_seq<span class="op">=</span><span class="dv">54</span>):</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.state <span class="op">=</span> <span class="dv">0</span></span>
@@ -425,19 +433,20 @@ nelle vostre implementazioni dovrete dichiarare <code>state</code> e
 <section id="il-metodo-pcg.random" class="slide level1">
 <h1>Il metodo <code>PCG.random</code></h1>
 <div class="sourceCode" id="cb4"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random(<span class="va">self</span>):</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 64-bit variable</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    oldstate <span class="op">=</span> <span class="va">self</span>.state</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.state <span class="op">=</span> to_uint64((oldstate <span class="op">*</span> <span class="dv">6364136223846793005</span> <span class="op">+</span> <span class="va">self</span>.inc))</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># &quot;^&quot; is the xor operation</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    xorshifted <span class="op">=</span> to_uint32((((oldstate <span class="op">&gt;&gt;</span> <span class="dv">18</span>) <span class="op">^</span> oldstate) <span class="op">&gt;&gt;</span> <span class="dv">27</span>))</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 32-bit variable</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    rot <span class="op">=</span> oldstate <span class="op">&gt;&gt;</span> <span class="dv">59</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> to_uint32((xorshifted <span class="op">&gt;&gt;</span> rot) <span class="op">|</span> (xorshifted <span class="op">&lt;&lt;</span> ((<span class="op">-</span>rot) <span class="op">&amp;</span> <span class="dv">31</span>)))</span></code></pre></div>
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:  <span class="co"># 32-bit unsigned number (in Java, return a 64-bit number)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    oldstate <span class="op">=</span> <span class="va">self</span>.state    <span class="co"># 64-bit unsigned integer</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.state <span class="op">=</span> to_uint64((oldstate <span class="op">*</span> <span class="dv">6364136223846793005</span> <span class="op">+</span> <span class="va">self</span>.inc))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># &quot;^&quot; is the xor operation</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    xorshifted <span class="op">=</span> to_uint32((((oldstate <span class="op">&gt;&gt;</span> <span class="dv">18</span>) <span class="op">^</span> oldstate) <span class="op">&gt;&gt;</span> <span class="dv">27</span>))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 32-bit variable</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    rot <span class="op">=</span> oldstate <span class="op">&gt;&gt;</span> <span class="dv">59</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Rotation with a wrap; in Java/Kotlin, use Integer.rotateRight(xorshifted, rot)</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># In Java, apply a two&#39;s complement (&amp; 0xffffffffL) to return a long</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> to_uint32((xorshifted <span class="op">&gt;&gt;</span> rot) <span class="op">|</span> (xorshifted <span class="op">&lt;&lt;</span> ((<span class="op">-</span>rot) <span class="op">&amp;</span> <span class="dv">31</span>)))</span></code></pre></div>
 </section>
 <section id="test-per-pcg" class="slide level1">
 <h1>Test per <code>PCG</code></h1>

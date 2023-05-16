@@ -177,7 +177,7 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
 
 -   La struttura dati usati dall'algoritmo PCG ha bisogno di memorizzare al suo interno due numeri interi `unsigned` a 64 bit.
 
--   Familiarizzatevi con i tipi di interi senza segno forniti dal vostro linguaggio.
+-   Familiarizzatevi con i tipi di interi senza segno forniti dal vostro linguaggio. (Java non ha interi senza segno, quindi dovrete cavarvela con quelli con segno ☹. Ricordate che il bitshift senza segno è `>>>`, non `>>`)
 
 
 # PCG in Python
@@ -187,8 +187,8 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
     ```python
     @dataclass
     class PCG:
-        state: int = 0
-        inc: int = 0
+        state: int = 0   # 64-bit unsigned integer
+        inc: int = 0     # 64-bit unsigned integer
 
         def __init__(self, init_state=42, init_seq=54):
             self.state = 0
@@ -204,9 +204,8 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
 
 
 ```python
-def random(self):
-    # 64-bit variable
-    oldstate = self.state
+def random(self) -> int:  # 32-bit unsigned number (in Java, return a 64-bit number)
+    oldstate = self.state    # 64-bit unsigned integer
 
     self.state = to_uint64((oldstate * 6364136223846793005 + self.inc))
     
@@ -216,6 +215,8 @@ def random(self):
     # 32-bit variable
     rot = oldstate >> 59
 
+    # Rotation with a wrap; in Java/Kotlin, use Integer.rotateRight(xorshifted, rot)
+    # In Java, apply a two's complement (& 0xffffffffL) to return a long
     return to_uint32((xorshifted >> rot) | (xorshifted << ((-rot) & 31)))
 ```
 
