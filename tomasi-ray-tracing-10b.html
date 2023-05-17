@@ -357,6 +357,81 @@ generazione.</p></li>
 medesimo generatore col medesimo seed.</p></li>
 </ul>
 </section>
+<section id="numeri-unsigned" class="slide level1">
+<h1>Numeri /unsigned/</h1>
+<ul>
+<li><p>PCG, come molti algoritmi simili, richiede di fare calcoli con
+maschere di bit.</p></li>
+<li><p>Le maschere di bit si codificano solitamente con interi senza
+segno.</p></li>
+</ul>
+<center>
+<img data-src="media/julia-signed-unsigned-int.png" width="480" />
+</center>
+<ul>
+<li>Un numero negativo come <code>-12</code> (<code>0b1100</code>) è
+codificato con il complemento a due: si invertono tutti i bit di
+<code>12</code> e si somma 1, a dare <code>0b11110100</code> (8
+bit).</li>
+</ul>
+</section>
+<section id="operazioni-sui-bit" class="slide level1">
+<h1>Operazioni sui bit</h1>
+<p><small></p>
+<table>
+<thead>
+<tr class="header">
+<th>Nome</th>
+<th>Esempio (Julia)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>And</td>
+<td><code>0b1001 &amp; 0b0011 == 0b0001</code></td>
+</tr>
+<tr class="even">
+<td>Or</td>
+<td><code>0b1001 | 0b0011 == 0b1011</code></td>
+</tr>
+<tr class="odd">
+<td>Xor</td>
+<td><code>0b1001 ^ 0b0011 == 0b1010</code></td>
+</tr>
+<tr class="even">
+<td>Arithmetic shift</td>
+<td><code>0b1001 &gt;&gt; 1 == 0b100</code></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><code>Int8(-12) &gt;&gt; 1 == -6</code></td>
+</tr>
+<tr class="even">
+<td></td>
+<td><code>Int16(-12) &gt;&gt; 1 == -6</code></td>
+</tr>
+<tr class="odd">
+<td>Logical shift</td>
+<td><code>0b1001 &gt;&gt;&gt; 1 == 0b100</code></td>
+</tr>
+<tr class="even">
+<td></td>
+<td><code>Int8(-12) &gt;&gt;&gt; 1 == 122</code></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><code>Int16(-12) &gt;&gt;&gt; 1 == 32762</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>Nell’/arithmetic shift/ a destra, il nuovo bit più significativo
+è la copia del vecchio, in modo da preservare il segno.</p></li>
+<li><p>Nel /logical shift/ il nuovo bit più significativo è sempre zero,
+ed è sempre questo da usare nel PCG.</p></li>
+</ul>
+<p></small></p>
+</section>
 <section id="implementazione-in-python" class="slide level1">
 <h1>Implementazione in Python</h1>
 <ul>
@@ -404,8 +479,8 @@ memorizzare al suo interno due numeri interi <code>unsigned</code> a 64
 bit.</p></li>
 <li><p>Familiarizzatevi con i tipi di interi senza segno forniti dal
 vostro linguaggio. (Java non ha interi senza segno, quindi dovrete
-cavarvela con quelli con segno ☹. Ricordate che il bitshift senza segno
-è <code>&gt;&gt;&gt;</code>, non <code>&gt;&gt;</code>)</p></li>
+cavarvela con quelli con segno ☹. Come in Julia, il bitshift senza segno
+è <code>&gt;&gt;&gt;</code>)</p></li>
 </ul>
 </section>
 <section id="pcg-in-python" class="slide level1">

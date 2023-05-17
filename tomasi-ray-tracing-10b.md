@@ -142,6 +142,41 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
 
 -   Faciliterà il lavoro dei vari gruppi se ciascuno userà il medesimo generatore col medesimo seed.
 
+
+# Numeri /unsigned/
+
+-   PCG, come molti algoritmi simili, richiede di fare calcoli con maschere di bit.
+
+-   Le maschere di bit si codificano solitamente con interi senza segno.
+
+<center>
+![](media/julia-signed-unsigned-int.png){width=480px}
+</center>
+
+-   Un numero negativo come `-12` (`0b1100`) è codificato con il complemento a due: si invertono tutti i bit di `12` e si somma 1, a dare `0b11110100` (8 bit).
+
+# Operazioni sui bit
+
+<small>
+
+| Nome             | Esempio (Julia)             |
+|------------------|-----------------------------|
+| And              | `0b1001 & 0b0011 == 0b0001` |
+| Or               | `0b1001 | 0b0011 == 0b1011` |
+| Xor              | `0b1001 ^ 0b0011 == 0b1010` |
+| Arithmetic shift | `0b1001 >> 1 == 0b100`      |
+|                  | `Int8(-12) >> 1 == -6`      |
+|                  | `Int16(-12) >> 1 == -6`     |
+| Logical shift    | `0b1001 >>> 1 == 0b100`     |
+|                  | `Int8(-12) >>> 1 == 122`    |
+|                  | `Int16(-12) >>> 1 == 32762` |
+
+- Nell'/arithmetic shift/ a destra, il nuovo bit più significativo è la copia del vecchio, in modo da preservare il segno.
+
+- Nel /logical shift/ il nuovo bit più significativo è sempre zero, ed è sempre questo da usare nel PCG.
+
+</small>
+
 # Implementazione in Python
 
 -   L'implementazione Python dell'algoritmo richiede delle operazioni che permettano di controllare il modo in cui Python esegue operazioni su interi.
@@ -152,7 +187,7 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
 
 -   I linguaggi che usate ottimizzano invece le prestazioni, e possono subire overflow. Questi overflow sono non solo accettati, ma addirittura *richiesti* nell'algoritmo PCG.
 
----
+----
 
 <asciinema-player src="cast/overflow-python-julia-74x26.cast" cols="74" rows="26" font-size="medium"></asciinema-player>
 
@@ -177,7 +212,7 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
 
 -   La struttura dati usati dall'algoritmo PCG ha bisogno di memorizzare al suo interno due numeri interi `unsigned` a 64 bit.
 
--   Familiarizzatevi con i tipi di interi senza segno forniti dal vostro linguaggio. (Java non ha interi senza segno, quindi dovrete cavarvela con quelli con segno ☹. Ricordate che il bitshift senza segno è `>>>`, non `>>`)
+-   Familiarizzatevi con i tipi di interi senza segno forniti dal vostro linguaggio. (Java non ha interi senza segno, quindi dovrete cavarvela con quelli con segno ☹. Come in Julia, il bitshift senza segno è `>>>`)
 
 
 # PCG in Python
