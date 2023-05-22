@@ -4,6 +4,8 @@ subtitle: "Path tracing (continua)"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
+![](media/lezione-git.png){width=540px}
+
 # MC e path-tracing
 
 # Integrale MC
