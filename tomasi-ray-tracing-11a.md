@@ -37,7 +37,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   La chiamata ricorsiva rappresenta il fatto che per calcolare la radianza *uscente* da un punto della superficie dobbiamo conoscere la radianza *entrante* in quel punto, e questo porta a una catena di calcoli.
 
--   Ma in linea di principio questa sequenza di chiamate ricorsive è infinita! Come fare a capire quando arrestarsi?
+-   Come in tutti gli algoritmi ricorsivi è però necessario stabilire una condizione d'arresto ([*stopping criterion*](https://en.wikipedia.org/wiki/Recursion_(computer_science))).
 
 ---
 
@@ -50,13 +50,13 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
     # Estimate the integral using Monte Carlo
     cum_radiance = Color(0.0, 0.0, 0.0)
     for i in range(num_of_samples):
-        # Start a new (secondary) ray and compute the radiance along it
+        # Create a new (secondary) ray
         mc_ray = scatter_ray(..., depth=ray.depth + 1)
-        # Recursive call! Will it ever stop?
+        # To compute the radiance, we must do a recursive call! Will it ever stop?
         mc_radiance = radiance(mc_ray, num_of_samples=num_of_samples)
         cum_radiance += material.brdf(...) * mc_radiance
 
-    return emitted_radiance + 2 * pi * (cum_radiance * (1.0 / num_of_samples))
+    return emitted_radiance + cum_radiance * (1.0 / num_of_samples)
 ```
 
 # Fermare la ricorsione
@@ -110,7 +110,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 # Roulette russa
 
--   Un algoritmo molto usato nel path-tracing è la *roulette russa*, che rimuove completamente il *bias*, ossia la sottostima della radianza, al prezzo però di aumentare il rumore scorrelato (bianco).
+-   Un algoritmo molto usato nel path-tracing è la *roulette russa*, che rimuove il *bias*, ossia la sottostima della radianza, al prezzo però di aumentare il rumore scorrelato (bianco).
 
 -   Il procedimento richiede di fissare una probabilità $0 \leq q \leq 1$ (nella vera roulette russa, $q = 1/6$, a meno che non sia il film [Il cacciatore](https://www.youtube.com/watch?v=nnGTuNtMQmc)!). Questo è l'algoritmo:
 
@@ -415,7 +415,7 @@ dove ovviamente è necessario che le $\Psi_i$ siano distribuite secondo $p(\omeg
 
 # Aliasing
 
--   Nel tipo `ImageTracer` del nostro ray-tracer abbiamo assunto che il colore di ogni pixel fosse determinato dal colore del raggio [passante per il centro](http://localhost:8000/tomasi-ray-tracing-08a-projections.html#/raggi-per-pixel):
+-   Nel tipo `ImageTracer` del nostro ray-tracer abbiamo assunto che il colore di ogni pixel fosse determinato dal colore del raggio [passante per il centro](http://localhost:8000/tomasi-ray-tracing-07a.html#/raggi-per-pixel):
 
     <center>
     ![](./media/projection-pixel-centers-cube.svg){height=280px}
@@ -619,10 +619,6 @@ Se la $p(\omega)$ usata nell'*importance sampling* potesse «pesare» la presenz
     #.  Creazione della *photon map*;
     #.  Rendering dell'immagine.
 
-# Fotoni nel «Cornell box»
-
-![](./media/cornell-box-schema.svg){height=560}
-
 # Algoritmo di *photon mapping*
 
 -   Per ogni sorgente luminosa si emettono una serie di raggi che dipartono verso direzioni casuali.
@@ -632,6 +628,10 @@ Se la $p(\omega)$ usata nell'*importance sampling* potesse «pesare» la presenz
 -   La lista di tutti i `Photon` creati (la *photon map*, appunto) viene memorizzata nel tipo `World` (non è necessario associare un `Photon` alla `Shape` che l'ha prodotto).
 
 -   Per calcolare $L(x \leftarrow \Psi)$ nell'equazione del rendering, si considerano tutti i `Photon` entro una certa distanza $d$ da $x$.
+
+# Fotoni nel «Cornell box»
+
+![](./media/cornell-box-schema.svg){height=560}
 
 ---
 

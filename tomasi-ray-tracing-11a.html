@@ -16,10 +16,16 @@
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -168,8 +174,10 @@ del rendering.</p></li>
 radianza <em>uscente</em> da un punto della superficie dobbiamo
 conoscere la radianza <em>entrante</em> in quel punto, e questo porta a
 una catena di calcoli.</p></li>
-<li><p>Ma in linea di principio questa sequenza di chiamate ricorsive è
-infinita! Come fare a capire quando arrestarsi?</p></li>
+<li><p>Come in tutti gli algoritmi ricorsivi è però necessario stabilire
+una condizione d’arresto (<a
+href="https://en.wikipedia.org/wiki/Recursion_(computer_science)"><em>stopping
+criterion</em></a>).</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -183,13 +191,13 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Estimate the integral using Monte Carlo</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    cum_radiance <span class="op">=</span> Color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_of_samples):</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Start a new (secondary) ray and compute the radiance along it</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create a new (secondary) ray</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        mc_ray <span class="op">=</span> scatter_ray(..., depth<span class="op">=</span>ray.depth <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Recursive call! Will it ever stop?</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># To compute the radiance, we must do a recursive call! Will it ever stop?</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        mc_radiance <span class="op">=</span> radiance(mc_ray, num_of_samples<span class="op">=</span>num_of_samples)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        cum_radiance <span class="op">+=</span> material.brdf(...) <span class="op">*</span> mc_radiance</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> emitted_radiance <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> pi <span class="op">*</span> (cum_radiance <span class="op">*</span> (<span class="fl">1.0</span> <span class="op">/</span> num_of_samples))</span></code></pre></div>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> emitted_radiance <span class="op">+</span> cum_radiance <span class="op">*</span> (<span class="fl">1.0</span> <span class="op">/</span> num_of_samples)</span></code></pre></div>
 </section>
 <section id="fermare-la-ricorsione" class="slide level1">
 <h1>Fermare la ricorsione</h1>
@@ -262,9 +270,9 @@ Transport</em></a>, Veach &amp; Guibas (1997)</span></p>
 <h1>Roulette russa</h1>
 <ul>
 <li><p>Un algoritmo molto usato nel path-tracing è la <em>roulette
-russa</em>, che rimuove completamente il <em>bias</em>, ossia la
-sottostima della radianza, al prezzo però di aumentare il rumore
-scorrelato (bianco).</p></li>
+russa</em>, che rimuove il <em>bias</em>, ossia la sottostima della
+radianza, al prezzo però di aumentare il rumore scorrelato
+(bianco).</p></li>
 <li><p>Il procedimento richiede di fissare una probabilità <span
 class="math inline">0 \leq q \leq 1</span> (nella vera roulette russa,
 <span class="math inline">q = 1/6</span>, a meno che non sia il film <a
@@ -715,7 +723,7 @@ quanto si possa implementare per questo corso.</li>
 <li><p>Nel tipo <code>ImageTracer</code> del nostro ray-tracer abbiamo
 assunto che il colore di ogni pixel fosse determinato dal colore del
 raggio <a
-href="http://localhost:8000/tomasi-ray-tracing-08a-projections.html#/raggi-per-pixel">passante
+href="http://localhost:8000/tomasi-ray-tracing-07a.html#/raggi-per-pixel">passante
 per il centro</a>:</p>
 <center>
 <p><img data-src="./media/projection-pixel-centers-cube.svg"
@@ -1041,10 +1049,6 @@ viene eseguito in due passaggi:</p>
 </ol></li>
 </ul>
 </section>
-<section id="fotoni-nel-cornell-box" class="slide level1">
-<h1>Fotoni nel «Cornell box»</h1>
-<p><img data-src="./media/cornell-box-schema.svg" height="560" /></p>
-</section>
 <section id="algoritmo-di-photon-mapping" class="slide level1">
 <h1>Algoritmo di <em>photon mapping</em></h1>
 <ul>
@@ -1064,6 +1068,10 @@ l’ha prodotto).</p></li>
 class="math inline">d</span> da <span
 class="math inline">x</span>.</p></li>
 </ul>
+</section>
+<section id="fotoni-nel-cornell-box" class="slide level1">
+<h1>Fotoni nel «Cornell box»</h1>
+<p><img data-src="./media/cornell-box-schema.svg" height="560" /></p>
 </section>
 <section class="slide level1">
 
