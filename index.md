@@ -23,6 +23,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 |         8 | [26 Aprile 2023](tomasi-ray-tracing-08a.html) | [3 Maggio 2023](tomasi-ray-tracing-08b.html) |
 |         9 | [8 Maggio 2023](tomasi-ray-tracing-09a.html) | — |
 |        10 | [15 Maggio 2023](tomasi-ray-tracing-10a.html) | [17 Maggio 2023](tomasi-ray-tracing-10b.html) |
+|        11 | [22 Maggio 2023](tomasi-ray-tracing-11a.html) | [24 Maggio 2023](tomasi-ray-tracing-11b.html) |
 
 # Argomenti per l'esame (A.A. 2022/2023)
 
