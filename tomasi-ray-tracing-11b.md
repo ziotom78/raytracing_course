@@ -4,6 +4,45 @@ subtitle: "Path tracing (continua)"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
+# Implementare il path tracer
+
+# Cosa abbiamo imparato
+
+-   Oggi finalmente implementeremo il nostro *path tracer*, che conclude la discussione sull'equazione del rendering
+
+-   Anche se mancano ancora due settimane alla fine del corso, possiamo già valutare cosa dovremmo aver imparato dal corso
+
+-   Facciamolo con una domanda…
+
+# Quali bug vi aspettate oggi?
+
+::: notes
+
+-   L'immagine non può uscire upside-down: abbiamo già dei test a riguardo
+
+-   L'intersezione raggio-sfera è sicuramente giusta
+
+-   I colori R e B non possono essere invertiti
+
+-   Etc.
+
+:::
+
+---
+
+# Metodo di lavoro
+
+-   Abbiamo sempre implementato una funzionalità alla volta (salvataggio di immagini, *tone mapping*, proiezioni…) alla volta
+
+-   Per ogni caratteristica abbiamo implementato una serie di test
+
+-   È per questo che ogni settimana avevamo la confidenza che quando ci appoggiavamo a codice scritto nelle settimane precedenti, esso era probabilmente “giusto”
+
+-   È impossibile scrivere un codice così lungo come il vostro senza procedere così
+
+-   **Questo è l'insegnamento più importante fornito da questo corso!**
+
+
 # Basi ortonormali (ONB)
 
 # Creazioni di ONB
