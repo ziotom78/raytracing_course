@@ -15,6 +15,7 @@ colorlinks: true
 
 | Date       | Comment                                                     |
 |------------|-------------------------------------------------------------|
+| 2023-05-23 | Add a few links, fix some typos                             |
 | 2023-01-02 | Show a more interesting comparison between Ruby and Crystal |
 | 2022-12-05 | Add a few more information about Pascal                     |
 | 2022-09-30 | Add a section about Crystal, fix some references            |
@@ -941,7 +942,8 @@ C++'s.
 
 [^clrrewrite]: For example, if an `else` branch of an `if` statement
     is executed very often, the CLR can rewrite the `if` statement to
-    take advantage of this.
+    swap the code below `if` with the code below `else`, as this might
+    make the code faster.
 
 Here is an example showing how to implement a basic `Vec` class in
 C\#. Note that, despite a few differences, the syntax looks very
@@ -1619,11 +1621,12 @@ A few references to learn FreePascal and Lazarus:
 
 -   If you plan to use Lazarus to develop a graphical interface for
     your program, you probably want to consult books written for
-    Borland Delphi, which was Lazarus' ancestor: Lazarus is still
-    compatible with Delphi, and so many of the stuff in any old book
-    is still relevant. A particularly good one is *Delphi developer's
-    guide* by Xavier Pacheco and Steve Teixeira (Sams publishing,
-    1995). It is still available on the web (e.g., on the [Internet
+    [Borland Delphi](https://en.wikipedia.org/wiki/Delphi_(software)),
+    which was Lazarus' ancestor: Lazarus is still compatible with
+    Delphi, and so many of the stuff in any old book is still
+    relevant. A particularly good one is *Delphi developer's guide* by
+    Xavier Pacheco and Steve Teixeira (Sams publishing, 1995). It is
+    still available on the web (e.g., on the [Internet
     Archive](https://archive.org/details/Delphi_Developers_Guide_SAMS)),
     and most of what is explained there applies to Lazarus as well.
 
@@ -1828,6 +1831,10 @@ FreeBASIC has a few disadvantages too:
 -   It is not easy to download and install new libraries, as the
     language lacks a package manager. (This shortcoming is shared with
     C++.)
+
+-   Mac OS X is not supported officially, although [people
+    report](https://www.freebasic.net/forum/viewtopic.php?t=32191)
+    that it can be possible to make it run on Apple hardware
 
 
 # Julia
@@ -2319,8 +2326,8 @@ A few disadvantages of Rust are the following:
 A few good resources to learn Rust:
 
 -   Two excellent books are [*The Rust programming
-    language*](https://doc.rust-lang.org/book/) by Steve Klabnik e
-    Carol Nichols (no starch press, 2019), and [*Rust in
+    language*](https://doc.rust-lang.org/book/) by Steve Klabnik and
+    Carol Nichols (No starch press, 2019), and [*Rust in
     action*](https://www.manning.com/books/rust-in-action) by Timothy
     S. McNamara (Manning, 2021).
 
