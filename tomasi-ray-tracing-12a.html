@@ -16,10 +16,16 @@
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -212,41 +218,6 @@ possibile.
 per esso. Il nostro sarà un approccio con <em>molta</em> pratica e quel
 tanto che basta di teoria.</p>
 </section>
-<section id="esempi-di-dsl" class="slide level1">
-<h1>Esempi di DSL</h1>
-</section>
-<section id="sql" class="slide level1">
-<h1>SQL</h1>
-<ul>
-<li><p>SQL (<em>Structured Query Language</em>) è un linguaggio usato
-per creare/modificare/consultare tabelle di dati salvate in
-database:</p>
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> measurement (<span class="dt">time</span> text, sensor text, <span class="fu">value</span> <span class="dt">real</span>, flags <span class="dt">number</span>);</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> measurement <span class="kw">VALUES</span> (<span class="st">&#39;2021-06-06&#39;</span>, <span class="st">&#39;LKS-0001&#39;</span>, <span class="fl">1.73</span>, <span class="dv">0</span>);</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> measurement <span class="kw">VALUES</span> (<span class="st">&#39;2021-06-07&#39;</span>, <span class="st">&#39;LKS-0001&#39;</span>, <span class="fl">1.46</span>, <span class="dv">1</span>);</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="dt">time</span>, <span class="fu">value</span> <span class="kw">FROM</span> measurement <span class="kw">WHERE</span> sensor <span class="op">=</span> <span class="st">&#39;LKS-0001&#39;</span> <span class="kw">AND</span> <span class="fu">value</span> <span class="op">&gt;</span> <span class="fl">1.50</span>;</span></code></pre></div>
-<p>(Anche se SQL è pensato per gestire tabelle, c’è gente che l’ha usato
-per <a href="https://www.pouet.net/prod.php?which=83222">scrivere un
-raytracer</a>…)</p></li>
-<li><p>La libreria <a
-href="https://www.sqlite.org/index.html">sqlite3</a> implementa un
-interprete SQL e un formato di dati, consentendo di salvare/leggere
-questi database da file. È una delle librerie più usate al mondo, ed è
-usata in Linux, Mac OS X, Android e iOS.</p></li>
-<li><p>È una libreria invocabile da <a
-href="https://www.sqlite.org/cintro.html">C/C++</a>, <a
-href="https://docs.python.org/3/library/sqlite3.html">Python</a>, <a
-href="https://zetcode.com/csharp/sqlite/">C#</a>, etc., ma il comando
-consente di operare direttamente dalla linea di comando!</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<p><asciinema-player src="cast/sqlite3-example-89x25.cast" cols="89" rows="25" font-size="medium"></asciinema-player></p>
-<p>Immaginate come implementare questi comandi in linguaggi come C++ o
-Python. Ovviamente SQL è molto più immediato!</p>
-</section>
 <section id="dsl-in-linguaggi-general-purpose" class="slide level1">
 <h1>DSL in linguaggi <em>general-purpose</em></h1>
 <ul>
@@ -263,58 +234,7 @@ href="https://docs.julialang.org/en/v1/manual/metaprogramming/">Julia</a>,
 <a
 href="https://www.raywenderlich.com/2780058-domain-specific-languages-in-kotlin-getting-started">Kotlin</a>,
 <a href="https://forum.nim-lang.org/t/2380">Nim</a>…).</p></li>
-<li><p>Vediamo un paio di esempi.</p></li>
 </ul>
-</section>
-<section id="acme.jl" class="slide level1">
-<h1><a href="https://github.com/HSU-ANT/ACME.jl">ACME.jl</a></h1>
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">ACME</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>circ <span class="op">=</span> <span class="pp">@circuit</span> <span class="cf">begin</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    j_in <span class="op">=</span> <span class="fu">voltagesource</span>()</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    r1 <span class="op">=</span> <span class="fu">resistor</span>(<span class="fl">1e3</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    c1 <span class="op">=</span> <span class="fu">capacitor</span>(<span class="fl">47e-9</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    d1 <span class="op">=</span> <span class="fu">diode</span>(is<span class="op">=</span><span class="fl">1e-15</span>)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    d2 <span class="op">=</span> <span class="fu">diode</span>(is<span class="op">=</span><span class="fl">1.8e-15</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    j_out <span class="op">=</span> <span class="fu">voltageprobe</span>()</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    j_in[<span class="op">+</span>] <span class="op">⟷</span> r1[<span class="fl">1</span>]</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    j_in[<span class="op">-</span>] <span class="op">⟷</span> gnd</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    r1[<span class="fl">2</span>] <span class="op">⟷</span> c1[<span class="fl">1</span>] <span class="op">⟷</span> d1[<span class="op">+</span>] <span class="op">⟷</span> d2[<span class="op">-</span>] <span class="op">⟷</span> j_out[<span class="op">+</span>]</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    gnd <span class="op">⟷</span> c1[<span class="fl">2</span>] <span class="op">⟷</span> d1[<span class="op">-</span>] <span class="op">⟷</span> d2[<span class="op">+</span>] <span class="op">⟷</span> j_out[<span class="op">-</span>]</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div>
-<p>La libreria ACME (Julia) definisce una serie di operatori come
-<code>⟷</code> e <code>[±]</code> per descrivere un circuito elettrico
-con una sintassi semplice da leggere.</p>
-</section>
-<section id="karax-nim" class="slide level1">
-<h1><a href="https://github.com/karaxnim/karax">Karax</a> (Nim)</h1>
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode nim"><code class="sourceCode nim"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> karax <span class="co">/</span> <span class="kw">[</span>karaxdsl<span class="kw">,</span> vdom<span class="kw">]</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> places <span class="co">=</span> <span class="co">@</span><span class="kw">[</span><span class="st">&quot;boston&quot;</span><span class="kw">,</span> <span class="st">&quot;cleveland&quot;</span><span class="kw">,</span> <span class="st">&quot;los angeles&quot;</span><span class="kw">,</span> <span class="st">&quot;new orleans&quot;</span><span class="kw">]</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> <span class="st">render</span><span class="co">*</span><span class="kw">():</span> <span class="at">string</span> <span class="co">=</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> vnode <span class="co">=</span> <span class="fu">buildHtml</span><span class="kw">(</span><span class="fu">tdiv</span><span class="kw">(</span>class <span class="co">=</span> <span class="st">&quot;mt-3&quot;</span><span class="kw">)):</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    h1<span class="kw">:</span> <span class="fu">text</span> <span class="st">&quot;My Web Page&quot;</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    p<span class="kw">:</span> <span class="fu">text</span> <span class="st">&quot;Hello world&quot;</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    ul<span class="kw">:</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> place <span class="co">in</span> places<span class="kw">:</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        li<span class="kw">:</span> <span class="fu">text</span> place</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    dl<span class="kw">:</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      dt<span class="kw">:</span> <span class="fu">text</span> <span class="st">&quot;Can I use Karax for client side single page apps?&quot;</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      dd<span class="kw">:</span> <span class="fu">text</span> <span class="st">&quot;Yes&quot;</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      dt<span class="kw">:</span> <span class="fu">text</span> <span class="st">&quot;Can I use Karax for server side HTML rendering?&quot;</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      dd<span class="kw">:</span> <span class="fu">text</span> <span class="st">&quot;Yes&quot;</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="ot">result</span> <span class="co">=</span> <span class="co">$</span>vnode</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="cf">echo</span> <span class="fu">render</span><span class="kw">()</span></span></code></pre></div>
-<p>La libreria <a
-href="https://github.com/karaxnim/karax">karax/karaxdsl</a> estende il
-linguaggio <a href="https://nim-lang.org/">Nim</a> con comandi come
-<code>h1</code> e <code>p</code>, in modo che si possano definire gli
-elementi che definiscono una pagina HTML.</p>
 </section>
 <section id="linguaggi-per-la-definizione-di-scene-3d"
 class="slide level1">
@@ -403,26 +323,26 @@ path-tracing.</p></li>
 </section>
 <section id="file-di-input-1" class="slide level1">
 <h1>File di input</h1>
-<div class="sourceCode" id="cb7"><pre
-class="sourceCode povray"><code class="sourceCode povray"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// POV-Ray example file</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ot">#include</span> <span class="st">&quot;colors.inc&quot;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="va">background</span> <span class="op">{</span> <span class="at">color</span> Cyan <span class="op">}</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#declare </span><span class="fu">tex </span><span class="op">=</span> <span class="at">texture</span> <span class="op">{</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">pigment</span> <span class="op">{</span> <span class="at">color</span> Yellow <span class="op">}</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="va">camera</span> <span class="op">{</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="va">location</span> <span class="op">&lt;</span><span class="fl">0</span><span class="op">,</span> <span class="fl">2</span><span class="op">,</span> <span class="op">-</span><span class="fl">3</span><span class="op">&gt;</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="va">look_at</span>  <span class="op">&lt;</span><span class="fl">0</span><span class="op">,</span> <span class="fl">1</span><span class="op">,</span>  <span class="fl">2</span><span class="op">&gt;</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="wa">sphere</span> <span class="op">{</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span><span class="fl">0</span><span class="op">,</span> <span class="fl">1</span><span class="op">,</span> <span class="fl">2</span><span class="op">&gt;,</span> <span class="fl">2</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">texture</span> <span class="op">{</span> tex <span class="op">}</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="wa">light_source</span> <span class="op">{</span> <span class="op">&lt;</span><span class="fl">2</span><span class="op">,</span> <span class="fl">4</span><span class="op">,</span> <span class="op">-</span><span class="fl">3</span><span class="op">&gt;</span> <span class="at">color</span> White <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode povray"><code class="sourceCode povray"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// POV-Ray example file</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ot">#include</span> <span class="st">&quot;colors.inc&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">background</span> <span class="op">{</span> <span class="at">color</span> Cyan <span class="op">}</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#declare </span><span class="fu">tex </span><span class="op">=</span> <span class="at">texture</span> <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">pigment</span> <span class="op">{</span> <span class="at">color</span> Yellow <span class="op">}</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="va">camera</span> <span class="op">{</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="va">location</span> <span class="op">&lt;</span><span class="fl">0</span><span class="op">,</span> <span class="fl">2</span><span class="op">,</span> <span class="op">-</span><span class="fl">3</span><span class="op">&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="va">look_at</span>  <span class="op">&lt;</span><span class="fl">0</span><span class="op">,</span> <span class="fl">1</span><span class="op">,</span>  <span class="fl">2</span><span class="op">&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="wa">sphere</span> <span class="op">{</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span><span class="fl">0</span><span class="op">,</span> <span class="fl">1</span><span class="op">,</span> <span class="fl">2</span><span class="op">&gt;,</span> <span class="fl">2</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">texture</span> <span class="op">{</span> tex <span class="op">}</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="wa">light_source</span> <span class="op">{</span> <span class="op">&lt;</span><span class="fl">2</span><span class="op">,</span> <span class="fl">4</span><span class="op">,</span> <span class="op">-</span><span class="fl">3</span><span class="op">&gt;</span> <span class="at">color</span> White <span class="op">}</span></span></code></pre></div>
 </section>
 <section class="slide level1">
 
@@ -446,65 +366,65 @@ href="https://en.wikipedia.org/wiki/XML">XML</a>.</p></li>
 </section>
 <section id="file-di-input-2" class="slide level1">
 <h1>File di input</h1>
-<div class="sourceCode" id="cb8"><pre
-class="sourceCode xml"><code class="sourceCode xml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">scene</span>&gt;</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">shader</span><span class="ot"> type=</span><span class="st">&quot;generic&quot;</span><span class="ot"> name=</span><span class="st">&quot;Default&quot;</span>&gt;</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">attributes</span>&gt;</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        &lt;<span class="kw">color</span><span class="ot"> r=</span><span class="st">&quot;0.750000&quot;</span><span class="ot"> g=</span><span class="st">&quot;0.750000&quot;</span><span class="ot"> b=</span><span class="st">&quot;0.800000&quot;</span> /&gt;</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        &lt;<span class="kw">specular</span><span class="ot"> r=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> g=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> b=</span><span class="st">&quot;0.000000&quot;</span> /&gt;</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        &lt;<span class="kw">reflected</span><span class="ot"> r=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> g=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> b=</span><span class="st">&quot;0.000000&quot;</span> /&gt;</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        &lt;<span class="kw">transmitted</span><span class="ot"> r=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> g=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> b=</span><span class="st">&quot;0.000000&quot;</span> /&gt;</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">attributes</span>&gt;</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">shader</span>&gt;</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">transform</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="ot">    m00=</span><span class="st">&quot;8.532125&quot;</span><span class="ot"> m01=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m02=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m03=</span><span class="st">&quot;0.000000&quot;</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="ot">    m10=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m11=</span><span class="st">&quot;8.532125&quot;</span><span class="ot"> m12=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m13=</span><span class="st">&quot;0.000000&quot;</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="ot">    m20=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m21=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m22=</span><span class="st">&quot;8.532125&quot;</span><span class="ot"> m23=</span><span class="st">&quot;0.000000&quot;</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="ot">    m30=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m31=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m32=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m33=</span><span class="st">&quot;1.000000&quot;</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>&gt;</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">object</span><span class="ot"> name=</span><span class="st">&quot;Plane&quot;</span><span class="ot"> shader_name=</span><span class="st">&quot;Default&quot;</span> &gt;</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">attributes</span>&gt;</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">attributes</span>&gt;</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">mesh</span>&gt;</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        &lt;<span class="kw">include</span><span class="ot"> file=</span><span class="st">&quot;.\Meshes\Plane.xml&quot;</span> /&gt;</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">mesh</span>&gt;</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">object</span>&gt;</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">transform</span>&gt;</span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">light</span><span class="ot"> type=</span><span class="st">&quot;pathlight&quot;</span><span class="ot"> name=</span><span class="st">&quot;path&quot;</span><span class="ot"> power=</span> <span class="st">&quot;1.000000&quot;</span><span class="ot"> depth=</span><span class="st">&quot;2&quot;</span><span class="ot"> samples=</span><span class="st">&quot;16&quot;</span> </span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="ot">       use_QMC=</span><span class="st">&quot;on&quot;</span><span class="ot"> cache=</span><span class="st">&quot;on&quot;</span><span class="ot">  cache_size=</span><span class="st">&quot;0.008000&quot;</span></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="ot">       angle_threshold=</span><span class="st">&quot;0.200000&quot;</span><span class="ot">  shadow_threshold=</span><span class="st">&quot;0.200000&quot;</span> &gt;</span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">light</span>&gt;</span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">camera</span><span class="ot"> name=</span><span class="st">&quot;Camera&quot;</span><span class="ot"> resx=</span><span class="st">&quot;1024&quot;</span><span class="ot"> resy=</span><span class="st">&quot;576&quot;</span><span class="ot"> focal=</span><span class="st">&quot;1.015937&quot;</span> &gt;</span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">from</span><span class="ot"> x=</span><span class="st">&quot;0.323759&quot;</span><span class="ot"> y=</span><span class="st">&quot;-7.701275&quot;</span><span class="ot"> z=</span><span class="st">&quot;2.818493&quot;</span> /&gt;</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">to</span><span class="ot"> x=</span><span class="st">&quot;0.318982&quot;</span><span class="ot"> y=</span><span class="st">&quot;-6.717273&quot;</span><span class="ot"> z=</span><span class="st">&quot;2.640400&quot;</span> /&gt;</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">up</span><span class="ot"> x=</span><span class="st">&quot;0.323330&quot;</span><span class="ot"> y=</span><span class="st">&quot;-7.523182&quot;</span><span class="ot"> z=</span><span class="st">&quot;3.802506&quot;</span> /&gt;</span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">camera</span>&gt;</span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">filter</span><span class="ot"> type=</span><span class="st">&quot;dof&quot;</span><span class="ot"> name=</span><span class="st">&quot;dof&quot;</span><span class="ot"> focus=</span><span class="st">&quot;7.97854234329&quot;</span><span class="ot"> near_blur=</span><span class="st">&quot;10.000000&quot;</span></span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="ot">        far_blur=</span><span class="st">&quot;10.000000&quot;</span><span class="ot"> scale=</span><span class="st">&quot;2.000000&quot;</span>&gt;</span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">filter</span>&gt;</span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">filter</span><span class="ot"> type=</span><span class="st">&quot;antinoise&quot;</span><span class="ot"> name=</span><span class="st">&quot;Anti Noise&quot;</span><span class="ot"> radius=</span><span class="st">&quot;1.000000&quot;</span></span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="ot">        max_delta=</span><span class="st">&quot;0.100000&quot;</span>&gt;</span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">filter</span>&gt;</span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">background</span><span class="ot"> type=</span><span class="st">&quot;HDRI&quot;</span><span class="ot"> name=</span><span class="st">&quot;envhdri&quot;</span><span class="ot"> exposure_adjust=</span><span class="st">&quot;1&quot;</span>&gt;</span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">filename</span><span class="ot"> value=</span><span class="st">&quot;Filename.HDR&quot;</span> /&gt;</span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">background</span>&gt;</span>
-<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">render</span><span class="ot"> camera_name=</span><span class="st">&quot;Camera&quot;</span><span class="ot"> AA_passes=</span><span class="st">&quot;2&quot;</span><span class="ot"> AA_minsamples=</span><span class="st">&quot;2&quot;</span></span>
-<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="ot">        AA_pixelwidth=</span><span class="st">&quot;1.500000&quot;</span><span class="ot"> AA_threshold=</span><span class="st">&quot;0.040000&quot;</span></span>
-<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a><span class="ot">        raydepth=</span><span class="st">&quot;5&quot;</span><span class="ot"> bias=</span><span class="st">&quot;0.300000&quot;</span><span class="ot"> indirect_samples=</span><span class="st">&quot;1&quot;</span></span>
-<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a><span class="ot">        gamma=</span><span class="st">&quot;1.000000&quot;</span><span class="ot"> exposure=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> background_name=</span><span class="st">&quot;envhdri&quot;</span>&gt;</span>
-<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">outfile</span><span class="ot"> value=</span><span class="st">&quot;butterfly2.tga&quot;</span>/&gt;</span>
-<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">save_alpha</span><span class="ot"> value=</span><span class="st">&quot;on&quot;</span>/&gt;</span>
-<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">render</span>&gt;</span>
-<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">scene</span>&gt;</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode xml"><code class="sourceCode xml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">scene</span>&gt;</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">shader</span><span class="ot"> type=</span><span class="st">&quot;generic&quot;</span><span class="ot"> name=</span><span class="st">&quot;Default&quot;</span>&gt;</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">attributes</span>&gt;</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        &lt;<span class="kw">color</span><span class="ot"> r=</span><span class="st">&quot;0.750000&quot;</span><span class="ot"> g=</span><span class="st">&quot;0.750000&quot;</span><span class="ot"> b=</span><span class="st">&quot;0.800000&quot;</span> /&gt;</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        &lt;<span class="kw">specular</span><span class="ot"> r=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> g=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> b=</span><span class="st">&quot;0.000000&quot;</span> /&gt;</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        &lt;<span class="kw">reflected</span><span class="ot"> r=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> g=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> b=</span><span class="st">&quot;0.000000&quot;</span> /&gt;</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        &lt;<span class="kw">transmitted</span><span class="ot"> r=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> g=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> b=</span><span class="st">&quot;0.000000&quot;</span> /&gt;</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">attributes</span>&gt;</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">shader</span>&gt;</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">transform</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="ot">    m00=</span><span class="st">&quot;8.532125&quot;</span><span class="ot"> m01=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m02=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m03=</span><span class="st">&quot;0.000000&quot;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="ot">    m10=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m11=</span><span class="st">&quot;8.532125&quot;</span><span class="ot"> m12=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m13=</span><span class="st">&quot;0.000000&quot;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="ot">    m20=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m21=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m22=</span><span class="st">&quot;8.532125&quot;</span><span class="ot"> m23=</span><span class="st">&quot;0.000000&quot;</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="ot">    m30=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m31=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m32=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> m33=</span><span class="st">&quot;1.000000&quot;</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>&gt;</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">object</span><span class="ot"> name=</span><span class="st">&quot;Plane&quot;</span><span class="ot"> shader_name=</span><span class="st">&quot;Default&quot;</span> &gt;</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">attributes</span>&gt;</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">attributes</span>&gt;</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">mesh</span>&gt;</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        &lt;<span class="kw">include</span><span class="ot"> file=</span><span class="st">&quot;.\Meshes\Plane.xml&quot;</span> /&gt;</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">mesh</span>&gt;</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">object</span>&gt;</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">transform</span>&gt;</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">light</span><span class="ot"> type=</span><span class="st">&quot;pathlight&quot;</span><span class="ot"> name=</span><span class="st">&quot;path&quot;</span><span class="ot"> power=</span> <span class="st">&quot;1.000000&quot;</span><span class="ot"> depth=</span><span class="st">&quot;2&quot;</span><span class="ot"> samples=</span><span class="st">&quot;16&quot;</span> </span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="ot">       use_QMC=</span><span class="st">&quot;on&quot;</span><span class="ot"> cache=</span><span class="st">&quot;on&quot;</span><span class="ot">  cache_size=</span><span class="st">&quot;0.008000&quot;</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="ot">       angle_threshold=</span><span class="st">&quot;0.200000&quot;</span><span class="ot">  shadow_threshold=</span><span class="st">&quot;0.200000&quot;</span> &gt;</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">light</span>&gt;</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">camera</span><span class="ot"> name=</span><span class="st">&quot;Camera&quot;</span><span class="ot"> resx=</span><span class="st">&quot;1024&quot;</span><span class="ot"> resy=</span><span class="st">&quot;576&quot;</span><span class="ot"> focal=</span><span class="st">&quot;1.015937&quot;</span> &gt;</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">from</span><span class="ot"> x=</span><span class="st">&quot;0.323759&quot;</span><span class="ot"> y=</span><span class="st">&quot;-7.701275&quot;</span><span class="ot"> z=</span><span class="st">&quot;2.818493&quot;</span> /&gt;</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">to</span><span class="ot"> x=</span><span class="st">&quot;0.318982&quot;</span><span class="ot"> y=</span><span class="st">&quot;-6.717273&quot;</span><span class="ot"> z=</span><span class="st">&quot;2.640400&quot;</span> /&gt;</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">up</span><span class="ot"> x=</span><span class="st">&quot;0.323330&quot;</span><span class="ot"> y=</span><span class="st">&quot;-7.523182&quot;</span><span class="ot"> z=</span><span class="st">&quot;3.802506&quot;</span> /&gt;</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">camera</span>&gt;</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">filter</span><span class="ot"> type=</span><span class="st">&quot;dof&quot;</span><span class="ot"> name=</span><span class="st">&quot;dof&quot;</span><span class="ot"> focus=</span><span class="st">&quot;7.97854234329&quot;</span><span class="ot"> near_blur=</span><span class="st">&quot;10.000000&quot;</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="ot">        far_blur=</span><span class="st">&quot;10.000000&quot;</span><span class="ot"> scale=</span><span class="st">&quot;2.000000&quot;</span>&gt;</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">filter</span>&gt;</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">filter</span><span class="ot"> type=</span><span class="st">&quot;antinoise&quot;</span><span class="ot"> name=</span><span class="st">&quot;Anti Noise&quot;</span><span class="ot"> radius=</span><span class="st">&quot;1.000000&quot;</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="ot">        max_delta=</span><span class="st">&quot;0.100000&quot;</span>&gt;</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">filter</span>&gt;</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">background</span><span class="ot"> type=</span><span class="st">&quot;HDRI&quot;</span><span class="ot"> name=</span><span class="st">&quot;envhdri&quot;</span><span class="ot"> exposure_adjust=</span><span class="st">&quot;1&quot;</span>&gt;</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">filename</span><span class="ot"> value=</span><span class="st">&quot;Filename.HDR&quot;</span> /&gt;</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">background</span>&gt;</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">render</span><span class="ot"> camera_name=</span><span class="st">&quot;Camera&quot;</span><span class="ot"> AA_passes=</span><span class="st">&quot;2&quot;</span><span class="ot"> AA_minsamples=</span><span class="st">&quot;2&quot;</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="ot">        AA_pixelwidth=</span><span class="st">&quot;1.500000&quot;</span><span class="ot"> AA_threshold=</span><span class="st">&quot;0.040000&quot;</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="ot">        raydepth=</span><span class="st">&quot;5&quot;</span><span class="ot"> bias=</span><span class="st">&quot;0.300000&quot;</span><span class="ot"> indirect_samples=</span><span class="st">&quot;1&quot;</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="ot">        gamma=</span><span class="st">&quot;1.000000&quot;</span><span class="ot"> exposure=</span><span class="st">&quot;0.000000&quot;</span><span class="ot"> background_name=</span><span class="st">&quot;envhdri&quot;</span>&gt;</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">outfile</span><span class="ot"> value=</span><span class="st">&quot;butterfly2.tga&quot;</span>/&gt;</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">save_alpha</span><span class="ot"> value=</span><span class="st">&quot;on&quot;</span>/&gt;</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">render</span>&gt;</span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">scene</span>&gt;</span></code></pre></div>
 </section>
 <section class="slide level1">
 
@@ -589,43 +509,43 @@ completamente nelle nostre mani!</p></li>
 </section>
 <section id="esempio-di-formato" class="slide level1">
 <h1>Esempio di formato</h1>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Declare a floating-point variable named &quot;clock&quot;</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span> clock(<span class="dv">150</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Declare a few new materials. Each of them includes a BRDF and a pigment</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># (the emitted radiance). We can split a definition over multiple lines</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># and indent them as we like</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>material sky_material(</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    diffuse(image(<span class="st">&quot;sky-dome.pfm&quot;</span>)),</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    uniform(<span class="op">&lt;</span><span class="fl">0.7</span>, <span class="fl">0.5</span>, <span class="dv">1</span><span class="op">&gt;</span>)</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>material ground_material(</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    diffuse(checkered(<span class="op">&lt;</span><span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">&gt;</span>,</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                      <span class="op">&lt;</span><span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span><span class="op">&gt;</span>, <span class="dv">4</span>)),</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    uniform(<span class="op">&lt;</span><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span><span class="op">&gt;</span>)</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>material sphere_material(</span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    specular(uniform(<span class="op">&lt;</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">&gt;</span>)),</span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    uniform(<span class="op">&lt;</span><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span><span class="op">&gt;</span>)</span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a few shapes</span></span>
-<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>sphere(sphere_material, translation([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]))</span>
-<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="co"># The language is flexible enough to permit spaces before &quot;(&quot;</span></span>
-<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>plane (ground_material, identity)</span>
-<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we use the &quot;clock&quot; variable! Note that vectors are notated using</span></span>
-<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="co"># square brackets ([]) instead of angular brackets (&lt;&gt;) like colors, and</span></span>
-<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="co"># that we can compose transformations through the &quot;*&quot; operator</span></span>
-<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>plane(sky_material, translation([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>]) <span class="op">*</span> rotation_y(clock))</span>
-<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a perspective camera, with some transformation, aspect</span></span>
-<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ratio, and eye-screen distance</span></span>
-<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>camera(perspective, rotation_z(<span class="dv">30</span>) <span class="op">*</span> translation([<span class="op">-</span><span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">1</span>]), <span class="fl">1.0</span>, <span class="fl">1.0</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Declare a floating-point variable named &quot;clock&quot;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span> clock(<span class="dv">150</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Declare a few new materials. Each of them includes a BRDF and a pigment</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># (the emitted radiance). We can split a definition over multiple lines</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># and indent them as we like</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>material sky_material(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    diffuse(image(<span class="st">&quot;sky-dome.pfm&quot;</span>)),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    uniform(<span class="op">&lt;</span><span class="fl">0.7</span>, <span class="fl">0.5</span>, <span class="dv">1</span><span class="op">&gt;</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>material ground_material(</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    diffuse(checkered(<span class="op">&lt;</span><span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">&gt;</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                      <span class="op">&lt;</span><span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span><span class="op">&gt;</span>, <span class="dv">4</span>)),</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    uniform(<span class="op">&lt;</span><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span><span class="op">&gt;</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>material sphere_material(</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    specular(uniform(<span class="op">&lt;</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">&gt;</span>)),</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    uniform(<span class="op">&lt;</span><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span><span class="op">&gt;</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a few shapes</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>sphere(sphere_material, translation([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]))</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co"># The language is flexible enough to permit spaces before &quot;(&quot;</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>plane (ground_material, identity)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we use the &quot;clock&quot; variable! Note that vectors are notated using</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="co"># square brackets ([]) instead of angular brackets (&lt;&gt;) like colors, and</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="co"># that we can compose transformations through the &quot;*&quot; operator</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>plane(sky_material, translation([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>]) <span class="op">*</span> rotation_y(clock))</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a perspective camera, with some transformation, aspect</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ratio, and eye-screen distance</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>camera(perspective, rotation_z(<span class="dv">30</span>) <span class="op">*</span> translation([<span class="op">-</span><span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">1</span>]), <span class="fl">1.0</span>, <span class="fl">1.0</span>)</span></code></pre></div>
 </section>
 <section id="come-interpretare-il-formato" class="slide level1">
 <h1>Come interpretare il formato?</h1>
@@ -650,12 +570,12 @@ gradi.</p></li>
 <li><p>Il lavoro che ci aspetta è simile alla scrittura di un
 compilatore vero e proprio. Ad esempio, il comando <code>g++</code>
 legge in input file di testo fatti come il seguente:</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="at">const</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;The name of the program is &quot;</span> <span class="op">&lt;&lt;</span> argv<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="at">const</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;The name of the program is &quot;</span> <span class="op">&lt;&lt;</span> argv<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>e produce in output un file eseguibile che contiene la sequenza di
 istruzioni macchina corrispondenti a questo codice C++.</p></li>
 <li><p>Nel nostro caso il codice deve costruire in memoria una serie di
@@ -739,14 +659,14 @@ float clock(150)</code></pre></li>
 <li><p>Il risultato dell’analisi lessicale delle linee sopra è la
 produzione della lista di token seguente (da cui sono già rimossi spazi
 bianchi e commenti):</p>
-<div class="sourceCode" id="cb15"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>[</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    KeywordToken(TOKEN_FLOAT), <span class="co"># A &quot;keyword&quot;, because &quot;float&quot; is a reserved word</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    IdentifierToken(<span class="st">&quot;clock&quot;</span>),  <span class="co"># An &quot;identifier&quot; is a variable name</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    SymbolToken(<span class="st">&quot;(&quot;</span>),</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    LiteralNumberToken(<span class="fl">150.0</span>),</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    SymbolToken(<span class="st">&quot;)&quot;</span>),</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div></li>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>[</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    KeywordToken(TOKEN_FLOAT), <span class="co"># A &quot;keyword&quot;, because &quot;float&quot; is a reserved word</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    IdentifierToken(<span class="st">&quot;clock&quot;</span>),  <span class="co"># An &quot;identifier&quot; is a variable name</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    SymbolToken(<span class="st">&quot;(&quot;</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    LiteralNumberToken(<span class="fl">150.0</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    SymbolToken(<span class="st">&quot;)&quot;</span>),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div></li>
 </ul>
 </section>
 <section id="esempio-analisi-sintattica" class="slide level1">
@@ -765,12 +685,12 @@ oggetto</p></li>
 <ul>
 <li><p>L’analisi sintattica parte dalla sequenza di token prodotta
 dall’analisi lessicale:</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List of tokens for `float clock(150)`:</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>[</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    KeywordToken(TOKEN_FLOAT), IdentifierToken(<span class="st">&quot;clock&quot;</span>), SymbolToken(<span class="st">&quot;(&quot;</span>),</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    LiteralNumberToken(<span class="fl">150.0</span>), SymbolToken(<span class="st">&quot;)&quot;</span>),</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div></li>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List of tokens for `float clock(150)`:</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>[</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    KeywordToken(TOKEN_FLOAT), IdentifierToken(<span class="st">&quot;clock&quot;</span>), SymbolToken(<span class="st">&quot;(&quot;</span>),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    LiteralNumberToken(<span class="fl">150.0</span>), SymbolToken(<span class="st">&quot;)&quot;</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div></li>
 <li><p>L’analisi sintattica deve verificare che la sequenza di token sia
 corretta: se il primo token è la parola chiave <code>float</code>,
 allora significa che stiamo definendo una variabile floating-point. È
@@ -784,13 +704,13 @@ numerico racchiuso tra le parentesi.</p></li>
 <ul>
 <li><p>Prendendo spunto da questo esempio, considerate il seguente
 codice C++:</p>
-<div class="sourceCode" id="cb18"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="cf">if</span><span class="op">;</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;Enter a number: &quot;</span><span class="op">;</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cin<span class="op"> &gt;&gt;</span> <span class="cf">if</span><span class="op">;</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="cf">if</span> <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;The number is even</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="cf">if</span><span class="op">;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;Enter a number: &quot;</span><span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cin<span class="op"> &gt;&gt;</span> <span class="cf">if</span><span class="op">;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="cf">if</span> <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> <span class="st">&quot;The number is even</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span></code></pre></div></li>
 <li><p>Questo codice sopra è perfettamente comprensibile da un essere
 umano, ma il C++ lo vieta! (L’equivalente in Scheme sarebbe invece
 ok).</p></li>
@@ -834,13 +754,13 @@ secondo il loro tipo.</p></li>
 <li><p>Per motivi di efficienza, i lexer <em>non</em> restituiscono una
 lista di token, ma leggono i <em>token</em> uno alla volta,
 restituendoli man mano che li interpretano, e si usano quindi così:</p>
-<div class="sourceCode" id="cb20"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> read_token()</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> token.eof():</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    …</span></code></pre></div></li>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> read_token()</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> token.eof():</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    …</span></code></pre></div></li>
 </ul>
 </section>
 <section id="output-di-un-lexer" class="slide level1">
@@ -882,34 +802,34 @@ appunto: si costruisce quindi una gerarchia di classi.</p></li>
 </section>
 <section class="slide level1">
 
-<div class="sourceCode" id="cb21"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Token:</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A lexical token, used when parsing a scene file&quot;&quot;&quot;</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LiteralNumberToken(Token):</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A token containing a literal number&quot;&quot;&quot;</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, value: <span class="bu">float</span>):</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.value <span class="op">=</span> value</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">str</span>(<span class="va">self</span>.value)</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SymbolToken(Token):</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A token containing a symbol (e.g., a comma or a parenthesis)&quot;&quot;&quot;</span></span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, symbol: <span class="bu">str</span>):</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.symbol <span class="op">=</span> symbol</span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.symbol</span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Etc.</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Token:</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A lexical token, used when parsing a scene file&quot;&quot;&quot;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LiteralNumberToken(Token):</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A token containing a literal number&quot;&quot;&quot;</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, value: <span class="bu">float</span>):</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.value <span class="op">=</span> value</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">str</span>(<span class="va">self</span>.value)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SymbolToken(Token):</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A token containing a symbol (e.g., a comma or a parenthesis)&quot;&quot;&quot;</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, symbol: <span class="bu">str</span>):</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.symbol <span class="op">=</span> symbol</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.symbol</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Etc.</span></span></code></pre></div>
 </section>
 <section id="tokens-e-gerarchie-di-classi" class="slide level1">
 <h1><em>Tokens</em> e gerarchie di classi</h1>
@@ -938,11 +858,11 @@ Python e Julia sono <em>product types</em>, perché dal punto di vista
 formale sono un <strong>prodotto cartesiano</strong> tra
 insiemi.</p></li>
 <li><p>Consideriamo questa definizione in C++:</p>
-<div class="sourceCode" id="cb22"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> MyStruct <span class="op">{</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span> <span class="co">// Can be any value in the set I of all 32-bit signed integers</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span> <span class="co">// Can be any value in the set B of all 8-bit unsigned bytes</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> MyStruct <span class="op">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span> <span class="co">// Can be any value in the set I of all 32-bit signed integers</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span> <span class="co">// Can be any value in the set B of all 8-bit unsigned bytes</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
 <p>Se l’insieme di tutti i valori assumibili da un <code>int32_t</code>
 e da un <code>uint8_t</code> è denominato rispettivamente con <span
 class="math inline">I</span> e <span class="math inline">B</span>,
@@ -959,11 +879,11 @@ class="math inline">\cup</span>) anziché il prodotto
 cartesiano.</p></li>
 <li><p>Nel nostro esempio C++, i <em>sum types</em> si definiscono
 tramite la parola chiave <code>union</code> (molto appropriata!):</p>
-<div class="sourceCode" id="cb23"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> MyUnion <span class="op">{</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> MyUnion <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
 <li><p>In questo caso, la variabile <code>MyUnion var</code> è tale per
 cui <span class="math inline">\mathtt{var} \in I \cup B</span>: puo
 essere un <code>int32_t</code> <strong>oppure</strong> un
@@ -972,30 +892,30 @@ essere un <code>int32_t</code> <strong>oppure</strong> un
 </section>
 <section id="uso-di-union" class="slide level1">
 <h1>Uso di <code>union</code></h1>
-<div class="sourceCode" id="cb24"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> MyUnion <span class="op">{</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span>   <span class="co">// This takes 4 bytes</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span>   <span class="co">// This takes 1 byte</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">/* The size in memory of MyUnion is *not* 4+1 == 5, but it is max(4, 1) == 4</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"> * &lt;-------a-------&gt;</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co"> * +---+---+---+---+</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co"> * | 1 | 2 | 3 | 4 |</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co"> * +---+---+---+---+</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co"> * &lt;-c-&gt;</span></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    MyUnion s<span class="op">;</span></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    s<span class="op">.</span>a <span class="op">=</span> <span class="dv">10</span><span class="op">;</span>   <span class="co">// Integer</span></span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> s<span class="op">.</span>a <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>    s<span class="op">.</span>c <span class="op">=</span> <span class="dv">24</span><span class="bu">U</span><span class="op">;</span>  <span class="co">// This replaces the value 10 (signed) with the value (24) unsigned</span></span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> s<span class="op">.</span>c <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
-<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> MyUnion <span class="op">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span>   <span class="co">// This takes 4 bytes</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span>   <span class="co">// This takes 1 byte</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">/* The size in memory of MyUnion is *not* 4+1 == 5, but it is max(4, 1) == 4</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"> * &lt;-------a-------&gt;</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"> * +---+---+---+---+</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co"> * | 1 | 2 | 3 | 4 |</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co"> * +---+---+---+---+</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co"> * &lt;-c-&gt;</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    MyUnion s<span class="op">;</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    s<span class="op">.</span>a <span class="op">=</span> <span class="dv">10</span><span class="op">;</span>   <span class="co">// Integer</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> s<span class="op">.</span>a <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    s<span class="op">.</span>c <span class="op">=</span> <span class="dv">24</span><span class="bu">U</span><span class="op">;</span>  <span class="co">// This replaces the value 10 (signed) with the value (24) unsigned</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> s<span class="op">.</span>c <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="sum-types-e-token" class="slide level1">
 <h1><em>Sum types</em> e <em>token</em></h1>
@@ -1026,19 +946,19 @@ contemporaneamente. È quindi logicamente un <em>sum type</em>!</p></li>
 <ul>
 <li><p>Una <code>union</code> racchiude all’interno di un’unica
 definizione tutti i tipi:</p>
-<div class="sourceCode" id="cb25"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> MyUnion <span class="op">{</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span>   <span class="co">// This takes 4 bytes</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span>   <span class="co">// This takes 1 byte</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> MyUnion <span class="op">{</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span>   <span class="co">// This takes 4 bytes</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span>   <span class="co">// This takes 1 byte</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
 <li><p>È più semplice da leggere e da capire di una gerarchia di
 classi:</p>
-<div class="sourceCode" id="cb26"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Value <span class="op">{};</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Int32Value <span class="op">:</span> Value <span class="op">{</span> <span class="dt">int32_t</span> a<span class="op">;</span> <span class="op">};</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> UInt8Value <span class="op">:</span> Value <span class="op">{</span> <span class="dt">uint8_t</span> c<span class="op">;</span> <span class="op">};</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Value <span class="op">{};</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Int32Value <span class="op">:</span> Value <span class="op">{</span> <span class="dt">int32_t</span> a<span class="op">;</span> <span class="op">};</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> UInt8Value <span class="op">:</span> Value <span class="op">{</span> <span class="dt">uint8_t</span> c<span class="op">;</span> <span class="op">};</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="sum-types-e-token-1" class="slide level1">
@@ -1046,65 +966,65 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb26-1"><a href="#
 <ul>
 <li><p>Potremmo allora definire il tipo <code>Token</code> in C++ nel
 modo seguente:</p>
-<div class="sourceCode" id="cb27"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> Token <span class="op">{</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>   <span class="dt">float</span> number<span class="op">;</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>   <span class="bu">std::</span>string<span class="op"> </span>string<span class="op">;</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> Token <span class="op">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>   <span class="dt">float</span> number<span class="op">;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>   <span class="bu">std::</span>string<span class="op"> </span>string<span class="op">;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
 <li><p>Una volta assegnato un valore però non c’è modo di capire a quale
 dei due insiemi <span class="math inline">N</span> o <span
 class="math inline">S</span> appartenga l’elemento (le
 <code>union</code> non sono <em>tagged</em>):</p>
-<div class="sourceCode" id="cb28"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>Token my_token<span class="op">;</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>my_token <span class="op">=</span> read_token<span class="op">(</span>stream<span class="op">);</span>  <span class="co">// Read the next token from the stream</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>my_token<span class="op">.???)</span>   <span class="co">// How can I check if it is a &quot;literal number&quot; or a &quot;string&quot;?</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>Token my_token<span class="op">;</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>my_token <span class="op">=</span> read_token<span class="op">(</span>stream<span class="op">);</span>  <span class="co">// Read the next token from the stream</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>my_token<span class="op">.???)</span>   <span class="co">// How can I check if it is a &quot;literal number&quot; or a &quot;string&quot;?</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="tagged-unions-in-cc" class="slide level1">
 <h1><em>Tagged unions</em> in C/C++</h1>
-<div class="sourceCode" id="cb29"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Kinds of tokens. Here we just consider two types</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> <span class="kw">class</span> TokenType <span class="op">{</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  LITERAL_NUMBER<span class="op">,</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  LITERAL_STRING<span class="op">,</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">// The sum type.</span></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> TokenValue <span class="op">{</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> number<span class="op">;</span></span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>string<span class="op"> </span>string<span class="op">;</span></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// The default constructor and destructor are *mandatory* for unions to</span></span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">// be used in structs/classes</span></span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>  TokenValue<span class="op">()</span> <span class="op">:</span> number<span class="op">(</span><span class="fl">0.0</span><span class="op">)</span> <span class="op">{}</span></span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">~</span>TokenValue<span class="op">()</span> <span class="op">{}</span></span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a><span class="co">// Here is the &quot;Token&quot; type! We just combine `TokenType` and `TokenValue`</span></span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a><span class="co">// in a product type, which implements a proper &quot;tagged union&quot;.</span></span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Token <span class="op">{</span></span>
-<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>  TokenType type<span class="op">;</span>    <span class="co">// The &quot;tag&quot;</span></span>
-<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>  TokenValue value<span class="op">;</span>  <span class="co">// The &quot;union&quot;</span></span>
-<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>  Token<span class="op">()</span> <span class="op">:</span> type<span class="op">(</span>TokenType<span class="op">::</span>LITERAL_NUMBER<span class="op">)</span> <span class="op">{}</span></span>
-<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> assign_number<span class="op">(</span><span class="dt">float</span> val<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>      type <span class="op">=</span> TokenType<span class="op">::</span>LITERAL_NUMBER<span class="op">;</span></span>
-<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>      value<span class="op">.</span>number <span class="op">=</span> val<span class="op">;</span></span>
-<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> assign_string<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span> s<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a>      type <span class="op">=</span> TokenType<span class="op">::</span>LITERAL_STRING<span class="op">;</span></span>
-<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a>      value<span class="op">.</span>string <span class="op">=</span> s<span class="op">;</span></span>
-<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a>  Token my_token<span class="op">;</span></span>
-<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a>  token<span class="op">.</span>assign_number<span class="op">(</span><span class="fl">150.0</span><span class="op">);</span></span>
-<span id="cb29-40"><a href="#cb29-40" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Kinds of tokens. Here we just consider two types</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> <span class="kw">class</span> TokenType <span class="op">{</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  LITERAL_NUMBER<span class="op">,</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  LITERAL_STRING<span class="op">,</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co">// The sum type.</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> TokenValue <span class="op">{</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> number<span class="op">;</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>string<span class="op"> </span>string<span class="op">;</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// The default constructor and destructor are *mandatory* for unions to</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">// be used in structs/classes</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  TokenValue<span class="op">()</span> <span class="op">:</span> number<span class="op">(</span><span class="fl">0.0</span><span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">~</span>TokenValue<span class="op">()</span> <span class="op">{}</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="co">// Here is the &quot;Token&quot; type! We just combine `TokenType` and `TokenValue`</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="co">// in a product type, which implements a proper &quot;tagged union&quot;.</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Token <span class="op">{</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>  TokenType type<span class="op">;</span>    <span class="co">// The &quot;tag&quot;</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>  TokenValue value<span class="op">;</span>  <span class="co">// The &quot;union&quot;</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>  Token<span class="op">()</span> <span class="op">:</span> type<span class="op">(</span>TokenType<span class="op">::</span>LITERAL_NUMBER<span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> assign_number<span class="op">(</span><span class="dt">float</span> val<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>      type <span class="op">=</span> TokenType<span class="op">::</span>LITERAL_NUMBER<span class="op">;</span></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>      value<span class="op">.</span>number <span class="op">=</span> val<span class="op">;</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>  <span class="dt">void</span> assign_string<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span> s<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>      type <span class="op">=</span> TokenType<span class="op">::</span>LITERAL_STRING<span class="op">;</span></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>      value<span class="op">.</span>string <span class="op">=</span> s<span class="op">;</span></span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>  Token my_token<span class="op">;</span></span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>  token<span class="op">.</span>assign_number<span class="op">(</span><span class="fl">150.0</span><span class="op">);</span></span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="tagged-unions-in-cc-1" class="slide level1">
 <h1><em>Tagged unions</em> in C/C++</h1>
@@ -1135,23 +1055,23 @@ variants</em></a></p></li>
 </section>
 <section id="esaustività-dei-controlli" class="slide level1">
 <h1>Esaustività dei controlli</h1>
-<div class="sourceCode" id="cb30"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Let&#39;s assume we have four token types</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> <span class="kw">class</span> TokenType <span class="op">{</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  LITERAL_NUMBER<span class="op">,</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  LITERAL_STRING<span class="op">,</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  SYMBOL<span class="op">,</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  KEYWORD<span class="op">,</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_token<span class="op">(</span><span class="at">const</span> Token <span class="op">&amp;</span> t<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span><span class="op">(</span>t<span class="op">.</span>type<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TokenType<span class="op">::</span>LITERAL_NUMBER<span class="op">:</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> t<span class="op">.</span>value<span class="op">.</span>number<span class="op">;</span> <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TokenType<span class="op">::</span>LITERAL_STRING<span class="op">:</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> t<span class="op">.</span>value<span class="op">.</span>string<span class="op">;</span> <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TokenType<span class="op">::</span>SYMBOL<span class="op">:</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> t<span class="op">.</span>value<span class="op">.</span>symbol<span class="op">;</span> <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Oops! I forgot TokenType::KEYWORD, but not every compiler will produce a warning!</span></span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Let&#39;s assume we have four token types</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> <span class="kw">class</span> TokenType <span class="op">{</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  LITERAL_NUMBER<span class="op">,</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  LITERAL_STRING<span class="op">,</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  SYMBOL<span class="op">,</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  KEYWORD<span class="op">,</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_token<span class="op">(</span><span class="at">const</span> Token <span class="op">&amp;</span> t<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span><span class="op">(</span>t<span class="op">.</span>type<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TokenType<span class="op">::</span>LITERAL_NUMBER<span class="op">:</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> t<span class="op">.</span>value<span class="op">.</span>number<span class="op">;</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TokenType<span class="op">::</span>LITERAL_STRING<span class="op">:</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> t<span class="op">.</span>value<span class="op">.</span>string<span class="op">;</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> TokenType<span class="op">::</span>SYMBOL<span class="op">:</span> <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> t<span class="op">.</span>value<span class="op">.</span>symbol<span class="op">;</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Oops! I forgot TokenType::KEYWORD, but not every compiler will produce a warning!</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="sum-types-fatti-bene" class="slide level1">
 <h1><em>Sum types</em> fatti bene</h1>
@@ -1168,12 +1088,12 @@ etc., consentono di definire <em>sum types</em> in maniera molto più
 naturale.</p></li>
 <li><p>Ad esempio, ecco come definire il tipo <code>Token</code> in
 OCaml:</p>
-<div class="sourceCode" id="cb31"><pre
-class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> token = </span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    | LiteralNumber <span class="kw">of</span> <span class="dt">float</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    | LiteralString <span class="kw">of</span> <span class="dt">string</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    | Symbol <span class="kw">of</span> <span class="dt">char</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    | Keyword <span class="kw">of</span> <span class="dt">string</span>;</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> token = </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    | LiteralNumber <span class="kw">of</span> <span class="dt">float</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    | LiteralString <span class="kw">of</span> <span class="dt">string</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    | Symbol <span class="kw">of</span> <span class="dt">char</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    | Keyword <span class="kw">of</span> <span class="dt">string</span>;</span></code></pre></div>
 <p>Non c’è bisogno di definire una lunga gerarchia di classi!</p></li>
 </ul>
 </section>
@@ -1183,15 +1103,15 @@ class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb31-1"><a hre
 <li><p>In linguaggi come <a href="https://ocaml.org/">OCaml</a> e <a
 href="https://fsharpforfunandprofit.com/posts/discriminated-unions/">F#</a>,
 i controlli sui <em>sum types</em> sono esaustivi:</p>
-<div class="sourceCode" id="cb32"><pre
-class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> print_token tok = <span class="kw">match</span> tok <span class="kw">with</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>   | LiteralNumber a -&gt; <span class="dt">print_float</span> a</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>   | LiteralString s -&gt; <span class="dt">print_string</span> s</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>   | Symbol c -&gt; <span class="dt">print_char</span> c;</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co">(* Warning 8 [partial-match]: this pattern-matching is not exhaustive.</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co"> * Here is an example of a case that is not matched:</span></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co"> * Keyword _                                         *)</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> print_token tok = <span class="kw">match</span> tok <span class="kw">with</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>   | LiteralNumber a -&gt; <span class="dt">print_float</span> a</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>   | LiteralString s -&gt; <span class="dt">print_string</span> s</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>   | Symbol c -&gt; <span class="dt">print_char</span> c;</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">(* Warning 8 [partial-match]: this pattern-matching is not exhaustive.</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"> * Here is an example of a case that is not matched:</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"> * Keyword _                                         *)</span></span></code></pre></div></li>
 <li><p>I <em>sum types</em> rappresentano gerarchie di classi «rigide»,
 dove c’è un solo antenato (<code>token</code>) e le classi figlie sono
 note a priori: proprio il caso dei token! Linguaggi come <a
@@ -1231,8 +1151,8 @@ cui si imbatte.</p></li>
 <li><p>Ad esempio, la lettura del carattere <code>"</code> (doppio
 apice) in un codice C++ indica che si sta definendo una stringa di
 caratteri:</p>
-<div class="sourceCode" id="cb33"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="at">const</span> <span class="dt">char</span> <span class="op">*</span> message <span class="op">=</span> <span class="st">&quot;error, you must specify an input file&quot;</span><span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="at">const</span> <span class="dt">char</span> <span class="op">*</span> message <span class="op">=</span> <span class="st">&quot;error, you must specify an input file&quot;</span><span class="op">;</span></span></code></pre></div>
 <p>Quando i lexer usati nei compilatori C++ trovano un carattere
 <code>"</code>, essi continuano a leggere caratteri fino al successivo
 <code>"</code>, che segnala la fine della stringa, e restituiscono un
@@ -1262,10 +1182,10 @@ ammesse dal linguaggio.</p></li>
 <li><p>In un <em>lexer</em> (e vedremo che è così anche nei
 <em>parser</em>) è comoda la possibilità di far sì che un carattere
 appena letto dal file sia «dis-letto», ossia venga rimesso a posto:</p>
-<div class="sourceCode" id="cb34"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> read_char(<span class="bu">file</span>)   <span class="co"># Suppose that this returns the character &quot;X&quot;</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>unread_char(<span class="bu">file</span>, c)  <span class="co"># Puts the &quot;X&quot; back into the file</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> read_char(<span class="bu">file</span>)   <span class="co"># Read the &quot;X&quot; again</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> read_char(<span class="bu">file</span>)   <span class="co"># Suppose that this returns the character &quot;X&quot;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>unread_char(<span class="bu">file</span>, c)  <span class="co"># Puts the &quot;X&quot; back into the file</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> read_char(<span class="bu">file</span>)   <span class="co"># Read the &quot;X&quot; again</span></span></code></pre></div>
 <p>Questo equivale a leggere un carattere in anticipo (operazione di
 <em>look ahead</em>), e permette di scrivere il <em>lexer</em> in
 maniera più elegante.</p></li>
@@ -1279,8 +1199,8 @@ restituisce alla successiva chiamata a <code>read_char</code>.</p></li>
 <ul>
 <li><p>Perché <code>unread_char</code> è utile in un <em>lexer</em>?
 Vediamo per esempio questa espressione Python:</p>
-<div class="sourceCode" id="cb35"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="dv">15</span><span class="op">+</span><span class="dv">4</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="dv">15</span><span class="op">+</span><span class="dv">4</span></span></code></pre></div>
 <p>che è composta dei <em>token</em> <code>15</code> (<em>numeric
 literal</em>), <code>+</code> (<em>symbol</em>), <code>4</code>
 (<em>numeric literal</em>).</p></li>
@@ -1295,29 +1215,29 @@ token successivo.</p></li>
 </section>
 <section id="lettura-di-un-numeric-literal" class="slide level1">
 <h1>Lettura di un <em>numeric literal</em></h1>
-<div class="sourceCode" id="cb36"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>ch <span class="op">=</span> read_char()</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Very basic and ugly code! It does not interpret negative numbers!</span></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ch.isdigit():</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We have a numeric literal here!</span></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    literal <span class="op">=</span> ch</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">=</span> read_char()  <span class="co"># Read the next character</span></span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch.isdigit():</span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>            <span class="co"># We have got the next digit for the current numeric literal</span></span>
-<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>            literal <span class="op">+=</span> ch</span>
-<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>            <span class="co"># The number has ended, so put the last character back in place</span></span>
-<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.unread_char(ch)</span>
-<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
-<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> <span class="bu">int</span>(literal)</span>
-<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
-<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;invalid numeric literal </span><span class="sc">{</span>literal<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ch <span class="op">=</span> read_char()</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Very basic and ugly code! It does not interpret negative numbers!</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ch.isdigit():</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We have a numeric literal here!</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    literal <span class="op">=</span> ch</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">=</span> read_char()  <span class="co"># Read the next character</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch.isdigit():</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>            <span class="co"># We have got the next digit for the current numeric literal</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>            literal <span class="op">+=</span> ch</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>            <span class="co"># The number has ended, so put the last character back in place</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.unread_char(ch)</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> <span class="bu">int</span>(literal)</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;invalid numeric literal </span><span class="sc">{</span>literal<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
 </section>
     </div>
   </div>

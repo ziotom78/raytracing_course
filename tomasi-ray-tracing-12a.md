@@ -65,31 +65,6 @@ Implementare un compilatore è un'attività didatticamente molto utile:
 
 Nel nostro caso dovremo definire un DSL e implementare un compilatore per esso. Il nostro sarà un approccio con *molta* pratica e quel tanto che basta di teoria.
 
-# Esempi di DSL
-
-# SQL
-
--   SQL (*Structured Query Language*) è un linguaggio usato per creare/modificare/consultare tabelle di dati salvate in database:
-
-    ```sql
-    CREATE TABLE measurement (time text, sensor text, value real, flags number);
-    INSERT INTO measurement VALUES ('2021-06-06', 'LKS-0001', 1.73, 0);
-    INSERT INTO measurement VALUES ('2021-06-07', 'LKS-0001', 1.46, 1);
-    SELECT time, value FROM measurement WHERE sensor = 'LKS-0001' AND value > 1.50;
-    ```
-    
-    (Anche se SQL è pensato per gestire tabelle, c'è gente che l'ha usato per [scrivere un raytracer](https://www.pouet.net/prod.php?which=83222)…)
-
--   La libreria [sqlite3](https://www.sqlite.org/index.html) implementa un interprete SQL e un formato di dati, consentendo di salvare/leggere questi database da file. È una delle librerie più usate al mondo, ed è usata in Linux, Mac OS X, Android e iOS.
-
--   È una libreria invocabile da [C/C++](https://www.sqlite.org/cintro.html), [Python](https://docs.python.org/3/library/sqlite3.html), [C\#](https://zetcode.com/csharp/sqlite/), etc., ma il comando consente di operare direttamente dalla linea di comando!
-
----
-
-<asciinema-player src="cast/sqlite3-example-89x25.cast" cols="89" rows="25" font-size="medium"></asciinema-player>
-
-Immaginate come implementare questi comandi in linguaggi come C++ o Python. Ovviamente SQL è molto più immediato!
-
 
 # DSL in linguaggi *general-purpose*
 
@@ -97,55 +72,6 @@ Immaginate come implementare questi comandi in linguaggi come C++ o Python. Ovvi
 
 -   È talmente comune che alcuni linguaggi *general-purpose* prevedono la possibilità di definire DSL **al proprio interno**: sono i linguaggi cosiddetti «metaprogrammabili» (es., [Common LISP](https://gigamonkeys.com/book/practical-a-simple-database.html), [Julia](https://docs.julialang.org/en/v1/manual/metaprogramming/), [Kotlin](https://www.raywenderlich.com/2780058-domain-specific-languages-in-kotlin-getting-started), [Nim](https://forum.nim-lang.org/t/2380)…).
 
--   Vediamo un paio di esempi.
-
-# [ACME.jl](https://github.com/HSU-ANT/ACME.jl)
-
-```julia
-using ACME
-
-circ = @circuit begin
-    j_in = voltagesource()
-    r1 = resistor(1e3)
-    c1 = capacitor(47e-9)
-    d1 = diode(is=1e-15)
-    d2 = diode(is=1.8e-15)
-    j_out = voltageprobe()
-    j_in[+] ⟷ r1[1]
-    j_in[-] ⟷ gnd
-    r1[2] ⟷ c1[1] ⟷ d1[+] ⟷ d2[-] ⟷ j_out[+]
-    gnd ⟷ c1[2] ⟷ d1[-] ⟷ d2[+] ⟷ j_out[-]
-end
-```
-
-La libreria ACME (Julia) definisce una serie di operatori come `⟷` e `[±]` per descrivere un circuito elettrico con una sintassi semplice da leggere.
-
-# [Karax](https://github.com/karaxnim/karax) (Nim)
-
-```nim
-import karax / [karaxdsl, vdom]
-
-const places = @["boston", "cleveland", "los angeles", "new orleans"]
-
-proc render*(): string =
-  let vnode = buildHtml(tdiv(class = "mt-3")):
-    h1: text "My Web Page"
-    p: text "Hello world"
-    ul:
-      for place in places:
-        li: text place
-    dl:
-      dt: text "Can I use Karax for client side single page apps?"
-      dd: text "Yes"
-
-      dt: text "Can I use Karax for server side HTML rendering?"
-      dd: text "Yes"
-  result = $vnode
-
-echo render()
-```
-
-La libreria [karax/karaxdsl](https://github.com/karaxnim/karax) estende il linguaggio [Nim](https://nim-lang.org/) con comandi come `h1` e `p`, in modo che si possano definire gli elementi che definiscono una pagina HTML.
 
 # Linguaggi per la definizione di scene 3D
 
