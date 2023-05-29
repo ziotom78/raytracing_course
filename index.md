@@ -24,6 +24,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 |         9 | [8 Maggio 2023](tomasi-ray-tracing-09a.html) | — |
 |        10 | [15 Maggio 2023](tomasi-ray-tracing-10a.html) | [17 Maggio 2023](tomasi-ray-tracing-10b.html) |
 |        11 | [22 Maggio 2023](tomasi-ray-tracing-11a.html) | [24 Maggio 2023](tomasi-ray-tracing-11b.html) |
+|        12 | [29 Maggio 2023](tomasi-ray-tracing-12a.html) | [31 Maggio 2023](tomasi-ray-tracing-12b.html) |
 
 # Argomenti per l'esame (A.A. 2022/2023)
 
@@ -65,13 +66,11 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Direzioni casuali](tomasi-ray-tracing-10a.html#/direzioni-casuali): distribuzione uniforme e distribuzione di Phong
 -   [BRDF e pigmenti](tomasi-ray-tracing-10a.html#/brdf)
 -   [Generazione di numeri pseudo-casuali](tomasi-ray-tracing-10b.html#/generazione-di-numeri-pseudocasuali)
-<!--
 -   [*Importance sampling* nell'equazione del rendering](tomasi-ray-tracing-11a.html#/integrale-mc)
 -   [Roulette russa](tomasi-ray-tracing-11a.html#/roulette-russa)
 -   [*Antialiasing*](tomasi-ray-tracing-11a.html#/aliasing-e-antialiasing)
 -   [Test della fornace](tomasi-ray-tracing-11b.html#/test-1)
 -   [Terminologia nella teoria dei compilatori](tomasi-ray-tracing-12a.html#/terminologia): lessico, sintassi, semantica, *token*, [*look-ahead*](tomasi-ray-tracing-12a.html#/tornare-indietro)
--->
 
 
 ## Parti non richieste per l'esame
@@ -89,7 +88,6 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [*Axis-aligned boxes*](tomasi-ray-tracing-09a.html#/axis-aligned-boxes)
 -   [Triangoli e *mesh* di triangoli](tomasi-ray-tracing-09a.html#/triangoli-e-mesh-di-triangoli)
 -   [Generatore PCG](tomasi-ray-tracing-10b.html#/lalgoritmo-pcg)
-<!--
 -   [Basi ortonormali arbitrarie](tomasi-ray-tracing-11a.html#/basi-ortonormali-onb-arbitrarie)
 -   [BRDF riflettente](tomasi-ray-tracing-11a.html#/brdf-riflettente)
 -   [Algoritmi di illuminazione diretta](tomasi-ray-tracing-11a.html#/illuminazione-diretta)
@@ -99,6 +97,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Esempi di DSL: [SQL](tomasi-ray-tracing-12a.html#/sql), Julia, Nim…
 -   [Panoramica sulla definizione di scene](tomasi-ray-tracing-12a.html#/linguaggi-per-la-definizione-di-scene-3d): DKBTrace, POV-Ray, YafaRay
 -   [Gerarchie di classi e *sum types*](tomasi-ray-tracing-12a.html#/tokens-e-gerarchie-di-classi)
+<!--
 -   [Gestione degli errori di un compilatore](tomasi-ray-tracing-13a.html#/gestione-degli-errori-di-un-compilatore)
 -   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/linguaggi-a-confronto)
 -   [Testing di compilatori](tomasi-ray-tracing-13a.html#/testing-di-compilatori)
