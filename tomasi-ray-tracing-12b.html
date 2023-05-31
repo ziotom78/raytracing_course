@@ -25,6 +25,7 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -377,18 +378,18 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a hr
 <h1>Definizione di <code>Token</code></h1>
 <ul>
 <li><p>Decidete se volete usare una gerarchia di classi o una <em>tagged
-union</em> (<em>sum type</em>); siccome Python non ammette queste
-ultime, in <a
-href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146">pytracer</a>
-ho usato una gerarchia di classi.</p></li>
+union</em> (<em>sum type</em>); in Python è obbligatoria la seconda, e
+quindi ho usato questa in <a
+href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146">pytracer</a>.</p></li>
 <li><p>I tipi di token da definire sono i seguenti:</p>
 <ol>
 <li><em>Keyword</em>: usate un tipo enumerativo (<code>enum</code> in <a
 href="https://nim-lang.org/docs/manual.html#types-enumeration-types">Nim</a>,
 <a href="https://dlang.org/spec/enum.html">D</a>, <a
-href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum">C#</a>
-e <a
+href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum">C#</a>,
+<a
 href="https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html">Rust</a>,
+<a href="https://www.w3schools.com/java/java_enums.asp">Java</a>,
 <code>enum class</code> in <a
 href="https://kotlinlang.org/docs/enum-classes.html">Kotlin</a>), perché
 renderà il <em>parser</em> più efficiente;</li>
@@ -434,16 +435,17 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a hr
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> ch <span class="kw">in</span> WHITESPACE <span class="kw">or</span> ch <span class="op">==</span> <span class="st">&quot;#&quot;</span>:</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;#&quot;</span>:</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            <span class="co"># It&#39;s a comment! Keep reading until the end of the line (include the case &quot;&quot;, the end-of-file)</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="va">self</span>.read_char() <span class="kw">not</span> <span class="kw">in</span> [<span class="st">&quot;</span><span class="ch">\r</span><span class="st">&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="st">&quot;&quot;</span>]:</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                <span class="cf">pass</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;&quot;</span>:</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Put the non-whitespace character back</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.unread_char(ch)</span></code></pre></div></li>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            <span class="co"># It&#39;s a comment! Keep reading until the end of the line</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            <span class="co"># (include the case &quot;&quot;, the end-of-file)</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="va">self</span>.read_char() <span class="kw">not</span> <span class="kw">in</span> [<span class="st">&quot;</span><span class="ch">\r</span><span class="st">&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="st">&quot;&quot;</span>]:</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                <span class="cf">pass</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;&quot;</span>:</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Put the non-whitespace character back</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.unread_char(ch)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="leggere-un-token" class="slide level1">

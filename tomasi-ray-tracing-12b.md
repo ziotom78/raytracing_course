@@ -225,11 +225,11 @@ class InputStream:
 
 # Definizione di `Token`
 
--   Decidete se volete usare una gerarchia di classi o una *tagged union* (*sum type*); siccome Python non ammette queste ultime, in [pytracer](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146) ho usato una gerarchia di classi.
+-   Decidete se volete usare una gerarchia di classi o una *tagged union* (*sum type*); in Python è obbligatoria la seconda, e quindi ho usato questa in [pytracer](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146).
 
 -   I tipi di token da definire sono i seguenti:
 
-    #.  *Keyword*: usate un tipo enumerativo (`enum` in [Nim](https://nim-lang.org/docs/manual.html#types-enumeration-types), [D](https://dlang.org/spec/enum.html), [C\#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum) e [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), `enum class` in [Kotlin](https://kotlinlang.org/docs/enum-classes.html)), perché renderà il *parser* più efficiente;
+    #.  *Keyword*: usate un tipo enumerativo (`enum` in [Nim](https://nim-lang.org/docs/manual.html#types-enumeration-types), [D](https://dlang.org/spec/enum.html), [C\#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum), [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), [Java](https://www.w3schools.com/java/java_enums.asp), `enum class` in [Kotlin](https://kotlinlang.org/docs/enum-classes.html)), perché renderà il *parser* più efficiente;
     #.  *Identificatore*: è una stringa;
     #.  *Literal string*: è nuovamente una stringa;
     #.  *Literal number*: un valore floating-point;
@@ -260,7 +260,8 @@ class InputStream:
         ch = self.read_char()
         while ch in WHITESPACE or ch == "#":
             if ch == "#":
-                # It's a comment! Keep reading until the end of the line (include the case "", the end-of-file)
+                # It's a comment! Keep reading until the end of the line
+                # (include the case "", the end-of-file)
                 while self.read_char() not in ["\r", "\n", ""]:
                     pass
 
