@@ -97,6 +97,9 @@ def parse_color(stream: InputStream) -> Color:
 
 ```python
 def parse_pigment(stream: InputStream) -> Pigment:
+    # Examples: uniform(<0.7, 0.5, 1>)
+    #           checkered(<0.3, 0.5, 0.1>, <0.1, 0.2, 0.5>, 4)
+    #           image("bitmap.pfm")
     keyword = expect_keywords(stream, [
         KeywordEnum.UNIFORM, 
         KeywordEnum.CHECKERED, 
@@ -105,12 +108,10 @@ def parse_pigment(stream: InputStream) -> Pigment:
 
     expect_symbol(stream, "(")
     if keyword == KeywordEnum.UNIFORM:
-        # Example: "uniform(<0.7, 0.5, 1>)"
         color = parse_color(stream)
         
         result = UniformPigment(color=color)
     elif keyword == KeywordEnum.CHECKERED:
-        # Example: "checkered(<0.3, 0.5, 0.1>, <0.1, 0.2, 0.5>, 4)"
         color1 = parse_color(stream)
         
         expect_symbol(stream, ",")
@@ -357,7 +358,7 @@ vector ::= "[" number "," number "," number "]"
 
 # Linguaggi a confronto
 
-# Velocità di un compilatore
+# Complessità di un compilatore
 
 -   La produzione di *liste* di errori anziché di un solo errore alla volta è importante soprattutto in quei casi in cui il compilatore è molto lento da eseguire. Questo è il caso del C++ e di Rust.
 
@@ -425,7 +426,7 @@ vector ::= "[" number "," number "," number "]"
     let x:    foo::Foo<Bar>     =     foo::Foo::<Bar>();
     ```
 
-# Esempio: dichiarazioni di variabili
+# Esempio: variabili
 
 -   Nel linguaggio Pascal le variabili si elencano dentro una clausola
     `var`. Il nome della variabile viene per primo ed è chiaramente
@@ -516,19 +517,19 @@ vector ::= "[" number "," number "," number "]"
 
 # Le abilità più importanti
 
--   Scrivere test, test, test e ancora test: ogni funzionalità deve avere un test automatico che ne verifichi la consistenza!
+-   Il codice va scritto poco alla volta, verificando con test ogni nuova *feature*: non si scrive tutto un programma da cima a fondo senza mai provarlo o compilarlo!
 
--   Progettate funzioni e classi in modo che siano facili da testare (es., passare in input *stream* anziché nomi di file) e automatizzare i test mediante *CI builds*.
+-   Automatizzate i test mediante *CI builds*.
 
--   Usare sistemi di controllo versione per monitorare i cambiamenti.
+-   Usate sistemi di controllo versione per monitorare i cambiamenti.
 
--   Essere ordinati nell'uso di *issues*, *pull requests*, file `CHANGELOG`, etc.
+-   Siate ordinati nell'uso di *issues*, *pull requests*, file `CHANGELOG`, etc.
 
--   Decidere sin da subito quale licenza usare per rilasciare il proprio codice.
+-   Decidete sin da subito quale licenza usare per rilasciare il proprio codice.
 
--   Documentare il proprio lavoro (`README`, docstrings…)
+-   Documentate il proprio lavoro (`README`, docstrings…)
 
--   Imparare a usare una IDE!
+-   Imparate a usare una IDE appropriata!
 
 
 # Codici di simulazione
