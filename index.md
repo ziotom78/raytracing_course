@@ -25,6 +25,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 |        10 | [15 Maggio 2023](tomasi-ray-tracing-10a.html) | [17 Maggio 2023](tomasi-ray-tracing-10b.html) |
 |        11 | [22 Maggio 2023](tomasi-ray-tracing-11a.html) | [24 Maggio 2023](tomasi-ray-tracing-11b.html) |
 |        12 | [29 Maggio 2023](tomasi-ray-tracing-12a.html) | [31 Maggio 2023](tomasi-ray-tracing-12b.html) |
+|        13 | [5 Giugno 2023](tomasi-ray-tracing-13a.html) | [7 Giugno 2023](tomasi-ray-tracing-13b.html) |
 
 # Argomenti per l'esame (A.A. 2022/2023)
 
@@ -97,9 +98,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Esempi di DSL: [SQL](tomasi-ray-tracing-12a.html#/sql), Julia, Nim…
 -   [Panoramica sulla definizione di scene](tomasi-ray-tracing-12a.html#/linguaggi-per-la-definizione-di-scene-3d): DKBTrace, POV-Ray, YafaRay
 -   [Gerarchie di classi e *sum types*](tomasi-ray-tracing-12a.html#/tokens-e-gerarchie-di-classi)
-<!--
 -   [Gestione degli errori di un compilatore](tomasi-ray-tracing-13a.html#/gestione-degli-errori-di-un-compilatore)
 -   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/linguaggi-a-confronto)
 -   [Testing di compilatori](tomasi-ray-tracing-13a.html#/testing-di-compilatori)
 -   [Generazione automatica di compilatori](tomasi-ray-tracing-13a.html#/generazione-automatica-di-compilatori)
--->
