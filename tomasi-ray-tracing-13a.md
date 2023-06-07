@@ -396,7 +396,15 @@ vector ::= "[" number "," number "," number "]"
     ```
     
     Ma a livello di sintassi, il termine `>` rende tutto complicato!
-    
+
+
+# Una testimonianza importante
+
+> I've become somewhat infamous about wanting to keep the language [Rust] LL(1) but the fact is that today one can't parse Rust very easily, much less pretty-print (thus auto-format) it, and this is an actual (and fairly frequent) source of problems. It's easier to work with than C++, but that's fairly faint praise. I lost almost every argument about this, from the **angle brackets for type parameters** [emphasis added] to the pattern-binding ambiguity to the semicolon and brace rules to ... ugh I don't even want to get into it. The grammar is not what I wanted. Sorry.
+
+<p style="text-align:right">[Graydon Hoare](https://graydon2.dreamwidth.org/307291.html), creatore del linguaggio Rust.</p>
+
+
 # Soluzioni al problema (1/2)
 
 -   Quando sono stati introdotti i *template* in C++, è stata una [pessima](https://keleshev.com/parsing-ambiguity-type-argument-v-less-than) [scelta](https://stackoverflow.com/questions/7304699/what-are-all-the-syntax-problems-introduced-by-the-usage-of-angle-brackets-in-c) usare come simboli `<` e `>`, perché (1) erano già usati come operatori di confronto, e (2) esistevano già gli operatori `<<` e `>>`.
