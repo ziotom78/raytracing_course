@@ -215,9 +215,9 @@ class InputStream:
     #.  `pfm2png`, per applicare il *tone mapping* a immagini HDR;
     #.  `demo`, per generare l'immagine dimostrativa.
     
--   Oggi dovete rinominare il comando `demo` in `render`, e fare in modo che accetti un file da linea di comando.
+-   Oggi dovete aggiungere il comando `render`, e fare in modo che accetti un file da linea di comando.
 
--   È ovviamente un'ottima idea aggiungere una cartella `examples` nel vostro repository, in cui aggiungere una immagine dimostrativa (o più di una!).
+-   È ovviamente un'ottima idea aggiungere una cartella `examples` nel vostro repository, in cui aggiungere una immagine dimostrativa (o più di una!). In questo caso potreste anche decidere di togliere il comando `demo`, se volete.
 
 # Animazioni
 
@@ -239,7 +239,7 @@ class InputStream:
     
 # Sovrascrivere variabili
     
--   Per semplificare l'esecuzione all'utente, questo tipo di definizioni può **sovrascrivere** definizioni già esistenti nel file di input (`examples/demo.txt` in quest'esempio).
+-   Per semplificare l'esecuzione all'utente, è permesso **sovrascrivere** la definizione di una variabile come `clock`, se questa è già esistente nel file di input (`examples/demo.txt` in quest'esempio).
 
 -   In altre parole, il file con la scena può contenere al suo interno la definizione della variabile `clock`:
 
@@ -247,7 +247,7 @@ class InputStream:
     float clock(150.0)
     ```
     
-    In presenza di `--declare-float=clock:0.0`, il valore 150 viene ignorato e il valore 0 viene usato al suo posto. Ma se non si passa questo argomento da linea di comando, la scena resta comunque leggibile.
+    In presenza di `--declare-float=clock:0.0`, il valore 150 viene ignorato e il valore 0 viene usato al suo posto. Ma se non si passa questo argomento da linea di comando, la scena resta comunque interpretabile.
 
 # Sovrascrivere variabili
 
@@ -279,6 +279,7 @@ class InputStream:
 #.  Modificate `InputStream` in modo che consenta il *look-ahead* di token oltre che di caratteri;
 #.  Create le funzioni `expect_*` e `parse_*`;
 #.  Cambiate il comando `demo` nel `main` con `render`, e permettete di leggere la scena da file;
-#.  Aggiornate la documentazione e il `CHANGELOG`
+#.  Create una directory `examples` che contenga uno o più esempi di scene;
+#.  Aggiornate la documentazione e il `CHANGELOG`;
 #.  Rilasciate la versione `1.0`: congratulazioni!
 
