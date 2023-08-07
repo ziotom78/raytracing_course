@@ -479,6 +479,10 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 # Debugging
 
+---
+
+<iframe width="1008" height="566" src="https://www.youtube.com/embed/4gNYTqn3qRc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 # Introduzione al debugging
 
 -   Settimana scorsa avete corretto il vostro primo bug, che riguardava l'errato orientamento delle immagini salvate dal vostro codice.
