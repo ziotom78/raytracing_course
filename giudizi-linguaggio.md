@@ -11,6 +11,94 @@ monofont: "Noto Mono"
 colorlinks: true
 ...
 
+# A.A. 2022–2023
+
+## Matteo Picciolini (Java 2023-08-04)
+
+Per questo progetto ho scelto il linguaggio /Java/, considerando
+diversi fattori che lo rendono una scelta vantaggiosa. Innanzitutto,
+la vasta adozione e il supporto della comunità di sviluppatori hanno
+reso /Java/ una scelta ideale, poiché ho avuto accesso a numerose
+risorse, librerie e strumenti che hanno semplificato notevolmente il
+processo di sviluppo. Un altro elemento cruciale nella mia scelta è
+stata la maturità e la stabilità di /Java/. Il linguaggio ha una lunga
+storia nel mondo dello sviluppo software ed è ampiamente utilizzato in
+ambiente lavorativo, il che significa che ha subito molte
+ottimizzazioni nel corso degli anni. Questa scelta mi ha permesso di
+acquisire competenze e conoscenze utili anche per il futuro, poiché
+/Java/ è uno dei linguaggi più richiesti nel settore informatico.
+
+All'inizio del corso sono stato indeciso tra scegliere /Java/ o
+/Kotlin/, poiché quest'ultimo ha una sintassi più moderna e implementa
+alcune funzionalità avanzate che /Java/ non possiede. Ho comunque
+optato per /Java/ per le motivazioni che ho esplicitato sopra.
+Inoltre, visto che /Kotlin/ si basa sull'esperienza di /Java/, ho
+voluto imparare prima quest'ultimo per capirne a pieno anche le
+criticità. Segnalo, in questo senso, due gravi mancanze di /Java/ che
+ho subito in particolar modo durante il corso e che /Kotlin/, invece,
+risolve:
+
+1.  /Nullable Type/: durante il corso viene spiegato come utilizzare
+questi oggetti presenti ormai in tutti i moderni linguaggi di
+programmazione, che però /Java/ non implementa in modo nativo (per
+esempio, i tipi di dato primitivi int, double, boolean, … non
+possono essere nulli). Si tratta di un concetto che viene
+continuamente utilizzato all'interno di un ray-tracer per descrivere,
+per esempio, la mancata intersezione tra un raggio e una `Shape`.
+Trattare alcune classi del progetto (come la classe `HitRecord`) con
+un utilizzo limitato dei /Nullable Type/, o comunque prestando molta
+attenzione ai valori nulli per evitare errori a runtime (tipicamente
+`NullPointerExceptions`) ha richiesto uno sforzo non indifferente.
+/Kotlin/, al contrario, permette l'utilizzo di /Nullable Type/.
+
+2.  Overloading degli operatori: per un algoritmo di ray-tracing è
+necessario far eseguire al compilatore una grandissima quantità di
+operazioni, che diventano difficili da gestire se non è possibile fare
+l'overloading di operatori (come +, *, o -). /Kotlin/, al contrario di
+/Java/, implementa questa funzionalità.
+
+Inoltre, in generale, /Kotlin/ offre una scrittura decisamente più
+concisa e leggibile rispetto a /Java/, il che rende il codice più
+facile da scrivere e mantenere. D'altro canto, /Java/ è un linguaggio
+più maturo rispetto a /Kotlin/ e per questo gode di una grande
+community di sviluppatori.
+
+Qualora la scelta di qualcuno ricadesse sul linguaggio /Java/, segnalo
+alcuni accorgimenti fondamentali:
+
+1.  L'utilizzo di una IDE appropriata semplifica tantissimo il lavoro
+di scrittura del codice. Sotto consiglio del professore noi abbiamo
+utilizzato il software IntelliJ IDEA di JetBrains (gratuita per gli
+studenti UNIMI) che garantisce un ambiente di sviluppo costruito su
+misura per /Java/. Può essere utilizzato anche per /Kotlin/.
+
+2.  L'utilizzo di Gradle o di Maven per la compilazione già dalla
+prima lezione. Altri strumenti di build e gestione di dipendenze per
+progetti /Java/ (anche molto comodi, come il compilatore interno di
+IntelliJ) non sono supportati da GitHub per l'esecuzione di CI Builds,
+necessari per andare avanti nel corso. Se iniziate con il compilatore
+di IntelliJ, per utilizzare i CI Builds di GitHub sarete costretti a
+convertire il codice in modo che Gradle o Maven possano eseguire il
+build, e assicuriamo che non è un'esperienza piacevole.
+
+Personalmente, durante il corso la verbosità di /Java/ non mi è
+dispiaciuta, anche se, con il senno di poi, la compattezza di /Kotlin/
+in qualche modo incuriosisce… In ogni caso ritengo che la scelta di
+/Java/ sia stata ottima, anche perché, una volta costruite le librerie
+in /Java/, queste possono essere utilizzate anche da codice /Kotlin/,
+e questo mi permetterebbe di sfruttare questo lavoro se mai in futuro
+vorrò imparare ad utilizzare /Kotlin/. Al contrario, se le librerie
+fossero state scritte in /Kotlin/, non avrei potuto utilizzarle in un
+codice /Java/.
+
+Per questo, e per come mi sono divertito ad utilizzare ed imparare
+/Java/, mi sento di consigliarlo per questo corso a chi è interessato
+ad imparare a gestire un progetto /Java/. In generale, però, è da
+tener presente che, per le ragioni sopra esposte (/Nullable Type/ e
+Overloading degli operatori), /Java/ non è certamente il linguaggio
+migliore per questo tipo di progetto (forse /Kotlin/ lo è già di più,
+ma non saprei fino in fondo…).
+
 # A.A. 2021–2022
 
 ## Eleonora Gatti (Nim 2022-09-07)
