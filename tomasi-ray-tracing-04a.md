@@ -597,3 +597,11 @@ Copyleft
     2.   Il sito OSI ha un [link](https://www.gnu.org/licenses/gpl-3.0.en.html) al testo della licenza sul sito GNU. Da questo sito si può scaricare la versione in [testo ASCII](https://www.gnu.org/licenses/gpl-3.0.txt) o in [Markdown](https://www.gnu.org/licenses/gpl-3.0.md).
     3.   Scaricate la licenza e salvatela in `LICENSE` (se testo ASCII) o `LICENSE.md` (se Markdown) dentro il vostro repository.
     4.   La maggior parte delle licenze consiglia di riportare un breve testo in un commento in cima a *ogni* file sorgente del vostro repository.
+
+# Oltre il file `LICENSE.md`
+
+-   È comune la prassi di inserire anche una copia della licenza in ogni file sorgente: in questo modo chi copia un file da un repository nel proprio codice si “porta dietro” la licenza
+
+-   Non è però necessario (io non lo faccio mai…); alternativamente potete inserire un breve messaggio: *This file is released under a … license. See LICENSE.md*.
+
+-   Ci sono metodi più strutturati per riportare il tipo di licenza nel codice. Un esempio è [SPDX](https://spdx.dev/), uno standard seguito anche dal [kernel Linux](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2c1212de6) che permette di processare le informazioni sulle licenze in modo automatico (ad esempio da uno script)

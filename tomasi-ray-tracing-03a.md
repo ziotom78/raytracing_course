@@ -538,10 +538,10 @@ double Bisezione::CercaZeri(double a, double b) {
 
 -   Nelle macchine da scrivere c'erano due operazioni da fare per iniziare una nuova riga (vedi [questo video YouTube](https://www.youtube.com/watch?v=r97JHr13T98)):
 
-    1.   Spostarsi verso il bordo sinistro/destro del foglio (*carriage return*, movimento orizzontale);
+    1.   Tornare al bordo del foglio (*carriage return*, movimento orizzontale);
     2.   Muoversi alla riga successiva (*line feed*, movimento verticale).
     
--   Nella codifica ASCII c'è un carattere per ciascuno dei due comandi, che corrispondono a `13` (*carriage return*, indicato anche come `\r`) e `10` (*line feed*, indicato con `\n`). Questi erano indispensabili per i terminali *teletype*.
+-   Nella codifica ASCII c'è un carattere per ciascuno dei due comandi, che corrispondono a `13` (*carriage return*, indicato anche come `\r`) e `10` (*line feed*, indicato con `\n`). Questi erano indispensabili per i terminali *teletype*, e di solito `\r` precedeva `\n` perché richiedeva più tempo per essere eseguito.
 
 
 # Terminale teletype [ASR-33](http://bytecollector.com/asr_33.htm)

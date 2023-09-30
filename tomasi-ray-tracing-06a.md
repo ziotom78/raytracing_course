@@ -249,7 +249,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Per descrivere le rotazioni su un piano 2D è necessario usare (pseudo)vettori 3D, come il *momento angolare* $\vec{L} = \vec{r} \times \vec{p}$ o il *momento torcente* $\vec{\tau} = \vec r \times \vec F$.
 
--   Il prodotto vettoriale è definibile solo per $\mathbb{R}^3$, e ha unità strane: se $v$ e $w$ sono in metri, $v \times w$ è in m² pur essendo ancora una direzione (ossia un vettore).
+-   Il prodotto vettoriale è definibile solo per $\mathbb{R}^3$ (e $\mathbb{R}^7$, [a causa degli ottonioni](https://en.m.wikipedia.org/wiki/Seven-dimensional_cross_product)…), e ha unità strane: se $v$ e $w$ sono in metri, $v \times w$ è in m² pur essendo ancora una direzione.
 
 -   La rappresentazione delle rotazioni richiede algebre via via più complicate man mano che aumentano le dimensioni (numeri complessi, quaternioni…).
 
