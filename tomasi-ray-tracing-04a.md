@@ -521,7 +521,7 @@ $endif$
     **non** è autorizzato a compilare il vostro codice, né ad
     eseguirlo, etc. Dovete dare il vostro consenso esplicito!
 
--   Se non siete esperti in questioni legali, è meglio che non scriviate da voi questo file.
+-   Se non siete esperti in questioni legali, è meglio che non scriviate da voi questo file. (Altrimenti potreste [scrivere abomini](https://github.com/ErikMcClure/bad-licenses)!)
 
 -   Esistono molti tipi di licenze pronte per essere usate, e i file `LICENSE` sono solitamente prodotti tramite copia-e-incolla. Vediamo quindi quali licenze possono essere usate nel vostro lavoro.
 
