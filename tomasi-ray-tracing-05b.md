@@ -144,7 +144,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Uno di voi crei un nuovo pull request chiamato `geometry`, e gli altri invochino `git fetch` seguito da `git checkout geometry`.
 
--   Nel branch `geometry` implementate questi tipi (seguendo il [Capitolo 2](https://www.pbr-book.org/3ed-2018/Geometry_and_Transformations) di Pharr, Jakobs & Humphreys):
+-   Nel branch `geometry` implementate questi tipi (seguendo il [Capitolo 2](https://pbr-book.org/4ed/Geometry_and_Transformations.html) di Pharr, Jakobs & Humphreys):
 
     #.  `Vec` (un vettore tridimensionale).
     #.  `Point` (un punto tridimensionale).

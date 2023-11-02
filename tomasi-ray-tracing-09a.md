@@ -474,7 +474,7 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 -   Sovente le scene sono occupate quasi completamente da un oggetto complesso, e in questo caso gli AABB non portano alcun vantaggio (è il caso dell'immagine precedente).
 
--   È però possibile basarsi sull'idea degli AABB per implementare ottimizzazioni più sofisticate: quella più usata impiega i [KD-tree](https://en.wikipedia.org/wiki/K-d_tree). C'è una spiegazione dettagliata e un'implementazione in C++ nel [libro di Pharr, Jakob & Humphreys](https://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Kd-Tree_Accelerator).
+-   È però possibile basarsi sull'idea degli AABB per implementare ottimizzazioni più sofisticate: quelle più usate impiegano i [KD-tree](https://en.wikipedia.org/wiki/K-d_tree) e i [BVH](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy). Vedere il [libro di Pharr, Jakob & Humphreys](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration).
 
 
 # Debugging
