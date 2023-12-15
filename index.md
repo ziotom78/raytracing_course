@@ -9,6 +9,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [A comparison between a few programming languages](language-comparison.html)
 -   [Giudizi degli studenti sui linguaggi usati negli anni passati](giudizi-linguaggio.html)
 
+<!--
 # Lezioni
 
 | Settimana | Slides teoria                                   | Slides esercitazioni                            |
@@ -26,11 +27,13 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 |        11 | [22 Maggio 2023](tomasi-ray-tracing-11a.html) | [24 Maggio 2023](tomasi-ray-tracing-11b.html) |
 |        12 | [29 Maggio 2023](tomasi-ray-tracing-12a.html) | [31 Maggio 2023](tomasi-ray-tracing-12b.html) |
 |        13 | [5 Giugno 2023](tomasi-ray-tracing-13a.html) | [7 Giugno 2023](tomasi-ray-tracing-13b.html) |
+-->
 
-# Argomenti per l'esame (A.A. 2022/2023)
+# Argomenti per l'esame (A.A. 2023/2024)
 
 ## Parti richieste per l'esame
 
+<!--
 -   [Elementi di radiometria](tomasi-ray-tracing-01a.html#/radiometria): energia emessa, flusso, irradianza/emettenza
 -   [Radianza e sue proprietà](tomasi-ray-tracing-01a.html#/radianza)
 -   [Emettitori diffusi ideali](tomasi-ray-tracing-01a.html#/esempio)
@@ -73,8 +76,11 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Test della fornace](tomasi-ray-tracing-11b.html#/test-1)
 -   [Terminologia nella teoria dei compilatori](tomasi-ray-tracing-12a.html#/terminologia): lessico, sintassi, semantica, *token*, [*look-ahead*](tomasi-ray-tracing-12a.html#/tornare-indietro)
 
+-->
 
 ## Parti non richieste per l'esame
+
+<!--
 
 -   [Il formato PFM](tomasi-ray-tracing-02a.html#/file-pfm)
 -   [File di testo e file binari](tomasi-ray-tracing-03a.html#/file-binari-e-di-testo)
@@ -102,3 +108,6 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/linguaggi-a-confronto)
 -   [Testing di compilatori](tomasi-ray-tracing-13a.html#/testing-di-compilatori)
 -   [Generazione automatica di compilatori](tomasi-ray-tracing-13a.html#/generazione-automatica-di-compilatori)
+
+-->
+
