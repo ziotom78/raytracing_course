@@ -54,8 +54,8 @@ attenzione ai valori nulli per evitare errori a runtime (tipicamente
 2.  Overloading degli operatori: per un algoritmo di ray-tracing è
 necessario far eseguire al compilatore una grandissima quantità di
 operazioni, che diventano difficili da gestire se non è possibile fare
-l'overloading di operatori (come +, *, o -). *Kotlin*, al contrario di
-*Java*, implementa questa funzionalità.
+l'overloading di operatori (come `+`, `*`, o `-`). *Kotlin*, al
+contrario di *Java*, implementa questa funzionalità.
 
 Inoltre, in generale, *Kotlin* offre una scrittura decisamente più
 concisa e leggibile rispetto a *Java*, il che rende il codice più

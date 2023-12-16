@@ -15,6 +15,7 @@ colorlinks: true
 
 | Date       | Comment                                                     |
 |------------|-------------------------------------------------------------|
+| 2023-12-16 | Update a few links, correct typos                           |
 | 2023-05-23 | Add a few links, fix some typos                             |
 | 2023-01-02 | Show a more interesting comparison between Ruby and Crystal |
 | 2022-12-05 | Add a few more information about Pascal                     |
@@ -181,7 +182,7 @@ programs for the course can rely on more advanced libraries[^fmt] to
 format strings.
 
 [^fmt]: A good choice is [`fmt`](https://fmt.dev/latest/index.html),
-    which is going to be included in the next C++ standard (C++20).
+    which was included in the C++20 standard.
 
 The code above makes use of a few features of C++17, like the
 `[[nodiscard]]` and `constexpr` specifiers. Students willing to use
@@ -1051,7 +1052,7 @@ Here are a few advantages of C\# over C++:
     internet, etc. There is no need to write a `Makefile`!
 
     For instance, to create a new program in the directory `myprog`,
-    after you have installed .NET5, you just type the following:
+    after you have installed .NET, you just type the following:
 
     ```
     $ dotnet new console -o myprog
@@ -1092,7 +1093,7 @@ Here are a few advantages of C\# over C++:
     textbook is *C\# in a nutshell*, by Joseph and Ben Albahari
     (O'Reilly).
 
--   Microsoft has recently released the [.NET6
+-   Microsoft has recently released the [.NET8
     platform](https://dotnet.microsoft.com/), which is easy to install
     and shows impressive performance.
 
@@ -1378,7 +1379,7 @@ Here are a few advantages of D:
 
 There are a few disadvantages too:
 
--   The amount of on-line resources is far more scarce than for C++.
+-   The amount of on-line resources is far scarcer than for C++.
 
 -   The language has evolved a lot in the last years, and it is still
     evolving. Many pages in the documentation refers to old practices
@@ -1408,8 +1409,8 @@ A few good resources to learn D:
 
 -   *The D programming language*, by Andrei Alexandrescu (2010,
     Addison-Wesley), is unfortunately dated, as D evolved a lot in the
-    last ten years. Still, this is by far one of the best programming
-    book not only for the D language but in general: Alexandrescu is a
+    last years. Still, this is by far one of the best programming book
+    not only for the D language but in general: Alexandrescu is a
     gifted writer, and the book is full of intriguing examples.
     Despite its age, it is a real gem.
 
@@ -1960,28 +1961,25 @@ However, Julia has a few disadvantages:
     slow; one needs to fully understand Julia's execution model to
     take full advantage of its capabilities.
 
--   Apart from the [official
-    documentation](https://docs.julialang.org/en/v1/), a **great**
-    book to learn Julia is [Hands-On Design Patterns and Best
-    Practices with
-    Julia](https://www.packtpub.com/product/hands-on-design-patterns-and-best-practices-with-julia/9781838648817),
-    by Tom Kwong. It describes with many practical examples how to
-    properly use Julia, and what are the best strategies to optimize
-    code for maximum performance. Manning is going to publish a new
-    book about Julia, [Julia as a second
-    language](https://www.manning.com/books/julia-as-a-second-language)
-    by Erik Engheim, which is another great introduction to the
-    language; although it is not completed yet, you can already buy a
-    draft copy for a discounted price and receive the full copy once
-    it will be finished. (Disclaimer: I'm the technical reviewer of
-    this book.)
+Apart from the [official
+documentation](https://docs.julialang.org/en/v1/), a **great** book to
+learn Julia is [Hands-On Design Patterns and Best Practices with
+Julia](https://www.packtpub.com/product/hands-on-design-patterns-and-best-practices-with-julia/9781838648817),
+by Tom Kwong. It describes with many practical examples how to
+properly use Julia, and what are the best strategies to optimize code
+for maximum performance. Manning is going to publish a new book about
+Julia, [Julia as a second
+language](https://www.manning.com/books/julia-as-a-second-language) by
+Erik Engheim, which is another great introduction to the language;
+although it is not completed yet, you can already buy a draft copy for
+a discounted price and receive the full copy once it will be finished.
+(Disclaimer: I'm the technical reviewer of this book.)
     
-    There is also some good material on YouTube: [A Gentle
-    Introduction to
-    Julia](https://www.youtube.com/watch?v=4igzy3bGVkQ) (syntax) and
-    [Getting Started with Julia (for Experienced
-    Programmers)](https://www.youtube.com/watch?v=-lJK92bEKow)
-    (development environment) are two examples.
+There is also some good material on YouTube: [A Gentle Introduction to
+Julia](https://www.youtube.com/watch?v=4igzy3bGVkQ) (syntax) and
+[Getting Started with Julia (for Experienced
+Programmers)](https://www.youtube.com/watch?v=-lJK92bEKow)
+(development environment) are two examples.
 
 In the past, the satisfaction of students who picked Julia was quite
 high, but some of them lamented that it required substantial effort to
@@ -2007,12 +2005,11 @@ language.
     and the source code is available online:
     [github.com/immuni-app/immuni-app-android](https://github.com/immuni-app/immuni-app-android)
 
-Kotlin was developed by JetBrains, a Russian company that offers
-several advanced IDEs like CLion (C++ and Rust), PyCharm (Python),
-IntelliJ IDEA (Java/Kotlin), etc. For this reason, JetBrains provides
-an IDE with stellar support for Kotlin through IntelliJ IDEA. If you
-pick Kotlin, you should install IDEA and do not look for anything
-else.
+Kotlin was developed by JetBrains, a company that offers several
+advanced IDEs like CLion (C++ and Rust), PyCharm (Python), IntelliJ
+IDEA (Java/Kotlin), etc. For this reason, JetBrains provides an IDE
+with stellar support for Kotlin through IntelliJ IDEA. If you pick
+Kotlin, you should install IDEA and do not look for anything else.
 
 Here is a possible implementation for the `Vec` class, which
 implements a 3D vector:
@@ -2158,15 +2155,15 @@ classes in the standard library.
 
 Grasping data ownership, borrowing rules and lifetimes can be
 daunting; in fact, they are probably among the biggest difficulties in
-learning the language; fortunately, there are several good resources
-online that teach them. Unfortunately, you can't postpone learning
-these concepts, as all of them are fundamental to write any
-non-trivial codes. On the other side, Rust is being used more and
-more, and it seems that several people in the field of physics are
-interested in learning it. Moreover, it is a formidable pedagogical
-tool to learn how values are represented in memory: learning Rust
-makes you a better programmer, no matter if you abandon it and move to
-other languages!
+learning the language. There are several good resources online that
+teach these concepts, but unfortunately you can't postpone learning
+them, as all of them are fundamental to write any non-trivial codes.
+On the other side, the usage of Rust is more and more widespread, and
+it seems that several people in the field of physics are interested in
+learning it. Moreover, it is a formidable pedagogical tool to learn
+how values are represented in memory: learning Rust makes you a better
+programmer, no matter if you later abandon it and move to other
+languages!
 
 Because of its difficulty, I strongly suggest that only people that
 have already written some non-trivial code in Rust pick it for this
@@ -2270,11 +2267,13 @@ Here is a list of advantages for Rust:
 
 -   IDE support for Rust is excellent: [JetBrains
     CLion](https://www.jetbrains.com/clion/) with the Rust plugin is
-    perfect, and you should look nowhere else. [Visual Studio
-    Code](https://code.visualstudio.com/) is quite good if you install
-    a plugin that support the Language Server Protocol (LSP). However,
-    even with the best plugin, Visual Studio Code is still not as good
-    as CLion.
+    perfect (and JetBrains is working on a dedicated IDE,
+    [RustRover](https://www.jetbrains.com/rust/), which however has
+    not been released yet), and you should look nowhere else. [Visual
+    Studio Code](https://code.visualstudio.com/) is quite good if you
+    install a plugin that support the Language Server Protocol (LSP).
+    However, even with the best plugin, Visual Studio Code is still
+    not as good as CLion.
 
 -   Despite its young age, there are several online resources to learn
     the language. (This is probably related to the fact that it has
