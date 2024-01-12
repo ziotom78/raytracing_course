@@ -98,7 +98,7 @@ Assemblaggio della sonda nei laboratori ESA
 
 ![](./media/Vivian_Maier.jpg){height=520}
 
-Vivian Maier, Autoritratto (1926–2009)
+Vivian Maier (1926–2009), Autoritratto
 
 ---
 
@@ -169,7 +169,7 @@ Vivian Maier, Autoritratto (1926–2009)
     I, E = \frac{\mathrm{d}\Phi}{\mathrm{d}A},
     \qquad [I] = \mathrm{W}/\mathrm{m}^2.
     $$
-    
+
 -   Irradianza $I$: ciò che *cade* su $\mathrm{d}A$; emettenza $E$:
     ciò che *abbandona* $\mathrm{d}A$
 
@@ -215,7 +215,7 @@ Vivian Maier, Autoritratto (1926–2009)
     L(\mathbf{x} \rightarrow \Theta)
     $$
     per indicare la radianza che abbandona una superficie nel punto $\mathbf{x}$ verso la direzione $\Theta$, a cui è associato un angolo solido $\mathrm{d}\Omega$.
-    
+
 -   Analogamente,
     $$
     L(\mathbf{x} \leftarrow \Theta)
@@ -238,7 +238,7 @@ la **radianza spettrale** $L_\lambda(\mathbf{x} \leftrightarrow
 $[\lambda, \lambda + \mathrm{d}\lambda]$ e indichiamo con la stessa
 lettera $L$ per comodità. È definita tramite l'equazione
 $$
-L(\mathbf{x} \leftrightarrow \Theta) = 
+L(\mathbf{x} \leftrightarrow \Theta) =
 \int_0^\infty L_\lambda(\mathbf{x} \leftrightarrow \Theta)\,\mathrm{d}\lambda,
 \quad
 [L_\lambda(\mathbf{x} \leftrightarrow \Theta, \lambda)] = \mathrm{W}/\mathrm{m}^2/\mathrm{sr}/\mathrm{m}.
@@ -247,17 +247,17 @@ $$
 # Proprietà di $L$
 
 1.  Da $L$ si possono ricavare $\Phi$, $I$, $E$. Ad esempio:
-    
+
     $$
     \Phi = \iint_{A, \Omega} L(\mathbf{x} \rightarrow \Theta)\,
            \cos\theta\,\mathrm{d}\Omega\,\mathrm{d}A_\mathbf{x},
     $$
-    
+
 2.  In assenza di attenuazione vale che $L(\mathbf{x} \rightarrow
     \mathbf{y}) = L(\mathbf{x} \rightarrow \mathbf{z}),$ se
     $\mathbf{x}$, $\mathbf{y}$, $\mathbf{z}$ sono sulla stessa retta;
     vale lo stesso per $L_\lambda$, ovviamente.
-    
+
 3.  Il fatto che $L$ e $L_\lambda$ non dipendano dalla distanza
     implica che il colore percepito di un oggetto alla distanza $d$
     non cambia al variare di $d$.
@@ -285,7 +285,7 @@ Stimare $L$ e $L_\lambda$ insieme consente di produrre un'immagine a
 colori:
 
 ![](./media/moana-frame.jpg)
-    
+
 # Esempio
 
 Consideriamo un *emettitore diffuso*, un oggetto che emette luce
