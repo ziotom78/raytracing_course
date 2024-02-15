@@ -19,15 +19,18 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -125,6 +128,20 @@ href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
+<section id="premessa-iniziale" class="slide level1">
+<h1>Premessa iniziale</h1>
+<ul>
+<li><p>Ci vorrà un bel po’ prima di essere in grado di produrre immagini
+fotorealistiche! (Non volevate mica finire il corso in quindici giorni,
+no?!?)</p></li>
+<li><p>La ragione è che ci serve molta “infrastruttura” prima di poter
+affrontare direttamente la soluzione dell’equazione del
+rendering</p></li>
+<li><p>La generazione della prima immagine sarà un “triangolo nero”,
+come si dice nel gergo informatico; leggete la storia che c’è dietro <a
+href="https://rampantgames.com/blog/?p=7745">qui</a>.</p></li>
+</ul>
+</section>
 <section id="gestione-dei-colori" class="slide level1">
 <h1>Gestione dei colori</h1>
 </section>
@@ -674,8 +691,8 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="dv">15</span><span class="op">;</span>   <span class="co">// This is fast</span></span>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>b <span class="op">=</span> <span class="dv">16</span><span class="op">;</span>  <span class="co">// This is slower</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout<span class="op"> &lt;&lt;</span> a <span class="op">&lt;&lt;</span> <span class="st">&quot;, &quot;</span> <span class="op">&lt;&lt;</span> <span class="op">*</span>b <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> a <span class="op">&lt;&lt;</span> <span class="st">&quot;, &quot;</span> <span class="op">&lt;&lt;</span> <span class="op">*</span>b <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
 <span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Output:</span></span>
 <span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 15, 16</span></span>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
@@ -1108,8 +1125,8 @@ compatta. Ecco un esempio di implementazione di
 <code>HdrImage</code>:</p>
 <div class="sourceCode" id="cb38"><pre
 class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage<span class="op">(</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span>  // <span class="va">Using</span> &#39;<span class="va">val</span>&#39; <span class="va">ensures</span> <span class="va">that</span> <span class="va">we</span> <span class="va">cannot</span> <span class="va">change</span> <span class="va">the</span> <span class="va">width</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> // <span class="va">or</span> <span class="va">the</span> <span class="va">height</span> <span class="va">of</span> <span class="va">the</span> <span class="va">image</span> <span class="va">once</span> <span class="va">it</span>&#39;<span class="va">s</span> <span class="va">been</span> <span class="va">created</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span>  <span class="co">// Using &#39;val&#39; ensures that we cannot change the width</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> <span class="co">// or the height of the image once it&#39;s been created</span></span>
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">pixels</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">Color</span>&gt; <span class="op">=</span> Array<span class="op">(</span>width * height<span class="op">)</span> <span class="op">{</span> Color<span class="op">(</span><span class="fl">0.0F</span>, <span class="fl">0.0F</span>, <span class="fl">0.0F</span><span class="op">)</span> <span class="op">}</span></span>
 <span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Here are the methods for the class…</span></span>

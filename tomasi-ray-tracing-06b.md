@@ -114,7 +114,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     <center>
     ![](./media/gradle-github-action.png)
     </center>
-    
+
     Se usate Kotlin, Gradle scaricherà automaticamente quanto serve per supportarlo.
 
 -   Il processo proverà a compilare il codice e a eseguire *tutti* i test nel repository
@@ -128,5 +128,5 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     ```sh
     gradle wrapper --gradle-version 5.3
     ```
-    
+
     (Gradle supporta Kotlin solo a partire dalla versione 5.3).

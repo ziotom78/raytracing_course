@@ -1,9 +1,3 @@
----
-title: "Esercitazione 4"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # Scrittura di immagini LDR
 
 # Interfaccia del programma
@@ -197,7 +191,7 @@ Capita però spesso che si debbano usare librerie *incompatibili* nei propri cod
 -   Sinora abbiamo utilizzato la versione 2.4 per scrivere molti codici di analisi usati regolarmente
 
 -   È però uscita ormai da un po' la versione 3.0 di `oscilloscope`, che ha nuove funzionalità interessanti, ma non ho ancora fatto l'aggiornamento perché è incompatibile con la versione 2.4!
-    
+
 -   Sta per uscire la versione 4.0, ancora più potente, ma non supporterà più uno dei miei vecchi oscilloscopi, che mi è ancora indispensabile.
 
 
@@ -388,7 +382,7 @@ using (Stream fileStream = File.OpenWrite("output.png")) {
     -   In D, usate `dub add NAME`;
     -   In Nim, usate `nimble install NAME`;
     -   In Cargo, usate `cargo` seguendo [la guida](https://doc.rust-lang.org/cargo/guide/dependencies.html).
-    
+
 -   Queste librerie saranno installate come dipendenze del vostro programma, e non a livello di sistema.
 
 # Indicazioni per Java/Kotlin
@@ -443,10 +437,15 @@ fun main(args: Array<String>) {
     ```
 
     perché è compilato per la JVM.
-    
+
 -   Se usate Kotlin, bisogna passare da `gradlew`, che richiede che i parametri siano passati attraverso `--args`:
 
     ```text
     ./gradlew run --args="input_file.pfm 0.3 1.0 output_file.png"
     ```
 
+---
+title: "Esercitazione 4"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

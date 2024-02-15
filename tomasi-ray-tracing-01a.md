@@ -1,9 +1,3 @@
----
-title: "Lezione 1: l'equazione del rendering"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # Introduzione al corso
 
 # Indicazioni generali
@@ -408,3 +402,9 @@ L(x \rightarrow \Theta) = &L_e(x \rightarrow \Theta) +\\
 \end{aligned}
 $$
 dove $L_e$ è la radianza emessa dalla superficie nel punto $x$ lungo la direzione $\Theta$.
+
+---
+title: "Lezione 1: l'equazione del rendering"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

@@ -542,7 +542,7 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 -   A volte gli studenti terminano una delle due sommatorie troppo presto (dimenticano l'ultimo termine) oppure troppo tardi (aggiungono un termine in più).
 
--   Nel caso di $\int_0^\pi \sin x\,\mathrm{d}x$, l'ultimo termine della sommatoria è per $x \approx \pi$, quindi è molto piccolo: c'è una *infezione*, ma se si stampano poche cifre significative a video può essere che il risultato è arrotondato al valore giusto, e non ci sia quindi un *fallimento*.
+-   Nel caso di $\int_0^\pi \sin x\,\mathrm{d}x$, l'ultimo termine della sommatoria è per $x \approx \pi$, quindi è molto piccolo: c'è una *infezione*, ma se si stampano poche cifre significative a video può essere che il risultato sia arrotondato al valore giusto, e non ci sia quindi un *fallimento*.
 
 ---
 

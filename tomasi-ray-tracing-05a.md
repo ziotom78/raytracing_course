@@ -1,10 +1,3 @@
----
-title: "Lezione 5"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
-
 # Modellizzazione di oggetti
 
 # «Cornell box»
@@ -97,7 +90,7 @@ Ripassiamo quindi le proprietà di questi oggetti geometrici.
     \[
         \vec v(t) = \lim_{\delta t \rightarrow 0} \frac{P(t + \delta t) - P(t)}{\delta t}.
     \]
-    
+
 -   I vettori servono anche per definire le **basi** (sistemi di riferimento), quindi approfondiamoli.
 
 # Spazi vettoriali
@@ -732,3 +725,9 @@ Nel nostro codice implementeremo solo trasformazioni **invertibili**:
 1.  Se viene rilasciata una nuova «patch release» della versione che si sta usando (es., `1.3.4` → `1.3.5`), l'utente dovrebbe **sempre** aggiornare.
 2.  Se viene rilasciata una nuova «minor release» della versione che si sta usando (es., `1.3.4` → `1.4.0`), l'utente dovrebbe aggiornare solo se ritiene utili le nuove caratteristiche.
 3.  Una nuova «major release» (es., `1.3.4` → `2.0.0`) dovrebbe essere installata solo da nuovi utenti, o da chi è intenzionato ad aggiornare il modo in cui si usa il programma.
+
+---
+title: "Lezione 5"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

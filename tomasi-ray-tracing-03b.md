@@ -1,9 +1,3 @@
----
-title: "Esercitazione 3"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # Immagini PFM
 
 # Immagini PFM
@@ -50,7 +44,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     std::ofstream of{"file.pfm"};
     of << 1.3;
     ```
-    
+
     stampa i caratteri «`1`», «`.`» e «`3`» (codifica testuale!).
 
 -   Ogni linguaggio ha un approccio diverso; in Python ad esempio si usa [`struct`](https://docs.python.org/3/library/struct.html):
@@ -100,7 +94,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Potete pensare a un file binario come a un vettore (array monodimensionale) di byte, in sequenza uno dopo l'altro. (Un file testuale è lo stesso, ma nella codifica UTF è una sequenza di *code point* anziché byte, e la cosa è un po' più complicata).
 
--   I linguaggi moderni introducono una astrazione: lo *stream*. (Ahimé, non D, almeno nelle sue librerie standard!)
+-   I linguaggi moderni introducono una astrazione: lo *stream*. (Ahimé, D non ce l'ha [nelle sue librerie standard](https://github.com/dlang/phobos/pull/3631): usate [stream.d](https://github.com/dlang/undeaD/blob/master/src/undead/stream.d))
 
 -   Questa astrazione è molto utile nei test.
 
@@ -141,7 +135,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ```python
 def write_pfm(self, stream, endianness=Endianness.LITTLE_ENDIAN):
     endianness_str = "-1.0" if endianness == Endianness.LITTLE_ENDIAN else "1.0"
-        
+
     # The PFM header, as a Python string (UTF-8)
     header = f"PF\n{self.width} {self.height}\n{endianness_str}\n"
 
@@ -255,7 +249,7 @@ assert buf.getvalue() == reference_bytes
         HdrImage image(std::istream & stream);
         // ...
     };
-    
+
     std::ifstream myfile{"input.pfm"};
     HdrImage img{myfile};
     ```
@@ -264,7 +258,7 @@ assert buf.getvalue() == reference_bytes
 
     ```c++
     HdrImage read_pfm_file(std::istream & stream);
-    
+
     std::ifstream myfile{"input.pfm"};
     HdrImage img{read_pfm_file(myfile)};
     ```
@@ -286,27 +280,27 @@ assert buf.getvalue() == reference_bytes
 
     ```python
     import gzip
-    
+
     with gzip.open("image_file.pfm.gz", "rb") as inpf:
         read_pfm_file(inpf)
     ```
-    
+
 # Lettura diretta di file
-    
+
 -   È però innegabile che sarebbe comodo poter aprire un file anche così:
 
     ```python
     # How handy!
     image = read_pfm_file("image_file.pfm")
     ```
-    
+
 -   In C++ si potrebbe usare l'overloading per definire un nuovo costruttore:
 
     ```c++
     struct HdrImage {
         // Read a PFM file from a stream
         HdrImage(std::istream & stream);
-        
+
         // Open a PFM file and read the stream of bytes from it
         HdrImage(const std::string & file_name)
         : this(std::ifstream{file_name}) { }
@@ -324,7 +318,7 @@ assert buf.getvalue() == reference_bytes
     hdrimages.cpp: In constructor ‘HdrImage::HdrImage(const string&)’:
     hdrimages.cpp:33:58: error: cannot bind non-const lvalue reference of type ‘std::istream&’ {aka ‘std::basic_istream<char>&’} to an rvalue of type ‘std::basic_istream<char>’
     ```
-    
+
 -   Questo problema si ripropone anche in Kotlin e C\#, ed è dovuto alle limitazioni del cosiddetto *constructor chaining* nei linguaggi OOP
 
 -   In questi casi io preferisco sempre implementare un metodo separato, oppure addirittura una funzione esterna
@@ -359,14 +353,14 @@ public:
     ±1.0
     <binary data>
     ```
-    
+
 -   Il codice di lettura deve verificare le seguenti cose:
 
     1.  Il file deve iniziare con `PF\n`, altrimenti non è in formato PFM;
     2.  La seconda riga deve contenere due numeri interi positivi;
     3.  La terza riga deve contenere `1.0` o `-1.0`;
     4.  I dati binari devono essere in numero sufficiente; nello specifico, ci aspettiamo $\text{width} \times \text{height}$ pixel, ciascuno composto da tre componenti (R, G, B) da 4 byte ciascuno, per un totale di $12 \times \text{width} \times \text{height}$ byte.
-  
+
 # Gestione degli errori
 
 -   La funzione che legge un file deve essere in grado di gestire condizioni di errore.
@@ -383,7 +377,7 @@ public:
         def __init__(self, error_message: str):
             super().__init__(error_message)
     ```
-    
+
     Notate che accettiamo un messaggio d'errore, in modo da identificare meglio quale problema sia sorto nella lettura del file PFM.
 
 -   Se possibile, seguite la stessa strategia per il vostro linguaggio, avendo magari l'accortezza di derivare la classe da un'eccezione preesistente adatta al contesto (es., `System.FormatException` in C\#, `RuntimeException` in Kotlin).
@@ -402,7 +396,7 @@ public:
     except InvalidPfmFileFormat as err:
         printf(f"impossible to open file {filename}, reason: {err}")
     ```
-    
+
 -   In uno *unit test* che deve aprire un file contenente dati di riferimento, **non** cattureremmo l'eccezione in un `try … except`.
 
 # Altre eccezioni
@@ -430,7 +424,7 @@ public:
     2.  Una funzione che legga una sequenza di bytes fino a `\n` (se il linguaggio non l'ha già);
     3.  Una funzione che interpreti la riga con la dimensione dell'immagine;
     4.  Una funzione che determini la *endianness* del file.
-    
+
     Ognuna di queste funzioni può essere testata in uno [*unit test*](./tomasi-ray-tracing-03b-image-files.html#/test) dedicato.
 
 
@@ -472,7 +466,7 @@ def _read_float(stream, endianness=Endianness.LITTLE_ENDIAN):
 
     try:
         return struct.unpack(format_str, stream.read(4))[0]
-        
+
     except struct.error:
         # Capture the exception and convert it in a more appropriate type
         raise InvalidPfmFileFormat("impossible to read binary data from the file")
@@ -641,7 +635,7 @@ def test_pfm_read_wrong(self):
     -   decodifica del tipo di *endianness* da una stringa (`_parse_endianness`).
 
 2.  Implementate una funzione/metodo che legga un file PFM da uno *stream*.
-    
+
 3.  Implementate gli stessi test dell'esempio Python. Verificate anche che i vostri metodi segnalino correttamente gli errori.
 
 
@@ -655,7 +649,7 @@ def test_pfm_read_wrong(self):
 
     ```csharp
     var img = new HdrImage(7, 4);
-    
+
     using (Stream fileStream = File.OpenWrite("file.pfm"))
     {
         img.SavePfm(fileStream);
@@ -687,7 +681,7 @@ def test_pfm_read_wrong(self):
     ```csharp
     var header = Encoding.ASCII.GetBytes($"PF\n{width} {height}\n{endianness_value}\n");
     ```
-    
+
     dove `endianness_value` è un `double` che vale `1.0` oppure `-1.0`.
 
 
@@ -707,7 +701,7 @@ def test_pfm_read_wrong(self):
 # Uso di `enum` e `match`
 
 -   Per specificare la *endianness* c'è il tipo [`ByteOrder`](https://docs.rs/endianness/latest/endianness/enum.ByteOrder.html) nella crate [endianness](https://docs.rs/endianness/latest/endianness/)
-    
+
 -   Con gli `enum` abituatevi ad usare `match` anziché `if`:
 
     ```rust
@@ -725,8 +719,8 @@ def test_pfm_read_wrong(self):
 
     ```rust
     fn write_float<T: Write>(
-        dest: &mut T, 
-        value: f32, 
+        dest: &mut T,
+        value: f32,
         endianness: &Endianness,
     ) -> std::io::Result<usize> {
         match endianness {
@@ -825,7 +819,7 @@ def test_pfm_read_wrong(self):
 
 # Suggerimenti per Java/Kotlin
 
-   
+
 # File e stream
 
 -   Java e Kotlin hanno le classi [`InputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html) e [`OutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html) (in `java.io`) per rappresentare uno stream. Queste vanno bene per i prototipi di `writeFloat` e `writePfm`.
@@ -851,11 +845,11 @@ def test_pfm_read_wrong(self):
     ```kotlin
     fun writeFloatToStream(stream: OutputStream, value: Float, order: ByteOrder) {
         val bytes = ByteBuffer.allocate(4).putFloat(value).array() // Big endian
-        
+
         if (order == ByteOrder.LITTLE_ENDIAN) {
             bytes.reverse()
         }
-        
+
         stream.write(bytes)
     }
     ```
@@ -867,7 +861,7 @@ def test_pfm_read_wrong(self):
 -   Per inizializzare un array da valori esadecimali come quelli stampati da `xxd -i reference_be.pfm`, occorre una piccola funzione di aiuto:
 
     ```kotlin
-    fun byteArrayOfInts(vararg ints: Int) = 
+    fun byteArrayOfInts(vararg ints: Int) =
         ByteArray(ints.size) { pos -> ints[pos].toByte() }
     ```
 
@@ -897,3 +891,9 @@ Fate lo stesso con `reference_le.pfm`.
     val header = "PF\n$width $height\n$endianness\n"
     stream.write(header.toByteArray())
     ```
+
+---
+title: "Esercitazione 3"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

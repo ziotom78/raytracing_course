@@ -1,9 +1,3 @@
----
-title: "Lezione 4"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # Tone mapping
 
 ---
@@ -167,7 +161,7 @@ plot [0:10] [] x/(1 + x) lw 4
     }
     // One year from now: «Wait! but… why were we doing this calculation in the first place?»
     ```
-    
+
 -   Se in una funzione sentite che è necessario mettere molti commenti per renderla chiara, forse la funzione non è scritta bene
 
 # *Docstrings*
@@ -181,7 +175,7 @@ plot [0:10] [] x/(1 + x) lw 4
     ```c++
     // Plain comment in C++
     int f(int x)  { return 2 * x; }
-    
+
     /// Docstring: it begins with three '/' instead of two
     int g(int x)  { return 3 * x; }
     ```
@@ -370,15 +364,15 @@ Si possono associare più paragrafi a una lista puntata:
 
     -   Primo
     -   Secondo
-    
+
     Questo è un nuovo paragrafo del primo punto, seguito da codice C++:
-    
+
     ```c++
     int main() {
         return 0;
     }
     ```
-    
+
 -   Punto secondo
 ```
 
@@ -426,7 +420,7 @@ $if(latex-dir-rtl)$
 \PassOptionsToPackage{RTLdocument}{bidi}
 $endif$
     ```
-    
+
 -   Si può passare un template personalizzato con `--template=FILE`.
 
 
@@ -442,7 +436,7 @@ $endif$
     </center>
 
 # Markdown in GitHub (2/2)
-    
+
 -   GitHub interpreta il Markdown in modo lievemente diverso da Pandoc: consultate la guida [GitHub Flavored Markdown Spec](https://github.github.com/gfm/).
 -   In particolare, non potete usare ritorni a capo all'interno di un paragrafo: nel testo seguente, la poesia viene riprodotta da GitHub con i versi separati ciascuno nella propria riga:
 
@@ -452,7 +446,7 @@ $endif$
     Quello ch'io provo vi ridirò;
     è per me nuovo, capir nol so.
     ```
-    
+
     (`pandoc` lo trasformerebbe invece in un paragrafo unico).
 
 # Licenze d'uso
@@ -493,7 +487,7 @@ $endif$
     -   Ho il permesso di compilarlo?
     -   Ho il permesso di eseguirlo?
     -   Ho il permesso di pubblicare i risultati che ho ottenuto con questo programma?
-    
+
 # Il caso di GitHub
 
 -   Quando vi siete registrati su GitHub, avete dovuto sottoscrivere i suoi [*Terms of service*](https://docs.github.com/en/github/site-policy/github-terms-of-service).
@@ -605,3 +599,9 @@ Copyleft
 -   Non è però necessario (io non lo faccio mai…); alternativamente potete inserire un breve messaggio: *This file is released under a … license. See LICENSE.md*.
 
 -   Ci sono metodi più strutturati per riportare il tipo di licenza nel codice. Un esempio è [SPDX](https://spdx.dev/), uno standard seguito anche dal [kernel Linux](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2c1212de6) che permette di processare le informazioni sulle licenze in modo automatico (ad esempio da uno script)
+
+---
+title: "Lezione 4"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

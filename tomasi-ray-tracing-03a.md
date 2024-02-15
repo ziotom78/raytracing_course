@@ -1,9 +1,3 @@
----
-title: "Lezione 3"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # Gestione degli errori
 
 # Errori
@@ -22,7 +16,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
     #.   Errori di pertinenza del programmatore
     #.   Errori di pertinenza dell'utente
-    
+
 -   Un errore andrebbe gestito in funzione del suo tipo (primo o secondo).
 
 # Errori del programmatore
@@ -95,7 +89,7 @@ assert len(my_list) == len(sorted_list)
     1.  Stampare un messaggio di errore, il più chiaro possibile;
     2.  Chiedere all'utente di inserire di nuovo il dato scorretto;
     3.  In certi contesti il codice può decidere autonomamente come correggere l'errore.
-    
+
         Ad esempio, se si chiede un valore numerico entro un certo intervallo $[a, b]$ e il valore fornito è $x > b$, si può porre $x = b$ e continuare.
 
 # Correzione errori (1/2)
@@ -120,7 +114,7 @@ while True:
         print("Error, the second number cannot be zero!")
     else:
         break
-        
+
 print(f"The ratio {x} / {y} is {x / y}")
 ```
 
@@ -243,10 +237,10 @@ double Bisezione::CercaZeri(double a, double b) {
     ```python
     def f():
         raise Exception("Error!")
-        
+
     def g():
         f()
-        
+
     def h():
         try:      # You can capture exceptions within functions, of course
             g()   # g doesn't raise exceptions, but f() does
@@ -256,13 +250,13 @@ double Bisezione::CercaZeri(double a, double b) {
 
 # Prestazioni
 
--   Le eccezioni rallentano i programmi, perché il compilatore deve inserire all'interno delle funzioni del codice «nascosto» che possa gestirle
+-   Le eccezioni rallentano i programmi, perché il compilatore deve inserire del codice «nascosto» che possa gestirle (per approfondire: [Exceptionally Bad: The Misuse of Exceptions in C++ & How to Do Better - Peter Muldoon - CppCon 2023](https://www.youtube.com/watch?v=Oy-VTqz1_58))
 
--   Per questo alcuni linguaggi (Rust, Go…) non le supportano, e in altri si possono disabilitare all'interno di specifiche funzioni/metodi (`nothrow` in C++)
+-   Per questo alcuni linguaggi (Rust, Go…) non le supportano, e in altri si possono disabilitare all'interno di specifiche funzioni/metodi ([`noexcept`](https://en.cppreference.com/w/cpp/language/noexcept) in C++, [`nothrow`](https://dlang.org/spec/function.html#nothrow-functions) in D…)
 
 -   Nel programma che svilupperemo useremo il seguente approccio, che non causerà alcun rallentamento significativo:
 
-    -   Leggeremo input dall'utente, usando eccezioni per segnalare errori
+    -   Leggeremo input dall'utente, usando eccezioni per segnalare errori gravi
     -   Calcoleremo la soluzione dell'equazione del rendering, evitando eccezioni: questa sarà la parte più lenta
     -   Salveremo il risultato in un file, usando nuovamente le eccezioni
 
@@ -275,7 +269,7 @@ double Bisezione::CercaZeri(double a, double b) {
     ```c++
     double Bisezione::CercaZeri(double a, double b, bool & error) {
         error = false;
-        
+
         if (m_f->Eval(a) * m_f->Eval(b) > 0.0) {
             error = true;
             return 0.0;
@@ -308,7 +302,7 @@ double Bisezione::CercaZeri(double a, double b) {
 
 # Tipi `Result`
 
--   In Rust esiste il tipo `Result`, che è una versione più versatile del tipo `std::optional` in C++ (dal C++23 c'è [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected))
+-   In Rust esiste il tipo `Result`, che è una versione più versatile del tipo `std::optional` in C++ (ma dal C++23 c'è [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected), che è analogo a `Result`)
 
 -   Il tipo `Result` è un *sum type* (li vedremo meglio più avanti), e permette di associare un tipo `A` in caso di successo, e un tipo `B` in caso di fallimento:
 
@@ -317,11 +311,11 @@ double Bisezione::CercaZeri(double a, double b) {
         pub mass: f32;
         pub charge: f32;
     };
-    
+
     pub struct SomeError {
         pub message: String;
     };
-    
+
     fn compute_quantities(…) -> Result<OutputData, SomeError> { … }
     ```
 
@@ -340,9 +334,9 @@ double Bisezione::CercaZeri(double a, double b) {
     ```text
     $ xxd file.bin
     ```
-    
+
     (Su altri sistemi operativi potreste avere `hexdump` anziché `xxd`).
-    
+
 -   Salvare dati in un file binario vuol dire scrivere una sequenza di numeri binari sul disco fisso, memorizzati come byte.
 
 ---
@@ -361,13 +355,13 @@ double Bisezione::CercaZeri(double a, double b) {
     4  → 100
     …
     ```
-    
+
 -   Per un numero `dcba` espresso in una base $B$, il suo valore è
 
     $$
     \text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times B^3.
     $$
-    
+
     Quindi il valore binario `100` corrisponde a $0 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 4.$
 
 # Notazione esadecimale
@@ -379,7 +373,7 @@ double Bisezione::CercaZeri(double a, double b) {
     ```
     0 1 2 3 4 5 6 7 8 9 A B C D E F
     ```
-    
+
 -   La notazione esadecimale richiede 4 bit per cifra, perché $2^4 = 16$. Siccome un byte è composto da 8 bit, il valore di un byte è sempre codificabile usando solo due cifre esadecimali (`0xFF = 255`).
 
 -   In C/C++/D/Nim/Rust/Julia/C\#/Kotlin, i numeri esadecimali si scrivono con `0x`, ad es. `0x1F67 = 8039` (in alcuni linguaggi `0b` introduce un numero binario).
@@ -437,16 +431,16 @@ double Bisezione::CercaZeri(double a, double b) {
 
     ```c++
     #include <fstream>
-    
+
     int main() {
       int x{138};  // 138 < 256, so the value fits in *one* byte
       std::ofstream outf{"file.bin"};
       outf << x; // Ouch! It writes *three* bytes: '1', '3', '8'
     }
     ```
-    
+
     Il valore `138` è stato salvato in *forma testuale*! (Se invece usate il tipo `uint8_t`, il C++ userà l'usuale *forma binaria*)
-    
+
 -   Vediamo dunque ora i segreti della codifica testuale.
 
 
@@ -464,7 +458,7 @@ double Bisezione::CercaZeri(double a, double b) {
 
     1. Commenti nel codice;
     2. Scrittura di messaggi all'utente.
-    
+
 ---
 
 <center>
@@ -503,7 +497,7 @@ double Bisezione::CercaZeri(double a, double b) {
     -  La lettera `A` è codificata dal numero 65, `B` da 66, `C` da 67, etc.;
     -  La lettera `a` è codificata dal numero 97, `b` da 98, etc.;
     -  La cifra `0` è codificata dal numero 48, `1` da 49, etc.
-    
+
 -   Codificare una parola come `Casa` vuol dire rappresentare la parola con la sequenza di valori `67 97 115 97 = 0x43 0x61 0x73 0x61`.
 
 -   Questi codici numerici fanno parte dello standard ASCII, che specifica 128 caratteri. ([Qui c'è la tabella completa](https://garbagecollected.org/2017/01/31/four-column-ascii/), spiegata bene).
@@ -516,14 +510,14 @@ double Bisezione::CercaZeri(double a, double b) {
     Beauty - be not caused - It Is -
     Chase it, and it ceases -
     Chase it not, and it abides -
-    
+
     Overtake the Creases
-    
+
     In the Meadow - when the Wind
     Runs his fingers thro' it -
     Deity will see to it
     That You never do it -
-    
+
     (Emily Dickinson, 1863)
     ```
 
@@ -540,7 +534,7 @@ double Bisezione::CercaZeri(double a, double b) {
 
     1.   Tornare al bordo del foglio (*carriage return*, movimento orizzontale);
     2.   Muoversi alla riga successiva (*line feed*, movimento verticale).
-    
+
 -   Nella codifica ASCII c'è un carattere per ciascuno dei due comandi, che corrispondono a `13` (*carriage return*, indicato anche come `\r`) e `10` (*line feed*, indicato con `\n`). Questi erano indispensabili per i terminali *teletype*, e di solito `\r` precedeva `\n` perché richiedeva più tempo per essere eseguito.
 
 
@@ -564,7 +558,7 @@ Vedete questo [link](https://www.howtogeek.com/727213/what-are-teletypes-and-why
     | RISC OS            | `10 13` (`\n\r`) |
     | C64, macOS classic | `13` (`\r`)      |
     | Linux, Mac OS X    | `10` (`\n`)      |
-    
+
 -   Git si aspetta il formato Linux (`\n`) nei file aggiunti con `git add`
 
 # Oltre i 127 caratteri
@@ -596,14 +590,14 @@ Code page 866 (cirillica)
     ```
     c:\> echo è > file.txt
     ```
-    
+
     il primo byte del file avrebbe valore `130`, e verrebbe rappresentato correttamente:
-    
+
     ```
     c:\> type file.txt
     è
     ```
-    
+
 -   Copiando però il file su un computer con *code page* 866, si otterrebbe questo:
 
     ```
@@ -725,7 +719,7 @@ Code page 866 (cirillica)
 
 # Codifica UTF-16
 
--   Funziona come la codifica UTF-8, ma si usano coppie di byte ($8 + 8 = 16$). 
+-   Funziona come la codifica UTF-8, ma si usano coppie di byte ($8 + 8 = 16$).
 
 -   Un *code point* può essere codificato da due oppure quattro byte.
 
@@ -754,9 +748,9 @@ Code page 866 (cirillica)
 -   I file testuali hanno però alcuni vantaggi significativi:
 
     -   Sono più facili da leggere e da scrivere per un essere umano;
-    
+
     -   Non hanno problemi di *endianness*.
-    
+
 -   Inoltre, c'è un tipo importante di file di testo che avete già iniziato ad usare: i vostri **codici sorgente**!
 
 
@@ -769,7 +763,7 @@ Code page 866 (cirillica)
     ```python
     print("The calculation completed successfully! 😀")
     ```
-    
+
 -   Come assicurarsi che il codice sia interpretato correttamente?
 
 # Codifiche di file sorgente
@@ -791,8 +785,14 @@ Code page 866 (cirillica)
 
 -   Ma questo risolve solo parte del problema, perché se il programma stampa una stringa UTF-8, bisogna assicurarsi che il sistema su cui gira il programma riconosca UTF-8 (Vedi le schermate all'inizio di questa sezione).
 
--   Fate attenzione alla codifica usata dal vostro editor; di solito inserire la stringa `encoding: utf-8` in un commento all'inizio del file aiuta (è riconosciuta sia da Emacs che da Vim)
+-   Fate attenzione alla codifica usata dal vostro editor; alcuni editor permettono di specificare la codifica in un commento all'inizio del file (vedi il manuale di [Emacs](https://www.gnu.org/software/emacs/manual/html_node/emacs/Specify-Coding.html) e di [Vim](https://vim.fandom.com/wiki/How_to_make_fileencoding_work_in_the_modeline))
 
 -   Tutti gli editor moderni consentono comunque di cambiare la codifica di un file
 
 -   Da linea di comando potete usare il programma [`iconv`](https://en.wikipedia.org/wiki/Iconv)
+
+---
+title: "Lezione 3"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

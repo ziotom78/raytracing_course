@@ -1,18 +1,12 @@
----
-title: "Esercitazione 1: Git e GitHub"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # Varie
 
 -   Comunicate al docente la composizione del vostro gruppo e il linguaggio scelto
 
 -   Le esercitazioni terminano alle 12,30, ma se completate il lavoro in anticipo potete andare via prima
 
--   Dal prossimo lunedì, le lezioni di teoria inizieranno alle 14,45 anziché alle 14,30
+-   A meno di sorprese, dovremmo terminare la settimana del 3–7 giugno…
 
--   Come recuperare le lezioni del 24 aprile e del 1 maggio?
+-   …ma potremmo dover essere creativi, facendo qualche lezione di teoria il mercoledì
 
 # Gestione di progetti
 
@@ -99,7 +93,7 @@ Alla fine dell'esempio, il database del VCS contiene due istantanee:
     $ whoami
     tomasi
     ```
-        
+
 -   Usiamo la possibilità delle shell Unix di sostituire comandi usando `$()`:
 
     ```sh
@@ -464,17 +458,17 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
     $ dotnet new console
     $ dotnet new gitignore
     ```
-    
+
     Se usate Rider, assicuratevi di attivare Git quando create il progetto.
-    
+
 -   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
-    
+
 -   Compilate ed eseguite; da linea di comando, eseguite
 
     ```
     dotnet run
     ```
-    
+
     mentre sotto Rider premete Shift+F10.
 
 # Esempio
@@ -551,13 +545,13 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
     ```sh
     sudo apt install clang-format
     ```
-    
+
 -   Se scrivete questo:
 
     ```c++
     int sum  ( int a,int b    )    {    return a+ b;}
     ```
-    
+
     la formattazione automatica lo trasforma in
     ```c++
     int sum(int a, int b) { return a + b; }
@@ -570,7 +564,7 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
     ```sh
     clang-format -i main.cpp
     ```
-    
+
 -   Se **non** usate CLion, dovrebbe essere possibile configurare il vostro editor perché invochi automaticamente `clang-format` ad ogni salvataggio (ad esempio, per VSCode esiste il package [clang-format](https://github.com/xaverh/vscode-clang-format-provider))
 
 -   Questi strumenti sono utilissimi per mantenere il codice pulito e chiaro da leggere: cercate di configurarli al meglio e di imparare ad usarli sin da subito.
@@ -585,25 +579,25 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
     ```
     $ nimble init helloworld
     ```
-    
+
 -   D usa `dub`:
 
     ```
     $ dub init helloworld
     ```
-    
+
 -   Rust usa `cargo`:
 
     ```
     $ cargo init helloworld
     ```
-    
+
 -   Sia con Nim che con D dovrete rispondere ad alcune domande. Se possibile, scegliete il default (ma per Nim assicuratevi di specificare che volete un `binary`).
 
 # Suggerimenti (2/2)
 
 -   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
-    
+
 -   Per compilare ed eseguire, basta usare il comando `run` (identico in `nimble`, `dub` e `cargo`):
 
     ```
@@ -620,11 +614,11 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
 -   Creare un'applicazione Java oppure Kotlin in [IntelliJ IDEA](https://www.jetbrains.com/idea/):
 
     -   Se usate Kotlin, come *Build system* scegliete «Gradle Kotlin»
-    
+
     -   Come JDK, se non ne avete di installati scegliete il numero (versione) 17
-    
+
     -   Usate «Console application» come template
-    
+
 -   L'applicazione vuota stampa `Hello World!`: come prima cosa, cambiate il messaggio in `Hello, wold!`.
 
 -   Per usare Git, meglio fare affidamento al menu «VCS» di IntelliJ (gestisce automaticamente i `.gitignore`).
@@ -650,3 +644,9 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
 -   In Java e in Kotlin si fa grande affidamento sull'ambiente di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!
 
 -   Abituatevi a invocare regolarmente il comando «Code | Reformat code» (Ctrl+Alt+L).
+
+---
+title: "Esercitazione 1: Git e GitHub"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

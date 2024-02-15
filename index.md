@@ -1,9 +1,3 @@
----
-title: "Numerical tecniques for photorealistic image generation"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
-
 # Scelta del linguaggio
 
 -   [A comparison between a few programming languages](language-comparison.html)
@@ -14,19 +8,19 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 | Settimana | Slides teoria                                   | Slides esercitazioni                            |
 |----------:|:-----------------------------------------------:|:-----------------------------------------------:|
-|         1 | [27 Febbraio 2023](tomasi-ray-tracing-01a.html) | [29 Febbraio 2023](tomasi-ray-tracing-01b.html) |
-|         2 | [6 Marzo 2023](tomasi-ray-tracing-02a.html)     | [8 Marzo 2023](tomasi-ray-tracing-02b.html)     |
-|         3 | [13 Marzo 2023](tomasi-ray-tracing-03a.html)    | [15 Marzo 2023](tomasi-ray-tracing-03b.html)    |
-|         4 | [20 Marzo 2023](tomasi-ray-tracing-04a.html)    | [22 Marzo 2023](tomasi-ray-tracing-04b.html)    |
-|         5 | [27 Marzo 2023](tomasi-ray-tracing-05a.html) | [29 Marzo 2023](tomasi-ray-tracing-05b.html) |
-|         6 | [3 Aprile 2023](tomasi-ray-tracing-06a.html) | [5 Aprile 2023](tomasi-ray-tracing-06b.html) |
-|         7 | [17 Aprile 2023](tomasi-ray-tracing-07a.html) | [19 Aprile 2023](tomasi-ray-tracing-07b.html) |
-|         8 | [26 Aprile 2023](tomasi-ray-tracing-08a.html) | [3 Maggio 2023](tomasi-ray-tracing-08b.html) |
-|         9 | [8 Maggio 2023](tomasi-ray-tracing-09a.html) | — |
-|        10 | [15 Maggio 2023](tomasi-ray-tracing-10a.html) | [17 Maggio 2023](tomasi-ray-tracing-10b.html) |
-|        11 | [22 Maggio 2023](tomasi-ray-tracing-11a.html) | [24 Maggio 2023](tomasi-ray-tracing-11b.html) |
-|        12 | [29 Maggio 2023](tomasi-ray-tracing-12a.html) | [31 Maggio 2023](tomasi-ray-tracing-12b.html) |
-|        13 | [5 Giugno 2023](tomasi-ray-tracing-13a.html) | [7 Giugno 2023](tomasi-ray-tracing-13b.html) |
+|         1 | [26 Febbraio 2024](tomasi-ray-tracing-01a.html) | [28 Febbraio 2024](tomasi-ray-tracing-01b.html) |
+|         2 | [4 Marzo 2024](tomasi-ray-tracing-02a.html)     | [6 Marzo 2024](tomasi-ray-tracing-02b.html)     |
+|         3 | [11 Marzo 2024](tomasi-ray-tracing-03a.html)    | [13 Marzo 2024](tomasi-ray-tracing-03b.html)    |
+|         4 | [18 Marzo 2024](tomasi-ray-tracing-04a.html)    | [20 Marzo 2024](tomasi-ray-tracing-04b.html)    |
+|         5 | [25 Marzo 2024](tomasi-ray-tracing-05a.html) | [27 Marzo 2024](tomasi-ray-tracing-05b.html) |
+|         6 | [8 Aprile 2024](tomasi-ray-tracing-06a.html) | [10 Aprile 2024](tomasi-ray-tracing-06b.html) |
+|         7 | [15 Aprile 2024](tomasi-ray-tracing-07a.html) | [17 Aprile 2024](tomasi-ray-tracing-07b.html) |
+|         8 | [22 Aprile 2024](tomasi-ray-tracing-08a.html) | [24 Maggio 2024](tomasi-ray-tracing-08b.html) |
+|         9 | [6 Maggio 2024](tomasi-ray-tracing-09a.html) | — |
+|        10 | [13 Maggio 2024](tomasi-ray-tracing-10a.html) | [15 Maggio 2024](tomasi-ray-tracing-10b.html) |
+|        11 | [20 Maggio 2024](tomasi-ray-tracing-11a.html) | [22 Maggio 2024](tomasi-ray-tracing-11b.html) |
+|        12 | [27 Maggio 2024](tomasi-ray-tracing-12a.html) | [29 Maggio 2024](tomasi-ray-tracing-12b.html) |
+|        13 | [3 Giugno 2024](tomasi-ray-tracing-13a.html) | [5 Giugno 2024](tomasi-ray-tracing-13b.html) |
 -->
 
 # Argomenti per l'esame (A.A. 2023/2024)
@@ -111,3 +105,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -->
 
+---
+title: "Tecniche numeriche per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

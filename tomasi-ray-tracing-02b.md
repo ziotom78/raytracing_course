@@ -1,8 +1,10 @@
----
-title: "Esercitazione 2"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
+# Premessa iniziale
+
+-   Ci vorrà un bel po' prima di essere in grado di produrre immagini fotorealistiche! (Non volevate mica finire il corso in quindici giorni, no?!?)
+
+-   La ragione è che ci serve molta “infrastruttura” prima di poter affrontare direttamente la soluzione dell'equazione del rendering
+
+-   La generazione della prima immagine sarà un “triangolo nero”, come si dice nel gergo informatico; leggete la storia che c'è dietro [qui](https://rampantgames.com/blog/?p=7745).
 
 # Gestione dei colori
 
@@ -470,7 +472,7 @@ int main() {
 
     a = 15;   // This is fast
     *b = 16;  // This is slower
-    
+
     std::cout << a << ", " << *b << "\n";
     // Output:
     // 15, 16
@@ -520,7 +522,7 @@ In Python, qualsiasi variabile (anche le variabili intere come `x = 1`) è alloc
     ```python
     assert not col.is_close(Color(3.0, 4.0, 5.0))  # First method
     ```
-    
+
     Questo tipo di test «negativi» è molto importante!
 
 # Test (2)
@@ -717,7 +719,7 @@ Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, 
     ```
     $ dub test
     ```
-    
+
 -   La documentazione corrispondente è qui: [Unit tests](https://dlang.org/spec/unittest.html)
 
 # Suggerimenti per Nim
@@ -734,7 +736,7 @@ Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, 
     type
         Color* = object
             r*, g*, b*: float32
-            
+
         HdrImage* = object
             width*, height*: int
             pixels*: Seq[Color]
@@ -757,12 +759,12 @@ Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, 
     ```
     $ nimble test
     ```
-    
+
 -   Per scrivere i test dei tipi `Color` e `HdrImage`, create quindi un file `tests/test_basictypes.nim` fatto così:
 
     ```nim
     import ../src/basictypes
-    
+
     when isMainModule:
         assert Color(1.0, 2.0, 3.0) + Color(3.0, 4.0, 5.0) == Color(4.0, 6.0, 8.0)
         # …
@@ -902,3 +904,9 @@ Qui la versione usata è la 4.
 <center>
 ![](./media/kotlin-run-test.png)
 </center>
+
+---
+title: "Esercitazione 2"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

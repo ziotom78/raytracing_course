@@ -190,9 +190,9 @@ class TestImageTracer(unittest.TestCase):
 -   È molto importante però prima dare un'occhiata complessiva alla PR, per verificare che sia chiaramente leggibile. In particolare, selezionate il tab *Files changed* e leggetelo con occhio critico:
 
     1.  I file che vengono modificati sono quelli che mi aspetto, o è presente qualche altra modifica a cui stavo lavorando quando il bug è stato scoperto? (Vedi [questo esempio](https://github.com/litebird/litebird_sim/pull/232)).
-    
+
     2.  Chi vedrà queste modifiche, sarà in grado di capirle senza leggere l'intero codice?
-    
+
 -   Evitate di includere modifiche «gratuite» (correzioni di errori grammaticali in docstring, linee vuote aggiunte a caso…)
 
 ---
@@ -253,7 +253,7 @@ Esempio preso da un PR di [pytracer](https://github.com/ziotom78/pytracer/pull/1
 
 # Cose da fare oggi
 
-# La prima immagine!
+# Il nostro “[triangolo nero](https://rampantgames.com/blog/?p=7745)”!
 
 <center>![](./media/pytracer-first-image.png)</center>
 

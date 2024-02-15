@@ -13,7 +13,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     #.  Il tipo `Ray` rappresenta un raggio di luce;
     #.  Il tipo `Camera` rappresenta l'osservatore/telecamera;
     #.  Il tipo `ImageTracer` invia raggi dall'osservatore allo schermo.
-    
+
 -   Il tipo `Ray` deve essere molto efficiente, quindi è meglio che sia un *value type* come `Color`, `Vec`, etc. (vedi [lezione 02b](./tomasi-ray-tracing-02b.html#uso-della-memoria)).
 
 -   I tipi `Camera` e `ImageTracer` non sono critici, e non serve che siano particolarmente ottimizzati.
@@ -80,7 +80,7 @@ class TestRays(unittest.TestCase):
 
     1.   Proiezione ortogonale
     2.   Proiezione prospettica
-    
+
 -   Questa è una buona occasione per implementare il *polimorfismo*, ossia il fatto che il nome di una funzione corrisponda ad implementazioni diverse a seconda del tipo dell'oggetto
 
 # Esempio
@@ -90,13 +90,13 @@ class TestRays(unittest.TestCase):
     ```c++
     void print(int i) { std::cout << "Integer: " << i << "\n"; }
     void print(float f) { std::cout << "Float: " << f << "\n"; }
-    
+
     int main() {
         print(1);    // "Integer: 1"
         print(1.0f); // "Float: 1"
     }
     ```
-    
+
 -   La funzione `print` assume due *forme* a seconda che l'argomento sia un intero o un floating-point
 
 -   La decisione di quale chiamata usare viene decisa dal compilatore in fase di compilazione
@@ -108,16 +108,16 @@ class TestRays(unittest.TestCase):
     ```c++
     struct OrthogonalCamera { /* ... */ };
     struct PerspectiveCamera { /* ... */ };
-    
+
     void fire_ray(const OrthogonalCamera & cam, ...);
     void fire_ray(const PerspectiveCamera & cam, ...);
-    
+
     int main() {
         std::string kind_of_camera = input_camera();
         // ?
     }
     ```
-    
+
 -   Ma che tipo stabiliamo per la variabile `cam`? `OrthogonalCamera` oppure `PerspectiveCamera`?
 
 # Polimorfismo dinamico
@@ -131,7 +131,7 @@ struct PerspectiveCamera : public Camera { void fire_ray(...) override; };
 
 int main() {
     std::string kind_of_camera = input_camera();
-    Camera * camera = (kind_of_camera == "orthogonal") ? 
+    Camera * camera = (kind_of_camera == "orthogonal") ?
         new OrthogonalCamera() : new PerspectiveCamera();
     // ...
 }
@@ -157,7 +157,7 @@ int main() {
     type camera interface { fire_ray(...) void }
     type orthogonal_camera struct { /* ... */ }
     type perspective_camera struct { /* ... */ }
-    
+
     func (cam orthogonal_camera) fire_ray(...) void { /* ... */ }
     func (cam perspective_camera) fire_ray(...) void { /* ... */ }
     ```
@@ -179,7 +179,7 @@ int main() {
     }
     ```
     </center>
-    
+
 -   Usate quanto il vostro linguaggio permette per implementare il polimorfismo: gerarchia di classi in C\#/D/Java/Kotlin, [*traits*](https://doc.rust-lang.org/book/ch10-02-traits.html) in Rust, [*dynamic dispatch*](https://nim-lang.org/docs/tut2.html#object-oriented-programming-dynamic-dispatch) in Nim
 
 ---
@@ -263,7 +263,7 @@ def test_transform():
     ray = Ray(origin=Point(1.0, 2.0, 3.0), dir=Vec(6.0, 5.0, 4.0))
     transformation = translation(Vec(10.0, 11.0, 12.0)) * rotation_x(90.0)
     transformed = ray.transform(transformation)
-    
+
     assert transformed.origin.is_close(Point(11.0, 8.0, 14.0))
     assert transformed.dir.is_close(Vec(6.0, -4.0, 5.0))
 ```
@@ -281,7 +281,7 @@ def test_transform():
     <center>
     ![](./media/screen-coordinates.svg)
     </center>
-    
+
     Ad esempio, un raggio sparato verso $(u, v) = (0, 1)$ deve passare per il punto $P + \vec d - \vec r + \vec u$.
 
 # `OrthogonalCamera`
@@ -340,7 +340,7 @@ def test_orthogonal_camera(self):
     ```python
     def test_orthogonal_camera_transform():
         cam = OrthogonalCamera(transformation=translation(-VEC_Y * 2.0) * rotation_z(angle_deg=90))
-        
+
         ray = cam.fire_ray(0.5, 0.5)
         assert ray.at(1.0).is_close(Point(0.0, -2.0, 0.0))
     ```
@@ -475,5 +475,5 @@ def test_image_tracer(self):
     #.  `Ray`;
     #.  `Camera`, `OrthogonalCamera` e `PerspectiveCamera`;
     #.  `ImageTracer`.
-    
+
 -   Implementate tutti i test. Quando avete terminato l'implementazione e i test passano con successo, chiudete il PR.

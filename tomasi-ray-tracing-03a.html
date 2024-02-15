@@ -19,8 +19,11 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
@@ -284,7 +287,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error, the second number cannot be zero!&quot;</span>)</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;The ratio </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
 </section>
 <section id="programma-corretto" class="slide level1">
@@ -432,16 +435,22 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a h
 <h1>Prestazioni</h1>
 <ul>
 <li><p>Le eccezioni rallentano i programmi, perché il compilatore deve
-inserire all’interno delle funzioni del codice «nascosto» che possa
-gestirle</p></li>
+inserire del codice «nascosto» che possa gestirle (per approfondire: <a
+href="https://www.youtube.com/watch?v=Oy-VTqz1_58">Exceptionally Bad:
+The Misuse of Exceptions in C++ &amp; How to Do Better - Peter Muldoon -
+CppCon 2023</a>)</p></li>
 <li><p>Per questo alcuni linguaggi (Rust, Go…) non le supportano, e in
 altri si possono disabilitare all’interno di specifiche funzioni/metodi
-(<code>nothrow</code> in C++)</p></li>
+(<a
+href="https://en.cppreference.com/w/cpp/language/noexcept"><code>noexcept</code></a>
+in C++, <a
+href="https://dlang.org/spec/function.html#nothrow-functions"><code>nothrow</code></a>
+in D…)</p></li>
 <li><p>Nel programma che svilupperemo useremo il seguente approccio, che
 non causerà alcun rallentamento significativo:</p>
 <ul>
-<li>Leggeremo input dall’utente, usando eccezioni per segnalare
-errori</li>
+<li>Leggeremo input dall’utente, usando eccezioni per segnalare errori
+gravi</li>
 <li>Calcoleremo la soluzione dell’equazione del rendering, evitando
 eccezioni: questa sarà la parte più lenta</li>
 <li>Salveremo il risultato in un file, usando nuovamente le
@@ -500,9 +509,10 @@ Nim)</p></li>
 <h1>Tipi <code>Result</code></h1>
 <ul>
 <li><p>In Rust esiste il tipo <code>Result</code>, che è una versione
-più versatile del tipo <code>std::optional</code> in C++ (dal C++23 c’è
-<a
-href="https://en.cppreference.com/w/cpp/utility/expected"><code>std::expected</code></a>)</p></li>
+più versatile del tipo <code>std::optional</code> in C++ (ma dal C++23
+c’è <a
+href="https://en.cppreference.com/w/cpp/utility/expected"><code>std::expected</code></a>,
+che è analogo a <code>Result</code>)</p></li>
 <li><p>Il tipo <code>Result</code> è un <em>sum type</em> (li vedremo
 meglio più avanti), e permette di associare un tipo <code>A</code> in
 caso di successo, e un tipo <code>B</code> in caso di fallimento:</p>
@@ -657,7 +667,7 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> x<span class="op">{</span><span class="dv">138</span><span class="op">};</span>  <span class="co">// 138 &lt; 256, so the value fits in *one* byte</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>ofstream<span class="op"> </span>outf<span class="op">{</span><span class="st">&quot;file.bin&quot;</span><span class="op">};</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>ofstream outf<span class="op">{</span><span class="st">&quot;file.bin&quot;</span><span class="op">};</span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  outf <span class="op">&lt;&lt;</span> x<span class="op">;</span> <span class="co">// Ouch! It writes *three* bytes: &#39;1&#39;, &#39;3&#39;, &#39;8&#39;</span></span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>Il valore <code>138</code> è stato salvato in <em>forma
@@ -1202,10 +1212,12 @@ usa UTF-8, GCC la ammette da linea di comando
 stampa una stringa UTF-8, bisogna assicurarsi che il sistema su cui gira
 il programma riconosca UTF-8 (Vedi le schermate all’inizio di questa
 sezione).</p></li>
-<li><p>Fate attenzione alla codifica usata dal vostro editor; di solito
-inserire la stringa <code>encoding: utf-8</code> in un commento
-all’inizio del file aiuta (è riconosciuta sia da Emacs che da
-Vim)</p></li>
+<li><p>Fate attenzione alla codifica usata dal vostro editor; alcuni
+editor permettono di specificare la codifica in un commento all’inizio
+del file (vedi il manuale di <a
+href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Specify-Coding.html">Emacs</a>
+e di <a
+href="https://vim.fandom.com/wiki/How_to_make_fileencoding_work_in_the_modeline">Vim</a>)</p></li>
 <li><p>Tutti gli editor moderni consentono comunque di cambiare la
 codifica di un file</p></li>
 <li><p>Da linea di comando potete usare il programma <a

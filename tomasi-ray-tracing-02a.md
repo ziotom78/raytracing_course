@@ -1,9 +1,3 @@
----
-title: "Lezione 2"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # Lezione precedente
 
 -   **Radianza** (flusso $\Phi$ in Watt normalizzato sulla superficie
@@ -90,7 +84,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     3.  Tipo L (*long*): sensibile al rosso
 
 -   Ci sono più teorie che spiegano come il cervello combini le informazioni dei tre tipi di coni per rappresentare un colore.
-    
+
 -   Nel mondo animale c'è molta varietà: il [gambero mantide](https://www.nature.com/news/mantis-shrimp-s-super-colour-vision-debunked-1.14578) possiede 12 tipi di coni!
 
 ---
@@ -121,7 +115,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # La codifica RGB
 
--   Esistono varie codifiche di colore, basate su terne di quantità scalari: XYZ, HSV, HSL, RGB… 
+-   Esistono varie codifiche di colore, basate su terne di quantità scalari: XYZ, HSV, HSL, RGB…
 
 -   Codifiche molto usate sono RGB (monitor) e CYMK (stampanti)
 
@@ -199,7 +193,7 @@ function rgb1ChangeAll() {
     var r = Math.round(document.getElementById('val1Red').innerHTML * 255);
     var g = Math.round(document.getElementById('val1Green').innerHTML * 255);
     var b = Math.round(document.getElementById('val1Blue').innerHTML * 255);
-    document.getElementById('rgb1Change').style.backgroundColor = 
+    document.getElementById('rgb1Change').style.backgroundColor =
         "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
 }
 
@@ -247,9 +241,9 @@ $$
         &\int_{\Omega_x} \vec f_r(x, \Psi \rightarrow \Theta)\otimes \vec c(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
     \end{aligned}
     $$
-    
+
     dove $\vec v \otimes \vec w$ indica un «vettore» dato dal prodotto delle componenti di $\vec v$ e $\vec w$.
-    
+
 -   Notate che così assumiamo che la BRDF $f_r$ sia costante nelle tre bande!
 
 
@@ -279,7 +273,7 @@ $$
         uint8_t r, g, b;
     };
     ```
-    
+
 -   Il numero totale di combinazioni RGB è $2^8 \times 2^8 \times 2^8 = 2^{24} = 16\,777\,216$.
 
 # Colori RGB { data-state="rgb-colors" }
@@ -354,7 +348,7 @@ document.addEventListener('rgb-colors', function() {
     $$
 
     dove $I \in [0, I_\text{max}]$, e $\gamma$ è un parametro caratteristico del dispositivo.
-    
+
 -   Nei monitor moderni ovviamente $I_\text{max} = 255$, e $I$ è un numero *intero*.
 
 # Andamento di $\gamma$
@@ -516,7 +510,7 @@ document.addEventListener('monitor-calibration-state', function() {
 -   I file più comunemente usati per le immagini (PNG, Jpeg, TIFF…) usano tutti la codifica sRGB
 
 -   Se vogliamo che il nostro programma produca immagini facili da fruire, dobbiamo quindi convertire il risultato dell'equazione del rendering da RGB a sRGB.
-    
+
 -   Il *tone mapping* è il processo attraverso cui si converte un'immagine RGB in un'immagine sRGB, dove per *immagine* si intende una matrice di colori RGB.
 
 # Tipi di immagini
@@ -552,7 +546,7 @@ digraph "" {
 
     Header
     : Specifica il formato dell'immagine, le dimensioni della matrice, e a volte anche altri parametri utili (es., la data e l'ora dello scatto, le coordinate del GPS, il valore di $\gamma$ del dispositivo che ha catturato l'immagine, etc.).
-    
+
     Matrice dei colori
     : L'ordine in cui sono salvate le righe/colonne, e anche l'ordine in cui sono salvate le componenti R, G, B (RGB/BGR) varia a seconda del formato.
 
@@ -571,14 +565,14 @@ digraph "" {
     ```text
     $ sudo apt install imagemagick
     ```
-    
+
     Potete convertire immagini col comando
-    
+
     ```text
     $ convert input.png output_p6.ppm                  # Formato P6
     $ convert input.jpg -compress none output_p3.ppm   # Formato P3
     ```
-    
+
 -   PPM è un formato pensato per essere scritto e letto facilmente.
 
 # File PPM (P3)
@@ -621,7 +615,7 @@ P3
     ```text
     $ sudo apt install pftools
     ```
-    
+
 -   Noi scriveremo i nostri tool che permetteranno di convertire file PFM in PPM, quindi `pftools` non sarà necessario
 
 # Struttura di un file PFM
@@ -634,3 +628,9 @@ P3
     3. Il valore `-1.0`, seguito da `0x0a`.
 
 -   **Matrice dei colori**: le terne R, G, B devono essere scritte come sequenze di numeri a 32 bit (quindi **non** testo!), da sinistra a destra e dal **basso all'alto** (diverso da PPM!).
+
+---
+title: "Lezione 2"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...
