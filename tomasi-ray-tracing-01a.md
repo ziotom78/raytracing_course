@@ -6,13 +6,13 @@
 
 -   Richiesta la presenza alle esercitazioni (firma)
 
--   Domande:
+-   Domande al di fuori delle lezioni:
 
-    - Durante le lezioni, o alla fine
-
-    - Se su argomenti di teoria, o comunque di interesse generale, sul forum di Ariel
+    - Se su argomenti di teoria o comunque di interesse generale, sul forum di Ariel
 
     - Se specifiche sul proprio codice, contattate il docente ([maurizio.tomasi@unimi.it](mailto:maurizio.tomasi@unimi.it))
+
+-   A meno di sorprese, dovremmo terminare la settimana del 3–7 giugno, ma potremmo dover essere creativi, facendo qualche lezione di teoria il mercoledì
 
 # Obbiettivi del corso
 
@@ -110,7 +110,7 @@ Vivian Maier (1926–2009), Autoritratto
 
 # Bibliografia
 
--   [*Physically Based Rendering: from Theory to Implementation*](http://www.pbr-book.org/) (M. Pharr, W. Jakob, G. Humphreys, terza ed.): molto complesso e completo, è il testo di riferimento in materia. È disponibile online.
+-   [*Physically Based Rendering: from Theory to Implementation*](http://www.pbr-book.org/) (M. Pharr, W. Jakob, G. Humphreys, quarta ed.): molto complesso e completo, è il testo di riferimento in materia. È disponibile online.
 -   *Advanced Global Illumination* (P. Dutré, K. Bala, P. Bekaert, seconda ed.): lo useremo soprattutto per le parti più «fisiche».
 -   *Realistic Ray Tracing* (P. Shirley, R. K. Morley, seconda ed.): molto antiquato, è utile soprattutto come testo introduttivo.
 
@@ -128,6 +128,7 @@ Vivian Maier (1926–2009), Autoritratto
 
 -   La luce si propaga lungo linee rette (geodesiche)
 -   La velocità della luce è assunta infinita
+-   La lunghezza d'onda si assume tendente a zero (frequenza → ∞)
 -   Propagazione non influenzata da effetti gravitazionali o magnetici
 
 # Perché ci serve la radiometria?
@@ -254,7 +255,7 @@ $$
 
 3.  Il fatto che $L$ e $L_\lambda$ non dipendano dalla distanza
     implica che il colore percepito di un oggetto alla distanza $d$
-    non cambia al variare di $d$.
+    non cambia al variare di $d$ (se non c'è attenuazione).
 
 # Utilità di $L$
 
@@ -327,7 +328,9 @@ dove $\cos(N_x, \Psi)$ è l'angolo tra la normale a $\mathrm{d}A$ e la direzione
 
 # La BRDF
 
-![](./media/brdf.svg){height=560}
+![](./media/brdf.svg){height=480}
+
+Si usa l'irradianza perché qui non ci interessano solo le caratteristiche intrinseche dei raggi luminosi, ma anche il modo in cui la superficie “reagisce” ad essi.
 
 # Significato della BRDF
 
@@ -340,13 +343,13 @@ dove $\cos(N_x, \Psi)$ è l'angolo tra la normale a $\mathrm{d}A$ e la direzione
 
 # Reciprocità di Helmholtz
 
-Per la BRDF vale la *reprocità di Helmholtz*:
-$$
-f_r(x, \Psi\rightarrow\Theta) = f_r(x, \Theta\rightarrow\Psi),
-$$
-ossia, la BRDF non cambia se si scambiano la direzione entrante con quella uscente.
+-   Per la BRDF vale la *reprocità di Helmholtz*:
+    $$
+    f_r(x, \Psi\rightarrow\Theta) = f_r(x, \Theta\rightarrow\Psi),
+    $$
+    ossia, la BRDF non cambia se si scambiano la direzione entrante con quella uscente.
 
-Si può dimostrare questa proprietà usando le equazioni di Maxwell, ma la dimostrazione è lunga e non particolarmente interessante per i nostri scopi.
+-   Si può dimostrare questa proprietà usando le equazioni di Maxwell, ma la dimostrazione è lunga e non particolarmente interessante per i nostri scopi.
 
 # Più angoli di incidenza
 
@@ -372,23 +375,15 @@ f_r(x, \Psi \rightarrow \Theta) = \frac{\rho_d}\pi,
 $$
 dove $0 \leq \rho_d \leq 1$ è la frazione di energia incidente che viene riflessa.
 
-# Superficie riflettente
-
-In questo caso $f_r$ è una Delta di Dirac, ossia identicamente nulla tranne nella direzione uscente $R$ data dalla legge di riflessione:
-$$
-R = 2(N \cdot \Psi) N - \Psi,
-$$
-dove $N$ è il vettore normale (tangente) alla superficie.
-
 # Altre BRDF
 
--   Superficie rifrattiva: si tratta in modo simile alla superficie riflettente.
+-   Una superficie perfettamente riflettente è modellata da una Delta di Dirac, ossia identicamente nulla tranne nella direzione uscente $R$ data dalla legge di riflessione:
+    $$
+    R = 2(N \cdot \Psi) N - \Psi,
+    $$
+    dove $N$ è il vettore normale (tangente) alla superficie.
 
--   Superficie di Fresnel: parte della luce viene riflessa e parte rifratta, secondo le *equazioni di Fresnel*.
-
--   Superficie di Phong: cerca di modellare una superficie in maniera semi-empirica. Molto popolare in passato, non è molto usata oggi perché non plausibile fisicamente (non conserva l'energia).
-
--   Esistono online librerie di BRDF, solitamente ricavate da misure in laboratorio.
+-   Esistono online librerie di BRDF, solitamente ricavate da misure in laboratorio, quasi tutte a pagamento.
 
 # L'equazione del rendering
 

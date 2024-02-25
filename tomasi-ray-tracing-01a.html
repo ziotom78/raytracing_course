@@ -73,14 +73,16 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 <li><p>Lezioni di teoria del lunedì videoregistrate e caricate su <a
 href="https://mtomasicngif.ariel.ctu.unimi.it">Ariel</a></p></li>
 <li><p>Richiesta la presenza alle esercitazioni (firma)</p></li>
-<li><p>Domande:</p>
+<li><p>Domande al di fuori delle lezioni:</p>
 <ul>
-<li><p>Durante le lezioni, o alla fine</p></li>
-<li><p>Se su argomenti di teoria, o comunque di interesse generale, sul
+<li><p>Se su argomenti di teoria o comunque di interesse generale, sul
 forum di Ariel</p></li>
 <li><p>Se specifiche sul proprio codice, contattate il docente (<a
 href="mailto:maurizio.tomasi@unimi.it">maurizio.tomasi@unimi.it</a>)</p></li>
 </ul></li>
+<li><p>A meno di sorprese, dovremmo terminare la settimana del 3–7
+giugno, ma potremmo dover essere creativi, facendo qualche lezione di
+teoria il mercoledì</p></li>
 </ul>
 </section>
 <section id="obbiettivi-del-corso" class="slide level1">
@@ -194,7 +196,7 @@ height="560" /></p>
 <ul>
 <li><a href="http://www.pbr-book.org/"><em>Physically Based Rendering:
 from Theory to Implementation</em></a> (M. Pharr, W. Jakob,
-G. Humphreys, terza ed.): molto complesso e completo, è il testo di
+G. Humphreys, quarta ed.): molto complesso e completo, è il testo di
 riferimento in materia. È disponibile online.</li>
 <li><em>Advanced Global Illumination</em> (P. Dutré, K. Bala,
 P. Bekaert, seconda ed.): lo useremo soprattutto per le parti più
@@ -220,6 +222,7 @@ ed.): molto antiquato, è utile soprattutto come testo introduttivo.</li>
 <ul>
 <li>La luce si propaga lungo linee rette (geodesiche)</li>
 <li>La velocità della luce è assunta infinita</li>
+<li>La lunghezza d’onda si assume tendente a zero (frequenza → ∞)</li>
 <li>Propagazione non influenzata da effetti gravitazionali o
 magnetici</li>
 </ul>
@@ -385,7 +388,7 @@ ovviamente.</p></li>
 class="math inline">L_\lambda</span> non dipendano dalla distanza
 implica che il colore percepito di un oggetto alla distanza <span
 class="math inline">d</span> non cambia al variare di <span
-class="math inline">d</span>.</p></li>
+class="math inline">d</span> (se non c’è attenuazione).</p></li>
 </ol>
 </section>
 <section id="utilità-di-l" class="slide level1">
@@ -465,7 +468,10 @@ direzione incidente <span class="math inline">\Psi</span>.</p>
 </section>
 <section id="la-brdf-1" class="slide level1">
 <h1>La BRDF</h1>
-<p><img data-src="./media/brdf.svg" height="560" /></p>
+<p><img data-src="./media/brdf.svg" height="480" /></p>
+<p>Si usa l’irradianza perché qui non ci interessano solo le
+caratteristiche intrinseche dei raggi luminosi, ma anche il modo in cui
+la superficie “reagisce” ad essi.</p>
 </section>
 <section id="significato-della-brdf" class="slide level1">
 <h1>Significato della BRDF</h1>
@@ -492,14 +498,16 @@ class="math inline">x</span> in cui l’ha incontrata (non vero per
 </section>
 <section id="reciprocità-di-helmholtz" class="slide level1">
 <h1>Reciprocità di Helmholtz</h1>
-<p>Per la BRDF vale la <em>reprocità di Helmholtz</em>: <span
+<ul>
+<li><p>Per la BRDF vale la <em>reprocità di Helmholtz</em>: <span
 class="math display">
 f_r(x, \Psi\rightarrow\Theta) = f_r(x, \Theta\rightarrow\Psi),
 </span> ossia, la BRDF non cambia se si scambiano la direzione entrante
-con quella uscente.</p>
-<p>Si può dimostrare questa proprietà usando le equazioni di Maxwell, ma
-la dimostrazione è lunga e non particolarmente interessante per i nostri
-scopi.</p>
+con quella uscente.</p></li>
+<li><p>Si può dimostrare questa proprietà usando le equazioni di
+Maxwell, ma la dimostrazione è lunga e non particolarmente interessante
+per i nostri scopi.</p></li>
+</ul>
 </section>
 <section id="più-angoli-di-incidenza" class="slide level1">
 <h1>Più angoli di incidenza</h1>
@@ -531,28 +539,18 @@ f_r(x, \Psi \rightarrow \Theta) = \frac{\rho_d}\pi,
 </span> dove <span class="math inline">0 \leq \rho_d \leq 1</span> è la
 frazione di energia incidente che viene riflessa.</p>
 </section>
-<section id="superficie-riflettente" class="slide level1">
-<h1>Superficie riflettente</h1>
-<p>In questo caso <span class="math inline">f_r</span> è una Delta di
-Dirac, ossia identicamente nulla tranne nella direzione uscente <span
+<section id="altre-brdf" class="slide level1">
+<h1>Altre BRDF</h1>
+<ul>
+<li><p>Una superficie perfettamente riflettente è modellata da una Delta
+di Dirac, ossia identicamente nulla tranne nella direzione uscente <span
 class="math inline">R</span> data dalla legge di riflessione: <span
 class="math display">
 R = 2(N \cdot \Psi) N - \Psi,
 </span> dove <span class="math inline">N</span> è il vettore normale
-(tangente) alla superficie.</p>
-</section>
-<section id="altre-brdf" class="slide level1">
-<h1>Altre BRDF</h1>
-<ul>
-<li><p>Superficie rifrattiva: si tratta in modo simile alla superficie
-riflettente.</p></li>
-<li><p>Superficie di Fresnel: parte della luce viene riflessa e parte
-rifratta, secondo le <em>equazioni di Fresnel</em>.</p></li>
-<li><p>Superficie di Phong: cerca di modellare una superficie in maniera
-semi-empirica. Molto popolare in passato, non è molto usata oggi perché
-non plausibile fisicamente (non conserva l’energia).</p></li>
+(tangente) alla superficie.</p></li>
 <li><p>Esistono online librerie di BRDF, solitamente ricavate da misure
-in laboratorio.</p></li>
+in laboratorio, quasi tutte a pagamento.</p></li>
 </ul>
 </section>
 <section id="lequazione-del-rendering" class="slide level1">
