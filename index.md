@@ -3,12 +3,12 @@
 -   [A comparison between a few programming languages](language-comparison.html)
 -   [Giudizi degli studenti sui linguaggi usati negli anni passati](giudizi-linguaggio.html)
 
-<!--
 # Lezioni
 
 | Settimana | Slides teoria                                   | Slides esercitazioni                            |
 |----------:|:-----------------------------------------------:|:-----------------------------------------------:|
 |         1 | [26 Febbraio 2024](tomasi-ray-tracing-01a.html) | [28 Febbraio 2024](tomasi-ray-tracing-01b.html) |
+<!--
 |         2 | [4 Marzo 2024](tomasi-ray-tracing-02a.html)     | [6 Marzo 2024](tomasi-ray-tracing-02b.html)     |
 |         3 | [11 Marzo 2024](tomasi-ray-tracing-03a.html)    | [13 Marzo 2024](tomasi-ray-tracing-03b.html)    |
 |         4 | [18 Marzo 2024](tomasi-ray-tracing-04a.html)    | [20 Marzo 2024](tomasi-ray-tracing-04b.html)    |
@@ -27,7 +27,6 @@
 
 ## Parti richieste per l'esame
 
-<!--
 -   [Elementi di radiometria](tomasi-ray-tracing-01a.html#/radiometria): energia emessa, flusso, irradianza/emettenza
 -   [Radianza e sue proprietà](tomasi-ray-tracing-01a.html#/radianza)
 -   [Emettitori diffusi ideali](tomasi-ray-tracing-01a.html#/esempio)
@@ -36,6 +35,7 @@
 -   [Sistemi di controllo delle versioni](tomasi-ray-tracing-01b.html#/sistemi-di-controllo-delle-versioni)
 -   [Git](tomasi-ray-tracing-01b.html#git)
 -   [GitHub](tomasi-ray-tracing-01b.html#github)
+<!--
 -   [Codifica del colore](tomasi-ray-tracing-02a.html#/codifica-del-colore)
 -   [Relazione tra radianza spettrale e colori RGB](tomasi-ray-tracing-02a.html#/da-l_lambda-a-rgb)
 -   [Visualizzazione su dispositivi](tomasi-ray-tracing-02a.html#/visualizzazione-su-dispositivi)
