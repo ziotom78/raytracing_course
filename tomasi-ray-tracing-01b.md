@@ -4,10 +4,6 @@
 
 -   Le esercitazioni terminano alle 12,30, ma se completate il lavoro in anticipo potete andare via prima
 
--   A meno di sorprese, dovremmo terminare la settimana del 3–7 giugno…
-
--   …ma potremmo dover essere creativi, facendo qualche lezione di teoria il mercoledì
-
 # Gestione di progetti
 
 # Panoramica
@@ -89,16 +85,16 @@ Alla fine dell'esempio, il database del VCS contiene due istantanee:
 
     ```sh
     $ date +%Y-%m-%d  # Data nel formato ANNO-MESE-GIORNO
-    2021-03-03
+    2024-02-28
     $ whoami
     tomasi
     ```
 
--   Usiamo la possibilità delle shell Unix di sostituire comandi usando `$()`:
+-   Usiamo la possibilità di shell come [Bash](https://www.gnu.org/software/bash/) di sostituire comandi usando `$()`:
 
     ```sh
     $ echo "Ciao, io sono $(whoami) e oggi è $(date +%Y-%m-%d)"
-    Ciao, io sono tomasi e oggi è 2021-03-03
+    Ciao, io sono tomasi e oggi è 2024-02-28
     ```
 
 # Un semplice VCS (2/3)
@@ -199,7 +195,7 @@ echo "File \"$filename\" created successfully"
 
     2.  Modifica che aggiunge la possibilità di caricare un file;
 
-    Se ciascuna delle due attività richiedesse una settimana di lavoro, il programmatore potrebbe voler eseguire un backup terminato il primo punto, e poi passare al secondo.
+    Se ciascuna delle due attività richiedesse una settimana di lavoro, il programmatore potrebbe voler eseguire un backup una volta terminato il primo punto, prima di passare al secondo.
 
 -   Il nostro sistema non consente di raggruppare modifiche logicamente legate tra loro: ogni file `tar` è indipendente dagli altri!
 
@@ -246,13 +242,14 @@ Distribuiti
 
 # Alcuni VCS importanti
 
-| Nome                 | Tipo           | Esempio                        |
-|----------------------+----------------|--------------------------------|
-| [Subversion](https://subversion.apache.org/) | Centralizzato | FreePascal, GCC (fino al 2019) |
-| [GNU Bazaar](https://bazaar.canonical.com/en/) | Distribuito | Ubuntu Linux |
-| [Mercurial](https://www.mercurial-scm.org/) | Distribuito | Facebook, Mozilla, GNU Octave |
-| [Fossil](https://www.fossil-scm.org/home/doc/trunk/www/index.wiki) | Distribuito | SQLite |
-| [BitKeeper](https://www.bitkeeper.org/) | Distribuito | Linux Kernel (fino al 2005) |
+| Nome      | Tipo        | Esempio                           |
+|-----------+-------------|-----------------------------------|
+| [CVS](https://cvs.nongnu.org/) | Centralizzato | [OpenBSD](https://www.openbsd.org/) ([link](https://www.openbsd.org/anoncvs.html)) |
+| [Subversion](https://subversion.apache.org/) | Centralizzato | [FreePascal](https://www.freepascal.org/) ([fino al 2021](https://forum.lazarus.freepascal.org/index.php/topic,55532.0.html)), [GCC](https://gcc.gnu.org/) ([fino al 2019](https://gcc.gnu.org/wiki/GitConversion)) |
+| [GNU Bazaar](https://bazaar.canonical.com/en/) | Distribuito | [Ubuntu Linux](https://ubuntu.com/) ([fino al 2018](https://wiki.ubuntu.com/UbuntuDevelopment/MigratingFromBzrToGit)) |
+| [Mercurial](https://www.mercurial-scm.org/) | Distribuito | Facebook, Mozilla, [GNU Octave](https://octave.org/) ([link](https://www.octave.org/hg/octave)) |
+| [Fossil](https://www.fossil-scm.org/home/doc/trunk/www/index.wiki) | Distribuito | [SQLite](https://www.sqlite.org/) ([link](https://sqlite.org/src/doc/trunk/README.md)) |
+| [BitKeeper](https://www.bitkeeper.org/) | Distribuito | Kernel Linux ([fino al 2005](https://www.linuxjournal.com/content/git-origin-story)) |
 | [Git](https://git-scm.com/) | Distribuito | Troppi esempi! |
 
 # Git
