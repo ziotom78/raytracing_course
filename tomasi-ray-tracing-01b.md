@@ -445,6 +445,80 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
 
 <iframe src="https://player.vimeo.com/video/683431827?h=9e4de4dba1&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Come usare una IDE (JetBrains Rider)"></iframe>
 
+# Indicazioni per Nim/D/Rust
+
+# Suggerimenti (1/2)
+
+-   Creare un'applicazione vuota usando il package manager del vostro linguaggio. Nim usa `nimble`:
+
+    ```
+    $ nimble init helloworld
+    ```
+
+-   D usa `dub`:
+
+    ```
+    $ dub init helloworld
+    ```
+
+-   Rust usa `cargo`:
+
+    ```
+    $ cargo init helloworld
+    ```
+
+-   Sia con Nim che con D dovrete rispondere ad alcune domande. Se possibile, scegliete il default (ma per Nim assicuratevi di specificare che volete un `binary`).
+
+# Suggerimenti (2/2)
+
+-   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
+
+-   Per compilare ed eseguire, basta usare il comando `run` (identico in `nimble`, `dub` e `cargo`):
+
+    ```
+    $ cd helloworld
+    $ nimble run     # Oppure: dub run, oppure: cargo run
+    ```
+
+-   Sia per [D](https://intellij-dlanguage.github.io/) che per [Nim](https://plugins.jetbrains.com/plugin/15128-nim) esistono dei plugin per IntelliJ IDEA, l'IDE Java di JetBrains. Per Rust, potete usare CLion con il plugin [Rust](https://plugins.jetbrains.com/plugin/8182-rust/docs).
+
+# Suggerimenti per Java/Kotlin
+
+# Suggerimenti
+
+-   Creare un'applicazione Kotlin oppure Java in [IntelliJ IDEA](https://www.jetbrains.com/idea/):
+
+    -   Se usate Kotlin, come *Build system* scegliete «Gradle Kotlin» (*non* usate il sistema di build interno di IntelliJ IDEA! È comodo ma troppo limitato per i nostri scopi!)
+
+    -   Usate «Console application» come template
+
+-   L'applicazione vuota stampa `Hello World!`: come prima cosa, cambiate il messaggio in `Hello, wold!`.
+
+-   Per usare Git, potete anche fare affidamento al menu «VCS» di IntelliJ (gestisce automaticamente i `.gitignore`). È molto comodo, a volte forse troppo…
+
+---
+
+<center>
+![](./media/intellij_new_kotlin_project.png)
+</center>
+
+# Compilare ed eseguire
+
+-   La directory che contiene il progetto ha un eseguibile, `gradlew`, che può essere usato per produrre una *distribution* nella directory `./build/distributions`:
+
+    ```
+    gradlew assembleDist
+    ```
+
+-   Siccome è una funzione molto utile, esploratela! Create una distribuzione del vostro programma e cercate di capire come installarla e usarla.
+
+# Suggerimenti
+
+-   In Java e in Kotlin si fa grande affidamento sull'ambiente di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!
+
+-   Abituatevi a invocare regolarmente il comando «Code | Reformat code» (Ctrl+Alt+L).
+
+
 # Suggerimenti per C\#
 
 # Suggerimenti
@@ -567,80 +641,6 @@ target_compile_features(hello_world PUBLIC cxx_std_17)
 -   Questi strumenti sono utilissimi per mantenere il codice pulito e chiaro da leggere: cercate di configurarli al meglio e di imparare ad usarli sin da subito.
 
 
-# Indicazioni per Nim/D/Rust
-
-# Suggerimenti (1/2)
-
--   Creare un'applicazione vuota usando il package manager del vostro linguaggio. Nim usa `nimble`:
-
-    ```
-    $ nimble init helloworld
-    ```
-
--   D usa `dub`:
-
-    ```
-    $ dub init helloworld
-    ```
-
--   Rust usa `cargo`:
-
-    ```
-    $ cargo init helloworld
-    ```
-
--   Sia con Nim che con D dovrete rispondere ad alcune domande. Se possibile, scegliete il default (ma per Nim assicuratevi di specificare che volete un `binary`).
-
-# Suggerimenti (2/2)
-
--   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
-
--   Per compilare ed eseguire, basta usare il comando `run` (identico in `nimble`, `dub` e `cargo`):
-
-    ```
-    $ cd helloworld
-    $ nimble run     # Oppure: dub run, oppure: cargo run
-    ```
-
--   Sia per [D](https://intellij-dlanguage.github.io/) che per [Nim](https://plugins.jetbrains.com/plugin/15128-nim) esistono dei plugin per IntelliJ IDEA, l'IDE Java di JetBrains. Per Rust, potete usare CLion con il plugin [Rust](https://plugins.jetbrains.com/plugin/8182-rust/docs).
-
-# Suggerimenti per Java/Kotlin
-
-# Suggerimenti
-
--   Creare un'applicazione Java oppure Kotlin in [IntelliJ IDEA](https://www.jetbrains.com/idea/):
-
-    -   Se usate Kotlin, come *Build system* scegliete «Gradle Kotlin»
-
-    -   Come JDK, se non ne avete di installati scegliete il numero (versione) 17
-
-    -   Usate «Console application» come template
-
--   L'applicazione vuota stampa `Hello World!`: come prima cosa, cambiate il messaggio in `Hello, wold!`.
-
--   Per usare Git, meglio fare affidamento al menu «VCS» di IntelliJ (gestisce automaticamente i `.gitignore`).
-
----
-
-<center>
-![](./media/intellij_new_kotlin_project.png)
-</center>
-
-# Compilare ed eseguire
-
--   La directory che contiene il progetto ha un eseguibile, `gradlew`, che può essere usato per produrre una *distribution* nella directory `./build/distributions`:
-
-    ```
-    gradlew assembleDist
-    ```
-
--   Siccome è una funzione molto utile, esploratela! Create una distribuzione del vostro programma e cercate di capire come installarla e usarla.
-
-# Suggerimenti
-
--   In Java e in Kotlin si fa grande affidamento sull'ambiente di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!
-
--   Abituatevi a invocare regolarmente il comando «Code | Reformat code» (Ctrl+Alt+L).
 
 ---
 title: "Esercitazione 1: Git e GitHub"
