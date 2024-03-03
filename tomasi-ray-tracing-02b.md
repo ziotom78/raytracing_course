@@ -4,7 +4,7 @@
 
 -   La ragione è che ci serve molta “infrastruttura” prima di poter affrontare direttamente la soluzione dell'equazione del rendering
 
--   La generazione della prima immagine sarà un “triangolo nero”, come si dice nel gergo informatico; leggete la storia che c'è dietro [qui](https://rampantgames.com/blog/?p=7745).
+-   La generazione della prima immagine sarà un “[triangolo nero](https://rampantgames.com/blog/?p=7745)”, come si dice nel gergo informatico.
 
 # Gestione dei colori
 
@@ -51,18 +51,29 @@ class Color:
     # ...
 
     def __add__(self, other):
+        """Sum two colors"""
         return Color(
             self.r + other.r,
             self.g + other.g,
             self.b + other.b,
         )
 
-    def __mul__(self, scalar):
-        return Color(
-            self.r * scalar,
-            self.g * scalar,
-            self.b * scalar,
-        )
+    def __mul__(self, other):
+        """Multiply two colors, or one color with one number"""
+        try:
+            # Try a color-times-color operation
+            return Color(
+                self.r * other.r,
+                self.g * other.g,
+                self.b * other.b,
+            )
+        except AttributeError:
+            # Fall back to a color-times-scalar operation
+            return Color(
+                self.r * other,
+                self.g * other,
+                self.b * other,
+            )
 
     # Etc.
 ```
@@ -78,7 +89,7 @@ class Color:
 
 -   Il tipo più naturale per una matrice di colori è un array bidimensionale di dimensione `(ncols, nrows)`…
 
--   …ma è più comodo ed efficiente usare un array **monodimensionale** di dimensione `ncols × nrows`.
+-   …ma è più efficiente usare un array **monodimensionale** di dimensione `ncols × nrows`.
 
 -   Gli array bidimensionali non sono supportati in tutti i linguaggi (Kotlin ad esempio non li supporta), e se usati male possono essere molto inefficienti:
 
@@ -114,24 +125,27 @@ Data la posizione `(x, y)` di un pixel (con `x` colonna e `y` riga), l'indice ne
 
 # `get_pixel` e `set_pixel`
 
--   Usando la formula della slide precedente possiamo implementare i metodi `get_pixel` e `set_pixel`:
+```python
+def get_pixel(self, x: int, y: int) -> Color:
+    """Return the `Color` value for a pixel in the image
 
-    ```python
-    def get_pixel(self, x: int, y: int) -> Color:
-        assert (x >= 0) and (x < self.width)
-        assert (y >= 0) and (y < self.height)
-        return self.pixels[y * self.width + x]
+    The pixel at the top-left corner has coordinates (0, 0)."""
 
-    def set_pixel(self, x: int, y: int, new_color: Color):
-        assert (x >= 0) and (x < self.width)
-        assert (y >= 0) and (y < self.height)
-        self.pixels[y * self.width + x] = new_color
-    ```
+    assert (x >= 0) and (x < self.width)
+    assert (y >= 0) and (y < self.height)
+    return self.pixels[y * self.width + x]
 
-    Ma questa implementazione è la migliore?
+def set_pixel(self, x: int, y: int, new_color: Color):
+    """Set the new color for a pixel in the image
 
--   No! Ma per capirlo dobbiamo parlare di come si verifica il codice
+    The pixel at the top-left corner has coordinates (0, 0)."""
 
+    assert (x >= 0) and (x < self.width)
+    assert (y >= 0) and (y < self.height)
+    self.pixels[y * self.width + x] = new_color
+```
+
+Possiamo evitare queste ripetizioni?
 
 # Verifica del codice
 
@@ -162,7 +176,7 @@ Data la posizione `(x, y)` di un pixel (con `x` colonna e `y` riga), l'indice ne
     color1 = Color(1.0, 2.0, 3.0)  # Avoid trivial cases like Color(3.0, 3.0, 3.0)
     color2 = Color(5.0, 6.0, 7.0)  # in your tests!
     print(color1 + color2)
-    print (color1 * 2)
+    print(color1 * 2)
     ```
 
     che produce l'output
@@ -180,11 +194,11 @@ Data la posizione `(x, y)` di un pixel (con `x` colonna e `y` riga), l'indice ne
 
 -   Dovremmo far svolgere compiti tediosi ai computer!
 
--   Tutti i linguaggi moderni offrono sistemi per l'esecuzione automatica di test. (Il C++ no, ed ecco perché queste cose non sono state spiegate nel corso di TNDS)
+-   Tutti i linguaggi moderni offrono sistemi per l'esecuzione automatica di test. (Il C++ no, a meno di usare librerie esterne: ecco perché queste cose non sono state spiegate nel corso di TNDS)
 
 # Test automatici
 
--   In Python, il nostro codice di partenza è questo:
+In Python, il nostro codice di partenza è questo:
 
 ```python
 color1 = Color(1.0, 2.0, 3.0)
@@ -193,16 +207,16 @@ print(color1 + color2)
 print(color1 * 2)
 ```
 
--   Possiamo migliorarlo facilmente usando `assert`:
+Possiamo migliorarlo facilmente usando `assert`:
 
 ```python
 color1 = Color(1.0, 2.0, 3.0)
 color2 = Color(5.0, 6.0, 7.0)
 assert (color1 + color2) == Color(6.0, 8.0, 10.0)
 assert (2 * color1) == Color(2.0, 4.0, 6.0)
+# If everything is ok, no output is expected
 ```
 
--   Se eseguiamo il codice, non produrrà alcun output: tutto bene!
 
 # Come testare i test?
 
@@ -213,11 +227,11 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
     ```python
     color1 = Color(1.0, 2.0, 3.0)
     color2 = Color(5.0, 6.0, 7.0)
-    assert (color1 + color2) == Color(6.0, 8.0, 11.0) # 10 -> 11
-    assert (2 * color1) == Color(3.0, 4.0, 6.0) # 2 -> 3
+    assert (color1 + color2) == Color(6.0, 8.0, 11.0) # 11.0 instead of 10.0: wrong!
+    assert (2 * color1) == Color(3.0, 4.0, 6.0) # 3.0 instead of 2.0: wrong!
     ```
 
-    Solo quando l'errore viene emesso si corregge il test.
+    Solo quando si è visto che l'errore è stato emesso si rimette a posto il test.
 
 ---
 
@@ -331,6 +345,15 @@ def set_pixel(self, x: int, y: int, new_color: Color):
     ```
 
 -   Questi sono detti *unit test*, perché vanno a verificare le singole «unità» di codice.
+
+
+# Metodi pubblici e privati
+
+-   La programmazione OOP propugna l'idea di definire certi metodi come “privati”, in modo che non siano invocabili dall'esterno.
+
+-   Questo però risulta molto scomodo nei test! Si vorrebbe infatti scrivere un test anche per `valid_coordinates` e per `pixel_offset`, ma la filosofia OOP imporrebbe di definirli privati e quindi non richiamabili dall'esterno.
+
+-   Se usate un linguaggio OOP, potete definire queste funzioni *pubbliche* ma chiamarle `_valid_coordinates` e `_pixel_offset`: di solito quando in informatica un nome inizia con `_` lo si considera “privato”, ma non si è obbligati a trattarlo come tale.
 
 
 # Funzioni di supporto ai test
@@ -579,6 +602,150 @@ def test_get_set_pixel():
     assert are_colors_close(reference_color, img.get_pixel(3, 2))
 ```
 
+
+# Suggerimenti per Nim
+
+# Definizione dei tipi
+
+-   Implementare i tipi `Color` e `HdrImage` dovrebbe essere elementare
+
+-   Assicuratevi di usare `object` e non `ref object` per Color, mentre per `HdrImage` è indifferente
+
+-   Ricordatevi che in Nim bisogna esportare sia i tipi che i loro membri, usando `*`:
+
+    ```nim
+    type
+        Color* = object
+            r*, g*, b*: float32
+
+        HdrImage* = object
+            width*, height*: int
+            pixels*: Seq[Color]
+    ```
+
+# Creazione di `HdrImage`
+
+-   In Nim non servono costruttori come in C++
+
+-   La prassi è quella di definire una funzione `newMyType` che crei il tipo `MyType`
+
+-   Aggiungete quindi una procedura `newHdrImage` che accetti due parametri `width` ed `height`; inizializzate il campo `pixels` usando [`newSeq`](https://nim-lang.org/docs/system.html#newSeq), poi impostate tutti i colori a zero (nero)
+
+# Scrittura di test
+
+-   In Nim è possibile usare il comando `assert` per eseguire dei test
+
+-   La prassi è quella di creare dei file Nim all'interno della directory `tests`; se questi file iniziano con `t`, vengono [eseguiti automaticamente](https://github.com/nim-lang/nimble#tests) dal comando
+
+    ```
+    $ nimble test
+    ```
+
+-   Per scrivere i test dei tipi `Color` e `HdrImage`, create quindi un file `tests/test_basictypes.nim` fatto così:
+
+    ```nim
+    import ../src/basictypes
+
+    when isMainModule:
+        assert Color(1.0, 2.0, 3.0) + Color(3.0, 4.0, 5.0) == Color(4.0, 6.0, 8.0)
+        # …
+    ```
+
+
+# Suggerimenti per Java/Kotlin
+
+# Gestione di progetti
+
+-   IntelliJ IDEA si basa su Gradle, che è l'equivalente di CMake in C++.
+
+-   Gradle può essere programmato in Groovy (un linguaggio basato su Java) o in Kotlin.
+
+-   Siccome Java e Kotlin permettono un'ottima modularità, per questo corso non è necessario differenziare tra libreria ed eseguibile.
+
+-   Create quindi un nuovo progetto esattamente come avete fatto la volta scorsa.
+
+# Creazione di classi
+
+In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):
+
+<center>
+![](./media/kotlin-new-class.png){height=480}
+</center>
+
+# Creazione di `Color`
+
+-   In Kotlin, usate le *data classes* per definire la classe `Color`: sono molto veloci da usare!
+
+    ```kotlin
+    /** A RGB color
+     *
+     * @param r The level of red
+     * @param g The level of green
+     * @param b The level of blue
+     */
+    public data class Color(val r: Double, val g: Double, val b: Double) {
+        // ...
+    }
+    ```
+
+-   Definite `is_close` e gli operatori `plus` (somma di due colori) e `times` (prodotto tra colore e scalare).
+
+# Definizione di `HdrImage`
+
+-   Kotlin permette la definizione di classi in forma estremamente compatta (una favola per chi viene da Java!). Ecco un esempio di implementazione di `HdrImage`:
+
+    ```kotlin
+    class HdrImage(
+        val width: Int,  // Using 'val' ensures that we cannot change the width
+        val height: Int, // or the height of the image once it's been created
+        var pixels: Array<Color> = Array(width * height) { Color(0.0F, 0.0F, 0.0F) }
+    ) {
+        // Here are the methods for the class…
+    }
+    ```
+
+-   Abituatevi alla differenza tra `val` e `var`!
+
+# Scrittura di test
+
+-   IntelliJ IDEA genera e gestisce il codice di test.
+
+-   Usa la libreria [JUnit](https://junit.org/); se vi chiede che versione usare, scegliete la 5.
+
+-   Controllate la versione usata nel vostro progetto aprendo il menu «File | Project structure».
+
+---
+
+<center>
+![](./media/kotlin-project-structure.png){height=560}
+</center>
+
+Qui la versione di JUnit è la 4.
+
+# Creazione di test vuoti
+
+-   Fate click col tasto destro sul nome di una classe e scegliete *Generate*.
+
+-   Nella finestra che compare, scegliete la versione giusta per JUnit e poi fate un segno di spunta accanto ai metodi per cui volete scrivere test. (Nel nostro caso saranno `is_close`, `plus` e `times`).
+
+-   Una volta implementati i test (usando `assertTrue` e `assertFalse`), eseguiteli usando le icone a sinistra dell'editor.
+
+---
+
+# Generare test
+
+<center>
+![](./media/kotlin-generate-test.png)
+</center>
+
+---
+
+# Eseguire test
+<center>
+![](./media/kotlin-run-test.png)
+</center>
+
+
 # Suggerimenti per C\#
 
 # Soluzioni e progetti
@@ -692,6 +859,7 @@ namespace Trace.Tests
 
 Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, fate riferimento alle slide relative a Kotlin)
 
+
 # Suggerimenti per D
 
 # Definizione dei tipi
@@ -722,53 +890,6 @@ Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, 
 
 -   La documentazione corrispondente è qui: [Unit tests](https://dlang.org/spec/unittest.html)
 
-# Suggerimenti per Nim
-
-# Definizione dei tipi
-
--   Implementare i tipi `Color` e `HdrImage` dovrebbe essere elementare
-
--   Assicuratevi di usare `object` e non `ref object` per Color, mentre per `HdrImage` è indifferente
-
--   Ricordatevi che in Nim bisogna esportare sia i tipi che i loro membri, usando `*`:
-
-    ```nim
-    type
-        Color* = object
-            r*, g*, b*: float32
-
-        HdrImage* = object
-            width*, height*: int
-            pixels*: Seq[Color]
-    ```
-
-# Creazione di `HdrImage`
-
--   In Nim non servono costruttori come in C++
-
--   La prassi è quella di definire una funzione `newMyType` che crei il tipo `MyType`
-
--   Aggiungete quindi una procedura `newHdrImage` che accetti due parametri `width` ed `height`; inizializzate il campo `pixels` usando [`newSeq`](https://nim-lang.org/docs/system.html#newSeq), poi impostate tutti i colori a zero (nero)
-
-# Scrittura di test
-
--   In Nim è possibile usare il comando `assert` per eseguire dei test
-
--   La prassi è quella di creare dei file Nim all'interno della directory `tests`; se questi file iniziano con `t`, vengono [eseguiti automaticamente](https://github.com/nim-lang/nimble#tests) dal comando
-
-    ```
-    $ nimble test
-    ```
-
--   Per scrivere i test dei tipi `Color` e `HdrImage`, create quindi un file `tests/test_basictypes.nim` fatto così:
-
-    ```nim
-    import ../src/basictypes
-
-    when isMainModule:
-        assert Color(1.0, 2.0, 3.0) + Color(3.0, 4.0, 5.0) == Color(4.0, 6.0, 8.0)
-        # …
-    ```
 
 # Suggerimenti per Rust
 
@@ -811,99 +932,6 @@ Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, 
 
 -   Consultate la [guida di Rust](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html); una trattazione più approfondita si trova nel [capitolo 11](https://doc.rust-lang.org/book/ch11-00-testing.html) di *The Rust Programming Language* (Klabnik & Nichols)
 
-
-# Suggerimenti per Java/Kotlin
-
-# Gestione di progetti
-
--   IntelliJ IDEA si basa su Gradle, che è l'equivalente di CMake in C++.
-
--   Gradle può essere programmato in Groovy (un linguaggio basato su Java) o in Kotlin.
-
--   Siccome Java e Kotlin permettono un'ottima modularità, per questo corso non è necessario differenziare tra libreria ed eseguibile.
-
--   Create quindi un nuovo progetto esattamente come avete fatto la volta scorsa.
-
-# Creazione di classi
-
-In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):
-
-<center>
-![](./media/kotlin-new-class.png){height=480}
-</center>
-
-# Creazione di `Color`
-
--   In Kotlin, usate le *data classes* per definire la classe `Color`: sono molto veloci da usare!
-
-    ```kotlin
-    /** A RGB color
-     *
-     * @param r The level of red
-     * @param g The level of green
-     * @param b The level of blue
-     */
-    public data class Color(val r: Double, val g: Double, val b: Double) {
-        // ...
-    }
-    ```
-
--   Definite `is_close` e gli operatori `plus` (somma di due colori) e `times` (prodotto tra colore e scalare).
-
-# Definizione di `HdrImage`
-
--   Kotlin permette la definizione di classi in forma estremamente compatta. Ecco un esempio di implementazione di `HdrImage`:
-
-    ```kotlin
-    class HdrImage(
-        val width: Int,  // Using 'val' ensures that we cannot change the width
-        val height: Int, // or the height of the image once it's been created
-        var pixels: Array<Color> = Array(width * height) { Color(0.0F, 0.0F, 0.0F) }
-    ) {
-        // Here are the methods for the class…
-    }
-    ```
-
--   Abituatevi alla differenza tra `val` e `var`!
-
-# Scrittura di test
-
--   IntelliJ IDEA genera e gestisce il codice di test.
-
--   Usa la libreria [JUnit](https://junit.org/); se vi chiede che versione usare, potete optare per la 4 oppure la 5.
-
--   Controllate la versione usata nel vostro progetto aprendo il menu «File | Project structure».
-
----
-
-<center>
-![](./media/kotlin-project-structure.png){height=560}
-</center>
-
-Qui la versione usata è la 4.
-
-# Creazione di test vuoti
-
--   Fate click col tasto destro sul nome di una classe e scegliete *Generate*.
-
--   Nella finestra che compare, scegliete la versione giusta per JUnit e poi fate un segno di spunta accanto ai metodi per cui volete scrivere test. (Nel nostro caso saranno `is_close`, `plus` e `times`).
-
--   Una volta implementati i test (usando `assertTrue` e `assertFalse`), eseguiteli usando le icone a sinistra dell'editor.
-
----
-
-# Generare test
-
-<center>
-![](./media/kotlin-generate-test.png)
-</center>
-
----
-
-# Eseguire test
-<center>
-![](./media/kotlin-run-test.png)
-</center>
 
 ---
 title: "Esercitazione 2"

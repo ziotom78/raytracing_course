@@ -137,9 +137,9 @@ no?!?)</p></li>
 <li><p>La ragione è che ci serve molta “infrastruttura” prima di poter
 affrontare direttamente la soluzione dell’equazione del
 rendering</p></li>
-<li><p>La generazione della prima immagine sarà un “triangolo nero”,
-come si dice nel gergo informatico; leggete la storia che c’è dietro <a
-href="https://rampantgames.com/blog/?p=7745">qui</a>.</p></li>
+<li><p>La generazione della prima immagine sarà un “<a
+href="https://rampantgames.com/blog/?p=7745">triangolo nero</a>”, come
+si dice nel gergo informatico.</p></li>
 </ul>
 </section>
 <section id="gestione-dei-colori" class="slide level1">
@@ -199,20 +199,31 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__add__</span>(<span class="va">self</span>, other):</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Color(</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.r <span class="op">+</span> other.r,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.g <span class="op">+</span> other.g,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.b <span class="op">+</span> other.b,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__mul__</span>(<span class="va">self</span>, scalar):</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Color(</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.r <span class="op">*</span> scalar,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.g <span class="op">*</span> scalar,</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.b <span class="op">*</span> scalar,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Etc.</span></span></code></pre></div>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Sum two colors&quot;&quot;&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Color(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.r <span class="op">+</span> other.r,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.g <span class="op">+</span> other.g,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.b <span class="op">+</span> other.b,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__mul__</span>(<span class="va">self</span>, other):</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Multiply two colors, or one color with one number&quot;&quot;&quot;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Try a color-times-color operation</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> Color(</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.r <span class="op">*</span> other.r,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.g <span class="op">*</span> other.g,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.b <span class="op">*</span> other.b,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">AttributeError</span>:</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Fall back to a color-times-scalar operation</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> Color(</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.r <span class="op">*</span> other,</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.g <span class="op">*</span> other,</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.b <span class="op">*</span> other,</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Etc.</span></span></code></pre></div>
 </section>
 <section id="il-tipo-hdrimage" class="slide level1">
 <h1>Il tipo <code>HdrImage</code></h1>
@@ -234,7 +245,7 @@ queste funzionalità:
 <ul>
 <li><p>Il tipo più naturale per una matrice di colori è un array
 bidimensionale di dimensione <code>(ncols, nrows)</code>…</p></li>
-<li><p>…ma è più comodo ed efficiente usare un array
+<li><p>…ma è più efficiente usare un array
 <strong>monodimensionale</strong> di dimensione
 <code>ncols × nrows</code>.</p></li>
 <li><p>Gli array bidimensionali non sono supportati in tutti i linguaggi
@@ -275,23 +286,25 @@ colonna e <code>y</code> riga), l’indice nell’array
 </section>
 <section id="get_pixel-e-set_pixel" class="slide level1">
 <h1><code>get_pixel</code> e <code>set_pixel</code></h1>
-<ul>
-<li><p>Usando la formula della slide precedente possiamo implementare i
-metodi <code>get_pixel</code> e <code>set_pixel</code>:</p>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> Color:</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Return the `Color` value for a pixel in the image</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">    The pixel at the top-left corner has coordinates (0, 0).&quot;&quot;&quot;</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> set_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>, new_color: Color):</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x] <span class="op">=</span> new_color</span></code></pre></div>
-<p>Ma questa implementazione è la migliore?</p></li>
-<li><p>No! Ma per capirlo dobbiamo parlare di come si verifica il
-codice</p></li>
-</ul>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x]</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> set_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>, new_color: Color):</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Set the new color for a pixel in the image</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">    The pixel at the top-left corner has coordinates (0, 0).&quot;&quot;&quot;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x] <span class="op">=</span> new_color</span></code></pre></div>
+<p>Possiamo evitare queste ripetizioni?</p>
 </section>
 <section id="verifica-del-codice" class="slide level1">
 <h1>Verifica del codice</h1>
@@ -324,7 +337,7 @@ valori:</p>
 class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)  <span class="co"># Avoid trivial cases like Color(3.0, 3.0, 3.0)</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)  <span class="co"># in your tests!</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">+</span> color2)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (color1 <span class="op">*</span> <span class="dv">2</span>)</span></code></pre></div>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">*</span> <span class="dv">2</span>)</span></code></pre></div>
 <p>che produce l’output</p>
 <pre class="text"><code>Color(r=6.0, g=8.0, b=10.0)
 Color(r=2.0, g=4.0, b=6.0)</code></pre></li>
@@ -338,31 +351,25 @@ Color(r=2.0, g=4.0, b=6.0)</code></pre></li>
 facile da sbagliare.</p></li>
 <li><p>Dovremmo far svolgere compiti tediosi ai computer!</p></li>
 <li><p>Tutti i linguaggi moderni offrono sistemi per l’esecuzione
-automatica di test. (Il C++ no, ed ecco perché queste cose non sono
-state spiegate nel corso di TNDS)</p></li>
+automatica di test. (Il C++ no, a meno di usare librerie esterne: ecco
+perché queste cose non sono state spiegate nel corso di TNDS)</p></li>
 </ul>
 </section>
 <section id="test-automatici" class="slide level1">
 <h1>Test automatici</h1>
-<ul>
-<li>In Python, il nostro codice di partenza è questo:</li>
-</ul>
+<p>In Python, il nostro codice di partenza è questo:</p>
 <div class="sourceCode" id="cb10"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">+</span> color2)</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">*</span> <span class="dv">2</span>)</span></code></pre></div>
-<ul>
-<li>Possiamo migliorarlo facilmente usando <code>assert</code>:</li>
-</ul>
+<p>Possiamo migliorarlo facilmente usando <code>assert</code>:</p>
 <div class="sourceCode" id="cb11"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (color1 <span class="op">+</span> color2) <span class="op">==</span> Color(<span class="fl">6.0</span>, <span class="fl">8.0</span>, <span class="fl">10.0</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (<span class="dv">2</span> <span class="op">*</span> color1) <span class="op">==</span> Color(<span class="fl">2.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>)</span></code></pre></div>
-<ul>
-<li>Se eseguiamo il codice, non produrrà alcun output: tutto bene!</li>
-</ul>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (<span class="dv">2</span> <span class="op">*</span> color1) <span class="op">==</span> Color(<span class="fl">2.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># If everything is ok, no output is expected</span></span></code></pre></div>
 </section>
 <section id="come-testare-i-test" class="slide level1">
 <h1>Come testare i test?</h1>
@@ -376,9 +383,10 @@ errore:</p>
 <div class="sourceCode" id="cb12"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (color1 <span class="op">+</span> color2) <span class="op">==</span> Color(<span class="fl">6.0</span>, <span class="fl">8.0</span>, <span class="fl">11.0</span>) <span class="co"># 10 -&gt; 11</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (<span class="dv">2</span> <span class="op">*</span> color1) <span class="op">==</span> Color(<span class="fl">3.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>) <span class="co"># 2 -&gt; 3</span></span></code></pre></div>
-<p>Solo quando l’errore viene emesso si corregge il test.</p></li>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (color1 <span class="op">+</span> color2) <span class="op">==</span> Color(<span class="fl">6.0</span>, <span class="fl">8.0</span>, <span class="fl">11.0</span>) <span class="co"># 11.0 instead of 10.0: wrong!</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (<span class="dv">2</span> <span class="op">*</span> color1) <span class="op">==</span> Color(<span class="fl">3.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>) <span class="co"># 3.0 instead of 2.0: wrong!</span></span></code></pre></div>
+<p>Solo quando si è visto che l’errore è stato emesso si rimette a posto
+il test.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -499,6 +507,22 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a h
 <span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.pixel_offset(<span class="dv">6</span>, <span class="dv">3</span>) <span class="op">==</span> <span class="dv">7</span> <span class="op">*</span> <span class="dv">4</span> <span class="op">-</span> <span class="dv">1</span></span></code></pre></div></li>
 <li><p>Questi sono detti <em>unit test</em>, perché vanno a verificare
 le singole «unità» di codice.</p></li>
+</ul>
+</section>
+<section id="metodi-pubblici-e-privati" class="slide level1">
+<h1>Metodi pubblici e privati</h1>
+<ul>
+<li><p>La programmazione OOP propugna l’idea di definire certi metodi
+come “privati”, in modo che non siano invocabili dall’esterno.</p></li>
+<li><p>Questo però risulta molto scomodo nei test! Si vorrebbe infatti
+scrivere un test anche per <code>valid_coordinates</code> e per
+<code>pixel_offset</code>, ma la filosofia OOP imporrebbe di definirli
+privati e quindi non richiamabili dall’esterno.</p></li>
+<li><p>Se usate un linguaggio OOP, potete definire queste funzioni
+<em>pubbliche</em> ma chiamarle <code>_valid_coordinates</code> e
+<code>_pixel_offset</code>: di solito quando in informatica un nome
+inizia con <code>_</code> lo si considera “privato”, ma non si è
+obbligati a trattarlo come tale.</p></li>
 </ul>
 </section>
 <section id="funzioni-di-supporto-ai-test" class="slide level1">
@@ -805,6 +829,170 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a h
 <span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">3</span>, <span class="dv">2</span>, reference_color)</span>
 <span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> are_colors_close(reference_color, img.get_pixel(<span class="dv">3</span>, <span class="dv">2</span>))</span></code></pre></div>
 </section>
+<section id="suggerimenti-per-nim" class="slide level1">
+<h1>Suggerimenti per Nim</h1>
+</section>
+<section id="definizione-dei-tipi" class="slide level1">
+<h1>Definizione dei tipi</h1>
+<ul>
+<li><p>Implementare i tipi <code>Color</code> e <code>HdrImage</code>
+dovrebbe essere elementare</p></li>
+<li><p>Assicuratevi di usare <code>object</code> e non
+<code>ref object</code> per Color, mentre per <code>HdrImage</code> è
+indifferente</p></li>
+<li><p>Ricordatevi che in Nim bisogna esportare sia i tipi che i loro
+membri, usando <code>*</code>:</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode nim"><code class="sourceCode nim"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">Color</span><span class="co">*</span> <span class="co">=</span> <span class="kw">object</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>        r<span class="co">*</span><span class="kw">,</span> g<span class="co">*</span><span class="kw">,</span> b<span class="co">*</span><span class="kw">:</span> <span class="at">float32</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">HdrImage</span><span class="co">*</span> <span class="co">=</span> <span class="kw">object</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>        width<span class="co">*</span><span class="kw">,</span> height<span class="co">*</span><span class="kw">:</span> <span class="at">int</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>        pixels<span class="co">*</span><span class="kw">:</span> <span class="at">Seq</span><span class="kw">[</span><span class="at">Color</span><span class="kw">]</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="creazione-di-hdrimage" class="slide level1">
+<h1>Creazione di <code>HdrImage</code></h1>
+<ul>
+<li><p>In Nim non servono costruttori come in C++</p></li>
+<li><p>La prassi è quella di definire una funzione
+<code>newMyType</code> che crei il tipo <code>MyType</code></p></li>
+<li><p>Aggiungete quindi una procedura <code>newHdrImage</code> che
+accetti due parametri <code>width</code> ed <code>height</code>;
+inizializzate il campo <code>pixels</code> usando <a
+href="https://nim-lang.org/docs/system.html#newSeq"><code>newSeq</code></a>,
+poi impostate tutti i colori a zero (nero)</p></li>
+</ul>
+</section>
+<section id="scrittura-di-test" class="slide level1">
+<h1>Scrittura di test</h1>
+<ul>
+<li><p>In Nim è possibile usare il comando <code>assert</code> per
+eseguire dei test</p></li>
+<li><p>La prassi è quella di creare dei file Nim all’interno della
+directory <code>tests</code>; se questi file iniziano con
+<code>t</code>, vengono <a
+href="https://github.com/nim-lang/nimble#tests">eseguiti
+automaticamente</a> dal comando</p>
+<pre><code>$ nimble test</code></pre></li>
+<li><p>Per scrivere i test dei tipi <code>Color</code> e
+<code>HdrImage</code>, create quindi un file
+<code>tests/test_basictypes.nim</code> fatto così:</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode nim"><code class="sourceCode nim"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">..</span><span class="co">/</span>src<span class="co">/</span>basictypes</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="cf">when</span> isMainModule<span class="kw">:</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">1.0</span><span class="kw">,</span> <span class="fl">2.0</span><span class="kw">,</span> <span class="fl">3.0</span><span class="kw">)</span> <span class="co">+</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">3.0</span><span class="kw">,</span> <span class="fl">4.0</span><span class="kw">,</span> <span class="fl">5.0</span><span class="kw">)</span> <span class="co">==</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">4.0</span><span class="kw">,</span> <span class="fl">6.0</span><span class="kw">,</span> <span class="fl">8.0</span><span class="kw">)</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># …</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="suggerimenti-per-javakotlin" class="slide level1">
+<h1>Suggerimenti per Java/Kotlin</h1>
+</section>
+<section id="gestione-di-progetti" class="slide level1">
+<h1>Gestione di progetti</h1>
+<ul>
+<li><p>IntelliJ IDEA si basa su Gradle, che è l’equivalente di CMake in
+C++.</p></li>
+<li><p>Gradle può essere programmato in Groovy (un linguaggio basato su
+Java) o in Kotlin.</p></li>
+<li><p>Siccome Java e Kotlin permettono un’ottima modularità, per questo
+corso non è necessario differenziare tra libreria ed
+eseguibile.</p></li>
+<li><p>Create quindi un nuovo progetto esattamente come avete fatto la
+volta scorsa.</p></li>
+</ul>
+</section>
+<section id="creazione-di-classi" class="slide level1">
+<h1>Creazione di classi</h1>
+<p>In IntelliJ IDEA le classi si creano dalla finestra del progetto (a
+sinistra):</p>
+<center>
+<img data-src="./media/kotlin-new-class.png" height="480" />
+</center>
+</section>
+<section id="creazione-di-color" class="slide level1">
+<h1>Creazione di <code>Color</code></h1>
+<ul>
+<li><p>In Kotlin, usate le <em>data classes</em> per definire la classe
+<code>Color</code>: sono molto veloci da usare!</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">/** A RGB color</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param r The level of red</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param g The level of green</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param b The level of blue</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">data</span> <span class="kw">class</span> Color<span class="op">(</span><span class="kw">val</span> <span class="va">r</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">g</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<li><p>Definite <code>is_close</code> e gli operatori <code>plus</code>
+(somma di due colori) e <code>times</code> (prodotto tra colore e
+scalare).</p></li>
+</ul>
+</section>
+<section id="definizione-di-hdrimage" class="slide level1">
+<h1>Definizione di <code>HdrImage</code></h1>
+<ul>
+<li><p>Kotlin permette la definizione di classi in forma estremamente
+compatta (una favola per chi viene da Java!). Ecco un esempio di
+implementazione di <code>HdrImage</code>:</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage<span class="op">(</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span>  <span class="co">// Using &#39;val&#39; ensures that we cannot change the width</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> <span class="co">// or the height of the image once it&#39;s been created</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">pixels</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">Color</span>&gt; <span class="op">=</span> Array<span class="op">(</span>width * height<span class="op">)</span> <span class="op">{</span> Color<span class="op">(</span><span class="fl">0.0F</span>, <span class="fl">0.0F</span>, <span class="fl">0.0F</span><span class="op">)</span> <span class="op">}</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Here are the methods for the class…</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<li><p>Abituatevi alla differenza tra <code>val</code> e
+<code>var</code>!</p></li>
+</ul>
+</section>
+<section id="scrittura-di-test-1" class="slide level1">
+<h1>Scrittura di test</h1>
+<ul>
+<li><p>IntelliJ IDEA genera e gestisce il codice di test.</p></li>
+<li><p>Usa la libreria <a href="https://junit.org/">JUnit</a>; se vi
+chiede che versione usare, scegliete la 5.</p></li>
+<li><p>Controllate la versione usata nel vostro progetto aprendo il menu
+«File | Project structure».</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/kotlin-project-structure.png" height="560" />
+</center>
+<p>Qui la versione di JUnit è la 4.</p>
+</section>
+<section id="creazione-di-test-vuoti" class="slide level1">
+<h1>Creazione di test vuoti</h1>
+<ul>
+<li><p>Fate click col tasto destro sul nome di una classe e scegliete
+<em>Generate</em>.</p></li>
+<li><p>Nella finestra che compare, scegliete la versione giusta per
+JUnit e poi fate un segno di spunta accanto ai metodi per cui volete
+scrivere test. (Nel nostro caso saranno <code>is_close</code>,
+<code>plus</code> e <code>times</code>).</p></li>
+<li><p>Una volta implementati i test (usando <code>assertTrue</code> e
+<code>assertFalse</code>), eseguiteli usando le icone a sinistra
+dell’editor.</p></li>
+</ul>
+</section>
+<section id="generare-test" class="slide level1">
+<h1>Generare test</h1>
+<center>
+<img data-src="./media/kotlin-generate-test.png" />
+</center>
+</section>
+<section id="eseguire-test" class="slide level1">
+<h1>Eseguire test</h1>
+<center>
+<img data-src="./media/kotlin-run-test.png" />
+</center>
+</section>
 <section id="suggerimenti-per-c" class="slide level1">
 <h1>Suggerimenti per C#</h1>
 </section>
@@ -845,33 +1033,33 @@ nel suo complesso è una <em>soluzione</em>.</p></li>
 <h1>La nostra soluzione</h1>
 <p>Questi sono i comandi da terminale per produrre la soluzione che
 vogliamo:</p>
-<div class="sourceCode" id="cb27"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new solution that will include:</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. The library</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. The executable (currently printing «Hello, world!»)</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. The tests</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new sln <span class="at">-o</span> <span class="st">&quot;Myraytracer&quot;</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Myraytracer</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create the library, named &quot;Trace&quot;, and add it to the solution</span></span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new classlib <span class="at">-o</span> <span class="st">&quot;Trace&quot;</span></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace/Trace.csproj</span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create the executable, named &quot;Myraytracer&quot;, and add it to the solution</span></span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new console <span class="at">-o</span> <span class="st">&quot;Myraytracer&quot;</span></span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Myraytracer/Myraytracer.csproj</span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Create the tests, named &quot;Trace.Tests&quot;, and add them to the solution</span></span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new xunit <span class="at">-o</span> <span class="st">&quot;Trace.Tests&quot;</span></span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace.Tests/Trace.Tests.csproj</span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Both the executable and the tests depend on the «Trace» library</span></span>
-<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> add Myraytracer/Myraytracer.csproj reference Trace/Trace.csproj</span>
-<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> add Trace.Tests/Trace.Tests.csproj reference Trace/Trace.csproj</span>
-<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a .gitignore file</span></span>
-<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new gitignore</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new solution that will include:</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. The library</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. The executable (currently printing «Hello, world!»)</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. The tests</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new sln <span class="at">-o</span> <span class="st">&quot;Myraytracer&quot;</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Myraytracer</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create the library, named &quot;Trace&quot;, and add it to the solution</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new classlib <span class="at">-o</span> <span class="st">&quot;Trace&quot;</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace/Trace.csproj</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create the executable, named &quot;Myraytracer&quot;, and add it to the solution</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new console <span class="at">-o</span> <span class="st">&quot;Myraytracer&quot;</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Myraytracer/Myraytracer.csproj</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Create the tests, named &quot;Trace.Tests&quot;, and add them to the solution</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new xunit <span class="at">-o</span> <span class="st">&quot;Trace.Tests&quot;</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace.Tests/Trace.Tests.csproj</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Both the executable and the tests depend on the «Trace» library</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> add Myraytracer/Myraytracer.csproj reference Trace/Trace.csproj</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> add Trace.Tests/Trace.Tests.csproj reference Trace/Trace.csproj</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a .gitignore file</span></span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new gitignore</span></code></pre></div>
 <p>Fate tutto da linea di comando e poi aprite il progetto in Rider: è
 più istruttivo!</p>
 </section>
@@ -897,29 +1085,29 @@ forma:</p>
     └── Trace.Tests.csproj</code></pre></li>
 </ul>
 </section>
-<section id="scrittura-di-test" class="slide level1">
+<section id="scrittura-di-test-2" class="slide level1">
 <h1>Scrittura di test</h1>
-<div class="sourceCode" id="cb29"><pre
-class="sourceCode csharp"><code class="sourceCode cs"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This should be put in Trace.Tests/ColorTests.cs</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> System<span class="op">;</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Xunit<span class="op">;</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Trace<span class="op">;</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="kw">namespace</span> Trace<span class="op">.</span><span class="fu">Tests</span></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">class</span> ColorTests</span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">[</span>Fact<span class="op">]</span></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">TestAdd</span><span class="op">()</span></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>            Color a <span class="op">=</span> <span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">1.0f</span><span class="op">,</span> <span class="fl">2.0f</span><span class="op">,</span> <span class="fl">3.0f</span><span class="op">);</span></span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>            Color b <span class="op">=</span> <span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">5.0f</span><span class="op">,</span> <span class="fl">6.0f</span><span class="op">,</span> <span class="fl">7.0f</span><span class="op">);</span></span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>            <span class="co">// C# convention: *first* the expected value, *then* the test value</span></span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>            Assert<span class="op">.</span><span class="fu">True</span><span class="op">(</span>Color<span class="op">.</span><span class="fu">are_close</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">6.0f</span><span class="op">,</span> <span class="fl">8.0f</span><span class="op">,</span> <span class="fl">10.0f</span><span class="op">),</span> a <span class="op">+</span> b<span class="op">));</span></span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>            <span class="co">// ...</span></span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This should be put in Trace.Tests/ColorTests.cs</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> System<span class="op">;</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Xunit<span class="op">;</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Trace<span class="op">;</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="kw">namespace</span> Trace<span class="op">.</span><span class="fu">Tests</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">class</span> ColorTests</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">[</span>Fact<span class="op">]</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">TestAdd</span><span class="op">()</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>            Color a <span class="op">=</span> <span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">1.0f</span><span class="op">,</span> <span class="fl">2.0f</span><span class="op">,</span> <span class="fl">3.0f</span><span class="op">);</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>            Color b <span class="op">=</span> <span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">5.0f</span><span class="op">,</span> <span class="fl">6.0f</span><span class="op">,</span> <span class="fl">7.0f</span><span class="op">);</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>            <span class="co">// C# convention: *first* the expected value, *then* the test value</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>            Assert<span class="op">.</span><span class="fu">True</span><span class="op">(</span>Color<span class="op">.</span><span class="fu">are_close</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">6.0f</span><span class="op">,</span> <span class="fl">8.0f</span><span class="op">,</span> <span class="fl">10.0f</span><span class="op">),</span> a <span class="op">+</span> b<span class="op">));</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>            <span class="co">// ...</span></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>Potete eseguire i test col comando <code>dotnet test</code>, oppure
 in Rider (comodissimo, fate riferimento alle slide relative a
 Kotlin)</p>
@@ -927,16 +1115,16 @@ Kotlin)</p>
 <section id="suggerimenti-per-d" class="slide level1">
 <h1>Suggerimenti per D</h1>
 </section>
-<section id="definizione-dei-tipi" class="slide level1">
+<section id="definizione-dei-tipi-1" class="slide level1">
 <h1>Definizione dei tipi</h1>
 <ul>
 <li><p>Definite <code>Color</code> come una <code>struct</code> e
 <code>HdrImage</code> come una <code>class</code>; per
 <code>Color</code> prevedete dei default:</p>
-<div class="sourceCode" id="cb30"><pre
-class="sourceCode d"><code class="sourceCode d"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="wa">struct</span> Color <span class="op">{</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> r <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> g <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> b <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode d"><code class="sourceCode d"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="wa">struct</span> Color <span class="op">{</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> r <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> g <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> b <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
 <li><p>Definite il campo <code>pixels</code> del tipo
 <code>HdrImage</code> come un <a
 href="https://dlang.org/spec/arrays.html#dynamic-arrays">array
@@ -962,64 +1150,6 @@ invece il caso ad esempio del C# e di Nim</p></li>
 href="https://dlang.org/spec/unittest.html">Unit tests</a></p></li>
 </ul>
 </section>
-<section id="suggerimenti-per-nim" class="slide level1">
-<h1>Suggerimenti per Nim</h1>
-</section>
-<section id="definizione-dei-tipi-1" class="slide level1">
-<h1>Definizione dei tipi</h1>
-<ul>
-<li><p>Implementare i tipi <code>Color</code> e <code>HdrImage</code>
-dovrebbe essere elementare</p></li>
-<li><p>Assicuratevi di usare <code>object</code> e non
-<code>ref object</code> per Color, mentre per <code>HdrImage</code> è
-indifferente</p></li>
-<li><p>Ricordatevi che in Nim bisogna esportare sia i tipi che i loro
-membri, usando <code>*</code>:</p>
-<div class="sourceCode" id="cb32"><pre
-class="sourceCode nim"><code class="sourceCode nim"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">Color</span><span class="co">*</span> <span class="co">=</span> <span class="kw">object</span></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>        r<span class="co">*</span><span class="kw">,</span> g<span class="co">*</span><span class="kw">,</span> b<span class="co">*</span><span class="kw">:</span> <span class="at">float32</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">HdrImage</span><span class="co">*</span> <span class="co">=</span> <span class="kw">object</span></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>        width<span class="co">*</span><span class="kw">,</span> height<span class="co">*</span><span class="kw">:</span> <span class="at">int</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>        pixels<span class="co">*</span><span class="kw">:</span> <span class="at">Seq</span><span class="kw">[</span><span class="at">Color</span><span class="kw">]</span></span></code></pre></div></li>
-</ul>
-</section>
-<section id="creazione-di-hdrimage" class="slide level1">
-<h1>Creazione di <code>HdrImage</code></h1>
-<ul>
-<li><p>In Nim non servono costruttori come in C++</p></li>
-<li><p>La prassi è quella di definire una funzione
-<code>newMyType</code> che crei il tipo <code>MyType</code></p></li>
-<li><p>Aggiungete quindi una procedura <code>newHdrImage</code> che
-accetti due parametri <code>width</code> ed <code>height</code>;
-inizializzate il campo <code>pixels</code> usando <a
-href="https://nim-lang.org/docs/system.html#newSeq"><code>newSeq</code></a>,
-poi impostate tutti i colori a zero (nero)</p></li>
-</ul>
-</section>
-<section id="scrittura-di-test-1" class="slide level1">
-<h1>Scrittura di test</h1>
-<ul>
-<li><p>In Nim è possibile usare il comando <code>assert</code> per
-eseguire dei test</p></li>
-<li><p>La prassi è quella di creare dei file Nim all’interno della
-directory <code>tests</code>; se questi file iniziano con
-<code>t</code>, vengono <a
-href="https://github.com/nim-lang/nimble#tests">eseguiti
-automaticamente</a> dal comando</p>
-<pre><code>$ nimble test</code></pre></li>
-<li><p>Per scrivere i test dei tipi <code>Color</code> e
-<code>HdrImage</code>, create quindi un file
-<code>tests/test_basictypes.nim</code> fatto così:</p>
-<div class="sourceCode" id="cb34"><pre
-class="sourceCode nim"><code class="sourceCode nim"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">..</span><span class="co">/</span>src<span class="co">/</span>basictypes</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="cf">when</span> isMainModule<span class="kw">:</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">1.0</span><span class="kw">,</span> <span class="fl">2.0</span><span class="kw">,</span> <span class="fl">3.0</span><span class="kw">)</span> <span class="co">+</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">3.0</span><span class="kw">,</span> <span class="fl">4.0</span><span class="kw">,</span> <span class="fl">5.0</span><span class="kw">)</span> <span class="co">==</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">4.0</span><span class="kw">,</span> <span class="fl">6.0</span><span class="kw">,</span> <span class="fl">8.0</span><span class="kw">)</span></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># …</span></span></code></pre></div></li>
-</ul>
-</section>
 <section id="suggerimenti-per-rust" class="slide level1">
 <h1>Suggerimenti per Rust</h1>
 </section>
@@ -1043,13 +1173,13 @@ intatto (con il messaggio <code>Hello, world!</code>)</p></li>
 <li><p>Per <code>Color</code>, derivate i <em>trait</em>
 <code>Copy</code>, <code>Clone</code> e <code>Debug</code> per
 semplificarvi la vita:</p>
-<div class="sourceCode" id="cb35"><pre
-class="sourceCode rust"><code class="sourceCode rust"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Copy</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Debug</span><span class="at">)]</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> Color <span class="op">{</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> r<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> g<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> b<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Copy</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Debug</span><span class="at">)]</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> Color <span class="op">{</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> r<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> g<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> b<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Per <code>HdrImage</code>, definite il membro <code>pixels</code>
 di tipo <code>Vec&lt;Color&gt;</code></p></li>
 <li><p>Definite anche una funzione
@@ -1071,112 +1201,6 @@ href="https://doc.rust-lang.org/book/ch11-00-testing.html">capitolo
 11</a> di <em>The Rust Programming Language</em> (Klabnik &amp;
 Nichols)</p></li>
 </ul>
-</section>
-<section id="suggerimenti-per-javakotlin" class="slide level1">
-<h1>Suggerimenti per Java/Kotlin</h1>
-</section>
-<section id="gestione-di-progetti" class="slide level1">
-<h1>Gestione di progetti</h1>
-<ul>
-<li><p>IntelliJ IDEA si basa su Gradle, che è l’equivalente di CMake in
-C++.</p></li>
-<li><p>Gradle può essere programmato in Groovy (un linguaggio basato su
-Java) o in Kotlin.</p></li>
-<li><p>Siccome Java e Kotlin permettono un’ottima modularità, per questo
-corso non è necessario differenziare tra libreria ed
-eseguibile.</p></li>
-<li><p>Create quindi un nuovo progetto esattamente come avete fatto la
-volta scorsa.</p></li>
-</ul>
-</section>
-<section id="creazione-di-classi" class="slide level1">
-<h1>Creazione di classi</h1>
-<p>In IntelliJ IDEA le classi si creano dalla finestra del progetto (a
-sinistra):</p>
-<center>
-<img data-src="./media/kotlin-new-class.png" height="480" />
-</center>
-</section>
-<section id="creazione-di-color" class="slide level1">
-<h1>Creazione di <code>Color</code></h1>
-<ul>
-<li><p>In Kotlin, usate le <em>data classes</em> per definire la classe
-<code>Color</code>: sono molto veloci da usare!</p>
-<div class="sourceCode" id="cb37"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">/** A RGB color</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param r The level of red</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param g The level of green</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param b The level of blue</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">data</span> <span class="kw">class</span> Color<span class="op">(</span><span class="kw">val</span> <span class="va">r</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">g</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>Definite <code>is_close</code> e gli operatori <code>plus</code>
-(somma di due colori) e <code>times</code> (prodotto tra colore e
-scalare).</p></li>
-</ul>
-</section>
-<section id="definizione-di-hdrimage" class="slide level1">
-<h1>Definizione di <code>HdrImage</code></h1>
-<ul>
-<li><p>Kotlin permette la definizione di classi in forma estremamente
-compatta. Ecco un esempio di implementazione di
-<code>HdrImage</code>:</p>
-<div class="sourceCode" id="cb38"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage<span class="op">(</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span>  <span class="co">// Using &#39;val&#39; ensures that we cannot change the width</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> <span class="co">// or the height of the image once it&#39;s been created</span></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">pixels</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">Color</span>&gt; <span class="op">=</span> Array<span class="op">(</span>width * height<span class="op">)</span> <span class="op">{</span> Color<span class="op">(</span><span class="fl">0.0F</span>, <span class="fl">0.0F</span>, <span class="fl">0.0F</span><span class="op">)</span> <span class="op">}</span></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Here are the methods for the class…</span></span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>Abituatevi alla differenza tra <code>val</code> e
-<code>var</code>!</p></li>
-</ul>
-</section>
-<section id="scrittura-di-test-2" class="slide level1">
-<h1>Scrittura di test</h1>
-<ul>
-<li><p>IntelliJ IDEA genera e gestisce il codice di test.</p></li>
-<li><p>Usa la libreria <a href="https://junit.org/">JUnit</a>; se vi
-chiede che versione usare, potete optare per la 4 oppure la 5.</p></li>
-<li><p>Controllate la versione usata nel vostro progetto aprendo il menu
-«File | Project structure».</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/kotlin-project-structure.png" height="560" />
-</center>
-<p>Qui la versione usata è la 4.</p>
-</section>
-<section id="creazione-di-test-vuoti" class="slide level1">
-<h1>Creazione di test vuoti</h1>
-<ul>
-<li><p>Fate click col tasto destro sul nome di una classe e scegliete
-<em>Generate</em>.</p></li>
-<li><p>Nella finestra che compare, scegliete la versione giusta per
-JUnit e poi fate un segno di spunta accanto ai metodi per cui volete
-scrivere test. (Nel nostro caso saranno <code>is_close</code>,
-<code>plus</code> e <code>times</code>).</p></li>
-<li><p>Una volta implementati i test (usando <code>assertTrue</code> e
-<code>assertFalse</code>), eseguiteli usando le icone a sinistra
-dell’editor.</p></li>
-</ul>
-</section>
-<section id="generare-test" class="slide level1">
-<h1>Generare test</h1>
-<center>
-<img data-src="./media/kotlin-generate-test.png" />
-</center>
-</section>
-<section id="eseguire-test" class="slide level1">
-<h1>Eseguire test</h1>
-<center>
-<img data-src="./media/kotlin-run-test.png" />
-</center>
 </section>
     </div>
   </div>

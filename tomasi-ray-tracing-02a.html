@@ -259,9 +259,8 @@ stessa terna <span class="math inline">(s, m, l)</span></p></li>
 <li><p>In questo caso il colore percepito per i due segnali è
 indistinguibile all’occhio umano</p></li>
 <li><p>Il fenomeno è detto <em>metamerismo cromatico</em>, e i due
-colori si dicono <em>metamerici</em></p></li>
-<li><p>Il metamerismo dipende dal tipo di illuminazione (sole, lampada a
-fluorescenza, luce laser, etc.)</p></li>
+colori associati alla radiazione che colpisce l’occhio si dicono
+<em>metamerici</em></p></li>
 </ul>
 </section>
 <section id="la-codifica-rgb" class="slide level1">
@@ -422,10 +421,10 @@ L_X(x \rightarrow \Theta) = &amp;L_{X,e}(x \rightarrow \Theta) +\\
 <li><p>Se indichiamo con <span class="math inline">R</span>, <span
 class="math inline">G</span> e <span class="math inline">B</span> la
 radianza integrata e convertita nel sistema RGB, l’equazione del
-rendering si traduce in un sistema di tre equazioni identiche, che si
-possono riscrivere come una equazione «vettoriale» su <span
-class="math inline">\vec c = (R, G, B)</span>: <span
-class="math display">
+rendering si traduce in un sistema di tre equazioni identiche.</p></li>
+<li><p>Le tre equazioni si possono riscrivere come una equazione
+«vettoriale» su <span class="math inline">\vec c = (R, G, B)</span>:
+<span class="math display">
 \begin{aligned}
 \vec c(x \rightarrow \Theta) = &amp;\vec c_{e}(x \rightarrow \Theta) +\\
     &amp;\int_{\Omega_x} \vec f_r(x, \Psi \rightarrow \Theta)\otimes
@@ -436,8 +435,6 @@ class="math display">
 «vettore» dato dal prodotto delle componenti di <span
 class="math inline">\vec v</span> e <span class="math inline">\vec
 w</span>.</p></li>
-<li><p>Notate che così assumiamo che la BRDF <span
-class="math inline">f_r</span> sia costante nelle tre bande!</p></li>
 </ul>
 </section>
 <section id="visualizzazione-su-dispositivi" class="slide level1">
@@ -562,8 +559,8 @@ linearmente.</p></li>
 class="math inline">I</span> e il flusso <span
 class="math inline">\Phi</span> effettivamente emesso da un pixel è di
 solito nella forma <span class="math display">
-\Phi = \Phi_\text{max} \left(\frac{I}{I_\text{max}}\right)^\gamma\
-\text{per ciascuna delle bande R, G, B},
+\Phi = \Phi_0 + \Phi_\text{max}
+\left(\frac{I}{I_\text{max}}\right)^\gamma\ \text{per R, G e B},
 </span></p>
 <p>dove <span class="math inline">I \in [0, I_\text{max}]</span>, e
 <span class="math inline">\gamma</span> è un parametro caratteristico
@@ -578,13 +575,16 @@ class="math inline">I</span> è un numero <em>intero</em>.</p></li>
 <p><img
 data-src="pd-images/60e312ab1ab2799c680c8bfa9ba1211cb7b85136.svg"
 data-im_fname="gamma-curve" /></p>
+<p>Qui assumiamo che <span class="math inline">\Phi_0 \approx
+0</span>.</p>
 </section>
 <section id="calibrazione-dei-monitor" class="slide level1">
 <h1>Calibrazione dei monitor</h1>
 <p><img data-src="./media/checkered-pattern.svg" /></p>
 <p><span class="math display">
-\text{value} = \left(\frac12\right)^\gamma \quad\Rightarrow\quad \gamma
-= \frac{\log 1/2}{\log(\text{value})}
+\text{value} = \frac{\Phi}{\Phi_\text{max}} \stackrel{\Phi_0 \approx
+0}{\approx} \left(\frac12\right)^\gamma \quad\Rightarrow\quad \gamma =
+\frac{\log 1/2}{\log(\text{value})}
 </span></p>
 </section>
 <section id="calibrazione-dei-monitor-1" class="slide level1"

@@ -109,9 +109,7 @@
 
 -   In questo caso il colore percepito per i due segnali è indistinguibile all'occhio umano
 
--   Il fenomeno è detto *metamerismo cromatico*, e i due colori si dicono *metamerici*
-
--   Il metamerismo dipende dal tipo di illuminazione (sole, lampada a fluorescenza, luce laser, etc.)
+-   Il fenomeno è detto *metamerismo cromatico*, e i due colori associati alla radiazione che colpisce l'occhio si dicono *metamerici*
 
 # La codifica RGB
 
@@ -234,7 +232,9 @@ $$
 
 # Equazione del rendering
 
--   Se indichiamo con $R$, $G$ e $B$ la radianza integrata e convertita nel sistema RGB, l'equazione del rendering si traduce in un sistema di tre equazioni identiche, che si possono riscrivere come una equazione «vettoriale» su $\vec c = (R, G, B)$:
+-   Se indichiamo con $R$, $G$ e $B$ la radianza integrata e convertita nel sistema RGB, l'equazione del rendering si traduce in un sistema di tre equazioni identiche.
+
+-   Le tre equazioni si possono riscrivere come una equazione «vettoriale» su $\vec c = (R, G, B)$:
     $$
     \begin{aligned}
     \vec c(x \rightarrow \Theta) = &\vec c_{e}(x \rightarrow \Theta) +\\
@@ -243,8 +243,6 @@ $$
     $$
 
     dove $\vec v \otimes \vec w$ indica un «vettore» dato dal prodotto delle componenti di $\vec v$ e $\vec w$.
-
--   Notate che così assumiamo che la BRDF $f_r$ sia costante nelle tre bande!
 
 
 # Visualizzazione su dispositivi
@@ -344,7 +342,7 @@ document.addEventListener('rgb-colors', function() {
 
 -   La relazione tra il livello di emissione richiesto $I$ e il flusso $\Phi$ effettivamente emesso da un pixel è di solito nella forma
     $$
-    \Phi = \Phi_\text{max} \left(\frac{I}{I_\text{max}}\right)^\gamma\ \text{per ciascuna delle bande R, G, B},
+    \Phi = \Phi_0 + \Phi_\text{max} \left(\frac{I}{I_\text{max}}\right)^\gamma\ \text{per R, G e B},
     $$
 
     dove $I \in [0, I_\text{max}]$, e $\gamma$ è un parametro caratteristico del dispositivo.
@@ -363,12 +361,14 @@ plot [0:1] x with lines t "γ = 1.0" lt rgb "#ad3434" lw 3, \
            x**2.2 with lines t "γ = 2.2" lt rgb "#3434ad" lw 3
 ```
 
+Qui assumiamo che $\Phi_0 \approx 0$.
+
 # Calibrazione dei monitor
 
 ![](./media/checkered-pattern.svg)
 
 $$
-\text{value} = \left(\frac12\right)^\gamma \quad\Rightarrow\quad \gamma = \frac{\log 1/2}{\log(\text{value})}
+\text{value} = \frac{\Phi}{\Phi_\text{max}} \stackrel{\Phi_0 \approx 0}{\approx} \left(\frac12\right)^\gamma \quad\Rightarrow\quad \gamma = \frac{\log 1/2}{\log(\text{value})}
 $$
 
 
@@ -473,6 +473,7 @@ document.addEventListener('monitor-calibration-state', function() {
   refresh_gamma_text(0.5);
 });
 </script>
+
 
 # Risposta dei monitor
 
