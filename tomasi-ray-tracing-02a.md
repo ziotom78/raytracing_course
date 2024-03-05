@@ -342,7 +342,7 @@ document.addEventListener('rgb-colors', function() {
 
 -   La relazione tra il livello di emissione richiesto $I$ e il flusso $\Phi$ effettivamente emesso da un pixel è di solito nella forma
     $$
-    \Phi = \Phi_0 + \Phi_\text{max} \left(\frac{I}{I_\text{max}}\right)^\gamma\ \text{per R, G e B},
+    \Phi = \Phi_0 + \bigl(\Phi_\text{max} - \Phi_0\bigr) \left(\frac{I}{I_\text{max}}\right)^\gamma\ \text{per R, G e B},
     $$
 
     dove $I \in [0, I_\text{max}]$, e $\gamma$ è un parametro caratteristico del dispositivo.
