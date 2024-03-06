@@ -376,6 +376,15 @@ def set_pixel(self, x: int, y: int, new_color: Color):
     assert are_colors_close(color1, color2)
     ```
 
+# Importanza dei test
+
+-   La scrittura di buoni test è una delle abilità che questo insegnamento vuole sviluppare.
+
+-   È quindi **fondamentale** che i vostri repository mostrino una regolare implementazione dei test, lezione per lezione.
+
+-   La regolarità nell'implementazione dei test e la loro qualità è uno dei criteri con cui verrete valutati all'esame.
+
+
 # Lavoro in gruppo
 
 -   Da oggi lavorerete in gruppo: ciascuno di voi dovrà scegliere quale parte di codice implementare.
