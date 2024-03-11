@@ -250,15 +250,15 @@ double Bisezione::CercaZeri(double a, double b) {
 
 # Prestazioni
 
--   Le eccezioni rallentano i programmi, perché il compilatore deve inserire del codice «nascosto» che possa gestirle (per approfondire: [Exceptionally Bad: The Misuse of Exceptions in C++ & How to Do Better - Peter Muldoon - CppCon 2023](https://www.youtube.com/watch?v=Oy-VTqz1_58))
+-   Le eccezioni rallentano i programmi, perché il compilatore deve inserire del codice «nascosto» che possa gestirle ([video di approfondimento](https://www.youtube.com/watch?v=Oy-VTqz1_58))
 
--   Per questo alcuni linguaggi (Rust, Go…) non le supportano, e in altri si possono disabilitare all'interno di specifiche funzioni/metodi ([`noexcept`](https://en.cppreference.com/w/cpp/language/noexcept) in C++, [`nothrow`](https://dlang.org/spec/function.html#nothrow-functions) in D…)
+-   Alcuni linguaggi (Rust, Go…) non le supportano, in altri si possono disabilitare ([`noexcept`](https://en.cppreference.com/w/cpp/language/noexcept) in C++, [`nothrow`](https://dlang.org/spec/function.html#nothrow-functions) in D…)
 
--   Nel programma che svilupperemo useremo il seguente approccio, che non causerà alcun rallentamento significativo:
+-   Nel programma che svilupperemo useremo un approccio efficiente:
 
-    -   Leggeremo input dall'utente, usando eccezioni per segnalare errori gravi
-    -   Calcoleremo la soluzione dell'equazione del rendering, evitando eccezioni: questa sarà la parte più lenta
-    -   Salveremo il risultato in un file, usando nuovamente le eccezioni
+    -   Leggeremo input dall'utente, usando eccezioni per segnalare errori gravi;
+    -   Calcoleremo la soluzione dell'equazione del rendering, **evitando eccezioni** perché questa sarà la parte più lenta;
+    -   Salveremo il risultato in un file, usando nuovamente le eccezioni.
 
 # Alternative alle eccezioni
 
@@ -302,7 +302,7 @@ double Bisezione::CercaZeri(double a, double b) {
 
 # Tipi `Result`
 
--   In Rust esiste il tipo `Result`, che è una versione più versatile del tipo `std::optional` in C++ (ma dal C++23 c'è [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected), che è analogo a `Result`)
+-   In Rust esiste il tipo `Result`, che è una versione più versatile dei *nullable* (nel C++23 c'è [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected)).
 
 -   Il tipo `Result` è un *sum type* (li vedremo meglio più avanti), e permette di associare un tipo `A` in caso di successo, e un tipo `B` in caso di fallimento:
 
@@ -340,6 +340,8 @@ double Bisezione::CercaZeri(double a, double b) {
 -   Salvare dati in un file binario vuol dire scrivere una sequenza di numeri binari sul disco fisso, memorizzati come byte.
 
 ---
+
+# Contenuto binario di un file
 
 <asciinema-player src="./cast/binary-files-73x19.cast" cols="73" rows="19" font-size="medium"></asciinema-player>
 
@@ -423,7 +425,7 @@ double Bisezione::CercaZeri(double a, double b) {
 
 -   Si parla anche in questo caso di codifica di byte *big endian* o *little endian*
 
--   A differenza della *bit endianness*, dovremo preoccuparci della *byte endianness* nella gestione dei file PFM ☹
+-   A differenza della *bit endianness*, dovremo preoccuparci della *byte endianness* nella gestione dei file PFM 🙁
 
 # Dati binari e testuali
 
@@ -452,7 +454,7 @@ double Bisezione::CercaZeri(double a, double b) {
 
 -   Voi però avete già avuto a che fare con file di testo: sono i vostri codici sorgente!
 
--   Alcuni di voi hanno anche avuto messaggi d'errore da Git a proposito di strane conversioni di caratteri `CRLF`
+-   Alcuni di voi potrebbero anche avere avuto messaggi d'errore da Git a proposito di strane conversioni di caratteri `CRLF`
 
 -   Vediamo ora nel dettaglio la codifica testuale dei file, vi sarà molto utile soprattutto in questi due ambiti:
 
@@ -563,7 +565,7 @@ Vedete questo [link](https://www.howtogeek.com/727213/what-are-teletypes-and-why
 
 # Oltre i 127 caratteri
 
--   Anche se ASCII nacque per computer con 7 bit per byte, ben presto i produttori di computer si uniformarono per usare 8 bit in ogni byte
+-   Anche se ASCII nacque per computer con 7 bit per byte, ben presto i produttori di computer si uniformarono per usare 8 bit in ogni byte (più comodo perché è una potenza di 2)
 
 -   Siccome $2^8 = 256$, questo vuol dire che i numeri 128–255 sono inutilizzati in ASCII: uno spreco!
 
@@ -613,7 +615,7 @@ Code page 866 (cirillica)
 
     <center>![](media/narratological-commentary-to-odissey.png)</center>
 
--   Oltre agli accenti sulle lettere latine, sono esistenti nel mondo molti altri alfabeti e simboli, sia contemporanei (greco, cirillico, cinese, i simboli matematici, etc.) che antichi (geroglifici egizi, caratteri cuneiformi sumerici)
+-   Oltre agli accenti sulle lettere latine, esistono nel mondo molti altri alfabeti e simboli, sia contemporanei (greco, cirillico, cinese, i simboli matematici, etc.) che antichi (geroglifici egizi, caratteri cuneiformi accadici)
 
 # Lo standard Unicode
 
@@ -633,10 +635,10 @@ Code page 866 (cirillica)
 |----------|----------------|-----------|-----------|
 | 1.0      | Ottobre 1991   | 24        | 7,129     |
 | …        |                |           |           |
-| 12.0     | Marzo 2019     | 150       | 137,928   |
 | 13.0     | Marzo 2020     | 154       | 143,859   |
 | 14.0     | Settembre 2021 | 159       | 144,697   |
 | 15.0     | Settembre 2022 | 161       | 149,186   |
+| 15.1     | Settembre 2023 | 161       | 149,813   |
 
 # Esempi di caratteri Unicode
 
@@ -651,7 +653,7 @@ Code page 866 (cirillica)
 
 -   Ogni carattere Unicode è associato a un valore numerico, chiamato *code point*.
 
--   Si possono [combinare insieme caratteri](https://en.wikipedia.org/wiki/Combining_character): unendo `a` e `^` per formare `â`.
+-   Si possono [combinare insieme caratteri](https://en.wikipedia.org/wiki/Combining_character), ad esempio unendo `a` e `^` per formare `â`.
 
 -   Le lettere accentate più comuni hanno però una [codifica dedicata](https://en.wikipedia.org/wiki/Precomposed_character). Queste lettere sono quindi codificabili in **più modi** secondo lo standard Unicode. (Questo rende complicato confrontare due stringhe!)
 
@@ -663,7 +665,7 @@ Code page 866 (cirillica)
 
 -   Lo standard Unicode possiede molti *code point*, e a ogni versione se ne aggiungono di nuovi.
 
--   Questo pone un problema nella codifica dei *code point* su file: ASCII usava un byte per carattere perché il set era limitato. Ma per Unicode quanti byte per *code point* usare? 1? 2? 100?
+-   Questo pone un problema nella codifica dei *code point* su file: ASCII usava un byte per carattere perché il set era limitato. Ma per Unicode quanti byte per *code point* usare? Uno? Due? Cento?
 
     -   Se si scegliesse un valore basso, si limiterebbe l'estendibilità di Unicode.
     -   Se si scegliesse un valore molto alto, i file di testo aumenterebbero inutilmente di dimensione.
@@ -725,7 +727,7 @@ Code page 866 (cirillica)
 
 -   C'è qui però un problema di *endianness*: il valore `0x2A6C` si scrive come la coppia di byte `0x2A 0x6C` (*big endian*) oppure `0x6C 0x2A` (*little endian*)?
 
--   Nei file di testo codificati con UTF-16 si inserisce all'inizio del file il cosiddetto BOM (*byte-order marker*) che corrisponde al *code point* `0xFEFF`. Se i primi due byte di un file sono `0xFE 0xFF`, allora è chiaro che il file usa *big endian*, se sono `0xFF 0xFE` usa *little endian*. (Anche UTF-8 ha un BOM, `0xEF 0xBB 0xBF`).
+-   Nei file di testo codificati con UTF-16 si inserisce all'inizio del file il cosiddetto BOM (*byte-order marker*) che corrisponde al *code point* `0xFEFF`. Se i primi due byte di un file sono `0xFE 0xFF`, allora il file usa *big endian*, se sono `0xFF 0xFE` usa *little endian*. (Anche UTF-8 ha un BOM: `0xEF 0xBB 0xBF`).
 
 -   UTF-16 è usato da Windows e nei linguaggi basati su Java (Kotlin, Scala, etc.).
 

@@ -9,8 +9,8 @@
 |----------:|:-----------------------------------------------:|:-----------------------------------------------:|
 |         1 | [26 Febbraio 2024](tomasi-ray-tracing-01a.html) | [28 Febbraio 2024](tomasi-ray-tracing-01b.html) |
 |         2 | [4 Marzo 2024](tomasi-ray-tracing-02a.html)     | [6 Marzo 2024](tomasi-ray-tracing-02b.html)     |
-<!--
 |         3 | [11 Marzo 2024](tomasi-ray-tracing-03a.html)    | [13 Marzo 2024](tomasi-ray-tracing-03b.html)    |
+<!--
 |         4 | [18 Marzo 2024](tomasi-ray-tracing-04a.html)    | [20 Marzo 2024](tomasi-ray-tracing-04b.html)    |
 |         5 | [25 Marzo 2024](tomasi-ray-tracing-05a.html) | [27 Marzo 2024](tomasi-ray-tracing-05b.html) |
 |         6 | [8 Aprile 2024](tomasi-ray-tracing-06a.html) | [10 Aprile 2024](tomasi-ray-tracing-06b.html) |
@@ -42,8 +42,8 @@
 -   [Gestione dei colori](tomasi-ray-tracing-02b.html#/gestione-dei-colori)
 -   [Test automatici](tomasi-ray-tracing-02b.html#/verifica-del-codice)
 -   [Conflitti e *merging*](tomasi-ray-tracing-02b.html#/lavoro-in-gruppo)
-<!--
 -   [Gestione degli errori](tomasi-ray-tracing-03a.html#/gestione-degli-errori)
+<!--
 -   [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenze-duso)
 -   [Tone mapping](tomasi-ray-tracing-04a.html#/tone-mapping)
 -   [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modellizzazione-di-oggetti)
@@ -75,10 +75,10 @@
 ## Parti non richieste per l'esame
 
 -   [Il formato PFM](tomasi-ray-tracing-02a.html#/file-pfm)
-<!--
 -   [File di testo e file binari](tomasi-ray-tracing-03a.html#/file-binari-e-di-testo)
 -   [Lo standard Unicode](tomasi-ray-tracing-03a.html#/lo-standard-unicode)
 -   [File e stream](tomasi-ray-tracing-03b.html#/file-e-stream)
+<!--
 -   [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
 -   [Numeri complessi e quaternioni](tomasi-ray-tracing-06a.html#/numeri-complessi-e-quaternioni)
 -   [Algebre di Clifford](tomasi-ray-tracing-06a.html#/algebre-di-clifford)

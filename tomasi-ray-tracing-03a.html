@@ -435,26 +435,25 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a h
 <h1>Prestazioni</h1>
 <ul>
 <li><p>Le eccezioni rallentano i programmi, perché il compilatore deve
-inserire del codice «nascosto» che possa gestirle (per approfondire: <a
-href="https://www.youtube.com/watch?v=Oy-VTqz1_58">Exceptionally Bad:
-The Misuse of Exceptions in C++ &amp; How to Do Better - Peter Muldoon -
-CppCon 2023</a>)</p></li>
-<li><p>Per questo alcuni linguaggi (Rust, Go…) non le supportano, e in
-altri si possono disabilitare all’interno di specifiche funzioni/metodi
-(<a
+inserire del codice «nascosto» che possa gestirle (<a
+href="https://www.youtube.com/watch?v=Oy-VTqz1_58">video di
+approfondimento</a>)</p></li>
+<li><p>Alcuni linguaggi (Rust, Go…) non le supportano, in altri si
+possono disabilitare (<a
 href="https://en.cppreference.com/w/cpp/language/noexcept"><code>noexcept</code></a>
 in C++, <a
 href="https://dlang.org/spec/function.html#nothrow-functions"><code>nothrow</code></a>
 in D…)</p></li>
-<li><p>Nel programma che svilupperemo useremo il seguente approccio, che
-non causerà alcun rallentamento significativo:</p>
+<li><p>Nel programma che svilupperemo useremo un approccio
+efficiente:</p>
 <ul>
 <li>Leggeremo input dall’utente, usando eccezioni per segnalare errori
-gravi</li>
-<li>Calcoleremo la soluzione dell’equazione del rendering, evitando
-eccezioni: questa sarà la parte più lenta</li>
+gravi;</li>
+<li>Calcoleremo la soluzione dell’equazione del rendering,
+<strong>evitando eccezioni</strong> perché questa sarà la parte più
+lenta;</li>
 <li>Salveremo il risultato in un file, usando nuovamente le
-eccezioni</li>
+eccezioni.</li>
 </ul></li>
 </ul>
 </section>
@@ -509,10 +508,8 @@ Nim)</p></li>
 <h1>Tipi <code>Result</code></h1>
 <ul>
 <li><p>In Rust esiste il tipo <code>Result</code>, che è una versione
-più versatile del tipo <code>std::optional</code> in C++ (ma dal C++23
-c’è <a
-href="https://en.cppreference.com/w/cpp/utility/expected"><code>std::expected</code></a>,
-che è analogo a <code>Result</code>)</p></li>
+più versatile dei <em>nullable</em> (nel C++23 c’è <a
+href="https://en.cppreference.com/w/cpp/utility/expected"><code>std::expected</code></a>).</p></li>
 <li><p>Il tipo <code>Result</code> è un <em>sum type</em> (li vedremo
 meglio più avanti), e permette di associare un tipo <code>A</code> in
 caso di successo, e un tipo <code>B</code> in caso di fallimento:</p>
@@ -549,8 +546,8 @@ anziché <code>xxd</code>).</p></li>
 di numeri binari sul disco fisso, memorizzati come byte.</p></li>
 </ul>
 </section>
-<section class="slide level1">
-
+<section id="contenuto-binario-di-un-file" class="slide level1">
+<h1>Contenuto binario di un file</h1>
 <p><asciinema-player src="./cast/binary-files-73x19.cast" cols="73" rows="19" font-size="medium"></asciinema-player></p>
 </section>
 <section id="da-binario-a-decimale" class="slide level1">
@@ -653,7 +650,7 @@ oppure <code>3D 1F</code> (<em>little endian</em>)?</p></li>
 <li><p>Si parla anche in questo caso di codifica di byte <em>big
 endian</em> o <em>little endian</em></p></li>
 <li><p>A differenza della <em>bit endianness</em>, dovremo preoccuparci
-della <em>byte endianness</em> nella gestione dei file PFM ☹</p></li>
+della <em>byte endianness</em> nella gestione dei file PFM 🙁</p></li>
 </ul>
 </section>
 <section id="dati-binari-e-testuali" class="slide level1">
@@ -686,8 +683,9 @@ userà l’usuale <em>forma binaria</em>)</p></li>
 binaria</p></li>
 <li><p>Voi però avete già avuto a che fare con file di testo: sono i
 vostri codici sorgente!</p></li>
-<li><p>Alcuni di voi hanno anche avuto messaggi d’errore da Git a
-proposito di strane conversioni di caratteri <code>CRLF</code></p></li>
+<li><p>Alcuni di voi potrebbero anche avere avuto messaggi d’errore da
+Git a proposito di strane conversioni di caratteri
+<code>CRLF</code></p></li>
 <li><p>Vediamo ora nel dettaglio la codifica testuale dei file, vi sarà
 molto utile soprattutto in questi due ambiti:</p>
 <ol type="1">
@@ -846,8 +844,8 @@ aggiunti con <code>git add</code></p></li>
 <h1>Oltre i 127 caratteri</h1>
 <ul>
 <li><p>Anche se ASCII nacque per computer con 7 bit per byte, ben presto
-i produttori di computer si uniformarono per usare 8 bit in ogni
-byte</p></li>
+i produttori di computer si uniformarono per usare 8 bit in ogni byte
+(più comodo perché è una potenza di 2)</p></li>
 <li><p>Siccome <span class="math inline">2^8 = 256</span>, questo vuol
 dire che i numeri 128–255 sono inutilizzati in ASCII: uno
 spreco!</p></li>
@@ -895,10 +893,10 @@ contemporaneamente?</p>
 <center>
 <p><img data-src="media/narratological-commentary-to-odissey.png" /></p>
 </center></li>
-<li><p>Oltre agli accenti sulle lettere latine, sono esistenti nel mondo
-molti altri alfabeti e simboli, sia contemporanei (greco, cirillico,
-cinese, i simboli matematici, etc.) che antichi (geroglifici egizi,
-caratteri cuneiformi sumerici)</p></li>
+<li><p>Oltre agli accenti sulle lettere latine, esistono nel mondo molti
+altri alfabeti e simboli, sia contemporanei (greco, cirillico, cinese, i
+simboli matematici, etc.) che antichi (geroglifici egizi, caratteri
+cuneiformi accadici)</p></li>
 </ul>
 </section>
 <section id="lo-standard-unicode" class="slide level1">
@@ -941,28 +939,28 @@ emoticons (😀, 😉), simboli musicali (♭, ♯, 𝄞), etc.</p></li>
 <td></td>
 </tr>
 <tr class="odd">
-<td>12.0</td>
-<td>Marzo 2019</td>
-<td>150</td>
-<td>137,928</td>
-</tr>
-<tr class="even">
 <td>13.0</td>
 <td>Marzo 2020</td>
 <td>154</td>
 <td>143,859</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>14.0</td>
 <td>Settembre 2021</td>
 <td>159</td>
 <td>144,697</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>15.0</td>
 <td>Settembre 2022</td>
 <td>161</td>
 <td>149,186</td>
+</tr>
+<tr class="even">
+<td>15.1</td>
+<td>Settembre 2023</td>
+<td>161</td>
+<td>149,813</td>
 </tr>
 </tbody>
 </table>
@@ -985,8 +983,8 @@ emoticons (😀, 😉), simboli musicali (♭, ♯, 𝄞), etc.</p></li>
 <em>code point</em>.</p></li>
 <li><p>Si possono <a
 href="https://en.wikipedia.org/wiki/Combining_character">combinare
-insieme caratteri</a>: unendo <code>a</code> e <code>^</code> per
-formare <code>â</code>.</p></li>
+insieme caratteri</a>, ad esempio unendo <code>a</code> e <code>^</code>
+per formare <code>â</code>.</p></li>
 <li><p>Le lettere accentate più comuni hanno però una <a
 href="https://en.wikipedia.org/wiki/Precomposed_character">codifica
 dedicata</a>. Queste lettere sono quindi codificabili in <strong>più
@@ -1008,7 +1006,8 @@ scritture come il cinese.</p></li>
 versione se ne aggiungono di nuovi.</p></li>
 <li><p>Questo pone un problema nella codifica dei <em>code point</em> su
 file: ASCII usava un byte per carattere perché il set era limitato. Ma
-per Unicode quanti byte per <em>code point</em> usare? 1? 2? 100?</p>
+per Unicode quanti byte per <em>code point</em> usare? Uno? Due?
+Cento?</p>
 <ul>
 <li>Se si scegliesse un valore basso, si limiterebbe l’estendibilità di
 Unicode.</li>
@@ -1128,10 +1127,9 @@ quattro byte.</p></li>
 <li><p>Nei file di testo codificati con UTF-16 si inserisce all’inizio
 del file il cosiddetto BOM (<em>byte-order marker</em>) che corrisponde
 al <em>code point</em> <code>0xFEFF</code>. Se i primi due byte di un
-file sono <code>0xFE 0xFF</code>, allora è chiaro che il file usa
-<em>big endian</em>, se sono <code>0xFF 0xFE</code> usa <em>little
-endian</em>. (Anche UTF-8 ha un BOM,
-<code>0xEF 0xBB 0xBF</code>).</p></li>
+file sono <code>0xFE 0xFF</code>, allora il file usa <em>big
+endian</em>, se sono <code>0xFF 0xFE</code> usa <em>little endian</em>.
+(Anche UTF-8 ha un BOM: <code>0xEF 0xBB 0xBF</code>).</p></li>
 <li><p>UTF-16 è usato da Windows e nei linguaggi basati su Java (Kotlin,
 Scala, etc.).</p></li>
 </ul>
