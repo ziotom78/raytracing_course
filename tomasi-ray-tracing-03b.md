@@ -639,6 +639,93 @@ def test_pfm_read_wrong(self):
 3.  Implementate gli stessi test dell'esempio Python. Verificate anche che i vostri metodi segnalino correttamente gli errori.
 
 
+# Suggerimenti per Java/Kotlin
+
+
+# File e stream
+
+-   Java e Kotlin hanno le classi [`InputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html) e [`OutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html) (in `java.io`) per rappresentare uno stream. Queste vanno bene per i prototipi di `writeFloat` e `writePfm`.
+
+-   Per aprire un file in scrittura c'è [`FileOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/FileOutputStream.html), che restituisce direttamente uno stream.
+
+-   Stream in memoria si creano con [`ByteArrayOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/ByteArrayOutputStream.html).
+
+-   Per aprire un file, operare su esso e chiuderlo, Kotlin offre il comodissimo [`use`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/use.html), simile a `using` in C\#:
+
+    ```kotlin
+    FileOutputStream("out.pfm").use {
+        outStream -> outStream.write(...)
+    }
+    ```
+
+# Scrittura di file binari
+
+-   La *endianness* è identificata dal tipo [`ByteOrder`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteOrder.html) in `java.nio` (una classe Java, ma in Kotlin si possono usare nativamente librerie Java)
+
+-   Per scrivere/leggere valori in formato binario c'è la classe [`ByteBuffer`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html), sempre in `java.nio`. Esempio in Kotlin:
+
+    ```kotlin
+    fun writeFloatToStream(stream: OutputStream, value: Float, order: ByteOrder) {
+        val bytes = ByteBuffer.allocate(4).putFloat(value).array() // Big endian
+
+        if (order == ByteOrder.LITTLE_ENDIAN) {
+            bytes.reverse()
+        }
+
+        stream.write(bytes)
+    }
+    ```
+
+# Inizializzare `ByteBuffer`
+
+-   I byte in Kotlin sono con segno (molto strano!)
+
+-   Per inizializzare un array da valori esadecimali come quelli stampati da `xxd -i reference_be.pfm`, occorre una piccola funzione di aiuto:
+
+    ```kotlin
+    fun byteArrayOfInts(vararg ints: Int) =
+        ByteArray(ints.size) { pos -> ints[pos].toByte() }
+    ```
+
+# Contenuto di `reference_be.pfm`
+
+```kotlin
+val reference_be = byteArrayOfInts(
+    0x50, 0x46, 0x0a, 0x33, 0x20, 0x32, 0x0a, 0x31, 0x2e, 0x30, 0x0a, 0x42,
+    0xc8, 0x00, 0x00, 0x43, 0x48, 0x00, 0x00, 0x43, 0x96, 0x00, 0x00, 0x43,
+    0xc8, 0x00, 0x00, 0x43, 0xfa, 0x00, 0x00, 0x44, 0x16, 0x00, 0x00, 0x44,
+    0x2f, 0x00, 0x00, 0x44, 0x48, 0x00, 0x00, 0x44, 0x61, 0x00, 0x00, 0x41,
+    0x20, 0x00, 0x00, 0x41, 0xa0, 0x00, 0x00, 0x41, 0xf0, 0x00, 0x00, 0x42,
+    0x20, 0x00, 0x00, 0x42, 0x48, 0x00, 0x00, 0x42, 0x70, 0x00, 0x00, 0x42,
+    0x8c, 0x00, 0x00, 0x42, 0xa0, 0x00, 0x00, 0x42, 0xb4, 0x00, 0x00
+)
+```
+
+Fate lo stesso con `reference_le.pfm`.
+
+# Scrittura di testo
+
+-   Java e Kotlin rappresentano internamente le stringhe di caratteri usando la codifica UTF-16.
+
+-   Per trasformare la codifica in ASCII e poterla salvare in un file binario, Kotlin offre il comodissimo metodo `toByteArray()`:
+
+    ```kotlin
+    val header = "PF\n$width $height\n$endianness\n"
+    stream.write(header.toByteArray())
+    ```
+
+# Suggerimenti per Nim
+
+# Librerie da usare
+
+-   Il codice di oggi dovrebbe essere molto semplice da implementare in Nim
+
+-   La libreria [endians](https://nim-lang.org/docs/endians.html) fornisce funzioni per convertire dati in formato *little*/*big endian*
+
+-   La libreria [streams](https://nim-lang.org/docs/streams.html) implementa il concetto di *stream* sia associato ad un file che ad una stringa in memoria
+
+
+
 # Suggerimenti per C\#
 
 # File e stream
@@ -683,17 +770,6 @@ def test_pfm_read_wrong(self):
     ```
 
     dove `endianness_value` è un `double` che vale `1.0` oppure `-1.0`.
-
-
-# Suggerimenti per Nim
-
-# Librerie da usare
-
--   Il codice di oggi dovrebbe essere molto semplice da implementare in Nim
-
--   La libreria [endians](https://nim-lang.org/docs/endians.html) fornisce funzioni per convertire dati in formato *little*/*big endian*
-
--   La libreria [streams](https://nim-lang.org/docs/streams.html) implementa il concetto di *stream* sia associato ad un file che ad una stringa in memoria
 
 
 # Suggerimenti per Rust
@@ -815,81 +891,6 @@ def test_pfm_read_wrong(self):
     HdrImage decode_pfm_from_file(const string file_name) {
       return decode_pfm(cast(const(ubyte)[])read(file_name));
     }
-    ```
-
-# Suggerimenti per Java/Kotlin
-
-
-# File e stream
-
--   Java e Kotlin hanno le classi [`InputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html) e [`OutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html) (in `java.io`) per rappresentare uno stream. Queste vanno bene per i prototipi di `writeFloat` e `writePfm`.
-
--   Per aprire un file in scrittura c'è [`FileOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/FileOutputStream.html), che restituisce direttamente uno stream.
-
--   Stream in memoria si creano con [`ByteArrayOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/ByteArrayOutputStream.html).
-
--   Per aprire un file, operare su esso e chiuderlo, Kotlin offre il comodissimo [`use`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/use.html), simile a `using` in C\#:
-
-    ```kotlin
-    FileOutputStream("out.pfm").use {
-        outStream -> outStream.write(...)
-    }
-    ```
-
-# Scrittura di file binari
-
--   La *endianness* è identificata dal tipo [`ByteOrder`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteOrder.html) in `java.nio` (una classe Java, ma in Kotlin si possono usare nativamente librerie Java)
-
--   Per scrivere/leggere valori in formato binario c'è la classe [`ByteBuffer`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html), sempre in `java.nio`. Esempio in Kotlin:
-
-    ```kotlin
-    fun writeFloatToStream(stream: OutputStream, value: Float, order: ByteOrder) {
-        val bytes = ByteBuffer.allocate(4).putFloat(value).array() // Big endian
-
-        if (order == ByteOrder.LITTLE_ENDIAN) {
-            bytes.reverse()
-        }
-
-        stream.write(bytes)
-    }
-    ```
-
-# Inizializzare `ByteBuffer`
-
--   I byte in Kotlin sono con segno (molto strano!)
-
--   Per inizializzare un array da valori esadecimali come quelli stampati da `xxd -i reference_be.pfm`, occorre una piccola funzione di aiuto:
-
-    ```kotlin
-    fun byteArrayOfInts(vararg ints: Int) =
-        ByteArray(ints.size) { pos -> ints[pos].toByte() }
-    ```
-
-# Contenuto di `reference_be.pfm`
-
-```kotlin
-val reference_be = byteArrayOfInts(
-    0x50, 0x46, 0x0a, 0x33, 0x20, 0x32, 0x0a, 0x31, 0x2e, 0x30, 0x0a, 0x42,
-    0xc8, 0x00, 0x00, 0x43, 0x48, 0x00, 0x00, 0x43, 0x96, 0x00, 0x00, 0x43,
-    0xc8, 0x00, 0x00, 0x43, 0xfa, 0x00, 0x00, 0x44, 0x16, 0x00, 0x00, 0x44,
-    0x2f, 0x00, 0x00, 0x44, 0x48, 0x00, 0x00, 0x44, 0x61, 0x00, 0x00, 0x41,
-    0x20, 0x00, 0x00, 0x41, 0xa0, 0x00, 0x00, 0x41, 0xf0, 0x00, 0x00, 0x42,
-    0x20, 0x00, 0x00, 0x42, 0x48, 0x00, 0x00, 0x42, 0x70, 0x00, 0x00, 0x42,
-    0x8c, 0x00, 0x00, 0x42, 0xa0, 0x00, 0x00, 0x42, 0xb4, 0x00, 0x00
-)
-```
-
-Fate lo stesso con `reference_le.pfm`.
-
-# Scrittura di testo
-
--   Java e Kotlin rappresentano internamente le stringhe di caratteri usando la codifica UTF-16.
-
--   Per trasformare la codifica in ASCII e poterla salvare in un file binario, Kotlin offre il comodissimo metodo `toByteArray()`:
-
-    ```kotlin
-    val header = "PF\n$width $height\n$endianness\n"
-    stream.write(header.toByteArray())
     ```
 
 ---
