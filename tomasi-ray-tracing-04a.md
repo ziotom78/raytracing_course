@@ -502,7 +502,7 @@ $endif$
 
 -   Ma date ovviamente a GitHub il diritto di mantenere sul loro server una copia del codice (in legalese si chiama «content», perché include anche altri tipi di file, come immagini e testo Markdown).
 
--   Date anche l'autorizzazione di GitHub a **visualizzare** il vostro *content*, e a permettere agli utenti di scaricarlo.
+-   Date anche l'autorizzazione a GitHub per [**visualizzare**](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#5-license-grant-to-other-users) il vostro *content*, e a permettere agli utenti di scaricarlo.
 
 -   Ciò che **non** garantite necessariamente agli utenti è di poter compilare, modificare o eseguire il vostro codice, e tantomeno di poter usare i risultati prodotti da esso in una pubblicazione!
 
@@ -510,10 +510,7 @@ $endif$
 
 -   Per come vi ho chiesto di creare i vostri repository, immagino che nessuno di voi abbia aggiunto un file `LICENSE` o `LICENSE.md`.
 
--   Si tratta di un file di testo che specifica quali sono i diritti
-    dell'utente: se questo file non esiste nel repository, l'utente
-    **non** è autorizzato a compilare il vostro codice, né ad
-    eseguirlo, etc. Dovete dare il vostro consenso esplicito!
+-   Si tratta di un file di testo che specifica quali sono i diritti dell'utente: se questo file non esiste nel repository, l'utente **non** è autorizzato a compilare il vostro codice, né ad eseguirlo, etc. Dovete dare il vostro consenso esplicito!
 
 -   Se non siete esperti in questioni legali, è meglio che non scriviate da voi questo file. (Altrimenti potreste [scrivere abomini](https://github.com/ErikMcClure/bad-licenses)!)
 
@@ -594,7 +591,7 @@ Copyleft
 
 # Oltre il file `LICENSE.md`
 
--   È comune la prassi di inserire anche una copia della licenza in ogni file sorgente: in questo modo chi copia un file da un repository nel proprio codice si “porta dietro” la licenza
+-   È comune la prassi di inserire anche una copia della licenza in un commento in testa a ogni file sorgente: in questo modo chi copia un file da un repository nel proprio codice si “porta dietro” la licenza
 
 -   Non è però necessario (io non lo faccio mai…); alternativamente potete inserire un breve messaggio: *This file is released under a … license. See LICENSE.md*.
 

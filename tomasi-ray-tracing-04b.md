@@ -207,9 +207,9 @@ Le librerie locali risolvono questi problemi perché non vengono installate a li
 
 # Gestione di dipendenze
 
--   Quasi tutti i linguaggi supportano una gestione di librerie «locali» (sigh! non il C++)
+-   Quasi tutti i linguaggi (non il C++) supportano una gestione di librerie «locali»
 
--   Queste funzionalità sono solitamente implementate nei programmi che avete usato sinora per creare progetti (`dotnet`, `dub`, `nimble`, `cargo`…)
+-   Queste funzionalità sono solitamente implementate nei programmi che avete usato sinora per creare progetti (`nimble`, `gradle`, `dotnet`, `dub`, `cargo`…)
 
 -   Scegliete quindi una libreria che supporti la *scrittura* di immagini LDR e importatela nel vostro progetto come una dipendenza **locale** (niente `sudo`!)
 
@@ -226,14 +226,14 @@ Le librerie locali risolvono questi problemi perché non vengono installate a li
 
 # Conversione a LDR (2/3)
 
-| Linguaggio  | Librerie                                                                                               |
-|-------------|--------------------------------------------------------------------------------------------------------|
-| C\#         | [ImageSharp](https://docs.sixlabors.com/articles/imagesharp/?tabs=tabid-1)                             |
-| D           | [imageformats](https://code.dlang.org/packages/imageformats)                                           |
-| Java/Kotlin | [javax.imageio](https://docs.oracle.com/javase/8/docs/api/javax/imageio/ImageIO.html) (già installato) |
-| Nim         | [simplepng](https://github.com/jrenner/nim-simplepng)                                                  |
-| Python      | [Pillow](https://pillow.readthedocs.io/en/stable/)                                                     |
-| Rust        | [image](https://crates.io/crates/image)                                                                |
+| Linguaggio                                            | Librerie                                                                                               |
+|-------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| C\#                                                   | [ImageSharp](https://docs.sixlabors.com/articles/imagesharp/?tabs=tabid-1)                             |
+| D                                                     | [imageformats](https://code.dlang.org/packages/imageformats)                                           |
+| Java/Kotlin                                           | [javax.imageio](https://docs.oracle.com/javase/8/docs/api/javax/imageio/ImageIO.html) (già installato) |
+| Nim                                                   | [simplepng](https://github.com/jrenner/nim-simplepng)                                                  |
+| Python                                                | [Pillow](https://pillow.readthedocs.io/en/stable/)                                                     |
+| Rust                                                  | [image](https://crates.io/crates/image)                                                                |
 
 Potete scegliere altre librerie, ma attenzione a scegliere quelle pixel-based!
 
@@ -312,18 +312,22 @@ def main(argv):
         print("Error: ", err)
         return
 
+    # You should put a try…except block here and produce a nice error
+    # message is the image couldn't be saved
     with open(parameters.input_pfm_file_name, "rb") as inpf:
         img = hdrimages.read_pfm_image(inpf)
 
-    print(f"File {parameters.input_pfm_file_name} has been read from disk.")
+    print(f'File "{parameters.input_pfm_file_name}" has been read from disk.')
 
     img.normalize_image(factor=parameters.factor)
     img.clamp_image()
 
+    # Same as above: use try…except to produce a human-readable message
+    # if something goes wrong
     with open(parameters.output_png_file_name, "wb") as outf:
         img.write_ldr_image(stream=outf, format="PNG", gamma=parameters.gamma)
 
-    print(f"File {parameters.output_png_file_name} has been written to disk.")
+    print(f'File "{parameters.output_png_file_name}" has been written to disk.')
 ```
 
 # Guida per l'esercitazione
@@ -343,45 +347,16 @@ def main(argv):
 
 -   C'è anche il sito [Scenes for pbrt-v3](https://www.pbrt.org/scenes-v3.html).
 
-# Indicazioni per C\#
-
-# Importare librerie
-
--   La libreria ImageSharp supporta molti formati: JPEG, PNG, BMP, GIF, e TGA (un vecchio formato che non abbiamo trattato nella lezione di teoria).
-
--   In C\# si possono scaricare e installare automaticamente librerie, e specificare che vanno impiegate nei propri progetti senza bisogno di modificare Makefile e di usare `root-config`, `pkg-config` e cose simili.
-
--   Aggiungete il package [SixLabors.ImageSharp](https://docs.sixlabors.com/index.html) alla libreria di classi (che forse avete chiamato `Tracer`):
-
-    ```text
-    $ dotnet add package SixLabors.ImageSharp
-    ```
-
-# Salvare file PNG
-
-```csharp
-// Create a sRGB bitmap
-var bitmap = new Image<Rgb24>(Configuration.Default, width, height);
-
-// The bitmap can be used as a matrix. To draw the pixels in the bitmap
-// just use the syntax "bitmap[x, y]" like the following:
-bitmap[SOMEX, SOMEY] = new Rgb24(255, 255, 128); // Three "Byte" values!
-
-// Save the bitmap as a PNG file
-using (Stream fileStream = File.OpenWrite("output.png")) {
-    bitmap.Save(fileStream, new PngEncoder());
-}
-```
 
 # Indicazioni per D/Nim/Rust
 
 # Indicazioni per D/Nim/Rust
 
--   Similmente al C\#, potete installare librerie nel vostro progetto con il vostro package manager:
+-   Potete installare librerie nel vostro progetto con il vostro package manager:
 
-    -   In D, usate `dub add NAME`;
     -   In Nim, usate `nimble install NAME`;
-    -   In Cargo, usate `cargo` seguendo [la guida](https://doc.rust-lang.org/cargo/guide/dependencies.html).
+    -   In Cargo, usate `cargo` seguendo [la guida](https://doc.rust-lang.org/cargo/guide/dependencies.html);
+    -   In D, usate `dub add NAME`.
 
 -   Queste librerie saranno installate come dipendenze del vostro programma, e non a livello di sistema.
 
@@ -395,9 +370,7 @@ using (Stream fileStream = File.OpenWrite("output.png")) {
 
 # Codificare il colore
 
--   La classe `BufferedImage` permette di codificare il colore in tanti modi diversi. Se usate `TYPE_INT_RGB`, il colore è un numero intero a 32 bit anziché una terna RGB.
-
--   I 32 bit del numero che codifica un colore seguono questo formato:
+-   La classe `BufferedImage` permette di codificare il colore in tanti modi diversi. Se usate `TYPE_INT_RGB`, il colore non è una terna RGB ma un intero a 32 bit con questo formato:
 
     ```
     00000000 rrrrrrrr gggggggg bbbbbbbb
@@ -405,7 +378,11 @@ using (Stream fileStream = File.OpenWrite("output.png")) {
 
     dove `r` sono i bit del rosso, `g` quelli del verde e `b` quelli del blu. Di solito i colori si indicano usando la notazione esadecimale, perché in questo modo sono sempre a sei cifre, ad es. `0x12FA51`.
 
--   Se `r`, `g` e `b` sono byte nell'intervallo [0, 255], potete usare la formula `r * 65536 + g * 256 + b` oppure `(r shl 16) + (g shl 8) + b`.
+-   Se `r`, `g` e `b` sono byte nell'intervallo [0, 255], potete usare una di queste due formule:
+
+    ```
+    r * 65536 + g * 256 + b                    (r shl 16) + (g shl 8) + b
+    ```
 
 # Esempio di codice Kotlin
 
@@ -443,6 +420,36 @@ fun main(args: Array<String>) {
     ```text
     ./gradlew run --args="input_file.pfm 0.3 1.0 output_file.png"
     ```
+
+# Indicazioni per C\#
+
+# Importare librerie
+
+-   La libreria ImageSharp supporta molti formati: JPEG, PNG, BMP, GIF, e TGA (un vecchio formato che non abbiamo trattato nella lezione di teoria).
+
+-   In C\# si possono scaricare e installare automaticamente librerie, e specificare che vanno impiegate nei propri progetti senza bisogno di modificare Makefile e di usare `root-config`, `pkg-config` e cose simili.
+
+-   Aggiungete il package [SixLabors.ImageSharp](https://docs.sixlabors.com/index.html) alla libreria di classi (che forse avete chiamato `Tracer`):
+
+    ```text
+    $ dotnet add package SixLabors.ImageSharp
+    ```
+
+# Salvare file PNG
+
+```csharp
+// Create a sRGB bitmap
+var bitmap = new Image<Rgb24>(Configuration.Default, width, height);
+
+// The bitmap can be used as a matrix. To draw the pixels in the bitmap
+// just use the syntax "bitmap[x, y]" like the following:
+bitmap[SOMEX, SOMEY] = new Rgb24(255, 255, 128); // Three "Byte" values!
+
+// Save the bitmap as a PNG file
+using (Stream fileStream = File.OpenWrite("output.png")) {
+    bitmap.Save(fileStream, new PngEncoder());
+}
+```
 
 ---
 title: "Esercitazione 4"

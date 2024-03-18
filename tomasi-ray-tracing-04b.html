@@ -380,11 +380,12 @@ environment</em></a> in Python</p></li>
 <section id="gestione-di-dipendenze-2" class="slide level1">
 <h1>Gestione di dipendenze</h1>
 <ul>
-<li><p>Quasi tutti i linguaggi supportano una gestione di librerie
-«locali» (sigh! non il C++)</p></li>
+<li><p>Quasi tutti i linguaggi (non il C++) supportano una gestione di
+librerie «locali»</p></li>
 <li><p>Queste funzionalità sono solitamente implementate nei programmi
-che avete usato sinora per creare progetti (<code>dotnet</code>,
-<code>dub</code>, <code>nimble</code>, <code>cargo</code>…)</p></li>
+che avete usato sinora per creare progetti (<code>nimble</code>,
+<code>gradle</code>, <code>dotnet</code>, <code>dub</code>,
+<code>cargo</code>…)</p></li>
 <li><p>Scegliete quindi una libreria che supporti la <em>scrittura</em>
 di immagini LDR e importatela nel vostro progetto come una dipendenza
 <strong>locale</strong> (niente <code>sudo</code>!)</p></li>
@@ -414,8 +415,8 @@ formato grafico LDR: PNG, JPEG, WebP…</li>
 <h1>Conversione a LDR (2/3)</h1>
 <table>
 <colgroup>
-<col style="width: 11%" />
-<col style="width: 88%" />
+<col style="width: 34%" />
+<col style="width: 65%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -537,18 +538,22 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a h
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error: &quot;</span>, err)</span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(parameters.input_pfm_file_name, <span class="st">&quot;rb&quot;</span>) <span class="im">as</span> inpf:</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> hdrimages.read_pfm_image(inpf)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;File </span><span class="sc">{</span>parameters<span class="sc">.</span>input_pfm_file_name<span class="sc">}</span><span class="ss"> has been read from disk.&quot;</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># You should put a try…except block here and produce a nice error</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># message is the image couldn&#39;t be saved</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(parameters.input_pfm_file_name, <span class="st">&quot;rb&quot;</span>) <span class="im">as</span> inpf:</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> hdrimages.read_pfm_image(inpf)</span>
 <span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    img.normalize_image(factor<span class="op">=</span>parameters.factor)</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    img.clamp_image()</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(parameters.output_png_file_name, <span class="st">&quot;wb&quot;</span>) <span class="im">as</span> outf:</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        img.write_ldr_image(stream<span class="op">=</span>outf, <span class="bu">format</span><span class="op">=</span><span class="st">&quot;PNG&quot;</span>, gamma<span class="op">=</span>parameters.gamma)</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;File </span><span class="sc">{</span>parameters<span class="sc">.</span>output_png_file_name<span class="sc">}</span><span class="ss"> has been written to disk.&quot;</span>)</span></code></pre></div>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&#39;File &quot;</span><span class="sc">{</span>parameters<span class="sc">.</span>input_pfm_file_name<span class="sc">}</span><span class="ss">&quot; has been read from disk.&#39;</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    img.normalize_image(factor<span class="op">=</span>parameters.factor)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    img.clamp_image()</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Same as above: use try…except to produce a human-readable message</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># if something goes wrong</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(parameters.output_png_file_name, <span class="st">&quot;wb&quot;</span>) <span class="im">as</span> outf:</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>        img.write_ldr_image(stream<span class="op">=</span>outf, <span class="bu">format</span><span class="op">=</span><span class="st">&quot;PNG&quot;</span>, gamma<span class="op">=</span>parameters.gamma)</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&#39;File &quot;</span><span class="sc">{</span>parameters<span class="sc">.</span>output_png_file_name<span class="sc">}</span><span class="ss">&quot; has been written to disk.&#39;</span>)</span></code></pre></div>
 </section>
 <section id="guida-per-lesercitazione" class="slide level1">
 <h1>Guida per l’esercitazione</h1>
@@ -586,55 +591,20 @@ href="https://www.pbrt.org/scenes-v3.html">Scenes for
 pbrt-v3</a>.</p></li>
 </ul>
 </section>
-<section id="indicazioni-per-c" class="slide level1">
-<h1>Indicazioni per C#</h1>
-</section>
-<section id="importare-librerie" class="slide level1">
-<h1>Importare librerie</h1>
-<ul>
-<li><p>La libreria ImageSharp supporta molti formati: JPEG, PNG, BMP,
-GIF, e TGA (un vecchio formato che non abbiamo trattato nella lezione di
-teoria).</p></li>
-<li><p>In C# si possono scaricare e installare automaticamente librerie,
-e specificare che vanno impiegate nei propri progetti senza bisogno di
-modificare Makefile e di usare <code>root-config</code>,
-<code>pkg-config</code> e cose simili.</p></li>
-<li><p>Aggiungete il package <a
-href="https://docs.sixlabors.com/index.html">SixLabors.ImageSharp</a>
-alla libreria di classi (che forse avete chiamato
-<code>Tracer</code>):</p>
-<pre class="text"><code>$ dotnet add package SixLabors.ImageSharp</code></pre></li>
-</ul>
-</section>
-<section id="salvare-file-png" class="slide level1">
-<h1>Salvare file PNG</h1>
-<div class="sourceCode" id="cb15"><pre
-class="sourceCode csharp"><code class="sourceCode cs"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Create a sRGB bitmap</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> bitmap <span class="op">=</span> <span class="kw">new</span> Image<span class="op">&lt;</span>Rgb24<span class="op">&gt;(</span>Configuration<span class="op">.</span><span class="fu">Default</span><span class="op">,</span> width<span class="op">,</span> height<span class="op">);</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">// The bitmap can be used as a matrix. To draw the pixels in the bitmap</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">// just use the syntax &quot;bitmap[x, y]&quot; like the following:</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>bitmap<span class="op">[</span>SOMEX<span class="op">,</span> SOMEY<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">Rgb24</span><span class="op">(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">128</span><span class="op">);</span> <span class="co">// Three &quot;Byte&quot; values!</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Save the bitmap as a PNG file</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="op">(</span>Stream fileStream <span class="op">=</span> File<span class="op">.</span><span class="fu">OpenWrite</span><span class="op">(</span><span class="st">&quot;output.png&quot;</span><span class="op">))</span> <span class="op">{</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    bitmap<span class="op">.</span><span class="fu">Save</span><span class="op">(</span>fileStream<span class="op">,</span> <span class="kw">new</span> <span class="fu">PngEncoder</span><span class="op">());</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-</section>
 <section id="indicazioni-per-dnimrust" class="slide level1">
 <h1>Indicazioni per D/Nim/Rust</h1>
 </section>
 <section id="indicazioni-per-dnimrust-1" class="slide level1">
 <h1>Indicazioni per D/Nim/Rust</h1>
 <ul>
-<li><p>Similmente al C#, potete installare librerie nel vostro progetto
-con il vostro package manager:</p>
+<li><p>Potete installare librerie nel vostro progetto con il vostro
+package manager:</p>
 <ul>
-<li>In D, usate <code>dub add NAME</code>;</li>
 <li>In Nim, usate <code>nimble install NAME</code>;</li>
 <li>In Cargo, usate <code>cargo</code> seguendo <a
 href="https://doc.rust-lang.org/cargo/guide/dependencies.html">la
-guida</a>.</li>
+guida</a>;</li>
+<li>In D, usate <code>dub add NAME</code>.</li>
 </ul></li>
 <li><p>Queste librerie saranno installate come dipendenze del vostro
 programma, e non a livello di sistema.</p></li>
@@ -659,37 +629,34 @@ implementa i metodi per leggere/scrivere immagini LDR su file).</p></li>
 <ul>
 <li><p>La classe <code>BufferedImage</code> permette di codificare il
 colore in tanti modi diversi. Se usate <code>TYPE_INT_RGB</code>, il
-colore è un numero intero a 32 bit anziché una terna RGB.</p></li>
-<li><p>I 32 bit del numero che codifica un colore seguono questo
-formato:</p>
+colore non è una terna RGB ma un intero a 32 bit con questo formato:</p>
 <pre><code>00000000 rrrrrrrr gggggggg bbbbbbbb</code></pre>
 <p>dove <code>r</code> sono i bit del rosso, <code>g</code> quelli del
 verde e <code>b</code> quelli del blu. Di solito i colori si indicano
 usando la notazione esadecimale, perché in questo modo sono sempre a sei
 cifre, ad es. <code>0x12FA51</code>.</p></li>
 <li><p>Se <code>r</code>, <code>g</code> e <code>b</code> sono byte
-nell’intervallo [0, 255], potete usare la formula
-<code>r * 65536 + g * 256 + b</code> oppure
-<code>(r shl 16) + (g shl 8) + b</code>.</p></li>
+nell’intervallo [0, 255], potete usare una di queste due formule:</p>
+<pre><code>r * 65536 + g * 256 + b                    (r shl 16) + (g shl 8) + b</code></pre></li>
 </ul>
 </section>
 <section id="esempio-di-codice-kotlin" class="slide level1">
 <h1>Esempio di codice Kotlin</h1>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span> <span class="op">=</span> <span class="dv">800</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span> <span class="op">=</span> <span class="dv">600</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">ldrImage</span> <span class="op">=</span> BufferedImage<span class="op">(</span>width<span class="op">,</span> height<span class="op">,</span> BufferedImage<span class="op">.</span>TYPE_INT_RGB<span class="op">)</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>y <span class="kw">in</span> <span class="dv">0</span> until height<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>x <span class="kw">in</span> <span class="dv">0</span> until width<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 0xFF0000 corresponds to sRGB(255, 0, 0): the image will be</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>            <span class="co">// painted uniformly with a bright red shade</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>            ldrImage<span class="op">.</span>setRGB<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> <span class="bn">0xFF0000</span><span class="op">)</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Save the image to the file specified on the command line</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    ImageIO<span class="op">.</span>write<span class="op">(</span>args<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="st">&quot;PNG&quot;</span><span class="op">,</span> stream<span class="op">)</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span> <span class="op">=</span> <span class="dv">800</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span> <span class="op">=</span> <span class="dv">600</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">ldrImage</span> <span class="op">=</span> BufferedImage<span class="op">(</span>width<span class="op">,</span> height<span class="op">,</span> BufferedImage<span class="op">.</span>TYPE_INT_RGB<span class="op">)</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>y <span class="kw">in</span> <span class="dv">0</span> until height<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>x <span class="kw">in</span> <span class="dv">0</span> until width<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 0xFF0000 corresponds to sRGB(255, 0, 0): the image will be</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>            <span class="co">// painted uniformly with a bright red shade</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>            ldrImage<span class="op">.</span>setRGB<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> <span class="bn">0xFF0000</span><span class="op">)</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Save the image to the file specified on the command line</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    ImageIO<span class="op">.</span>write<span class="op">(</span>args<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="st">&quot;PNG&quot;</span><span class="op">,</span> stream<span class="op">)</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="linea-di-comando" class="slide level1">
 <h1>Linea di comando</h1>
@@ -705,6 +672,41 @@ richiede che i parametri siano passati attraverso
 <code>--args</code>:</p>
 <pre class="text"><code>./gradlew run --args=&quot;input_file.pfm 0.3 1.0 output_file.png&quot;</code></pre></li>
 </ul>
+</section>
+<section id="indicazioni-per-c" class="slide level1">
+<h1>Indicazioni per C#</h1>
+</section>
+<section id="importare-librerie" class="slide level1">
+<h1>Importare librerie</h1>
+<ul>
+<li><p>La libreria ImageSharp supporta molti formati: JPEG, PNG, BMP,
+GIF, e TGA (un vecchio formato che non abbiamo trattato nella lezione di
+teoria).</p></li>
+<li><p>In C# si possono scaricare e installare automaticamente librerie,
+e specificare che vanno impiegate nei propri progetti senza bisogno di
+modificare Makefile e di usare <code>root-config</code>,
+<code>pkg-config</code> e cose simili.</p></li>
+<li><p>Aggiungete il package <a
+href="https://docs.sixlabors.com/index.html">SixLabors.ImageSharp</a>
+alla libreria di classi (che forse avete chiamato
+<code>Tracer</code>):</p>
+<pre class="text"><code>$ dotnet add package SixLabors.ImageSharp</code></pre></li>
+</ul>
+</section>
+<section id="salvare-file-png" class="slide level1">
+<h1>Salvare file PNG</h1>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Create a sRGB bitmap</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> bitmap <span class="op">=</span> <span class="kw">new</span> Image<span class="op">&lt;</span>Rgb24<span class="op">&gt;(</span>Configuration<span class="op">.</span><span class="fu">Default</span><span class="op">,</span> width<span class="op">,</span> height<span class="op">);</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">// The bitmap can be used as a matrix. To draw the pixels in the bitmap</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">// just use the syntax &quot;bitmap[x, y]&quot; like the following:</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>bitmap<span class="op">[</span>SOMEX<span class="op">,</span> SOMEY<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">Rgb24</span><span class="op">(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">128</span><span class="op">);</span> <span class="co">// Three &quot;Byte&quot; values!</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Save the bitmap as a PNG file</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="op">(</span>Stream fileStream <span class="op">=</span> File<span class="op">.</span><span class="fu">OpenWrite</span><span class="op">(</span><span class="st">&quot;output.png&quot;</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    bitmap<span class="op">.</span><span class="fu">Save</span><span class="op">(</span>fileStream<span class="op">,</span> <span class="kw">new</span> <span class="fu">PngEncoder</span><span class="op">());</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
     </div>
   </div>
