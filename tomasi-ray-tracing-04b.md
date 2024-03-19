@@ -89,7 +89,7 @@ def test_average_luminosity():
 
 -   La funzione `normalize_image` calcola la luminosità media di un'immagine secondo l'[equazione corrispondente](tomasi-ray-tracing-05b-external-libraries.html#/normalizzazione).
 
--   La funzione dovrebbe accettare il valore di $a$ come parametro di input:
+-   La funzione dovrebbe accettare il valore di $a$ come parametro di input (in `factor`):
 
     ```python
     def normalize_image(self, factor, luminosity=None):
@@ -207,7 +207,7 @@ Le librerie locali risolvono questi problemi perché non vengono installate a li
 
 # Gestione di dipendenze
 
--   Quasi tutti i linguaggi (non il C++) supportano una gestione di librerie «locali»
+-   Quasi tutti i linguaggi supportano una gestione di librerie «locali»
 
 -   Queste funzionalità sono solitamente implementate nei programmi che avete usato sinora per creare progetti (`nimble`, `gradle`, `dotnet`, `dub`, `cargo`…)
 
