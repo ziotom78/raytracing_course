@@ -214,7 +214,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 
     ma $\left<v, e_1\right> = 4$ e $\left<v, e_2\right> = 7$.
 
--   Il nostro codice userà sempre basi ortonormali.
+-   Il nostro codice userà sempre basi ortonormali: $\alpha_i = \left<v, e_i\right>$ è troppo comoda!
 
 # Trasformazioni lineari
 
@@ -234,7 +234,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 
 -   Una matrice $M$ è un insieme di valori scalari $\left\{m_{ij}\right\} \in F$ che rappresenta una trasformazione lineare $f: V \rightarrow W$ secondo una coppia di basi per $V$ e per $W$.
 
--   La matrice $M$ che rappresenta $f: V \rightarrow W$ deve avere $n = N$ colonne e $m = M$ righe, dove $N$ è la dimensione di $V$ e $M$ è la dimensione di $W$.
+-   Se $N$ è la dimensione di $V$ e $M$ è la dimensione di $W$, allora la matrice $M$ che rappresenta $f: V \rightarrow W$ deve avere $n = N$ colonne e $m = M$ righe.
 
 # Matrici (2/2)
 
@@ -260,7 +260,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 -   È facile vedere che la prima colonna di $M$ è uguale a $M e_1$ e la seconda a $M e_2$:
 
     $$
-    M e_1 = \begin{pmatrix}3&4\\2&-1\end{pmatrix} \begin{pmatrix}1\\0\end{pmatrix} = \begin{pmatrix}3\\2\end{pmatrix},\quad
+    M e_1 = \begin{pmatrix}3&4\\2&-1\end{pmatrix} \begin{pmatrix}1\\0\end{pmatrix} = \begin{pmatrix}3\\2\end{pmatrix},\ {}
     M e_2 = \begin{pmatrix}3&4\\2&-1\end{pmatrix} \begin{pmatrix}0\\1\end{pmatrix} = \begin{pmatrix}4\\-1\end{pmatrix}.
     $$
 
@@ -660,11 +660,11 @@ Nel nostro codice implementeremo solo trasformazioni **invertibili**:
 
 # Semantic versioning (1/2)
 
--   Si parte dalla versione `0.1.0`.
+-   Si usa lo schema `X.Y.Z` partendo dalla versione `0.1.0`.
 -   Ad ogni rilascio di una nuova versione, si segue una di queste regole:
     -   Si incrementa `Z` («patch number») se si sono solo corretti dei bug;
-    -   Si incrementa `Y` («minor number») e si resetta `Z` se si sono aggiunte funzionalità nuove;
-    -   Si incrementa `X` («major number») e si resettano `Y` e `Z` se si sono aggiunte funzionalità che rendono il programma **incompatibile** con l'ultima versione rilasciata.
+    -   Si incrementa `Y` («minor number») e si resetta `Z` a zero se si sono aggiunte funzionalità nuove;
+    -   Si incrementa `X` («major number») e si resettano `Y` e `Z` a zero se si sono aggiunte funzionalità che rendono il programma **incompatibile** con l'ultima versione rilasciata.
 
 # Semantic versioning (2/2)
 

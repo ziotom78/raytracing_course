@@ -319,9 +319,9 @@ assert buf.getvalue() == reference_bytes
     hdrimages.cpp:33:58: error: cannot bind non-const lvalue reference of type ‘std::istream&’ {aka ‘std::basic_istream<char>&’} to an rvalue of type ‘std::basic_istream<char>’
     ```
 
--   Questo problema si ripropone anche in Kotlin e C\#, ed è dovuto alle limitazioni del cosiddetto *constructor chaining* nei linguaggi OOP
+-   Ci sono problemi simili anche in C\# e Kotlin (dove i costruttori secondari devono invocare quelli primari come prima cosa), ed è dovuto alle limitazioni del *constructor chaining*
 
--   In questi casi io preferisco sempre implementare un metodo separato, oppure addirittura una funzione esterna
+-   In questi casi potete usare una funzione esterna o un [*factory object*](https://kt.academy/article/ek-factory-functions) (a volte chiamato *companion object*)
 
 # Risolvere il dilemma
 
