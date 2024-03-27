@@ -133,7 +133,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   I pull request sono una delle caratteristiche fondamentali di GitHub!
 
--   Abituatevi ad usarli per ogni modifica «seria» del vostro codice (no, correggere un errore grammaticale nel `README.md` non rientra nella casistica).
+-   Abituatevi ad usarli per ogni modifica «seria» del vostro codice.
+
+-   **Ai colloqui di lavoro, chiedono spesso di mostrare qualche vostra PR!**
 
 
 # Guida per l'esercitazione
