@@ -43,7 +43,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     <center>
     ![](./media/git-commit.svg)
     </center>
-    
+
 -   Oggi vedremo che questa struttura lineare può in realtà essere più complicata.
 
 # Modifiche complesse
@@ -67,7 +67,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     <center>
     ![](./media/git-branch.svg)
     </center>
-    
+
 -   Tramite il comando `git branch NOME` si cambia il branch attivo; `git commit` aggiunge sempre in coda a questo branch.
 
 -   `HEAD` punta sempre all'ultimo commit del branch attivo.
@@ -97,7 +97,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     <center>
     ![](./media/github-branches-list.png){height=440px}
     </center>
-    
+
 -   La vera potenza dei branch sta però nei *pull request*.
 
 # Pull request in GitHub
@@ -128,7 +128,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     git fetch
     git checkout NOME_PULL_REQUEST
     ```
-    
+
     come se fosse un branch creato da loro stessi (`git fetch` scarica da GitHub tutti i nuovi branch, inclusi i pull request).
 
 -   I pull request sono una delle caratteristiche fondamentali di GitHub!
@@ -161,7 +161,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     struct Point { float x, y, z; };
     struct Normal { float x, y, z; };
     ```
-    
+
 -   In alcuni ray-tracer in effetti si usa un solo tipo `Vec` per codificare vettori, punti e normali (e anche colori RGB!), ma l'uso di tipi distinti renderà il nostro codice più robusto e chiaro.
 
 # Metodi per `Vec`
@@ -210,7 +210,7 @@ Fate riferimento ai test nel progetto [`pytracer`](https://github.com/ziotom78/p
 
     #. `Point` + `Vec` → `Point`;
     #. `Vec` + `Vec` → `Vec`.
-    
+
 -   Potete fare riferimento al codice completo di [`pytracer`](https://github.com/ziotom78/pytracer) (che useremo anche nelle prossime settimane).
 
 # Implementazione Python
@@ -290,7 +290,7 @@ def normalize(self):
     #.  Punti (oggetti di tipo `Point`);
     #.  Vettori (oggetti di tipo `Vec`);
     #.  Normali (oggetti di tipo `Normal`).
-    
+
 # Il tipo `Transformation`
 
 -   È spesso necessario avere a portata di mano sia la matrice $M$ (che implementa la trasformazione) che la sua inversa $M^{-1}$.
@@ -303,7 +303,7 @@ def normalize(self):
             self.m = m
             self.invm = invm
     ```
-    
+
     dove `IDENTITY_MATR4x4` è una costante uguale alla matrice identità di dimensioni 4×4.
 
 # Consistenza
@@ -317,9 +317,9 @@ def normalize(self):
         prod = _matr_prod(self.m, self.invm)
         return _are_matr_close(prod, IDENTITY_MATR4x4)
     ```
-    
+
     dove `_matr_prod` e `_are_matr_close` sono semplici metodi che operano su matrici 4×4.
-    
+
 # Trasformazioni standard
 
 -   Definiamo una serie di funzioni che costruiscono oggetti `Transformation` preoccupandosi di inizializzare correttamente $M$ e $M^{-1}$.
@@ -328,6 +328,9 @@ def normalize(self):
 
     ```python
     def translation(vec: Vec):
+        # We are adopting the dumbest solution here. In your code,
+        # it might be more convenient (and efficient) to define a
+        # HomMatrix class instead of using explicit matrices…
         return Transformation(
             m=[[1.0, 0.0, 0.0, vec.x],
                [0.0, 1.0, 0.0, vec.y],
@@ -350,6 +353,7 @@ def normalize(self):
     class Transformation:
         # …
         def inverse(self):
+            # That was easy!
             return Transformation(m=self.invm, invm=self.m)
     ```
 
@@ -445,7 +449,7 @@ else:
     \mathbf{0}& 1,
     \end{pmatrix}
     $$
-    
+
     dove $\textcolor{#3434AD}{A}$ è una matrice 3×3.
 
 -   Si può [dimostrare facilmente](https://en.wikipedia.org/wiki/Invertible_matrix#Blockwise_inversion) che l'inversa di una matrice omogenea è ancora una matrice omogenea.
@@ -465,7 +469,7 @@ else:
 
 -   Esplicitando il prodotto tra l'inversa trasposta e un vettore, si vede che l'ultimo coefficiente (omogeneo) non è più 0!
 
--   Questo però **non influisce** su $\hat n'$, e possiamo quindi ignorare il problema.
+-   Questo però **non influisce** su $\hat n'$ (`n[3] == 0`): possiamo quindi ignorare il problema.
 
 # Implementazione
 
@@ -508,7 +512,7 @@ else:
 -   Attenzione a definire `HomMatrix` in modo da evitare l'allocazione di memoria nello *heap*, perché deve essere veloce da allocare:
 
     -   Evitate di usare costrutti come `vector<vector<float>>` (C++) o `seq[seq[float]]` (Nim), perché i dati non sarebbero contigui in memoria
-    
+
     -   Anzi, evitate del tutto `vector` (C++), `seq[]` (Nim) e simili, che internamente usano lo heap, e definite un semplice array di 16 elementi.
 
 # Definizione dei tipi
@@ -532,26 +536,26 @@ else:
       result.x = a.x + b.x
       result.y = a.y + b.y
       result.z = a.z + b.z
-      
+
     proc `+`(a: Vec, b: Vec): Vec =        # Vec + Vec → Vec
       # The implementation is the same as above!
       result.x = a.x + b.x
       result.y = a.y + b.y
       result.z = a.z + b.z
     ```
-    
+
     ma ciò è noiosissimo!
-    
+
 # Metaprogrammazione
 
 -   Per risparmiare le ripetizioni nella definizione di ``+`` possiamo usare la metaprogrammazione, ossia codice che non viene eseguito quando il programma viene avviato, ma mentre il programma viene compilato.
 
--   Nim ammette tre costrutti diversi che implementano la metaprogrammazione: 
-    
+-   Nim ammette tre costrutti diversi che implementano la metaprogrammazione:
+
     #.   [*funzioni generiche*](https://nim-lang.org/docs/tut2.html#generics);
     #.   [*template*](https://nim-lang.org/docs/tut2.html#templates);
-    #.   [*macro*](https://nim-lang.org/docs/tut3.html). 
-    
+    #.   [*macro*](https://nim-lang.org/docs/tut3.html).
+
 -   Vediamo in cosa consistono: in questo modo potrete poi cercare nella documentazione del vostro linguaggio se vengono supportati paradigmi simili
 
 # Funzioni generiche
@@ -563,12 +567,12 @@ else:
     ```nim
     proc mysum[T](a: T, b: T): T =
       result = a + a + b
-      
+
     echo mysum(1, 2)       # Works on integers…
     echo mysum(0x1, 0x2)   # …and on unsigned integers…
     echo mysum(1.0, 2.0)   # …and on floats!
     ```
-    
+
 -   Non è indicato nel nostro caso, perché noi vogliamo specificare dei *vincoli* (ad esempio, non si può sommare un vettore a una normale!)
 
 # Template
@@ -581,7 +585,7 @@ else:
     template define_double_proc(fname: untyped, t: typedesc) =
       proc fname(arg: t): t =
         result = arg + arg
-        
+
     define_double_proc(double_int, int)
     define_double_proc(double_float32, float32)
     ```
@@ -601,7 +605,7 @@ else:
 -   Un buon modo per capire come usare le macro è fare prima pratica con un linguaggio LISP ([Racket](https://racket-lang.org/), [Clojure](https://clojure.org/), [Scheme](https://www.scheme.com/tspl4/)…)
 
 # *Template* in Nim
-    
+
 Quello che serve per definire velocemente operazioni matematiche su più tipi sono ovviamente i template:
 
 ```nim
@@ -616,7 +620,7 @@ define_sum(Vec, Point, Point)
 define_sum(Point, Vec, Point)
 define_sum(Normal, Normal, Normal)
 ```
-    
+
 # *Template* in Nim (2/2)
 
 Possiamo spingerci oltre e rendere l'approccio estendibile anche al tipo di operazione, in modo che si possa usare il template anche per la sottrazione:
@@ -627,7 +631,7 @@ template define_3dop(fname: untyped, type1: typedesc, type2: typedesc, rettype: 
     result.x = fname(a.x, b.x)  # This works because "a + b" is interpreted as `+`(a, b)
     result.y = fname(a.y, b.y)
     result.z = fname(a.z, b.z)
-        
+
 define_3dop(`+`, Vec, Vec, Vec)
 define_3dop(`-`, Vec, Vec, Vec)
 define_3dop(`+`, Vec, Point, Point)
@@ -660,7 +664,7 @@ struct Point {
   mixin defSumDiff!(Vec, Point);
 }
 ```
-    
+
 # Uso in Rust
 
 -   Purtroppo Rust non ha l'equivalente dei *template* di Nim e dei *template mixin* di D: dovrete usare per forza le macro!
@@ -672,7 +676,7 @@ struct Point {
         ($type1:ty, $type2:ty, $return_type:tt) => {
             impl ops::Add<$type2> for $type1 {
                 type Output = $return_type;
-    
+
                 fn add(self: $type1, other: $type2) -> $return_type {
                     let result = $return_type{x: self.x + other.x, y: self.y + other.y, z: self.z + other.z};
                     result
@@ -684,14 +688,6 @@ struct Point {
     implement_sum!(Vec, Vec, Vec);
     implement_sum!(Point, Vec, Point);
     ```
-
-# Indicazioni per C\#
-
-# Definizione dei tipi
-
--   Siccome `Vec`, `Point`, `Normal` e `Transformation` saranno molto utilizzati nei calcoli, è importante che siano classi estremamente efficienti.
--   Questo è quindi un caso in cui è meglio definire i tipi come *value types* usando `struct` anziché `class`.
--   Purtroppo C\# non implementa funzionalità di metaprogrammazione, quindi dovrete definire due volte le operazioni comuni tra `Point` e `Vec`, come la somma.
 
 
 # Indicazioni per Java/Kotlin
@@ -725,3 +721,11 @@ class HomMatrix(var elements: FloatArray) {
 }
 ```
 
+
+# Indicazioni per C\#
+
+# Definizione dei tipi
+
+-   Siccome `Vec`, `Point`, `Normal` e `Transformation` saranno molto utilizzati nei calcoli, è importante che siano classi estremamente efficienti.
+-   Questo è quindi un caso in cui è meglio definire i tipi come *value types* usando `struct` anziché `class`.
+-   Purtroppo C\# non implementa funzionalità di metaprogrammazione, quindi dovrete definire due volte le operazioni comuni tra `Point` e `Vec`, come la somma.

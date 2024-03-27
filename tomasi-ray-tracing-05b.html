@@ -19,8 +19,11 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
@@ -535,16 +538,19 @@ class="math inline">M^{-1}</span>.</p></li>
 class="math inline">\vec v</span>):</p>
 <div class="sourceCode" id="cb8"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> translation(vec: Vec):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Transformation(</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        m<span class="op">=</span>[[<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, vec.x],</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>           [<span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>, vec.y],</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>           [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, vec.z],</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>           [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>]],</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        invm<span class="op">=</span>[[<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="op">-</span>vec.x],</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="op">-</span>vec.y],</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="op">-</span>vec.z],</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>]],</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div></li>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We are adopting the dumbest solution here. In your code,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># it might be more convenient (and efficient) to define a</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># HomMatrix class instead of using explicit matrices…</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Transformation(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        m<span class="op">=</span>[[<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, vec.x],</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>           [<span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>, vec.y],</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>           [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, vec.z],</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>           [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>]],</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        invm<span class="op">=</span>[[<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="op">-</span>vec.x],</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="op">-</span>vec.y],</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="op">-</span>vec.z],</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>]],</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div></li>
 </ul>
 </section>
 <section id="inversa" class="slide level1">
@@ -559,7 +565,8 @@ class="math inline">M^{-1}</span>, questo compito è molto facile:</p>
 class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Transformation:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># …</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> inverse(<span class="va">self</span>):</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Transformation(m<span class="op">=</span><span class="va">self</span>.invm, invm<span class="op">=</span><span class="va">self</span>.m)</span></code></pre></div></li>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="co"># That was easy!</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Transformation(m<span class="op">=</span><span class="va">self</span>.invm, invm<span class="op">=</span><span class="va">self</span>.m)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="prodotti" class="slide level1">
@@ -700,8 +707,8 @@ M^t = \begin{pmatrix}
 <li><p>Esplicitando il prodotto tra l’inversa trasposta e un vettore, si
 vede che l’ultimo coefficiente (omogeneo) non è più 0!</p></li>
 <li><p>Questo però <strong>non influisce</strong> su <span
-class="math inline">\hat n&#39;</span>, e possiamo quindi ignorare il
-problema.</p></li>
+class="math inline">\hat n&#39;</span> (<code>n[3] == 0</code>):
+possiamo quindi ignorare il problema.</p></li>
 </ul>
 </section>
 <section id="implementazione" class="slide level1">
@@ -912,7 +919,7 @@ class="sourceCode nim"><code class="sourceCode nim"><span id="cb17-1"><a href="#
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">result</span><span class="kw">.</span><span class="at">x</span> <span class="co">=</span> <span class="fu">fname</span><span class="kw">(</span>a<span class="kw">.</span><span class="at">x</span><span class="kw">,</span> b<span class="kw">.</span><span class="at">x</span><span class="kw">)</span>  <span class="co"># This works because &quot;a + b&quot; is interpreted as `+`(a, b)</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="ot">result</span><span class="kw">.</span><span class="at">y</span> <span class="co">=</span> <span class="fu">fname</span><span class="kw">(</span>a<span class="kw">.</span><span class="at">y</span><span class="kw">,</span> b<span class="kw">.</span><span class="at">y</span><span class="kw">)</span></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">result</span><span class="kw">.</span><span class="at">z</span> <span class="co">=</span> <span class="fu">fname</span><span class="kw">(</span>a<span class="kw">.</span><span class="at">z</span><span class="kw">,</span> b<span class="kw">.</span><span class="at">z</span><span class="kw">)</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">define_3dop</span><span class="kw">(</span>`<span class="co">+</span>`<span class="kw">,</span> <span class="at">Vec</span><span class="kw">,</span> <span class="at">Vec</span><span class="kw">,</span> <span class="at">Vec</span><span class="kw">)</span></span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">define_3dop</span><span class="kw">(</span>`<span class="co">-</span>`<span class="kw">,</span> <span class="at">Vec</span><span class="kw">,</span> <span class="at">Vec</span><span class="kw">,</span> <span class="at">Vec</span><span class="kw">)</span></span>
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">define_3dop</span><span class="kw">(</span>`<span class="co">+</span>`<span class="kw">,</span> <span class="at">Vec</span><span class="kw">,</span> <span class="at">Point</span><span class="kw">,</span> <span class="at">Point</span><span class="kw">)</span></span>
@@ -970,23 +977,6 @@ class="sourceCode rust"><code class="sourceCode rust"><span id="cb19-1"><a href=
 <span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="pp">implement_sum!</span>(Point<span class="op">,</span> <span class="dt">Vec</span><span class="op">,</span> Point)<span class="op">;</span></span></code></pre></div></li>
 </ul>
 </section>
-<section id="indicazioni-per-c" class="slide level1">
-<h1>Indicazioni per C#</h1>
-</section>
-<section id="definizione-dei-tipi-1" class="slide level1">
-<h1>Definizione dei tipi</h1>
-<ul>
-<li>Siccome <code>Vec</code>, <code>Point</code>, <code>Normal</code> e
-<code>Transformation</code> saranno molto utilizzati nei calcoli, è
-importante che siano classi estremamente efficienti.</li>
-<li>Questo è quindi un caso in cui è meglio definire i tipi come
-<em>value types</em> usando <code>struct</code> anziché
-<code>class</code>.</li>
-<li>Purtroppo C# non implementa funzionalità di metaprogrammazione,
-quindi dovrete definire due volte le operazioni comuni tra
-<code>Point</code> e <code>Vec</code>, come la somma.</li>
-</ul>
-</section>
 <section id="indicazioni-per-javakotlin" class="slide level1">
 <h1>Indicazioni per Java/Kotlin</h1>
 </section>
@@ -1025,6 +1015,23 @@ class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb20-1"><a h
 <span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Etc.</span></span>
 <span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="indicazioni-per-c" class="slide level1">
+<h1>Indicazioni per C#</h1>
+</section>
+<section id="definizione-dei-tipi-1" class="slide level1">
+<h1>Definizione dei tipi</h1>
+<ul>
+<li>Siccome <code>Vec</code>, <code>Point</code>, <code>Normal</code> e
+<code>Transformation</code> saranno molto utilizzati nei calcoli, è
+importante che siano classi estremamente efficienti.</li>
+<li>Questo è quindi un caso in cui è meglio definire i tipi come
+<em>value types</em> usando <code>struct</code> anziché
+<code>class</code>.</li>
+<li>Purtroppo C# non implementa funzionalità di metaprogrammazione,
+quindi dovrete definire due volte le operazioni comuni tra
+<code>Point</code> e <code>Vec</code>, come la somma.</li>
+</ul>
 </section>
     </div>
   </div>
