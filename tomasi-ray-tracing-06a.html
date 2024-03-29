@@ -19,8 +19,11 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
@@ -61,9 +64,109 @@ href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="approfondimento-sul-calcolo-vettoriale"
-class="slide level1">
-<h1>Approfondimento sul calcolo vettoriale</h1>
+<section id="animazioni" class="slide level1">
+<h1>Animazioni</h1>
+</section>
+<section id="creazione-di-animazioni" class="slide level1">
+<h1>Creazione di animazioni</h1>
+<ul>
+<li><p>La matematica delle trasformazioni che abbiamo introdotto nella
+scorsa lezione permette di creare facilmente immagini
+<em>statiche</em>.</p></li>
+<li><p>Cosa cambierebbe se volessimo invece realizzare
+<strong>animazioni</strong>?</p></li>
+<li><p>Vediamo subito un esempio pratico.</p></li>
+</ul>
+</section>
+<section id="trasformazioni-nel-tempo-12" class="slide level1">
+<h1>Trasformazioni nel tempo (1/2)</h1>
+<ul>
+<li><p>Consideriamo un oggetto 3D centrato nell’origine.</p></li>
+<li><p>Immaginiamo che al tempo <span class="math inline">t = 0</span>
+dell’animazione l’oggetto debba essere alla posizione <span
+class="math inline">\vec k_0</span>, e al tempo <span
+class="math inline">t = 1</span> alla posizione <span
+class="math inline">\vec k_1</span>.</p></li>
+<li><p>Se voglio generare il fotogramma dell’oggetto al tempo generico
+<span class="math inline">0 \leq t \leq 1</span>, la trasformazione
+<span class="math inline">A</span> è banalmente</p>
+<p><span class="math display">
+A(t) = T_{\vec k_0 + (\vec k_1 - \vec k_0) t} =
+\begin{pmatrix}
+1&amp;0&amp;0&amp;k_{0x} + (k_{1x} - k_{0x})t\\
+0&amp;1&amp;0&amp;k_{0y} + (k_{1y} - k_{0y})t\\
+0&amp;0&amp;1&amp;k_{0z} + (k_{1z} - k_{0z})t\\
+0&amp;0&amp;0&amp;1
+\end{pmatrix}.
+</span></p></li>
+</ul>
+</section>
+<section id="trasformazioni-nel-tempo-22" class="slide level1">
+<h1>Trasformazioni nel tempo (2/2)</h1>
+<ul>
+<li><p>Le trasformazioni di scala sono ugualmente facili da animare: per
+scalare da <span class="math inline">s_0</span> a <span
+class="math inline">s_1</span>, la trasformazione è</p>
+<p><span class="math display">
+A(t) = M_{s_0 + (s_1 - s_0) t} = \bigl(s_0 + (s_1 - s_0) t\bigr)
+\begin{pmatrix}
+1&amp;0&amp;0&amp;0\\
+0&amp;1&amp;0&amp;0\\
+0&amp;0&amp;1&amp;0\\
+0&amp;0&amp;0&amp;1
+\end{pmatrix}.
+</span></p></li>
+<li><p>Ma per le rotazioni non esiste alcuna formula semplice!</p></li>
+</ul>
+</section>
+<section id="animare-rotazioni" class="slide level1">
+<h1>Animare rotazioni</h1>
+<ul>
+<li><p>Non basta interpolare i coefficienti delle due matrici <span
+class="math display">
+R(0) = \begin{pmatrix}
+m_{11}&amp;m_{12}&amp;m_{13}\\
+m_{21}&amp;m_{22}&amp;m_{23}\\
+m_{31}&amp;m_{32}&amp;m_{33}
+\end{pmatrix},\ %
+R(1) = \begin{pmatrix}
+m&#39;_{11}&amp;m&#39;_{12}&amp;m&#39;_{13}\\
+m&#39;_{21}&amp;m&#39;_{22}&amp;m&#39;_{23}\\
+m&#39;_{31}&amp;m&#39;_{32}&amp;m&#39;_{33}
+\end{pmatrix},\quad
+</span> con la formula <span class="math inline">m_{ij} +
+\bigl(m&#39;_{ij} - m_{ij}\bigr) t</span>, perché non è garantito che
+l’interpolazione sia ancora ortogonale (<span class="math inline">R(t)
+R(t)^t = I</span>).</p></li>
+<li><p>Non esiste un modo semplice per interpolare le matrici di
+rotazione!</p></li>
+</ul>
+</section>
+<section id="esempio" class="slide level1">
+<h1>Esempio</h1>
+<iframe src="https://player.vimeo.com/video/538566733?title=0&amp;byline=0&amp;portrait=0&amp;speed=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="896" height="504" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Scanning strategy of a CMB spacecraft (LiteBIRD-like)">
+</iframe>
+</section>
+<section id="esempio-1" class="slide level1">
+<h1>Esempio</h1>
+<ul>
+<li><p>Il satellite <em>Planck</em> aveva a bordo uno <em>star
+tracker</em> che identificava l’orientamento del satellite rispetto alle
+stelle fisse.</p></li>
+<li><p>L’orientamento (<em>attitude</em>) era misurato 10 volte al
+secondo (i dati scientifici venivano campionati ~100 volte al secondo) e
+trasmesso alla stazione di terra:</p>
+<center>
+<p><img data-src="./media/planck-attitude-quaternions.svg" /></p>
+</center></li>
+<li><p>A terra serve l’orientamento allo stesso campionamento del dato
+scientifico, quindi è necessario interpolare.</p></li>
+<li><p>Per fare ciò, la pipeline di <em>data reduction</em> di Planck
+usava i <strong>quaternioni</strong>.</p></li>
+</ul>
+</section>
+<section id="numeri-complessi-e-quaternioni" class="slide level1">
+<h1>Numeri complessi e quaternioni</h1>
 </section>
 <section id="breve-panoramica-storica" class="slide level1">
 <h1>Breve panoramica storica</h1>
@@ -95,9 +198,6 @@ propongono il calcolo vettoriale moderno, che in pochi decenni diventa
 il linguaggio dominante nella fisica</li>
 </ul>
 </section>
-<section id="numeri-complessi-e-quaternioni" class="slide level1">
-<h1>Numeri complessi e quaternioni</h1>
-</section>
 <section id="numeri-complessi-e-quaternioni-1" class="slide level1">
 <h1>Numeri complessi e quaternioni</h1>
 <ul>
@@ -106,13 +206,11 @@ matriciale.</p></li>
 <li><p>È possibile anche esprimere le rotazioni usando numeri complessi
 (in 2D) o quaternioni (in 3D).</p></li>
 <li><p>I quaternioni hanno molti vantaggi rispetto alle matrici di
-rotazione 3D, e sono usati in robotica, nel controllo dell’assetto delle
-missioni spaziali e nei videogiochi. (Le equazioni di Maxwell furono
-inizialmente espresse con i quaternioni, che erano molto usati nella
-seconda metà dell’Ottocento).</p></li>
-<li><p>Noi <strong>non</strong> useremo quaternioni nel corso, quindi
-questo argomento non sarà richiesto all’esame. Se volete approfondire,
-due ottimi testi sono <a
+rotazione 3D, e sono usati in molti ambiti. (Persino le equazioni di
+Maxwell furono inizialmente espresse con i quaternioni).</p></li>
+<li><p>Noi <strong>non</strong> useremo quaternioni nel nostro codice,
+quindi questo argomento non sarà richiesto all’esame. Se volete
+approfondire, due ottimi testi sono <a
 href="https://www.amazon.com/Visualizing-Quaternions-Kaufmann-Interactive-Technology/dp/0120884003"><em>Visualizing
 quaternions</em></a> (A. J. Hanson) e <a
 href="https://link.springer.com/book/10.1007/978-0-85729-760-0"><em>Quaternions
@@ -170,7 +268,7 @@ href="https://en.wikipedia.org/wiki/Quaternion"><em>quaternioni</em></a>
 generalizzano in 3D la capacità dei numeri complessi di codificare
 rotazioni. Sono stati proposti da <a
 href="https://en.wikipedia.org/wiki/William_Rowan_Hamilton">W. R. Hamilton</a>
-(quello dell’Hamiltoniana) nel 1843 proprio per estendere ℂ (inventato
+(quello dell’Hamiltoniana) nel 1843 proprio per estendere ℂ (“inventato”
 pochi decenni prima), e la loro algebra si indica con ℍ.</p></li>
 <li><p>Se un numero complesso <span class="math inline">z</span> è
 formato da due coefficienti (la parte reale <span
@@ -189,9 +287,6 @@ q_3)</span> è la <em>parte vettoriale</em>.</p></li>
 <section id="prodotto-di-quaternioni" class="slide level1">
 <h1>Prodotto di quaternioni</h1>
 <ul>
-<li><p>I numeri complessi rappresentano una rotazione 2D con il prodotto
-tra complessi, che soddisfa le proprietà di un’algebra
-associativa.</p></li>
 <li><p>Il prodotto <span class="math inline">p q</span> tra due
 quaternioni è definito così:</p>
 <p><span class="math display">
@@ -305,48 +400,6 @@ calcoli.</p></li>
 <li><p>A cosa sono utili allora i quaternioni?</p></li>
 </ul>
 </section>
-<section id="movimenti-di-robot" class="slide level1">
-<h1>Movimenti di robot</h1>
-<ul>
-<li><p>Supponete che il braccio artificiale di un robot si trovi in una
-certa configurazione al tempo <span class="math inline">t_1 = 0</span>,
-e volete fare in modo che sia in una nuova posizione al tempo <span
-class="math inline">t_2 = 1</span>.</p></li>
-<li><p>Il braccio è dotato di un asse orientabile a piacere attorno a
-cui può ruotare, e voi avete le matrici di rotazione <span
-class="math inline">R_1</span> e <span class="math inline">R_2</span>
-che convertono la posizione a riposo del braccio nelle posizioni ai due
-tempi <span class="math inline">t_1</span> e <span
-class="math inline">r_2</span>.</p></li>
-<li><p>Dovete determinare l’evoluzione della rotazione <span
-class="math inline">R(t)\ \forall t \in [0, 1]</span>, per poter
-programmare esattamente i motori durante il movimento.</p></li>
-</ul>
-</section>
-<section id="interpolazione" class="slide level1">
-<h1>Interpolazione</h1>
-<ul>
-<li><p>Non basta interpolare tra loro i coefficienti delle due matrici
-<span class="math display">
-R(0) = \begin{pmatrix}
-m_{11}&amp;m_{12}&amp;m_{13}\\
-m_{21}&amp;m_{22}&amp;m_{23}\\
-m_{31}&amp;m_{32}&amp;m_{33}
-\end{pmatrix},\ %
-R(1) = \begin{pmatrix}
-m_{11}&amp;m_{12}&amp;m_{13}\\
-m_{21}&amp;m_{22}&amp;m_{23}\\
-m_{31}&amp;m_{32}&amp;m_{33}
-\end{pmatrix},\quad
-</span> in modo da ottenere <span class="math inline">R(t)</span> per
-<span class="math inline">0 &lt; t &lt; 1</span>, perché non è garantito
-che l’interpolazione sia ancora ortogonale (<span
-class="math inline">R(t) R(t)^t = I</span>).</p></li>
-<li><p>Non è possibile fare questa operazione in modo semplice tramite
-le matrici di rotazione…</p></li>
-<li><p>…ma è banale se si usano i quaternioni!</p></li>
-</ul>
-</section>
 <section id="slerp" class="slide level1">
 <h1><em>Slerp</em></h1>
 <ul>
@@ -374,47 +427,25 @@ rappresenta una rotazione <span class="math inline">\forall t\in [0,
 1]</span>.</p></li>
 </ul>
 </section>
-<section id="applicazioni" class="slide level1">
-<h1>Applicazioni</h1>
-<iframe src="https://player.vimeo.com/video/538566733?title=0&amp;byline=0&amp;portrait=0&amp;speed=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="896" height="504" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Scanning strategy of a CMB spacecraft (LiteBIRD-like)">
-</iframe>
-</section>
-<section id="applicazioni-1" class="slide level1">
-<h1>Applicazioni</h1>
+<section id="animare-le-trasformazioni" class="slide level1">
+<h1>Animare le trasformazioni</h1>
 <ul>
-<li><p>Il satellite <em>Planck</em> aveva a bordo uno <em>star
-tracker</em> che identificava l’orientamento del satellite rispetto alle
-stelle fisse.</p></li>
-<li><p>L’orientamento (<em>attitude</em>) era misurato 10 volte al
-secondo (i dati scientifici venivano campionati ~100 volte al secondo) e
-trasmesso alla stazione di terra:</p>
-<center>
-<p><img data-src="./media/planck-attitude-quaternions.svg" /></p>
-</center></li>
-<li><p>Per capire in che posizione era orientato il satellite Planck in
-corrispondenza di ogni misurazione, l’orientamento era convertito in
-quaternioni, che venivano poi interpolati.</p></li>
-</ul>
-</section>
-<section id="oltre-i-quaternioni" class="slide level1">
-<h1>Oltre i quaternioni?</h1>
-<ul>
-<li><p>L’algebra di ℂ permette di esprimere rotazioni sul piano, e
-l’algebra di ℍ permette di esprimere rotazioni 3D.</p></li>
-<li><p>Si può proseguire definendo gli <a
-href="https://en.wikipedia.org/wiki/Octonion"><em>ottonioni</em></a>
-(𝕆), che sono utili per esprimere rotazioni in 4D (usate ad esempio in
-relatività).</p></li>
-<li><p>L’algebra degli ottonioni non è però associativa: <span
-class="math inline">(a b) c \not= a (b c)</span>, anche se vale che
-<span class="math inline">(a a) b = a (a b)</span> e <span
-class="math inline">(a b) b = a (b b)</span> (<em>alternatività</em>,
-una forma più debole di associatività).</p></li>
-<li><p>Esiste l’algebra dei <a
-href="https://en.wikipedia.org/wiki/Sedenion">sedenioni</a> (𝕊), che
-però non soddisfa neppure l’alternatività.</p></li>
-<li><p>In generale, più si va avanti e meno le algebre sono interessanti
-e pratiche.</p></li>
+<li><p>Rappresentare le rotazioni con i quaternioni riempie l’ultimo
+“buco” che ci mancava: tutte le trasformazioni presentate nella lezione
+precedente sono facilmente interpolabili:</p>
+<ol type="1">
+<li>Traslazioni;</li>
+<li>Trasformazioni di scala;</li>
+<li>Rotazioni 🥳.</li>
+</ol></li>
+<li><p>La pagina <a
+href="https://enkimute.github.io/LookMaNoMatrices/">Look, Ma, No
+Matrices!</a> mostra un simpatico esempio…</p></li>
+<li><p>…che usa un’estensione del concetto di “quaternione”, i
+<strong>multivettori</strong>, per generare gli effetti mostrati in
+fondo alla pagina.</p></li>
+<li><p>Vediamo quindi cosa sono i multivettori e le algebre di
+Clifford.</p></li>
 </ul>
 </section>
 <section id="algebre-di-clifford" class="slide level1">
@@ -436,8 +467,7 @@ class="math inline">\mathbb{R}^7</span>, <a
 href="https://en.m.wikipedia.org/wiki/Seven-dimensional_cross_product">a
 causa degli ottonioni</a>…), e ha unità strane: se <span
 class="math inline">v</span> e <span class="math inline">w</span> sono
-in metri, <span class="math inline">v \times w</span> è in m² pur
-essendo ancora una direzione.</p></li>
+in metri, <span class="math inline">v \times w</span> è in m².</p></li>
 <li><p>La rappresentazione delle rotazioni richiede algebre via via più
 complicate man mano che aumentano le dimensioni (numeri complessi,
 quaternioni…).</p></li>
@@ -457,7 +487,9 @@ l’<em>algebra geometrica</em>, superano tutti i problemi elencati nella
 slide precedente.</p></li>
 <li><p>Si tratta di una branca della matematica che rifonda l’algebra
 lineare classica, e fornisce un’interpretazione più intuitiva e coerente
-di certe proprietà geometriche. Clifford la propose nel 1878</p></li>
+di certe proprietà geometriche. <a
+href="https://en.wikipedia.org/wiki/William_Kingdon_Clifford">Clifford</a>
+la propose nel 1878.</p></li>
 <li><p>L’<strong>algebra geometrica</strong> è l’applicazione delle
 algebre di Clifford al caso di <span
 class="math inline">\mathbb{R}^n</span>, ed è ciò che solitamente
@@ -582,8 +614,11 @@ w</span>.</p></li>
 <section id="base-dei-bivettori" class="slide level1">
 <h1>Base dei bivettori</h1>
 <ul>
+<li><p>La formula della somma appare complicata, ma permette di
+costruire uno spazio vettoriale.</p></li>
 <li><p>Essendo uno spazio vettoriale, l’insieme dei bivettori possiede
-delle basi.</p></li>
+quindi delle basi, e la somma è più semplice da capire e calcolare se si
+decompongono i bivettori in una base.</p></li>
 <li><p>Possiamo definire la <strong>base canonica</strong> come
 l’insieme dei tre bivettori di area unitaria sui piani <span
 class="math inline">xy</span>, <span class="math inline">yz</span> e
@@ -592,14 +627,29 @@ class="math inline">xy</span>, <span class="math inline">yz</span> e
 \hat e_1 \wedge \hat e_2, \quad \hat e_2 \wedge \hat e_3, \quad \hat e_1
 \wedge \hat e_3.
 </span></p></li>
-<li><p>Qualsiasi bivettore si può quindi scrivere come combinazione
-lineare di elementi della base canonica.</p></li>
 </ul>
 </section>
 <section id="base-dei-bivettori-1" class="slide level1">
 <h1>Base dei bivettori</h1>
 <p><embed width="640px" height="640px" src="pd-images/9d2243027ec07b44597cce27ca5fd907dcb396fb.html"
 data-im_fname="bivector-basis" /></p>
+</section>
+<section id="somma-di-bivettori-2" class="slide level1">
+<h1>Somma di bivettori</h1>
+<ul>
+<li><p>Se si hanno due bivettori</p>
+<p><span class="math display">
+\begin{aligned}
+\vec v &amp;= 3 \hat e_1 \wedge \hat e_2 - \hat e_1 \wedge \hat e_3,\\
+\vec w &amp;= 2 \hat e_1 \wedge \hat e_2 + 4\hat e_1 \wedge \hat e_3,\\
+\end{aligned}
+</span></p>
+<p>allora la loro somma è</p>
+<p><span class="math display">
+\vec v + \vec w = 5\hat e_1 \wedge \hat e_2 + 3\hat e_1 \wedge \hat e_3.
+</span></p></li>
+<li><p>È quindi banale fare calcoli con bivettori!</p></li>
+</ul>
 </section>
 <section id="multivettori" class="slide level1">
 <h1>Multivettori</h1>
@@ -639,32 +689,21 @@ e_1 \wedge \hat e_3 = \hat e_1 \wedge \hat e_2 \wedge \hat e_3,\\
 e_1 \wedge (\hat e_2 \wedge \hat e_2) \wedge \hat e_3 = 0.\\
 \end{aligned}
 </span></p></li>
-<li><p>È facile convincersi che il prodotto esterno di quattro elementi
-della base si annulla sempre; il risultato è in realtà più
-generale.</p></li>
+<li><p>Dagli ultimi due esempi è facile convincersi che il prodotto
+esterno di quattro elementi della base si <strong>annulla
+sempre</strong>.</p></li>
 </ul>
-</section>
-<section id="limite-ai-multivettori" class="slide level1">
-<h1>Limite ai multivettori</h1>
-<p>Se in <span class="math inline">\mathbb{R}^n</span> si prendono <span
-class="math inline">n + 1</span> vettori, l’ultimo non può essere
-linearmente indipendente dagli altri:</p>
-<p><span class="math display">
-\vec v_{k + 1} = \sum_{i=1}^n \alpha_i \vec v_i,
-</span></p>
-<p>Come conseguenza di ciò, il prodotto esterno tra loro si annulla
-sempre:</p>
-<p><span class="math display">
-\vec v_1 \wedge \vec v_2 \wedge \ldots \wedge \vec v_n \wedge
-\left(\sum_{i=1}^n \alpha_i \vec v_i\right) = 0.
-</span></p>
 </section>
 <section id="numerosità-dei-multivettori" class="slide level1">
 <h1>Numerosità dei multivettori</h1>
 <ul>
-<li><p>Il risultato della slide precedente ci dice che in uno spazio
-<span class="math inline">\mathbb{R}^n</span> il massimo grado dei
-multivettori è <span class="math inline">n</span>.</p></li>
+<li><p>Non solo il prodotto esterno di quattro elementi della
+<strong>base</strong> è nullo: anche se si prendono quattro vettori
+qualsiasi in <span class="math inline">\mathbb{R}^3</span>, il loro
+prodotto è zero.</p></li>
+<li><p>È banale dimostrare che in uno spazio <span
+class="math inline">\mathbb{R}^n</span> il massimo grado dei
+multivettori è <span class="math inline">n</span></p></li>
 <li><p>Di conseguenza, in <span class="math inline">\mathbb{R}^3</span>
 solo i seguenti oggetti sono non banali:</p>
 <ol>
@@ -682,15 +721,13 @@ solo i seguenti oggetti sono non banali:</p>
 <section id="nascita-dellalgebra-geometrica" class="slide level1">
 <h1>Nascita dell’algebra geometrica</h1>
 <ul>
-<li><p>L’algebra geometrica parte dalla definizione di un
+<li><p>Clifford partì dal prodotto esterno di Grassmann per definire un
 <strong>prodotto tra vettori</strong>, che rende lo spazio vettoriale
-<span class="math inline">\mathbb{R}^n</span> un’algebra con proprietà
-molto interessanti.</p></li>
-<li><p>Il prodotto geometrico venne introdotto da Clifford, usando il
-prodotto di Grassmann (che viene chiamato <em>prodotto esterno</em>) e
-il classico prodotto scalare</p></li>
-<li><p>Il punto di partenza è la constatazione che prodotto scalare e
-vettoriale sono intuitivamente legati tra loro, perché</p>
+<span class="math inline">\mathbb{R}^n</span>
+un’<strong>algebra</strong>.</p></li>
+<li><p>L’intuizione geniale di Clifford fu che il vecchio, “classico”
+prodotto scalare e il “nuovo” prodotto esterno di Grassmann sono
+intuitivamente legati tra loro, perché</p>
 <p><span class="math display">
 \vec{v} \cdot \vec{w} \propto \cos\theta, \quad \vec{v} \wedge \vec{w}
 \propto \sin\theta,
@@ -741,12 +778,8 @@ class="math inline">n = 1</span> è banale), perché lo stesso prodotto
 esterno <span class="math inline">\vec v \wedge \vec w</span> è
 facilmente generalizzabile a <span class="math inline">n</span>
 dimensioni.</p></li>
-<li><p>La definizione e lo studio delle proprietà del prodotto
-geometrico si deve a <a
-href="https://en.wikipedia.org/wiki/William_Kingdon_Clifford">William Kingdon Clifford</a>
-(1845–1879), che sistematizzò le idee di Grassmann.</p></li>
-<li><p>Questo prodotto definisce un’algebra associativa sullo spazio
-vettoriale.</p></li>
+<li><p>Il prodotto geometrico definisce un’algebra associativa sullo
+spazio vettoriale.</p></li>
 </ul>
 </section>
 <section id="prodotto-geometrico-1" class="slide level1">
@@ -786,7 +819,8 @@ class="math inline">\vec v</span>:</p>
 v}{\left\|\vec v\right\|^2} = 1,
 </span></p>
 <p>e quindi <span class="math inline">\vec v^{-1} = \vec v / \left\|\vec
-v\right\|^2</span>.</p></li>
+v\right\|^2</span>: come ogni algebra che si rispetti, <strong>esiste
+l’inversa</strong>!</p></li>
 </ul>
 </section>
 <section id="altri-esempi" class="slide level1">
@@ -815,8 +849,8 @@ e_j = \hat e_i \wedge \hat e_j = -\hat e_j \wedge \hat e_i = - \hat e_j
 <li><p>Abbiamo detto che in <span
 class="math inline">\mathbb{R}^n</span> si possono avere multivettori di
 grado fino a <span class="math inline">n</span>, perché il prodotto
-esterno di <span class="math inline">n + 1</span> vettori si
-annulla.</p></li>
+esterno <span class="math inline">\wedge</span> di <span
+class="math inline">n + 1</span> vettori si annulla.</p></li>
 <li><p>Cosa succede al prodotto geometrico di quattro vettori
 ortonormali in ℝ³?</p>
 <p><span class="math display">
@@ -883,15 +917,13 @@ e_2
 <p>è possibile individuare quattro sottoinsiemi (sottoalgebre):</p>
 <ol>
 <li>Se <span class="math inline">\beta_1 = \beta_2 = \gamma = 0</span>,
-allora l’insieme dei <span class="math inline">q = \alpha</span> è
-isomorfo a ℝ.</li>
-<li>Se <span class="math inline">\alpha = \gamma = 0</span>, allora
-l’insieme dei <span class="math inline">q</span> è isomorfo allo spazio
-vettoriale <span class="math inline">\mathbb{R}^2</span>.</li>
+il sottoinsieme è isomorfo a ℝ.</li>
+<li>Se <span class="math inline">\alpha = \gamma = 0</span>, il
+sottoinsieme è isomorfo allo spazio vettoriale <span
+class="math inline">\mathbb{R}^2</span>.</li>
 <li>Se <span class="math inline">\alpha = \beta_1 = \beta_2 = 0</span>,
-l’insieme dei <span class="math inline">q = \gamma \hat e_1 \hat
-e_2</span> sembra ancora isomorfo a ℝ; questi multivettori si dicono
-<em>pseudoscalari</em>.</li>
+il sottoinsieme sembra ancora isomorfo a ℝ; questi multivettori si
+dicono <em>pseudoscalari</em>.</li>
 </ol></li>
 <li><p>A parte questi casi banali, esistono altre sottoalgebre
 interessanti?</p></li>
@@ -935,9 +967,10 @@ geometrico:</p>
    \left\|\vec u\right\| \cdot \left\|\vec u\right\| \cdot \sin\theta
 \cdot \hat e_1 \hat e_2 =\\
 &amp;= \left\|\vec u\right\| \cdot \left\|\vec v\right\| \cdot
-   \bigl(\cos\theta + i\sin\theta\bigr) =\\
-&amp;= \left\|\vec u\right\| \cdot \left\|\vec v\right\| \cdot
-e^{i\theta},
+   \bigl(\cos\theta + i\sin\theta\bigr) \equiv\\
+&amp;\stackrel{\text{def.}}{\equiv} \left\|\vec u\right\| \cdot
+\left\|\vec v\right\| \cdot e^{i\theta} = \left\|\vec u\right\| \cdot
+\left\|\vec v\right\| \cdot e^{\theta \hat e_1 \hat e_2},
 \end{aligned}
 </span></p>
 <p>che per <span class="math inline">\left\|\vec u\right\| = \left\|\vec
@@ -1010,7 +1043,7 @@ questa forma:</p>
 <li><p>Abbiamo <strong>otto</strong> gradi di libertà: 1 per gli
 scalari, 3 per i vettori, 3 per i bivettori e 1 per i trivettori
 (pseudoscalari). Vale ancora che <span class="math inline">(\hat e_1
-\hat e_2 \hat e_3)^2 = i^2 = -1</span>.</p></li>
+\hat e_2 \hat e_3)^2 = -1 \equiv i^2</span>.</p></li>
 </ul>
 </section>
 <section id="multivettori-e-rotazioni-in-3d" class="slide level1">
@@ -1039,14 +1072,14 @@ class="math inline">i</span>!</p></li>
 <h1>Meccanica quantistica</h1>
 <ul>
 <li><p><a
-href="https://en.wikipedia.org/wiki/David_Hestenes">D. Hestenes</a>
-negli anni ’60-’70 ha riscoperto i lavori di Grassmann e Clifford,
-mostrando che il termine <span class="math inline">i</span>
+href="https://en.wikipedia.org/wiki/David_Hestenes">D. Hestenes</a>, che
+negli anni ’60-’70 ha riscoperto i lavori di Grassmann e Clifford, ha
+mostrato che il termine <span class="math inline">i</span>
 nell’equazione di Schrödinger <span class="math display">
 H \left|\psi\right&gt; = i\hbar \frac{\mathrm{d}}{\mathrm{d}t}
 \left|\psi\right&gt;,
 </span> è legato alla medesima rotazione che nella teoria di Dirac-Pauli
-rappresenta lo spin dell’elettrone.</p></li>
+rappresenta lo spin.</p></li>
 <li><p><em>It is only in a theory with electron spin that one can see
 why the wave function is complex […] spin is not a mere add-on in
 quantum mechanics, [and] was inadvertently incorporated into the
@@ -1068,8 +1101,8 @@ all’algebra ℍ dei quaternioni ponendo</p>
 <p><span class="math display">
 \mathbf{i} = \hat e_2 \hat e_3, \quad \mathbf{j} = \hat e_1 \hat
 e_3,\quad \mathbf{k} = \hat e_1 \hat e_2.
-</span></p>
-<p>Come è facile dimostrare, tutte le <a
+</span></p></li>
+<li><p>Com’è facile dimostrare, tutte le <a
 href="tomasi-ray-tracing-07a-clifford-algebras.html#/notazione-per-i-quaternioni">proprietà
 che avevamo elencato</a> continuano ad essere valide.</p></li>
 </ul>
@@ -1114,19 +1147,20 @@ v_3) \hat e_2 + (u_1 v_2 - u_2 v_1) \hat e_3.
 <section id="prodotto-esterno-e-vettoriale" class="slide level1">
 <h1>Prodotto esterno e vettoriale</h1>
 <ul>
-<li><p>Si può verificare facilmente che</p>
+<li><p>Se <span class="math inline">i = \hat e_1 \hat e_2 \hat
+e_3</span>, si può verificare facilmente che</p>
 <p><span class="math display">
 i\vec u \times \vec v = \vec u \wedge \vec v,
 </span></p>
-<p>dove ovviamente <span class="math inline">i = \hat e_1 \hat e_2 \hat
-e_3</span>.</p></li>
+<p>e questa formula può essere usata come spunto per convertire nel
+formalismo dell’algebra geometrica le equazioni classiche che contengono
+<span class="math inline">\times</span> .</p></li>
 <li><p>Il prodotto esterno ha una serie di vantaggi su quello
 vettoriale:</p>
 <ol>
 <li>È definito su <span class="math inline">\mathbb{R}^n</span> per
 qualsiasi <span class="math inline">n</span>, mentre quello vettoriale
-solo per <span class="math inline">n = 3</span>: formule che usano ∧
-sono quindi più facili da generalizzare.</li>
+solo per <span class="math inline">n = 3</span>.</li>
 <li>Il prodotto esterno è associativo, quello vettoriale no: <span
 class="math inline">u \times (v \times w) \not= (u \times v) \times
 w</span>. I calcoli sono quindi più semplici.</li>
@@ -1138,7 +1172,7 @@ w</span>. I calcoli sono quindi più semplici.</li>
 <ul>
 <li><p>Il prodotto vettoriale compare in molte leggi della fisica:</p>
 <ul>
-<li><p>Cinematica e dinamica del corpo rigido;</p></li>
+<li><p>Dinamica del corpo rigido;</p></li>
 <li><p>Equazioni di Maxwell;</p></li>
 <li><p>Forza di Lorentz.</p></li>
 </ul></li>
@@ -1179,85 +1213,13 @@ si riflette banalmente nello specchio.</p></li>
 <section id="equazioni-di-maxwell" class="slide level1">
 <h1>Equazioni di Maxwell</h1>
 <ul>
-<li><p>Le quattro equazioni di Maxwell usano prodotti scalari e
-vettoriali:</p>
-<p><span class="math display">
-\begin{alignedat}{4}
-\vec\nabla \cdot \vec E &amp;= \frac\rho{\epsilon_0}, \quad
-&amp;\vec\nabla \cdot \vec B &amp;= 0,\\
-\vec\nabla \times \vec E &amp;= -\frac{\partial \vec B}{\partial t},
-\quad
-&amp;\vec\nabla \times \vec B &amp;= \mu_0 \left(\vec J + \epsilon_0
-\frac{\partial \vec E}{\partial t}\right).\\
-\end{alignedat}
-</span></p></li>
-<li><p>Per riscriverle nel linguaggio dell’algebra geometrica, possiamo
-definire dei multivettori <em>ad hoc</em>.</p></li>
-</ul>
-</section>
-<section id="multivettori-elettromagnetici" class="slide level1">
-<h1>Multivettori elettromagnetici</h1>
-<ul>
-<li><p>Definiamo</p>
-<p><span class="math display">
-\begin{aligned}
-F &amp;= \vec E + i c \vec B,\\
-J &amp;= c\rho - \vec J,\\
-\nabla &amp;= \frac1c \frac{\partial}{\partial t} + \vec \nabla.
-\end{aligned}
-</span></p></li>
 <li><p><span class="math inline">\vec E</span> è un vettore, ma <span
-class="math inline">\vec B</span> è un bivettore!</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
+class="math inline">\vec B</span> è un bivettore!</p>
 <center>
-<img data-src="./media/B-pseudovector.svg" height="380" />
-</center>
-<p>Il problema della riflessione nella <a
-href="tomasi-ray-tracing-05a.html#pseudovettori-1">legge di Ampère</a> è
-così risolto!</p>
-</section>
-<section id="equazione-di-maxwell" class="slide level1">
-<h1>Equazione di Maxwell</h1>
-<ul>
-<li><p>Usando le definizioni, le quattro equazioni di Maxwell si
-riscrivono come</p>
-<p><span class="math display">
-\nabla F = \frac{J}{c \epsilon_0}.
-</span></p></li>
-<li><p>Il lato destro e sinistro sono multivettori, e l’uguaglianza si
-riferisce alle componenti (1) scalari, (2) vettoriali, (3) bivettoriali,
-e (4) pseudoscalari.</p></li>
-<li><p>Essendo <span class="math inline">F</span> e <span
-class="math inline">J</span> dei multivettori (che ammettono l’inversa),
-è possibile usare molti teoremi dell’ analisi per risolvere direttamente
-l’equazione.</p></li>
-</ul>
-</section>
-<section id="compendio" class="slide level1">
-<h1>Compendio</h1>
-<ul>
-<li><p>L’algebra geometrica si può riassumere in una slide!</p></li>
-<li><p>Il prodotto è definito dalle relazioni</p>
-<p><span class="math display">
-\begin{alignedat}{4}
-\vec u(\vec v + \vec w) &amp;= \vec u \vec v + \vec u \vec w,\quad
-&amp;\vec u(\vec v \vec w) &amp;= (\vec u \vec v) \vec w,\\
-(\vec u + \vec v) \vec w &amp;= \vec u \vec w + \vec v \vec w,\quad
-&amp;\vec u^2 &amp;= \left\|\vec u\right\|^2.
-\end{alignedat}
-</span></p></li>
-<li><p>Il prodotto <span class="math inline">\vec u \vec v</span> può
-essere decomposto in una parte simmetrica e una antisimmetrica, che
-coincidono col prodotto interno/esterno:</p>
-<p><span class="math display">
-\vec u \cdot \vec v = \frac{\vec u \vec v + \vec v \vec u}2,\ \vec u
-\wedge \vec v = \frac{\vec u \vec v - \vec v \vec
-u}2\quad\Rightarrow\quad \vec u \vec v = \vec u \cdot \vec v + \vec u
-\wedge \vec v.
-</span></p></li>
+<p><img data-src="./media/B-pseudovector.svg" height="380" /></p>
+</center></li>
+<li><p>(Ma è più conveniente pensare in termini del multivettore <span
+class="math inline">\vec F = \vec E + i c \vec B</span>).</p></li>
 </ul>
 </section>
 <section id="multivettori-e-ray-tracing" class="slide level1">
@@ -1273,8 +1235,9 @@ volta: che meraviglia!</p></li>
 essere memorizzato: visto che in un ray-tracer servono soprattutto
 vettori, ciò è uno spreco (la nostra struttura <code>Vec</code> richiede
 appena 3 floating point).</p></li>
-<li><p>È difficile implementare programmi di ray-tracing che usano
-l’algebra geometrica e che siano efficienti.</p></li>
+<li><p>È difficile (ma non impossibile) implementare programmi di
+ray-tracing che usano l’algebra geometrica e che siano
+efficienti.</p></li>
 </ul>
 </section>
 <section id="approfondimenti-12" class="slide level1">

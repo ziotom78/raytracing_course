@@ -12,8 +12,8 @@
 |         3 | [11 Marzo 2024](tomasi-ray-tracing-03a.html)    | [13 Marzo 2024](tomasi-ray-tracing-03b.html)    |
 |         4 | [18 Marzo 2024](tomasi-ray-tracing-04a.html)    | [20 Marzo 2024](tomasi-ray-tracing-04b.html)    |
 |         5 | [25 Marzo 2024](tomasi-ray-tracing-05a.html) | [27 Marzo 2024](tomasi-ray-tracing-05b.html) |
-<!--
 |         6 | [3 Aprile 2024](tomasi-ray-tracing-06a.html) | [10 Aprile 2024](tomasi-ray-tracing-06b.html) |
+<!--
 |         7 | [15 Aprile 2024](tomasi-ray-tracing-07a.html) | [17 Aprile 2024](tomasi-ray-tracing-07b.html) |
 |         8 | [22 Aprile 2024](tomasi-ray-tracing-08a.html) | [24 Maggio 2024](tomasi-ray-tracing-08b.html) |
 |         9 | [6 Maggio 2024](tomasi-ray-tracing-09a.html) | — |
@@ -49,8 +49,8 @@
 -   [Trasformazioni](tomasi-ray-tracing-05a.html#/trasformazioni): [di scala](tomasi-ray-tracing-05a.html#/trasformazioni-di-scala), [applicate a normali](tomasi-ray-tracing-05a.html#/trasformazioni-e-normali), [rotazioni](tomasi-ray-tracing-05a.html#/rotazioni), [traslazioni](tomasi-ray-tracing-05a.html#/traslazioni)
 -   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/numeri-di-versione)
 -   [*Branch* e *pull requests*](tomasi-ray-tracing-05b.html#/pull-requests)
-<!--
 -   [*CI builds*](tomasi-ray-tracing-06b.html#/ci-builds)
+<!--
 -   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-07a.html#/soluzione-dellequazione)
 -   [Algoritmi *image order*](tomasi-ray-tracing-07a.html#/algoritmi-image-order)
 -   [Schermi virtuali e osservatori](tomasi-ray-tracing-07a.html#/schermo-e-osservatore)
@@ -79,9 +79,9 @@
 -   [Lo standard Unicode](tomasi-ray-tracing-03a.html#/lo-standard-unicode)
 -   [File e stream](tomasi-ray-tracing-03b.html#/file-e-stream)
 -   [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
-<!--
 -   [Numeri complessi e quaternioni](tomasi-ray-tracing-06a.html#/numeri-complessi-e-quaternioni)
 -   [Algebre di Clifford](tomasi-ray-tracing-06a.html#/algebre-di-clifford)
+<!--
 -   [Constructive Solid Geometry](tomasi-ray-tracing-08a.html#/constructive-solid-geometry)
 -   [*Issues*](tomasi-ray-tracing-08b.html#/issues)
 -   [*Change log*](tomasi-ray-tracing-08b.html#/changelog)

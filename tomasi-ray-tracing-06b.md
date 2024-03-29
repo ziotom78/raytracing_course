@@ -12,7 +12,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Un requisito basilare è che tutti i test continuino a passare una volta che viene incorporato il *pull request*.
 
--   GitHub consente di verificare automaticamente questo requisito, tramite i *Continuous Integration builds*.
+-   GitHub consente di verificare automaticamente questo requisito, tramite i *Continuous Integration builds* (che GitHub chiama *GitHub actions*).
 
 # Continuous Integration (CI)
 
@@ -83,18 +83,6 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Modificate un test in modo che fallisca e verificate che quando fate il commit ciò vi venga segnalato. (Poi rimettete a posto il test).
 
-# Indicazioni per C\#
-
-# GitHub Actions
-
--   Aggiungete una Action al repository GitHub, una volta che avete fatto il commit ed eseguito `git push`.
-
--   Il modello è «.NET» (evitate il modello «.NET desktop», a noi serve quello per i programmi che funzionano da linea di comando):
-
-    <center>
-    ![](./media/dotnet-github-action.png)
-    </center>
-
 # Indicazioni per D/Nim/Rust
 
 # GitHub Actions
@@ -126,7 +114,19 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Se in Kotlin avete problemi a causa della versione di Gradle, rigenerate `gradlew` da linea di comando così:
 
     ```sh
-    gradle wrapper --gradle-version 5.3
+    gradle wrapper --gradle-version 8.4
     ```
 
-    (Gradle supporta Kotlin solo a partire dalla versione 5.3).
+    (Tenete presente che Gradle supporta Kotlin solo a partire dalla versione 5.3).
+
+# Indicazioni per C\#
+
+# GitHub Actions
+
+-   Aggiungete una Action al repository GitHub, una volta che avete fatto il commit ed eseguito `git push`.
+
+-   Il modello è «.NET» (evitate il modello «.NET desktop», a noi serve quello per i programmi che funzionano da linea di comando):
+
+    <center>
+    ![](./media/dotnet-github-action.png)
+    </center>
