@@ -262,6 +262,10 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   È facile dimostrare che $r(t)$ rappresenta una rotazione $\forall t\in [0, 1]$.
 
+# Esempio di slerp
+
+<p><embed width="640px" height="640px" src="js/slerp.html"/></p>
+
 # Animare le trasformazioni
 
 -   Rappresentare le rotazioni con i quaternioni riempie l'ultimo “buco” che ci mancava: tutte le trasformazioni presentate nella lezione precedente sono facilmente interpolabili:
