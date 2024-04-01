@@ -339,6 +339,8 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ![](./media/bivectors-meaning.svg)
 </center>
 
+Può suonare strano! Però ciò garantisce che $(2\vec v) \wedge \vec w = \vec v \wedge (2\vec w)$.
+
 # Significato del prodotto esterno
 
 -   Queste sono le informazioni che codifica un prodotto esterno $\vec v \wedge \vec w$:
