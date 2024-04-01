@@ -34,14 +34,14 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Trasformazioni nel tempo (2/2)
 
--   Le trasformazioni di scala sono ugualmente facili da animare: per scalare da $s_0$ a $s_1$, la trasformazione è
+-   Le trasformazioni di scala sono ugualmente facili da animare: per scalare da $s_0$ a $s_1$, posso definire $\xi(t) = s_0 + (s_1 - s_0) t$ e la trasformazione è
 
     $$
-    A(t) = M_{s_0 + (s_1 - s_0) t} = \bigl(s_0 + (s_1 - s_0) t\bigr)
+    A(t) = M_{s_0 + (s_1 - s_0) t} = M_{\xi(t)} = 
     \begin{pmatrix}
-    1&0&0&0\\
-    0&1&0&0\\
-    0&0&1&0\\
+    \xi(t)&0&0&0\\
+    0&\xi(t)&0&0\\
+    0&0&\xi(t)&0\\
     0&0&0&1
     \end{pmatrix}.
     $$
@@ -394,7 +394,7 @@ Può suonare strano! Però ciò garantisce che $(2\vec v) \wedge \vec w = \vec v
 
 -   La formula della somma appare complicata, ma permette di costruire uno spazio vettoriale.
 
--   Essendo uno spazio vettoriale, l'insieme dei bivettori possiede quindi delle basi, e la somma è più semplice da capire e calcolare se si decompongono i bivettori in una base.
+-   Essendo uno spazio vettoriale, è possibile decomporre i bivettori usando **basi**, e in questo modo la somma è banale da capire: tanto semplice quanto sommare $\vec v = 3\hat e_1 + 2\hat e_2$ a $\vec w = -2\hat e_1 + \hat e_2$.
 
 -   Possiamo definire la **base canonica** come l'insieme dei tre bivettori di area unitaria sui piani $xy$, $yz$ e $xz$:
 
