@@ -31,9 +31,7 @@ scene.add(cube2);
 scene.add(interp_cube);
 
 cube1.position.x = -2;
-cube1.position.y = -1.5;
 cube2.position.x = +2;
-cube2.position.y = -1.5;
 interp_cube.position.x = -1.5;
 
 camera.position.z = 5;
