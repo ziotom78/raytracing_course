@@ -50,7 +50,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Animare rotazioni
 
--   Non basta interpolare i coefficienti delle due matrici
+-   Non basta interpolare i coefficienti di due matrici di rotazione
     $$
     R(0) = \begin{pmatrix}
     m_{11}&m_{12}&m_{13}\\
