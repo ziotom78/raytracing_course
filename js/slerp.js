@@ -41,20 +41,20 @@ var controls = new function() {
     this.cube1rotY = 0.0;
     this.cube1rotZ = 0.0;
 
-    this.cube2rotX = 0.7;
-    this.cube2rotY = -0.4;
-    this.cube2rotZ = 0.2;
+    this.cube2rotX = 45.0;
+    this.cube2rotY = -30.0;
+    this.cube2rotZ = 15.0;
 
     this.slerp = 0.5;
 }
 
 var gui = new dat.GUI();
-gui.add(controls, 'cube1rotX', -Math.PI / 4, Math.PI / 4);
-gui.add(controls, 'cube1rotY', -Math.PI / 4, Math.PI / 4);
-gui.add(controls, 'cube1rotZ', -Math.PI / 4, Math.PI / 4);
-gui.add(controls, 'cube2rotX', -Math.PI / 4, Math.PI / 4);
-gui.add(controls, 'cube2rotY', -Math.PI / 4, Math.PI / 4);
-gui.add(controls, 'cube2rotZ', -Math.PI / 4, Math.PI / 4);
+gui.add(controls, 'cube1rotX', -90.0, 90.0);
+gui.add(controls, 'cube1rotY', -90.0, 90.0);
+gui.add(controls, 'cube1rotZ', -90.0, 90.0);
+gui.add(controls, 'cube2rotX', -90.0, 90.0);
+gui.add(controls, 'cube2rotY', -90.0, 90.0);
+gui.add(controls, 'cube2rotZ', -90.0, 90.0);
 gui.add(controls, 'slerp', 0, 1);
 
 var quatFromObj = function(obj) {
@@ -66,13 +66,13 @@ var quatFromObj = function(obj) {
 var animate = function () {
     requestAnimationFrame(animate);
 
-    cube1.rotation.x = controls.cube1rotX;
-    cube1.rotation.y = controls.cube1rotY;
-    cube1.rotation.z = controls.cube1rotZ;
+    cube1.rotation.x = controls.cube1rotX * Math.PI / 180.0;
+    cube1.rotation.y = controls.cube1rotY * Math.PI / 180.0;
+    cube1.rotation.z = controls.cube1rotZ * Math.PI / 180.0;
 
-    cube2.rotation.x = controls.cube2rotX;
-    cube2.rotation.y = controls.cube2rotY;
-    cube2.rotation.z = controls.cube2rotZ;
+    cube2.rotation.x = controls.cube2rotX * Math.PI / 180.0;
+    cube2.rotation.y = controls.cube2rotY * Math.PI / 180.0;
+    cube2.rotation.z = controls.cube2rotZ * Math.PI / 180.0;
 
     interp_cube.position.x = cube1.position.x + (cube2.position.x - cube1.position.x) * controls.slerp;
 
