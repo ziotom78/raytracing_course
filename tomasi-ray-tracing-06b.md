@@ -68,13 +68,15 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Cosa si può fare in un CI build?
 
--   Lo scopo più importante è eseguire i test!
+-   Potete eseguire dei *linter* come [PyFlakes](https://pypi.org/project/pyflakes/) per Python o [CSA](https://clang-analyzer.llvm.org/) per C++.
 
--   Può essere molto utile anche verificare che il codice sia formattato correttamente: se la formattazione non è corretta, il build fallisce. Questo è particolarmente vero se usate qualche tool per la formattazione automatica (come [black](https://github.com/psf/black) per Python o [clang-format](https://clang.llvm.org/docs/ClangFormat.html) per il C++).
+-   Se usate un tool per la formattazione automatica (come [black](https://github.com/psf/black) per Python o [clang-format](https://clang.llvm.org/docs/ClangFormat.html) per il C++), potete verificare che il codice sia formattato correttamente.
 
--   Appoggiandosi a siti come [ReadTheDocs](https://about.readthedocs.com/?ref=readthedocs.org), si può far sì che le *docstrings* nel manuale siano sempre aggiornate.
+-   Si possono usare siti come [ReadTheDocs](https://about.readthedocs.com/?ref=readthedocs.org) per pubblicare il manuale dell'utente con [Sphinx](https://www.sphinx-doc.org/), [MkDocs](https://www.mkdocs.org/) o [Jupyter Book](https://jupyterbook.org/en/stable/intro.html), garantendo che vengano incluse le *docstrings* aggiornate.
 
--   Si possono generare eseguibili pronti da scaricare, nel caso si usi un linguaggio compilato: in questo modo l'utente non è obbligato ad installare un compilatore C++/Nim/Rust/…
+-   Si possono generare eseguibili pronti da scaricare: in questo modo l'utente non è obbligato ad installare un compilatore C++/Nim/Rust/…
+
+-   **L'unico requisito per questo corso è che si eseguano i test!**
 
 
 # Guida per l'esercitazione
