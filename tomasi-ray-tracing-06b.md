@@ -28,9 +28,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Installano il codice su una macchina virtuale: più difficile combinare guai.
 
--   La macchina virtuale viene creata sempre da zero: più facile scoprire quali sono le dipendenze del codice. (Esempio: è stata installato il compilatore C++? È stata installata la libreria `libgd`?)
+-   La macchina virtuale viene creata sempre da zero: più facile scoprire quali sono le dipendenze del codice. (Esempio: quale versione del compilatore C++ è stata installata? È stata installata la libreria `libgd`?)
 
--   Si possono creare macchine virtuali che installano diversi sistemi operativi (Linux, Windows, Mac OS X, FreeBSD, etc.): il codice viene verificato su ciascuna di esse.
+-   Si possono creare più macchine virtuali con diversi sistemi operativi (Linux, Windows, Mac OS X…): il codice viene verificato su ciascuna di esse.
 
 -   I CI builds possono venire eseguiti automaticamente da GitHub ogni volta che si apre un pull request, ogni volta che si fa un commit, etc.
 
@@ -64,6 +64,17 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 <center>
 ![](./media/github-action-run-tests-detail.png){height=720px}
 </center>
+
+
+# Cosa si può fare in un CI build?
+
+-   Lo scopo più importante è eseguire i test!
+
+-   Può essere molto utile anche verificare che il codice sia formattato correttamente: se la formattazione non è corretta, il build fallisce. Questo è particolarmente vero se usate qualche tool per la formattazione automatica (come [black](https://github.com/psf/black) per Python o [clang-format](https://clang.llvm.org/docs/ClangFormat.html) per il C++).
+
+-   Appoggiandosi a siti come [ReadTheDocs](https://about.readthedocs.com/?ref=readthedocs.org), si può far sì che le *docstrings* nel manuale siano sempre aggiornate.
+
+-   Si possono generare eseguibili pronti da scaricare, nel caso si usi un linguaggio compilato: in questo modo l'utente non è obbligato ad installare un compilatore C++/Nim/Rust/…
 
 
 # Guida per l'esercitazione
