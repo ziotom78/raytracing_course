@@ -13,8 +13,8 @@
 |         4 | [18 Marzo 2024](tomasi-ray-tracing-04a.html)    | [20 Marzo 2024](tomasi-ray-tracing-04b.html)    |
 |         5 | [25 Marzo 2024](tomasi-ray-tracing-05a.html) | [27 Marzo 2024](tomasi-ray-tracing-05b.html) |
 |         6 | [3 Aprile 2024](tomasi-ray-tracing-06a.html) | [10 Aprile 2024](tomasi-ray-tracing-06b.html) |
-<!--
 |         7 | [15 Aprile 2024](tomasi-ray-tracing-07a.html) | [17 Aprile 2024](tomasi-ray-tracing-07b.html) |
+<!--
 |         8 | [22 Aprile 2024](tomasi-ray-tracing-08a.html) | [24 Maggio 2024](tomasi-ray-tracing-08b.html) |
 |         9 | [6 Maggio 2024](tomasi-ray-tracing-09a.html) | — |
 |        10 | [13 Maggio 2024](tomasi-ray-tracing-10a.html) | [15 Maggio 2024](tomasi-ray-tracing-10b.html) |

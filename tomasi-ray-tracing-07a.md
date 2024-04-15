@@ -208,7 +208,7 @@ Come si tratta questo caso?
 <center>
 ![](./media/leon-battista-alberti-piramide-visuale.webp)
 </center>
-[[Leon Battista Alberti](https://it.wikipedia.org/wiki/Leon_Battista_Alberti), *De pictura* (1435)]{style="float:right"}
+[[Leon Battista Alberti](https://it.wikipedia.org/wiki/Leon_Battista_Alberti), [*De pictura*](https://it.wikipedia.org/wiki/De_pictura) (1435)]{style="float:right"}
 
 # Descrizione generale
 
