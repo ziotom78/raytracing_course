@@ -1,9 +1,3 @@
----
-title: "Esercitazione 7"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # Codice da implementare
 
 # Nuovi tipi
@@ -47,7 +41,7 @@ class Ray:
     tmax: float = inf
     depth: int = 0
 
-    def is_close(self, other: Ray, epsilon=1e-5):
+    def is_close(self, other: Ray, epsilon=1e-5) -> bool:
         return (self.origin.is_close(other.origin, epsilon=epsilon) and
                 self.dir.is_close(other.dir, epsilon=epsilon))
 
@@ -120,9 +114,9 @@ class TestRays(unittest.TestCase):
 
 -   Ma che tipo stabiliamo per la variabile `cam`? `OrthogonalCamera` oppure `PerspectiveCamera`?
 
-# Polimorfismo dinamico
+# Polimorfismo dinamico (1/2)
 
-La programmazione OOP consente di salvarsi da questo pasticcio introducendo un **terzo** tipo oltre a `OrthogonalCamera` oppure `PerspectiveCamera`:
+La programmazione OOP consente di salvarsi da questo pasticcio introducendo un **terzo** tipo oltre a `OrthogonalCamera` oppure `PerspectiveCamera`, come mostra questo codice C++:
 
 ```c++
 struct Camera { virtual void fire_ray(...) = 0; };
@@ -137,21 +131,46 @@ int main() {
 }
 ```
 
+# Polimorfismo dinamico (2/2)
+
+Ma la OOP non è l'unico mezzo per ottenere il polimorfismo dinamico, perché si può usare anche il *polimorfismo procedurale*. Ecco un esempio in C++:
+
+```c++
+using FireRayProc = void(…);
+
+void fire_ray_orthogonal(…);
+void fire_ray_perspective(…);
+
+void fire_all_rays(FireRayProc fire_ray) {
+    // Use `fire_ray(…)` as any other function
+}
+
+int main() {
+    std::string kind_of_camera = input_camera();
+    FireRayProc * proc = (kind_of_camera == "orthogonal") ?
+        &fire_ray_orthogonal : &fire_ray_perspective;
+
+    // Dynamic polymorphic call!
+    fire_all_rays(proc);
+}
+```
+
 # Tipi di polimorfismo
 
--   Ci sono due tipi di polimorfismo:
+-   Riassumendo, ci sono due tipi di polimorfismo:
 
     1.  Polimorfismo statico (ossia in fase di compilazione): è il caso dell'*overloading*.
 
     2.  Polimorfismo dinamico: è il caso della gerarchia di classi.
 
--   Esistono tipi di polimorfismo più sofisticati, come il *multiple dispatch* che è un concetto cardine del linguaggio Julia ed è implementato in modo sperimentale anche in Nim, ma a noi non interessa.
+-   A noi servirà il polimorfismo dinamico, che potete implementare sia usando costrutti OOP (indicato per linguaggi come Java e Kotlin) o usando la programmazione procedurale.
+
 
 # Interfacce e *traits*
 
--   Un caso molto comune è quello in cui la classe base è solo un *escamotage* per avere un tipo base, ma tutti i metodi sono virtuali
+-   Un caso molto comune è quello in cui la classe base è solo un *escamotage* per avere un tipo base, ma tutti i metodi sono virtuali puri (astratti).
 
--   Per questo motivo alcuni linguaggi moderni offrono meccanismi più leggeri chiamati *interfacce* (Go, C\#) o *traits* (Rust). Una *interfaccia* è l'analogo di una classe in cui tutti i metodi sono vuoti; ecco un esempio in Go:
+-   Alcuni linguaggi moderni offrono meccanismi più leggeri chiamati *interfacce* (Go, C\#) o *traits* (Rust). Una *interfaccia* è l'analogo di una classe in cui tutti i metodi sono vuoti; ecco un esempio in Go:
 
     ```go
     type camera interface { fire_ray(...) void }
@@ -164,7 +183,7 @@ int main() {
 
 # Le classi `*Camera`
 
--   In linguaggi che implementano l'ereditarietà, `Camera` sarà il tipo da cui sono derivati i nuovi tipi `OrthogonalCamera` e `PerspectiveCamera`.
+-   Se volete usare un approccio OOP, `Camera` sarà il tipo da cui sono derivati i nuovi tipi `OrthogonalCamera` e `PerspectiveCamera`.
 
 -   L'idea è proprio di implementare la gerarchia di tipi che abbiamo visto:
 
@@ -180,7 +199,7 @@ int main() {
     ```
     </center>
 
--   Usate quanto il vostro linguaggio permette per implementare il polimorfismo: gerarchia di classi in C\#/D/Java/Kotlin, [*traits*](https://doc.rust-lang.org/book/ch10-02-traits.html) in Rust, [*dynamic dispatch*](https://nim-lang.org/docs/tut2.html#object-oriented-programming-dynamic-dispatch) in Nim
+-   Usate quanto il vostro linguaggio permette per implementare il polimorfismo: gerarchia di classi in C\#/D/Java/Kotlin, [*traits*](https://doc.rust-lang.org/book/ch10-02-traits.html) in Rust, etc.
 
 ---
 
@@ -417,11 +436,10 @@ def test_perspective_camera(self):
 
 -   Una volta «lanciato» un raggio verso un pixel, la funzione `fire_all_rays` dovrebbe calcolare la soluzione dell'equazione del rendering
 
--   Implementeremo più metodi risolutivi, alcuni accurati ma lenti e altri grossolani ma velocissimi: quindi anche qui potremmo usare il polimorfismo. **Ma**…
+-   Implementeremo più metodi risolutivi, alcuni accurati ma lenti e altri grossolani ma velocissimi: quindi anche qui si può usare il polimorfismo.
 
--   …quello che invece facciamo per ora è accettare come argomento di `fire_all_rays` una **funzione** che venga invocata per ogni pixel/raggio dell'immagine e restituisca un oggetto di tipo `Color`.
+-   Per il momento vi consiglio di impiegare un approccio procedurale: `fire_all_rays` accetta come argomento una **funzione** che viene invocata per ogni pixel/raggio dell'immagine e restituisce un oggetto di tipo `Color`.
 
--   Questo è un approccio alternativo al polimorfismo, e vi consiglio di provarlo! Potrete poi cambiarlo se vedete che nel vostro linguaggio porta a codice poco naturale.
 
 # `ImageTracer` in Python
 
@@ -477,3 +495,10 @@ def test_image_tracer(self):
     #.  `ImageTracer`.
 
 -   Implementate tutti i test. Quando avete terminato l'implementazione e i test passano con successo, chiudete il PR.
+
+
+---
+title: "Esercitazione 7"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...
