@@ -14,8 +14,8 @@
 |         5 | [25 Marzo 2024](tomasi-ray-tracing-05a.html) | [27 Marzo 2024](tomasi-ray-tracing-05b.html) |
 |         6 | [3 Aprile 2024](tomasi-ray-tracing-06a.html) | [10 Aprile 2024](tomasi-ray-tracing-06b.html) |
 |         7 | [15 Aprile 2024](tomasi-ray-tracing-07a.html) | [17 Aprile 2024](tomasi-ray-tracing-07b.html) |
-<!--
 |         8 | [22 Aprile 2024](tomasi-ray-tracing-08a.html) | [24 Maggio 2024](tomasi-ray-tracing-08b.html) |
+<!--
 |         9 | [6 Maggio 2024](tomasi-ray-tracing-09a.html) | — |
 |        10 | [13 Maggio 2024](tomasi-ray-tracing-10a.html) | [15 Maggio 2024](tomasi-ray-tracing-10b.html) |
 |        11 | [20 Maggio 2024](tomasi-ray-tracing-11a.html) | [22 Maggio 2024](tomasi-ray-tracing-11b.html) |
@@ -50,7 +50,6 @@
 -   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/numeri-di-versione)
 -   [*Branch* e *pull requests*](tomasi-ray-tracing-05b.html#/pull-requests)
 -   [*CI builds*](tomasi-ray-tracing-06b.html#/ci-builds)
-<!--
 -   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-07a.html#/soluzione-dellequazione)
 -   [Algoritmi *image order*](tomasi-ray-tracing-07a.html#/algoritmi-image-order)
 -   [Schermi virtuali e osservatori](tomasi-ray-tracing-07a.html#/schermo-e-osservatore)
@@ -58,6 +57,8 @@
 -   [*Aspect ratio*](tomasi-ray-tracing-07a.html#/aspect-ratio)
 -   [Forma alternativa dell'equazione del rendering e funzione di visibilità](tomasi-ray-tracing-08a.html#/equazione-del-rendering)
 -   [Intersezioni tra raggi e forme geometriche](tomasi-ray-tracing-08a.html#/intersezioni-tra-raggi-e-forme-geometriche): [sfere](tomasi-ray-tracing-08a.html#/sfere), [piani](tomasi-ray-tracing-08a.html#/piani)
+-   [Constructive Solid Geometry](tomasi-ray-tracing-08a.html#/constructive-solid-geometry)
+<!--
 -   [Debugging: difetto, infezione, fallimento](tomasi-ray-tracing-09a.html#/debugging)
 -   [Algoritmo di path tracing](tomasi-ray-tracing-10a.html#/path-tracing)
 -   [Probabilità e Monte Carlo](tomasi-ray-tracing-10a.html#/probabilit%C3%A0-e-monte-carlo): CDF, PDF, valore di aspettazione, varianza, deviazione standard, metodo della media, *importance sampling*, densità marginale e condizionale
@@ -81,10 +82,9 @@
 -   [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
 -   [Numeri complessi e quaternioni](tomasi-ray-tracing-06a.html#/numeri-complessi-e-quaternioni)
 -   [Algebre di Clifford](tomasi-ray-tracing-06a.html#/algebre-di-clifford)
-<!--
--   [Constructive Solid Geometry](tomasi-ray-tracing-08a.html#/constructive-solid-geometry)
 -   [*Issues*](tomasi-ray-tracing-08b.html#/issues)
 -   [*Change log*](tomasi-ray-tracing-08b.html#/changelog)
+<!--
 -   [*Axis-aligned boxes*](tomasi-ray-tracing-09a.html#/axis-aligned-boxes)
 -   [Triangoli e *mesh* di triangoli](tomasi-ray-tracing-09a.html#/triangoli-e-mesh-di-triangoli)
 -   [Generatore PCG](tomasi-ray-tracing-10b.html#/lalgoritmo-pcg)
