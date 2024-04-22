@@ -1,9 +1,3 @@
----
-title: "Lezione 8"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # Forme geometriche
 
 # «Cornell box»
@@ -32,7 +26,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     \int_{4\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
     $$
-    
+
 -   L'integrale è calcolato sull'intero angolo solido 4π, e il suo significato fisico è di tenere conto della radiazione che cade sul punto $x$ di una superficie.
 
 -   Questa radiazione deve essere stata emessa da qualche elemento di superficie $\mathrm{d}\sigma'$ sulla scena, corrispondente a un punto $x'$ nello spazio (v. figura seguente).
@@ -50,13 +44,13 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     \mathrm{d}\omega_\Psi = \frac{\mathrm{d}\sigma'\,\cos\theta_i'}{\left\|x - x'\right\|^2}.
     $$
-    
+
 -   Il termine integrale dell'equazione del rendering si riscrive quindi così:
 
     $$
     \int_{\sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x, x - x')\,\frac{\cos\theta_i\,\cos\theta'}{\left\|x - x'\right\|^2}\mathrm{d}\sigma',
     $$
-    
+
     dove $\sum S$ indica tutte le superfici **visibili** da $x$.
 
 ---
@@ -88,7 +82,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
     #.  Intersezione tra un raggio e una superficie;
     #.  Determinazione della funzione di visibilità $v(x, x')$ tra due punti.
-    
+
 -   Questi due problemi possono essere risolti in modo molto simile, ed è quello che vedremo nella lezione di oggi.
 
 # Intersezioni tra raggi e forme geometriche
@@ -101,7 +95,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
     #.   Si rappresentano raggi e forme come equazioni in cui l'incognita è il punto $(x, y, z)$ dello spazio.
     #.   Si risolve il sistema delle equazioni per il raggio e per la forma, in modo da trovare i punti $(x, y, z)$ in comune tra le due equazioni.
-    
+
 -   Grazie alla nostra implementazione delle trasformazioni affini, possiamo implementare solo le forme più semplici, che potranno poi essere modificate tramite concatenazioni di trasformazioni.
 
 # Trasformazioni
@@ -123,15 +117,15 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     T\cdot S = \left\{T x: x \in S\right\},
     $$
-    
+
 -   Se il raggio $O + t \vec d$ interseca $T\cdot S$ quando $t = \tilde t$, allora
-    
+
     $$
     O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde t\,T^{-1} \vec d = \tilde x,
     $$
-    
+
     che equivale a formulare il problema dell'intersezione nel sistema di riferimento di $S$. Notate che $\tilde t$ **non cambia** tra le due formulazioni!
-    
+
 # Tipi di forme
 
 -   In questo corso discuteremo le seguenti forme geometriche:
@@ -141,7 +135,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     #.   *Constructive Solid Geometry* (CSG);
     #.   Cubi;
     #.   Triangoli.
-    
+
 -   Tratteremo cubi e triangoli più avanti, dal momento che sono solitamente associati ad argomenti più avanzati (*bounding boxes* e *triangle meshes*).
 
 # Sfere
@@ -153,7 +147,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     (x - c_x)^2 + (y - c_y)^2 + (z - c_z)^2 = R^2,
     $$
-    
+
     e deriva dalla definizione geometrica di sfera.
 
 -   Ci limitiamo però a considerare solo la sfera unitaria centrata nell'origine:
@@ -161,7 +155,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     x^2 + y^2 + z^2 = 1\ \rightarrow\ \left\|P - 0\right\|^2 = (P - 0) \cdot (P - 0) = 1,
     $$
-    
+
     dove $0$ è l'origine degli assi e $P$ è il generico punto della sfera. Potremo poi traslarla e trasformarla in un ellissoide mediante una trasformazione $T$.
 
 # Intersezione raggio-sfera
@@ -174,9 +168,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     P = O + t \vec d,
     \end{cases}
     $$
-    
+
 -   Le incognite sono $P$ e $t$; quest'ultimo dice a che distanza dall'origine del raggio avviene l'intersezione con la sfera.
-    
+
 # Soluzione dell'equazione
 
 -   Possiamo trovare $t$ sostituendo la seconda equazione nella prima:
@@ -184,15 +178,15 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     (O + t\vec d - 0) \cdot (O + t\vec d - 0) - 1 = 0.
     $$
-    
+
 -   La scrittura $O - 0$ indica semplicemente che $O$ va considerato un *vettore* anziché un punto. Noi semplifichiamo la notazione così:
 
     $$
     O - 0 = \vec O,
     $$
-    
+
     che suggerisce che potremo usare la funzione/metodo `Point.toVec()`.
-    
+
 # Soluzione dell'equazione
 
 -   Espandendo la definizione di prodotto scalare otteniamo
@@ -200,7 +194,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     t^2 \left\|\vec d\right\|^2 + 2 t\,\vec O \cdot \vec d + \left\|\vec O\right\|^2 - 1 = 0,
     $$
-    
+
 -   È una equazione di secondo grado, e ammette quindi zero, una o due soluzioni:
 
     #.  Zero soluzioni: il raggio non colpisce la sfera;
@@ -214,7 +208,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
     $$
-    
+
 -   Nel caso in cui $\Delta > 0$, le due intersezioni sono
 
     $$
@@ -233,7 +227,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     <center>
     ![](./media/ray-sphere-intersection.svg)
     </center>
-    
+
 
 # Intersezioni valide
 
@@ -244,9 +238,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     t_\text{min} \leq \tilde t \leq t_\text{max}
     $$
-    
+
     (usare < anziché ≤ non cambia nulla).
-    
+
 -   Se le due intersezioni $t_1$ e $t_2$ soddisfano entrambe questo criterio, allora si considera il valore minore delle due, ossia $t_1$ (*criterio di visibilità*).
 
 
@@ -267,9 +261,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     \hat n_P = P - C,
     $$
-    
+
     dove $C$ è il centro della sfera.
-    
+
 -   C'è però una ambiguità nel segno: sia $P - C$ che $C - P$ sono normali alla superficie. Ma la normale dovrebbe essere *entrante* o *uscente*?
 
 ---
@@ -287,7 +281,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     \hat n \cdot \vec d = \left\|\hat n\right\|\cdot\left\|\vec d\right\|\,\cos\theta,
     $$
-    
+
     e se è positivo consideriamo $-\hat n$ anziché $\hat n$.
 
 
@@ -321,7 +315,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     \theta = \arccos p_z, \quad \phi = \arctan \frac{p_y}{p_x}.
     $$
-    
+
 -   L'intervallo di valori $\theta \in [0, \pi], \phi \in [0, 2\pi]$ è troppo specifico per la sfera, quindi di solito si usa la parametrizzazione
 
     $$
@@ -337,9 +331,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     (P - O) \cdot \hat n = 0,
     $$
-    
+
     dove $P$ è il generico punto sul piano.
-    
+
 -   (Come potete intuire, in geometria algebrica invece i piani sono rappresentati mediante bivettori, e la loro equazione è identica a quella della retta: una meraviglia se si fanno calcoli a mano!)
 
 # Piano standard
@@ -351,13 +345,13 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     (P - O) \cdot \hat n = 0\ \Rightarrow\ \vec P \cdot \hat e_z = 0,
     $$
-    
+
     che equivale a chiedere che
-    
+
     $$
     P_z = 0.
     $$
-    
+
 # Intersezione raggio-piano
 
 -   L'intersezione tra il piano e il raggio $O + t \vec d$ è quindi banalissima: basta richiedere che la componente $z$ del punto lungo il raggio si annulli per qualche valore di $t$.
@@ -367,7 +361,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     O_z + t d_z = 0\ \Rightarrow\ t = -\frac{O_z}{d_z},
     $$
-    
+
     che vale ovviamente solo se $d_z \not= 0$, ossia se la direzione $\vec d$ del raggio non è parallela al piano $xy$.
 
 
@@ -390,7 +384,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     u = p_x - \lfloor p_x \rfloor,\quad v = p_y - \lfloor p_y \rfloor,
     $$
-    
+
     dove $\lfloor \cdot \rfloor$ indica l'arrotondamento per difetto, in modo che $u, v \in [0, 1)$ come nel caso della sfera.
 
 -   L'intera superficie del piano è quindi la ripetizione periodica della regione $[0, 1] \times [0, 1]$ (*tile pattern*).
@@ -409,7 +403,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Vedremo in futuro che forme arbitrariamente complesse si possono approssimare con insiemi di triangoli.
 
--   Oggi però affrontiamo brevemente un'altra tecnica per costruire forme geometriche complesse a partire da forme semplici: la *Constructive Solid Geometry* (CSG).
+-   Oggi presentiamo una tecnica per costruire forme geometriche complesse a partire da forme semplici: la *Constructive Solid Geometry* (CSG).
 
 
 # Operazioni Booleane
@@ -463,3 +457,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 <center>![](./media/villarceau-circles.webp)</center>
 
 [[*Villarceau Circles*](http://hof.povray.org/Villarceau_Circles-CSG.html), by Tor Olav Kristensen (2004)]{style="float:right"}
+
+---
+title: "Lezione 8"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

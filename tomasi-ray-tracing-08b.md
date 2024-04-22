@@ -1,9 +1,3 @@
----
-title: "Esercitazione 8"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # Issues
 
 # Un bug nel codice!
@@ -15,7 +9,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     v = (row + v_pixel) / (self.image.height - 1)
     ```
 
--   L'errore sta nel fatto che le righe in `HdrImage` sono numerate dall'*alto*, non dal *basso*, mentre la coordinata $v$ cresce verso l'*alto*. Nella seconda riga invece, la variabile `v` cresce quando cresce `row`.
+-   L'errore sta nel fatto che le righe in `HdrImage` sono numerate dall'*alto*, non dal *basso*, mentre la coordinata $v$ cresce verso l'*alto*. Nella seconda riga invece, la variabile `v` cresce quando cresce `row`: questo è sbagliato!
 
 # Cosa fare con i bug
 
@@ -39,7 +33,7 @@ ray1 = tracer.fire_ray(0, 0, u_pixel=2.5, v_pixel=1.5)
 ray2 = tracer.fire_ray(2, 1, u_pixel=0.5, v_pixel=0.5)
 assert ray1.is_close(ray2)
 
-# Here we check that all pixels have been visited
+# Here we check that all pixels have been visited at least once
 tracer.fire_all_rays(lambda ray: Color(1.0, 2.0, 3.0))
 for row in range(image.height):
     for col in range(image.width):
@@ -66,9 +60,9 @@ Correzioni in un repository pubblico come GitHub richiedono questi passaggi:
 
 #.   Modificare i test in modo che evidenzino l'errore: una volta implementati, questi nuovi test devono ovviamente fallire.
 
-#.   Solo una volta che i nuovi test sono implementati si può correggere il bug (**non invertite l'ordine!**)
+#.   Solo una volta che i nuovi test sono implementati si può correggere il bug.
 
-#.   Quando i nuovi test passano, aprire una PR legata al branch, e se tutto funziona (inclusi i *CI builds*) si aggiorna il `CHANGELOG`, si fa il *merge*, e si chiude la *issue*.
+#.   Quando i nuovi test passano, aprire una PR legata al branch, e se tutto funziona (inclusi i *CI builds*) aggiornare il `CHANGELOG`, fare il *merge*, e chiudere la *issue*.
 
 
 # Aprire una *issue*
@@ -126,7 +120,7 @@ def test_image_coverage():
 
 -   L'ineleganza sta nel fatto che dobbiamo creare in ogni test gli oggetti `image`, `camera` e `tracer`.
 
--   I framework di test (non tutti ☹) forniscono di solito la possibilità di invocare procedure di *set-up* per creare gli oggetti su cui si eseguono poi i test.
+-   I framework di test (non tutti 🙁) forniscono di solito la possibilità di invocare procedure di *set-up* per creare gli oggetti su cui si eseguono poi i test.
 
 -   (Analogamente, questi framework implementano anche la possibilità di invocare procedure di *tear-down* alla fine dei test, con lo scopo ad esempio di cancellare file temporanei creati durante i test stessi).
 
@@ -162,10 +156,6 @@ class TestImageTracer(unittest.TestCase):
                 assert self.image.get_pixel(col, row) == Color(1.0, 2.0, 3.0)
 ```
 
-# Fallimento dei test
-
-<asciinema-player src="cast/github-issue-failed-tests-86x22.cast" cols="86" rows="22" font-size="medium"></asciinema-player>
-
 # Creazione di un PR
 
 <center>![](./media/github-fix-issue.png){height=560px}</center>
@@ -193,7 +183,7 @@ class TestImageTracer(unittest.TestCase):
 
     2.  Chi vedrà queste modifiche, sarà in grado di capirle senza leggere l'intero codice?
 
--   Evitate di includere modifiche «gratuite» (correzioni di errori grammaticali in docstring, linee vuote aggiunte a caso…)
+-   Evitate di includere modifiche «gratuite»…
 
 ---
 
@@ -580,3 +570,9 @@ L'asimmetria nella disposizione delle sfere consente di individuare errori nell'
 #.  Creare i tipi `Shape`, `Sphere`, `World`, `Vec2d`;
 #.  Implementare il comando `demo`, nel modo in cui preferite (potete cercare una libreria per interpretare la linea di comando);
 #.  Aprire una PR e aggiornare il file `CHANGELOG.md`.
+
+---
+title: "Esercitazione 8"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

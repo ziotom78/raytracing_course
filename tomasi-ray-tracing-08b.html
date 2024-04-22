@@ -144,7 +144,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 numerate dall’<em>alto</em>, non dal <em>basso</em>, mentre la
 coordinata <span class="math inline">v</span> cresce verso
 l’<em>alto</em>. Nella seconda riga invece, la variabile <code>v</code>
-cresce quando cresce <code>row</code>.</p></li>
+cresce quando cresce <code>row</code>: questo è sbagliato!</p></li>
 </ul>
 </section>
 <section id="cosa-fare-con-i-bug" class="slide level1">
@@ -169,7 +169,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>ray2 <span class="op">=</span> tracer.fire_ray(<span class="dv">2</span>, <span class="dv">1</span>, u_pixel<span class="op">=</span><span class="fl">0.5</span>, v_pixel<span class="op">=</span><span class="fl">0.5</span>)</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> ray1.is_close(ray2)</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we check that all pixels have been visited</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we check that all pixels have been visited at least once</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>tracer.fire_all_rays(<span class="kw">lambda</span> ray: Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(image.height):</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(image.width):</span>
@@ -202,10 +202,10 @@ assegnato un numero unico, ad es. #156.</p></li>
 <li><p>Modificare i test in modo che evidenzino l’errore: una volta
 implementati, questi nuovi test devono ovviamente fallire.</p></li>
 <li><p>Solo una volta che i nuovi test sono implementati si può
-correggere il bug (<strong>non invertite l’ordine!</strong>)</p></li>
+correggere il bug.</p></li>
 <li><p>Quando i nuovi test passano, aprire una PR legata al branch, e se
-tutto funziona (inclusi i <em>CI builds</em>) si aggiorna il
-<code>CHANGELOG</code>, si fa il <em>merge</em>, e si chiude la
+tutto funziona (inclusi i <em>CI builds</em>) aggiornare il
+<code>CHANGELOG</code>, fare il <em>merge</em>, e chiudere la
 <em>issue</em>.</p></li>
 </ol>
 </section>
@@ -277,7 +277,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <li><p>L’ineleganza sta nel fatto che dobbiamo creare in ogni test gli
 oggetti <code>image</code>, <code>camera</code> e
 <code>tracer</code>.</p></li>
-<li><p>I framework di test (non tutti ☹) forniscono di solito la
+<li><p>I framework di test (non tutti 🙁) forniscono di solito la
 possibilità di invocare procedure di <em>set-up</em> per creare gli
 oggetti su cui si eseguono poi i test.</p></li>
 <li><p>(Analogamente, questi framework implementano anche la possibilità
@@ -315,10 +315,6 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.height):</span>
 <span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.width):</span>
 <span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                <span class="cf">assert</span> <span class="va">self</span>.image.get_pixel(col, row) <span class="op">==</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span></code></pre></div>
-</section>
-<section id="fallimento-dei-test" class="slide level1">
-<h1>Fallimento dei test</h1>
-<p><asciinema-player src="cast/github-issue-failed-tests-86x22.cast" cols="86" rows="22" font-size="medium"></asciinema-player></p>
 </section>
 <section id="creazione-di-un-pr" class="slide level1">
 <h1>Creazione di un PR</h1>
@@ -358,8 +354,7 @@ esempio</a>).</p></li>
 <li><p>Chi vedrà queste modifiche, sarà in grado di capirle senza
 leggere l’intero codice?</p></li>
 </ol></li>
-<li><p>Evitate di includere modifiche «gratuite» (correzioni di errori
-grammaticali in docstring, linee vuote aggiunte a caso…)</p></li>
+<li><p>Evitate di includere modifiche «gratuite»…</p></li>
 </ul>
 </section>
 <section class="slide level1">
