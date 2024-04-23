@@ -86,7 +86,7 @@
 -   [*Change log*](tomasi-ray-tracing-08b.html#/changelog)
 <!--
 -   [*Axis-aligned boxes*](tomasi-ray-tracing-09a.html#/axis-aligned-boxes)
--   [Triangoli e *mesh* di triangoli](tomasi-ray-tracing-09a.html#/triangoli-e-mesh-di-triangoli)
+-   [Triangoli, quadilateri e *mesh*](tomasi-ray-tracing-09a.html#/triangoli-quadilateri-e-mesh)
 -   [Generatore PCG](tomasi-ray-tracing-10b.html#/lalgoritmo-pcg)
 -   [Basi ortonormali arbitrarie](tomasi-ray-tracing-11a.html#/basi-ortonormali-onb-arbitrarie)
 -   [BRDF riflettente](tomasi-ray-tracing-11a.html#/brdf-riflettente)

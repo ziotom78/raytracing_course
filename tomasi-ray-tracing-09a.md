@@ -1,9 +1,3 @@
----
-title: "Lezione 9"
-subtitle: "Forme avanzate, debugging"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # *Axis-aligned boxes*
 
 # *Axis-aligned boxes*
@@ -151,7 +145,7 @@ Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è st
     ```
 
 
-# Triangoli e *mesh* di triangoli
+# Triangoli, quadilateri e *mesh*
 
 # Modellizzazione 3D
 
@@ -169,7 +163,7 @@ Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è st
 
 # Triangoli
 
-I triangoli sono la forma geometrica più usata nei programmi di modellizzazione e rendering 3D, per le molte loro proprietà:
+I triangoli sono una forma geometrica molto usata nei programmi di modellizzazione e rendering 3D, per le molte loro proprietà:
 
 #. Sono la superficie piana con il minor numero di vertici (→ efficienti da memorizzare).
 #. La loro rappresentazione nello spazio è univoca (per tre punti passa uno e un solo triangolo planare).
@@ -232,6 +226,16 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
 </center>
 
 <script type="text/javascript" src="./js/barycentric-coordinates.js"></script>
+
+# Quadrilateri
+
+-   Noi oggi ci concentreremo sui triangoli, ma i programmi di rendering offrono anche la possibilità di definire *quadrilateri*.
+
+-   Se ci si limita ai parallelogrammi, si possono rappresentare come l'unione di un vertice $P$ e due vettori $\vec v$ e $\vec w$; in questo modo, i risultati che mostreremo oggi sono facilmente estendibili anche ad essi:
+
+    <center>
+    ![](media/parallelogram.svg)
+    </center>
 
 # Intersezione con raggi
 
@@ -321,7 +325,7 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
 -   Le coordinate $(u, v)$ possono essere poste uguali a $(\beta, \gamma)$.
 
 
-# *Mesh* di triangoli
+# *Mesh*
 
 # [*Moana island scene*](https://www.disneyanimation.com/resources/moana-island-scene/)
 
@@ -345,13 +349,13 @@ I triangoli sono la forma geometrica più usata nei programmi di modellizzazione
 [The challenges of Releasing the *Moana* Island Scene (Tamstorf & Pritchett, EGSR 2019)](https://disneyanimation.com/publications/the-challenges-of-releasing-the-moana-island-scene/)
 </small>
 
-# *Mesh* di triangoli
+# *Mesh*
 
 -   Le scene viste nelle slide precedenti sono formate dalla combinazione di molte forme semplici.
 
 -   Mantenere in memoria una lista di forme semplici richiede una serie di accorgimenti non banali.
 
--   Oggi discuteremo delle *mesh* di triangoli, in cui la forma elementare è appunto un triangolo planare.
+-   Oggi discuteremo delle *mesh*, in cui la forma elementare è appunto un triangolo planare. (Identico discorso si può fare per le *mesh* di quadrilateri, ma noi ci concentreremo per semplicità sui triangoli).
 
 # Memorizzare triangoli
 
@@ -409,11 +413,11 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 # Coordinate $(u, v)$
 
--   Nel caso di una mesh ci sono infiniti modi possibili per creare una mappatura $(u, v)$ sulla superficie.
+-   Nel caso di una *mesh* ci sono infiniti modi possibili per creare una mappatura $(u, v)$ sulla superficie.
 
--   Nelle *mesh* si fa in modo che ogni triangolo copra una porzione specifica dell'intero spazio $[0, 1] \times [0, 1]$.
+-   Nelle *mesh* si fa in modo che ogni elemento della *mesh* copra una porzione specifica dell'intero spazio $[0, 1] \times [0, 1]$.
 
--   Programmi di modellizzazione 3D come Blender permettono di modificare la mappatura $(u, v)$ di ogni triangolo.
+-   Programmi di modellizzazione 3D come Blender permettono di modificare la mappatura $(u, v)$ di ogni elemento.
 
 ---
 
@@ -458,11 +462,11 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 # AABB e *mesh*
 
--   Gli AABB sono perfetti per essere applicati a *mesh* di triangoli. (In questo caso non si applicano ovviamente ai **singoli** triangoli, ma alla *mesh* nel suo complesso).
+-   Gli AABB sono perfetti per essere applicati a *mesh*. (In questo caso non si applicano ovviamente ai **singoli** elementi, ma alla *mesh* nel suo complesso).
 
 -   Al momento del caricamento di una *mesh*, si può calcolare il suo AABB calcolando il valore minimo e il valore massimo delle coordinate di tutti i vertici.
 
--   Nel caso dell'albero di *Oceania*, l'intersezione tra un raggio e i 18 milioni di triangoli avverebbe solo per quei raggi effettivamente orientati verso quell'albero.
+-   Nel caso dell'albero di *Oceania*, l'intersezione tra un raggio e i 18 milioni di elementi avverebbe solo per quei raggi effettivamente orientati verso quell'albero.
 
 ---
 
@@ -470,7 +474,7 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 # Oltre le AABB
 
--   Non è però sempre sufficiente usare gli AABB per le *mesh* di triangoli.
+-   Non è però sempre sufficiente usare gli AABB per le *mesh* perché queste siano efficienti.
 
 -   Sovente le scene sono occupate quasi completamente da un oggetto complesso, e in questo caso gli AABB non portano alcun vantaggio (è il caso dell'immagine precedente).
 
@@ -487,18 +491,18 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 -   Settimana scorsa avete corretto il vostro primo bug, che riguardava l'errato orientamento delle immagini salvate dal vostro codice.
 
--   In generale un *bug* è un problema nel programma che lo fa funzionare in modo diverso da come ci si aspetta
+-   In generale un *bug* è un problema nel programma che lo fa funzionare in modo diverso da quello che ci si aspetta.
 
--   È molto importante avere un approccio scientifico alla gestione dei bug! Nelle prossime slide vi darò alcune indicazioni generali
+-   È molto importante avere un approccio scientifico alla gestione dei bug! Nelle prossime slide vi darò alcune indicazioni generali.
 
 
 # Difetto, infezione e fallimento
 
 -   Il bellissimo libro di Zeller [*Why programs fail: a guide to systematic debugging*](https://www.whyprogramsfail.com/) spiega la scoperta di un *bug* come la combinazione di tre fattori:
 
-    1. **Difetto**: un errore nel modo in cui è scritto il codice
-    2. **Infezione**: un certo input “attiva” il difetto ed altera il valore di alcune variabili rispetto al caso atteso
-    3. **Fallimento**: l'esito del programma è sbagliato, o perché i risultati sono errati, o perché il programma va in crash
+    1. **Difetto**: un errore nel modo in cui è scritto il codice;
+    2. **Infezione**: un certo input “attiva” il difetto ed altera il valore di alcune variabili rispetto al caso atteso;
+    3. **Fallimento**: l'esito del programma è sbagliato, o perché i risultati sono errati, o perché il programma va in crash.
 
 -   Il *bug* sta nel difetto iniziale, ma se non c'è infezione o non c'è fallimento è difficile accorgersene!
 
@@ -581,7 +585,7 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 -   Se un utente vi segnala una issue senza che alcune di queste cose siano chiare, non fatevi scrupoli a chiedere maggiori dettagli.
 
--   GitHub consente di configurare un [modello per le *issue*](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository)
+-   GitHub consente di configurare un [modello per le *issue*](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository).
 
 # Individuare *difetti* scientificamente (Zeller)
 
@@ -592,3 +596,9 @@ Modello: 44.000 vertici, 80.000 triangoli.
      -   Se l'ipotesi è confermata, raffinare la predizione
      -   Se l'ipotesi è invalidata, cercarne una alternativa
 5.   Ripetere i passi 3 e 4 finché l'ipotesi non può più essere migliorata
+
+---
+title: "Lezione 9"
+subtitle: "Forme avanzate, debugging"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

@@ -343,8 +343,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># etc.</span></span></code></pre></div></li>
 </ul>
 </section>
-<section id="triangoli-e-mesh-di-triangoli" class="slide level1">
-<h1>Triangoli e <em>mesh</em> di triangoli</h1>
+<section id="triangoli-quadilateri-e-mesh" class="slide level1">
+<h1>Triangoli, quadilateri e <em>mesh</em></h1>
 </section>
 <section id="modellizzazione-3d" class="slide level1">
 <h1>Modellizzazione 3D</h1>
@@ -367,7 +367,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 </section>
 <section id="triangoli" class="slide level1">
 <h1>Triangoli</h1>
-<p>I triangoli sono la forma geometrica più usata nei programmi di
+<p>I triangoli sono una forma geometrica molto usata nei programmi di
 modellizzazione e rendering 3D, per le molte loro proprietà:</p>
 <ol>
 <li>Sono la superficie piana con il minor numero di vertici (→
@@ -457,6 +457,22 @@ data-state="barycentric-coordinates-demo">
         style="left:0px;top:0px;cursor:crosshair;border:1px solid black;"/>
 </center>
 <script type="text/javascript" src="./js/barycentric-coordinates.js"></script>
+</section>
+<section id="quadrilateri" class="slide level1">
+<h1>Quadrilateri</h1>
+<ul>
+<li><p>Noi oggi ci concentreremo sui triangoli, ma i programmi di
+rendering offrono anche la possibilità di definire
+<em>quadrilateri</em>.</p></li>
+<li><p>Se ci si limita ai parallelogrammi, si possono rappresentare come
+l’unione di un vertice <span class="math inline">P</span> e due vettori
+<span class="math inline">\vec v</span> e <span class="math inline">\vec
+w</span>; in questo modo, i risultati che mostreremo oggi sono
+facilmente estendibili anche ad essi:</p>
+<center>
+<p><img data-src="media/parallelogram.svg" /></p>
+</center></li>
+</ul>
 </section>
 <section id="intersezione-con-raggi" class="slide level1">
 <h1>Intersezione con raggi</h1>
@@ -557,8 +573,8 @@ essere poste uguali a <span class="math inline">(\beta,
 \gamma)</span>.</p></li>
 </ul>
 </section>
-<section id="mesh-di-triangoli" class="slide level1">
-<h1><em>Mesh</em> di triangoli</h1>
+<section id="mesh" class="slide level1">
+<h1><em>Mesh</em></h1>
 </section>
 <section id="moana-island-scene-1" class="slide level1">
 <h1><a
@@ -586,15 +602,17 @@ href="https://disneyanimation.com/publications/the-challenges-of-releasing-the-m
 challenges of Releasing the <em>Moana</em> Island Scene (Tamstorf &amp;
 Pritchett, EGSR 2019)</a> </small></p>
 </section>
-<section id="mesh-di-triangoli-1" class="slide level1">
-<h1><em>Mesh</em> di triangoli</h1>
+<section id="mesh-1" class="slide level1">
+<h1><em>Mesh</em></h1>
 <ul>
 <li><p>Le scene viste nelle slide precedenti sono formate dalla
 combinazione di molte forme semplici.</p></li>
 <li><p>Mantenere in memoria una lista di forme semplici richiede una
 serie di accorgimenti non banali.</p></li>
-<li><p>Oggi discuteremo delle <em>mesh</em> di triangoli, in cui la
-forma elementare è appunto un triangolo planare.</p></li>
+<li><p>Oggi discuteremo delle <em>mesh</em>, in cui la forma elementare
+è appunto un triangolo planare. (Identico discorso si può fare per le
+<em>mesh</em> di quadrilateri, ma noi ci concentreremo per semplicità
+sui triangoli).</p></li>
 </ul>
 </section>
 <section id="memorizzare-triangoli" class="slide level1">
@@ -683,15 +701,15 @@ assegna la normale</p>
 <section id="coordinate-u-v" class="slide level1">
 <h1>Coordinate <span class="math inline">(u, v)</span></h1>
 <ul>
-<li><p>Nel caso di una mesh ci sono infiniti modi possibili per creare
-una mappatura <span class="math inline">(u, v)</span> sulla
+<li><p>Nel caso di una <em>mesh</em> ci sono infiniti modi possibili per
+creare una mappatura <span class="math inline">(u, v)</span> sulla
 superficie.</p></li>
-<li><p>Nelle <em>mesh</em> si fa in modo che ogni triangolo copra una
-porzione specifica dell’intero spazio <span class="math inline">[0, 1]
-\times [0, 1]</span>.</p></li>
+<li><p>Nelle <em>mesh</em> si fa in modo che ogni elemento della
+<em>mesh</em> copra una porzione specifica dell’intero spazio <span
+class="math inline">[0, 1] \times [0, 1]</span>.</p></li>
 <li><p>Programmi di modellizzazione 3D come Blender permettono di
 modificare la mappatura <span class="math inline">(u, v)</span> di ogni
-triangolo.</p></li>
+elemento.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -753,15 +771,14 @@ di calcolo.</p></li>
 <section id="aabb-e-mesh" class="slide level1">
 <h1>AABB e <em>mesh</em></h1>
 <ul>
-<li><p>Gli AABB sono perfetti per essere applicati a <em>mesh</em> di
-triangoli. (In questo caso non si applicano ovviamente ai
-<strong>singoli</strong> triangoli, ma alla <em>mesh</em> nel suo
-complesso).</p></li>
+<li><p>Gli AABB sono perfetti per essere applicati a <em>mesh</em>. (In
+questo caso non si applicano ovviamente ai <strong>singoli</strong>
+elementi, ma alla <em>mesh</em> nel suo complesso).</p></li>
 <li><p>Al momento del caricamento di una <em>mesh</em>, si può calcolare
 il suo AABB calcolando il valore minimo e il valore massimo delle
 coordinate di tutti i vertici.</p></li>
 <li><p>Nel caso dell’albero di <em>Oceania</em>, l’intersezione tra un
-raggio e i 18 milioni di triangoli avverebbe solo per quei raggi
+raggio e i 18 milioni di elementi avverebbe solo per quei raggi
 effettivamente orientati verso quell’albero.</p></li>
 </ul>
 </section>
@@ -775,7 +792,7 @@ effettivamente orientati verso quell’albero.</p></li>
 <h1>Oltre le AABB</h1>
 <ul>
 <li><p>Non è però sempre sufficiente usare gli AABB per le <em>mesh</em>
-di triangoli.</p></li>
+perché queste siano efficienti.</p></li>
 <li><p>Sovente le scene sono occupate quasi completamente da un oggetto
 complesso, e in questo caso gli AABB non portano alcun vantaggio (è il
 caso dell’immagine precedente).</p></li>
@@ -803,10 +820,10 @@ di Pharr, Jakob &amp; Humphreys</a>.</p></li>
 riguardava l’errato orientamento delle immagini salvate dal vostro
 codice.</p></li>
 <li><p>In generale un <em>bug</em> è un problema nel programma che lo fa
-funzionare in modo diverso da come ci si aspetta</p></li>
+funzionare in modo diverso da quello che ci si aspetta.</p></li>
 <li><p>È molto importante avere un approccio scientifico alla gestione
 dei bug! Nelle prossime slide vi darò alcune indicazioni
-generali</p></li>
+generali.</p></li>
 </ul>
 </section>
 <section id="difetto-infezione-e-fallimento" class="slide level1">
@@ -818,11 +835,11 @@ to systematic debugging</em></a> spiega la scoperta di un <em>bug</em>
 come la combinazione di tre fattori:</p>
 <ol type="1">
 <li><strong>Difetto</strong>: un errore nel modo in cui è scritto il
-codice</li>
+codice;</li>
 <li><strong>Infezione</strong>: un certo input “attiva” il difetto ed
-altera il valore di alcune variabili rispetto al caso atteso</li>
+altera il valore di alcune variabili rispetto al caso atteso;</li>
 <li><strong>Fallimento</strong>: l’esito del programma è sbagliato, o
-perché i risultati sono errati, o perché il programma va in crash</li>
+perché i risultati sono errati, o perché il programma va in crash.</li>
 </ol></li>
 <li><p>Il <em>bug</em> sta nel difetto iniziale, ma se non c’è infezione
 o non c’è fallimento è difficile accorgersene!</p></li>
@@ -939,7 +956,7 @@ causato.</p></li>
 siano chiare, non fatevi scrupoli a chiedere maggiori dettagli.</p></li>
 <li><p>GitHub consente di configurare un <a
 href="https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository">modello
-per le <em>issue</em></a></p></li>
+per le <em>issue</em></a>.</p></li>
 </ul>
 </section>
 <section id="individuare-difetti-scientificamente-zeller"
