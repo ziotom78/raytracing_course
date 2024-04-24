@@ -371,9 +371,9 @@ class Shape:
 -   Quando avete calcolato `t1` e `t2`, dovete determinare quale delle due intersezioni è la più vicina all'origine del raggio:
 
     ```python
-    if (tmin > inv_ray.tmin) and (tmin < inv_ray.tmax):
+    if (t1 > inv_ray.tmin) and (t1 < inv_ray.tmax):
         first_hit_t = t1
-    elif (tmax > inv_ray.tmin) and (tmax < inv_ray.tmax):
+    elif (t2 > inv_ray.tmin) and (t2 < inv_ray.tmax):
         first_hit_t = t2
     else:
         return None   # The ray missed the sphere
