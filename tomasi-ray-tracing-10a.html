@@ -221,7 +221,7 @@ class="math inline">P(x)</span> è la probabilità che <span
 class="math inline">X</span> sia inferiore ad un valore <span
 class="math inline">x</span> fissato:</p>
 <p><span class="math display">
-P(x) = \text{Pr}\{X \leq x\}
+P(x) = \mathrm{Pr}\{X \leq x\}
 </span></p></li>
 <li><p>La <em>funzione di densità di probabilità</em> (PDF) <span
 class="math inline">p(x)</span> è la derivata di <span
@@ -308,7 +308,7 @@ risente.</p></li>
 <section class="slide level1">
 
 <center>
-<img data-src="./media/rough-path-tracing.webp" />
+<img data-src="./media/becatti-sardena-scene.webp" />
 </center>
 <p>Se la varianza nella stima degli integrali è eccessiva, viene creata
 un’immagine sgranata.</p>
@@ -328,7 +328,7 @@ class="math inline">I</span>:</p>
 I = \int_a^b f(x)\,\mathrm{d}x \approx F_N \equiv \frac{b - a}N
 \sum_{i=1}^N f(X_i),
 </span></p>
-<p>dove <span class="math inline">x_i</span> sono <span
+<p>dove <span class="math inline">X_i</span> sono <span
 class="math inline">N</span> numeri casuali con PDF costante <span
 class="math inline">p(x) = 1 / (b - a)</span>.</p></li>
 </ul>
@@ -412,8 +412,8 @@ p(x) = \frac12 \sin x\,\chi_{[0, \pi]}(x).
 <li><p>Dobbiamo ora ottenere numeri casuali <span
 class="math inline">X_i</span> che seguano questa distribuzione. Usiamo
 il metodo della funzione inversa, passando dalla PDF <span
-class="math inline">p(x)</span> alla CDF <span
-class="math inline">P(x)</span>:</p>
+class="math inline">p(x)</span> alla CDF <span class="math inline">P(x)
+= \mathrm{Pr}\{X \leq x\}</span>:</p>
 <p><span class="math display">
 P(x) = \int_{-\infty}^x p(x&#39;)\,\mathrm{d}x&#39; = \frac12(1 - \cos
 x).
@@ -446,13 +446,13 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate(f, n):  <span class="co"># Plain mean method</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n) <span class="op">*</span> np.pi  <span class="co"># Random numbers in the range [0, π]</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(np.pi <span class="op">*</span> f(x))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.pi <span class="op">*</span> np.mean(f(x))</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_importance(f, n):  <span class="co"># Mean method with importance sampling</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n)       <span class="co"># Uniform random numbers in the range [0, 1]</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> np.arccos(<span class="dv">1</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> x)   <span class="co"># These are distributed as p(x) = 1/2 sin(x)</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(f(xp) <span class="op">/</span> (<span class="fl">0.5</span> <span class="op">*</span> np.sin(xp)))</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate many times the same integral using the two methods</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="kw">lambda</span> x: np.sqrt(x) <span class="op">*</span> np.sin(x)</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>est1 <span class="op">=</span> [estimate(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>)]</span>
@@ -479,14 +479,13 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <h1>Altra possibilità</h1>
 <ul>
 <li><p>Cosa cambierebbe se scegliessimo <span class="math inline">p(x)
-\propto \sqrt x</span>?</p></li>
-<li><p>Potete verificare che il seguente codice Python implementa
-l’<em>importance sampling</em> in questo caso:</p>
+\propto \sqrt x</span>? Potete verificare che il seguente codice Python
+implementa l’<em>importance sampling</em> in questo caso:</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_importance2(f, n):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is because P^−1 (y) = (3/2 y)^(2/3)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is because P⁻¹ (y) = (3/2 y)^⅔</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> np.pi <span class="op">*</span> x <span class="op">**</span> (<span class="dv">2</span> <span class="op">/</span> <span class="dv">3</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># p(x) = 3/(2π^3/2) * √x</span></span>
@@ -503,12 +502,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_importance2(f, n):</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># These are distributed as p(x) = 3/(2π^3/2) * √x</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> np.pi <span class="op">*</span> x<span class="op">**</span>(<span class="dv">2</span><span class="op">/</span><span class="dv">3</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(f(xp) <span class="op">/</span> (<span class="dv">3</span> <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">**</span> <span class="fl">1.5</span>) <span class="op">*</span> np.sqrt(xp)))</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>est0 <span class="op">=</span> [estimate(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10_000</span>)]</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>est1 <span class="op">=</span> [estimate_importance1(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10_000</span>)]</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>est2 <span class="op">=</span> [estimate_importance2(f, <span class="dv">1000</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10_000</span>)]</span>
@@ -527,6 +526,14 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <img data-src="media/importance-sampling-demo2.svg" />
 </center>
 </section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/becatti-sardena-scene.webp" />
+</center>
+<p>Se scegliamo bene il modo in cui integriamo, possiamo quindi ridurre
+la varianza nei pixel dell’immagine prodotta dal nostro codice.</p>
+</section>
 <section id="implementazione-del-path-tracing" class="slide level1">
 <h1>Implementazione del path tracing</h1>
 </section>
@@ -537,7 +544,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <p><span class="math display">
 \begin{aligned}
 L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
-&amp;\int_{4\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
+&amp;\int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
 \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
 \end{aligned}
 </span></p></li>
@@ -635,8 +642,8 @@ class="math inline">f^{-1}</span> è crescente.</p></li>
 <ul>
 <li><p>In questo caso</p>
 <p><span class="math display">
-P_Y(y) = \text{Pr}\bigl(X \leq f^{-1}(y)\bigr) =
-P_X\bigl(f^{-1}(y)\bigr).
+P_Y(y) = \mathrm{Pr}\bigl(f(X) \leq y\bigr) = \mathrm{Pr}\bigl(X \leq
+f^{-1}(y)\bigr) = P_X\bigl(f^{-1}(y)\bigr).
 </span></p></li>
 <li><p>Dalla CDF <span class="math inline">P_Y(y)</span> possiamo
 passare alla PDF applicando la formula per la derivata di una funzione
@@ -654,8 +661,8 @@ P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} = p_X\bigl(f^{-1}(y)\bigr)\cdot
 <li><p>Se <span class="math inline">f^{-1}</span> è una funzione
 decrescente, allora vale che</p>
 <p><span class="math display">
-P_Y(y) = \text{Pr}\bigl(X \geq f^{-1}(y)\bigr) = 1 - \text{Pr}\bigl(X
-\leq f^{-1}(y)\bigr) = 1 - P_X\bigl(f^{-1}(y)\bigr).
+P_Y(y) = \mathrm{Pr}\bigl(X \geq f^{-1}(y)\bigr) = 1 -
+\mathrm{Pr}\bigl(X \leq f^{-1}(y)\bigr) = 1 - P_X\bigl(f^{-1}(y)\bigr).
 </span></p></li>
 <li><p>Applicando di nuovo la derivata come nel caso precedente,
 otteniamo che</p>
@@ -726,7 +733,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    plt.title(title)</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    plt.hist(fun(numbers), bins<span class="op">=</span><span class="dv">50</span>, density<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    curplot <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>numbers <span class="op">=</span> np.random.rand(<span class="dv">100_000</span>)</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
@@ -751,7 +758,7 @@ complicato perché bisogna estrarre <em>coppie</em> di numeri
 casuali.</p></li>
 <li><p>Fortunatamente la matematica è abbastanza simile a quella vista
 nel caso 1D; siccome sono in gioco integrali e cambi di variabile, è
-scontato che nell’espressione debba comparire il determinante della
+plausibile che nell’espressione debba comparire il determinante della
 Jacobiana:</p>
 <p><span class="math display">
 p_Y(\vec y) = p_X\bigl(\vec{f}^{-1}(\vec y)\bigr)\cdot\left|\frac1{\det
@@ -1045,7 +1052,8 @@ p(\varphi | \theta) = \frac1{2\pi}.
 <li><p>Ripetendo i calcoli si ottiene</p>
 <p><span class="math display">
 \begin{aligned}
-\theta &amp;= \arccos\left[\bigl(1 - X_1\bigr)^{\frac1{n + 1}}\right],\\
+\theta &amp;= \arccos\left[\bigl(1 - X_1\bigr)^{\frac1{n + 1}}\right] =
+\arccos\left[\bigl(X&#39;_1\bigr)^{\frac1{n + 1}}\right],\\
 \varphi &amp;= 2\pi X_2,
 \end{aligned}
 </span></p>
@@ -1143,8 +1151,7 @@ n</span>.</p></li>
 <li><a
 href="tomasi-ray-tracing-01a.html#/superficie-diffusiva-ideale">Superficie
 diffusiva ideale</a>;</li>
-<li><a
-href="tomasi-ray-tracing-01a.html#/superficie-riflettente">Superficie
+<li><a href="tomasi-ray-tracing-01a.html#/altre-brdf">Superficie
 riflettente</a>.</li>
 </ol></li>
 <li><p>Nelle esercitazioni implementeremo le BRDF, insieme a un

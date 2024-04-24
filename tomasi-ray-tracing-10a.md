@@ -1,9 +1,3 @@
----
-title: "Lezione 10"
-subtitle: "Path tracing"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
-
 # Path tracing
 
 # Equazione del rendering
@@ -41,9 +35,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     &\int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
     \end{aligned}
     $$
-    
+
     che per semplicità consideriamo applicato a un materiale *opaco* e non trasparente (4π→2π).
-    
+
 -   Come abbiamo visto, esso è in realtà un integrale multiplo, su un numero arbitrario di dimensioni: in questi casi, gli integrali si stimano efficientemente usando metodi Monte Carlo (MC).
 
 
@@ -72,9 +66,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 -   Data una variabile $X$, la *funzione di distribuzione cumulativa* (CDF) $P(x)$ è la probabilità che $X$ sia inferiore ad un valore $x$ fissato:
 
     $$
-    P(x) = \text{Pr}\{X \leq x\}
+    P(x) = \mathrm{Pr}\{X \leq x\}
     $$
-    
+
 -   La *funzione di densità di probabilità* (PDF) $p(x)$ è la derivata di $P(x)$, ed è tale che $p(x)\,\mathrm{d}x$ è la probabilità che $X$ stia nell'intervallo $[x, x + \mathrm{d}x]$:
 
     $$
@@ -89,14 +83,14 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     \int_{\mathbb{R}} p(x)\,\mathrm{d}x = 1.
     $$
-    
+
 -   Dalla definizione segue che la probabilità che $X$ cada nell'intervallo $[a, b]$ è
 
     $$
     P\bigl(X \in [a, b]\bigr) = P(b) - P(a) = \int_a^b p(x)\,\mathrm{d}x.
     $$
-    
-    
+
+
 # Ripasso di probabilità
 
 -   Si definisce *valore di aspettazione* di una funzione $f(X)$ dipendente dalla variabile casuale $X$ con PDF $p(x)$ il valore
@@ -104,13 +98,13 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     E_p[f] = \int_\mathbb{R}\,f(x)\,p(x)\,\mathrm{d}x.
     $$
-    
+
 -   Si definisce *varianza* di $f(X)$ rispetto a $p$ il valore
 
     $$
     V_p[f] = E_p\left[\bigl(f(x) - E_p[f]\bigr)^2\right] = \int_\mathbb{R}\,\bigl(f(x) - E_p[f]\bigr)^2\,p(x)\,\mathrm{d}x.
     $$
-    
+
 -   La *deviazione standard* è definita come $\sqrt{V_p[f]}$.
 
 
@@ -121,7 +115,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     $$
     E_p[a f(x)] = a E_p[f(x)], \quad E[f(x) + g(x)] = E[f(x)] + E[g(x)].
     $$
-    
+
 -   Per la varianza (che **non è lineare!**) vale invece che
 
     $$
@@ -147,7 +141,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ---
 
 <center>
-![](./media/rough-path-tracing.webp)
+![](./media/becatti-sardena-scene.webp)
 </center>
 
 Se la varianza nella stima degli integrali è eccessiva, viene creata un'immagine sgranata.
@@ -160,14 +154,14 @@ Se la varianza nella stima degli integrali è eccessiva, viene creata un'immagin
     $$
     I = \int_a^b f(x)\,\mathrm{d}x
     $$
-    
+
 -   Il metodo della media fornisce una semplice approssimazione $F_N$ per $I$:
-    
+
     $$
     I = \int_a^b f(x)\,\mathrm{d}x \approx F_N \equiv \frac{b - a}N \sum_{i=1}^N f(X_i),
     $$
-    
-    dove $x_i$ sono $N$ numeri casuali con PDF costante $p(x) = 1 / (b - a)$.
+
+    dove $X_i$ sono $N$ numeri casuali con PDF costante $p(x) = 1 / (b - a)$.
 
 
 ---
@@ -188,9 +182,9 @@ $$
     $$
     F_N = \frac1N \sum_{i = 1}^N \frac{f(X_i)}{p(X_i)},
     $$
-    
+
     a patto che $p(x) > 0$ quando $f(x) \not= 0$. (Notate che qui non figura $b - a$).
-    
+
 -   Se si sceglie bene $p(x)$, è possibile aumentare l'accuratezza della stima. Nel caso in cui $f(x) = k \cdot p(x)$ infatti, il termine nella sommatoria è costante (k) e uguale all'integrale, quindi basta $N = 1$ per stimarlo!
 
 # Esempio
@@ -200,7 +194,7 @@ $$
     $$
     \int_0^\pi f(x)\,\mathrm{d}x = \int_0^\pi \sqrt{x}\,\sin x\,\mathrm{d}x \approx 2.435.
     $$
-    
+
 -   Per usare l'*importance sampling* dobbiamo decidere quale $p(x)$ usare:
 
     #.  $p(x) \propto \sqrt{x}\,\sin x$? (No, questa è proprio l'integranda!)
@@ -234,13 +228,13 @@ $$
     $$
     p(x) = \frac12 \sin x\,\chi_{[0, \pi]}(x).
     $$
-    
--   Dobbiamo ora ottenere numeri casuali $X_i$ che seguano questa distribuzione. Usiamo il metodo della funzione inversa, passando dalla PDF $p(x)$ alla CDF $P(x)$:
+
+-   Dobbiamo ora ottenere numeri casuali $X_i$ che seguano questa distribuzione. Usiamo il metodo della funzione inversa, passando dalla PDF $p(x)$ alla CDF $P(x) = \mathrm{Pr}\{X \leq x\}$:
 
     $$
     P(x) = \int_{-\infty}^x p(x')\,\mathrm{d}x' = \frac12(1 - \cos x).
     $$
-    
+
 # Esempio
 
 -   Siccome $P(x) = \frac12 (1 - \cos x)$, allora
@@ -248,7 +242,7 @@ $$
     $$
     P^{-1}(y) = \arccos(1 - 2y).
     $$
-    
+
 -   Se quindi $Y_i$ è distribuito uniformemente su $[0, 1]$, allora $P^{-1}(Y_i) = X_i$ è distribuito secondo $p(x)$. (Vedremo tra poco come dimostrarlo rigorosamente).
 
 -   Implementiamo ora un codice Python che calcoli l'integrale col metodo della media **senza** e **con** l'*importance sampling*, per verificare effettivamente quale sia il vantaggio.
@@ -260,13 +254,13 @@ import numpy as np, matplotlib.pylab as plt
 
 def estimate(f, n):  # Plain mean method
     x = np.random.rand(n) * np.pi  # Random numbers in the range [0, π]
-    return np.mean(np.pi * f(x))
+    return np.pi * np.mean(f(x))
 
 def estimate_importance(f, n):  # Mean method with importance sampling
     x = np.random.rand(n)       # Uniform random numbers in the range [0, 1]
     xp = np.arccos(1 - 2 * x)   # These are distributed as p(x) = 1/2 sin(x)
     return np.mean(f(xp) / (0.5 * np.sin(xp)))
-    
+
 # Estimate many times the same integral using the two methods
 f = lambda x: np.sqrt(x) * np.sin(x)
 est1 = [estimate(f, 1000) for i in range(100)]
@@ -291,15 +285,13 @@ plt.legend()
 
 # Altra possibilità
 
--   Cosa cambierebbe se scegliessimo $p(x) \propto \sqrt x$?
-
--   Potete verificare che il seguente codice Python implementa l'*importance sampling* in questo caso:
+-   Cosa cambierebbe se scegliessimo $p(x) \propto \sqrt x$? Potete verificare che il seguente codice Python implementa l'*importance sampling* in questo caso:
 
     ```python
     def estimate_importance2(f, n):
         x = np.random.rand(n)
 
-        # This is because P^−1 (y) = (3/2 y)^(2/3)
+        # This is because P⁻¹ (y) = (3/2 y)^⅔
         xp = np.pi * x ** (2 / 3)
 
         # p(x) = 3/(2π^3/2) * √x
@@ -316,12 +308,12 @@ plt.legend()
 
 def estimate_importance2(f, n):
     x = np.random.rand(n)
-    
+
     # These are distributed as p(x) = 3/(2π^3/2) * √x
     xp = np.pi * x**(2/3)
-    
+
     return np.mean(f(xp) / (3 / (2 * np.pi ** 1.5) * np.sqrt(xp)))
-    
+
 est0 = [estimate(f, 1000) for i in range(10_000)]
 est1 = [estimate_importance1(f, 1000) for i in range(10_000)]
 est2 = [estimate_importance2(f, 1000) for i in range(10_000)]
@@ -340,6 +332,15 @@ plt.ylabel("Estimated value for the integral")
 <center>![](media/importance-sampling-demo2.svg)</center>
 
 
+---
+
+<center>
+![](./media/becatti-sardena-scene.webp)
+</center>
+
+Se scegliamo bene il modo in cui integriamo, possiamo quindi ridurre la varianza nei pixel dell'immagine prodotta dal nostro codice.
+
+
 # Implementazione del path tracing
 
 # Applicazione al ray-tracing
@@ -349,7 +350,7 @@ plt.ylabel("Estimated value for the integral")
     $$
     \begin{aligned}
     L(x \rightarrow \Theta) = &L_e(x \rightarrow \Theta) +\\
-    &\int_{4\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
+    &\int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
     \end{aligned}
     $$
 
@@ -362,12 +363,12 @@ plt.ylabel("Estimated value for the integral")
     #.  Si scelgono $N$ direzioni casuali $\Psi_i$ (o equivalentemente angoli solidi infinitesimi $\mathrm{d} \omega_i$);
     #.  Si valuta l'integranda lungo le $N$ direzioni, ottenendo $N$ stime;
     #.  Si applica il metodo della media calcolando la media di tutte le $N$ stime.
-    
+
 -   Ci sono però due complicazioni:
 
     -   Come si scelgono le «direzioni casuali» $\Psi_i$? Qui siamo in 2D, non in 1D!
     -   Come si valuta l'integranda, visto che è ricorsiva?
-    
+
 # Direzioni casuali
 
 -   Abbiamo sempre indicato le direzioni con gli angoli θ e φ, legati alle coordinate cartesiane tramite le relazioni sferiche con $r = 1$:
@@ -375,7 +376,7 @@ plt.ylabel("Estimated value for the integral")
     $$
     x = \sin\theta\cos\varphi, \quad y = \sin\theta\sin\varphi, \quad z = \cos\theta.
     $$
-    
+
 -   Se anche volessimo applicare il metodo della media *senza* importance sampling, dovremmo avere una probabilità $p(\omega)$ costante. Ma questo **non** coincide col chiedere che $p(\theta)$ e $p(\varphi)$ siano costanti!
 
 -   Dobbiamo scegliere le direzioni casuali in modo che $p(\omega)$ sia una costante, e per fare questo dobbiamo capire come i cambi di variabile agiscono sulle distribuzioni di probabilità in $n$ dimensioni.
@@ -389,9 +390,9 @@ plt.ylabel("Estimated value for the integral")
     $$
     P_Y(y) = \mathrm{Pr}(Y \leq y) = \mathrm{Pr}\bigl(f(X) \leq y\bigr).
     $$
-    
+
     A questo punto possiamo applicare $f^{-1}$ ad entrambi i membri della disequazione $f(X) \leq y$, ma con un'accortezza.
-    
+
 # Distribuzioni di probabilità 1D
 
 -   Se $f^{-1}$ è una funzione *crescente*, vale che
@@ -399,13 +400,13 @@ plt.ylabel("Estimated value for the integral")
     $$
     f(X) \leq y\quad\Rightarrow\quad X \leq f^{-1}(y).
     $$
-    
+
 -   Se invece è decrescente, vale che
 
     $$
     f(X) \leq y\quad\Rightarrow\quad X \geq f^{-1}(y).
     $$
-    
+
 -   Vediamo innanzitutto il caso in cui $f^{-1}$ è crescente.
 
 # Caso di inversa crescente
@@ -413,29 +414,29 @@ plt.ylabel("Estimated value for the integral")
 -   In questo caso
 
     $$
-    P_Y(y) = \text{Pr}\bigl(X \leq f^{-1}(y)\bigr) = P_X\bigl(f^{-1}(y)\bigr).
+    P_Y(y) = \mathrm{Pr}\bigl(f(X) \leq y\bigr) = \mathrm{Pr}\bigl(X \leq f^{-1}(y)\bigr) = P_X\bigl(f^{-1}(y)\bigr).
     $$
-    
+
 -   Dalla CDF $P_Y(y)$ possiamo passare alla PDF applicando la formula per la derivata di una funzione composta:
 
     $$
     p_Y(y) = P_Y'(y) = \frac{\mathrm{d} P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} = p_X\bigl(f^{-1}(y)\bigr)\cdot \frac{\mathrm{d}f^{-1}}{\mathrm{d}y}(y).
     $$
-    
+
 # Caso di inversa decrescente
 
 -   Se $f^{-1}$ è una funzione decrescente, allora vale che
 
     $$
-    P_Y(y) = \text{Pr}\bigl(X \geq f^{-1}(y)\bigr) = 1 - \text{Pr}\bigl(X \leq f^{-1}(y)\bigr) = 1 - P_X\bigl(f^{-1}(y)\bigr).
+    P_Y(y) = \mathrm{Pr}\bigl(X \geq f^{-1}(y)\bigr) = 1 - \mathrm{Pr}\bigl(X \leq f^{-1}(y)\bigr) = 1 - P_X\bigl(f^{-1}(y)\bigr).
     $$
-    
+
 -   Applicando di nuovo la derivata come nel caso precedente, otteniamo che
 
     $$
     p_Y(y) = P_Y'(y) = \frac{\mathrm{d} P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} = -p_X\bigl(f^{-1}(y)\bigr)\cdot \frac{\mathrm{d}f^{-1}}{\mathrm{d}y}(y).
     $$
-    
+
 -   Notiamo però che la derivata di $f^{-1}$ in questo caso è *negativa*.
 
 # Caso generale
@@ -445,11 +446,11 @@ plt.ylabel("Estimated value for the integral")
     $$
     p_Y(y) = p_X\bigl(f^{-1}(y)\bigr)\cdot \left|\frac{\mathrm{d}f^{-1}}{\mathrm{d}y}(y)\right|,
     $$
-    
+
     che è corretto perché $p_Y(y)$ deve sempre essere positiva. Questa relazione inoltre preserva la normalizzazione di $p_Y$.
-    
+
 -   Un trucco mnemonico per ricordarla parte dal fatto che deve valere $p_Y(y)\,\left|\mathrm{d}y\right| = p_X(x)\,\left|\mathrm{d}x\right|$: da qui si ricava facilmente la relazione sopra.
-    
+
 -   Vediamo ora qualche esempio pratico.
 
 # Esempi
@@ -479,7 +480,7 @@ def plot_distribution(numbers, title, fun):
     plt.title(title)
     plt.hist(fun(numbers), bins=50, density=True)
     curplot += 1
-    
+
 numbers = np.random.rand(100_000)
 
 fig = plt.figure(figsize=(10, 8))
@@ -499,7 +500,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
 
 -   Nel caso si debbano campionare angoli solidi, il problema è più complicato perché bisogna estrarre *coppie* di numeri casuali.
 
--   Fortunatamente la matematica è abbastanza simile a quella vista nel caso 1D; siccome sono in gioco integrali e cambi di variabile, è scontato che nell'espressione debba comparire il determinante della Jacobiana:
+-   Fortunatamente la matematica è abbastanza simile a quella vista nel caso 1D; siccome sono in gioco integrali e cambi di variabile, è plausibile che nell'espressione debba comparire il determinante della Jacobiana:
 
     $$
     p_Y(\vec y) = p_X\bigl(\vec{f}^{-1}(\vec y)\bigr)\cdot\left|\frac1{\det J(y)}\right|.
@@ -512,20 +513,20 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
     $$
     x = r \cos \theta, \quad y = r \sin \theta.
     $$
-    
+
 -   Il determinante della matrice Jacobiana è
 
     $$
     \det J = \det\begin{pmatrix}
     \partial_r x& \partial_\theta x\\
     \partial_r y& \partial_\theta y
-    \end{pmatrix} = 
+    \end{pmatrix} =
     \det\begin{pmatrix}
     \cos\theta& -r\sin\theta\\
     \sin\theta& r\cos\theta
     \end{pmatrix} = r,
     $$
-    
+
     e di conseguenza vale $p(x, y) = p(r, \theta) / r$, ossia $p(r, \theta) = r\cdot p(x, y)$.
 
 # Coordinate sferiche
@@ -535,15 +536,15 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
     $$
     x = r \sin\theta\cos\varphi, \quad y = r \sin\theta\sin\varphi, \quad z = r \cos\theta,
     $$
-    
+
     e si ricava che $\det J = r^2 \sin\theta$.
-    
+
 -   Di conseguenza, vale la relazione
 
     $$
     p(r, \theta, \varphi) = r^2 \sin\theta \cdot p(x, y, z),
     $$
-    
+
     che come nel caso polare può essere usata sia per ricavare $p(x, y, z)$ da $p(r, \theta, \varphi)$ che viceversa.
 
 # Campionare la semisfera
@@ -561,7 +562,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
     $$
     p(x) = \int_\mathbb{R} p(x, y)\,\mathrm{d}y,
     $$
-    
+
     che è la probabilità di ottenere $x$ indipendentemente dal valore di $y$.
 
 -   La *funzione di densità condizionale* $p(y | x)$ è la probabilità di ottenere $y$ nell'ipotesi che si sia ottenuto uno specifico valore $x$:
@@ -607,7 +608,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
     #.  Estraiamo un valore casuale per θ secondo quella densità marginale: è facile, perché ci siamo ricondotti a un caso 1D;
     #.  Una volta noto θ, usiamo la *densità condizionale* per stimare la probabilità di ottenere φ dato il particolare θ che abbiamo appena ottenuto;
     #.  Estraiamo φ seguendo la distribuzione appena ottenuta: anche qui siamo in un caso monodimensionale semplice da trattare!
-    
+
 # Applicazione alle direzioni
 
 -   Se sulla semisfera $\mathcal{H}^2$ deve valere che $p(\omega) = c$, allora
@@ -615,7 +616,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
     $$
     \int_{\mathcal{H}^2} p(\omega)\,\mathrm{d}\omega = 1 \quad \Rightarrow \quad c\int_{\mathcal{H}^2}\mathrm{d}\omega = 1\quad\Rightarrow\quad c = \frac1{2\pi}.
     $$
-    
+
 -   Siccome $p(\omega) = 1 / (2\pi)$ e $\mathrm{d}\omega = \sin\theta\,\mathrm{d}\theta\,\mathrm{d}\varphi$, allora
 
     $$
@@ -635,11 +636,11 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
     $$
     p(\varphi | \theta) = \frac{p(\theta, \varphi)}{p(\theta)} = \frac1{2\pi}.
     $$
-    
+
     Per φ quindi la PDF è costante, il che è sensato vista la simmetria della variabile.
-    
+
 # Campionare θ e φ
-    
+
 -   Per campionare θ e φ abbiamo bisogno della loro CDF, che è
 
     $$
@@ -648,7 +649,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
     P_\varphi(\varphi | \theta) &= \int_0^\varphi \frac1{2\pi}\,\mathrm{d}\varphi' = \frac{\varphi}{2\pi}.
     \end{aligned}
     $$
-    
+
 -   Date due variabili $X_1, X_2$ distribuite su $[0, 1]$, le variabili θ e φ che corrispondono alle CDF appena calcolate sono
 
     $$
@@ -695,9 +696,9 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
     $$
     p(\omega) = k \cos^n\theta,
     $$
-    
+
     con $n$ numero intero. (La forma che abbiamo ottenuto in precedenza corrisponde al caso $n = 0$).
-    
+
 -   La normalizzazione si ottiene al solito modo:
 
     $$
@@ -711,7 +712,7 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
     $$
     p(\theta) = (n + 1) \cos^n\theta\,\sin\theta.
     $$
-    
+
 -   La densità condizionale di $\varphi$ è nuovamente una costante, com'è evidente per la simmetria di $p(\omega)$:
 
     $$
@@ -725,13 +726,13 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
 
     $$
     \begin{aligned}
-    \theta &= \arccos\left[\bigl(1 - X_1\bigr)^{\frac1{n + 1}}\right],\\
+    \theta &= \arccos\left[\bigl(1 - X_1\bigr)^{\frac1{n + 1}}\right] = \arccos\left[\bigl(X'_1\bigr)^{\frac1{n + 1}}\right],\\
     \varphi &= 2\pi X_2,
     \end{aligned}
     $$
-    
+
     dove ancora una volta $X_1$ e $X_2$ sono numeri casuali con distribuzione uniforme su $[0, 1]$.
-    
+
 -   Questa distribuzione $p(\theta, \varphi)$ è chiamata *distribuzione di Phong*, e ci sarà molto utile.
 
 
@@ -749,9 +750,9 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
     $$
     f_r(x, \Psi \rightarrow \Theta),
     $$
-    
+
     che è un numero puro che «pesa» la quantità di radiazione proveniente dalla direzione $\Psi$ e riflessa verso $\Theta$.
-    
+
 -   Siccome però $f_r$ dipende dalla frequenza $\lambda$, in realtà dovrebbe essere codificato come una funzione $f_r = f_r(\lambda)$…
 
 -   …ma per le proprietà dell'occhio umano ci basta che $f_r$ restituisca *tre* valori: un numero puro per la componente R, uno per G, e uno per B.
@@ -762,7 +763,7 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
 
     #.  Quelle proprietà che dipendono dall'angolo di incidenza della luce e dalla posizione dell'osservatore;
     #.  Quelle proprietà che invece **non** dipendono dalla direzione, e che vengono identificate sotto il nome collettivo di *pigmento*.
-    
+
 -   È comodo quindi definire un tipo `BRDF` che ha al suo interno un sotto-tipo `Pigment`.
 
 # Tipi di pigmenti
@@ -789,7 +790,7 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
 -   Abbiamo già visto alcuni tipi di BRDF nella prima lezione:
 
     #.   [Superficie diffusiva ideale](tomasi-ray-tracing-01a.html#/superficie-diffusiva-ideale);
-    #.   [Superficie riflettente](tomasi-ray-tracing-01a.html#/superficie-riflettente).
+    #.   [Superficie riflettente](tomasi-ray-tracing-01a.html#/altre-brdf).
 
 -   Nelle esercitazioni implementeremo le BRDF, insieme a un generatore di numeri casuali.
 
@@ -798,3 +799,9 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
 <center>![](media/brdf-examples.webp)</center>
 
 Nella scena tutte le superfici sono diffusive ideali, tranne la sfera rossa che implementa una BRDF riflettente. L'ambiente è una sfera di raggio molto grande il cui materiale è basato su un [file HDR](https://blog.gregzaal.com/2017/01/17/blender-institute-hdri/) (tramite un pigmento *textured*).
+
+---
+title: "Lezione 10"
+subtitle: "Path tracing"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

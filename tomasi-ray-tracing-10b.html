@@ -19,15 +19,18 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -126,14 +129,6 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 
 <section id="generazione-di-numeri-pseudocasuali" class="slide level1">
 <h1>Generazione di numeri pseudocasuali</h1>
-</section>
-<section class="slide level1">
-
-<center>
-<a href="https://xkcd.com/221/"><img
-data-src="https://imgs.xkcd.com/comics/random_number.png" /></a>
-</center>
-<p><a href="https://xkcd.com/221/">xkcd.com/221/</a></p>
 </section>
 <section id="numeri-pseudo-casuali" class="slide level1">
 <h1>Numeri pseudo-casuali</h1>
@@ -358,7 +353,7 @@ medesimo generatore col medesimo seed.</p></li>
 </ul>
 </section>
 <section id="numeri-unsigned" class="slide level1">
-<h1>Numeri /unsigned/</h1>
+<h1>Numeri <em>unsigned</em></h1>
 <ul>
 <li><p>PCG, come molti algoritmi simili, richiede di fare calcoli con
 maschere di bit.</p></li>
@@ -425,10 +420,11 @@ bit).</li>
 </tbody>
 </table>
 <ul>
-<li><p>Nell’/arithmetic shift/ a destra, il nuovo bit più significativo
-è la copia del vecchio, in modo da preservare il segno.</p></li>
-<li><p>Nel /logical shift/ il nuovo bit più significativo è sempre zero,
-ed è sempre questo da usare nel PCG.</p></li>
+<li><p>Nell’<em>arithmetic shift</em> a destra, il nuovo bit più
+significativo è la copia del vecchio, in modo da preservare il
+segno.</p></li>
+<li><p>Nel <em>logical shift</em> il nuovo bit più significativo è
+sempre zero, ed è sempre questo da usare nel PCG.</p></li>
 </ul>
 <p></small></p>
 </section>
@@ -478,9 +474,10 @@ i linguaggi che state usando 😀.</p></li>
 memorizzare al suo interno due numeri interi <code>unsigned</code> a 64
 bit.</p></li>
 <li><p>Familiarizzatevi con i tipi di interi senza segno forniti dal
-vostro linguaggio. (Java non ha interi senza segno, quindi dovrete
-cavarvela con quelli con segno ☹. Come in Julia, il bitshift senza segno
-è <code>&gt;&gt;&gt;</code>)</p></li>
+vostro linguaggio. (Linguaggi come Java non hanno interi senza segno,
+quindi dovrete cavarvela con quelli con segno 🙁; però Kotlin <a
+href="https://kotlinlang.org/docs/unsigned-integer-types.html">li
+implementa</a> 😀)</p></li>
 </ul>
 </section>
 <section id="pcg-in-python" class="slide level1">

@@ -6,12 +6,6 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Generazione di numeri pseudocasuali
 
----
-
-<center>[![](https://imgs.xkcd.com/comics/random_number.png)](https://xkcd.com/221/)</center>
-
-[xkcd.com/221/](https://xkcd.com/221/)
-
 # Numeri pseudo-casuali
 
 -   Avete sicuramente già avuto a che fare con numeri casuali, probabilmente per eseguire simulazioni Monte Carlo (vedi ad es. il corso di TNDS).
@@ -143,7 +137,7 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
 -   Faciliterà il lavoro dei vari gruppi se ciascuno userà il medesimo generatore col medesimo seed.
 
 
-# Numeri /unsigned/
+# Numeri *unsigned*
 
 -   PCG, come molti algoritmi simili, richiede di fare calcoli con maschere di bit.
 
@@ -171,9 +165,9 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
 |                  | `Int8(-12) >>> 1 == 122`    |
 |                  | `Int16(-12) >>> 1 == 32762` |
 
-- Nell'/arithmetic shift/ a destra, il nuovo bit più significativo è la copia del vecchio, in modo da preservare il segno.
+- Nell'*arithmetic shift* a destra, il nuovo bit più significativo è la copia del vecchio, in modo da preservare il segno.
 
-- Nel /logical shift/ il nuovo bit più significativo è sempre zero, ed è sempre questo da usare nel PCG.
+- Nel *logical shift* il nuovo bit più significativo è sempre zero, ed è sempre questo da usare nel PCG.
 
 </small>
 
@@ -212,7 +206,7 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
 
 -   La struttura dati usati dall'algoritmo PCG ha bisogno di memorizzare al suo interno due numeri interi `unsigned` a 64 bit.
 
--   Familiarizzatevi con i tipi di interi senza segno forniti dal vostro linguaggio. (Java non ha interi senza segno, quindi dovrete cavarvela con quelli con segno ☹. Come in Julia, il bitshift senza segno è `>>>`)
+-   Familiarizzatevi con i tipi di interi senza segno forniti dal vostro linguaggio. (Linguaggi come Java non hanno interi senza segno, quindi dovrete cavarvela con quelli con segno 🙁; però Kotlin [li implementa](https://kotlinlang.org/docs/unsigned-integer-types.html) 😀)
 
 
 # PCG in Python
