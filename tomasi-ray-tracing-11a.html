@@ -127,10 +127,6 @@ href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section class="slide level1">
-
-<p><img data-src="media/lezione-git.png" width="540" /></p>
-</section>
 <section id="mc-e-path-tracing" class="slide level1">
 <h1>MC e path-tracing</h1>
 </section>
@@ -181,8 +177,8 @@ del rendering.</p></li>
 radianza <em>uscente</em> da un punto della superficie dobbiamo
 conoscere la radianza <em>entrante</em> in quel punto, e questo porta a
 una catena di calcoli.</p></li>
-<li><p>Come in tutti gli algoritmi ricorsivi è però necessario stabilire
-una condizione d’arresto (<a
+<li><p>Come in tutti gli algoritmi ricorsivi, è necessario stabilire una
+condizione d’arresto (<a
 href="https://en.wikipedia.org/wiki/Recursion_(computer_science)"><em>stopping
 criterion</em></a>).</p></li>
 </ul>
@@ -240,10 +236,6 @@ fisicamente corretto!</p></li>
 certo numero di iterazioni vuol dire <strong>sottostimare</strong> il
 valore dell’integrale: se si sottostima la radianza, si introduce un
 <em>bias</em> nella soluzione.</p></li>
-<li><p>Confrontate questo tipo di errore con quello compiuto nel
-misurare una quantità con uno strumento (es., una corrente con un
-amperometro): in questo caso, l’errore a volte sovrastima, a volte
-sottostima il valore vero.</p></li>
 <li><p>Nel nostro caso il troncamento della ricorsione produrrà sempre
 un’immagine <strong>più scura</strong>.</p></li>
 </ul>
@@ -282,9 +274,7 @@ radianza, al prezzo però di aumentare il rumore scorrelato
 (bianco).</p></li>
 <li><p>Il procedimento richiede di fissare una probabilità <span
 class="math inline">0 \leq q \leq 1</span> (nella vera roulette russa,
-<span class="math inline">q = 1/6</span>, a meno che non sia il film <a
-href="https://www.youtube.com/watch?v=nnGTuNtMQmc">Il cacciatore</a>!).
-Questo è l’algoritmo:</p>
+<span class="math inline">q = 1/6</span>). Questo è l’algoritmo:</p>
 <ol>
 <li>Si estrae un numero casuale <span class="math inline">0 \leq x \leq
 1</span>;</li>
@@ -343,7 +333,7 @@ cosiddette <em>fireflies</em> (lucciole), seppure chiaramente
 <li><p>Per implementare la roulette russa, di solito si fissa una soglia
 minima al valore di <code>depth</code>:</p>
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ray.depth <span class="op">&gt;</span> <span class="dv">5</span>:</span>
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ray.depth <span class="op">&gt;</span> <span class="dv">2</span>:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    threshold <span class="op">=</span> compute_threshold(...)  <span class="co"># Estimate a reasonable value for &quot;q&quot;</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pcg.random_float() <span class="op">&gt;</span> threshold:</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> radiance <span class="op">/</span> (<span class="dv">1</span> <span class="op">-</span> threshold)</span>

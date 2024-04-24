@@ -4,8 +4,6 @@ subtitle: "Path tracing (continua)"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
 
-![](media/lezione-git.png){width=540px}
-
 # MC e path-tracing
 
 # Integrale MC
@@ -39,7 +37,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   La chiamata ricorsiva rappresenta il fatto che per calcolare la radianza *uscente* da un punto della superficie dobbiamo conoscere la radianza *entrante* in quel punto, e questo porta a una catena di calcoli.
 
--   Come in tutti gli algoritmi ricorsivi è però necessario stabilire una condizione d'arresto ([*stopping criterion*](https://en.wikipedia.org/wiki/Recursion_(computer_science))).
+-   Come in tutti gli algoritmi ricorsivi, è necessario stabilire una condizione d'arresto ([*stopping criterion*](https://en.wikipedia.org/wiki/Recursion_(computer_science))).
 
 ---
 
@@ -88,8 +86,6 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 -   Dal momento che $L(x \leftarrow \Psi) \geq 0$ infatti, «troncare» il contributo dell'integrale dopo un certo numero di iterazioni vuol dire **sottostimare** il valore dell'integrale: se si sottostima la radianza, si introduce un *bias* nella soluzione.
 
--   Confrontate questo tipo di errore con quello compiuto nel misurare una quantità con uno strumento (es., una corrente con un amperometro): in questo caso, l'errore a volte sovrastima, a volte sottostima il valore vero.
-
 -   Nel nostro caso il troncamento della ricorsione produrrà sempre un'immagine **più scura**.
 
 # {data-transition="none"}
@@ -114,7 +110,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 -   Un algoritmo molto usato nel path-tracing è la *roulette russa*, che rimuove il *bias*, ossia la sottostima della radianza, al prezzo però di aumentare il rumore scorrelato (bianco).
 
--   Il procedimento richiede di fissare una probabilità $0 \leq q \leq 1$ (nella vera roulette russa, $q = 1/6$, a meno che non sia il film [Il cacciatore](https://www.youtube.com/watch?v=nnGTuNtMQmc)!). Questo è l'algoritmo:
+-   Il procedimento richiede di fissare una probabilità $0 \leq q \leq 1$ (nella vera roulette russa, $q = 1/6$). Questo è l'algoritmo:
 
     #.  Si estrae un numero casuale $0 \leq x \leq 1$;
     #.  Se $x > q$, si procede a calcolare la radianza $L$ e si restituisce $L/ (1 - q)$;
@@ -154,7 +150,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 -   Per implementare la roulette russa, di solito si fissa una soglia minima al valore di `depth`:
 
     ```python
-    if ray.depth > 5:
+    if ray.depth > 2:
         threshold = compute_threshold(...)  # Estimate a reasonable value for "q"
         if pcg.random_float() > threshold:
             return radiance / (1 - threshold)
