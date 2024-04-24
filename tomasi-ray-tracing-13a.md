@@ -32,14 +32,14 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
         uniform(<0.7, 0.5, 1>)
     )
     ```
-    
+
 -   È una definizione che include elementi più complessi di un *token*:
 
     #.  Un materiale;
     #.  Una BRDF (`diffuse`);
     #.  Due pigmenti (`image` e `uniform`);
     #.  Un colore, indicato con `<0.7, 0.5, 1>`.
-    
+
 # Approccio *top-down*
 
 -   La definizione di `sky_material` è però semplice da analizzare se suddividiamo il problema in tante funzioni, ciascuna delle quali analizza *un elemento soltanto*.
@@ -56,7 +56,7 @@ def expect_symbol(stream: InputStream, symbol: str):
     token = stream.read_token()
     if not isinstance(token, SymbolToken) or token.symbol != symbol:
         raise parser_error(token, f"got '{token}' instead of '{symbol}'")
-        
+
     # Don't bother returning the character: we were already expecting it
 
 
@@ -101,31 +101,31 @@ def parse_pigment(stream: InputStream) -> Pigment:
     #           checkered(<0.3, 0.5, 0.1>, <0.1, 0.2, 0.5>, 4)
     #           image("bitmap.pfm")
     keyword = expect_keywords(stream, [
-        KeywordEnum.UNIFORM, 
-        KeywordEnum.CHECKERED, 
+        KeywordEnum.UNIFORM,
+        KeywordEnum.CHECKERED,
         KeywordEnum.IMAGE,
     ])
 
     expect_symbol(stream, "(")
     if keyword == KeywordEnum.UNIFORM:
         color = parse_color(stream)
-        
+
         result = UniformPigment(color=color)
     elif keyword == KeywordEnum.CHECKERED:
         color1 = parse_color(stream)
-        
+
         expect_symbol(stream, ",")
-        
+
         color2 = parse_color(stream)
-        
+
         expect_symbol(stream, ",")
-        
+
         num_of_steps = int(expect_number(stream))
-        
+
         result = CheckeredPigment(color1=color1, color2=color2, num_of_steps=num_of_steps)
     elif …: # Other pigments
         …
-        
+
     expect_symbol(stream, ")")
     return result
 ```
@@ -160,9 +160,9 @@ def parse_pigment(stream: InputStream) -> Pigment:
     ```
     float clock(150)
     ```
-    
+
     In questo caso **non** è necessario un *look-ahead*:
-    
+
     #.  Il primo token è la *keyword* `float`, che indica che si sta definendo una variabile;
     #.  So quindi che per forza i token successivi saranno l'*identificatore*, il simbolo `(`, un *numeric literal* e il simbolo `)`.
 
@@ -175,16 +175,16 @@ what = expect_keywords(stream, [KeywordEnum.FLOAT, …])
 
 if what == KeywordEnum.FLOAT:
     # We are going to declare a new "float" variable
-    
+
     # Read the name of the variable
     variable_name = expect_identifier(stream)
-    
+
     # Now we must get a "("
     expect_symbol(stream, "(")
-    
+
     # Read the literal number to associate with the variable
     variable_value = expect_number(stream, scene)
-    
+
     # Check that the statement ends with ")"
     expect_symbol(stream, ")")
 
@@ -201,9 +201,9 @@ elif …:  # Statements other than "float …" can be interpreted here
     ```text
     plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))
     ```
-    
+
 -   Il modo più naturale di interpretare questa riga è tramite una funzione `parse_plane`, che al suo interno invochi una funzione `parse_transformation`.
-    
+
 -   Però la trasformazione presenta un problema: dopo i caratteri `…100])` non si può sapere se la trasformazione è terminata (e occorre ritornare a `parse_plane`), oppure se segua il simbolo `*` che rappresenta l'operatore di composizione: in quest'ultimo caso, `parse_transformation` non avrebbe ancora finito il suo lavoro!
 
 ---
@@ -295,13 +295,13 @@ color ::= "<" number "," number "," number ">"
 
 transformation ::= basic_transformation | basic_transformation "*" transformation
 
-basic_transformation ::= "identity" 
+basic_transformation ::= "identity"
     | "translation" "(" vector ")"
     | "rotation_x" "(" number ")"
     | "rotation_y" "(" number ")"
     | "rotation_z" "(" number ")"
     | "scaling" "(" vector ")"
-    
+
 number ::= LITERAL_NUMBER | IDENTIFIER
 
 vector ::= "[" number "," number "," number "]"
@@ -353,7 +353,7 @@ vector ::= "[" number "," number "," number "]"
     }
     x /= 1O;       // Uh-oh, I wrote a capital "o" instead of "0"
     ```
-    
+
 -   In un linguaggio come il nostro non è semplice individuare un *termination token*; la cosa migliore sarebbe richiedere la presenza di `;` alla fine di ogni *statement*, come nel C++, oppure obbligare a concludere le definizioni con un ritorno a capo (che sia codificato come un token `TOKEN_NEWLINE`).
 
 # Linguaggi a confronto
@@ -376,7 +376,7 @@ vector ::= "[" number "," number "," number "]"
     std::vector<std::vector<double>> matrix = identity(3); // >> are *two* tokens
     std::cin >> matrix[0][0]; // Here >> is *one* token
     ```
-    
+
 -   È impossibile creare la sequenza di token corretta con l'approccio che abbiamo seguito, che divide rigidamente il *lexing* dal *parsing* (e infatti la prima riga non era ammessa dallo standard C++ fino a pochi anni fa).
 
 # Altre difficoltà dei `template`
@@ -388,13 +388,13 @@ vector ::= "[" number "," number "," number "]"
     template<> struct MyStruct<false> { /* Fields valid on 32-bit machines */ };
     template<> struct MyStruct<true> { /* Fields valid on 64-bit machines */ };
     ```
-    
+
 -   Si tratta in pratica di *due* strutture con lo stesso nome (`MyStruct`). Questo può essere usato ad esempio nel codice seguente:
 
     ```c++
     MyStruct<sizeof(size_t) > 4> A;  // On 64-bit machines use the extended definition
     ```
-    
+
     Ma a livello di sintassi, il termine `>` rende tutto complicato!
 
 
@@ -425,7 +425,7 @@ vector ::= "[" number "," number "," number "]"
     ```
 
     Questa sintassi è molto più semplice da analizzare!
- 
+
 -   Rust usa `<>` come il C++, ma per rimuovere l'ambiguità richiede di scrivere `::<` nelle espressioni:
 
     ```rust
@@ -446,7 +446,7 @@ vector ::= "[" number "," number "," number "]"
         other : String;
         x     : Real;
     ```
-    
+
 -   Questa sintassi è molto facile da interpretare: il Pascal è infatti progettato per essere semplice e nel contempo veloce da compilare.
 
 -   Idee simili sono usate nei linguaggi Modula, Oberon, Ada, Nim e Kotlin.
@@ -459,9 +459,9 @@ vector ::= "[" number "," number "," number "]"
     ```c
     int myvar[100];  /* More complicated: static const int * myvar[100] */
     ```
-    
+
     che dichiara un array di 100 variabili di tipo `int`.
-    
+
 -   I token che definiscono il tipo sono `int`, `[`, `100` e `]`, e si trovano sia a *sinistra* che a *destra* del nome della variabile: questo per il programmatore è complicato! (Provate a interpretare il caso *more complicated* da soli!)
 
 # Il caso di Go
@@ -471,11 +471,11 @@ vector ::= "[" number "," number "," number "]"
     ```go
     var myvar [100]int
     ```
-    
+
 -   La keyword `var` segnala al *parser* che si sta dichiarando una variabile.
 
 -   I token che definiscono il tipo sono riportati tutti insieme, *dopo* l'identificatore che rappresenta il nome della variabile.
-    
+
 -   La scrittura `[100]int` segue l'ordine naturale delle parole: «un array di 100 valori `int`», ed è più facile da leggere per il programmatore (in C bisogna leggere a ritroso, da destra a sinistra).
 
 # Testing di compilatori
@@ -533,9 +533,9 @@ vector ::= "[" number "," number "," number "]"
 
 -   Siate ordinati nell'uso di *issues*, *pull requests*, file `CHANGELOG`, etc.
 
--   Decidete sin da subito quale licenza usare per rilasciare il proprio codice.
+-   Decidete sin da subito quale licenza usare per rilasciare il vostro codice.
 
--   Documentate il proprio lavoro (`README`, docstrings…)
+-   Documentate il vostro lavoro (`README`, docstrings…).
 
 -   Imparate a usare una IDE appropriata!
 
@@ -660,9 +660,9 @@ Il vantaggio di usare un formato diffuso come JSON è che sono a disposizioni mo
 -   Attività molto creativa, ma ha alcuni potenziali problemi:
 
     -   Rischia di richiedere molto tempo allo sviluppatore…
-    
+
     -   …e richiede che l'utente impari la sintassi e la semantica del vostro linguaggio
-    
+
 -   Noi l'abbiamo adottata a lezione per la sua valenza didattica (comprensione del funzionamento dei compilatori, gestione degli errori, …), e perché non è comunque facile usare un formato generico come JSON in questo contesto particolare.
 
 
@@ -778,13 +778,14 @@ PyInit_emb(void)
 -   I file di input sarebbero stati normali script Python, che potevano impiegare tutte le potenzialità del linguaggio (variabili, funzioni, cicli `for`, etc.):
 
     ```python
-    black = color(0.0, 0.0, 0.0)  # We can define variables of any type, not only floats!
-    
+    # A custom type "color" is available alongside with the usual "int", "float", etc.
+    black = color(0.0, 0.0, 0.0)
+
     sphere_material = create_material(
         brdf=diffuse_brdf(uniform_pigment(color(0.7, 0.5, 1.0))),
         emitted_radiance=uniform_pigment(black),
     )
-    
+
     # Create many objects using a `for` loop
     for angle in [0, 90, 180, 270]:
         create_sphere(sphere_material, rotation_x(angle) * translation(vec(10, 0, 0)))

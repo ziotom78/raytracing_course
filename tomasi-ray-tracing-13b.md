@@ -258,18 +258,6 @@ class InputStream:
     #.   Marcare le variabili definite da linea di comando con un flag Booleano; quando nel file della scena si ridefiniscono queste variabile, non viene prodotto un errore se questo flag è `True`.
     #.   In fase di definizione di una variabile, si controlla se il valore è già stato letto da linea di comando: se sì, si ignora il valore letto nel file e si usa quello fornito dall'utente. ([Questo è quanto fa pytracer](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L595-L601)).
 
-# Una richiesta
-
-# Una richiesta
-
--   È utile per gli studenti futuri conoscere le vostre impressioni sul linguaggio che avete scelto:
-
-    #.  Perché avete scelto questo linguaggio? Quali altre alternative avevate valutato, e perché le avete scartate?
-    #.  Indipendentemente dal linguaggio scelto, quali sono stati i criteri che vi hanno aiutato a decidere? Come li giudicate col senno di poi?
-    #.  Alla luce del lavoro di questo semestre, pensate sia stata una buona scelta?
-    #.  Se tornaste indietro, rifareste questa scelta? Perché?
-    
--   Vi chiedo un breve testo che risponda a queste domande, che renderò disponibile (anonimamente, se preferite) ai futuri studenti; quindi scrivete immaginando che siano *loro*, non io, il vostro uditorio.
 
 # Guida per l'esercitazione
 
