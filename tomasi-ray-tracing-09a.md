@@ -34,7 +34,7 @@
 -   Scriviamo con $F_i$ il generico punto del piano perpendicolare alla direzione $i$-esima (sei piani in tutto), che avrà coordinate
 
     $$
-    F_0 = (f_0^{\text{min}/\text{max}}, ?, ?), \quad F_1 = (?, f_1^{\text{min}/\text{max}}, ?), \quad F_2 = (?, ?, f_2^{\text{min}/\text{max}}).
+    F_0 = (f_0^{\text{min}/\text{max}}, \cdot, \cdot), \quad F_1 = (\cdot, f_1^{\text{min}/\text{max}}, \cdot), \quad F_2 = (\cdot, \cdot, f_2^{\text{min}/\text{max}}).
     $$
 
 -   Lungo la coordinata $i$-esima si intersecano *due* piani:
@@ -367,6 +367,10 @@ I triangoli sono una forma geometrica molto usata nei programmi di modellizzazio
 
 -   …ma si può fare di meglio!
 
+---
+
+<center>![](./media/stanford-bunny-triangles.png)</center>
+
 # Memorizzazione di *mesh*
 
 -   In una *mesh* di triangoli si memorizzano i vertici in una lista ordinata $P_k$, con $k = 1\ldots N$.
@@ -376,10 +380,6 @@ I triangoli sono una forma geometrica molto usata nei programmi di modellizzazio
 -   Se si usano numeri interi a 32 bit per memorizzare gli indici, ogni triangolo richiede 3×4 = 12 bytes.
 
 -   Questo è vantaggioso se un vertice è condiviso da più triangoli, che è il caso generale.
-
----
-
-<center>![](./media/stanford-bunny-triangles.png)</center>
 
 ---
 
@@ -450,7 +450,7 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 -   Il modo più comodo di visualizzarli è usare [Blender](https://www.blender.org/), ovviamente! Sotto Linux potete anche impiegare `openctm-tools`, che è più agile (il comando `ctmviewer NOMEFILE` visualizza un file OBJ in una finestra interattiva).
 
--   Il sito di [J. Burkardt](https://people.sc.fsu.edu/~jburkardt/data/obj/obj.html) contiene molti file OBJ scaricabili liberamente (il modello della Mini Cooper è preso da lì).
+-   Il sito di [J. Burkardt](https://people.sc.fsu.edu/~jburkardt/data/obj/obj.html) contiene molti file OBJ scaricabili liberamente (ho preso da lì il modello della Mini Cooper).
 
 # Intersezione con raggi
 
