@@ -15,7 +15,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     #.  Modificare il codice nel `main`;
     #.  Ricompilare;
     #.  Eseguire il codice e controllare il risultato.
-    
+
 -   Questo approccio potrebbe non essere sostenibile: di fatto obblighiamo gli utenti a scrivere codice nel linguaggio di programmazione che abbiamo usato!
 
 # Obbiettivo
@@ -27,9 +27,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     ```
     ./myprogram render scene.txt
     ```
-    
+
     e gli oggetti `Shape` e `Material` saranno creati in memoria basandosi su quanto specificato in `scene.txt`. A differenza del comando `demo` però, è facile modificare `scene.txt`.
-    
+
 -   Quello che ci aspetta è di fatto l'implementazione di un *compilatore*!
 
 # Categorie di utenti
@@ -209,7 +209,7 @@ light_source { <2, 4, -3> color White }
 </object>
 </transform>
 
-<light type="pathlight" name="path" power= "1.000000" depth="2" samples="16" 
+<light type="pathlight" name="path" power= "1.000000" depth="2" samples="16"
        use_QMC="on" cache="on"  cache_size="0.008000"
        angle_threshold="0.200000"  shadow_threshold="0.200000" >
 </light>
@@ -261,7 +261,7 @@ light_source { <2, 4, -3> color White }
     d 0.3 0.7 0.5
     s 1 3 6 2
     ```
-    
+
     Ma non sarebbe affatto leggibile! Proviamo a pensare a qualcosa di più elegante.
 
 # Come implementare il formato
@@ -297,9 +297,9 @@ light_source { <2, 4, -3> color White }
     sphere([1, 3, 6], 2)
     create sphere with center [1, 3, 6] and radius 2
     ```
-    
+
 -   La scelta dell'una o dell'altra sintassi è in linea di principio completamente nelle nostre mani!
-    
+
 -   Per Pytracer ho scelto la sintassi che ora illustro.
 
 
@@ -360,14 +360,14 @@ camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 
     ```c++
     #include <iostream>
-    
+
     int main(int argc, const char *argv[]) {
       std::cout << "The name of the program is " << argv[0] << "\n";
     }
     ```
-    
+
     e produce in output un file eseguibile che contiene la sequenza di istruzioni macchina corrispondenti a questo codice C++.
-    
+
 -   Nel nostro caso il codice deve costruire in memoria una serie di variabili che contengono le `Shape`, la `Camera` e i `Material` di cui è composta la scena.
 
 # Terminologia
@@ -397,7 +397,7 @@ graph "" {
     AST [label="AST builder" shape=box];
     optimizer [label="optimizer" shape=box];
     executable [label="executable" shape=ellipse];
-    
+
     source -- lexer;
     lexer -- parser;
     parser -- AST;
@@ -419,7 +419,7 @@ graph "" {
     ```
     Il bambino mangia la mela
     ```
-    
+
 -   Quello che farebbe un *lexer* della lingua italiana è produrre questa lista:
 
     1.  `Il`: articolo determinativo maschile singolare
@@ -454,7 +454,7 @@ graph "" {
     ```
     Il bambino mangia la mela
     ```
-    
+
 -   L'analisi sintattica verifica che le concordanze siano corrette (articolo/nome, nome/verbo…)
 
 -   Determina quale è il soggetto e quale il complemento oggetto
@@ -483,7 +483,7 @@ graph "" {
     int if;
     std::cout << "Enter a number: ";
     std::cin >> if;
-    
+
     if (if % 2 == 0)
         std::cout << "The number is even\n";
     ```
@@ -522,7 +522,7 @@ float clock(150)
         token = read_token()
         if token.eof():
             break
-            
+
         …
     ```
 
@@ -585,7 +585,7 @@ class SymbolToken(Token):
 
     #.  Il codice diventa molto verboso: si devono implementare tante classi, tutte molto simili tra loro.
     #.  Le gerarchie di classi sono pensate per essere *estendibili*: posso sempre definire una nuova classe derivata da `Token`. Ma nel caso di un linguaggio, l'elenco dei tipi di token è fissato ed è molto difficile che cambi.
-    
+
 -   Il tipo più indicato per un *token* è un *sum type*, chiamato anche *tagged union* o *object variant*, che si contrappone ai *product type* che tutti voi conoscete (probabilmente senza saperlo). Vediamo in cosa consistono.
 
 
@@ -601,7 +601,7 @@ class SymbolToken(Token):
         uint8_t c; // Can be any value in the set B of all 8-bit unsigned bytes
     };
     ```
-    
+
     Se l'insieme di tutti i valori assumibili da un `int32_t` e da un `uint8_t` è denominato rispettivamente con $I$ e $B$, allora una variabile `MyStruct var` è tale per cui $\mathtt{var} \in I \times B$.
 
 
@@ -617,7 +617,7 @@ class SymbolToken(Token):
         uint8_t c;
     };
     ```
-    
+
 -   In questo caso, la variabile `MyUnion var` è tale per cui $\mathtt{var} \in I \cup B$: puo essere un `int32_t` **oppure** un `uint8_t`, ma non entrambi.
 
 # Uso di `union`
@@ -639,10 +639,10 @@ union MyUnion {
 
 int main() {
     MyUnion s;
-    
+
     s.a = 10;   // Integer
     std::cout << s.a << "\n";
-    
+
     s.c = 24U;  // This replaces the value 10 (signed) with the value (24) unsigned
     std::cout << s.c << "\n";
 }
@@ -661,7 +661,7 @@ int main() {
 
 # *Sum types* vs gerarchie
 
--   Una `union` racchiude all'interno di un'unica definizione tutti i tipi: 
+-   Una `union` racchiude all'interno di un'unica definizione tutti i tipi:
 
     ```c++
     union MyUnion {
@@ -674,9 +674,9 @@ int main() {
 
     ```c++
     struct Value {};
-    
+
     struct Int32Value : Value { int32_t a; };
-    
+
     struct UInt8Value : Value { uint8_t c; };
     ```
 
@@ -697,7 +697,7 @@ int main() {
     ```c++
     Token my_token;
     my_token = read_token(stream);  // Read the next token from the stream
-    
+
     if (my_token.???)   // How can I check if it is a "literal number" or a "string"?
     ```
 
@@ -788,17 +788,17 @@ void print_token(const Token & t) {
 -   Ad esempio, ecco come definire il tipo `Token` in OCaml:
 
     ```ocaml
-    type token = 
+    type token =
         | LiteralNumber of float
         | LiteralString of string
         | Symbol of char
         | Keyword of string;
     ```
- 
+
     Non c'è bisogno di definire una lunga gerarchia di classi!
-    
+
 # Esaustività in OCaml
- 
+
 -   In linguaggi come [OCaml](https://ocaml.org/) e [F\#](https://fsharpforfunandprofit.com/posts/discriminated-unions/), i controlli sui *sum types* sono esaustivi:
 
     ```ocaml
@@ -806,12 +806,12 @@ void print_token(const Token & t) {
        | LiteralNumber a -> print_float a
        | LiteralString s -> print_string s
        | Symbol c -> print_char c;
-   
+
     (* Warning 8 [partial-match]: this pattern-matching is not exhaustive.
      * Here is an example of a case that is not matched:
      * Keyword _                                         *)
     ```
-    
+
 -   I *sum types* rappresentano gerarchie di classi «rigide», dove c'è un solo antenato (`token`) e le classi figlie sono note a priori: proprio il caso dei token! Linguaggi come [OCaml](https://ocaml.org/) sono infatti spesso usati per scrivere compilatori (es., [FFTW](http://www.fftw.org/fftw-paper-ieee.pdf),  [Rust](https://www.reddit.com/r/rust/comments/18b808/is_the_original_ocaml_compiler_still_available/)).
 
 
@@ -833,7 +833,7 @@ void print_token(const Token & t) {
     ```c++
     const char * message = "error, you must specify an input file";
     ```
-    
+
     Quando i lexer usati nei compilatori C++ trovano un carattere `"`, essi  continuano a leggere caratteri fino al successivo `"`, che segnala la fine della stringa, e restituiscono un token *string literal*.
 
 # Ambiguità nei *lexer*
@@ -843,7 +843,7 @@ void print_token(const Token & t) {
 -   Ma nella maggior parte dei casi un *lexer* deve affrontare ambiguità. Ad esempio, un carattere `a`…`z` indica che sta iniziando una *keyword*  come `int`, oppure un *identifier* come `iterations_per_minute`?
 
     In questo caso si leggono caratteri finché appartengono alla lista dei caratteri validi in un identificatore (solitamente lettere maiuscole/minuscole, cifre e il carattere `_`), poi si confronta la stringa letta con la lista di possibili *keyword* ammesse dal linguaggio.
-    
+
 # Tornare indietro
 
 -   In un *lexer* (e vedremo che è così anche nei *parser*) è comoda la possibilità di far sì che un carattere appena letto dal file sia «dis-letto», ossia venga rimesso a posto:
@@ -853,9 +853,9 @@ void print_token(const Token & t) {
     unread_char(file, c)  # Puts the "X" back into the file
     c = read_char(file)   # Read the "X" again
     ```
-    
+
     Questo equivale a leggere un carattere in anticipo (operazione di *look ahead*), e permette di scrivere il *lexer* in maniera più elegante.
-    
+
 -   L'operazione `unread_char` non altera il file: memorizza soltanto il carattere `X` in una variabile, e la restituisce alla successiva chiamata a `read_char`.
 
 # Uso di `unread_char`
@@ -865,9 +865,9 @@ void print_token(const Token & t) {
     ```python
     15+4
     ```
-    
+
     che è composta dei *token* `15` (*numeric literal*), `+` (*symbol*), `4` (*numeric literal*).
-    
+
 -   Quando il *lexer* inizia il suo lavoro individua il carattere `1`, e capisce che deve creare un token *numeric literal*. A questo punto deve leggere i caratteri finché trova la prima non-cifra, che è `+`. La lettura di `+` segnala che l'intero è finito e va emesso un *literal number token*; ma `+` va rimesso a posto, perché farà parte del token successivo.
 
 
