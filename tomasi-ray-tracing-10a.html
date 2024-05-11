@@ -153,8 +153,8 @@ tracing.</p></li>
 <ul>
 <li><p>È il metodo concettualmente più semplice da
 implementare.</p></li>
-<li><p>È in grado di produrre soluzioni <em>esatte</em>, nel senso che
-sono <em>unbiased</em> (senza effetti sistematici).</p></li>
+<li><p>È in grado di produrre soluzioni <em>unbiased</em> (senza effetti
+sistematici).</p></li>
 <li><p>È computazionalmente molto inefficiente.</p></li>
 <li><p>Ci sono molte tecniche per renderlo più veloce; noi
 implementeremo solo le più semplici (non è l’obbiettivo principale del
@@ -325,8 +325,8 @@ I = \int_a^b f(x)\,\mathrm{d}x
 class="math inline">F_N</span> per <span
 class="math inline">I</span>:</p>
 <p><span class="math display">
-I = \int_a^b f(x)\,\mathrm{d}x \approx F_N \equiv \frac{b - a}N
-\sum_{i=1}^N f(X_i),
+I = \int_a^b f(x)\,\mathrm{d}x \approx F_N \equiv (b - a) \cdot
+\left[\frac1N \sum_{i=1}^N f(X_i)\right],
 </span></p>
 <p>dove <span class="math inline">X_i</span> sono <span
 class="math inline">N</span> numeri casuali con PDF costante <span
@@ -356,13 +356,13 @@ class="math inline">p(x)</span>, un estimatore dell’integrale è</p>
 F_N = \frac1N \sum_{i = 1}^N \frac{f(X_i)}{p(X_i)},
 </span></p>
 <p>a patto che <span class="math inline">p(x) &gt; 0</span> quando <span
-class="math inline">f(x) \not= 0</span>. (Notate che qui non figura
-<span class="math inline">b - a</span>).</p></li>
+class="math inline">f(x) \not= 0</span>.</p></li>
 <li><p>Se si sceglie bene <span class="math inline">p(x)</span>, è
 possibile aumentare l’accuratezza della stima. Nel caso in cui <span
 class="math inline">f(x) = k \cdot p(x)</span> infatti, il termine nella
-sommatoria è costante (k) e uguale all’integrale, quindi basta <span
-class="math inline">N = 1</span> per stimarlo!</p></li>
+sommatoria è costante (<span class="math inline">k</span>) e uguale
+all’integrale, quindi basta <span class="math inline">N = 1</span> per
+stimarlo!</p></li>
 </ul>
 </section>
 <section id="esempio" class="slide level1">
@@ -407,7 +407,7 @@ class="math inline">f(x)</span>.</p></li>
 <li><p>Normalizzando <span class="math inline">p(x) \propto \sin
 x</span> sul dominio di integrazione si ottiene che</p>
 <p><span class="math display">
-p(x) = \frac12 \sin x\,\chi_{[0, \pi]}(x).
+p(x) = \frac{\chi_{[0, \pi]}(x)}2 \sin x.
 </span></p></li>
 <li><p>Dobbiamo ora ottenere numeri casuali <span
 class="math inline">X_i</span> che seguano questa distribuzione. Usiamo
@@ -416,7 +416,7 @@ class="math inline">p(x)</span> alla CDF <span class="math inline">P(x)
 = \mathrm{Pr}\{X \leq x\}</span>:</p>
 <p><span class="math display">
 P(x) = \int_{-\infty}^x p(x&#39;)\,\mathrm{d}x&#39; = \frac12(1 - \cos
-x).
+x)\quad\text{ per }x \in [0, \pi].
 </span></p></li>
 </ul>
 </section>
@@ -816,9 +816,9 @@ class="math inline">p(x, y, z)</span> da <span class="math inline">p(r,
 <h1>Campionare la semisfera</h1>
 <ul>
 <li><p>Torniamo al problema di estrarre direzioni casuali sulla
-semisfera <span class="math inline">2\pi</span>. Questo equivale ad
-estrarre coppie <span class="math inline">\theta, \varphi</span> tali
-che la probabilità sia uniforme.</p></li>
+semisfera <span class="math inline">2\pi\,\text{sterad}</span>. Questo
+equivale ad estrarre coppie <span class="math inline">\theta,
+\varphi</span> tali che la probabilità sia uniforme.</p></li>
 <li><p>Siccome i generatori di numeri casuali permettono di estrarre
 <em>un solo numero alla volta</em>, dobbiamo seguire una strada per
 ricavare prima l’uno e poi l’altro.</p></li>
@@ -843,7 +843,8 @@ class="math inline">p(y | x)</span> è la probabilità di ottenere <span
 class="math inline">y</span> nell’ipotesi che si sia ottenuto uno
 specifico valore <span class="math inline">x</span>:</p>
 <p><span class="math display">
-p(y | x) = \frac{p(x, y)}{p(x)}.
+p(y | x) = \frac{p(x, y)}{p(x)}\quad\Longleftrightarrow\quad p(x, y) =
+p(x) p(y | x).
 </span></p></li>
 </ul>
 </section>

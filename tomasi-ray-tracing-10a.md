@@ -18,7 +18,7 @@
 
 -   È il metodo concettualmente più semplice da implementare.
 
--   È in grado di produrre soluzioni *esatte*, nel senso che sono *unbiased* (senza effetti sistematici).
+-   È in grado di produrre soluzioni *unbiased* (senza effetti sistematici).
 
 -   È computazionalmente molto inefficiente.
 
@@ -158,7 +158,7 @@ Se la varianza nella stima degli integrali è eccessiva, viene creata un'immagin
 -   Il metodo della media fornisce una semplice approssimazione $F_N$ per $I$:
 
     $$
-    I = \int_a^b f(x)\,\mathrm{d}x \approx F_N \equiv \frac{b - a}N \sum_{i=1}^N f(X_i),
+    I = \int_a^b f(x)\,\mathrm{d}x \approx F_N \equiv (b - a) \cdot \left[\frac1N \sum_{i=1}^N f(X_i)\right],
     $$
 
     dove $X_i$ sono $N$ numeri casuali con PDF costante $p(x) = 1 / (b - a)$.
@@ -183,9 +183,9 @@ $$
     F_N = \frac1N \sum_{i = 1}^N \frac{f(X_i)}{p(X_i)},
     $$
 
-    a patto che $p(x) > 0$ quando $f(x) \not= 0$. (Notate che qui non figura $b - a$).
+    a patto che $p(x) > 0$ quando $f(x) \not= 0$.
 
--   Se si sceglie bene $p(x)$, è possibile aumentare l'accuratezza della stima. Nel caso in cui $f(x) = k \cdot p(x)$ infatti, il termine nella sommatoria è costante (k) e uguale all'integrale, quindi basta $N = 1$ per stimarlo!
+-   Se si sceglie bene $p(x)$, è possibile aumentare l'accuratezza della stima. Nel caso in cui $f(x) = k \cdot p(x)$ infatti, il termine nella sommatoria è costante ($k$) e uguale all'integrale, quindi basta $N = 1$ per stimarlo!
 
 # Esempio
 
@@ -226,13 +226,13 @@ $$
 -   Normalizzando $p(x) \propto \sin x$ sul dominio di integrazione si ottiene che
 
     $$
-    p(x) = \frac12 \sin x\,\chi_{[0, \pi]}(x).
+    p(x) = \frac{\chi_{[0, \pi]}(x)}2 \sin x.
     $$
 
 -   Dobbiamo ora ottenere numeri casuali $X_i$ che seguano questa distribuzione. Usiamo il metodo della funzione inversa, passando dalla PDF $p(x)$ alla CDF $P(x) = \mathrm{Pr}\{X \leq x\}$:
 
     $$
-    P(x) = \int_{-\infty}^x p(x')\,\mathrm{d}x' = \frac12(1 - \cos x).
+    P(x) = \int_{-\infty}^x p(x')\,\mathrm{d}x' = \frac12(1 - \cos x)\quad\text{ per }x \in [0, \pi].
     $$
 
 # Esempio
@@ -549,7 +549,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
 
 # Campionare la semisfera
 
--   Torniamo al problema di estrarre direzioni casuali sulla semisfera $2\pi$. Questo equivale ad estrarre coppie $\theta, \varphi$ tali che la probabilità sia uniforme.
+-   Torniamo al problema di estrarre direzioni casuali sulla semisfera $2\pi\,\text{sterad}$. Questo equivale ad estrarre coppie $\theta, \varphi$ tali che la probabilità sia uniforme.
 
 -   Siccome i generatori di numeri casuali permettono di estrarre *un solo numero alla volta*, dobbiamo seguire una strada per ricavare prima l'uno e poi l'altro.
 
@@ -568,7 +568,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
 -   La *funzione di densità condizionale* $p(y | x)$ è la probabilità di ottenere $y$ nell'ipotesi che si sia ottenuto uno specifico valore $x$:
 
     $$
-    p(y | x) = \frac{p(x, y)}{p(x)}.
+    p(y | x) = \frac{p(x, y)}{p(x)}\quad\Longleftrightarrow\quad p(x, y) = p(x) p(y | x).
     $$
 
 # Esempio: «Cornell box»
