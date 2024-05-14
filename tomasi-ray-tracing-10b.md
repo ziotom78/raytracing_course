@@ -62,6 +62,20 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 ---
 
+# Esempio
+
+-   Supponiamo che un generatore produca numeri a 32 bit in cui i primi 31 bit sono “casuali”, ma l'ultimo bit alterni regolarmente tra 0 ed 1:
+
+    #.  1110111101100010110101110111001<font color=#f00>0</font> (numero pari)
+    #.  1010001010100100001000010111010<font color=#f00>1</font> (numero dispari)
+    #.  0100001101100101100111111000111<font color=#f00>0</font> (numero pari)
+    #.  0101011011001110101000110101011<font color=#f00>1</font> (numero dispari)
+    #.  Etc., in modo che **tutti** i valori tra 0 e 2³²−1 siano estratti una volta
+
+-   Se voglio produrre punti 2D $(x, y)$ casuali distribuiti uniformemente, le ascisse avranno sempre valore pari e le ordinate dispari ⇒ metà dei punti teoricamente possibili in realtà non verranno mai scelti!
+
+---
+
 <center>![](./media/2d-randomness.png)</center>
 
 Un *randogramma* (v. O'Neill 2014).
@@ -70,7 +84,7 @@ Un *randogramma* (v. O'Neill 2014).
 
 -   Le applicazioni alla fisica dei metodi Monte Carlo richiedono di eseguire molte volte delle simulazioni, in modo da ridurre gli effetti del campionamento.
 
--   I generatori di numeri casuali più diffusi si basano su operazioni a livello di bit, che sono le più veloci realizzabili con le comuni CPU.
+-   Un modo per avere grande velocità è usare operazioni logiche a livello di bit, che sono le più veloci realizzabili con le comuni CPU.
 
 -   Un generatore dovrebbe mantenere il proprio stato in una struttura di memoria il più piccola possibile: in questo modo è più facile per la CPU ottimizzarne l'esecuzione.
 
@@ -95,9 +109,9 @@ Un *randogramma* (v. O'Neill 2014).
     computer #1:  5  36  17  29  45  …
     computer #2: 36  17  29  45   3  …
     ```
-    
+
 -   Ovviamente, questo sarebbe un problema anche se anziché 36 assegnassi 17, 29 o 45 al secondo computer.
-    
+
 -   Non basta dare un *seed* diverso ai due computer per ottenere sequenze indipendenti!
 
 
@@ -206,7 +220,7 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
 
 -   La struttura dati usati dall'algoritmo PCG ha bisogno di memorizzare al suo interno due numeri interi `unsigned` a 64 bit.
 
--   Familiarizzatevi con i tipi di interi senza segno forniti dal vostro linguaggio. (Linguaggi come Java non hanno interi senza segno, quindi dovrete cavarvela con quelli con segno 🙁; però Kotlin [li implementa](https://kotlinlang.org/docs/unsigned-integer-types.html) 😀)
+-   Familiarizzatevi con i tipi di interi senza segno forniti dal vostro linguaggio. (Linguaggi come Java non hanno interi senza segno, quindi bisogna cavarsela con quelli con segno 🙁; però Kotlin [li implementa](https://kotlinlang.org/docs/unsigned-integer-types.html) 🥳)
 
 
 # PCG in Python
@@ -237,7 +251,7 @@ def random(self) -> int:  # 32-bit unsigned number (in Java, return a 64-bit num
     oldstate = self.state    # 64-bit unsigned integer
 
     self.state = to_uint64((oldstate * 6364136223846793005 + self.inc))
-    
+
     # "^" is the xor operation
     xorshifted = to_uint32((((oldstate >> 18) ^ oldstate) >> 27))
 
@@ -254,7 +268,7 @@ def random(self) -> int:  # 32-bit unsigned number (in Java, return a 64-bit num
 ```python
 def test_random():
     pcg = PCG()
-    
+
     # You can check these members in a test only if you
     # did not declare "state" and "inc" as private members
     # of the PCG type
@@ -288,7 +302,7 @@ def test_random():
     init_state = 42
     init_seq = 54
     ```
-    
+
 -   In questo modo nei test basterà creare una variabile `PCG` col costruttore di default e il test sarà ripetibile (e confrontabile tra gruppi diversi!).
 
 
@@ -301,7 +315,7 @@ def test_random():
     #.  Il tipo `Pigment` è **astratto**, e rappresenta il colore associato ad un punto particolare di una superficie $(u, v)$;
     #.  Il tipo `BRDF` è **astratto**, e rappresenta la BRDF di un materiale, che deve contenere al suo interno un membro `Pigment`;
     #.  Il tipo `Material` è **concreto**, e rappresenta l'unione della parte emissiva di un materiale (il termine $L_e$, che rappresentiamo ancora come un `Pigment`) e della sua BRDF.
-    
+
 -   Dai tipi astratti `Pigment` e `BRDF` derivereremo poi una serie di tipi concreti.
 
 # `Pigment`
@@ -312,7 +326,7 @@ def test_random():
 
     -   `UniformPigment` (colore uniforme, il pigmento più semplice!);
     -   `CheckeredPigment` (scacchiera, utile per il debugging).
-    
+
 -   Potreste definire anche un `ImagePigment` che si costruisca a partire da una `HdrImage`: questo consente di creare effetti molto interessanti se applicate a sfere delle immagini contenenti [proiezioni equirettangolari](https://en.wikipedia.org/wiki/Equirectangular_projection). Usate come riferimento l'implementazione in [pytracer](https://github.com/ziotom78/pytracer/blob/f994f863bf2c37b3f3f73f681435895f8117c8fb/materials.py#L53-L73).
 
 # Pigmento a scacchiera
@@ -328,11 +342,11 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
     $$
     f_r = f_r(x, \Psi \rightarrow \Theta).
     $$
-    
+
 -   La BRDF è per definizione uno scalare, ma per rappresentare la dipendenza dalla lunghezza d'onda $\lambda$, il codice Python restituisce un `Color` anziché un `float`: ogni componente (R/G/B) è la BRDF integrata su quella banda.
 
 -   Questo è il prototipo di `BRDF.Eval` com'è implementato in [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L92-L98):
-    
+
     ```python
     class BRDF:
         def eval(self, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) -> Color:
@@ -359,7 +373,7 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
 
     #.  La BRDF $f_r = f_r(x, \Psi \rightarrow \Theta)$;
     #.  La radianza emessa in funzione del punto sulla superficie: $L_e = L_e(u, v)$.
-    
+
 -   In [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L111-L115) è definito così:
 
     ```python
@@ -384,8 +398,7 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
 
     ```python
     class Shape:
-        def __init__(self,
-                     transformation: Transformation = Transformation(), 
+        def __init__(self, transformation: Transformation = Transformation(),
                      material: Material = Material()):
             self.transformation = transformation
             self.material = material

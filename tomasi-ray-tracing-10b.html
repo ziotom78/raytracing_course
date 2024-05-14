@@ -41,7 +41,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -227,6 +227,30 @@ l’<em>equidistribuzione <span
 class="math inline">k</span>-dimensionale</em>.</p></li>
 </ul>
 </section>
+<section id="esempio" class="slide level1">
+<h1>Esempio</h1>
+<ul>
+<li><p>Supponiamo che un generatore produca numeri a 32 bit in cui i
+primi 31 bit sono “casuali”, ma l’ultimo bit alterni regolarmente tra 0
+ed 1:</p>
+<ol>
+<li>1110111101100010110101110111001<font color=#f00>0</font> (numero
+pari)</li>
+<li>1010001010100100001000010111010<font color=#f00>1</font> (numero
+dispari)</li>
+<li>0100001101100101100111111000111<font color=#f00>0</font> (numero
+pari)</li>
+<li>0101011011001110101000110101011<font color=#f00>1</font> (numero
+dispari)</li>
+<li>Etc., in modo che <strong>tutti</strong> i valori tra 0 e 2³²−1
+siano estratti una volta</li>
+</ol></li>
+<li><p>Se voglio produrre punti 2D <span class="math inline">(x,
+y)</span> casuali distribuiti uniformemente, le ascisse avranno sempre
+valore pari e le ordinate dispari ⇒ metà dei punti teoricamente
+possibili in realtà non verranno mai scelti!</p></li>
+</ul>
+</section>
 <section class="slide level1">
 
 <center>
@@ -240,9 +264,9 @@ class="math inline">k</span>-dimensionale</em>.</p></li>
 <li><p>Le applicazioni alla fisica dei metodi Monte Carlo richiedono di
 eseguire molte volte delle simulazioni, in modo da ridurre gli effetti
 del campionamento.</p></li>
-<li><p>I generatori di numeri casuali più diffusi si basano su
-operazioni a livello di bit, che sono le più veloci realizzabili con le
-comuni CPU.</p></li>
+<li><p>Un modo per avere grande velocità è usare operazioni logiche a
+livello di bit, che sono le più veloci realizzabili con le comuni
+CPU.</p></li>
 <li><p>Un generatore dovrebbe mantenere il proprio stato in una
 struttura di memoria il più piccola possibile: in questo modo è più
 facile per la CPU ottimizzarne l’esecuzione.</p></li>
@@ -264,7 +288,7 @@ seconda.</p></li>
 che le due sequenze di campioni siano correlate.</p></li>
 </ul>
 </section>
-<section id="esempio" class="slide level1">
+<section id="esempio-1" class="slide level1">
 <h1>Esempio</h1>
 <ul>
 <li><p>Se assegno lo stesso <em>seed</em> ai due computer, ottengo la
@@ -475,9 +499,9 @@ memorizzare al suo interno due numeri interi <code>unsigned</code> a 64
 bit.</p></li>
 <li><p>Familiarizzatevi con i tipi di interi senza segno forniti dal
 vostro linguaggio. (Linguaggi come Java non hanno interi senza segno,
-quindi dovrete cavarvela con quelli con segno 🙁; però Kotlin <a
+quindi bisogna cavarsela con quelli con segno 🙁; però Kotlin <a
 href="https://kotlinlang.org/docs/unsigned-integer-types.html">li
-implementa</a> 😀)</p></li>
+implementa</a> 🥳)</p></li>
 </ul>
 </section>
 <section id="pcg-in-python" class="slide level1">
@@ -509,7 +533,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    oldstate <span class="op">=</span> <span class="va">self</span>.state    <span class="co"># 64-bit unsigned integer</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.state <span class="op">=</span> to_uint64((oldstate <span class="op">*</span> <span class="dv">6364136223846793005</span> <span class="op">+</span> <span class="va">self</span>.inc))</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># &quot;^&quot; is the xor operation</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    xorshifted <span class="op">=</span> to_uint32((((oldstate <span class="op">&gt;&gt;</span> <span class="dv">18</span>) <span class="op">^</span> oldstate) <span class="op">&gt;&gt;</span> <span class="dv">27</span>))</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
@@ -525,7 +549,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_random():</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    pcg <span class="op">=</span> PCG()</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># You can check these members in a test only if you</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># did not declare &quot;state&quot; and &quot;inc&quot; as private members</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># of the PCG type</span></span>
@@ -717,11 +741,10 @@ modo che contenga al suo interno una istanza del tipo
 <code>Material</code>:</p>
 <div class="sourceCode" id="cb11"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Shape:</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                 transformation: Transformation <span class="op">=</span> Transformation(), </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                 material: Material <span class="op">=</span> Material()):</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.material <span class="op">=</span> material</span></code></pre></div></li>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, transformation: Transformation <span class="op">=</span> Transformation(),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                 material: Material <span class="op">=</span> Material()):</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.material <span class="op">=</span> material</span></code></pre></div></li>
 <li><p>Il tipo <code>HitRecord</code> dovrebbe essere modificato in modo
 da contenere anche un puntatore all’oggetto <code>Shape</code> che è
 stato «colpito» dal raggio: in questo modo si potrà risalire al
