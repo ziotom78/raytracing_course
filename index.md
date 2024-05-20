@@ -17,8 +17,8 @@
 |         8 | [22 Aprile 2024](tomasi-ray-tracing-08a.html) | [24 Aprile 2024](tomasi-ray-tracing-08b.html) |
 |         9 | [6 Maggio 2024](tomasi-ray-tracing-09a.html) | — |
 |        10 | [13 Maggio 2024](tomasi-ray-tracing-10a.html) | [15 Maggio 2024](tomasi-ray-tracing-10b.html) |
-<!--
 |        11 | [20 Maggio 2024](tomasi-ray-tracing-11a.html) | [22 Maggio 2024](tomasi-ray-tracing-11b.html) |
+<!--
 |        12 | [27 Maggio 2024](tomasi-ray-tracing-12a.html) | [29 Maggio 2024](tomasi-ray-tracing-12b.html) |
 |        13 | [3 Giugno 2024](tomasi-ray-tracing-13a.html) | [5 Giugno 2024](tomasi-ray-tracing-13b.html) |
 -->
@@ -64,13 +64,12 @@
 -   [Direzioni casuali](tomasi-ray-tracing-10a.html#/direzioni-casuali): distribuzione uniforme e distribuzione di Phong
 -   [BRDF e pigmenti](tomasi-ray-tracing-10a.html#/brdf)
 -   [Generazione di numeri pseudo-casuali](tomasi-ray-tracing-10b.html#/generazione-di-numeri-pseudocasuali)
-<!--
 -   [*Importance sampling* nell'equazione del rendering](tomasi-ray-tracing-11a.html#/integrale-mc)
 -   [Roulette russa](tomasi-ray-tracing-11a.html#/roulette-russa)
 -   [*Antialiasing*](tomasi-ray-tracing-11a.html#/aliasing-e-antialiasing)
 -   [Test della fornace](tomasi-ray-tracing-11b.html#/test-1)
+<!--
 -   [Terminologia nella teoria dei compilatori](tomasi-ray-tracing-12a.html#/terminologia): lessico, sintassi, semantica, *token*, [*look-ahead*](tomasi-ray-tracing-12a.html#/tornare-indietro)
-
 -->
 
 ## Parti non richieste per l'esame
@@ -87,13 +86,13 @@
 -   [*Axis-aligned boxes*](tomasi-ray-tracing-09a.html#/axis-aligned-boxes)
 -   [Triangoli, quadilateri e *mesh*](tomasi-ray-tracing-09a.html#/triangoli-quadilateri-e-mesh)
 -   [Generatore PCG](tomasi-ray-tracing-10b.html#/lalgoritmo-pcg)
-<!--
 -   [Basi ortonormali arbitrarie](tomasi-ray-tracing-11a.html#/basi-ortonormali-onb-arbitrarie)
 -   [BRDF riflettente](tomasi-ray-tracing-11a.html#/brdf-riflettente)
 -   [Algoritmi di illuminazione diretta](tomasi-ray-tracing-11a.html#/illuminazione-diretta)
 -   [*Photon mapping*](tomasi-ray-tracing-11a.html#/photon-mapping)
 -   [*Stratified sampling*](tomasi-ray-tracing-11a.html#/stratified-sampling)
 -   [*Point-light tracing*](tomasi-ray-tracing-11a.html#/point-light-tracing)
+<!--
 -   [Panoramica sulla definizione di scene](tomasi-ray-tracing-12a.html#/linguaggi-per-la-definizione-di-scene-3d): DKBTrace, POV-Ray, YafaRay
 -   [Gerarchie di classi e *sum types*](tomasi-ray-tracing-12a.html#/tokens-e-gerarchie-di-classi)
 -   [Gestione degli errori di un compilatore](tomasi-ray-tracing-13a.html#/gestione-degli-errori-di-un-compilatore)
