@@ -19,15 +19,18 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -38,7 +41,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -177,14 +180,15 @@ href="https://graphics.pixar.com/library/OrthonormalB/paper.pdf">Duff et
 al. 2017</a>:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_onb_from_z(normal: Union[Vec, Normal]) <span class="op">-&gt;</span> Tuple[Vec, Vec, Vec]:</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    sign <span class="op">=</span> <span class="fl">1.0</span> <span class="cf">if</span> (normal.z <span class="op">&gt;</span> <span class="fl">0.0</span>) <span class="cf">else</span> <span class="op">-</span><span class="fl">1.0</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span> <span class="op">/</span> (sign <span class="op">+</span> normal.z)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> normal.x <span class="op">*</span> normal.y <span class="op">*</span> a</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    e1 <span class="op">=</span> Vec(<span class="fl">1.0</span> <span class="op">+</span> sign <span class="op">*</span> normal.x <span class="op">*</span> normal.x <span class="op">*</span> a, sign <span class="op">*</span> b, <span class="op">-</span>sign <span class="op">*</span> normal.x)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    e2 <span class="op">=</span> Vec(b, sign <span class="op">+</span> normal.y <span class="op">*</span> normal.y <span class="op">*</span> a, <span class="op">-</span>normal.y)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> e1, e2, Vec(normal.x, normal.y, normal.z)</span></code></pre></div></li>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># In Python non c&#39;è la funzione `copysign` 🙁</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    sign <span class="op">=</span> <span class="fl">1.0</span> <span class="cf">if</span> (normal.z <span class="op">&gt;</span> <span class="fl">0.0</span>) <span class="cf">else</span> <span class="op">-</span><span class="fl">1.0</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span> <span class="op">/</span> (sign <span class="op">+</span> normal.z)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> normal.x <span class="op">*</span> normal.y <span class="op">*</span> a</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    e1 <span class="op">=</span> Vec(<span class="fl">1.0</span> <span class="op">+</span> sign <span class="op">*</span> normal.x <span class="op">*</span> normal.x <span class="op">*</span> a, sign <span class="op">*</span> b, <span class="op">-</span>sign <span class="op">*</span> normal.x)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    e2 <span class="op">=</span> Vec(b, sign <span class="op">+</span> normal.y <span class="op">*</span> normal.y <span class="op">*</span> a, <span class="op">-</span>normal.y)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> e1, e2, Vec(normal.x, normal.y, normal.z)</span></code></pre></div></li>
 <li><p>Quando invocate questa funzione, fate molta attenzione al fatto
 che il parametro <code>normal</code> deve essere già
 normalizzato!</p></li>
@@ -220,21 +224,24 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># As Python is slow, we just test 100 times the function. You can use</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># larger numbers, as far as the time required to run the test is kept short</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    normal <span class="op">=</span> Vec(<span class="op">*</span>[pcg.random_float() <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)]).normalize()</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    e1, e2, e3 <span class="op">=</span> create_onb_from_z(normal)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the z axis is aligned with the normal</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> e3.is_close(normal)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the base is orthogonal</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_zero <span class="op">==</span> e1.dot(e2)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_zero <span class="op">==</span> e2.dot(e3)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_zero <span class="op">==</span> e3.dot(e1)</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that each component is normalized</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_one <span class="op">==</span> e1.squared_norm()</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_one <span class="op">==</span> e2.squared_norm()</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_one <span class="op">==</span> e3.squared_norm()</span></code></pre></div>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We could use a fancier code that samples uniformly over the 4π sphere…</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    normal <span class="op">=</span> Vec(<span class="op">*</span>[pcg.random_float() <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)]).normalize()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    e1, e2, e3 <span class="op">=</span> create_onb_from_z(normal)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the z axis is aligned with the normal</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> e3.is_close(normal)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that the base is orthogonal</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_zero <span class="op">==</span> e1.dot(e2)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_zero <span class="op">==</span> e2.dot(e3)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_zero <span class="op">==</span> e3.dot(e1)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verify that each component is normalized</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_one <span class="op">==</span> e1.squared_norm()</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_one <span class="op">==</span> e2.squared_norm()</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> expected_one <span class="op">==</span> e3.squared_norm()</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># You could also check that e₁×e₂=e₃, e₂×e₃=e₁, e₃×e₁=e₂</span></span></code></pre></div>
 </section>
 <section id="importance-sampling" class="slide level1">
 <h1><em>Importance sampling</em></h1>
@@ -264,7 +271,7 @@ derivati da <code>BRDF</code> e che abbia <a
 href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L103">questa
 segnatura</a>:</p>
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, </span>
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>,</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pcg: PCG,                    <span class="co"># Used to generate random numbers</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    incoming_dir: Vec,           <span class="co"># Direction of the incoming ray</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    interaction_point: Point,    <span class="co"># Where the ray hit the surface</span></span>

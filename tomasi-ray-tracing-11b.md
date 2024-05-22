@@ -51,6 +51,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
     ```python
     def create_onb_from_z(normal: Union[Vec, Normal]) -> Tuple[Vec, Vec, Vec]:
+        # In Python non c'è la funzione `copysign` 🙁
         sign = 1.0 if (normal.z > 0.0) else -1.0
         a = -1.0 / (sign + normal.z)
         b = normal.x * normal.y * a
@@ -59,9 +60,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
         e2 = Vec(b, sign + normal.y * normal.y * a, -normal.y)
 
         return e1, e2, Vec(normal.x, normal.y, normal.z)
-    
+
     ```
-    
+
 -   Quando invocate questa funzione, fate molta attenzione al fatto che il parametro `normal` deve essere già normalizzato!
 
 # Test
@@ -84,6 +85,7 @@ expected_zero, expected_one = pytest.approx(0.0), pytest.approx(1.0)
 # As Python is slow, we just test 100 times the function. You can use
 # larger numbers, as far as the time required to run the test is kept short
 for i in range(100):
+    # We could use a fancier code that samples uniformly over the 4π sphere…
     normal = Vec(*[pcg.random_float() for i in range(3)]).normalize()
     e1, e2, e3 = create_onb_from_z(normal)
 
@@ -99,6 +101,8 @@ for i in range(100):
     assert expected_one == e1.squared_norm()
     assert expected_one == e2.squared_norm()
     assert expected_one == e3.squared_norm()
+
+    # You could also check that e₁×e₂=e₃, e₂×e₃=e₁, e₃×e₁=e₂
 ```
 
 # *Importance sampling*
@@ -110,19 +114,19 @@ for i in range(100):
     $$
     \int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos\theta\,\mathrm{d}\omega_\Psi.
     $$
-    
+
 -   Per migliorare la varianza useremo l'*importance sampling*, impiegando la PDF
 
     $$
     p(\omega) \propto f_r \cdot \cos\theta.
     $$
-    
+
 # Il tipo `BRDF`
 
 -   Dobbiamo quindi aggiungere un metodo che si applichi ai tipi derivati da `BRDF` e che abbia [questa segnatura](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L103):
 
     ```python
-    def scatter_ray(self, 
+    def scatter_ray(self,
         pcg: PCG,                    # Used to generate random numbers
         incoming_dir: Vec,           # Direction of the incoming ray
         interaction_point: Point,    # Where the ray hit the surface
@@ -243,7 +247,7 @@ def __call__(self, ray: Ray) -> Color:
     $$
     L = L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\Bigr).
     $$
-    
+
 ---
 
 <center>![](media/furnace-test.svg)</center>
@@ -269,7 +273,7 @@ $$
     #.  Lancia un raggio che parta dal centro della sfera;
     #.  Invoca `PathTracer` fissando `max_depth=100` e assicurandosi che *non* venga usato l'algoritmo della roulette russa;
     #.  Verifica che la radianza restituita corrisponda a $L_e / (1 - \rho_d)$.
-    
+
 -   Il test viene ripetuto un certo numero di volte usando valori casuali di $L_e$ e di $\rho_d$ (evitando di scegliere $\rho_d \approx 1$!).
 
 ---
@@ -342,7 +346,7 @@ for i in range(5):
 -   Non è sufficiente sapere quanto tempo impieghi in tutto il vostro
     codice per produrre un'immagine: occorre sapere quanto spende in
     ciascuna funzione.
-    
+
 -   Ci sono vari modi di misurarlo, e molti strumenti a disposizione: è impossibile essere esaustivi!
 
 -   Vi elenco alcune possibilità, e vi offro alcuni suggerimenti e trucchi
@@ -358,7 +362,7 @@ for i in range(5):
     long_function_call(...)
     elapsed_time = perf_counter_ns() - start
     ```
-    
+
 -   Esistono profiler che misurano il tempo cumulativo speso da ciascuna linea di codice: attenzione, perché possono rallentare molto il codice!
 
 -   Sono anche disponibili profiler statistici, che sono meno accurati ma non rallentano significativamente il codice.
