@@ -68,7 +68,7 @@ Nel nostro caso dovremo definire un DSL e implementare un compilatore per esso. 
 
 # DSL in linguaggi *general-purpose*
 
--   Non dovreste stupirvi del fatto che oggi inventeremo un nuovo «linguaggio» per il nostro programma: è un'attività più comune di quanto si pensi (anche se i fisici non lo fanno quasi mai ☹).
+-   Non dovreste stupirvi del fatto che oggi inventeremo un nuovo «linguaggio» per il nostro programma: è un'attività più comune di quanto si pensi (anche se i fisici non lo fanno quasi mai 🙁).
 
 -   È talmente comune che alcuni linguaggi *general-purpose* prevedono la possibilità di definire DSL **al proprio interno**: sono i linguaggi cosiddetti «metaprogrammabili» (es., [Common LISP](https://gigamonkeys.com/book/practical-a-simple-database.html), [Julia](https://docs.julialang.org/en/v1/manual/metaprogramming/), [Kotlin](https://www.raywenderlich.com/2780058-domain-specific-languages-in-kotlin-getting-started), [Nim](https://forum.nim-lang.org/t/2380)…).
 
@@ -270,7 +270,7 @@ light_source { <2, 4, -3> color White }
 
 -   Anziché usare lettere come `s` o `d` per indicare diverse entità (sfera o BRDF diffusiva), useremo stringhe di caratteri (`sphere` e `diffuse`)
 
--   La scrittura `s 1 3 6 2` non è chiara, perché non si distingue il raggio dalle coordinate. Ispirandoci alla sintassi di Python e Julia, indicheremo punti e vettori con le parentesi angolari, ad es. `[1, 3, 6]`.
+-   La scrittura `s 1 3 6 2` non è chiara, perché non si distingue il raggio dalle coordinate. Ispirandoci alla sintassi di Python e Julia, indicheremo punti e vettori con le parentesi quadre, ad es. `[1, 3, 6]`.
 
 -   Implementeremo anche la possibilità di associare un nome agli oggetti: in questo modo potremo fare riferimento a BRDF create in precedenza (es., `green_matte`) quando definiamo nuove `Shape`.
 
