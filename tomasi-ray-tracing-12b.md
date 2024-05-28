@@ -72,7 +72,7 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
       std::string message = 127;
                   ^         ~~~
     ```
-    
+
     dove viene indicato il nome del file (`test.cpp`), il numero della riga (`31`) e il numero della colonna (`15`) in cui è stato trovato l'errore.
 
 # Tracciare posizioni
@@ -82,8 +82,8 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
     #.  Il nome del file sorgente (una stringa);
     #.  Il numero della riga (un intero, numerato partendo da 1);
     #.  Il numero della colonna (idem).
-    
--   Il tipo `Token` dovrebbe quindi contenere questi tre campi. Nel caso di pytracer, ha un membro di tipo [`SourceLocation`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L20-L32).
+
+-   Il tipo `Token` dovrebbe quindi contenere questi tre campi. In PyTracer ho creato un tipo [`SourceLocation`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L20-L32). (Ma sarebbe più efficiente tenere una lista di nomi file, e usare qui un indice al file!)
 
     ```python
     @dataclass
@@ -129,7 +129,7 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
     with open(file_name, "rt") as f:  # "rt" stands for "*R*ead *T*ext"
         …
     ```
-    
+
 -   A noi serve anche la possibilità di *look ahead*, ossia di leggere un carattere e rimetterlo a posto, nonché la capacità di tenere traccia della posizione nello *stream* in cui siamo arrivati (per produrre messaggi d'errore).
 
 # Definizione di `InputStream`
@@ -138,7 +138,7 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
 
     #.  Un campo `stream`, il cui tipo dipende dal linguaggio che usate: ad esempio `std::istream` in C++;
     #.  Un campo `location` di tipo `SourceLocation`.
-    
+
 -   Oltre a questi campi ne servono altri per implementare il *look-ahead*.
 
 
@@ -177,7 +177,7 @@ class InputStream:
     #.  In presenza di un ritorno a capo come `\n`, si incrementa `line_num` e si resetta `col_num` a 1;
     #.  In presenza di `\t` (tabulazione) si incrementa `col_num` di un valore convenzionale (solitamente 4 oppure 8);
     #.  In tutti gli altri casi si incrementa `col_num` e si lascia intatto `line_num`.
-    
+
 -   Questo approccio richiederebbe accorgimenti aggiuntivi per i [caratteri Unicode](./tomasi-ray-tracing-03a.html#lo-standard-unicode), ma il nostro formato ammette solo caratteri ASCII (per fortuna!).
 
 ---
@@ -185,7 +185,7 @@ class InputStream:
 ```python
 class InputStream:
     …
-    
+
     def _update_pos(self, ch):
         """Update `location` after having read `ch` from the stream"""
         if ch == "":
@@ -225,7 +225,7 @@ class InputStream:
 
 # Definizione di `Token`
 
--   Decidete se volete usare una gerarchia di classi o una *tagged union* (*sum type*); in Python è obbligatoria la seconda, e quindi ho usato questa in [pytracer](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146).
+-   Decidete se volete usare una gerarchia di classi o una *tagged union* (*sum type*); in Python ho usato le gerarchie perché non esistono i *sum types* ([link al codice](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146)).
 
 -   I tipi di token da definire sono i seguenti:
 
@@ -284,7 +284,7 @@ class InputStream:
     #.  Se è `"`, restituisce un `LiteralStringToken`;
     #.  Se è una sequenza di caratteri `a`…`z`, restituisce un `KeywordToken` se la sequenza è una parola chiave, `IdentifierToken` altrimenti;
     #.  Se il file è finito, restituisce `StopToken`.
-    
+
 ---
 
 ```python
@@ -299,7 +299,7 @@ def read_token(self) -> Token:
         # No more characters in the file, so return a StopToken
         return StopToken(location=self.location)
 
-    # At this point we must check what kind of token begins with the "ch" character 
+    # At this point we must check what kind of token begins with the "ch" character
     # (which has been put back in the stream with self.unread_char). First,
     # we save the position in the stream
     token_location = copy(self.location)
@@ -317,7 +317,7 @@ def read_token(self) -> Token:
         # Since it begins with an alphabetic character, it must either be a keyword
         # or a identifier
         return self._parse_keyword_or_identifier_token(
-            first_char=ch, 
+            first_char=ch,
             token_location=token_location,
         )
     else:
@@ -331,7 +331,7 @@ def read_token(self) -> Token:
 
     #.  Un [test per `InputStream`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1037-L1081), che verifichi che la posizione in un file sia tracciata correttamente anche in caso ci siano ritorni a capo o si invochi `unread_char`;
     #.  Un [test per `read_token`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1083-L1104), che verifichi che spazi e commenti vengano saltati e che la sequenza di token sia prodotta correttamente.
-    
+
 -   La scrittura di questi test vi permetterà di familiarizzare con i tipi che avete definito (soprattutto se usate *sum types*!), in previsione della prossima lezione.
 
 
