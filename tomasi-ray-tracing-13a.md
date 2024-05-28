@@ -26,7 +26,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 -   Consideriamo questa definizione:
 
-    ```bash
+    ```python
     material sky_material(
         diffuse(image("sky-dome.pfm")),
         uniform(<0.7, 0.5, 1>)
@@ -409,10 +409,10 @@ vector ::= "[" number "," number "," number "]"
 
 -   Quando sono stati introdotti i *template* in C++, è stata una [pessima](https://keleshev.com/parsing-ambiguity-type-argument-v-less-than) [scelta](https://stackoverflow.com/questions/7304699/what-are-all-the-syntax-problems-introduced-by-the-usage-of-angle-brackets-in-c) usare come simboli `<` e `>`, perché (1) erano già usati come operatori di confronto, e (2) esistevano già gli operatori `<<` e `>>`.
 
--   C\# risolve entrambi i problemi dei template (che in C\# si chiamano *generics*):
+-   C\# soffre del medesimo problema, ma è meno grave (in C\# i *template* si chiamano *generics*):
 
     1.  Per distinguere tra il caso in cui `>>` va interpretato come due token o come uno, la regola è che se il token successivo è `(`, `)`, `]`, `:`, `;`, `,`, `.`, `?`, `==` oppure `!=`, allora va interpretato come due token, altrimenti uno;
-    2.  Dentro le parentesi angolari dei generici si possono solo indicare tipi, non espressioni come `a > b`.
+    2.  Dentro `<>` si possono solo indicare tipi, non espressioni come `a > b`.
 
 -   Pascal, Nim e Kotlin usano `shl` e `shr` per questi operatori.
 
