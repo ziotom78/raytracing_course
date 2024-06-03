@@ -56,7 +56,7 @@ Questo è il tipo di file per cui oggi implementeremo il nostro *parser*, che ef
     -   La definizione dell'osservatore;
     -   Una tabella contenente tutti i `Material` definiti nella scena e associati al loro nome (es., `sky_material` nel nostro esempio);
     -   Una tabella contenente tutte le variabili `float`.
-    
+
 -   La tabella dei materiali e delle variabili non servirà per fare il *rendering* della scena, ma può essere utile per stampare a video una tabella riassuntiva, oppure per fare *debugging*.
 
 # Il tipo `Scene`
@@ -126,7 +126,7 @@ Questo è il tipo di file per cui oggi implementeremo il nostro *parser*, che ef
 
         raise GrammarError(token.location, f"got '{token}' instead of a number")
     ```
-    
+
 -   È questo il motivo per cui richiede un parametro `Scene`.
 
 # Funzioni `parse_*`
@@ -146,7 +146,7 @@ Questo è il tipo di file per cui oggi implementeremo il nostro *parser*, che ef
         expect_symbol(input_file, ">")
         return Color(red, green, blue)
     ```
-    
+
 -   L'uso di [`expect_number`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L361-L374) abilita la possibilità di usare variabili `float`.
 
 # Lista di funzioni `parse_*`
@@ -168,7 +168,7 @@ Questo è il tipo di file per cui oggi implementeremo il nostro *parser*, che ef
     ```python
     parse_scene(s: InputStream) -> Scene
     ```
-    
+
 -   Nella grammatica EBNF che abbiamo visto a lezione, una scene è una lista di zero o più definizioni di `float`/materiale/sfera/piano/osservatore (`scene ::= declaration*`). Dal punto di vista del codice, questo va scandito in un ciclo `while`.
 
 -   La stessa cosa vale per le definizioni EBNF ricorsive, come `transformation`, che in aggiunta deve usare il *look-ahead*.
@@ -196,7 +196,7 @@ class InputStream:
             result = self.saved_token
             self.saved_token = None
             return result
-            
+
         # Continue as usual
         # …
 
@@ -214,7 +214,7 @@ class InputStream:
 
     #.  `pfm2png`, per applicare il *tone mapping* a immagini HDR;
     #.  `demo`, per generare l'immagine dimostrativa.
-    
+
 -   Oggi dovete aggiungere il comando `render`, e fare in modo che accetti un file da linea di comando.
 
 -   È ovviamente un'ottima idea aggiungere una cartella `examples` nel vostro repository, in cui aggiungere una immagine dimostrativa (o più di una!). In questo caso potreste anche decidere di togliere il comando `demo`, se volete.
@@ -226,9 +226,9 @@ class InputStream:
     ```
     ./main --declare-float=clock:150.0 examples/demo.txt
     ```
-    
+
     L'effetto di [`--declare-float`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/main.py#L118-L124) è quello di dichiarare una variabile `clock` e assegnarle il valore 150.0.
-    
+
 -   Questo di per sè non genera animazioni, ma è molto comodo per realizzarle:
 
     ```
@@ -236,9 +236,9 @@ class InputStream:
         ./main --declare-float=clock:$angle --pfm-output=image$angle.pfm examples/demo.txt
     done
     ```
-    
+
 # Sovrascrivere variabili
-    
+
 -   Per semplificare l'esecuzione all'utente, è permesso **sovrascrivere** la definizione di una variabile come `clock`, se questa è già esistente nel file di input (`examples/demo.txt` in quest'esempio).
 
 -   In altre parole, il file con la scena può contenere al suo interno la definizione della variabile `clock`:
@@ -246,7 +246,7 @@ class InputStream:
     ```python
     float clock(150.0)
     ```
-    
+
     In presenza di `--declare-float=clock:0.0`, il valore 150 viene ignorato e il valore 0 viene usato al suo posto. Ma se non si passa questo argomento da linea di comando, la scena resta comunque interpretabile.
 
 # Sovrascrivere variabili
@@ -270,4 +270,3 @@ class InputStream:
 #.  Create una directory `examples` che contenga uno o più esempi di scene;
 #.  Aggiornate la documentazione e il `CHANGELOG`;
 #.  Rilasciate la versione `1.0`: congratulazioni!
-
