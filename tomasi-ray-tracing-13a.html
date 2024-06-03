@@ -150,10 +150,15 @@ semantica).</p></li>
 <ul>
 <li><p>La sintassi di un linguaggio è divisibile in categorie a seconda
 delle peculiarità nella sua sintassi e nel modo in cui sono quindi
-concatenati i token: LL(n), LR(n), GLR(n), LALR(n), etc.</p></li>
+concatenati i token: <a
+href="https://en.wikipedia.org/wiki/LL_parser">LL(n)</a>, <a
+href="https://en.wikipedia.org/wiki/LR_parser">LR(n)</a>, <a
+href="https://en.wikipedia.org/wiki/GLR_parser">GLR(n)</a>, <a
+href="https://en.wikipedia.org/wiki/LALR_parser">LALR(n)</a>,
+etc.</p></li>
 <li><p>Ciascuna di queste famiglie richiede algoritmi specifici per
 l’analisi sintattica, e purtroppo algoritmi che vanno bene per una
-famiglia non vanno bene per altre!</p></li>
+famiglia non vanno necessariamente bene per altre!</p></li>
 <li><p>Il nostro linguaggio è di tipo LL(1), come il linguaggio <a
 href="https://en.wikipedia.org/wiki/Pascal_(programming_language)">Pascal</a>,
 e l’algoritmo corrispondente per analizzare la grammatica è tra i più
@@ -182,9 +187,9 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <section id="approccio-top-down" class="slide level1">
 <h1>Approccio <em>top-down</em></h1>
 <ul>
-<li><p>La definizione di <code>sky_material</code> è però semplice da
-analizzare se suddividiamo il problema in tante funzioni, ciascuna delle
-quali analizza <em>un elemento soltanto</em>.</p></li>
+<li><p>È però semplice scrivere una funzione che analizzi la definizione
+di <code>sky_material</code> se essa può appoggiarsi su altre funzioni,
+ciascuna delle quali analizza <em>un elemento soltanto</em>.</p></li>
 <li><p>Definiamo quindi una funzione <code>parse_color</code> che si
 occupa di interpretare una sequenza di <em>token</em> come un colore e
 di restituire l’oggetto <code>Color</code> corrispondente, una funzione
@@ -199,7 +204,7 @@ semplici come <code>parse_color</code>.</p></li>
 <section id="parse_color" class="slide level1">
 <h1><code>parse_color</code></h1>
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expect_symbol(stream: InputStream, symbol: <span class="bu">str</span>):</span>
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expect_symbol(stream: InputStream, symbol: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Read a token from `stream` and check that it matches `symbol`.&quot;&quot;&quot;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> stream.read_token()</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(token, SymbolToken) <span class="kw">or</span> token.symbol <span class="op">!=</span> symbol:</span>
@@ -366,17 +371,18 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a hr
 <section id="perché-ll1-1" class="slide level1">
 <h1>Perché LL(1)?</h1>
 <ul>
-<li><p>Consideriamo invece questa definizione:</p>
-<pre class="text"><code>plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))</code></pre></li>
-<li><p>Il modo più naturale di interpretare questa riga è tramite una
-funzione <code>parse_plane</code>, che al suo interno invochi una
-funzione <code>parse_transformation</code>.</p></li>
+<li><p>Consideriamo invece queste due definizioni:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>plane(sky_material, translation([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>]))                        <span class="co"># Case #1</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>plane(sky_material, translation([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>]) <span class="op">*</span> rotation_y(clock))    <span class="co"># Case #2</span></span></code></pre></div></li>
+<li><p>Ovviamente dobbiamo scrivere una funzione
+<code>parse_plane</code> che al suo interno invoca una funzione
+<code>parse_transformation</code>.</p></li>
 <li><p>Però la trasformazione presenta un problema: dopo i caratteri
-<code>…100])</code> non si può sapere se la trasformazione è terminata
-(e occorre ritornare a <code>parse_plane</code>), oppure se segua il
-simbolo <code>*</code> che rappresenta l’operatore di composizione: in
-quest’ultimo caso, <code>parse_transformation</code> non avrebbe ancora
-finito il suo lavoro!</p></li>
+<code>…100])</code> non si può sapere se la trasformazione sia
+terminata, oppure se segua il simbolo <code>*</code> (composizione di
+trasformazioni): in quest’ultimo caso, <code>parse_transformation</code>
+avrebbe ancora lavoro da fare!</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -426,9 +432,6 @@ interpretare il codice sorgente.</p></li>
 notazioni per descrivere la grammatica di linguaggi, che sono utilissime
 nel momento in cui si implementa un <em>lexer</em> o un
 <em>parser</em>.</p></li>
-<li><p>In effetti, prima di implementare il parser di pytracer ho dovuto
-io stesso scrivere la nostra grammatica in un formato che consentisse di
-derivare la lista esaustiva di tutte le possibilità.</p></li>
 </ul>
 </section>
 <section id="grammatica-ebnf" class="slide level1">
@@ -436,7 +439,8 @@ derivare la lista esaustiva di tutte le possibilità.</p></li>
 <ul>
 <li><p>La notazione che vedremo è detta <em>Extended Backus-Naur
 Form</em> (EBNF), ed è il risultato del lavoro di molte persone, tra cui
-Niklaus Wirth (il creatore del linguaggio Pascal).</p></li>
+<a href="https://en.wikipedia.org/wiki/Niklaus_Wirth">Niklaus Wirth</a>
+(il creatore del linguaggio Pascal).</p></li>
 <li><p>Non descriveremo EBNF in modo completo, ma la presenteremo solo
 nella misura in cui serve ai nostri scopi. È utile comprenderla perché
 spesso la documentazione dei linguaggi di programmazione contiene la
@@ -550,7 +554,7 @@ sono il <code>;</code> (usato per terminare uno <em>statement</em>) e
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>x <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">*=</span> <span class="op">-</span><span class="fl">1.0</span>  <span class="co">// Error: missing &#39;;&#39;</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">/=</span> <span class="dv">1</span><span class="er">O</span><span class="op">;</span>       <span class="co">// Uh-oh, I wrote a capital &quot;o&quot; instead of &quot;0&quot;</span></span></code></pre></div></li>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">/=</span> <span class="dv">1</span><span class="er">O</span> <span class="op">*</span> a<span class="op">;</span>       <span class="co">// Uh-oh, I wrote a capital &quot;o&quot; instead of &quot;0&quot;</span></span></code></pre></div></li>
 <li><p>In un linguaggio come il nostro non è semplice individuare un
 <em>termination token</em>; la cosa migliore sarebbe richiedere la
 presenza di <code>;</code> alla fine di ogni <em>statement</em>, come

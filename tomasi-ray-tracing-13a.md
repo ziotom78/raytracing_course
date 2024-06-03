@@ -16,9 +16,9 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Analisi sintattica
 
--   La sintassi di un linguaggio è divisibile in categorie a seconda delle peculiarità nella sua sintassi e nel modo in cui sono quindi concatenati i token: LL(n), LR(n), GLR(n), LALR(n), etc.
+-   La sintassi di un linguaggio è divisibile in categorie a seconda delle peculiarità nella sua sintassi e nel modo in cui sono quindi concatenati i token: [LL(n)](https://en.wikipedia.org/wiki/LL_parser), [LR(n)](https://en.wikipedia.org/wiki/LR_parser), [GLR(n)](https://en.wikipedia.org/wiki/GLR_parser), [LALR(n)](https://en.wikipedia.org/wiki/LALR_parser), etc.
 
--   Ciascuna di queste famiglie richiede algoritmi specifici per l'analisi sintattica, e purtroppo algoritmi che vanno bene per una famiglia non vanno bene per altre!
+-   Ciascuna di queste famiglie richiede algoritmi specifici per l'analisi sintattica, e purtroppo algoritmi che vanno bene per una famiglia non vanno necessariamente bene per altre!
 
 -   Il nostro linguaggio è di tipo LL(1), come il linguaggio [Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)), e l'algoritmo corrispondente per analizzare la grammatica è tra i più semplici.
 
@@ -42,7 +42,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 # Approccio *top-down*
 
--   La definizione di `sky_material` è però semplice da analizzare se suddividiamo il problema in tante funzioni, ciascuna delle quali analizza *un elemento soltanto*.
+-   È però semplice scrivere una funzione che analizzi la definizione di `sky_material` se essa può appoggiarsi su altre funzioni, ciascuna delle quali analizza *un elemento soltanto*.
 
 -   Definiamo quindi una funzione `parse_color` che si occupa di interpretare una sequenza di *token* come un colore e di restituire l'oggetto `Color` corrispondente, una funzione `parse_pigment`, una funzione `parse_brdf`, etc.
 
@@ -51,7 +51,7 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 # `parse_color`
 
 ```python
-def expect_symbol(stream: InputStream, symbol: str):
+def expect_symbol(stream: InputStream, symbol: str) -> None:
     """Read a token from `stream` and check that it matches `symbol`."""
     token = stream.read_token()
     if not isinstance(token, SymbolToken) or token.symbol != symbol:
@@ -196,15 +196,16 @@ elif …:  # Statements other than "float …" can be interpreted here
 
 # Perché LL(1)?
 
--   Consideriamo invece questa definizione:
+-   Consideriamo invece queste due definizioni:
 
-    ```text
-    plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))
+    ```python
+    plane(sky_material, translation([0, 0, 100]))                        # Case #1
+    plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))    # Case #2
     ```
 
--   Il modo più naturale di interpretare questa riga è tramite una funzione `parse_plane`, che al suo interno invochi una funzione `parse_transformation`.
+-   Ovviamente dobbiamo scrivere una funzione `parse_plane` che al suo interno invoca una funzione `parse_transformation`.
 
--   Però la trasformazione presenta un problema: dopo i caratteri `…100])` non si può sapere se la trasformazione è terminata (e occorre ritornare a `parse_plane`), oppure se segua il simbolo `*` che rappresenta l'operatore di composizione: in quest'ultimo caso, `parse_transformation` non avrebbe ancora finito il suo lavoro!
+-   Però la trasformazione presenta un problema: dopo i caratteri `…100])` non si può sapere se la trasformazione sia terminata, oppure se segua il simbolo `*` (composizione di trasformazioni): in quest'ultimo caso, `parse_transformation` avrebbe ancora lavoro da fare!
 
 ---
 
@@ -248,11 +249,9 @@ while True:
 
 -   Nella teoria dei compilatori sono state inventate alcune notazioni per descrivere la grammatica di linguaggi, che sono utilissime nel momento in cui si implementa un *lexer* o un *parser*.
 
--   In effetti, prima di implementare il parser di pytracer ho dovuto io stesso scrivere la nostra grammatica in un formato che consentisse di derivare la lista esaustiva di tutte le possibilità.
-
 # Grammatica EBNF
 
--   La notazione che vedremo è detta *Extended Backus-Naur Form* (EBNF), ed è il risultato del lavoro di molte persone, tra cui Niklaus Wirth (il creatore del linguaggio Pascal).
+-   La notazione che vedremo è detta *Extended Backus-Naur Form* (EBNF), ed è il risultato del lavoro di molte persone, tra cui [Niklaus Wirth](https://en.wikipedia.org/wiki/Niklaus_Wirth) (il creatore del linguaggio Pascal).
 
 -   Non descriveremo EBNF in modo completo, ma la presenteremo solo nella misura in cui serve ai nostri scopi. È utile comprenderla perché spesso la documentazione dei linguaggi di programmazione contiene la loro grammatica (ad esempio [Nim](https://nim-lang.org/docs/manual.html#syntax-grammar), [C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/lexical-structure) e [Kotlin](https://kotlinlang.org/docs/reference/grammar.html); per Rust [ci stanno lavorando](https://github.com/rust-lang/wg-grammar), mentre [il manuale di D](https://dlang.org/spec/grammar.html) usa una sintassi diversa).
 
@@ -351,7 +350,7 @@ vector ::= "[" number "," number "," number "]"
     if (x < 0) {
         x *= -1.0  // Error: missing ';'
     }
-    x /= 1O;       // Uh-oh, I wrote a capital "o" instead of "0"
+    x /= 1O * a;       // Uh-oh, I wrote a capital "o" instead of "0"
     ```
 
 -   In un linguaggio come il nostro non è semplice individuare un *termination token*; la cosa migliore sarebbe richiedere la presenza di `;` alla fine di ogni *statement*, come nel C++, oppure obbligare a concludere le definizioni con un ritorno a capo (che sia codificato come un token `TOKEN_NEWLINE`).
