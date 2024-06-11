@@ -1,5 +1,5 @@
 ---
-title: "Esercitazione 14"
+title: "Esercitazione 13"
 subtitle: "Analisi sintattica e semantica"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
