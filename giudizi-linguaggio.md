@@ -11,6 +11,26 @@ monofont: "Noto Mono"
 colorlinks: true
 ...
 
+# A.A. 2023–2024
+
+## Angela Bonato (Nim, 2024-08-27)
+
+Come linguaggio per il corso ho scelto Nim. Complessivamente mi ritengo soddisfatta perché:
+
+-   ho trovato la sintassi leggera ma rigorosa: a differenza di Python (per esempio), Nim è molto rigido quando si tratta di specificare il tipo delle variabili;
+-   penso si adatti molto bene alle esigenze del corso, non abbiamo mai avuto grossi ostacoli nell'implementare funzioni e classi del codice sviluppato (consiglio però, a chi volesse usarlo nei prossimi anni, di non usare le classi virtuali ma di imparare dall'inizio ad usare i *case statements*);
+-   personalmente preferisco i linguaggi procedurali rispetto a quelli orientati agli oggetti quindi mi sono trovata molto a mio agio nell'utilizzarlo, anche quando le funzioni da implementare erano più naturali da pensare ad oggetti;
+-   il fatto che la documentazione sia scarna e non si trovino molti suggerimenti online è stato sicuramente scomodo e a tratti frustrante ma, posto che potevo sempre avvalermi dell'aiuto del mio compagno di gruppo nonché di quello del prof, non trovare velocemente soluzioni preconfezionate ai miei dubbi mi ha obbligata ad approfondire gli argomenti su cui ho avuto difficoltà.
+
+Ovviamente non è tutto oro quel che luccica e ci sono importanti svantaggi da considerare:
+
+-   Nim è molto poco usato e conosciuto; ciò è da un lato divertente ma dall'altro forse sarebbe stato più sensato imparare un linguaggio più “utile”, anche considerato che non so quanto sia probabile che in futuro io possa riutilizzarlo;
+-   Non c'è un buon IDE in cui scrivere il codice. Noi abbiamo optato per Visual Studio Code con una apposita estensione, che però si è rivelata piena di bug (in particolare molto spesso saturava senza motivo tutti i core del pc mandandolo in crush, fatto decisamente fastidioso e riscontrato da tutti coloro che hanno usato Nim nell'edizione del corso che ho seguito);
+-   Per un bug particolarmente subdolo che abbiamo trovato nel nostro programma sarebbe stato estremamente utile e istruttivo utilizzare un debugger; ne abbiamo provati alcuni, ma non ne abbiamo trovato nessuno che ci fosse davvero d'aiuto.
+
+Penso, in conclusione, che Nim sia una buona scelta ma di certo non la migliore.
+
+
 # A.A. 2022–2023
 
 ## Matteo Picciolini (Java 2023-08-04)
