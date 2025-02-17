@@ -7,6 +7,7 @@
 
 | Settimana | Slides teoria                                   | Slides esercitazioni                            |
 |----------:|:-----------------------------------------------:|:-----------------------------------------------:|
+<!--
 |         1 | [26 Febbraio 2024](tomasi-ray-tracing-01a.html) | [28 Febbraio 2024](tomasi-ray-tracing-01b.html) |
 |         2 | [4 Marzo 2024](tomasi-ray-tracing-02a.html)     | [6 Marzo 2024](tomasi-ray-tracing-02b.html)     |
 |         3 | [11 Marzo 2024](tomasi-ray-tracing-03a.html)    | [13 Marzo 2024](tomasi-ray-tracing-03b.html)    |
@@ -20,11 +21,13 @@
 |        11 | [20 Maggio 2024](tomasi-ray-tracing-11a.html) | [22 Maggio 2024](tomasi-ray-tracing-11b.html) |
 |        12 | [27 Maggio 2024](tomasi-ray-tracing-12a.html) | [29 Maggio 2024](tomasi-ray-tracing-12b.html) |
 |        13 | [3 Giugno 2024](tomasi-ray-tracing-13a.html) | [12 Giugno 2024](tomasi-ray-tracing-13b.html) |
+-->
 
-# Argomenti per l'esame (A.A. 2023/2024)
+# Argomenti per l'esame (A.A. 2024/2025)
 
 ## Parti richieste per l'esame
 
+<!--
 -   [Elementi di radiometria](tomasi-ray-tracing-01a.html#/radiometria): energia emessa, flusso, irradianza/emettenza
 -   [Radianza e sue proprietà](tomasi-ray-tracing-01a.html#/radianza)
 -   [Emettitori diffusi ideali](tomasi-ray-tracing-01a.html#/esempio)
@@ -67,9 +70,11 @@
 -   [*Antialiasing*](tomasi-ray-tracing-11a.html#/aliasing-e-antialiasing)
 -   [Test della fornace](tomasi-ray-tracing-11b.html#/test-1)
 -   [Terminologia nella teoria dei compilatori](tomasi-ray-tracing-12a.html#/terminologia): lessico, sintassi, semantica, *token*, [*look-ahead*](tomasi-ray-tracing-12a.html#/tornare-indietro)
+-->
 
 ## Parti non richieste per l'esame
 
+<!--
 -   [Il formato PFM](tomasi-ray-tracing-02a.html#/file-pfm)
 -   [File di testo e file binari](tomasi-ray-tracing-03a.html#/file-binari-e-di-testo)
 -   [Lo standard Unicode](tomasi-ray-tracing-03a.html#/lo-standard-unicode)
@@ -94,6 +99,7 @@
 -   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/linguaggi-a-confronto)
 -   [Testing di compilatori](tomasi-ray-tracing-13a.html#/testing-di-compilatori)
 -   [Generazione automatica di compilatori](tomasi-ray-tracing-13a.html#/generazione-automatica-di-compilatori)
+-->
 
 ---
 title: "Tecniche numeriche per la generazione di immagini fotorealistiche"
