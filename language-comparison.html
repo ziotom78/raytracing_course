@@ -23,8 +23,9 @@
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -88,9 +89,6 @@
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="./css/github-pandoc.css" />
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <header id="title-block-header">
@@ -132,38 +130,42 @@ programming language</a></li>
 </thead>
 <tbody>
 <tr class="odd">
+<td>2025-02-17</td>
+<td>Update the text for C++ and Nim</td>
+</tr>
+<tr class="even">
 <td>2023-12-16</td>
 <td>Update a few links, correct typos</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>2023-05-23</td>
 <td>Add a few links, fix some typos</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>2023-01-02</td>
 <td>Show a more interesting comparison between Ruby and Crystal</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>2022-12-05</td>
 <td>Add a few more information about Pascal</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>2022-09-30</td>
 <td>Add a section about Crystal, fix some references</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>2021-12-17</td>
 <td>Add a description of how to «learn» a language</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>2021-12-08</td>
 <td>Add a description of the D language, plus a few more fixes</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>2021-01-02</td>
 <td>Fix a few typos</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>2020-12-29</td>
 <td>First release</td>
 </tr>
@@ -305,13 +307,14 @@ the <code>Vec</code> class, namely sum, dot product, and scalar-vector
 product. Printing a <code>Vec</code> object is implemented through the
 <code>Vec::format</code> method, which uses a
 <code>std::stringstream</code> object; this is the standard approach in
-C++17, although students developing their programs for the course can
-rely on more advanced libraries<a href="#fn1" class="footnote-ref"
+C++, although students developing their programs for the course can rely
+on more advanced libraries<a href="#fn1" class="footnote-ref"
 id="fnref1" role="doc-noteref"><sup>1</sup></a> to format strings.</p>
-<p>The code above makes use of a few features of C++17, like the
-<code>[[nodiscard]]</code> and <code>constexpr</code> specifiers.
-Students willing to use C++ in this course should become accustomed with
-the most recent releases of the C++ standard.</p>
+<p>The code above makes use of a few features of recent C++ standards,
+like the <code>[[nodiscard]]</code> and <code>constexpr</code>
+specifiers. Students willing to use C++ in this course should become
+accustomed with the most recent releases of the C++ standard. (C++23, at
+the time of writing.)</p>
 <p>The following code implements the <code>Ray</code> and
 <code>Sphere</code> data structures; the latter has the method
 <code>intersect</code>, which checks if a ray (oriented line) and a
@@ -451,12 +454,14 @@ designed and performant. It was created by Andreas Rumpf in 2008, and it
 is deeply inspired by the Pascal language. (In fact, the very first Nim
 compiler was written in <a
 href="https://www.freepascal.org/">FreePascal</a>.)</p>
-<p>Nim is the language I used to prepare both the HTML version of the
-course slides and the course notes. I picked it because it can either
+<p>Nim is the language I have used in the past to prepare both the HTML
+version of the course slides and the course notes. I picked it because
+at the time it was one of the very few languages that was able to
 produce a standalone executable or a Javascript code to be loaded in
-HTML pages. This means that Nim programs can be run either from the
-terminal or within a web browser; this is a feature that only a few
-languages offer. (See below for an example.)</p>
+HTML pages<a href="#fn3" class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a>. This means that Nim programs can be
+run either from the terminal or within a web browser. (See below for an
+example.)</p>
 <p>Nim’s syntax looks like a mixture of Python and Pascal, as the
 following implementation of the <code>Vec</code> data type shows:</p>
 <div class="sourceCode" id="cb7"><pre
@@ -563,8 +568,8 @@ in the codes I have written for this course.</p></li>
 <code>gcc</code> or <code>clang</code>. (A switch forces the Nim
 compiler to generate a C++ program, which can be fed to <code>g++</code>
 or <code>clang++</code>.) Thanks to this way of compiling executables,
-it is trivial to use C/C++ libraries<a href="#fn3" class="footnote-ref"
-id="fnref3" role="doc-noteref"><sup>3</sup></a> within a Nim program,
+it is trivial to use C/C++ libraries<a href="#fn4" class="footnote-ref"
+id="fnref4" role="doc-noteref"><sup>4</sup></a> within a Nim program,
 using the two pragmas <code>{.importc.}</code> and
 <code>{.importcpp.}</code>.</p></li>
 <li><p>Similarly to C#, Rust, Crystal, and Julia, it has a standard
@@ -594,8 +599,8 @@ changing the numbers triggers a call to the Javascript code produced by
 the Nim compiler out of my Nim source code.</li>
 <li>The image on the right is produced by the same Nim code that has
 been compiled to C and then fed to <code>gcc</code>. The output program
-invokes Cairo<a href="#fn4" class="footnote-ref" id="fnref4"
-role="doc-noteref"><sup>4</sup></a>, a C library that generates PDF
+invokes Cairo<a href="#fn5" class="footnote-ref" id="fnref5"
+role="doc-noteref"><sup>5</sup></a>, a C library that generates PDF
 files (<a
 href="https://www.cairographics.org/">www.cairographics.org</a>), and it
 is thus suitable to be included in a LaTeX file.</li>
@@ -603,25 +608,27 @@ is thus suitable to be included in a LaTeX file.</li>
 </ul>
 <p>Disadvantages:</p>
 <ul>
-<li><p>Unfortunately Nim does not have a wide user base. As a
-consequence, there are not many online resources to learn the
-language.</p></li>
-<li><p>The quality of the documentation is not as high as for other
-languages (e.g., C#). This is partly mitigated by the existence of three
-books about Nim: <a
-href="https://www.manning.com/books/nim-in-action"><em>Nim in
-action</em></a>, by Dominik Picheta (Manning, 2017), <a
-href="http://ssalewski.de/nimprogramming.html"><em>Computer programming
-with the Nim programming language</em></a>, by Stefan Salewski, which is
-an e-book available for free, and <a
-href="https://www.amazon.com/Mastering-Nim-complete-programming-language/dp/B0B4R7B9YX"><em>Mastering
-Nim</em></a>, by Nim’s creator, Andreas Rumpf. (However, I have never
-read the latter, so I cannot comment about its quality.)</p></li>
+<li><p>Although Nim is widely regarded as one of the best languages
+available today, it does not have a wide user base. As a consequence,
+there are not many online resources to learn the language, and using
+ChatGPT and other AI tools might produce hallucinations, where code for
+more common languages like C++ or Rust gets translated (poorly) to Nim
+and usually does not work as intended.</p></li>
+<li><p>Tooling is poor: there are no sophisticated editors nor code
+refactoring tools, and the ones available are often full of
+bugs.</p></li>
+<li><p>The quality of the documentation is poor</p></li>
+<li><p>The Nim community has a few problems with the leadership, and the
+number of “core developers” (the persons that are in charge of improving
+and maintaining the compiler) has shrunk significantly in the last
+years. However, there is an Italian Telegram channel to ask for help: <a
+href="https://t.me/nimitalia"
+class="uri">https://t.me/nimitalia</a>.</p></li>
 </ul>
-<p>The opinion of the teacher is that Nim is one of the best language to
-use for this course: it is easy to learn, extremely performant, and it
-provides all the tools needed to implement the tasks required in the
-curse. Moreover, it is extremely elegant and well-designed.</p>
+<p>The opinion of the teacher is that Nim might be the best language for
+this course, from a technical standpoint. Unfortunately, the poor
+tooling and the scarce documentation have been a pain point for several
+students.</p>
 <h1 id="crystal">Crystal</h1>
 <p>The Crystal language is one of the youngest languages considered in
 this document. The history that leads to Crystal is interesting and
@@ -939,8 +946,8 @@ the on-the-fly translation made by the CLR to actually execute the code,
 the CLR implements a number of optimizations that make its performance
 similar to C++. In particular, the CLR measures the way the code is used
 during the execution and can re-generate CPU instructions according to
-what it has learnt<a href="#fn5" class="footnote-ref" id="fnref5"
-role="doc-noteref"><sup>5</sup></a>. Because of this, a program running
+what it has learnt<a href="#fn6" class="footnote-ref" id="fnref6"
+role="doc-noteref"><sup>6</sup></a>. Because of this, a program running
 in a managed environment requires some time to optimize itself (the
 so-called <em>burn-in phase</em>), but then after some time spent
 running it can be as performant as C++. In the tests I did while
@@ -1349,13 +1356,13 @@ willing to use it.</p>
 <p>Pascal is one of the most venerable languages listed in this
 document. It was developed by prof. Niklaus Wirth in 1970, but it raised
 to widespread use only when in the 1980s Borland International produced
-and commercialized the Turbo Pascal<a href="#fn6" class="footnote-ref"
-id="fnref6" role="doc-noteref"><sup>6</sup></a> compiler. Wirth
+and commercialized the Turbo Pascal<a href="#fn7" class="footnote-ref"
+id="fnref7" role="doc-noteref"><sup>7</sup></a> compiler. Wirth
 developed the Pascal language as a tool to teach programming to
 students, which means that the language is meant to be easy to learn and
 teaches good programming practices. It was used to develop Apple Mac
-OS<a href="#fn7" class="footnote-ref" id="fnref7"
-role="doc-noteref"><sup>7</sup></a> at least until version 6 (after
+OS<a href="#fn8" class="footnote-ref" id="fnref8"
+role="doc-noteref"><sup>8</sup></a> at least until version 6 (after
 that, Pascal fell out of fashion and Apple slowly rewrote parts of it in
 C).</p>
 <p>Today one of the most used Pascal compilers is FreePascal (<a
@@ -1549,8 +1556,8 @@ BASIC PDS, together with Microsoft QuickBASIC (the latter was a
 simplified edition of BASIC PDS). Microsoft introduced a number of
 enhancements to the original BASIC language, and it included BASIC
 compilers in its own operating system, MS-DOS (an ancestor of Windows).
-The most advanced of these bundled BASIC compilers, QBasic<a href="#fn8"
-class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>,
+The most advanced of these bundled BASIC compilers, QBasic<a href="#fn9"
+class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>,
 was a stripped clone of Microsoft’s own QuickBasic, and the fact that it
 was available on every computer running MS-DOS contributed to the
 popularity of the language.</p>
@@ -1851,8 +1858,8 @@ released in 2011. It is a <em>managed</em> language like C#, but it is
 based on the Java Virtual Machine; so, many of the things discussed for
 C# apply to Kotlin as well.</p>
 <p>Kotlin is being used more and more since Google added full support
-for Kotlin<a href="#fn9" class="footnote-ref" id="fnref9"
-role="doc-noteref"><sup>9</sup></a> in the Android operating system
+for Kotlin<a href="#fn10" class="footnote-ref" id="fnref10"
+role="doc-noteref"><sup>10</sup></a> in the Android operating system
 (previously only Java was fully supported, with partial support for C,
 C++, and Go). If you are interested in mobile programming, it might be
 worth picking this language.</p>
@@ -1917,8 +1924,8 @@ class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb49-1"><a h
 used to develop mobile applications for Android devices, Kotlin is
 probably the best option.</p></li>
 <li><p>Kotlin is pedagogically useful, as it implements a very neat way
-to implement<a href="#fn10" class="footnote-ref" id="fnref10"
-role="doc-noteref"><sup>10</sup></a> <em>null safety</em> through
+to implement<a href="#fn11" class="footnote-ref" id="fnref11"
+role="doc-noteref"><sup>11</sup></a> <em>null safety</em> through
 nullable values. These are used when you request the value for a
 variable from some source which might be unavailable or erroneous (e.g.,
 a missing file, or a badly typed user input.)</p></li>
@@ -2147,7 +2154,7 @@ Levick’s YouTube Channel</a> has some very good videos about Rust. Alas,
 the editor used in the videos is Visual Studio Code and not
 CLion!</p></li>
 </ul>
-<aside id="footnotes" class="footnotes footnotes-end-of-document"
+<section id="footnotes" class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
 <ol>
@@ -2160,41 +2167,48 @@ list the proper dependencies in the <code>Makefile</code>, some
 <code>.cpp</code> files depending on that header might fail to be
 recompiled in a <code>.o</code> file, leading to potential disasters.<a
 href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Yes, you can use ROOT in Nim if you want! You just need
+<li id="fn3"><p>Nowadays, there are plenty of solutions to convert other
+languages to Javascript or WebAssembly: <a
+href="https://emscripten.org/">C++</a>, <a
+href="https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/Rust_to_Wasm">Rust</a>,
+<a href="https://kotlinlang.org/docs/js-overview.html">Kotlin</a>,
+etc.<a href="#fnref3" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Yes, you can use ROOT in Nim if you want! You just need
 to force the compiler to output C++ code instead of C and use the
 <code>{.importcpp.}</code> pragma to create your own bindings.<a
-href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>Cairo is a C library to create graphics and save it in
+href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Cairo is a C library to create graphics and save it in
 PNG, PDF, or SVG files. Nim bindings can be installed through the
-command <code>nimble install cairo</code>.<a href="#fnref4"
+command <code>nimble install cairo</code>.<a href="#fnref5"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>For example, if an <code>else</code> branch of an
+<li id="fn6"><p>For example, if an <code>else</code> branch of an
 <code>if</code> statement is executed very often, the CLR can rewrite
 the <code>if</code> statement to swap the code below <code>if</code>
 with the code below <code>else</code>, as this might make the code
-faster.<a href="#fnref5" class="footnote-back"
+faster.<a href="#fnref6" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p>It is interesting to note that one of the lead
+<li id="fn7"><p>It is interesting to note that one of the lead
 developers of the Turbo Pascal compiler was Anders Hejlsberg, the
-creator of C#.<a href="#fnref6" class="footnote-back"
+creator of C#.<a href="#fnref7" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
-<li id="fn7"><p>If you are curious, you can test how Mac OS looked like
+<li id="fn8"><p>If you are curious, you can test how Mac OS looked like
 in your browser by going to <a href="https://macos9.app/"
-class="uri">https://macos9.app/</a>.<a href="#fnref7"
+class="uri">https://macos9.app/</a>.<a href="#fnref8"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8"><p>If you are curious, you can run a copy of QBasic within
+<li id="fn9"><p>If you are curious, you can run a copy of QBasic within
 your web browser, thanks to the Internet Archive: <a
 href="https://archive.org/details/msdos_qbasic_megapack">archive.org/details/msdos_qbasic_megapack</a>.<a
-href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9"><p>In Italy, one of the most famous apps available on the
+href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>In Italy, one of the most famous apps available on the
 Google Store is the <em>Immuni</em> app. It has been written in Kotlin,
 and the source code is available online: <a
 href="https://github.com/immuni-app/immuni-app-android">github.com/immuni-app/immuni-app-android</a><a
-href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10"><p>The term <em>null safety</em> refers to the ability of
-a language or a program to properly handle missing values.<a
 href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>The term <em>null safety</em> refers to the ability of
+a language or a program to properly handle missing values.<a
+href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</aside>
+</section>
 </body>
 </html>

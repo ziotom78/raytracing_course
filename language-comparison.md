@@ -15,6 +15,7 @@ colorlinks: true
 
 | Date       | Comment                                                     |
 |------------|-------------------------------------------------------------|
+| 2025-02-17 | Update the text for C++ and Nim                             |
 | 2023-12-16 | Update a few links, correct typos                           |
 | 2023-05-23 | Add a few links, fix some typos                             |
 | 2023-01-02 | Show a more interesting comparison between Ruby and Crystal |
@@ -177,17 +178,18 @@ in this document is to illustrate how to implement custom operators
 for the `Vec` class, namely sum, dot product, and scalar-vector
 product. Printing a `Vec` object is implemented through the
 `Vec::format` method, which uses a `std::stringstream` object; this is
-the standard approach in C++17, although students developing their
+the standard approach in C++, although students developing their
 programs for the course can rely on more advanced libraries[^fmt] to
 format strings.
 
 [^fmt]: A good choice is [`fmt`](https://fmt.dev/latest/index.html),
     which was included in the C++20 standard.
 
-The code above makes use of a few features of C++17, like the
-`[[nodiscard]]` and `constexpr` specifiers. Students willing to use
-C++ in this course should become accustomed with the most recent
-releases of the C++ standard.
+
+The code above makes use of a few features of recent C++ standards,
+like the `[[nodiscard]]` and `constexpr` specifiers. Students willing
+to use C++ in this course should become accustomed with the most
+recent releases of the C++ standard. (C++23, at the time of writing.)
 
 The following code implements the `Ray` and `Sphere` data structures;
 the latter has the method `intersect`, which checks if a ray (oriented
@@ -355,12 +357,14 @@ performant. It was created by Andreas Rumpf in 2008, and it is deeply
 inspired by the Pascal language. (In fact, the very first Nim compiler
 was written in [FreePascal](https://www.freepascal.org/).)
 
-Nim is the language I used to prepare both the HTML version of the
-course slides and the course notes. I picked it because it can either
+Nim is the language I have used in the past to prepare both the HTML
+version of the course slides and the course notes. I picked it because
+at the time it was one of the very few languages that was able to
 produce a standalone executable or a Javascript code to be loaded in
-HTML pages. This means that Nim programs can be run either from the
-terminal or within a web browser; this is a feature that only a few
-languages offer. (See below for an example.)
+HTML pages[^js]. This means that Nim programs can be run either from the
+terminal or within a web browser. (See below for an example.)
+
+[^js]: Nowadays, there are plenty of solutions to convert other languages to Javascript or WebAssembly: [C++](https://emscripten.org/), [Rust](https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/Rust_to_Wasm), [Kotlin](https://kotlinlang.org/docs/js-overview.html), etc.
 
 Nim's syntax looks like a mixture of Python and Pascal, as the
 following implementation of the `Vec` data type shows:
@@ -539,27 +543,29 @@ Nim has several advantages over other languages:
 
 Disadvantages:
 
--   Unfortunately Nim does not have a wide user base. As a
+-   Although Nim is widely regarded as one of the best languages
+    available today, it does not have a wide user base. As a
     consequence, there are not many online resources to learn the
-    language.
+    language, and using ChatGPT and other AI tools might produce
+    hallucinations, where code for more common languages like C++ or
+    Rust gets translated (poorly) to Nim and usually does not work as
+    intended.
 
--   The quality of the documentation is not as high as for other
-    languages (e.g., C\#). This is partly mitigated by the existence
-    of three books about Nim: [*Nim in
-    action*](https://www.manning.com/books/nim-in-action), by Dominik
-    Picheta (Manning, 2017), [*Computer programming with the Nim
-    programming language*](http://ssalewski.de/nimprogramming.html), by
-    Stefan Salewski, which is an e-book available for free, and
-    [*Mastering
-    Nim*](https://www.amazon.com/Mastering-Nim-complete-programming-language/dp/B0B4R7B9YX),
-    by Nim's creator, Andreas Rumpf. (However, I have never read the
-    latter, so I cannot comment about its quality.)
+-   Tooling is poor: there are no sophisticated editors nor code
+    refactoring tools, and the ones available are often full of bugs.
 
+-   The quality of the documentation is poor
 
-The opinion of the teacher is that Nim is one of the best language to
-use for this course: it is easy to learn, extremely performant, and it
-provides all the tools needed to implement the tasks required in the
-curse. Moreover, it is extremely elegant and well-designed.
+-   The Nim community has a few problems with the leadership, and the
+    number of “core developers” (the persons that are in charge of
+    improving and maintaining the compiler) has shrunk significantly
+    in the last years. However, there is an Italian Telegram channel
+    to ask for help: <https://t.me/nimitalia>.
+
+The opinion of the teacher is that Nim might be the best language for
+this course, from a technical standpoint. Unfortunately, the poor
+tooling and the scarce documentation have been a pain point for
+several students.
 
 
 # Crystal
