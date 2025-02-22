@@ -1,5 +1,13 @@
 # Introduzione al corso
 
+# Queste slide
+
+Sono disponibili all'indirizzo [ziotom78.github.io/raytracing_course/](https://ziotom78.github.io/raytracing_course/).
+
+<center>
+![](media/url-qr-code.svg){height=400}
+</center>
+
 # Indicazioni generali
 
 -   Lezioni di teoria del lunedì videoregistrate e caricate su [Ariel](https://mtomasicngif.ariel.ctu.unimi.it)
@@ -12,7 +20,13 @@
 
     - Se specifiche sul proprio codice, contattate il docente ([maurizio.tomasi@unimi.it](mailto:maurizio.tomasi@unimi.it))
 
--   A meno di sorprese, dovremmo terminare la settimana del 3–7 giugno, ma potremmo dover essere creativi, facendo qualche lezione di teoria il mercoledì
+# Calendario
+
+-   Prossima settimana (3 marzo): niente lezioni perché sono a un convegno
+-   Settimana del 14 aprile: niente lezioni per prove in itinere
+-   Settimana dopo pasqua: lezione “speciale” il 23 aprile
+-   Settimana del 2 giugno: niente lezioni
+-   Settimana del 9 giugno: fine del corso
 
 # Obbiettivi del corso
 

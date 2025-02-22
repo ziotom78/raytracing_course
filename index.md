@@ -7,27 +7,26 @@
 
 | Settimana | Slides teoria                                   | Slides esercitazioni                            |
 |----------:|:-----------------------------------------------:|:-----------------------------------------------:|
+|         1 | [24 Febbraio 2025](tomasi-ray-tracing-01a.html) | [26 Febbraio 2025](tomasi-ray-tracing-01b.html) |
 <!--
-|         1 | [26 Febbraio 2024](tomasi-ray-tracing-01a.html) | [28 Febbraio 2024](tomasi-ray-tracing-01b.html) |
-|         2 | [4 Marzo 2024](tomasi-ray-tracing-02a.html)     | [6 Marzo 2024](tomasi-ray-tracing-02b.html)     |
-|         3 | [11 Marzo 2024](tomasi-ray-tracing-03a.html)    | [13 Marzo 2024](tomasi-ray-tracing-03b.html)    |
-|         4 | [18 Marzo 2024](tomasi-ray-tracing-04a.html)    | [20 Marzo 2024](tomasi-ray-tracing-04b.html)    |
-|         5 | [25 Marzo 2024](tomasi-ray-tracing-05a.html) | [27 Marzo 2024](tomasi-ray-tracing-05b.html) |
-|         6 | [3 Aprile 2024](tomasi-ray-tracing-06a.html) | [10 Aprile 2024](tomasi-ray-tracing-06b.html) |
-|         7 | [15 Aprile 2024](tomasi-ray-tracing-07a.html) | [17 Aprile 2024](tomasi-ray-tracing-07b.html) |
-|         8 | [22 Aprile 2024](tomasi-ray-tracing-08a.html) | [24 Aprile 2024](tomasi-ray-tracing-08b.html) |
-|         9 | [6 Maggio 2024](tomasi-ray-tracing-09a.html) | — |
-|        10 | [13 Maggio 2024](tomasi-ray-tracing-10a.html) | [15 Maggio 2024](tomasi-ray-tracing-10b.html) |
-|        11 | [20 Maggio 2024](tomasi-ray-tracing-11a.html) | [22 Maggio 2024](tomasi-ray-tracing-11b.html) |
-|        12 | [27 Maggio 2024](tomasi-ray-tracing-12a.html) | [29 Maggio 2024](tomasi-ray-tracing-12b.html) |
-|        13 | [3 Giugno 2024](tomasi-ray-tracing-13a.html) | [12 Giugno 2024](tomasi-ray-tracing-13b.html) |
+|         2 | [4 Marzo 2025](tomasi-ray-tracing-02a.html)     | [6 Marzo 2025](tomasi-ray-tracing-02b.html)     |
+|         3 | [11 Marzo 2025](tomasi-ray-tracing-03a.html)    | [13 Marzo 2025](tomasi-ray-tracing-03b.html)    |
+|         4 | [18 Marzo 2025](tomasi-ray-tracing-04a.html)    | [20 Marzo 2025](tomasi-ray-tracing-04b.html)    |
+|         5 | [25 Marzo 2025](tomasi-ray-tracing-05a.html) | [27 Marzo 2025](tomasi-ray-tracing-05b.html) |
+|         6 | [3 Aprile 2025](tomasi-ray-tracing-06a.html) | [10 Aprile 2025](tomasi-ray-tracing-06b.html) |
+|         7 | [15 Aprile 2025](tomasi-ray-tracing-07a.html) | [17 Aprile 2025](tomasi-ray-tracing-07b.html) |
+|         8 | [22 Aprile 2025](tomasi-ray-tracing-08a.html) | [24 Aprile 2025](tomasi-ray-tracing-08b.html) |
+|         9 | [6 Maggio 2025](tomasi-ray-tracing-09a.html) | — |
+|        10 | [13 Maggio 2025](tomasi-ray-tracing-10a.html) | [15 Maggio 2025](tomasi-ray-tracing-10b.html) |
+|        11 | [20 Maggio 2025](tomasi-ray-tracing-11a.html) | [22 Maggio 2025](tomasi-ray-tracing-11b.html) |
+|        12 | [27 Maggio 2025](tomasi-ray-tracing-12a.html) | [29 Maggio 2025](tomasi-ray-tracing-12b.html) |
+|        13 | [3 Giugno 2025](tomasi-ray-tracing-13a.html) | [12 Giugno 2025](tomasi-ray-tracing-13b.html) |
 -->
 
 # Argomenti per l'esame (A.A. 2024/2025)
 
 ## Parti richieste per l'esame
 
-<!--
 -   [Elementi di radiometria](tomasi-ray-tracing-01a.html#/radiometria): energia emessa, flusso, irradianza/emettenza
 -   [Radianza e sue proprietà](tomasi-ray-tracing-01a.html#/radianza)
 -   [Emettitori diffusi ideali](tomasi-ray-tracing-01a.html#/esempio)
@@ -36,6 +35,7 @@
 -   [Sistemi di controllo delle versioni](tomasi-ray-tracing-01b.html#/sistemi-di-controllo-delle-versioni)
 -   [Git](tomasi-ray-tracing-01b.html#git)
 -   [GitHub](tomasi-ray-tracing-01b.html#github)
+<!--
 -   [Codifica del colore](tomasi-ray-tracing-02a.html#/codifica-del-colore)
 -   [Relazione tra radianza spettrale e colori RGB](tomasi-ray-tracing-02a.html#/da-l_lambda-a-rgb)
 -   [Visualizzazione su dispositivi](tomasi-ray-tracing-02a.html#/visualizzazione-su-dispositivi)
