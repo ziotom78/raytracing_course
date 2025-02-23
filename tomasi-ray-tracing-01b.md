@@ -85,7 +85,7 @@ Alla fine dell'esempio, il database del VCS contiene due istantanee:
 
     ```sh
     $ date +%Y-%m-%d  # Data nel formato ANNO-MESE-GIORNO
-    2024-02-28
+    2025-02-26
     $ whoami
     tomasi
     ```
@@ -94,7 +94,7 @@ Alla fine dell'esempio, il database del VCS contiene due istantanee:
 
     ```sh
     $ echo "Ciao, io sono $(whoami) e oggi è $(date +%Y-%m-%d)"
-    Ciao, io sono tomasi e oggi è 2024-02-28
+    Ciao, io sono tomasi e oggi è 2025-02-26
     ```
 
 # Un semplice VCS (2/3)
@@ -110,7 +110,7 @@ Alla fine dell'esempio, il database del VCS contiene due istantanee:
 
 -   Il nome del file contiene il nome dell'utente e la data;
     quest'ultima è codificata come un lungo numero (es.,
-    `20200926155130` per la data 2020-09-26, 15:51:30)
+    `20240926155130` per la data 2024-09-26, 15:51:30)
 
 # Un semplice VCS (3/3)
 
@@ -148,8 +148,8 @@ echo "File \"$filename\" created successfully"
 -   Possiamo ricostruire la storia dello sviluppo del codice, semplicemente guardando l'elenco dei file in `/vcsdatabase`:
 
     ```
-    20200926153856-tomasi-first-release.tar
-    20200926155130-tomasi-fix-bug.tar
+    20240926153856-tomasi-first-release.tar
+    20240926155130-tomasi-fix-bug.tar
     ```
 
 -   Se ci accorgiamo dell'esistenza di un bug, possiamo controllare a ritroso in quale momento il bug è stato introdotto
@@ -168,8 +168,8 @@ echo "File \"$filename\" created successfully"
 -   C'è anche un altro problema: se nel database ci fossero i file
 
     ```
-    20200926153856-tomasi-first-release.tar
-    20200926155130-tomasi-fix-bug.tar
+    20240926153856-tomasi-first-release.tar
+    20240926155130-tomasi-fix-bug.tar
     ```
 
     e volessimo capire cos'era il «bug» e com'è stato corretto, dovremmo confrontare uno a uno i file nell'ultimo `.tar` con i loro analoghi nel `.tar` precedente per capire cosa sia cambiato.
@@ -438,7 +438,7 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
 # Uso di IDE
 
 -   Se possibile, iniziate già oggi ad impratichirvi con un ambiente di sviluppo integrato (IDE) appropriato per il vostro linguaggio
--   Personalmente sono un ammiratore delle IDE sviluppate da [JetBrains](https://www.jetbrains.com/); sono a pagamento, ma esistono [licenze gratuite per studenti](https://www.jetbrains.com/community/education/#students).
+-   Un’ottima scelta sono le IDE sviluppate da [JetBrains](https://www.jetbrains.com/); sono a pagamento, ma esistono [licenze gratuite per studenti](https://www.jetbrains.com/community/education/#students).
 -   Ho realizzato un video che mostra come usare [Rider](https://www.jetbrains.com/rider/); è utile che lo guardino anche coloro che usano altri linguaggi, in modo da sapere quali caratteristiche cercare nelle IDE
 
 ---

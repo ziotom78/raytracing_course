@@ -342,15 +342,15 @@ dove $\cos(N_x, \Psi)$ è l'angolo tra la normale a $\mathrm{d}A$ e la direzione
 
 # La BRDF
 
-![](./media/brdf.svg){height=480}
+![](./media/brdf.svg){height=400}
 
-Si usa l'irradianza perché qui non ci interessano solo le caratteristiche intrinseche dei raggi luminosi, ma anche il modo in cui la superficie “reagisce” ad essi.
+Non si definisce la BRDF come rapporto tra due radianze, perché $f_r$ ci servirà per calcolare la radianza totale uscente $L_\text{tot} \sim \int_{2\pi} L\,f\,\mathrm{d}\omega$. Se $f$ fosse un numero puro o se $A$ fosse “corretto” per l’angolo $\theta$, l’integrale si complicherebbe.
 
 # Significato della BRDF
 
 -   Descrive come una superficie interagisce con la luce;
 -   $f_r \propto \cos^{-1}(N_x, \Psi)$: si tiene conto dell'inclinazione della sorgente luminosa rispetto a $\mathrm{d}A$.
--   $f_r : \mathbb{R}^2 \times \mathbb{R}^2 \rightarrow \mathbb{R}$ (per codificare una direzione sono necessari due numeri), ma nel caso più generale dipende anche da $\lambda$ e dal tempo $t$;
+-   $f_r : \mathbb{R}^3 \times \mathbb{R}^2 \times \mathbb{R}^2 \rightarrow \mathbb{R}$ ($x\times\Theta\times\Psi \rightarrow f_r$), ma nel caso più generale dipende anche da $\lambda$ e dal tempo $t$;
 -   È una funzione positiva: $f_r \geq 0$, e la sua unità di misura è $1/\mathrm{sr}$;
 -   Si considera tutto l'angolo solido $4\pi$, perché la BRDF si usa anche per superfici (semi-)trasparenti.
 -   Assume che la luce abbandoni la superficie dallo stesso punto $x$ in cui l'ha incontrata (non vero per *subsurface scattering*!).
