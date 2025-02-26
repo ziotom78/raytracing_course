@@ -1,6 +1,6 @@
 # Varie
 
--   Comunicate al docente la composizione del vostro gruppo e il linguaggio scelto
+-   Comunicate al docente entro la prossima esercitazione la composizione del vostro gruppo e il linguaggio scelto
 
 -   Le esercitazioni terminano alle 12,30, ma se completate il lavoro in anticipo potete andare via prima
 
@@ -16,10 +16,11 @@
     -   Visibilità del codice ad altri utenti
     -   Accesso alla documentazione
 
+# Dibattito: come avete gestito sinora i vostri progetti?
+
 # Sistemi di controllo delle versioni
 
--   Un sistema di controllo di versione (*version control system*,
-    VCS) registra le modifiche fatte al codice;
+-   Un sistema di controllo di versione (*version control system*, VCS) registra le modifiche fatte al codice;
 -   Possibilità di annullare modifiche;
 -   Rilascio di «release» (es., 1.0, 1.1, 1.2) con possibilità di
     recuperare quelle più vecchie;
@@ -179,10 +180,10 @@ echo "File \"$filename\" created successfully"
 -   Potremmo scrivere uno shell script che invoca `tar` salvando solo
     i file effettivamente modificati (controllando ad esempio la data
     di modifica di ciascun file con `ls -l`).
--   Ma neppure questo è ottimale: può darsi che un file molto lungo
+-   Ma neppure questo è ottimale: può darsi che un file molto grande
     sia stato cambiato in **una sola riga**, e noi lo salveremmo per
     intero!
--   (Ci sono in giro file «molto lunghi», di decine di migliaia di
+-   (Ci sono in giro file di decine di migliaia di
     linee di codice.
     L'[amalgamation](https://www.sqlite.org/amalgamation.html) di
     SQLite3 è un file in linguaggio C di 220.000 righe.)
@@ -411,6 +412,17 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
 
 <iframe src="https://player.vimeo.com/video/513805000" width="960" height="540" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
+# GitHub è distribuito?
+
+GitHub rende Git “un po’ più centralizzato”:
+
+- Fornisce un indirizzo canonico (`https://github.com/nome/progetto`);
+- Stabilisce regole su chi può fare commit e quando;
+- Fornisce la possibilità di mostrare una pagina di presentazione del progetto;
+- …e molte altre caratteristiche che vedremo nelle prossime settimane.
+
+È interessante notare che GitHub potrebbe fornire tutte queste caratteristiche basandosi su qualsiasi altro VCS che non sia Git!
+
 # Git
 
 [![](./media/git-coffee-mug.jpg){height=560}](https://remembertheapi.com/products/git-cheat-sheet-black-mugs)
@@ -445,78 +457,81 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
 
 <iframe src="https://player.vimeo.com/video/683431827?h=9e4de4dba1&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Come usare una IDE (JetBrains Rider)"></iframe>
 
-# Indicazioni per Nim/D/Rust
 
-# Suggerimenti (1/2)
 
--   Creare un'applicazione vuota usando il package manager del vostro linguaggio. Nim usa `nimble`:
+# Indicazioni per C++
 
-    ```
-    $ nimble init helloworld
-    ```
+# Istruzioni
 
--   D usa `dub`:
+-   Installare CMake; sotto Linux Debian/Ubuntu/Mint basta eseguire
 
     ```
-    $ dub init helloworld
+    sudo apt install cmake
     ```
 
--   Rust usa `cargo`:
+-   Creare un'applicazione che produca un eseguibile. Strutturare il codice in questo modo:
 
-    ```
-    $ cargo init helloworld
-    ```
+    -   Un file `CMakeLists.txt` nella directory principale
+    -   Una directory `src` che contiene il file `main.cpp`
 
--   Sia con Nim che con D dovrete rispondere ad alcune domande. Se possibile, scegliete il default (ma per Nim assicuratevi di specificare che volete un `binary`).
+-   In `.gitignore` elencate `*.o`, il nome dell'eseguibile (es. `hello_world`), eventuali file di backup (`*.bak`, `*~` a seconda dell'editor che usate) e la directory `build` (oppure usate [gitignore.io](https://gitignore.io/) indicando `c++` e `cmake`).
 
-# Suggerimenti (2/2)
+# Esempio di CMake per C++
 
--   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
+```cmake
+cmake_minimum_required(VERSION 3.12)
 
--   Per compilare ed eseguire, basta usare il comando `run` (identico in `nimble`, `dub` e `cargo`):
+# Define a "project", providing a description and a programming language
+project(hello_world
+    VERSION 1.0
+    DESCRIPTION "Hello world in C++"
+    LANGUAGES CXX
+)
 
-    ```
-    $ cd helloworld
-    $ nimble run     # Oppure: dub run, oppure: cargo run
-    ```
+set(CMAKE_CXX_STANDARD 20)   # Pick the standard you like
 
--   Sia per [D](https://intellij-dlanguage.github.io/) che per [Nim](https://plugins.jetbrains.com/plugin/15128-nim) esistono dei plugin per IntelliJ IDEA, l'IDE Java di JetBrains. Per Rust, potete usare CLion con il plugin [Rust](https://plugins.jetbrains.com/plugin/8182-rust/docs).
+# Our "project" will be able to build an executable out of a C++ source file
+add_executable(hello_world src/main.cpp)
+```
 
-# Suggerimenti per Java/Kotlin
+# Esempio: CMake e GNU Make
 
-# Suggerimenti
+<asciinema-player src="cast/cmake-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
 
--   Creare un'applicazione Kotlin oppure Java in [IntelliJ IDEA](https://www.jetbrains.com/idea/):
+(Nel vostro caso potrebbe comparire `build.ninja` anziché `Makefile`: in tal caso scrivete `ninja` invece di `make`).
 
-    -   Se usate Kotlin, come *Build system* scegliete «Gradle Kotlin» (*non* usate il sistema di build interno di IntelliJ IDEA! È comodo ma troppo limitato per i nostri scopi!)
+# Riferimenti per CMake
 
-    -   Usate «Console application» come template
+- [Documentazione ufficiale](https://cmake.org/documentation/) (abbastanza illeggibile, ma è la più aggiornata per definizione)
+- [*Professional CMake*](https://crascit.com/professional-cmake/) (C. Scott)
+- [*An Introduction to Modern CMake*](https://cliutils.gitlab.io/modern-cmake/)
 
--   L'applicazione vuota stampa `Hello World!`: come prima cosa, cambiate il messaggio in `Hello, wold!`.
+# Formattazione
 
--   Per usare Git, potete anche fare affidamento al menu «VCS» di IntelliJ (gestisce automaticamente i `.gitignore`). È molto comodo, a volte forse troppo…
+-   Se usate [CLion](https://www.jetbrains.com/clion/) (consigliatissimo!), potete formattare il codice usando il comando *Code*/*Reformat code* (Shift+Alt+L)
 
----
+-   Altrimenti, esiste il programma da linea di comando `clang-format`; installatelo con ```sudo apt install clang-format``. Se scrivete questo:
 
-<center>
-![](./media/intellij_new_kotlin_project.png)
-</center>
-
-# Compilare ed eseguire
-
--   La directory che contiene il progetto ha un eseguibile, `gradlew`, che può essere usato per produrre una *distribution* nella directory `./build/distributions`:
-
-    ```
-    gradlew assembleDist
+    ```c++
+    int sum  ( int a,int b    )    {    return a+ b;}
     ```
 
--   Siccome è una funzione molto utile, esploratela! Create una distribuzione del vostro programma e cercate di capire come installarla e usarla.
+    allora `clang-format` lo trasforma in
+    ```c++
+    int sum(int a, int b) { return a + b; }
+    ```
 
-# Suggerimenti
+# Formattazione
 
--   In Java e in Kotlin si fa grande affidamento sull'ambiente di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!
+-   Il programma `clang-format` si usa da linea di comando:
 
--   Abituatevi a invocare regolarmente il comando «Code | Reformat code» (Ctrl+Alt+L).
+    ```sh
+    clang-format -i main.cpp
+    ```
+
+-   Se **non** usate CLion, dovrebbe essere possibile configurare il vostro editor perché invochi automaticamente `clang-format` ad ogni salvataggio. Alcuni ambienti di sviluppo come [Qt Creator](https://en.wikipedia.org/wiki/Qt_Creator) possono farlo automaticamente ad ogni salvataggio.
+
+-   Questi strumenti sono utilissimi per mantenere il codice pulito e chiaro da leggere: cercate di configurarli al meglio e di imparare ad usarli sin da subito.
 
 
 # Suggerimenti per C\#
@@ -559,88 +574,79 @@ Siccome Git è un sistema distribuito, quando ci si connette a un server remoto 
     ```
 
 
-# Indicazioni per C++
+# Suggerimenti per Java/Kotlin
 
-# Istruzioni
+# Suggerimenti
 
--   Installare CMake; sotto Linux Debian/Ubuntu/Mint basta eseguire
+-   Creare un'applicazione Kotlin oppure Java in [IntelliJ IDEA](https://www.jetbrains.com/idea/):
+
+    -   Se usate Kotlin, come *Build system* scegliete «Gradle Kotlin» (*non* usate il sistema di build interno di IntelliJ IDEA! È comodo ma troppo limitato per i nostri scopi!)
+
+    -   Usate «Console application» come template
+
+-   L'applicazione vuota stampa `Hello World!`: come prima cosa, cambiate il messaggio in `Hello, wold!`.
+
+-   Per usare Git, potete anche fare affidamento al menu «VCS» di IntelliJ (gestisce automaticamente i `.gitignore`). È molto comodo, a volte forse troppo…
+
+---
+
+<center>
+![](./media/intellij_new_kotlin_project.png)
+</center>
+
+# Compilare ed eseguire
+
+-   La directory che contiene il progetto ha un eseguibile, `gradlew`, che può essere usato per produrre una *distribution* nella directory `./build/distributions`:
 
     ```
-    sudo apt install cmake
+    gradlew assembleDist
     ```
 
--   Creare un'applicazione che produca un eseguibile. Strutturare il codice in questo modo:
+-   Siccome è una funzione molto utile, esploratela! Create una distribuzione del vostro programma e cercate di capire come installarla e usarla.
 
-    -   Un file `CMakeLists.txt` nella directory principale
-    -   Una directory `src` che contiene il file `main.cpp`
+# Suggerimenti
 
--   In `.gitignore` elencate `*.o`, il nome dell'eseguibile (es. `hello_world`), eventuali file di backup (`*.bak`, `*~` a seconda dell'editor che usate) e la directory `build` (oppure usate [gitignore.io](https://gitignore.io/) indicando `c++` e `cmake`).
+-   In Java e in Kotlin si fa grande affidamento sull'ambiente di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!
 
-# Esempio di CMake per C++
+-   Abituatevi a invocare regolarmente il comando «Code | Reformat code» (Ctrl+Alt+L).
 
-```cmake
-cmake_minimum_required(VERSION 3.12)
 
-# Define a "project", providing a description and a programming language
-project(hello_world
-    VERSION 1.0
-    DESCRIPTION "Hello world in C++"
-    LANGUAGES CXX
-)
+# Indicazioni per Nim/D/Rust
 
-# Our "project" will be able to build an executable out of a C++ source file
-add_executable(hello_world
-    src/main.cpp
-)
+# Suggerimenti (1/2)
 
-# Force the compiler to use the C++17 standard
-target_compile_features(hello_world PUBLIC cxx_std_17)
-```
+-   Creare un'applicazione vuota usando il package manager del vostro linguaggio. Nim usa `nimble`:
 
-# Esempio d'uso di CMake
-
-<asciinema-player src="cast/cmake-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
-
-# Riferimenti per CMake
-
-- [Documentazione ufficiale](https://cmake.org/documentation/) (abbastanza illeggibile, ma è la più aggiornata per definizione)
-- [*Professional CMake*](https://crascit.com/professional-cmake/) (C. Scott)
-- [*An Introduction to Modern CMake*](https://cliutils.gitlab.io/modern-cmake/)
-
-# Formattazione
-
--   Se usate [CLion](https://www.jetbrains.com/clion/) (consigliatissimo!), potete formattare il codice usando il comando *Code*/*Reformat code* (Shift+Alt+L)
-
--   Altrimenti, esiste il programma da linea di comando `clang-format`; installatelo con
-
-    ```sh
-    sudo apt install clang-format
+    ```
+    $ nimble init helloworld
     ```
 
--   Se scrivete questo:
+-   D usa `dub`:
 
-    ```c++
-    int sum  ( int a,int b    )    {    return a+ b;}
+    ```
+    $ dub init helloworld
     ```
 
-    la formattazione automatica lo trasforma in
-    ```c++
-    int sum(int a, int b) { return a + b; }
+-   Rust usa `cargo`:
+
+    ```
+    $ cargo init helloworld
     ```
 
-# Formattazione
+-   Sia con Nim che con D dovrete rispondere ad alcune domande. Se possibile, scegliete il default (ma per Nim assicuratevi di specificare che volete un `binary`).
 
--   Il programma `clang-format` si usa da linea di comando:
+# Suggerimenti (2/2)
 
-    ```sh
-    clang-format -i main.cpp
+-   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
+
+-   Per compilare ed eseguire, basta usare il comando `run` (identico in `nimble`, `dub` e `cargo`):
+
+    ```
+    $ cd helloworld
+    $ nimble run     # Oppure: dub run, oppure: cargo run
     ```
 
--   Se **non** usate CLion, dovrebbe essere possibile configurare il vostro editor perché invochi automaticamente `clang-format` ad ogni salvataggio (ad esempio, per VSCode esiste il package [clang-format](https://github.com/xaverh/vscode-clang-format-provider))
-
--   Questi strumenti sono utilissimi per mantenere il codice pulito e chiaro da leggere: cercate di configurarli al meglio e di imparare ad usarli sin da subito.
-
-
+-   Sia per [D](https://intellij-dlanguage.github.io/) che per [Nim](https://plugins.jetbrains.com/plugin/15128-nim) esistono dei plugin per IntelliJ IDEA, l'IDE Java di JetBrains. Per Rust, potete usare CLion con il plugin [Rust](https://plugins.jetbrains.com/plugin/8182-rust/docs).
 
 ---
 title: "Esercitazione 1: Git e GitHub"

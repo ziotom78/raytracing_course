@@ -114,8 +114,8 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 <section id="varie" class="slide level1">
 <h1>Varie</h1>
 <ul>
-<li><p>Comunicate al docente la composizione del vostro gruppo e il
-linguaggio scelto</p></li>
+<li><p>Comunicate al docente entro la prossima esercitazione la
+composizione del vostro gruppo e il linguaggio scelto</p></li>
 <li><p>Le esercitazioni terminano alle 12,30, ma se completate il lavoro
 in anticipo potete andare via prima</p></li>
 </ul>
@@ -137,6 +137,10 @@ accorgimenti:
 <li>Accesso alla documentazione</li>
 </ul></li>
 </ul>
+</section>
+<section id="dibattito-come-avete-gestito-sinora-i-vostri-progetti"
+class="slide level1">
+<h1>Dibattito: come avete gestito sinora i vostri progetti?</h1>
 </section>
 <section id="sistemi-di-controllo-delle-versioni" class="slide level1">
 <h1>Sistemi di controllo delle versioni</h1>
@@ -307,11 +311,10 @@ cambiato.</p></li>
 <li>Potremmo scrivere uno shell script che invoca <code>tar</code>
 salvando solo i file effettivamente modificati (controllando ad esempio
 la data di modifica di ciascun file con <code>ls -l</code>).</li>
-<li>Ma neppure questo è ottimale: può darsi che un file molto lungo sia
+<li>Ma neppure questo è ottimale: può darsi che un file molto grande sia
 stato cambiato in <strong>una sola riga</strong>, e noi lo salveremmo
 per intero!</li>
-<li>(Ci sono in giro file «molto lunghi», di decine di migliaia di linee
-di codice. L’<a
+<li>(Ci sono in giro file di decine di migliaia di linee di codice. L’<a
 href="https://www.sqlite.org/amalgamation.html">amalgamation</a> di
 SQLite3 è un file in linguaggio C di 220.000 righe.)</li>
 </ul>
@@ -642,6 +645,21 @@ href="https://github.com/gitbucket/gitbucket">GitBucket</a>, etc.)</li>
 <iframe src="https://player.vimeo.com/video/513805000" width="960" height="540" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
 </section>
+<section id="github-è-distribuito" class="slide level1">
+<h1>GitHub è distribuito?</h1>
+<p>GitHub rende Git “un po’ più centralizzato”:</p>
+<ul>
+<li>Fornisce un indirizzo canonico
+(<code>https://github.com/nome/progetto</code>);</li>
+<li>Stabilisce regole su chi può fare commit e quando;</li>
+<li>Fornisce la possibilità di mostrare una pagina di presentazione del
+progetto;</li>
+<li>…e molte altre caratteristiche che vedremo nelle prossime
+settimane.</li>
+</ul>
+<p>È interessante notare che GitHub potrebbe fornire tutte queste
+caratteristiche basandosi su qualsiasi altro VCS che non sia Git!</p>
+</section>
 <section id="git-1" class="slide level1">
 <h1>Git</h1>
 <p><a
@@ -692,46 +710,141 @@ caratteristiche cercare nelle IDE</li>
 <iframe src="https://player.vimeo.com/video/683431827?h=9e4de4dba1&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Come usare una IDE (JetBrains Rider)">
 </iframe>
 </section>
-<section id="indicazioni-per-nimdrust" class="slide level1">
-<h1>Indicazioni per Nim/D/Rust</h1>
+<section id="indicazioni-per-c" class="slide level1">
+<h1>Indicazioni per C++</h1>
 </section>
-<section id="suggerimenti-12" class="slide level1">
-<h1>Suggerimenti (1/2)</h1>
+<section id="istruzioni" class="slide level1">
+<h1>Istruzioni</h1>
 <ul>
-<li><p>Creare un’applicazione vuota usando il package manager del vostro
-linguaggio. Nim usa <code>nimble</code>:</p>
-<pre><code>$ nimble init helloworld</code></pre></li>
-<li><p>D usa <code>dub</code>:</p>
-<pre><code>$ dub init helloworld</code></pre></li>
-<li><p>Rust usa <code>cargo</code>:</p>
-<pre><code>$ cargo init helloworld</code></pre></li>
-<li><p>Sia con Nim che con D dovrete rispondere ad alcune domande. Se
-possibile, scegliete il default (ma per Nim assicuratevi di specificare
-che volete un <code>binary</code>).</p></li>
+<li><p>Installare CMake; sotto Linux Debian/Ubuntu/Mint basta
+eseguire</p>
+<pre><code>sudo apt install cmake</code></pre></li>
+<li><p>Creare un’applicazione che produca un eseguibile. Strutturare il
+codice in questo modo:</p>
+<ul>
+<li>Un file <code>CMakeLists.txt</code> nella directory principale</li>
+<li>Una directory <code>src</code> che contiene il file
+<code>main.cpp</code></li>
+</ul></li>
+<li><p>In <code>.gitignore</code> elencate <code>*.o</code>, il nome
+dell’eseguibile (es. <code>hello_world</code>), eventuali file di backup
+(<code>*.bak</code>, <code>*~</code> a seconda dell’editor che usate) e
+la directory <code>build</code> (oppure usate <a
+href="https://gitignore.io/">gitignore.io</a> indicando <code>c++</code>
+e <code>cmake</code>).</p></li>
 </ul>
 </section>
-<section id="suggerimenti-22" class="slide level1">
-<h1>Suggerimenti (2/2)</h1>
+<section id="esempio-di-cmake-per-c" class="slide level1">
+<h1>Esempio di CMake per C++</h1>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">cmake_minimum_required</span>(<span class="ot">VERSION</span> <span class="dt">3.12</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a &quot;project&quot;, providing a description and a programming language</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="kw">project</span>(hello_world</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">VERSION</span> <span class="dt">1.0</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">DESCRIPTION</span> <span class="st">&quot;Hello world in C++&quot;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">LANGUAGES</span> <span class="ot">CXX</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span>(<span class="dv">CMAKE_CXX_STANDARD</span> 20)   <span class="co"># Pick the standard you like</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Our &quot;project&quot; will be able to build an executable out of a C++ source file</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(<span class="bn">hello_world</span> src/main.cpp)</span></code></pre></div>
+</section>
+<section id="esempio-cmake-e-gnu-make" class="slide level1">
+<h1>Esempio: CMake e GNU Make</h1>
+<p><asciinema-player src="cast/cmake-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player></p>
+<p>(Nel vostro caso potrebbe comparire <code>build.ninja</code> anziché
+<code>Makefile</code>: in tal caso scrivete <code>ninja</code> invece di
+<code>make</code>).</p>
+</section>
+<section id="riferimenti-per-cmake" class="slide level1">
+<h1>Riferimenti per CMake</h1>
 <ul>
+<li><a href="https://cmake.org/documentation/">Documentazione
+ufficiale</a> (abbastanza illeggibile, ma è la più aggiornata per
+definizione)</li>
+<li><a href="https://crascit.com/professional-cmake/"><em>Professional
+CMake</em></a> (C. Scott)</li>
+<li><a href="https://cliutils.gitlab.io/modern-cmake/"><em>An
+Introduction to Modern CMake</em></a></li>
+</ul>
+</section>
+<section id="formattazione" class="slide level1">
+<h1>Formattazione</h1>
+<ul>
+<li><p>Se usate <a href="https://www.jetbrains.com/clion/">CLion</a>
+(consigliatissimo!), potete formattare il codice usando il comando
+<em>Code</em>/<em>Reformat code</em> (Shift+Alt+L)</p></li>
+<li><p>Altrimenti, esiste il programma da linea di comando
+<code>clang-format</code>; installatelo con
+`<code>sudo apt install clang-format</code>. Se scrivete questo:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sum  <span class="op">(</span> <span class="dt">int</span> a<span class="op">,</span><span class="dt">int</span> b    <span class="op">)</span>    <span class="op">{</span>    <span class="cf">return</span> a<span class="op">+</span> b<span class="op">;}</span></span></code></pre></div>
+<p>allora <code>clang-format</code> lo trasforma in</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sum<span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span> <span class="op">}</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="formattazione-1" class="slide level1">
+<h1>Formattazione</h1>
+<ul>
+<li><p>Il programma <code>clang-format</code> si usa da linea di
+comando:</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">clang-format</span> <span class="at">-i</span> main.cpp</span></code></pre></div></li>
+<li><p>Se <strong>non</strong> usate CLion, dovrebbe essere possibile
+configurare il vostro editor perché invochi automaticamente
+<code>clang-format</code> ad ogni salvataggio. Alcuni ambienti di
+sviluppo come <a href="https://en.wikipedia.org/wiki/Qt_Creator">Qt
+Creator</a> possono farlo automaticamente ad ogni salvataggio.</p></li>
+<li><p>Questi strumenti sono utilissimi per mantenere il codice pulito e
+chiaro da leggere: cercate di configurarli al meglio e di imparare ad
+usarli sin da subito.</p></li>
+</ul>
+</section>
+<section id="suggerimenti-per-c" class="slide level1">
+<h1>Suggerimenti per C#</h1>
+</section>
+<section id="suggerimenti" class="slide level1">
+<h1>Suggerimenti</h1>
+<ul>
+<li><p>Creare un’applicazione vuota e il file <code>.gitignore</code>;
+se usate <code>dotnet</code> da linea di comando, eseguite</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> dotnet new console</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> dotnet new gitignore</span></code></pre></div>
+<p>Se usate Rider, assicuratevi di attivare Git quando create il
+progetto.</p></li>
 <li><p>L’applicazione stampa già <code>Hello World!</code>: cambiate il
 messaggio in <code>Hello, wold!</code> (altrimenti l’esercitazione di
 oggi non ha senso!)</p></li>
-<li><p>Per compilare ed eseguire, basta usare il comando
-<code>run</code> (identico in <code>nimble</code>, <code>dub</code> e
-<code>cargo</code>):</p>
-<pre><code>$ cd helloworld
-$ nimble run     # Oppure: dub run, oppure: cargo run</code></pre></li>
-<li><p>Sia per <a href="https://intellij-dlanguage.github.io/">D</a> che
-per <a href="https://plugins.jetbrains.com/plugin/15128-nim">Nim</a>
-esistono dei plugin per IntelliJ IDEA, l’IDE Java di JetBrains. Per
-Rust, potete usare CLion con il plugin <a
-href="https://plugins.jetbrains.com/plugin/8182-rust/docs">Rust</a>.</p></li>
+<li><p>Compilate ed eseguite; da linea di comando, eseguite</p>
+<pre><code>dotnet run</code></pre>
+<p>mentre sotto Rider premete Shift+F10.</p></li>
+</ul>
+</section>
+<section id="esempio-4" class="slide level1">
+<h1>Esempio</h1>
+<p><asciinema-player src="cast/dotnet-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player></p>
+</section>
+<section id="formattazione-2" class="slide level1">
+<h1>Formattazione</h1>
+<ul>
+<li><p>Per formattare automaticamente il codice in Rider, eseguite
+<em>Code</em>/<em>Reformat code</em> (Shift+Alt+L)</p></li>
+<li><p>Sotto Visual Studio Code, installate il package <a
+href="https://code.visualstudio.com/docs/languages/csharp">C#</a>.</p></li>
+<li><p>Per formattare il codice da linea di comando, installate
+<code>dotnet-format</code>:</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> dotnet tool install <span class="at">-g</span> dotnet-format</span></code></pre></div></li>
 </ul>
 </section>
 <section id="suggerimenti-per-javakotlin" class="slide level1">
 <h1>Suggerimenti per Java/Kotlin</h1>
 </section>
-<section id="suggerimenti" class="slide level1">
+<section id="suggerimenti-1" class="slide level1">
 <h1>Suggerimenti</h1>
 <ul>
 <li><p>Creare un’applicazione Kotlin oppure Java in <a
@@ -768,7 +881,7 @@ distribuzione del vostro programma e cercate di capire come installarla
 e usarla.</p></li>
 </ul>
 </section>
-<section id="suggerimenti-1" class="slide level1">
+<section id="suggerimenti-2" class="slide level1">
 <h1>Suggerimenti</h1>
 <ul>
 <li><p>In Java e in Kotlin si fa grande affidamento sull’ambiente di
@@ -777,137 +890,40 @@ sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!</p></li>
 code» (Ctrl+Alt+L).</p></li>
 </ul>
 </section>
-<section id="suggerimenti-per-c" class="slide level1">
-<h1>Suggerimenti per C#</h1>
+<section id="indicazioni-per-nimdrust" class="slide level1">
+<h1>Indicazioni per Nim/D/Rust</h1>
 </section>
-<section id="suggerimenti-2" class="slide level1">
-<h1>Suggerimenti</h1>
+<section id="suggerimenti-12" class="slide level1">
+<h1>Suggerimenti (1/2)</h1>
 <ul>
-<li><p>Creare un’applicazione vuota e il file <code>.gitignore</code>;
-se usate <code>dotnet</code> da linea di comando, eseguite</p>
-<div class="sourceCode" id="cb22"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> dotnet new console</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> dotnet new gitignore</span></code></pre></div>
-<p>Se usate Rider, assicuratevi di attivare Git quando create il
-progetto.</p></li>
+<li><p>Creare un’applicazione vuota usando il package manager del vostro
+linguaggio. Nim usa <code>nimble</code>:</p>
+<pre><code>$ nimble init helloworld</code></pre></li>
+<li><p>D usa <code>dub</code>:</p>
+<pre><code>$ dub init helloworld</code></pre></li>
+<li><p>Rust usa <code>cargo</code>:</p>
+<pre><code>$ cargo init helloworld</code></pre></li>
+<li><p>Sia con Nim che con D dovrete rispondere ad alcune domande. Se
+possibile, scegliete il default (ma per Nim assicuratevi di specificare
+che volete un <code>binary</code>).</p></li>
+</ul>
+</section>
+<section id="suggerimenti-22" class="slide level1">
+<h1>Suggerimenti (2/2)</h1>
+<ul>
 <li><p>L’applicazione stampa già <code>Hello World!</code>: cambiate il
 messaggio in <code>Hello, wold!</code> (altrimenti l’esercitazione di
 oggi non ha senso!)</p></li>
-<li><p>Compilate ed eseguite; da linea di comando, eseguite</p>
-<pre><code>dotnet run</code></pre>
-<p>mentre sotto Rider premete Shift+F10.</p></li>
-</ul>
-</section>
-<section id="esempio-4" class="slide level1">
-<h1>Esempio</h1>
-<p><asciinema-player src="cast/dotnet-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player></p>
-</section>
-<section id="formattazione" class="slide level1">
-<h1>Formattazione</h1>
-<ul>
-<li><p>Per formattare automaticamente il codice in Rider, eseguite
-<em>Code</em>/<em>Reformat code</em> (Shift+Alt+L)</p></li>
-<li><p>Sotto Visual Studio Code, installate il package <a
-href="https://code.visualstudio.com/docs/languages/csharp">C#</a>.</p></li>
-<li><p>Per formattare il codice da linea di comando, installate
-<code>dotnet-format</code>:</p>
-<div class="sourceCode" id="cb24"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> dotnet tool install <span class="at">-g</span> dotnet-format</span></code></pre></div></li>
-</ul>
-</section>
-<section id="indicazioni-per-c" class="slide level1">
-<h1>Indicazioni per C++</h1>
-</section>
-<section id="istruzioni" class="slide level1">
-<h1>Istruzioni</h1>
-<ul>
-<li><p>Installare CMake; sotto Linux Debian/Ubuntu/Mint basta
-eseguire</p>
-<pre><code>sudo apt install cmake</code></pre></li>
-<li><p>Creare un’applicazione che produca un eseguibile. Strutturare il
-codice in questo modo:</p>
-<ul>
-<li>Un file <code>CMakeLists.txt</code> nella directory principale</li>
-<li>Una directory <code>src</code> che contiene il file
-<code>main.cpp</code></li>
-</ul></li>
-<li><p>In <code>.gitignore</code> elencate <code>*.o</code>, il nome
-dell’eseguibile (es. <code>hello_world</code>), eventuali file di backup
-(<code>*.bak</code>, <code>*~</code> a seconda dell’editor che usate) e
-la directory <code>build</code> (oppure usate <a
-href="https://gitignore.io/">gitignore.io</a> indicando <code>c++</code>
-e <code>cmake</code>).</p></li>
-</ul>
-</section>
-<section id="esempio-di-cmake-per-c" class="slide level1">
-<h1>Esempio di CMake per C++</h1>
-<div class="sourceCode" id="cb26"><pre
-class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">cmake_minimum_required</span>(<span class="ot">VERSION</span> <span class="dt">3.12</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a &quot;project&quot;, providing a description and a programming language</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="kw">project</span>(hello_world</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">VERSION</span> <span class="dt">1.0</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">DESCRIPTION</span> <span class="st">&quot;Hello world in C++&quot;</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">LANGUAGES</span> <span class="ot">CXX</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Our &quot;project&quot; will be able to build an executable out of a C++ source file</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(<span class="bn">hello_world</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    src/main.cpp</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Force the compiler to use the C++17 standard</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="kw">target_compile_features</span>(<span class="bn">hello_world</span> <span class="ot">PUBLIC</span> <span class="ot">cxx_std_17</span>)</span></code></pre></div>
-</section>
-<section id="esempio-duso-di-cmake" class="slide level1">
-<h1>Esempio d’uso di CMake</h1>
-<p><asciinema-player src="cast/cmake-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player></p>
-</section>
-<section id="riferimenti-per-cmake" class="slide level1">
-<h1>Riferimenti per CMake</h1>
-<ul>
-<li><a href="https://cmake.org/documentation/">Documentazione
-ufficiale</a> (abbastanza illeggibile, ma è la più aggiornata per
-definizione)</li>
-<li><a href="https://crascit.com/professional-cmake/"><em>Professional
-CMake</em></a> (C. Scott)</li>
-<li><a href="https://cliutils.gitlab.io/modern-cmake/"><em>An
-Introduction to Modern CMake</em></a></li>
-</ul>
-</section>
-<section id="formattazione-1" class="slide level1">
-<h1>Formattazione</h1>
-<ul>
-<li><p>Se usate <a href="https://www.jetbrains.com/clion/">CLion</a>
-(consigliatissimo!), potete formattare il codice usando il comando
-<em>Code</em>/<em>Reformat code</em> (Shift+Alt+L)</p></li>
-<li><p>Altrimenti, esiste il programma da linea di comando
-<code>clang-format</code>; installatelo con</p>
-<div class="sourceCode" id="cb27"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install clang-format</span></code></pre></div></li>
-<li><p>Se scrivete questo:</p>
-<div class="sourceCode" id="cb28"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sum  <span class="op">(</span> <span class="dt">int</span> a<span class="op">,</span><span class="dt">int</span> b    <span class="op">)</span>    <span class="op">{</span>    <span class="cf">return</span> a<span class="op">+</span> b<span class="op">;}</span></span></code></pre></div>
-<p>la formattazione automatica lo trasforma in</p>
-<div class="sourceCode" id="cb29"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> sum<span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span> <span class="op">}</span></span></code></pre></div></li>
-</ul>
-</section>
-<section id="formattazione-2" class="slide level1">
-<h1>Formattazione</h1>
-<ul>
-<li><p>Il programma <code>clang-format</code> si usa da linea di
-comando:</p>
-<div class="sourceCode" id="cb30"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">clang-format</span> <span class="at">-i</span> main.cpp</span></code></pre></div></li>
-<li><p>Se <strong>non</strong> usate CLion, dovrebbe essere possibile
-configurare il vostro editor perché invochi automaticamente
-<code>clang-format</code> ad ogni salvataggio (ad esempio, per VSCode
-esiste il package <a
-href="https://github.com/xaverh/vscode-clang-format-provider">clang-format</a>)</p></li>
-<li><p>Questi strumenti sono utilissimi per mantenere il codice pulito e
-chiaro da leggere: cercate di configurarli al meglio e di imparare ad
-usarli sin da subito.</p></li>
+<li><p>Per compilare ed eseguire, basta usare il comando
+<code>run</code> (identico in <code>nimble</code>, <code>dub</code> e
+<code>cargo</code>):</p>
+<pre><code>$ cd helloworld
+$ nimble run     # Oppure: dub run, oppure: cargo run</code></pre></li>
+<li><p>Sia per <a href="https://intellij-dlanguage.github.io/">D</a> che
+per <a href="https://plugins.jetbrains.com/plugin/15128-nim">Nim</a>
+esistono dei plugin per IntelliJ IDEA, l’IDE Java di JetBrains. Per
+Rust, potete usare CLion con il plugin <a
+href="https://plugins.jetbrains.com/plugin/8182-rust/docs">Rust</a>.</p></li>
 </ul>
 </section>
     </div>
