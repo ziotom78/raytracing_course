@@ -573,6 +573,77 @@ add_executable(hello_world src/main.cpp)
     $ dotnet tool install -g dotnet-format
     ```
 
+# Indicazioni per Julia
+
+# Istruzioni {#julia-main}
+
+-   Creare un package usando il [manuale di Julia](https://julialang.github.io/Pkg.jl/v1/creating-packages/) (vedi l'esempio nella slide seguente)
+
+-   Creare un'applicazione `hello_world` (nella directory dove c'è `Project.toml`) in questo modo:
+
+    ```julia
+    #!/usr/bin/env julia
+
+    using Pkg
+    Pkg.activate(normpath(@__DIR__))
+
+    using hello_world
+
+    function main()
+        hello_world.greet()
+    end
+
+    main()
+    ```
+
+---
+
+# Creazione di un package
+
+<asciinema-player src="cast/julia-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
+
+# Struttura della directory
+
+-   Quando avrete completato l'esercizio, la directory dovrebbe avere questo aspetto:
+
+    ```text
+    $ tree hello_world
+    hello_world/
+    ├── hello_world
+    ├── Project.toml
+    └── src
+        └── hello_world.jl
+    ```
+
+-   La logica di questa struttura è che la libreria di funzioni venga implementata dentro `src`, mentre in `hello_world` vada messo il codice relativo alla parte eseguibile (es., interpretazione dei parametri da linea di comando).
+
+# Formattazione
+
+-   Se usate Visual Studio Code, esiste il pacchetto [julia-vscode](https://www.julia-vscode.org/docs/stable/gettingstarted/).
+
+-   Dovrebbe garantire la possibilità di formattare il codice, ma è bene che verifichiate che funzioni.
+
+-   Esiste anche un package autonomo, [Runic.jl](https://github.com/fredrikekre/Runic.jl).
+
+# Uso di package
+
+-   Aspetto fondamentale di Julia!
+
+-   Corrispondono ai *virtual environments* di Python
+
+-   Con `Pkg.generate` si crea un nuovo package, con `Pkg.activate` si attiva il package
+
+-   Lo script `hello_world` mostrato prima attiva il package e lo invoca:
+
+    ```julia
+    # This activates the package in the current directory ("hello_world")
+    using Pkg
+    Pkg.activate(normpath(@__DIR__))
+
+    # Not calling "activate" above would make this "using" statement fail
+    using hello_world
+    ```
+
 
 # Suggerimenti per Java/Kotlin
 

@@ -89,7 +89,7 @@ class Color:
 
 -   Il tipo più naturale per una matrice di colori è un array bidimensionale di dimensione `(ncols, nrows)`…
 
--   …ma è più efficiente usare un array **monodimensionale** di dimensione `ncols × nrows`.
+-   …ma è più efficiente usare un array **monodimensionale** di dimensione `ncols × nrows`. (Se usate Julia non avete questo problema: basta usare una `Matrix`!)
 
 -   Gli array bidimensionali non sono supportati in tutti i linguaggi (Kotlin ad esempio non li supporta), e se usati male possono essere molto inefficienti:
 
@@ -611,149 +611,296 @@ def test_get_set_pixel():
     assert are_colors_close(reference_color, img.get_pixel(3, 2))
 ```
 
+# Indicazioni per C++
 
-# Suggerimenti per Nim
+# Uso di CMake
 
-# Definizione dei tipi
+-   [CMake](https://cmake.org/) permette non solo di generare automaticamente un `Makefile`, ma anche di eseguire test automatici.
 
--   Implementare i tipi `Color` e `HdrImage` dovrebbe essere elementare
+-   Create il seguente albero di directory:
 
--   Assicuratevi di usare `object` e non `ref object` per Color, mentre per `HdrImage` è indifferente
-
--   Ricordatevi che in Nim bisogna esportare sia i tipi che i loro membri, usando `*`:
-
-    ```nim
-    type
-        Color* = object
-            r*, g*, b*: float32
-
-        HdrImage* = object
-            width*, height*: int
-            pixels*: Seq[Color]
+    ```text
+    $ tree raytracer
+    raytracer
+    ├── CMakeLists.txt
+    ├── include
+    │   └── colors.h       <-- Definition of "Color"
+    ├── src
+    │   ├── colors.cpp     <-- Implementation of "Color" (if you *really* need it!)
+    │   └── raytracer.cpp
+    └── test
+        └── colors.cpp     <-- Tests for the class "Color"
     ```
 
-# Creazione di `HdrImage`
+-   Se implementate tutti i metodi di `Color` in `include/colors.h` (consigliato, il codice è più veloce così), non c'è bisogno di `src/colors.cpp`.
 
--   In Nim non servono costruttori come in C++
+# Struttura di `CMakeLists.txt`
 
--   La prassi è quella di definire una funzione `newMyType` che crei il tipo `MyType`
+-   CMake dovrà creare tre prodotti:
 
--   Aggiungete quindi una procedura `newHdrImage` che accetti due parametri `width` ed `height`; inizializzate il campo `pixels` usando [`newSeq`](https://nim-lang.org/docs/system.html#newSeq), poi impostate tutti i colori a zero (nero)
+    1.  Una libreria che implementi `Color`; sceglietele un nome (noi useremo `trace`).
+    2.  Un programma eseguibile che usi la libreria, che chiameremo `raytracer`. Al momento basta che stampi `Hello, world!`.
+    3.  Un programma che esegua i test, che chiameremo `colorTest`.
 
-# Scrittura di test
+-   Per creare programmi sappiamo che c'è il comando `add_executable`; per le librerie esiste l'analogo `add_library`.
 
--   In Nim è possibile usare il comando `assert` per eseguire dei test
+-   Le dipendenze tra libreria `trace` e programmi si specificano con `target_link_libraries`.
 
--   La prassi è quella di creare dei file Nim all'interno della directory `tests`; se questi file iniziano con `t`, vengono [eseguiti automaticamente](https://github.com/nim-lang/nimble#tests) dal comando
+# Librerie ed eseguibili
 
-    ```
-    $ nimble test
-    ```
+-   La sequenza di librerie e di eseguibili da produrre si specifica così:
 
--   Per scrivere i test dei tipi `Color` e `HdrImage`, create quindi un file `tests/test_basictypes.nim` fatto così:
+    ```cmake
+    add_library(trace
+      src/colors.cpp
+      )
+    # This is needed if we keep .h files in the "include" directory
+    target_include_directories(trace PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include>
+      )
 
-    ```nim
-    import ../src/basictypes
+    add_executable(raytracer
+      src/raytracer.cpp
+      )
+    target_link_libraries(raytracer PUBLIC trace)
 
-    when isMainModule:
-        assert Color(1.0, 2.0, 3.0) + Color(3.0, 4.0, 5.0) == Color(4.0, 6.0, 8.0)
-        # …
-    ```
-
-
-# Suggerimenti per Java/Kotlin
-
-# Gestione di progetti
-
--   IntelliJ IDEA si basa su Gradle, che è l'equivalente di CMake in C++.
-
--   Gradle può essere programmato in Groovy (un linguaggio basato su Java) o in Kotlin.
-
--   Siccome Java e Kotlin permettono un'ottima modularità, per questo corso non è necessario differenziare tra libreria ed eseguibile.
-
--   Create quindi un nuovo progetto esattamente come avete fatto la volta scorsa.
-
-# Creazione di classi
-
-In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):
-
-<center>
-![](./media/kotlin-new-class.png){height=480}
-</center>
-
-# Creazione di `Color`
-
--   In Kotlin, usate le *data classes* per definire la classe `Color`: sono molto veloci da usare!
-
-    ```kotlin
-    /** A RGB color
-     *
-     * @param r The level of red
-     * @param g The level of green
-     * @param b The level of blue
-     */
-    public data class Color(val r: Double, val g: Double, val b: Double) {
-        // ...
-    }
+    add_executable(colorTest
+      test/colors.cpp
+      )
+    target_link_libraries(colorTest PUBLIC trace)
     ```
 
--   Definite `is_close` e gli operatori `plus` (somma di due colori) e `times` (prodotto tra colore e scalare).
-
-# Definizione di `HdrImage`
-
--   Kotlin permette la definizione di classi in forma estremamente compatta (una favola per chi viene da Java!). Ecco un esempio di implementazione di `HdrImage`:
-
-    ```kotlin
-    class HdrImage(
-        val width: Int,  // Using 'val' ensures that we cannot change the width
-        val height: Int, // or the height of the image once it's been created
-        var pixels: Array<Color> = Array(width * height) { Color(0.0F, 0.0F, 0.0F) }
-    ) {
-        // Here are the methods for the class…
-    }
-    ```
-
--   Abituatevi alla differenza tra `val` e `var`!
-
-# Scrittura di test
-
--   IntelliJ IDEA genera e gestisce il codice di test.
-
--   Usa la libreria [JUnit](https://junit.org/); se vi chiede che versione usare, scegliete la 5.
-
--   Controllate la versione usata nel vostro progetto aprendo il menu «File | Project structure».
-
----
-
-<center>
-![](./media/kotlin-project-structure.png){height=560}
-</center>
-
-Qui la versione di JUnit è la 4.
-
-# Creazione di test vuoti
-
--   Fate click col tasto destro sul nome di una classe e scegliete *Generate*.
-
--   Nella finestra che compare, scegliete la versione giusta per JUnit e poi fate un segno di spunta accanto ai metodi per cui volete scrivere test. (Nel nostro caso saranno `is_close`, `plus` e `times`).
-
--   Una volta implementati i test (usando `assertTrue` e `assertFalse`), eseguiteli usando le icone a sinistra dell'editor.
-
----
-
-# Generare test
-
-<center>
-![](./media/kotlin-generate-test.png)
-</center>
-
----
+-   `target_include_directories` specifica dove cercare `colors.h`.
 
 # Eseguire test
-<center>
-![](./media/kotlin-run-test.png)
-</center>
 
+-   Per eseguire test automatici, occorre invocare due comandi in `CMakeLists.txt`:
+
+    1.  `enable_testing` abilita la possibilità di eseguire test, e va scritto subito dopo il comando `project`.
+
+    2.  `add_test` specifica quale dei file eseguibili da produrre esegue effettivamente test. (Si può usare più volte).
+
+-   Nel nostro caso, invocheremo `add_test` una sola volta per eseguire `colorTest`.
+
+-   Per eseguire i test, nella directory `build` basta invocare `ctest`.
+
+# `CMakeLists.txt`
+
+Questo è il contenuto completo di `CMakeLists.txt`:
+```cmake
+cmake_minimum_required(VERSION 3.12)
+
+# Define a "project", providing a description and a programming language
+project(raytracer
+  VERSION 1.0
+  DESCRIPTION "Hello world in C++"
+  LANGUAGES CXX
+  )
+
+# Force the compiler to use the C++23 standard (or whatever you want)
+set(CMAKE_CXX_STANDARD 23)
+
+# If the compiler does not support the standard, stop!
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Turn on the support for automatic tests
+enable_testing()
+
+# This is the library. Pick the name you like the most; we use "trace"
+add_library(trace
+  src/colors.cpp
+  )
+# Help the compiler when you write "#include <colors.h>"
+# See "cmake-generator-expressions(7)" in the CMake manual
+target_include_directories(trace PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  )
+
+# This is the program that we will run from the command line
+add_executable(raytracer
+  src/raytracer.cpp
+  )
+# The command-line program needs to be linked to the "trace" library
+target_link_libraries(raytracer PUBLIC trace)
+
+# This program runs the automatic tests on the "Color" class
+add_executable(colorTest
+  test/colors.cpp
+  )
+# The test program too needs to be linked to "trace"
+target_link_libraries(colorTest PUBLIC trace)
+
+# Here we specify that "colorTest" is a special executable, because
+# it is meant to be run automatically whenever we want to check our code
+add_test(NAME colorTest
+  COMMAND colorTest
+  )
+```
+
+---
+
+<asciinema-player src="cast/c++-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player>
+
+# Funzionamento dei test
+
+-   Occorre restituire l'esito del test come valore al sistema operativo.
+
+-   La possibilità più elementare è di usare un `return` appropriato nel `main`:
+
+    ```c++
+    #include "colors.h"
+    #include <cstdlib>
+
+    int main() {
+        Color c1{1.0, 2.0, 3.0};
+        Color c2{5.0, 7.0, 9.0};
+
+        return are_colors_close(Color{6.0, 9.0, 11.0}, c1 + c2)
+            ? EXIT_SUCCESS : EXIT_FAILURE;
+    }
+    ```
+
+-   Si può usare [`abort`](https://www.cplusplus.com/reference/cstdlib/abort/?kw=abort) (in caso di fallimento) o [`assert`](https://www.cplusplus.com/reference/cassert/assert/?kw=assert) (occhio a `NDEBUG`!).
+
+# Esecuzione dei test
+
+-   Provate a modificare uno dei test sul tipo `Color`, in modo che fallisca:
+
+    -   Cambiate il file `test/colors.cpp`
+    -   Andate nella directory `build` ed eseguite `ctest`
+    -   Fate il commit delle modifiche
+    -   Inviate le modifiche a GitHub col comando `git push`
+
+ -  Sarebbe bene che ciascun membro del gruppo provasse a fare questo.
+
+# Suggerimenti
+
+-   Se il build **non** fallisce, è probabilmente perché viene usato come tipo di build il `Release` anziché il `Debug`, e avete usato `assert` nel vostro codice.
+-   Soluzioni:
+    -   Cambiate il file `.yml` in modo da usare `Debug` anziché `Release`;
+    -   Usate `#undef NDEBUG` prima di `#include <cassert>` (meglio!);
+    -   Definite una vostra funzione `my_assert` (ancora meglio!);
+    -   Usate una libreria di testing C++, come [Catch2](https://github.com/catchorg/Catch2/tree/v2.x) (ottimo!).
+-   Insegnamento: provare **sempre** a far fallire uno o più test!
+
+# Indicazioni per Julia
+
+# Struttura del package
+
+-   Julia implementa in modo nativo il tipo di struttura richiesta (libreria, eseguibile, eseguibile con i test):
+
+    -   Ogni package può essere usato come una libreria;
+    -   I package possono includere una serie di test se al loro interno è presente una directory chiamata `test`;
+    -   Lo script che implementa il `main` [visto nella precedente esercitazione](./tomasi-ray-tracing-01b.html#/julia-main) può essere usato come eseguibile.
+
+-   La creazione di un nuovo package configura quindi tutto già nel modo richiesto, tranne l'eseguibile.
+
+# Creazione del package
+
+-   Create un nuovo package con i comandi visti la volta scorsa:
+
+    ```julia
+    using Pkg
+    Pkg.generate("Raytracer")  # Upper case is customary in Julia
+    Pkg.activate("Raytracer")
+    ```
+
+-   Julia supporta la gestione dei colori tramite [ColorTypes](https://github.com/JuliaGraphics/ColorTypes.jl) e [Colors](https://juliagraphics.github.io/Colors.jl/stable/):
+
+    ```julia
+    Pkg.add("ColorTypes")
+    Pkg.add("Colors")
+    ```
+
+    Questo modificherà `Project.toml` e aggiungerà `Manifest.toml`, che vanno salvati in Git (guardate cosa contengono!).
+
+# Operazioni sui colori
+
+-   Per oggi non c'è bisogno di comprendere la differenza tra *value* e *reference types*, perché userete Colors e ColorTypes.
+
+-   La libreria Colors implementa una serie di tipi template:
+
+    ```julia
+    using Colors
+
+    a = RGB(0.1, 0.3, 0.7)
+    b = XYZ(0.8, 0.4, 0.2)
+    println(convert(XYZ, a))  # Convert a from RGB to XYZ space
+    ```
+
+-   La libreria non implementa però le operazioni sui colori che ci interessano (somma, differenza, prodotto, confronto). Implementatele voi nel file `src/Raytracer.jl` (il nome del file dipende dal nome del vostro progetto).
+
+# Complicazioni
+
+-   I tipi in ColorTypes sono [*parametrici*](https://docs.julialang.org/en/v1/manual/types/#Parametric-Types) (come i template in C++): il tipo `RGB` è in realtà `RGB{T}`, con `T` parametro.
+
+-   Dovete ridefinire le operazioni fondamentali `+`, `-`, `*` e `≈` (`\approx`), che in Julia sono presenti nel package `Base`.
+
+    Dovrete scrivere qualcosa del genere in `src/Raytracer.jl`:
+
+    ```julia
+    import ColorTypes
+    import Base.:+, Base.:*, Base.:≈
+
+    # To make this work, first define the product "scalar * color"
+    Base.:*(c::ColorTypes.RGB{T}, scalar) where {T} = scalar * c
+    ```
+
+# Creazione di test
+
+-   Per implementare i test, create un file `test/runtests.jl`, in modo che la struttura delle directory sia la seguente:
+
+    ```sh
+    $ tree Raytracer
+    Raytracer
+    ├── Manifest.toml
+    ├── Project.toml
+    ├── src
+    │   └── Raytracer.jl
+    └── test
+        └── runtests.jl
+    ```
+
+-   Per scrivere test, dovete aggiungere la libreria [Test]():
+
+    ```julia
+    Pkg.add("Test")
+    ```
+
+# Come scrivere test
+
+-   Nel file `runtests.jl` dovete scrivere le procedure di test. La libreria Test implementa le macro `@testset` (raggruppa test) e `@test`:
+
+    ```julia
+    using Raytracer   # Mettete il nome che avete scelto
+    using Test
+
+    @testset "Colors" begin
+        # Put here the tests required for color sum and product
+        @test 1 + 1 == 2
+    end
+    ```
+
+-   Per eseguirli dalla REPL, scrivete
+
+    ```julia
+    Pkg.test()
+    ```
+
+# Esecuzione di test
+
+<asciinema-player src="cast/julia-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player>
+
+# Il file `Manifest.toml`
+
+-   Julia usa il file `Project.toml` per indicare informazioni generali sul package, e può essere editato
+-   Il file `Manifest.toml` viene generato automaticamente, e fissa (in inglese, “pin”) il numero di versione delle dipendenze usate dal vostro package.
+-   È indispensabile aggiungere a Git il file `Project.toml`.
+-   Per `Manifest.toml` ci sono due possibilità:
+    1.  Se ritenete che sia **indispensabile** che ogni utente usi esattamente le stesse vostre versioni delle dipendenze, aggiungetelo;
+    2.  Se volete garantire più versatilità, escludetelo da Git (aggiungendo quindi una riga a `.gitignore`).
 
 # Suggerimenti per C\#
 
@@ -885,6 +1032,101 @@ Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, 
 
 -   Definite un costruttore per `HdrImage` che accetti `width` ed `height`, ed inizializzi `pixels` [allocando la lunghezza appropriata](https://dlang.org/spec/arrays.html#length-initialization) e poi impostando il colore di tutti i pixel al nero
 
+
+# Suggerimenti per Java/Kotlin
+
+# Gestione di progetti
+
+-   IntelliJ IDEA si basa su Gradle, che è l'equivalente di CMake in C++.
+
+-   Gradle può essere programmato in Groovy (un linguaggio basato su Java) o in Kotlin.
+
+-   Siccome Java e Kotlin permettono un'ottima modularità, per questo corso non è necessario differenziare tra libreria ed eseguibile.
+
+-   Create quindi un nuovo progetto esattamente come avete fatto la volta scorsa.
+
+# Creazione di classi
+
+In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):
+
+<center>
+![](./media/kotlin-new-class.png){height=480}
+</center>
+
+# Creazione di `Color`
+
+-   In Kotlin, usate le *data classes* per definire la classe `Color`: sono molto veloci da usare!
+
+    ```kotlin
+    /** A RGB color
+     *
+     * @param r The level of red
+     * @param g The level of green
+     * @param b The level of blue
+     */
+    public data class Color(val r: Double, val g: Double, val b: Double) {
+        // ...
+    }
+    ```
+
+-   Definite `is_close` e gli operatori `plus` (somma di due colori) e `times` (prodotto tra colore e scalare).
+
+# Definizione di `HdrImage`
+
+-   Kotlin permette la definizione di classi in forma estremamente compatta (una favola per chi viene da Java!). Ecco un esempio di implementazione di `HdrImage`:
+
+    ```kotlin
+    class HdrImage(
+        val width: Int,  // Using 'val' ensures that we cannot change the width
+        val height: Int, // or the height of the image once it's been created
+        var pixels: Array<Color> = Array(width * height) { Color(0.0F, 0.0F, 0.0F) }
+    ) {
+        // Here are the methods for the class…
+    }
+    ```
+
+-   Abituatevi alla differenza tra `val` e `var`!
+
+# Scrittura di test
+
+-   IntelliJ IDEA genera e gestisce il codice di test.
+
+-   Usa la libreria [JUnit](https://junit.org/); se vi chiede che versione usare, scegliete la 5.
+
+-   Controllate la versione usata nel vostro progetto aprendo il menu «File | Project structure».
+
+---
+
+<center>
+![](./media/kotlin-project-structure.png){height=560}
+</center>
+
+Qui la versione di JUnit è la 4.
+
+# Creazione di test vuoti
+
+-   Fate click col tasto destro sul nome di una classe e scegliete *Generate*.
+
+-   Nella finestra che compare, scegliete la versione giusta per JUnit e poi fate un segno di spunta accanto ai metodi per cui volete scrivere test. (Nel nostro caso saranno `is_close`, `plus` e `times`).
+
+-   Una volta implementati i test (usando `assertTrue` e `assertFalse`), eseguiteli usando le icone a sinistra dell'editor.
+
+---
+
+# Generare test
+
+<center>
+![](./media/kotlin-generate-test.png)
+</center>
+
+---
+
+# Eseguire test
+<center>
+![](./media/kotlin-run-test.png)
+</center>
+
+
 # Test in D
 
 -   Il linguaggio D offre un ottimo supporto ai test tramite la keyword `unittest` (da sogno!)
@@ -940,6 +1182,55 @@ Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, 
     ```
 
 -   Consultate la [guida di Rust](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html); una trattazione più approfondita si trova nel [capitolo 11](https://doc.rust-lang.org/book/ch11-00-testing.html) di *The Rust Programming Language* (Klabnik & Nichols)
+
+
+# Suggerimenti per Nim
+
+# Definizione dei tipi
+
+-   Implementare i tipi `Color` e `HdrImage` dovrebbe essere elementare
+
+-   Assicuratevi di usare `object` e non `ref object` per Color, mentre per `HdrImage` è indifferente
+
+-   Ricordatevi che in Nim bisogna esportare sia i tipi che i loro membri, usando `*`:
+
+    ```nim
+    type
+        Color* = object
+            r*, g*, b*: float32
+
+        HdrImage* = object
+            width*, height*: int
+            pixels*: Seq[Color]
+    ```
+
+# Creazione di `HdrImage`
+
+-   In Nim non servono costruttori come in C++
+
+-   La prassi è quella di definire una funzione `newMyType` che crei il tipo `MyType`
+
+-   Aggiungete quindi una procedura `newHdrImage` che accetti due parametri `width` ed `height`; inizializzate il campo `pixels` usando [`newSeq`](https://nim-lang.org/docs/system.html#newSeq), poi impostate tutti i colori a zero (nero)
+
+# Scrittura di test
+
+-   In Nim è possibile usare il comando `assert` per eseguire dei test
+
+-   La prassi è quella di creare dei file Nim all'interno della directory `tests`; se questi file iniziano con `t`, vengono [eseguiti automaticamente](https://github.com/nim-lang/nimble#tests) dal comando
+
+    ```
+    $ nimble test
+    ```
+
+-   Per scrivere i test dei tipi `Color` e `HdrImage`, create quindi un file `tests/test_basictypes.nim` fatto così:
+
+    ```nim
+    import ../src/basictypes
+
+    when isMainModule:
+        assert Color(1.0, 2.0, 3.0) + Color(3.0, 4.0, 5.0) == Color(4.0, 6.0, 8.0)
+        # …
+    ```
 
 
 ---
