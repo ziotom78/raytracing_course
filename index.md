@@ -8,8 +8,8 @@
 | Settimana | Slides teoria                                   | Slides esercitazioni                            |
 |----------:|:-----------------------------------------------:|:-----------------------------------------------:|
 |         1 | [24 Febbraio 2025](tomasi-ray-tracing-01a.html) | [26 Febbraio 2025](tomasi-ray-tracing-01b.html) |
+|         2 | [10 Marzo 2025](tomasi-ray-tracing-02a.html)     | [12 Marzo 2025](tomasi-ray-tracing-02b.html)     |
 <!--
-|         2 | [4 Marzo 2025](tomasi-ray-tracing-02a.html)     | [6 Marzo 2025](tomasi-ray-tracing-02b.html)     |
 |         3 | [11 Marzo 2025](tomasi-ray-tracing-03a.html)    | [13 Marzo 2025](tomasi-ray-tracing-03b.html)    |
 |         4 | [18 Marzo 2025](tomasi-ray-tracing-04a.html)    | [20 Marzo 2025](tomasi-ray-tracing-04b.html)    |
 |         5 | [25 Marzo 2025](tomasi-ray-tracing-05a.html) | [27 Marzo 2025](tomasi-ray-tracing-05b.html) |
@@ -35,7 +35,6 @@
 -   [Sistemi di controllo delle versioni](tomasi-ray-tracing-01b.html#/sistemi-di-controllo-delle-versioni)
 -   [Git](tomasi-ray-tracing-01b.html#git)
 -   [GitHub](tomasi-ray-tracing-01b.html#github)
-<!--
 -   [Codifica del colore](tomasi-ray-tracing-02a.html#/codifica-del-colore)
 -   [Relazione tra radianza spettrale e colori RGB](tomasi-ray-tracing-02a.html#/da-l_lambda-a-rgb)
 -   [Visualizzazione su dispositivi](tomasi-ray-tracing-02a.html#/visualizzazione-su-dispositivi)
@@ -43,6 +42,7 @@
 -   [Gestione dei colori](tomasi-ray-tracing-02b.html#/gestione-dei-colori)
 -   [Test automatici](tomasi-ray-tracing-02b.html#/verifica-del-codice)
 -   [Conflitti e *merging*](tomasi-ray-tracing-02b.html#/lavoro-in-gruppo)
+<!--
 -   [Gestione degli errori](tomasi-ray-tracing-03a.html#/gestione-degli-errori)
 -   [Tone mapping](tomasi-ray-tracing-04a.html#/tone-mapping)
 -   [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenze-duso)
