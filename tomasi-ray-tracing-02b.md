@@ -428,7 +428,7 @@ def set_pixel(self, x: int, y: int, new_color: Color):
     -   Un programma da linea di comando che importi la libreria, ma che per il momento stampi solo `Hello, world!`;
     -   Una serie di test automatici sui tipi `Color` e `HdrImage`.
 
-3.  Registrare il progetto su GitHub e aggiungere i propri compagni.
+3.  Registrare il progetto su GitHub, aggiungere i propri compagni e mandare una mail al docente.
 
 5.  Non abbiate paura di creare conflitti e fare *merge commit*: più vi esercitate con essi, più semplice vi sarà la vita in futuro.
 
@@ -462,6 +462,18 @@ def set_pixel(self, x: int, y: int, new_color: Color):
     - `valid_coordinates` + test;
     - `pixel_offset` + test;
     - `get_pixel`/`set_pixel` + test.
+
+# Attenzione ai commit!
+
+-   Il proprio profilo GitHub/LinkedIn può essere esaminato durante i colloqui di lavoro
+
+-   Se curate bene il repository su cui lavorerete per questo insegnamento, potrebbe essere uno “show-case” da mettere in evidenza nel vostro CV
+
+-   Evitate quindi di scrivere commenti approssimativi nei vostri commit!
+
+---
+
+![](media/bad-commit-messages.png)
 
 # Caratteristiche di `Color`
 
