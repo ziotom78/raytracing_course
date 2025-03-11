@@ -533,7 +533,7 @@ Copyleft
 
 -   Non sempre permettono all'utente di ottenere una copia del codice sorgente; quando ciò è previsto, è di solito solo per *lettura* e *verifica*.
 
--   È un tipo di licenza usata in ambito accademico, anche se non molto comune nell'ambito della fisica.
+-   È un tipo di licenza usata in ambito accademico (ad es., nelle facoltà molto legate all'industria, come quelle di ingegneria), anche se non molto comune nell'ambito della fisica.
 
 # Le *Permissive licenses*
 
@@ -563,9 +563,37 @@ Copyleft
 
 -   Se il codice di una *copyleft license* viene usato all'interno di un codice, anche quest'ultimo deve essere rilasciato con una *copyleft license* (ma non è obbligatorio rilasciarlo!).
 
--   È detta *viral license*: se un programma «tocca» del codice *copyleft*, diventa automaticamente *copyleft* lui stesso.
+-   L'esempio più famoso è la [GNU Public License](https://opensource.org/licenses/gpl-license), usata per Linux, Emacs, Bash e il vostro amato GCC. È detta *viral license*: se un programma «tocca» del codice *copyleft*, diventa automaticamente *copyleft* lui stesso, anche se si limita a linkarlo. (Molti la detestano per questo!)
 
--   L'esempio più famoso è la [GNU Public License](https://opensource.org/licenses/gpl-license), usata per Linux, Emacs, Bash e il vostro amato GCC.
+# European Union Public License (EUPL)
+
+-   È una licenza open software progettata dall'Unione Europea, e sono disponibili traduzioni legalizzate nelle 23 lingue della UE!
+
+-   Proposta nel 2007, oggi è arrivata alla versione 1.2
+
+-   Compatibile con la GPL, la LGPL e la AGPL (oltre ad altre), ma non è virale… e questa è una buona cosa!
+
+-   Vediamo le differenze tra la EUPL e la GPL, che è la licenza *copyleft* più famosa di tutte
+
+# EUPL vs GPL
+
+-   È compatibile con la legislazione europea, contrariamente alla GPL, che ha alcune parti che potrebbero non essere applicabili nella UE
+
+-   Pur essendo *copyleft*, non è virale: si può scrivere un programma che si interfaccia a un programma EUPL e scegliere la licenza che si vuole, perché è prevista un'eccezione esplicita nel testo.
+
+-   Copre esplicitamente il caso dei cosiddetti SaaS (“Software as a Service”), che sono i programmi che non sono eseguiti sul proprio computer ma funzionano all'interno di un browser. (Uno dei motivi per cui la AGPL è stata scritta è proprio per colmare questa lacuna della GPL).
+
+-   È la licenza “raccomandata” in un gran numero di paesi (tra cui [l'Italia](https://joinup.ec.europa.eu/collection/eupl/news/agid-guidelines)) per il software usato nella pubblica amministrazione (*obbligatoria* in Spagna!).
+
+# Ulteriori informazioni sulla EUPL
+
+-   L'Unione Europea mette a disposizione un [corso gratuito ufficiale sulla EUPL](https://academy.europa.eu/courses/the-european-union-public-license-eupl)! (Chi completa il quiz con il 60% almeno di risposte esatte ottiene un attestato)
+
+-   [Discussione sulla EUPL](https://discourse.writefreesoftware.org/t/eupl-a-better-choice-for-european-citizens/43/9) sul sito [writefreesoftware.org](https://discourse.writefreesoftware.org)
+
+-   Spiegazione in termini semplici del motivo per cui la viralità della GPL non è compatibile con la legislazione europea: [Why viral licensing is a ghost](https://joinup.ec.europa.eu/collection/eupl/news/why-viral-licensing-ghost).
+
+-   Interessante [discussione più generale](https://discourse.julialang.org/t/package-licenses-contemplations-and-considerations/117922) sul forum Julia
 
 # Che licenza usare?
 
@@ -576,17 +604,17 @@ Copyleft
     -   Se il vostro codice usa una *copyleft license*, dovete verificarne la compatibilità con quella della libreria;
     -   Se il vostro codice usa una *permissive license*, in generale non potete usare librerie con licenza *copyleft* a meno di non cambiare la vostra licenza.
 
--   Potete usare i siti [TLDRLegal](https://tldrlegal.com/) e [Choose an open source license](https://choosealicense.com/) per decidere. Se proprio non sapete cosa usare, la scelta più sicura è probabilmente la GPL.
+-   Potete usare i siti [TLDRLegal](https://tldrlegal.com/) e [Choose an open source license](https://choosealicense.com/) per decidere. Se proprio non sapete cosa usare, la scelta più sicura è probabilmente la EUPL.
 
 # Come «usare» una licenza?
 
--   Il sito [Open Source Initiative](https://opensource.org/) riporta un template di varie licenze.
+-   Il sito [Open Source Initiative](https://opensource.org/) riporta un template di varie licenze, e la UE ne fornisce uno [interattivo](https://joinup.ec.europa.eu/collection/eupl/solution/joinup-licensing-assistant/jla-find-and-compare-software-licenses)!
 
 -   Per applicare una licenza al vostro codice, dovete compiere i seguenti passaggi:
 
-    1.   Scegliete la licenza. Noi prendiamo come esempio la GPL versione 3, descritta sul sito [OSI](https://opensource.org/licenses/GPL-3.0).
-    2.   Il sito OSI ha un [link](https://www.gnu.org/licenses/gpl-3.0.en.html) al testo della licenza sul sito GNU. Da questo sito si può scaricare la versione in [testo ASCII](https://www.gnu.org/licenses/gpl-3.0.txt) o in [Markdown](https://www.gnu.org/licenses/gpl-3.0.md).
-    3.   Scaricate la licenza e salvatela in `LICENSE` (se testo ASCII) o `LICENSE.md` (se Markdown) dentro il vostro repository.
+    1.   Scegliete la licenza. Noi prendiamo come esempio la EUPL 1.2, descritta sul sito [OSI](https://opensource.org/license/eupl-1-2).
+    2.   Il sito <https://license.md> fornisce il testo di diverse licenze open-source in formato testo o Markdown. Da questo sito si può scaricare il testo della [EUPL 1.2](https://license.md/licenses/european-union-public-license-1-2/), che usiamo come esempio.
+    3.   Salvate il testo della licenza nel file `LICENSE` (se è in formato ASCII) o `LICENSE.md` (se in Markdown) dentro il vostro repository.
     4.   La maggior parte delle licenze consiglia di riportare un breve testo in un commento in cima a *ogni* file sorgente del vostro repository.
 
 # Oltre il file `LICENSE.md`
