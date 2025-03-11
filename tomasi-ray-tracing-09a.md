@@ -597,6 +597,16 @@ Modello: 44.000 vertici, 80.000 triangoli.
      -   Se l'ipotesi è invalidata, cercarne una alternativa
 5.   Ripetere i passi 3 e 4 finché l'ipotesi non può più essere migliorata
 
+# Strumenti di debugging
+
+| Tipo               | Esempi                                                                                                 |
+|--------------------|--------------------------------------------------------------------------------------------------------|
+| Debugger simbolico | [GDB](https://sourceware.org/gdb/), [LLDB](https://lldb.llvm.org/)                                     |
+| Memory checkers    | [Memcheck](https://valgrind.org/docs/manual/mc-manual.html)                                            |
+| Analisi dinamica   | [Valgrind](https://valgrind.org/docs/manual/mc-manual.html)                                            |
+| Record-and-replay  | [rr](https://rr-project.org/), [UDB](https://undo.io/products/udb/)                                    |
+| Fuzzying debuggers | [AFL++](https://github.com/AFLplusplus/AFLplusplus), [libFuzzer](https://llvm.org/docs/LibFuzzer.html) |
+
 ---
 title: "Lezione 9"
 subtitle: "Forme avanzate, debugging"
