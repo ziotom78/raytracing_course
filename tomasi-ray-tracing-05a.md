@@ -652,7 +652,7 @@ Nel nostro codice implementeremo solo trasformazioni **invertibili**:
 
 # Esempio IV: *semantic versioning*
 
--   Lo schema che useremo nel corso è il cosiddetto [*semantic versioning*](https://semver.org/), usato ad esempio da Julia e Python, che usa lo schema `X.Y.Z`:
+-   Lo schema che useremo nel corso è il cosiddetto [*semantic versioning*](https://semver.org/), usato ad esempio da Julia. Usa lo schema `X.Y.Z`:
     -   `X` è la «major version»
     -   `Y` è la «minor version»
     -   `Z` è la «patch version»
@@ -725,6 +725,26 @@ Nel nostro codice implementeremo solo trasformazioni **invertibili**:
 1.  Se viene rilasciata una nuova «patch release» della versione che si sta usando (es., `1.3.4` → `1.3.5`), l'utente dovrebbe **sempre** aggiornare.
 2.  Se viene rilasciata una nuova «minor release» della versione che si sta usando (es., `1.3.4` → `1.4.0`), l'utente dovrebbe aggiornare solo se ritiene utili le nuove caratteristiche.
 3.  Una nuova «major release» (es., `1.3.4` → `2.0.0`) dovrebbe essere installata solo da nuovi utenti, o da chi è intenzionato ad aggiornare il modo in cui si usa il programma.
+
+
+# Esempio: Textualize 2.0.0
+
+-   Nel febbraio 2025 è stata rilasciata la versione 2.0.0 di [Textualize](https://github.com/Textualize/textual), un application framework Python per creare interfacce pseudo-grafiche da terminale
+
+-   Nelle [release notes](https://github.com/Textualize/textual/releases/tag/v2.0.0) è riportata questa spiegazione:
+
+    > It took us more than 3 years to get to 1.0. But a couple of months to get to 2.0? Why?
+    >
+    > We follow [Semver](https://semver.org/) which says that after 1.0, all breaking changes bump the major version number. We have some breaking changes here, which will be trivial to fix -- if they effect you at all. But a breaking change is a breaking change!
+
+# Svantaggi del semantic versioning
+
+-   A volte è difficile stabilire se una modifica è “breaking” oppure no (vedi ad esempio l'articolo [Semantic Versioning Will Not Save You](https://hynek.me/articles/semver-will-not-save-you/)).
+
+-   Per progetti con grande massa critica può avere più senso usare la data di rilascio, com'è il caso del C++. Anche Python si sta muovendo in questa direzione con [PEP 2026](https://peps.python.org/pep-2026/).
+
+-   Noi useremo il *semantic versioning* per uniformità, ma nei vostri progetti dovreste valutare qual è la soluzione più appropriata.
+
 
 ---
 title: "Lezione 5"
