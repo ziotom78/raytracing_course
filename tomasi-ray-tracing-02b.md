@@ -1,23 +1,26 @@
-# Premessa iniziale
+# A warning
 
--   Ci vorrà un bel po' prima di essere in grado di produrre immagini fotorealistiche! (Non volevate mica finire il corso in quindici giorni, no?!?)
+-   It will take some time before you can produce photorealistic images (You didn’t want to end this course in two weeks, did you?!?)
 
--   La ragione è che ci serve molta “infrastruttura” prima di poter affrontare direttamente la soluzione dell'equazione del rendering
+-   The problem is that we need a lot of infrastructure before we can solve the rendering equation
 
--   La generazione della prima immagine sarà un “[triangolo nero](https://rampantgames.com/blog/?p=7745)”, come si dice nel gergo informatico.
+-   Our first image will be a so-called [black triangle](https://rampantgames.com/blog/?p=7745), to use a well-known meme.
 
-# Gestione dei colori
+# How to handle colors
 
-# Codificare un colore
+# Encoding a color
 
--   Abbiamo visto che i colori percepiti dall'occhio umano possono essere codificati tramite tre valori scalari R, G, B.
--   Il compito di oggi è implementare un tipo di dato `Color` che codifichi un colore usando tre numeri *floating-point* (a 32 bit) per i livelli di rosso, verde e blu.
--   La conversione da RGB a sRGB sarà oggetto dell'esercitazione di settimana prossima, quando introdurremmo i formati grafici (PNG, Jpeg, etc.)
--   Come per la scorsa lezione, anche oggi mostrerò esempi di codice in Python
+-   We saw that the colors perceived by the human eye can be encoded using three scalars R, G, B.
 
-# Colori in Python
+-   Our task for today is to implement a `Color` data type that encodes a color using three 32-bit floating-point numbers.
 
--   Definiamo una classe `Color` usando `@dataclass` (come `struct` in C++):
+-   We’ll deal with the conversion from RGB to sRGB next week, when we will talk about graphics formats (PNG, Jpeg, etc.)
+
+-   As I did last week, I will show you a few examples in Python
+
+# Colors in Python
+
+-   Let’s define a class named `Color` using `@dataclass` (it’s like `struct` in C++):
 
     ```python
     # Supported since Python 3.7
@@ -30,21 +33,21 @@
         b: float = 0.0
     ```
 
--   È possibile creare un colore con questa sintassi:
+-   We can create colors using these syntaxes:
 
     ```python
     color1 = Color(r=3.4, g=0.4, b=1.7)
     color2 = Color(3.4, 0.4, 1.7)  # Shorter version
     ```
 
-# Operazioni su `Color`
+# Operations on `Color`
 
--   Somma tra due colori (analogo di $L_\lambda^{(1)} + L_\lambda^{(2)}$)
--   Prodotto per uno scalare ($\alpha L_\lambda$)
--   Prodotto tra due colori ($f_{r,\lambda} \otimes L_\lambda$ nell'equazione del rendering)
--   Livello di somiglianza tra due colori (da usare nei test)
+-   Sum two colors (like in $L_\lambda^{(1)} + L_\lambda^{(2)}$)
+-   Scalar-color product ($\alpha L_\lambda$)
+-   Product between two colors ($f_{r,\lambda} \otimes L_\lambda$ in the rendering equation)
+-   Similarity between two colors (useful for tests)
 
-# Esempio in Python
+# Example in Python
 
 ```python
 class Color:
@@ -78,29 +81,29 @@ class Color:
     # Etc.
 ```
 
-# Il tipo `HdrImage`
+# The type `HdrImage`
 
--   Oltre al tipo `Color`, oggi implementeremo un tipo `HdrImage`, che useremo per rappresentare una immagine HDR tramite una matrice di elementi `Color`.
--   Per oggi, il tipo `HdrImage` dovrà implementare solo queste funzionalità:
-    -   Creazione di un'immagine vuota, specificando il numero di colonne (`width`) e il numero di righe (`height`);
-    -   Lettura/modifica di pixel.
+-   We’ll implement the type `HdrImage` alongside `Color`. It will be used to represent a HDR image as a 2D matrix of `Color` instances.
+-   The task for today is to implement the following functionalities in `HdrImage`:
+    -   Create an empty image with a given number of columns (`width`) and rows (`height`);
+    -   Read/write pixels.
 
-# Matrice dei colori
+# The `Color` matrix
 
--   Il tipo più naturale per una matrice di colori è un array bidimensionale di dimensione `(ncols, nrows)`…
+-   The most natural type for a matrix is a 2D array with size `(width, height)`…
 
--   …ma è più efficiente usare un array **monodimensionale** di dimensione `ncols × nrows`. (Se usate Julia non avete questo problema: basta usare una `Matrix`!)
+-   …but it’s more efficient to use a **monodimensional** array with size `width × height`. (This is not the case if you use Julia: just rely on `Matrix`!)
 
--   Gli array bidimensionali non sono supportati in tutti i linguaggi (Kotlin ad esempio non li supporta), e se usati male possono essere molto inefficienti:
+-   Not every programming language supports 2D arrays (e.g., Kotlin), and if you use them in the wrong way, they can be inefficient:
 
     ```java
     // This is valid Java, but it's sub-optimal!
     int[][] myNumbers = { {1, 2, 3, 4}, {5, 6, 7} };
     ```
 
-# Struttura di `HdrImage`
+# Structure of `HdrImage`
 
--   In Python possiamo implementare `HdrImage` così:
+-   In Python, we can implement `HdrImage` in this way:
 
     ```python
     class HdrImage:
@@ -111,19 +114,19 @@ class Color:
             self.pixels = [Color() for i in range(self.width * self.height)]
     ```
 
--   L'array di valori ha un numero di elementi pari a $\mathtt{width} \times \mathtt{height}$
+-   The array of values has $\mathtt{width} \times \mathtt{height}$ elements
 
--   A noi però interessa identificare un elemento della matrice tramite una coppia `(colonna, riga)`, ossia `(x, y)`.
+-   However, we want to identify an element in the matrix using a pair `(column, row)`, i.e., `(x, y)`.
 
-# Accesso ai pixel
+# Accessing pixels
 
-Data la posizione `(x, y)` di un pixel (con `x` colonna e `y` riga), l'indice nell'array `self.pixels` si trova così:
+Given some position `(x, y)` for a pixel (with `x` the number of the column and `y` the row), the index in the array `self.pixels` can be calculated in this way:
 
 <center>
 ![](./media/bitmap-linear-access.svg)
 </center>
 
-# `get_pixel` e `set_pixel`
+# `get_pixel` and `set_pixel`
 
 ```python
 def get_pixel(self, x: int, y: int) -> Color:
@@ -145,32 +148,32 @@ def set_pixel(self, x: int, y: int, new_color: Color):
     self.pixels[y * self.width + x] = new_color
 ```
 
-Possiamo evitare queste ripetizioni?
+Can we avoid those repetitions?
 
-# Verifica del codice
+# Verifying your code
 
-# Perché verificare il codice?
+# Why should we verify our code?
 
--   Gli errori sono dietro l'angolo!
+-   Errors are lurking around every corner!
 
--   Esempio (in un tema d'esame del corso di TNDS!):
+-   This example was taken from a test in the TNDS course:
 
     ```c++
-    CampoVettoriale operator+(const CampoVettoriale &v) const {
-      CampoVettoriale sum(v); // invoco costruttore di copia di v
+    VectorField operator+(const VectorField &v) const {
+      VectorField sum(v); // I am calling the copy constructor for v
       sum.Addcomponent(getFx(), getFx(), getFz());
 
       return sum;
     }
     ```
 
--   Per verificare la correttezza di una funzione, occorrerebbe invocarla con dati *non banali* e controllarne il risultato.
+-   To verify the correctness of a function, we should call it with *non-trivial data* and check the result.
 
-# Come verificare il codice?
+# How can we verify our code?
 
--   Una volta scritto, il codice va *verificato* su casi il cui risultato è già noto
+-   Once we have written some code, we must *verify* its correctness by running it on inputs for which we can reasonably foresee the expected outputs.
 
--   Il modo più semplice è testare il codice stampando a video i valori:
+-   The simplest way is to print the output and visually check it’s ok:
 
     ```python
     color1 = Color(1.0, 2.0, 3.0)  # Avoid trivial cases like Color(3.0, 3.0, 3.0)
@@ -179,26 +182,26 @@ Possiamo evitare queste ripetizioni?
     print(color1 * 2)
     ```
 
-    che produce l'output
+    This produces the output
 
     ```text
     Color(r=6.0, g=8.0, b=10.0)
     Color(r=2.0, g=4.0, b=6.0)
     ```
 
--   Possiamo fare di meglio?
+-   Can we do better?
 
-# Scrittura di test automatici
+# Automatic tests
 
--   Il compito di verificare la correttezza dei calcoli è noioso e facile da sbagliare.
+-   Checking calculations is boring and error-prone.
 
--   Dovremmo far svolgere compiti tediosi ai computer!
+-   Computers have been invented to avoid doing repetitive and boring stuff!
 
--   Tutti i linguaggi moderni offrono sistemi per l'esecuzione automatica di test. (Il C++ no, a meno di usare librerie esterne: ecco perché queste cose non sono state spiegate nel corso di TNDS)
+-   Every modern language offers some built-in system to run tests automatically. (C++ is a notable exception, but there are lots of libraries that fill this gap.)
 
-# Test automatici
+# Automatic tests
 
-In Python, il nostro codice di partenza è questo:
+Our starting point is this Python code:
 
 ```python
 color1 = Color(1.0, 2.0, 3.0)
@@ -207,7 +210,7 @@ print(color1 + color2)
 print(color1 * 2)
 ```
 
-Possiamo migliorarlo facilmente usando `assert`:
+We can improve it using `assert`:
 
 ```python
 color1 = Color(1.0, 2.0, 3.0)
@@ -218,40 +221,41 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 ```
 
 
-# Come testare i test?
+# Are we sure of our tests?
 
--   Il fatto che il nostro programma non produca output è atteso (non ha bug), ma non tranquillizzante: siamo *sicuri* che abbia davvero eseguito il test?
+-   The fact that the new version of our Python scripts does not produce any output is expected, as the implementation is bug-free. But if we get no output, are we *really* sure that the tests were executed as expected?
 
--   Una pratica molto diffusa è quella di iniziare scrivendo test *sbagliati*, e verificando che si generi effettivamente un errore:
+-   A common trick is to implement *wrong* tests and make them fail:
 
     ```python
     color1 = Color(1.0, 2.0, 3.0)
     color2 = Color(5.0, 6.0, 7.0)
     assert (color1 + color2) == Color(6.0, 8.0, 11.0) # 11.0 instead of 10.0: wrong!
-    assert (2 * color1) == Color(3.0, 4.0, 6.0) # 3.0 instead of 2.0: wrong!
+    assert (2 * color1) == Color(3.0, 4.0, 6.0)       # 3.0 instead of 2.0: wrong!
     ```
 
-    Solo quando si è visto che l'errore è stato emesso si rimette a posto il test.
+    Once we see that the tests failed, we can fix them and make them pass.
 
 ---
 
 <asciinema-player src="cast/color-test-python.cast" rows="27" cols="94" font-size="medium"></asciinema-player>
 
-# Verifiche su floating point
+# Testing floating-point values
 
--   Nei test che scriveremo dovremo usare operazioni logiche e di confronto (in Python: `==`, `<`, `>`, `<=`, `>=`, etc.)
+-   In the tests we are going to write, we will have to use logical operations and comparisons (for Python, these are typically `==`, `<`, `>`, `<=`, `>=`, etc.)
 
--   Occorre prestare molta attenzione ai numeri floating point!
+-   We must handle floating-point numbers with special care!
 
     <asciinema-player src="cast/floating-point-python.cast" rows="15" cols="80"
         font-size="medium"></asciinema-player>
 
-# Accorgimenti per floating point
+# Tricks for floating-point values
 
--   Evitate dei test che coinvolgano numeri con parti decimali (es., `2.1`, `5.09`)
--   Numeri interi piccoli (es., `16.0`) sono codificati senza arrotondamenti…
--   …quindi nei test, se possibile, usate numeri floating point interi (come abbiamo fatto per la classe `Color` in Python)
--   Per i casi in cui non è possibile, definite una funzione `are_close`:
+-   Avoid numbers with a decimal part, like `2.1` or `5.09`, if possible
+
+-   Small integer numbers like `16.0` are encoded without rounding, so prefer them in tests, if possible (we did so for `Color` in our Python example)
+
+-   As it’s not always possible to use integer numbers, implement a function `are_close` (if your language doesn’t provide one already):
 
     ```python
     def are_close(x, y, epsilon = 1e-5):
@@ -263,11 +267,11 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
     ```
 
 
-# Test e granularità
+# Code granularity and tests
 
--   L'implementazione di funzioni e tipi dovrebbe essere legata alla scrittura di test.
+-   Tests can provide a guidance for the implementation of types and functions.
 
--   Implementare test per le due funzioni `get_pixel` e `set_pixel` è ripetitivo:
+-   Implementing `get_pixel` and `set_pixel` leads to repetitions:
 
     ```python
     def get_pixel(self, x: int, y: int) -> Color:
@@ -281,13 +285,13 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
         self.pixels[y * self.width + x] = new_color
     ```
 
-    La verifica delle coordinate va testata due volte: in `get_pixel` e in `set_pixel`.
+    We must verify the correctness of coordinates twice 🙁
 
 ---
 
-# Test ripetuti
+# Repeating tests
 
--   Dobbiamo verificare che coordinate sbagliate vengano rigettate sia in `set_pixel` che in `get_pixel`:
+-   We must verify that wrong coordinates are rejected both by `set_pixel` and `get_pixel`:
 
     ```python
     img = HdrImage(7, 4)
@@ -301,9 +305,9 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
         img.set_pixel(-1, 0, Color())
     ```
 
--   Possiamo fare di meglio *modularizzando* il codice, ossia decomponendolo in parti più semplici (che è un vantaggio già di per sè).
+-   We can improve our code and tests by *modularizing* our implementation, i.e., we decompose it in simpler parts.
 
-# Nuova implementazione
+# New implementation
 
 ```python
 def valid_coordinates(self, x: int, y: int) -> bool:
@@ -322,9 +326,9 @@ def set_pixel(self, x: int, y: int, new_color: Color):
     self.pixels[self.pixel_offset(x, y)] = new_color
 ```
 
-# Test
+# Tests
 
--   Questi sono i test scritti per la nuova implementazione:
+-   Here are the tests for the new implementation:
 
     ```python
     img = HdrImage(7, 4)
@@ -344,54 +348,63 @@ def set_pixel(self, x: int, y: int, new_color: Color):
     assert img.pixel_offset(6, 3) == 7 * 4 - 1
     ```
 
--   Questi sono detti *unit test*, perché vanno a verificare le singole «unità» di codice.
+-   This kind of test is called *unit test*
 
 
-# Metodi pubblici e privati
+# Public/private methods
 
--   La programmazione OOP propugna l'idea di definire certi metodi come “privati”, in modo che non siano invocabili dall'esterno.
+-   OOP programming encourages the declaration of some methods/fields as “private”, so that they cannot be invoked outside a class.
 
--   Questo però risulta molto scomodo nei test! Si vorrebbe infatti scrivere un test anche per `valid_coordinates` e per `pixel_offset`, ma la filosofia OOP imporrebbe di definirli privati e quindi non richiamabili dall'esterno.
+-   However, this practice makes the implementation of unit tests more difficult. Functions like `valid_coordinates` and `pixel_offset` should be declared “private”, but in this way we cannot invoke them directly in tests!
 
--   Se usate un linguaggio OOP, potete definire queste funzioni *pubbliche* ma chiamarle `_valid_coordinates` e `_pixel_offset`: di solito quando in informatica un nome inizia con `_` lo si considera “privato”, ma non si è obbligati a trattarlo come tale.
-
-
-# Funzioni di supporto ai test
-
--   Nel nostro codice Python, per verificare la corrispondenza tra due colori abbiamo usato `==`, che funziona perché abbiamo specificato numeri interi:
-
-    ```c++
-    assert (color1 + color2) == Color(6.0, 8.0, 10.0)
-    assert (2 * color1) == Color(2.0, 4.0, 6.0)
-    ```
-
--   Però $\pi$ compare spesso nei calcoli radiometrici!
-
--   Definite una funzione che confronti due `Color` come i floating-point:
-
-    ```python
-    def are_colors_close(a, b):
-        return are_close(a.r, b.r) and are_close(a.g, b.g) and are_close(a.b, b.b)
-
-    assert are_colors_close(color1, color2)
-    ```
-
-# Importanza dei test
-
--   La scrittura di buoni test è una delle abilità che questo insegnamento vuole sviluppare.
-
--   È quindi **fondamentale** che i vostri repository mostrino una regolare implementazione dei test, lezione per lezione.
-
--   La regolarità nell'implementazione dei test e la loro qualità è uno dei criteri con cui verrete valutati all'esame.
+-   The simplest solution is to define these functions as “public” so that we can write tests in the usual way, but to prepend their name with an underscore “`_`”. (In Computer Science, it is customary to consider names like `_valid_coordinates` and `_pixel_offset` as private.)
 
 
-# Lavoro in gruppo
+# Support functions for tests
 
--   Da oggi lavorerete in gruppo: ciascuno di voi dovrà scegliere quale parte di codice implementare.
+-   In our Python code, to check the correspondence between two colors, we used `==`, which works because we specified integer numbers:
 
--   Inizieremo ad usare le caratteristiche più avanzate di Git per gestire i **conflitti**, ossia le situazioni in cui una parte di codice viene modificata contemporaneamente da più persone.
+```c++
+assert (color1 + color2) == Color(6.0, 8.0, 10.0)
+assert (2 * color1) == Color(2.0, 4.0, 6.0)
+```
 
--   Vediamo un esempio pratico di conflitto per un semplice codice Python.
+-   We will soon need to use $\pi$ in our calculations with colors, so define a function that compares the “closeness” of two `Color` instances:
+
+```python
+def are_colors_close(a, b):
+    return are_close(a.r, b.r) and are_close(a.g, b.g) and are_close(a.b, b.b)
+
+assert are_colors_close(color1, color2)
+```
+
+# Importance of Tests
+
+- Writing good tests is one of the skills that this course aims to develop.
+
+- Therefore, **it is essential** that your repositories demonstrate a regular implementation of tests, lesson by lesson.
+
+- Regularity in the implementation of tests and their quality is one of the criteria by which you will be assessed in the exam.
+
+- (Moreover, it will be a good showcase of your code cleanliness in the future!)
+
+# Importance of good commits!
+
+- Your GitHub or LinkedIn profile may be reviewed during job interviews
+
+- If you take good care of the repository for this course, it may serve as a "showcase" to include in your resume
+
+- Therefore, avoid writing vague comments in your commits!
+
+---
+
+![](media/bad-commit-messages.png)
+
+# Group Work
+
+- From now on, you will work in groups: each of you will have to choose a part of the code to implement.
+
+- We will start using the advanced features of Git to manage **conflicts**, that is, situations in which a part of the code is modified simultaneously by multiple people.
 
 ---
 
@@ -403,48 +416,46 @@ def set_pixel(self, x: int, y: int, new_color: Color):
 ![](./media/merge-commit.svg)
 </center>
 
-# Tipi di conflitti
+# Types of conflicts
 
-1.  Due sviluppatori stanno implementando la stessa funzionalità:
-    -   Si sceglie una delle due implementazioni
-    -   Si fondono insieme
-2.  Due sviluppatori implementano funzionalità separate nello stesso punto del codice:
-    -   Se possono coesistere, si mantengono insieme (è il caso del video precedente)
-    -   Se non possono, si separano in due file diversi
-3.  Due sviluppatori implementano due funzionalità incompatibili:
-    -   Decidono quale delle due funzionalità vada mantenuta e quale no…
-    -   …oppure uno dei due si licenzia!
+1. Two developers implement the same functionality:
+    - Choose one of the implementations
+    - Merge them together
+2. Two developers implement separate functionalities in the same code location:
+    - If they can coexist, keep them together (as in the previous video example)
+    - If not, separate them into two different files
+3. Two developers implement incompatible functionalities:
+    - Decide which functionality to maintain and which to discard…
+    - …or one of the developers quits!
 
+# What to do today
 
-# Guida per l'esercitazione
+# What to do today
 
-# Guida per l'esercitazione
+1. Choose a project name (we will use `myraytracer` for this exercise).
 
-1.  Scegliete un nome per il vostro progetto (qui useremo `myraytracer`).
+2. Structure the project as follows:
 
-2.  Strutturare il progetto nel modo seguente:
+   - A library implementing `Color` and `HdrImage` classes, and their operations
+   - A console application that imports the library, but for now only prints "Hello, world!"
+   - A series of automated tests for `Color` and `HdrImage` classes
 
-    -   Una libreria che implementi `Color` e `HdrImage`, più le operazioni su di essi;
-    -   Un programma da linea di comando che importi la libreria, ma che per il momento stampi solo `Hello, world!`;
-    -   Una serie di test automatici sui tipi `Color` e `HdrImage`.
+3. Commit the project to GitHub, add team members, and send an email to the teacher ([maurizio.tomasi@unimi.it](mailto:maurizio.tomasi@unimi.it).)
 
-3.  Registrare il progetto su GitHub, aggiungere i propri compagni e mandare una mail al docente.
+5. Don't be afraid of creating conflicts and performing merge commits: the more you practice with them, the easier it will be in the future.
 
-5.  Non abbiate paura di creare conflitti e fare *merge commit*: più vi esercitate con essi, più semplice vi sarà la vita in futuro.
+# Group work
 
+- In each group, only **one** person should create the project skeleton, create the GitHub page, and save it.
 
-# Lavoro in gruppo
+- The other group members become project collaborators (see the following slide for more information).
 
--   In ogni gruppo, solo **uno** di voi dovrebbe creare lo scheletro del progetto, creare la pagina GitHub e salvarlo.
+- Think about how to divide the work among group members; for example, for `Color`:
 
--   Gli altri membri diventeranno collaboratori del progetto (v. slide seguente).
-
--   Pensate a un modo per suddividere il lavoro tra membri del vostro gruppo; ad esempio, per `Color`:
-
-    1.  Somma di due colori;
-    2.  Prodotto tra due colori, e prodotto colore-scalare;
-    3.  Funzione `are_colors_close`;
-    4.  Test.
+    1. Sum of two colors
+    2. Product of two colors, and color-scalar product
+    3. `are_colors_close` function
+    4. Tests
 
 ---
 
@@ -452,47 +463,41 @@ def set_pixel(self, x: int, y: int, new_color: Color):
 ![](./media/github-add-collaborators.png)
 </center>
 
-# Lavoro in gruppo
+# Working in a Team
 
--   Per lavorare in gruppo sul repository GitHub, ciascuno di voi dovrà eseguire `git push` per inviare le proprie modifiche («commit») al server GitHub
--   A quel punto i compagni potranno scaricare le modifiche usando `git pull`.
+- Each of you will need to run `git push` on your repository on GitHub to send your changes (“commit”) to the server
 
--   Un modo per dividersi il lavoro è che uno di voi implementi un metodo (ad esempio `valid_coordinates`) e l'altro scriva **contemporaneamente** il test:
+- Once this is done, your team members can download the changes using `git pull`
+
+- A way to divide the work is for one of you to implement a method (e.g., `valid_coordinates`) while the other writes the test **simultaneously**:
 
     - `valid_coordinates` + test;
     - `pixel_offset` + test;
     - `get_pixel`/`set_pixel` + test.
 
-# Attenzione ai commit!
+# Properties of `Color`
 
--   Il proprio profilo GitHub/LinkedIn può essere esaminato durante i colloqui di lavoro
+- Three fields `r`, `g`, `b` of type 32-bit floating-point: they don't need 64 bits, and would actually waste memory and processing time
 
--   Se curate bene il repository su cui lavorerete per questo insegnamento, potrebbe essere uno “show-case” da mettere in evidenza nel vostro CV
+- For OOP languages, don’t lose time writing getters and setters like `GetR`, etc.: they are long to write, prone to errors, and make the code harder to read
 
--   Evitate quindi di scrivere commenti approssimativi nei vostri commit!
+- A method/function that checks if two colors are similar (useful for testing);
 
----
+- Addition of colors;
 
-![](media/bad-commit-messages.png)
+- Multiplication of color and color or color and scalar;
 
-# Caratteristiche di `Color`
+- If appropriate, implement a function that converts an object into a string (e.g., `<r:1.0, g:3.0, b:4.0>`): it will be handy for debugging
 
--   Tre campi `r`, `g`, `b` di tipo floating-point a **32 bit**: non servono 64 bit, e anzi ci farebbero sprecare memoria e tempo
--   Se usate linguaggi OOP, non perdete tempo a definire `GetR`/`SetR` e simili: sono lunghe da scrivere, facili da sbagliare, rendono il codice difficile da leggere e più lento da compilare
--   Metodo `Color.is_close` o funzione `are_close`/`are_colors_close` per verificare se due colori sono simili (utile nei test);
--   Somma tra colori;
--   Prodotti colore-colore e colore-scalare
--   Se è il caso, implementate anche una funzione che converta un numero in una stringa (es., `<r:1.0, g:3.0, b:4.0>`): sarà comodo per fare debug
+# Memory usage
 
-# Uso della memoria
+- Most programming languages differentiate between *value* and *reference types*.
 
--   Nella maggior parte dei linguaggi c'è differenza tra *value* e *reference types*.
+- *Value types* are direct values that can be accessed directly, and are always allocated on the stack: they are very fast to use, but cannot take up much memory (usually only a few kilobytes).
 
--   I *value types* sono valori a cui si può accedere direttamente, e sono sempre allocati sullo *stack*: sono molto veloci da usare, ma non possono occupare troppa memoria (alcuni kB al massimo).
+- *Reference types* are pointers to the actual data, and can be allocated on the stack or heap: they can consume all available memory, but are slower to access and manipulate.
 
--   I *reference types* sono dei puntatori al dato attuale, e possono essere sia sullo *stack* che nello *heap*; in quest'ultimo caso possono occupare tutta la memoria che vogliono, ma sono più lenti da leggere e scrivere.
-
--   Fanno eccezione i linguaggi basati su JVM (Java, Kotlin, Scala, etc.), per cui esistono solo *reference types* (ma la JVM può autonomamente convertire variabili in *value types* se capisce che è conveniente).
+- Exceptions include languages based on the Java Virtual Machine (Java, Kotlin, Scala, etc.), where there are only reference types (although the JVM may automatically convert values to references if it deems it beneficial).
 
 ---
 
@@ -502,7 +507,7 @@ def set_pixel(self, x: int, y: int, new_color: Color):
 
 ---
 
-# Esempio in C++
+# An example using C++
 
 ```c++
 #include <iostream>
@@ -523,55 +528,53 @@ int main() {
 }
 ```
 
-In Python, qualsiasi variabile (anche le variabili intere come `x = 1`) è allocata nello heap (uno dei motivi per cui è molto più lento del C++)
+ In Python, any variable (even integer variables like `x = 1`) is allocated on the heap (one of the reasons why it is much slower than C++)
 
-# Dimensione dello stack
+# Stack size
 
--   Per programmi C/C++/Fortran/Julia, la dimensione è fissata dal sistema operativo. Sotto sistemi Posix (Linux/Mac OS X), potete conoscerne il valore in KB col comando `ulimit -s`:
+- For programs written in C/C++/Fortran/Julia, the stack size is set by the operating system. On systems using Posix (such as Linux/macOS), you can find the value in KB using the command `ulimit -s`:
 
-    ```text
+    ```
     $ ulimit -s
     8192
     ```
 
-    Il valore di 8 MB è caratteristico di Linux; per i Mac è 0,5 MB.
+    The value of 8 MB is characteristic of Linux; for macOS, it is 0.5 MB.
 
--   La piattaforma .NET (Visual Basic, C\#) usa uno stack di 1 MB.
+- For the .NET platform (including Visual Basic and C#), a 1 MB stack is used.
 
--   La piattaforma JVM (Java, Kotlin) usa uno stack di 1 MB, che è però usato solo per i tipi primitivi (interi, booleani, numeri floating-point).
+- The JVM (Java, Kotlin) uses a 1 MB stack, which is only used for primitive types (integers, booleans, floating-point numbers).
 
 # Value types
 
--   La classe `Color` è molto piccola: richiede memoria per 3 numeri floating-point, ed è quindi logico definirla come un *value type* (questo non è vero per `HdrImage`)
+- The `Color` class is quite small: it requires 3 floating-point numbers in memory, making it a good candidate for a value type (this is not true for `HdrImage`).
 
--   A seconda del linguaggio, l'uso di un *value type* richiede accorgimenti diversi:
+- The way you ask for a value type depends on the programming language:
 
-    -   In C++, si usa `struct` oppure `class` (è uguale), ma quando la userete nei codici/test evitate `new`/`delete`;
-    -   In C\# e in D, si usa `struct` (value type), ma non `class` (reference type);
-    -   In Pascal, si usa `object` o `record`, ma non si usa `class`;
-    -   In Nim, si usa `object`, ma non si usa `ref object`;
-    -   In Julia, si usa il package [`StaticArrays`](https://juliaarrays.github.io/StaticArrays.jl/stable/).
+    - In C++, both `struct` and `class` can be used (they are equivalent), but when using them, avoid using `new` and `delete`.
+    - In C# and D, `struct` is used for value types (but not `class`), while `class` is used for reference types.
+    - In Pascal, `object` or `record` can be used, but not `class`.
+    - In Nim, `object` can be used, but not `ref object`.
+    - In Julia, the [`StaticArrays`](https://julialang.github.io/staticarrays.jl/) package can be used.
 
 # Test (1)
 
--   Creazione di colori e funzione `is_close`:
+- Creating `Color` objects and using the `is_close` function:
 
     ```python
-    col = Color(1.0, 2.0, 3.0)
-    assert col.is_close(Color(1.0, 2.0, 3.0))
+    color = Color(1.0, 2.0, 3.0)
+    assert color.is_close(Color(1.0, 2.0, 3.0))
     ```
 
--   Verificate anche che `is_close` fallisca (ossia ritorni `False`) quando è necessario:
+-   It is important to test that `is_close` returns `False` when necessary (note that this is a **negative** test):
 
     ```python
-    assert not col.is_close(Color(3.0, 4.0, 5.0))  # First method
+    assert not color.is_close(Color(3.0, 4.0, 5.0))  # First method
     ```
-
-    Questo tipo di test «negativi» è molto importante!
 
 # Test (2)
 
--   Somma/prodotto di colori:
+-   Sum/product between colors:
 
     ```python
     col1 = Color(1.0, 2.0, 3.0)  # Do not use the previous definition,
@@ -581,8 +584,7 @@ In Python, qualsiasi variabile (anche le variabili intere come `x = 1`) è alloc
     assert (col1 * col2).is_close(Color(5.0, 14.0, 27.0))
     ```
 
--   Prodotto colore-scalare (implementate anche scalare-colore,
-    se volete):
+-   Color-scalar product (you can implement scalar-color too, if you want):
 
     ```python
     prod_col = Color(1.0, 2.0, 3.0) * 2.0
@@ -623,13 +625,13 @@ def test_get_set_pixel():
     assert are_colors_close(reference_color, img.get_pixel(3, 2))
 ```
 
-# Indicazioni per C++
+# Hints for C++
 
-# Uso di CMake
+# Using CMake
 
--   [CMake](https://cmake.org/) permette non solo di generare automaticamente un `Makefile`, ma anche di eseguire test automatici.
+-   [CMake](https://cmake.org/) provides the ability to automatically run tests.
 
--   Create il seguente albero di directory:
+-   Create this directory tree:
 
     ```text
     $ tree raytracer
@@ -644,23 +646,23 @@ def test_get_set_pixel():
         └── colors.cpp     <-- Tests for the class "Color"
     ```
 
--   Se implementate tutti i metodi di `Color` in `include/colors.h` (consigliato, il codice è più veloce così), non c'è bisogno di `src/colors.cpp`.
+-   If you implement all the methods for `Colors` in `include/colors.h` (highly recommended! this makes the code faster), there is no need of `src/colors.cpp`.
 
-# Struttura di `CMakeLists.txt`
+# `CMakeLists.txt`
 
--   CMake dovrà creare tre prodotti:
+-   CMake will have to create three products:
 
-    1.  Una libreria che implementi `Color`; sceglietele un nome (noi useremo `trace`).
-    2.  Un programma eseguibile che usi la libreria, che chiameremo `raytracer`. Al momento basta che stampi `Hello, world!`.
-    3.  Un programma che esegua i test, che chiameremo `colorTest`.
+    1.  A library that implements `Color`; choose a name for it (we will use `trace`).
+    2.  An executable program that uses the library, which we will call `raytracer`. At the moment it is enough that it prints `Hello, world!`.
+    3.  A program that runs the tests, which we will call `colorTest`.
 
--   Per creare programmi sappiamo che c'è il comando `add_executable`; per le librerie esiste l'analogo `add_library`.
+-   To create programs we know that there is the `add_executable` command; for libraries there is the analogous `add_library`.
 
--   Le dipendenze tra libreria `trace` e programmi si specificano con `target_link_libraries`.
+-   The dependencies between the `trace` library and programs are specified with `target_link_libraries`.
 
-# Librerie ed eseguibili
+# Libraries and Executables
 
--   La sequenza di librerie e di eseguibili da produrre si specifica così:
+-   The sequence of libraries and executables to produce is specified as follows:
 
     ```cmake
     add_library(trace
@@ -683,23 +685,23 @@ def test_get_set_pixel():
     target_link_libraries(colorTest PUBLIC trace)
     ```
 
--   `target_include_directories` specifica dove cercare `colors.h`.
+-   `target_include_directories` specifies where to look  for `colors.h`.
 
-# Eseguire test
+# Running Tests
 
--   Per eseguire test automatici, occorre invocare due comandi in `CMakeLists.txt`:
+-   To run automatic tests, you need to invoke two commands in `CMakeLists.txt`:
 
-    1.  `enable_testing` abilita la possibilità di eseguire test, e va scritto subito dopo il comando `project`.
+    1.  `enable_testing` enables the ability to run tests, and should be written immediately after the `project` command.
 
-    2.  `add_test` specifica quale dei file eseguibili da produrre esegue effettivamente test. (Si può usare più volte).
+    2.  `add_test` specifies which of the executable files to produce actually runs tests. (You can use it multiple times).
 
--   Nel nostro caso, invocheremo `add_test` una sola volta per eseguire `colorTest`.
+-   In our case, we will invoke `add_test` only once to run `colorTest`.
 
--   Per eseguire i test, nella directory `build` basta invocare `ctest`.
+-   To run the tests, in the `build` directory, simply invoke `ctest`.
 
 # `CMakeLists.txt`
 
-Questo è il contenuto completo di `CMakeLists.txt`:
+This is the complete content of `CMakeLists.txt`:
 ```cmake
 cmake_minimum_required(VERSION 3.12)
 
@@ -755,11 +757,11 @@ add_test(NAME colorTest
 
 <asciinema-player src="cast/c++-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player>
 
-# Funzionamento dei test
+# Test Operation
 
--   Occorre restituire l'esito del test come valore al sistema operativo.
+-   The test result must be returned as a value to the operating system.
 
--   La possibilità più elementare è di usare un `return` appropriato nel `main`:
+-   The most elementary possibility is to use an appropriate `return` in `main`:
 
     ```c++
     #include "colors.h"
@@ -774,83 +776,83 @@ add_test(NAME colorTest
     }
     ```
 
--   Si può usare [`abort`](https://www.cplusplus.com/reference/cstdlib/abort/?kw=abort) (in caso di fallimento) o [`assert`](https://www.cplusplus.com/reference/cassert/assert/?kw=assert) (occhio a `NDEBUG`!).
+-   You can use [`abort`](https://www.cplusplus.com/reference/cstdlib/abort/?kw=abort) (in case of failure) or [`assert`](https://www.cplusplus.com/reference/cassert/assert/?kw=assert) (watch out for `NDEBUG`!).
 
-# Esecuzione dei test
+# Running Tests
 
--   Provate a modificare uno dei test sul tipo `Color`, in modo che fallisca:
+-   Try modifying one of the tests on the `Color` type so that it fails:
 
-    -   Cambiate il file `test/colors.cpp`
-    -   Andate nella directory `build` ed eseguite `ctest`
-    -   Fate il commit delle modifiche
-    -   Inviate le modifiche a GitHub col comando `git push`
+    -   Change the `test/colors.cpp` file
+    -   Go to the `build` directory and run `ctest`
+    -   Commit the changes
+    -   Send the changes to GitHub with the `git push` command
 
- -  Sarebbe bene che ciascun membro del gruppo provasse a fare questo.
+-   It would be good if each group member tried to do this.
 
-# Suggerimenti
+# Suggestions
 
--   Se il build **non** fallisce, è probabilmente perché viene usato come tipo di build il `Release` anziché il `Debug`, e avete usato `assert` nel vostro codice.
--   Soluzioni:
-    -   Cambiate il file `.yml` in modo da usare `Debug` anziché `Release`;
-    -   Usate `#undef NDEBUG` prima di `#include <cassert>` (meglio!);
-    -   Definite una vostra funzione `my_assert` (ancora meglio!);
-    -   Usate una libreria di testing C++, come [Catch2](https://github.com/catchorg/Catch2/tree/v2.x) (ottimo!).
--   Insegnamento: provare **sempre** a far fallire uno o più test!
+-   If the build does **not** fail, it is probably because the `Release` build type is used instead of `Debug`, and you used `assert` in your code.
+-   Solutions:
+    -   Change the `.yml` file to use `Debug` instead of `Release`;
+    -   Use `#undef NDEBUG` before `#include <cassert>` (better!);
+    -   Define your own `my_assert` function (even better!);
+    -   Use a C++ testing library, such as [Catch2](https://github.com/catchorg/Catch2/tree/v2.x) (excellent!).
+-   Lesson: **always** try to make one or more tests fail!
 
-# Indicazioni per Julia
+# Hints for Julia
 
-# Struttura del package
+# Package Structure
 
--   Julia implementa in modo nativo il tipo di struttura richiesta (libreria, eseguibile, eseguibile con i test):
+-   Julia natively implements the required structure type (library, executable, executable with tests):
 
-    -   Ogni package può essere usato come una libreria;
-    -   I package possono includere una serie di test se al loro interno è presente una directory chiamata `test`;
-    -   Lo script che implementa il `main` [visto nella precedente esercitazione](./tomasi-ray-tracing-01b.html#/julia-main) può essere usato come eseguibile.
+    -   Each package can be used as a library;
+    -   Packages can include a set of tests if they have a directory called `test` inside;
+    -   The script that implements `main` [seen in the previous exercise](./tomasi-ray-tracing-01b.html#/julia-main) can be used as an executable.
 
--   La creazione di un nuovo package configura quindi tutto già nel modo richiesto, tranne l'eseguibile.
+-   Creating a new package therefore configures everything already in the required way, except for the executable.
 
-# Creazione del package
+# Creating the Package
 
--   Create un nuovo package con i comandi visti la volta scorsa:
+-   Create a new package with the commands seen last time:
 
     ```julia
     using Pkg
-    Pkg.generate("Raytracer")  # Upper case is customary in Julia
+    Pkg.generate("Raytracer") # Upper case is customary in Julia
     Pkg.activate("Raytracer")
     ```
 
--   Julia supporta la gestione dei colori tramite [ColorTypes](https://github.com/JuliaGraphics/ColorTypes.jl) e [Colors](https://juliagraphics.github.io/Colors.jl/stable/):
+-   Julia supports color management through [ColorTypes](https://github.com/JuliaGraphics/ColorTypes.jl) and [Colors](https://juliagraphics.github.io/Colors.jl/stable/):
 
     ```julia
     Pkg.add("ColorTypes")
     Pkg.add("Colors")
     ```
 
-    Questo modificherà `Project.toml` e aggiungerà `Manifest.toml`, che vanno salvati in Git (guardate cosa contengono!).
+    This will modify `Project.toml` and add `Manifest.toml`, which should be saved in Git (look at what they contain!).
 
-# Operazioni sui colori
+# Color Operations
 
--   Per oggi non c'è bisogno di comprendere la differenza tra *value* e *reference types*, perché userete Colors e ColorTypes.
+-   For today, there is no need to understand the difference between *value* and *reference types*, because you will be using Colors and ColorTypes.
 
--   La libreria Colors implementa una serie di tipi template:
+-   The Colors library implements a series of template types:
 
     ```julia
     using Colors
 
     a = RGB(0.1, 0.3, 0.7)
     b = XYZ(0.8, 0.4, 0.2)
-    println(convert(XYZ, a))  # Convert a from RGB to XYZ space
+    println(convert(XYZ, a)) # Convert a from RGB to XYZ space
     ```
 
--   La libreria non implementa però le operazioni sui colori che ci interessano (somma, differenza, prodotto, confronto). Implementatele voi nel file `src/Raytracer.jl` (il nome del file dipende dal nome del vostro progetto).
+-   However, the library does not implement the color operations that interest us (sum, difference, product, comparison). Implement them yourself in the `src/Raytracer.jl` file (the file name depends on your project name).
 
-# Complicazioni
+# Complications
 
--   I tipi in ColorTypes sono [*parametrici*](https://docs.julialang.org/en/v1/manual/types/#Parametric-Types) (come i template in C++): il tipo `RGB` è in realtà `RGB{T}`, con `T` parametro.
+-   The types in ColorTypes are [*parametric*](https://docs.julialang.org/en/v1/manual/types/#Parametric-Types) (like templates in C++): the `RGB` type is actually `RGB{T}`, with `T` as a parameter.
 
--   Dovete ridefinire le operazioni fondamentali `+`, `-`, `*` e `≈` (`\approx`), che in Julia sono presenti nel package `Base`.
+-   You need to redefine the fundamental operations `+`, `-`, `*` and `≈` (`\approx`), which in Julia are present in the `Base` package.
 
-    Dovrete scrivere qualcosa del genere in `src/Raytracer.jl`:
+    You will need to write something like this in `src/Raytracer.jl`:
 
     ```julia
     import ColorTypes
@@ -860,9 +862,9 @@ add_test(NAME colorTest
     Base.:*(c::ColorTypes.RGB{T}, scalar) where {T} = scalar * c
     ```
 
-# Creazione di test
+# Creating Tests
 
--   Per implementare i test, create un file `test/runtests.jl`, in modo che la struttura delle directory sia la seguente:
+-   To implement the tests, create a `test/runtests.jl` file, so that the directory structure is as follows:
 
     ```sh
     $ tree Raytracer
@@ -875,18 +877,18 @@ add_test(NAME colorTest
         └── runtests.jl
     ```
 
--   Per scrivere test, dovete aggiungere la libreria [Test]():
+-   To write tests, you need to add the [Test]() library:
 
     ```julia
     Pkg.add("Test")
     ```
 
-# Come scrivere test
+# How to Write Tests
 
--   Nel file `runtests.jl` dovete scrivere le procedure di test. La libreria Test implementa le macro `@testset` (raggruppa test) e `@test`:
+-   In the `runtests.jl` file, you need to write the test procedures. The Test library implements the `@testset` (groups tests) and `@test` macros:
 
     ```julia
-    using Raytracer   # Mettete il nome che avete scelto
+    using Raytracer # Put the name you chose
     using Test
 
     @testset "Colors" begin
@@ -895,28 +897,28 @@ add_test(NAME colorTest
     end
     ```
 
--   Per eseguirli dalla REPL, scrivete
+-   To run them from the REPL, write
 
     ```julia
     Pkg.test()
     ```
 
-# Esecuzione di test
+# Running Tests
 
 <asciinema-player src="cast/julia-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player>
 
-# Il file `Manifest.toml`
+# The `Manifest.toml` File
 
--   Julia usa il file `Project.toml` per indicare informazioni generali sul package, e può essere editato
--   Il file `Manifest.toml` viene generato automaticamente, e fissa (in inglese, “pin”) il numero di versione delle dipendenze usate dal vostro package.
--   È indispensabile aggiungere a Git il file `Project.toml`.
--   Per `Manifest.toml` ci sono due possibilità:
-    1.  Se ritenete che sia **indispensabile** che ogni utente usi esattamente le stesse vostre versioni delle dipendenze, aggiungetelo;
-    2.  Se volete garantire più versatilità, escludetelo da Git (aggiungendo quindi una riga a `.gitignore`).
+-   Julia uses the `Project.toml` file to indicate general information about the package, and it can be edited.
+-   The `Manifest.toml` file is generated automatically, and it pins the version numbers of the dependencies used by your package.
+-   It is essential to add the `Project.toml` file to Git.
+-   For `Manifest.toml` there are two possibilities:
+    1.  If you believe it is **essential** that every user uses exactly your versions of the dependencies, add it;
+    2.  If you want to guarantee more versatility, exclude it from Git (thus adding a line to `.gitignore`).
 
-# Suggerimenti per C\#
+# Hints for C\#
 
-# Soluzioni e progetti
+# Solutions and Projects
 
 ```{.graphviz im_fmt="svg" im_out="img" im_fname="project-structure-csharp"}
 graph "" {
@@ -928,25 +930,26 @@ graph "" {
 }
 ```
 
--   Il comando `dotnet` supporta la creazione di *soluzioni* e *progetti*.
+-   The `dotnet` command supports the creation of *solutions* and *projects*.
 
--   Per *progetto* si intende qualsiasi cosa che possa essere prodotta a partire da file contenenti codice C\# (eseguibile, libreria…)
+-   A *progetto* is anything that can be produced from source C\# files (executables, libraries)…
 
--   Una *soluzione* è un insieme di progetti. Nel grafico sopra, ogni elemento del grafico è un *progetto*, e il grafico nel suo complesso è una *soluzione*.
+-   A *solution* is a collection of projects. Each element of the diagram is a *project*, and the whole diagram is a *solution*.
 
-# Creare soluzioni/progetti
+# Creating solutions/projects
 
--   Per creare una soluzione, basta scrivere `dotnet new sln`
--   I progetti in `dotnet` si dividono in più tipi:
-    -   Eseguibili (`dotnet new console`)
-    -   Librerie (`dotnet new classlib`)
-    -   Test automatici (`dotnet new xunit`)
--   Per specificare che il progetto `A` dipende da `B`, si usa `dotnet add A reference B`
--   Per aggiungere progetti a una soluzione, si usa `dotnet sln add`
+-   To create a solution, run `dotnet new sln`
 
-# La nostra soluzione
+-   Projects in `dotnet` can be of three types:
+    -   Executables (`dotnet new console`)
+    -   Libraries (`dotnet new classlib`)
+    -   Automatic tests (`dotnet new xunit`)
+-   To specify that project `A` depends on `B`, write  `dotnet add A reference B`
+-   To add new projects to a solution, use `dotnet sln add`
 
-Questi sono i comandi da terminale per produrre la soluzione che vogliamo:
+# Our “solution”
+
+Here are the commands to run to create the solution we want:
 
 ```sh
 # Create a new solution that will include:
@@ -977,12 +980,13 @@ dotnet add Trace.Tests/Trace.Tests.csproj reference Trace/Trace.csproj
 dotnet new gitignore
 ```
 
-Fate tutto da linea di comando e poi aprite il progetto in Rider: è più istruttivo!
+Do everything from the command line and then open the project in Rider: it's more instructive!
 
-# Albero delle directory
+# Directory tree
 
--   La soluzione così com'è creata ha nomi generici per i file, ed è meglio cambiarli in qualcosa di più facile da riconoscere;
--   Rinominate i file in modo da avere una struttura con questa forma:
+-   This solution has generic names for each file, so it is wise to change them into something easier to recognize.
+
+-   Rename the files so that they have the following structure:
 
     ```text
     Myraytracer
@@ -1000,7 +1004,7 @@ Fate tutto da linea di comando e poi aprite il progetto in Rider: è più istrut
         └── Trace.Tests.csproj
     ```
 
-# Scrittura di test
+# Writing tests
 
 ```csharp
 // This should be put in Trace.Tests/ColorTests.cs
@@ -1025,14 +1029,14 @@ namespace Trace.Tests
 }
 ```
 
-Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, fate riferimento alle slide relative a Kotlin)
+You can run tests with `dotnet test`, but you can also use Rider (this is **so handy**! Refer to the slides for Kotlin.)
 
 
-# Suggerimenti per D
+# Hints for D
 
-# Definizione dei tipi
+# Definition of the types
 
--   Definite `Color` come una `struct` e `HdrImage` come una `class`; per `Color` prevedete dei default:
+-   Define `Color` as a `struct` and `HdrImage` as a `class`; for `Color`, include defaults:
 
     ```d
     struct Color {
@@ -1040,34 +1044,48 @@ Potete eseguire i test col comando `dotnet test`, oppure in Rider (comodissimo, 
     };
     ```
 
--   Definite il campo `pixels` del tipo `HdrImage` come un [array dinamico](https://dlang.org/spec/arrays.html#dynamic-arrays)
+-   Define `pixels` in `HdrImage` as a [dynamic array](https://dlang.org/spec/arrays.html#dynamic-arrays)
 
--   Definite un costruttore per `HdrImage` che accetti `width` ed `height`, ed inizializzi `pixels` [allocando la lunghezza appropriata](https://dlang.org/spec/arrays.html#length-initialization) e poi impostando il colore di tutti i pixel al nero
+-   Define a constructor for `HdrImage` that requires `width` ed `height` and initializes `pixels` [allocating the correct length](https://dlang.org/spec/arrays.html#length-initialization). Then set the color of every pixel to black.
+
+# Tests in D
+
+-   D offers excellent support for tests via the keyword `unittest` (it’s awesome!)
+
+-   It’s not needed to define tests in separate files, as it is the case for C++ and C\#.
+
+-   To run the tests, execute the command
+
+    ```
+    $ dub test
+    ```
+
+-   See the documentation for more information: [Unit tests](https://dlang.org/spec/unittest.html)
 
 
-# Suggerimenti per Java/Kotlin
+# Hints for Java/Kotlin
 
-# Gestione di progetti
+# Handling projects
 
--   IntelliJ IDEA si basa su Gradle, che è l'equivalente di CMake in C++.
+-   IntelliJ IDEA is based on Gradle, which is the analogous of CMake for C++.C++.
 
--   Gradle può essere programmato in Groovy (un linguaggio basato su Java) o in Kotlin.
+-   Gradle can be programmed using Groovy (a language derived from Java) or Kotlin.
 
--   Siccome Java e Kotlin permettono un'ottima modularità, per questo corso non è necessario differenziare tra libreria ed eseguibile.
+-   As Java and Kotlin are highly modular, for this course there is no need to differentiate between a library and an executable.
 
--   Create quindi un nuovo progetto esattamente come avete fatto la volta scorsa.
+-   Therefore, you can create a project exactly like you did last week.
 
-# Creazione di classi
+# Creating classes
 
-In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):
+In IntelliJ IDEA, you can create new classes via the Project window (on the left):
 
 <center>
 ![](./media/kotlin-new-class.png){height=480}
 </center>
 
-# Creazione di `Color`
+# The `Color` class
 
--   In Kotlin, usate le *data classes* per definire la classe `Color`: sono molto veloci da usare!
+-   In Kotlin, use *data classes* to define `Color`: they are so easy to use!
 
     ```kotlin
     /** A RGB color
@@ -1081,11 +1099,11 @@ In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):
     }
     ```
 
--   Definite `is_close` e gli operatori `plus` (somma di due colori) e `times` (prodotto tra colore e scalare).
+-   Define `is_close` and operators `plus` (sum of two colors) and `times` (product between a color and a number).
 
-# Definizione di `HdrImage`
+# The `HdrImage` class
 
--   Kotlin permette la definizione di classi in forma estremamente compatta (una favola per chi viene da Java!). Ecco un esempio di implementazione di `HdrImage`:
+-   Kotlin lets you to define classes in a compact form (a dream for whoever has used Java!). Here is an example:
 
     ```kotlin
     class HdrImage(
@@ -1097,15 +1115,15 @@ In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):
     }
     ```
 
--   Abituatevi alla differenza tra `val` e `var`!
+-   Be sure to understand the difference between `val` and `var`!
 
-# Scrittura di test
+# Writing tests
 
--   IntelliJ IDEA genera e gestisce il codice di test.
+-   IntelliJ IDEA generates and handles tests automatically.
 
--   Usa la libreria [JUnit](https://junit.org/); se vi chiede che versione usare, scegliete la 5.
+-   You should use [JUnit](https://junit.org/); if the IDE asks you which version to use, pick 5.
 
--   Controllate la versione usata nel vostro progetto aprendo il menu «File | Project structure».
+-   Check the version you are using by opening menu «File | Project structure».
 
 ---
 
@@ -1113,19 +1131,19 @@ In IntelliJ IDEA le classi si creano dalla finestra del progetto (a sinistra):
 ![](./media/kotlin-project-structure.png){height=560}
 </center>
 
-Qui la versione di JUnit è la 4.
+In this screenshot, JUnit’s version is 4.
 
-# Creazione di test vuoti
+# Creating empty tests
 
--   Fate click col tasto destro sul nome di una classe e scegliete *Generate*.
+-   Right-click on a class name and pick *Generate*.
 
--   Nella finestra che compare, scegliete la versione giusta per JUnit e poi fate un segno di spunta accanto ai metodi per cui volete scrivere test. (Nel nostro caso saranno `is_close`, `plus` e `times`).
+-   In the window, pick the right version for JUnit and choose the methods that you want to test. (In our case, they are `is_close`, `plus`, and `times`).
 
--   Una volta implementati i test (usando `assertTrue` e `assertFalse`), eseguiteli usando le icone a sinistra dell'editor.
+-   Once you have implemented the tests using `assertTrue` and `assertFalse`, run them using the icons on the left.
 
 ---
 
-# Generare test
+# Generating tests
 
 <center>
 ![](./media/kotlin-generate-test.png)
@@ -1133,42 +1151,27 @@ Qui la versione di JUnit è la 4.
 
 ---
 
-# Eseguire test
+# Running tests
 <center>
 ![](./media/kotlin-run-test.png)
 </center>
 
 
-# Test in D
+# Hints for Rust
 
--   Il linguaggio D offre un ottimo supporto ai test tramite la keyword `unittest` (da sogno!)
+# Code Structure
 
--   Non è quindi necessario definire i test in file separati, com'è invece il caso ad esempio del C\# e di Nim
+-   For today, it is not necessary for you to structure the code into complex modules.
 
--   Per eseguire i test, basta avviare il comando
+-   Create a `basictypes.rs` file in which you will define both the `Color` type and the `HdrImage` type, along with all the tests associated with them.
 
-    ```
-    $ dub test
-    ```
+-   You can leave the `main.rs` file intact for the moment (with the `Hello, world!` message).
 
--   La documentazione corrispondente è qui: [Unit tests](https://dlang.org/spec/unittest.html)
+-   To automatically format the code, use the `cargo fmt` command.
 
+# Type Definition
 
-# Suggerimenti per Rust
-
-# Struttura del codice
-
--   Per oggi non è necessario che strutturiate il codice in moduli complessi.
-
--   Create un file `basictypes.rs` in cui definirete sia il tipo `Color` che il tipo `HdrImage`, insieme a tutti i test associati ad essi
-
--   Potete per il momento lasciare il file `main.rs` intatto (con il messaggio `Hello, world!`)
-
--   Per formattare automaticamente il codice, usate il comando `cargo fmt`
-
-# Definizione dei tipi
-
--   Per `Color`, derivate i *trait* `Copy`, `Clone` e `Debug` per semplificarvi la vita:
+-   For `Color`, derive the `Copy`, `Clone` and `Debug` traits to simplify your life:
 
     ```rust
     #[derive(Copy, Clone, Debug)]
@@ -1179,32 +1182,31 @@ Qui la versione di JUnit è la 4.
     }
     ```
 
--   Per `HdrImage`, definite il membro `pixels` di tipo `Vec<Color>`
+-   For `HdrImage`, define the `pixels` member of type `Vec<Color>`.
 
--   Definite anche una funzione `create_hdr_image(width: i32, height: i32) -> HdrImage`, che inizializzi `pixels` correttamente
+-   Also define a function `create_hdr_image(width: i32, height: i32) -> HdrImage`, which initializes `pixels` correctly.
 
-# Test in Rust
+# Tests in Rust
 
--   Rust supporta test nativamente usando le annotazioni `#[cfg(test)]` e `#[test]`
+-   Rust natively supports tests using the `#[cfg(test)]` and `#[test]` annotations.
 
--   I test possono essere eseguiti automaticamente con il comando
+-   Tests can be executed automatically with the command
 
     ```
     $ cargo test
     ```
 
--   Consultate la [guida di Rust](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html); una trattazione più approfondita si trova nel [capitolo 11](https://doc.rust-lang.org/book/ch11-00-testing.html) di *The Rust Programming Language* (Klabnik & Nichols)
+-   Consult the [Rust guide](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html); a more in-depth discussion can be found in [chapter 11](https://doc.rust-lang.org/book/ch11-00-testing.html) of *The Rust Programming Language* (Klabnik & Nichols).
 
+# Nim Suggestions
 
-# Suggerimenti per Nim
+# Type Definition
 
-# Definizione dei tipi
+-   Implementing the `Color` and `HdrImage` types should be elementary.
 
--   Implementare i tipi `Color` e `HdrImage` dovrebbe essere elementare
+-   Make sure to use `object` and not `ref object` for Color, while for `HdrImage` it is indifferent.
 
--   Assicuratevi di usare `object` e non `ref object` per Color, mentre per `HdrImage` è indifferente
-
--   Ricordatevi che in Nim bisogna esportare sia i tipi che i loro membri, usando `*`:
+-   Remember that in Nim you need to export both the types and their members, using `*`:
 
     ```nim
     type
@@ -1216,25 +1218,25 @@ Qui la versione di JUnit è la 4.
             pixels*: Seq[Color]
     ```
 
-# Creazione di `HdrImage`
+# Creating `HdrImage`
 
--   In Nim non servono costruttori come in C++
+-   In Nim, constructors like in C++ are not needed.
 
--   La prassi è quella di definire una funzione `newMyType` che crei il tipo `MyType`
+-   The common practice is to define a `newMyType` function that creates the `MyType` type.
 
--   Aggiungete quindi una procedura `newHdrImage` che accetti due parametri `width` ed `height`; inizializzate il campo `pixels` usando [`newSeq`](https://nim-lang.org/docs/system.html#newSeq), poi impostate tutti i colori a zero (nero)
+-   Therefore, add a `newHdrImage` procedure that accepts two parameters `width` and `height`, initialize the `pixels` field using [`newSeq`](https://nim-lang.org/docs/system.html#newSeq), and set all colors to zero (black).
 
-# Scrittura di test
+# Writing Tests
 
--   In Nim è possibile usare il comando `assert` per eseguire dei test
+-   In Nim, you can use the [`assert` template](https://nim-lang.org/docs/assertions.html#assert.t%2Cuntyped%2Cstring] to run tests.
 
--   La prassi è quella di creare dei file Nim all'interno della directory `tests`; se questi file iniziano con `t`, vengono [eseguiti automaticamente](https://github.com/nim-lang/nimble#tests) dal comando
+-   The practice is to create Nim files inside the `tests` directory; if these files start with `t`, they are [automatically executed](https://github.com/nim-lang/nimble#tests) by the command
 
     ```
     $ nimble test
     ```
 
--   Per scrivere i test dei tipi `Color` e `HdrImage`, create quindi un file `tests/test_basictypes.nim` fatto così:
+-   To write tests for the `Color` and `HdrImage` types, create a `tests/test_basictypes.nim` file like this:
 
     ```nim
     import ../src/basictypes
@@ -1244,9 +1246,8 @@ Qui la versione di JUnit è la 4.
         # …
     ```
 
-
 ---
-title: "Esercitazione 2"
+title: "Laboratory 2"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

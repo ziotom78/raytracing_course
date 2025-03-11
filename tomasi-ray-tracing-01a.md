@@ -1,112 +1,110 @@
-# Introduzione al corso
+# Introduction
 
-# Queste slide
+# These Slides
 
-Sono disponibili all'indirizzo [ziotom78.github.io/raytracing_course/](https://ziotom78.github.io/raytracing_course/).
+They are available at [ziotom78.github.io/raytracing_course/](https://ziotom78.github.io/raytracing_course/).
 
 <center>
 ![](media/url-qr-code.svg){height=400}
 </center>
 
-# Indicazioni generali
+# General Guidelines
 
--   Lezioni di teoria del lunedì videoregistrate e caricate su [Ariel](https://mtomasicngif.ariel.ctu.unimi.it)
+-   Monday theory lessons are recorded and uploaded to [Ariel](https://mtomasicngif.ariel.ctu.unimi.it)
 
--   Richiesta la presenza alle esercitazioni (firma)
+-   Attendance is required for laboratories (sign-in required)
 
--   Domande al di fuori delle lezioni:
+-   Questions outside of lessons:
 
-    - Se su argomenti di teoria o comunque di interesse generale, sul forum di Ariel
+    - If related to theory topics or of general interest, ask on the Ariel forum
 
-    - Se specifiche sul proprio codice, contattate il docente ([maurizio.tomasi@unimi.it](mailto:maurizio.tomasi@unimi.it))
+    - If specific to your own code, contact the instructor ([maurizio.tomasi@unimi.it](mailto:maurizio.tomasi@unimi.it))
 
-# Calendario
+# Schedule
 
--   Prossima settimana (3 marzo): niente lezioni perché sono a un convegno
--   Settimana del 14 aprile: niente lezioni per prove in itinere
--   Settimana dopo pasqua: lezione “speciale” il 23 aprile
--   Settimana del 2 giugno: niente lezioni
--   Settimana del 9 giugno: fine del corso
+-   Next week (March 3): no lessons as I will be at a conference
+-   Week of April 14: no lessons due to midterm exams
+-   Week after Easter: “special” lesson on April 23
+-   Week of June 2: no lessons
+-   Week of June 9: end of the course
 
-# Obbiettivi del corso
+# Course Objectives
 
-1.  Come tradurre un modello fisico in un codice numerico?
-2.  Come scrivere codice ben strutturato e documentato?
-3.  Come generare immagini fotorealistiche?
+1.  How to translate a physical model into numerical code?
+2.  How to write well-structured and documented code?
+3.  How to generate photorealistic images?
 
-È un corso multidisciplinare: **non** riservato a cosmologi e
-astrofisici!
+This is a multidisciplinary course: **not** reserved for cosmologists and astrophysicists!
 
-# Obbiettivi del corso
+# Course Objectives
 
-1.  **Come tradurre un modello fisico in un codice numerico?**
-2.  Come scrivere codice ben strutturato e documentato?
-3.  Come generare immagini fotorealistiche?
+1.  **How to translate a physical model into numerical code?**
+2.  How to write well-structured and documented code?
+3.  How to generate photorealistic images?
 
-È un corso multidisciplinare: **non** riservato a cosmologi e
-astrofisici!
+This is a multidisciplinary course: **not** reserved for cosmologists and astrophysicists!
 
-# Soluzioni numeriche
+# Numerical Solutions
 
-![](./media/numerical-model-schema.png){height=560}
+![](./media/numerical-model-schema.svg){height=560}
 
-# Utilità delle simulazioni
+# The Usefulness of Simulations
 
 ![](./media/celebrating_planck.jpg){height=520}
 
-Planck: missione spaziale ESA (2009–2013)
+Planck: ESA space mission (2009–2013)
 
-# Utilità delle simulazioni
+# The Usefulness of Simulations
 
 ![](./media/Planck_satellite_s_mirrors_pillars.jpg){height=520}
 
-Assemblaggio della sonda nei laboratori ESA
+Assembly of the probe in ESA laboratories
 
-# Utilità delle simulazioni
+# The Usefulness of Simulations
 
 ![](./media/2006 Reinecke - A simulation pipeline for the Planck mission.png){height=520}
 
-# Utilità delle simulazioni
+# The Usefulness of Simulations
 
 ![](./media/2010 Burigana - Forecast for Planck.png)
 
-# Obbiettivi del corso
+# Course Objectives
 
-1.  Come tradurre un modello fisico in un codice numerico?
-2.  **Come scrivere codice ben strutturato e documentato?**
-3.  Come generare immagini fotorealistiche?
+1.  How to translate a physical model into numerical code?
+2.  **How to write well-structured and documented code?**
+3.  How to generate photorealistic images?
 
-# Repository pubblici
+# Public repositories
 
 ![](./media/litebird_sim-repo.png){height=560}
 
-# Elenco di modifiche
+# List of changes
 
 ![](./media/litebird_sim-commits.png){height=560}
 
-# Test automatici
+# Automatic tests
 
 ![](./media/litebird_sim-tests.png){height=560}
 
-# Tracciamento di bug
+# Bug tracking
 
 ![](./media/litebird_sim-issues.png){height=560}
 
-# Lavoro in team
+# Teamwork
 
 ![](./media/harlequin_pr.png){height=560}
 
-# Obbiettivi del corso
+# Course Objectives
 
-1.  Come tradurre un modello fisico in un codice numerico?
-2.  Come scrivere codice ben strutturato e documentato?
-3.  **Come generare immagini fotorealistiche?**
+1.  How to translate a physical model into numerical code?
+2.  How to write well-structured and documented code?
+3.  **How to generate photorealistic images?**
 
-# Generazione di immagini
+# Image Generation
 
 ![](./media/Vivian_Maier.jpg){height=520}
 
-Vivian Maier (1926–2009), Autoritratto
+Vivian Maier (1926–2009), Self-portrait
 
 ---
 
@@ -122,213 +120,199 @@ Vivian Maier (1926–2009), Autoritratto
 
 ![](./media/cornell-box-schema.svg){height=560}
 
-# Bibliografia
+# Bibliography
 
--   [*Physically Based Rendering: from Theory to Implementation*](http://www.pbr-book.org/) (M. Pharr, W. Jakob, G. Humphreys, quarta ed.): molto complesso e completo, è il testo di riferimento in materia. È disponibile online.
--   *Advanced Global Illumination* (P. Dutré, K. Bala, P. Bekaert, seconda ed.): lo useremo soprattutto per le parti più «fisiche».
--   *Realistic Ray Tracing* (P. Shirley, R. K. Morley, seconda ed.): molto antiquato, è utile soprattutto come testo introduttivo.
+-   [*Physically Based Rendering: from Theory to Implementation*](http://www.pbr-book.org/) (M. Pharr, W. Jakob, G. Humphreys, 4th ed.): quite complex but complete, it’s the gold standard for this topic. It’s available online.
+-   *Advanced Global Illumination* (P. Dutré, K. Bala, P. Bekaert, 2nd ed.): we’ll use it for the most “physical” parts.
+-   *Realistic Ray Tracing* (P. Shirley, R. K. Morley, 2nd ed.): old-fashioned, it’s useful just as an introductory text.
 
-# Radiometria
+# Radiometry
 
-# Propagazione della luce
+# Light Propagation
 
--   Ottica quantistica (non usata nella *computer graphics*)
--   Modello ondulatorio (diffrazione, es. bolle di sapone)
--   Ottica geometrica
+-   Quantum optics (not used in *computer graphics*)
+-   Wave model (diffraction, e.g., soap bubbles)
+-   Geometrical optics
 
-[(v. Dutré, Bala, Bekaert)]{style="float:right"}
+[(see Dutré, Bala, Bekaert)]{style="float:right"}
 
-# Ottica geometrica
+# Geometrical Optics
 
--   La luce si propaga lungo linee rette (geodesiche)
--   La velocità della luce è assunta infinita
--   La lunghezza d'onda si assume tendente a zero (frequenza → ∞)
--   Propagazione non influenzata da effetti gravitazionali o magnetici
+-   Light propagates along straight lines (geodesics)
+-   The speed of light is assumed to be infinite
+-   The wavelength is assumed to tend to zero (frequency → ∞)
+-   Propagation is not affected by gravitational or magnetic effects
 
-# Perché ci serve la radiometria?
+# Why Do We Need Radiometry?
 
--   In questo corso dovremo trattare la *radiometria*, ossia la scienza che studia come la radiazione si propaga in un mezzo.
--   Ciò che è importante è avere quantità che caratterizzano la *radiazione* in maniera il più possibile indipendente da strumenti che la misurano.
+-   In this course, we will deal with *radiometry*, the science that studies how radiation propagates through a medium.
+-   The important goal is to define quantities that characterize *radiation* as independently as possible from the instruments that measure it.
 
-# Quantità radiometriche
+# Radiometric Quantities
 
--   Energia emessa (Joule)
--   Potenza radiante, o *flusso* (Energia che attraversa una
-    superficie nell'unità di tempo)
--   Irradianza, emettenza radiante (flusso normalizzato sulla superficie)
--   **Radianza** (← il cuore del corso!)
--   Le definizioni che useremo saranno quelle usate nella *computer
-    graphics*, ma possono essere diverse in altri campi della fisica!
-    (Es., in astronomia l'irradianza è chiamata *flusso*).
+-   Emitted energy (Joules)
+-   Radiant power, or *flux* (Energy passing through a surface per unit time)
+-   Irradiance, radiant emittance (flux normalized over a surface)
+-   **Radiance** (← the core of the course!)
+-   The definitions we will use are those used in *computer graphics*, but they may differ in other fields of physics!
+    (For example, in astronomy, irradiance is called *flux*).
 
-# Flusso
+# Flux
 
--   Energia che attraversa una superficie $A$ nell'unità di tempo: $\Phi$
--   $[\Phi] = \mathrm{W}$ (in fisica, il flusso si misura invece come $\mathrm{W}/\mathrm{m}^2$!).
--   Esempio: $A$ è la superficie di un rivelatore, come la
-    pupilla umana o l'obbiettivo di una fotocamera.
--   Più è grande la superficie $A$, maggiore è $\Phi$.
+-   Energy passing through a surface $A$ per unit time: $\Phi$
+-   $[\Phi] = \mathrm{W}$ (in physics, flux is instead measured as $\mathrm{W}/\mathrm{m}^2$!).
+-   Example: $A$ is the surface of a detector, such as the human pupil or a camera lens.
+-   The larger the surface $A$, the greater the flux $\Phi$.
 
 ![](./media/flux.svg){height=260}
 
-# Irradianza/emettenza
+# Irradiance/Emittance
 
--   Flusso $\Phi$ normalizzato sulla superficie:
+-   Flux $\Phi$ normalized over the surface:
     $$
     I, E = \frac{\mathrm{d}\Phi}{\mathrm{d}A},
     \qquad [I] = \mathrm{W}/\mathrm{m}^2.
     $$
 
--   Irradianza $I$: ciò che *cade* su $\mathrm{d}A$; emettenza $E$:
-    ciò che *abbandona* $\mathrm{d}A$
+-   Irradiance $I$: what *falls* on $\mathrm{d}A$; emittance $E$: what *leaves* $\mathrm{d}A$.
 
 ![](./media/flux.svg){height=260}
 
-# Radianza
+# Radiance
 
--   Ciò che ci interessa!
--   Flusso $\Phi$ normalizzato sulla superficie **proiettata** per
-    unità di angolo solido:
+-   This is what interests us!
+-   Flux $\Phi$ normalized over the **projected** surface per unit solid angle:
     $$
     L = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A^\perp}
       = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A\,\cos\theta},
     \qquad [L] = \mathrm{W}/\mathrm{m}^2/\mathrm{sr}.
     $$
--   Come l'irradianza e l'emettenza, la radianza è funzione del punto
-    $\mathbf{x}$ della superficie $\mathrm{d}A$:
+-   Like irradiance and emittance, radiance is a function of the point $\mathbf{x}$ on the surface $\mathrm{d}A$:
     $$
     L = L(\mathbf{x}).
     $$
 
-# Angoli solidi e distanza
+# Solid Angles and Distance
 
 ![](./media/radiance-distance.svg){height=320px}
 
--   Dato che $I \propto A^{-1} \propto d^{-2}$, l'irradianza su $\mathrm{d}A$ a $3d$ è 1/9 di quella a $d$
--   Ma $\mathrm{d}\Omega = dA/d^2 \propto d^{-2}$
--   Quindi $L \propto I/\mathrm{d}\Omega$ non dipende da $d$
+-   Since $I \propto A^{-1} \propto d^{-2}$, the irradiance on $\mathrm{d}A$ at $3d$ is 1/9 of that at $d$.
+-   But $\mathrm{d}\Omega = dA/d^2 \propto d^{-2}$.
+-   Therefore, $L \propto I/\mathrm{d}\Omega$ does not depend on $d$.
 
-# Radianza
+# Radiance
 
 ![](./media/radiance.svg)
 
--   Il rapporto sull'angolo solido rimuove la dipendenza dalla
-    distanza
--   La presenza di $\cos\theta$ rimuove la dipendenza
-    dall'orientamento di $\mathrm{d}A$.
+-   The ratio over the solid angle removes the dependence on the distance.
+-   The presence of $\cos\theta$ removes the dependence on the orientation of $\mathrm{d}A$.
 
-# Notazione per la radianza
+# Notation for Radiance
 
--   Useremo spesso la notazione
+-   We will often use the notation
     $$
     L(\mathbf{x} \rightarrow \Theta)
     $$
-    per indicare la radianza che abbandona una superficie nel punto $\mathbf{x}$ verso la direzione $\Theta$, a cui è associato un angolo solido $\mathrm{d}\Omega$.
+    to indicate the radiance leaving a surface at point $\mathbf{x}$ towards direction $\Theta$, which is associated with a solid angle $\mathrm{d}\Omega$.
 
--   Analogamente,
+-   Similarly,
     $$
     L(\mathbf{x} \leftarrow \Theta)
     $$
-    è la radianza proveniente dalla direzione $\Theta$ che incide sulla superficie in $\mathbf{x}$.
+    represents the radiance coming from direction $\Theta$ and incident on $\mathbf{x}$.
 
-# Spettri di emissione
+# Emission Spectra
 
-Ciascuna delle quantità viste finora può essere riferita a un
-intervallo di lunghezze d'onda. Diverse sorgenti luminose hanno
-infatti spettri differenti:
+-   Each of the quantities discussed so far are actually wavelength-dependent.
 
-![](./media/led-lighting-2.jpg)
+-   Different light sources have different spectra:
 
-# Radianza spettrale
+    ![](./media/led-lighting-2.jpg)
 
-Dalla radianza $L(\mathbf{x} \leftrightarrow \Theta)$ si può definire
-la **radianza spettrale** $L_\lambda(\mathbf{x} \leftrightarrow
-\Theta),$ che fa riferimento all'intervallo di lunghezze d'onda
-$[\lambda, \lambda + \mathrm{d}\lambda]$ e indichiamo con la stessa
-lettera $L$ per comodità. È definita tramite l'equazione
-$$
-L(\mathbf{x} \leftrightarrow \Theta) =
-\int_0^\infty L_\lambda(\mathbf{x} \leftrightarrow \Theta)\,\mathrm{d}\lambda,
-\quad
-[L_\lambda(\mathbf{x} \leftrightarrow \Theta, \lambda)] = \mathrm{W}/\mathrm{m}^2/\mathrm{sr}/\mathrm{m}.
-$$
+# Spectral Radiance
 
-# Proprietà di $L$
+-   From radiance $L(\mathbf{x} \leftrightarrow \Theta)$, we can define **spectral radiance** $L_\lambda(\mathbf{x} \leftrightarrow \Theta),$ which refers to the wavelength interval $[\lambda, \lambda + \mathrm{d}\lambda]$ and is denoted by the same letter $L$ for convenience.
 
-1.  Da $L$ si possono ricavare $\Phi$, $I$, $E$. Ad esempio:
+-   It is defined by the equation
+
+    $$
+    L(\mathbf{x} \leftrightarrow \Theta) =
+    \int_0^\infty L_\lambda(\mathbf{x} \leftrightarrow \Theta)\,\mathrm{d}\lambda,
+    \ {}
+    [L_\lambda(\mathbf{x} \leftrightarrow \Theta, \lambda)] = \mathrm{W}/\mathrm{m}^2/\mathrm{sr}/\mathrm{m}.
+    $$
+
+# Properties of $L$
+
+1.  From $L$, we can derive $\Phi$, $I$, and $E$. For example:
 
     $$
     \Phi = \iint_{A, \Omega} L(\mathbf{x} \rightarrow \Theta)\,
            \cos\theta\,\mathrm{d}\Omega\,\mathrm{d}A_\mathbf{x},
     $$
 
-2.  In assenza di attenuazione vale che $L(\mathbf{x} \rightarrow
-    \mathbf{y}) = L(\mathbf{x} \rightarrow \mathbf{z}),$ se
-    $\mathbf{x}$, $\mathbf{y}$, $\mathbf{z}$ sono sulla stessa retta;
-    vale lo stesso per $L_\lambda$, ovviamente.
+2.  In the absence of attenuation, it holds that $L(\mathbf{x} \rightarrow
+    \mathbf{y}) = L(\mathbf{x} \rightarrow \mathbf{z}),$ if
+    $\mathbf{x}$, $\mathbf{y}$, $\mathbf{z}$ lie on the same line;
+    the same applies to $L_\lambda$.
 
-3.  Il fatto che $L$ e $L_\lambda$ non dipendano dalla distanza
-    implica che il colore percepito di un oggetto alla distanza $d$
-    non cambia al variare di $d$ (se non c'è attenuazione).
+3.  The fact that $L$ and $L_\lambda$ do not depend on distance
+    implies that the perceived color of an object at distance $d$
+    does not change as $d$ varies (if there is no attenuation).
 
-# Utilità di $L$
+# Importance of $L$
 
-$L$ è ciò che viene misurato da qualsiasi sensore (telecamera, occhio
-umano) sensibile alla luce.
+$L$ is what is measured by any light-sensitive sensor (camera, human eye).
 
 ![](./media/moana-frame-value.jpg)
 
-# Utilità di $L_\lambda$
+# Importance of $L_\lambda$
 
-Il comportamento di $L_\lambda$ al variare di $\lambda$ permette di
-stimare il colore (*hue*):
+The behavior of $L_\lambda$ as $\lambda$ varies allows us to estimate color (*hue*):
 
 ![](./media/moana-frame-hue.jpg)
 
-(Esiste anche un terzo parametro, la *saturazione*, che tratteremo a
-breve.)
+(There is also a third parameter, *saturation*, which we will discuss shortly.)
 
-# Creazione di immagini
+# Image Creation
 
-Stimare $L$ e $L_\lambda$ insieme consente di produrre un'immagine a
-colori:
+Estimating $L$ and $L_\lambda$ together allows us to produce a color image:
 
 ![](./media/moana-frame.jpg)
 
-# Esempio
+# Example
 
-Consideriamo un *emettitore diffuso*, un oggetto che emette luce
-uniformemente in tutte le direzioni:
+Consider a *diffuse emitter*, an object that emits light uniformly in all directions:
 
 ![](./media/diffuse-emitter.svg)
 
-In questo caso,
+In this case,
 $$
-L(\mathbf{x} \rightarrow \Theta) = L_e\qquad\text{(costante)}.
+L(\mathbf{x} \rightarrow \Theta) = L_e\qquad\text{(constant)}.
 $$
 
-# Calcolo del flusso
+# Flux Calculation
 
 $$
 \begin{aligned}
 \Phi &= \iint_{A, \Omega} L(\mathbf{x} \rightarrow \Theta)\,\cos\theta\,\mathrm{d}\Omega\,\mathrm{d}A =\\
-     &= \iint_{A, \Omega} L_e\,\cos\theta\,\mathrm{d}\Omega\,\mathrm{d}A =\\
-     &= L_e \int_A \mathrm{d}A \int_\Omega \cos\theta\,\mathrm{d}\Omega =\\
-     &= L_e \int_A \mathrm{d}A \int_0^{2\pi}\mathrm{d}\phi \int_0^{\pi/2}\mathrm{d}\theta \cos\theta\,\sin\theta =\\
-     &= \pi A L_e.\\
+    &= \iint_{A, \Omega} L_e\,\cos\theta\,\mathrm{d}\Omega\,\mathrm{d}A =\\
+    &= L_e \int_A \mathrm{d}A \int_\Omega \cos\theta\,\mathrm{d}\Omega =\\
+    &= L_e \int_A \mathrm{d}A \int_0^{2\pi}\mathrm{d}\phi \int_0^{\pi/2}\mathrm{d}\theta \cos\theta\,\sin\theta =\\
+    &= \pi A L_e.\\
 \end{aligned}
 $$
 
-# Interazione luce/superficie
+# Light/Surface Interaction
 
-# «Cornell box»
+# "Cornell box"
 
 ![](./media/cornell-box-schema.svg){height=560}
 
 
-# La BRDF
+# The BRDF
 
-La Bidirectional Reflectance Distribution Function (BRDF) è il rapporto $f_r(x, \Psi \rightarrow \Theta)$ tra la *radianza* che abbandona una superficie lungo $\Theta$ e l'*irradianza* (flusso normalizzato su $A$, $\mathrm{W}/\mathrm{m}^2$) ricevuta da una direzione $\Psi$:
+The Bidirectional Reflectance Distribution Function (BRDF) is the ratio $f_r(x, \Psi \rightarrow \Theta)$ between the *radiance* leaving a surface along $\Theta$ and the *irradiance* (flux normalized over $A$, $\mathrm{W}/\mathrm{m}^2$) received from a direction $\Psi$:
 
 $$
 \begin{aligned}
@@ -338,36 +322,36 @@ f_r(x, \Psi \rightarrow \Theta) &= \frac{\mathrm{d}L (x \rightarrow \Theta)}{\ma
 },
 \end{aligned}
 $$
-dove $\cos(N_x, \Psi)$ è l'angolo tra la normale a $\mathrm{d}A$ e la direzione incidente $\Psi$.
+where $\cos(N_x, \Psi)$ is the angle between the normal to $\mathrm{d}A$ and the incident direction $\Psi$.
 
-# La BRDF
+# The BRDF
 
 ![](./media/brdf.svg){height=400}
 
-Non si definisce la BRDF come rapporto tra due radianze, perché $f_r$ ci servirà per calcolare la radianza totale uscente $L_\text{tot} \sim \int_{2\pi} L\,f\,\mathrm{d}\omega$. Se $f$ fosse un numero puro o se $A$ fosse “corretto” per l’angolo $\theta$, l’integrale si complicherebbe.
+The BRDF is not defined as the ratio between two radiances, because $f_r$ will be used to calculate the total outgoing radiance $L_\text{tot} \sim \int_{2\pi} L\,f\,\mathrm{d}\omega$. If $f$ were a pure number or if $A$ were "corrected" for the angle $\theta$, the integral would become more complicated.
 
-# Significato della BRDF
+# Meaning of the BRDF
 
--   Descrive come una superficie interagisce con la luce;
--   $f_r \propto \cos^{-1}(N_x, \Psi)$: si tiene conto dell'inclinazione della sorgente luminosa rispetto a $\mathrm{d}A$.
--   $f_r : \mathbb{R}^3 \times \mathbb{R}^2 \times \mathbb{R}^2 \rightarrow \mathbb{R}$ ($x\times\Theta\times\Psi \rightarrow f_r$), ma nel caso più generale dipende anche da $\lambda$ e dal tempo $t$;
--   È una funzione positiva: $f_r \geq 0$, e la sua unità di misura è $1/\mathrm{sr}$;
--   Si considera tutto l'angolo solido $4\pi$, perché la BRDF si usa anche per superfici (semi-)trasparenti.
--   Assume che la luce abbandoni la superficie dallo stesso punto $x$ in cui l'ha incontrata (non vero per *subsurface scattering*!).
+-   Describes how a surface interacts with light;
+-   $f_r \propto \cos^{-1}(N_x, \Psi)$: the inclination of the light source with respect to $\mathrm{d}A$ is taken into account.
+-   $f_r : \mathbb{R}^3 \times \mathbb{R}^2 \times \mathbb{R}^2 \rightarrow \mathbb{R}$ ($x\times\Theta\times\Psi \rightarrow f_r$), but in the most general case it also depends on $\lambda$ and time $t$;
+-   It is a positive function: $f_r \geq 0$, and its unit of measure is $1/\mathrm{sr}$;
+-   The entire solid angle $4\pi$ is considered, because the BRDF is also used for (semi-)transparent surfaces.
+-   It assumes that light leaves the surface from the same point $x$ where it encountered it (not true for *subsurface scattering*!).
 
-# Reciprocità di Helmholtz
+# Helmholtz Reciprocity
 
--   Per la BRDF vale la *reprocità di Helmholtz*:
+-   The *Helmholtz reciprocity* holds for the BRDF:
     $$
     f_r(x, \Psi\rightarrow\Theta) = f_r(x, \Theta\rightarrow\Psi),
     $$
-    ossia, la BRDF non cambia se si scambiano la direzione entrante con quella uscente.
+    that is, the BRDF does not change if the incoming direction is exchanged with the outgoing one.
 
--   Si può dimostrare questa proprietà usando le equazioni di Maxwell, ma la dimostrazione è lunga e non particolarmente interessante per i nostri scopi.
+-   This property can be demonstrated using Maxwell's equations, but the demonstration is long and not particularly interesting for our purposes.
 
-# Più angoli di incidenza
+# Multiple Incidence Angles
 
-Grazie al principio di sovrapposizione dei campi e.m., se si hanno più sorgenti luminose $i=1\ldots N$ che insistono su una superficie, è sufficiente sommare le componenti:
+Thanks to the superposition principle of e.m. fields, if there are multiple light sources $i=1\ldots N$ that insist on a surface, it is sufficient to sum the components:
 
 $$
 \begin{aligned}
@@ -377,43 +361,43 @@ L_\text{tot}(x \rightarrow \Theta) &= \int_{\Omega_x} f_r(x, \Psi \rightarrow \T
 \end{aligned}
 $$
 
-# Utilità della BRDF
+# Utility of the BRDF
 
 ![](./media/moana-frame.jpg)
 
-# Superficie diffusiva ideale
+# Ideal Diffusive Surface
 
-Tutta la radiazione incidente viene distribuita sulla semisfera $2\pi$, così la BRDF è costante:
+All incident radiation is distributed over the $2\pi$ hemisphere, so the BRDF is constant:
 $$
 f_r(x, \Psi \rightarrow \Theta) = \frac{\rho_d}\pi,
 $$
-dove $0 \leq \rho_d \leq 1$ è la frazione di energia incidente che viene riflessa.
+where $0 \leq \rho_d \leq 1$ is the fraction of incident energy that is reflected.
 
-# Altre BRDF
+# Other BRDFs
 
--   Una superficie perfettamente riflettente è modellata da una Delta di Dirac, ossia identicamente nulla tranne nella direzione uscente $R$ data dalla legge di riflessione:
+-   A perfectly reflective surface is modeled by a Dirac Delta, that is, identically null except in the outgoing direction $R$ given by the reflection law:
     $$
     R = 2(N \cdot \Psi) N - \Psi,
     $$
-    dove $N$ è il vettore normale (tangente) alla superficie.
+    where $N$ is the normal (tangent) vector to the surface.
 
--   Esistono online librerie di BRDF, solitamente ricavate da misure in laboratorio, quasi tutte a pagamento.
+-   Online libraries of BRDFs exist, usually obtained from laboratory measurements, almost all of which are paid.
 
-# L'equazione del rendering
+# The Rendering Equation
 
-# Formulazione dell'equazione
+# Formulation of the Equation
 
-L'equazione che studieremo durante il corso è la seguente:
+The equation we will study during the course is the following:
 $$
 \begin{aligned}
 L(x \rightarrow \Theta) = &L_e(x \rightarrow \Theta) +\\
 &\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
 \end{aligned}
 $$
-dove $L_e$ è la radianza emessa dalla superficie nel punto $x$ lungo la direzione $\Theta$.
+where $L_e$ is the radiance emitted by the surface at point $x$ along the direction $\Theta$.
 
 ---
-title: "Lezione 1: l'equazione del rendering"
+title: "Lesson 1: the rendering equation"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

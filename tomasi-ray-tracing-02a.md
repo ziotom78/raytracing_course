@@ -1,14 +1,13 @@
-# Lezione precedente
+# Previous Lesson
 
--   **Radianza** (flusso $\Phi$ in Watt normalizzato sulla superficie
-    proiettata per unità di angolo solido):
+-   **Radiance** (flux $\Phi$ in Watts normalized on the projected surface per unit solid angle):
     $$
     L = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A^\perp}
-      = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A\,\cos\theta},
+    = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A\,\cos\theta},
     \qquad [L] = \mathrm{W}/\mathrm{m}^2/\mathrm{sr}.
     $$
 
--   Equazione del rendering:
+-   Rendering equation:
     $$
     \begin{aligned}
     L(x \rightarrow \Theta) = &L_e(x \rightarrow \Theta) +\\
@@ -16,32 +15,25 @@
     \end{aligned}
     $$
 
-# Codifica del colore
+# Color Encoding
 
--   Le quantità $\Phi$, $L$, etc. sono tutte dipendenti
-    dalla lunghezza d'onda $\lambda$ (radianza → *radianza spettrale*)
+-   The quantities $\Phi$, $L$, etc. are all dependent on the wavelength $\lambda$ (radiance → *spectral radiance*)
 
--   In codici numerici che simulano la propagazione della luce,
-    dobbiamo risolvere due problemi:
+-   In numerical codes that simulate light propagation, we have to solve two problems:
 
-    1.  Una funzione $f(\lambda)$ dipendente dalla lunghezza d'onda ha un
-        numero infinito di gradi di libertà: come rappresentarla
-        numericamente?
+    1.  A function $f(\lambda)$ dependent on the wavelength has an infinite number of degrees of freedom: how to represent it numerically?
 
-    2.  Nel nostro caso, la radianza viene percepita come un colore:
-        ma come si specifica un colore quando si comanda un monitor o
-        una stampante?
+    2.  In our case, radiance is perceived as a color: but how do you specify a color when controlling a monitor or a printer?
 
 ---
 
 ![](./media/electromagnetic-spectrum.png)
 
-# Emissioni realistiche
+# Realistic Emissions
 
--   Non basta **un** numero per codificare un colore: questo è vero solo per un corpo nero ideale (dove è sufficiente la temperatura `T`)!
+-   **One** number is not enough to encode a color: this is only true for an ideal black body (where temperature `T` is sufficient)!
 
--   Gli spettri di emissione di oggetti del mondo reale possono essere
-    molto complessi (v. lezione precedente):
+-   Emission spectra of real-world objects can be very complex (see previous lesson):
 
     <center>
     ![](./media/led-lighting-2.jpg){height="360px"}
@@ -49,51 +41,43 @@
 
 # SPD
 
--   Il termine *Spectral Power Distribution* (SPD) è un termine
-    generico che indica la forma funzionale di una quantità dipendente
-    da $\lambda$: SPD della radianza, SPD del flusso, SPD dell'emittanza, etc.
+-   The term *Spectral Power Distribution* (SPD) is a generic term that indicates the functional form of a quantity dependent on λ: SPD of radiance, SPD of flux, SPD of emittance, etc.
 
--   I grafici della slide precedente sono di fatto rappresentazioni di
-    diverse SPD.
+-   The plots in the previous slide are in fact representations of different SPDs.
 
--   La percezione che il nostro occhio ha di un colore dipende dalla
-    SPD dell'irradianza che raggiunge i fotorecettori della retina
-    sensibili al colore (*coni*).
+-   The visual perception of a color depends on the SPD of the irradiance that reaches the color-sensitive photoreceptors of the retina (*cones*).
 
-# Percezione del colore
+# Color Perception
 
--   I fotorecettori presenti nell'occhio umano sono di due tipi:
+-   There are two types of photoreceptors in the human eye:
 
-    1.  **Bastoncelli**: cellule fotorecettrici fortemente sensibili
-        all'intensità della luce (~100 milioni per occhio)
+    1.  **Rods**: photoreceptor cells highly sensitive to light intensity (~100 million per eye)
 
-    2.  **Coni**: cellule fotorecettrici sensibili al colore della
-        luce (~ 5 milioni per occhio)
+    2.  **Cones**: photoreceptor cells sensitive to the color of light (~5 million per eye)
 
--   I bastoncelli non sono sensibili alla SPD, e sono usati
-    soprattutto in condizioni di scarsa luminosità.
+-   Rods are not sensitive to SPD, and are used mainly in low light conditions.
 
--   Ovviamente a noi oggi interessano i coni!
+-   Obviously, as today we are discussing colors, we are interested in cones!
 
-# Tipi di coni
+# Types of Cones
 
--   Esistono tre tipi di coni:
+-   There are three types of cones:
 
-    1.  Tipo S (*short*): sensibile al blu
-    2.  Tipo M (*medium*): sensibile al verde
-    3.  Tipo L (*long*): sensibile al rosso
+    1.  Type S (*short*): sensitive to blue
+    2.  Type M (*medium*): sensitive to green
+    3.  Type L (*long*): sensitive to red
 
--   Ci sono più teorie che spiegano come il cervello combini le informazioni dei tre tipi di coni per rappresentare un colore.
+-   There are many theories that explain how the brain combines the information from the three types of cones to represent a color.
 
--   Nel mondo animale c'è molta varietà: il [gambero mantide](https://www.nature.com/news/mantis-shrimp-s-super-colour-vision-debunked-1.14578) possiede 12 tipi di coni!
+-   In the animal world there is a lot of variety: the [mantis shrimp](https://www.nature.com/news/mantis-shrimp-s-super-colour-vision-debunked-1.14578) has 12 types of cones!
 
 ---
 
 ![](./media/mantis-shrimp.jpg)
 
-# Codifica dei colori
+# Color Encoding
 
--   Teoria tristimolare dei colori: è sempre possibile codificare il colore del segnale $S(\lambda)$ percepito dall'occhio umano usando tre quantità scalari legate alle risposte $B_S(\lambda)$, $B_M(\lambda)$ e $B_L(\lambda)$ dei coni:
+-   Tristimulus theory of color: it is always possible to encode the color of the signal $S(\lambda)$ perceived by the human eye using three scalar quantities related to the responses $B_S(\lambda)$, $B_M(\lambda)$, and $B_L(\lambda)$ of the cones:
 
     $$
     \begin{aligned}
@@ -103,42 +87,41 @@
     \end{aligned}
     $$
 
-# Metamerismo cromatico
+# Metamerism
 
--   È possibile che due segnali diversi $S_1(\lambda) \not= S_2(\lambda)$ portino alla stessa terna $(s, m, l)$
+-   It is possible that two different signals $S_1(\lambda) \not= S_2(\lambda)$ lead to the same triplet $(s, m, l)$
 
--   In questo caso il colore percepito per i due segnali è indistinguibile all'occhio umano
+-   In this case, the perceived color for the two signals is indistinguishable to the human eye
 
--   Il fenomeno è detto *metamerismo cromatico*, e i due colori associati alla radiazione che colpisce l'occhio si dicono *metamerici*
+-   The phenomenon is called *metamerism*, and the two colors associated with the radiation hitting the eye are said to be *metameric*
 
-# La codifica RGB
+# RGB Encoding
 
--   Esistono varie codifiche di colore, basate su terne di quantità scalari: XYZ, HSV, HSL, RGB…
+-   There are various color encodings, based on triplets of scalar quantities: XYZ, HSV, HSL, RGB…
 
--   Codifiche molto usate sono RGB (monitor) e CYMK (stampanti)
+-   Widely used encodings are RGB (monitors) and CYMK (printers)
 
--   In questo corso ci occuperemo solo della codifica RGB
+-   In this course we will only deal with RGB encoding
 
-# Sistema RGB
+# RGB System
 
--   La codifica RGB usa tre quantità scalari per identificare un colore: rosso, verde, blu (**R**ed, **G**reen, **B**lue).
+-   RGB encoding uses three scalar quantities to identify a color: red, green, blue (**R**ed, **G**reen, **B**lue).
 
--   Basato sulla sintesi *additiva* dei colori, che è perfetta per i monitor (le stampanti usano la sintesi *sottrattiva*, e usano la codifica CYMK).
+-   Based on the *additive* synthesis of colors, which is perfect for monitors (printers use *subtractive* synthesis, and use CYMK encoding).
 
--   Legato al funzionamento dei vecchi televisori a tubo catodico e replicato sui moderni schermi LED e LCD
+-   Linked to the operation of old cathode ray tube televisions and replicated on modern LED and LCD screens
 
 ![](./media/lcd-pixels-closeup.png){height=200px}
 
-# Emissione RGB
+# RGB Emission
 
-Esistono vari tipi di schermi (tubi catodici, LED, etc.), e gli
-spettri di emissione dei tre canali RGB possono essere diversi:
+There are various types of screens (cathode ray tubes, LEDs, etc.), and the emission spectra of the three RGB channels can be different:
 
 ![](./media/screen-emission.svg){height=400px}
 
-Non spenderemo troppo tempo su questo per motivi di tempo.
+We will not spend too much time on this for time reasons.
 
-# Colori RGB { data-state="rgb-colors-1.0" }
+# RGB Colors { data-state="rgb-colors-1.0" }
 
 <table style="width:60%">
     <tr>
@@ -203,9 +186,9 @@ document.addEventListener('rgb-colors-1.0', function() {
 });
 </script>
 
-# Da $L_\lambda$ a RGB
+# From $L_\lambda$ to RGB
 
--   Equazione del rendering espressa per $L_\lambda$
+-   Rendering equation expressed for $L_\lambda$
     $$
     \begin{aligned}
     L_\lambda(x \rightarrow \Theta) = &L_{e,\lambda}(x \rightarrow \Theta) +\\
@@ -213,11 +196,11 @@ document.addEventListener('rgb-colors-1.0', function() {
     \end{aligned}
     $$
 
--   Vogliamo convertire l'equazione in $L_\lambda$ in tre equazioni che forniscano $R$, $G$, $B$.
+-   We want to convert the equation in $L_\lambda$ into three equations that provide $R$, $G$, $B$.
 
 ---
 
-Se $f_{r,\lambda} = f_{r, X}$ è costante nella banda $X(\lambda)$, allora
+If $f_{r,\lambda} = f_{r, X}$ is constant in the band $X(\lambda)$, then
 
 $$
 \begin{aligned}
@@ -231,29 +214,31 @@ L_X(x \rightarrow \Theta) = &L_{X,e}(x \rightarrow \Theta) +\\
 \end{aligned}
 $$
 
-# Equazione del rendering
+# Rendering Equation
 
--   Se indichiamo con $R$, $G$ e $B$ la radianza integrata e convertita nel sistema RGB, l'equazione del rendering si traduce in un sistema di tre equazioni identiche.
+-   If we denote with $R$, $G$ and $B$ the integrated and converted radiance in the RGB system, the rendering equation translates into a system of three equations.
 
--   Le tre equazioni si possono riscrivere come una equazione «vettoriale» su $\vec c = (R, G, B)$:
+-   These can be rewritten as a "vector" equation on $\vec c = (R, G, B)$:
     $$
     \begin{aligned}
     \vec c(x \rightarrow \Theta) = &\vec c_{e}(x \rightarrow \Theta) +\\
-        &\int_{\Omega_x} \vec f_r(x, \Psi \rightarrow \Theta)\otimes \vec c(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
+    &\int_{\Omega_x} \vec f_r(x, \Psi \rightarrow \Theta)\otimes \vec c(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.\\
     \end{aligned}
     $$
 
-    dove $\vec v \otimes \vec w$ indica un «vettore» dato dal prodotto delle componenti di $\vec v$ e $\vec w$.
+    where $\vec v \otimes \vec w$ indicates a "vector" given by the product of the components of $\vec v$ and $\vec w$.
 
+# Display devices
 
-# Visualizzazione su dispositivi
+# How a monitor operates
 
-# Funzionamento di un monitor
+-   A monitor can be considered a matrix of emitting points (*pixels*: *picture element*)
 
--   Un monitor visualizza le immagini tramite una matrice di punti (*pixel*: *picture element*)
--   Ogni punto è comandato tramite una terna RGB di valori
--   I valori possibili spaziano in un intervallo limitato
--   Il realismo nell'emissione di $L$ da parte di un monitor è quindi in genere impossibile
+-   Each point is controlled by an RGB triplet of values
+
+-   The possible values range in a limited interval
+
+-   Realism in the emission of $L$ by a monitor is therefore generally impossible
 
 ---
 
@@ -261,11 +246,11 @@ $$
 ![](./media/monitor-in-dark-room.jpg)
 </center>
 
-# Codifica RGB di colori
+# RGB Color Encoding
 
--   Oggi tutti i monitor e le schede grafiche supportano la cosiddetta «codifica a 16 milioni di colori»
+-   Today all monitors and graphics cards support the so-called "16 million color encoding"
 
--   Una terna RGB viene codificata da un computer usando tre valori interi a 8 bit; ad esempio, in C++ si potrebbe usare un tipo come il seguente:
+-   An RGB triplet is encoded by a computer using three 8-bit integer values; for example, in C++ one could use a type like the following:
 
     ```c++
     struct RGB {
@@ -273,9 +258,9 @@ $$
     };
     ```
 
--   Il numero totale di combinazioni RGB è $2^8 \times 2^8 \times 2^8 = 2^{24} = 16\,777\,216$.
+-   The total number of RGB combinations is $2^8 \times 2^8 \times 2^8 = 2^{24} = 16\,777\,216$.
 
-# Colori RGB { data-state="rgb-colors" }
+# RGB Colors { data-state="rgb-colors" }
 
 <table style="width:60%">
     <tr>
@@ -335,22 +320,22 @@ document.addEventListener('rgb-colors', function() {
 });
 </script>
 
-# Comportamento dei monitor
+# Monitor Behavior
 
-# Non-linearità dei monitor
+# Monitor Non-Linearity
 
--   La potenza emessa dai punti di uno schermo non varia linearmente.
+-   The power emitted by the points of a screen does not vary linearly.
 
--   La relazione tra il livello di emissione richiesto $I$ e il flusso $\Phi$ effettivamente emesso da un pixel è di solito nella forma
+-   The relationship between the requested emission level $I$ and the flux $\Phi$ actually emitted by a pixel is usually in the form
     $$
-    \Phi = \Phi_0 + \bigl(\Phi_\text{max} - \Phi_0\bigr) \left(\frac{I}{I_\text{max}}\right)^\gamma\ \text{per R, G e B},
+    \Phi = \Phi_0 + \bigl(\Phi_\text{max} - \Phi_0\bigr) \left(\frac{I}{I_\text{max}}\right)^\gamma\ \text{for R, G and B},
     $$
 
-    dove $I \in [0, I_\text{max}]$, e $\gamma$ è un parametro caratteristico del dispositivo.
+    where $I \in [0, I_\text{max}]$, and $\gamma$ is a characteristic parameter of the device.
 
--   Nei monitor moderni ovviamente $I_\text{max} = 255$, e $I$ è un numero *intero*.
+-   In modern monitors, of course $I_\text{max} = 255$, and $I$ is an *integer* number.
 
-# Andamento di $\gamma$
+# Trend of $\gamma$
 
 ```{.gnuplot im_fmt="svg" im_out="img" im_fname="gamma-curve"}
 set terminal svg font 'Helvetica,24'
@@ -362,9 +347,9 @@ plot [0:1] x with lines t "γ = 1.0" lt rgb "#ad3434" lw 3, \
            x**2.2 with lines t "γ = 2.2" lt rgb "#3434ad" lw 3
 ```
 
-Qui assumiamo che $\Phi_0 \approx 0$.
+We assume here that $\Phi_0 \approx 0$.
 
-# Calibrazione dei monitor
+# Monitor calibration
 
 ![](./media/checkered-pattern.svg)
 
@@ -373,7 +358,8 @@ $$
 $$
 
 
-# Calibrazione dei monitor  { data-state="monitor-calibration-state" }
+
+# Monitor calibration { data-state="monitor-calibration-state" }
 
 <table>
     <tr>
@@ -475,17 +461,16 @@ document.addEventListener('monitor-calibration-state', function() {
 });
 </script>
 
+# Monitor Response
 
-# Risposta dei monitor
+-   Therefore, when we have a color expressed as an RGB triplet of real numbers, to display the color on a monitor it is necessary to perform the conversion using the $\gamma$ factor
+-   The RGB color converted with $\gamma$ is an "[sRGB triplet](https://en.wikipedia.org/wiki/SRGB)".
+-   The conversion is **not linear**, as is evident from its analytical expression
+-   What we have seen for the conversion $L_\lambda \rightarrow (R, G, B)$ does not apply to sRGB: we cannot write the rendering equation directly in the sRGB space!
 
--   Quindi, quando abbiamo un colore espresso come terna RGB di numeri reali, per visualizzare il colore su un monitor occorre effettuare la conversione usando il fattore $\gamma$
--   Il colore RGB convertito con $\gamma$ è una «[terna sRGB](https://en.wikipedia.org/wiki/SRGB)».
--   La conversione **non è lineare**, com'è evidente dalla sua espressione analitica
--   Quanto abbiamo visto per la conversione $L_\lambda \rightarrow (R, G, B)$ non si applica quindi a sRGB: non possiamo scrivere l'equazione del rendering direttamente nello spazio sRGB!
+# Conversion from RGB to sRGB
 
-# Conversione da RGB a sRGB
-
--   Una semplice approssimazione per la conversione da RGB, $(R, G, B)$, a sRGB, $(r, g, b)$, è la seguente:
+-   A simple approximation for the conversion from RGB, $(R, G, B)$, to sRGB, $(r, g, b)$, is the following:
     $$
     \begin{aligned}
     r &= \left[k\,R^\gamma\right],\\
@@ -493,40 +478,39 @@ document.addEventListener('monitor-calibration-state', function() {
     b &= \left[k\,B^\gamma\right],\\
     \end{aligned}
     $$
-    dove $[\cdot]$ è indica l'arrotondamento a intero, e $k$ è una costante di normalizzazione.
--   Determinare un «buon» valore per $k$ è critico!
+    where $[\cdot]$ indicates rounding to integer, and $k$ is a normalization constant.
+-   Determining a "good" value for $k$ is critical!
 
-# Determinazione di $k$
+# Determination of $k$
 
--   Se i valori R, G e B fossero compresi nell'intervallo $[0, 1]$, allora basterebbe porre $k = 255$.
--   Ma l'intervallo dei possibili valori di R, G e B è $[0, \infty)$:
-    -   Dipende dall'unità di misura usata per $L_\lambda$;
-    -   Dipende dalla scena
--   Esistono alcuni standard di colore (come il CIE XYZ) che fissano una normalizzazione di riferimento (colore standard, temperatura di corpo nero…)
--   Vediamo ora come salvare immagini in un file
+-   If the R, G and B values were in the range $[0, 1]$, then it would be sufficient to set $k = 255$.
+-   But the range of possible values of R, G and B is $[0, \infty)$:
+    -   It depends on the unit of measurement used for $L_\lambda$;
+    -   It depends on the scene
+-   There are some color standards (such as CIE XYZ) that set a reference normalization (standard color, black body temperature…)
+-   Let's see now how to save images in a file
 
-# Immagini HDR e LDR
+# HDR and LDR Images
 
-# Da RGB a sRGB
+# From RGB to sRGB
 
--   I file più comunemente usati per le immagini (PNG, Jpeg, TIFF…) usano tutti la codifica sRGB
+-   The most commonly used files for images (PNG, Jpeg, TIFF…) all use sRGB encoding
 
--   Se vogliamo che il nostro programma produca immagini facili da fruire, dobbiamo quindi convertire il risultato dell'equazione del rendering da RGB a sRGB.
+-   If we want our program to produce easy-to-use images, we must therefore convert the result of the rendering equation from RGB to sRGB.
 
--   Il *tone mapping* è il processo attraverso cui si converte un'immagine RGB in un'immagine sRGB, dove per *immagine* si intende una matrice di colori RGB.
+-   *Tone mapping* is the process through which an RGB image is converted into an sRGB image, where by *image* we mean a matrix of RGB colors.
 
-# Tipi di immagini
+# Image Types
 
-Ci sono due categorie di immagini che sono rilevanti per questo corso:
+There are two categories of images that are relevant for this course:
 
-Immagini LDR (Low-Dynamic Range)
-: Codificano i colori usando il sistema sRGB: le tre componenti R, G, B sono quindi numeri interi, solitamente nell'intervallo 0–255. Tutti i formati grafici più diffusi (JPEG, PNG, GIF, etc.) appartengono a questo tipo.
+LDR (Low-Dynamic Range) Images
+: They encode colors using the sRGB system: the three components R, G, B are therefore integers, usually in the range 0–255. All the most common graphic formats (JPEG, PNG, GIF, etc.) belong to this type.
 
-Immagini HDR (High-Dynamic Range)
-: Codificano i colori usando il sistema RGB o sRGB, ma le tre componenti R, G, B sono numeri floating-point e coprono quindi un grande intervallo dinamico; per visualizzarle occorre quindi applicare il *tone mapping*. Esempi di questo formato sono OpenEXR e PFM.
+HDR (High-Dynamic Range) Images
+: They encode colors using the RGB or sRGB system, but the three components R, G, B are floating-point numbers and therefore cover a large dynamic range; to display them, it is therefore necessary to apply *tone mapping*. Examples of this format are OpenEXR and PFM.
 
-
-# Funzionamento del nostro codice
+# How your code will work
 
 ```{.graphviz im_fmt="svg" im_out="img" im_fname="course-workflow"}
 digraph "" {
@@ -540,17 +524,17 @@ digraph "" {
 }
 ```
 
-# Codifica di immagini raster
+# Raster Image Encoding
 
--   Sia le immagini LDR che HDR sono codificate tramite una matrice di colori; ogni colore è solitamente una terna RGB.
+-   Both LDR and HDR images are encoded by a color matrix; each color is usually an RGB triplet.
 
--   Il file ha solitamente questo contenuto:
+-   The file usually has this content:
 
     Header
-    : Specifica il formato dell'immagine, le dimensioni della matrice, e a volte anche altri parametri utili (es., la data e l'ora dello scatto, le coordinate del GPS, il valore di $\gamma$ del dispositivo che ha catturato l'immagine, etc.).
+    : Specifies the image format, the matrix dimensions, and sometimes other useful parameters (e.g., the date and time of the shot, GPS coordinates, the $\gamma$ value of the device that captured the image, etc.).
 
-    Matrice dei colori
-    : L'ordine in cui sono salvate le righe/colonne, e anche l'ordine in cui sono salvate le componenti R, G, B (RGB/BGR) varia a seconda del formato.
+    Color Matrix
+    : The order in which rows/columns are saved, and also the order in which R, G, B components are saved (RGB/BGR) varies depending on the format.
 
 ---
 
@@ -558,37 +542,37 @@ digraph "" {
 ![](./media/image-save-order.svg)
 </center>
 
-# Esempio: il formato PPM
+# Example: the PPM Format
 
--   Formato LDR, molto diffuso sui sistemi Unix.
+-   LDR format, very common on Unix systems.
 
--   Potete leggerlo e scriverlo usando [NetPBM](http://netpbm.sourceforge.net/) o [ImageMagick](https://imagemagick.org/index.php). Il secondo è il più diffuso, e può essere installato sotto Ubuntu con
+-   You can read and write it using [NetPBM](http://netpbm.sourceforge.net/) or [ImageMagick](https://imagemagick.org/index.php). The second is the most common, and can be installed under Ubuntu with
 
     ```text
     $ sudo apt install imagemagick
     ```
 
-    Potete convertire immagini col comando
+    You can convert images with the command
 
     ```text
-    $ convert input.png output_p6.ppm                  # Formato P6
-    $ convert input.jpg -compress none output_p3.ppm   # Formato P3
+    $ convert input.png output_p6.ppm                # P6 Format
+    $ convert input.jpg -compress none output_p3.ppm # P3 Format
     ```
 
--   PPM è un formato pensato per essere scritto e letto facilmente.
+-   PPM is a format designed to be written and read easily.
 
-# File PPM (P3)
+# PPM File (P3)
 
--   Un file PPM è un file di testo, apribile con qualsiasi editor.
+-   A PPM file is a text file, openable with any editor.
 -   **Header**:
 
-    1. I due caratteri `P3`;
-    2. Numero di colonne e di righe, in formato testo e separate da uno spazio;
-    3. Valore massimo per ciascuna delle componenti R, G, B (solitamente 255).
+    1.  The two characters `P3`;
+    2.  Number of columns and rows, in text format and separated by a space;
+    3.  Maximum value for each of the R, G, B components (usually 255).
 
--   **Matrice dei colori**: le terne R, G, B devono essere riportate come numeri interi partendo dall'angolo in alto a sinistra a quello in basso a destra, procedendo riga per riga.
+-   **Color Matrix**: the R, G, B triplets must be reported as integers starting from the top left corner to the bottom right, proceeding row by row.
 
-# Esempio (P3)
+# Example (P3)
 
 ```text
 P3
@@ -606,33 +590,33 @@ P3
 ![](./media/tiny-image-6pixels.png)
 </center>
 
-# File PFM
+# PFM File
 
--   È un tipo di file che si ispira a PPM, ma è un formato HDR
+-   It is a type of file that is inspired by PPM, but it is an HDR format
 
--   **Molto** importante per questo corso!
+-   **Very** important for this course!
 
--   Non è così ben supportato: sotto Ubuntu esiste solo `pftools`, che si installa con
+-   It is not so well supported: under Ubuntu there is only `pftools`, which is installed with
 
     ```text
     $ sudo apt install pftools
     ```
 
--   Noi scriveremo i nostri tool che permetteranno di convertire file PFM in PPM, quindi `pftools` non sarà necessario
+-   We will write our own tools that will allow us to convert PFM files to PPM, so `pftools` will not be necessary
 
-# Struttura di un file PFM
+# Structure of a PFM File
 
--   Come i file PPM in formato P6, anche i file PFM sono parzialmente di testo e parzialmente binari.
+-   Like PPM files in P6 format, PFM files are also partially text and partially binary.
 -   **Header**:
 
-    1. I due caratteri `PF`, più il carattere `0x0a` (ritorno a capo);
-    2. `ncol nrows` (colonne e righe), seguito da ritorno a capo `0x0a`;
-    3. Il valore `-1.0`, seguito da `0x0a`.
+    1.  The two characters `PF`, plus the character `0x0a` (newline);
+    2.  `ncol nrows` (columns and rows), followed by newline `0x0a`;
+    3.  The value `-1.0`, followed by `0x0a`.
 
--   **Matrice dei colori**: le terne R, G, B devono essere scritte come sequenze di numeri a 32 bit (quindi **non** testo!), da sinistra a destra e dal **basso all'alto** (diverso da PPM!).
+-   **Color Matrix**: the R, G, B triplets must be written as sequences of 32-bit numbers (so **not** text!), from left to right and from **bottom to top** (different from PPM!).
 
 ---
-title: "Lezione 2"
+title: "Lesson 2"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

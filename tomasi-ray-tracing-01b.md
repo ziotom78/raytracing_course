@@ -1,71 +1,74 @@
-# Varie
+# Miscellanea
 
--   Comunicate al docente entro la prossima esercitazione la composizione del vostro gruppo e il linguaggio scelto
+-   Communicate to the teacher by the next exercise the composition of your group and the chosen language
 
--   Le esercitazioni terminano alle 12,30, ma se completate il lavoro in anticipo potete andare via prima
+-   The exercises end at 12:30, but if you complete the work early you can leave earlier
 
-# Gestione di progetti
+# Project management
 
-# Panoramica
+# Overview
 
--   In questo corso svilupperemo un programma complesso per generare
-    immagini fotorealistiche;
--   La gestione di programmi complessi richiede una serie di accorgimenti:
-    -   Controlli automatici della qualità del codice
-    -   Monitoraggio delle modifiche
-    -   Visibilità del codice ad altri utenti
-    -   Accesso alla documentazione
+-   In this course we will develop a complex program to generate photorealistic images;
 
-# Dibattito: come avete gestito sinora i vostri progetti?
+-   Managing complex programs requires a series of measures:
 
-# Sistemi di controllo delle versioni
+    -   Automatic code quality checks
 
--   Un sistema di controllo di versione (*version control system*, VCS) registra le modifiche fatte al codice;
--   Possibilità di annullare modifiche;
--   Rilascio di «release» (es., 1.0, 1.1, 1.2) con possibilità di
-    recuperare quelle più vecchie;
--   Garantisce a più programmatori di modificare il codice
-    *contemporaneamente* (con alcune avvertenze).
+    -   Change monitoring
 
-# Modo d'uso di un VCS
+    -   Code visibility to other users
 
--   Un VCS gestisce una *directory*, con tutte le sue sottodirectory;
--   Quando si crea/modifica un file dentro la directory, si chiede al
-    VCS di *registrare* la modifica;
--   Il VCS scatta «istantanee» della directory, che salva in un
-    proprio database.
+    -   Access to documentation
 
-# Esempio d'uso
+# How have you managed your projects so far?
 
--   Creo una directory `hello_world` e un file `hello_world/hello.py`:
+# Version control systems
+
+-   A version control system (VCS) records changes made to the code;
+
+-   Possibility to undo changes;
+
+-   Release of "releases" (e.g., 1.0, 1.1, 1.2) with the possibility of retrieving older ones;
+
+-   Ensures that multiple programmers can modify the code simultaneously (with some caveats).
+
+# How to use a VCS
+
+-   A VCS manages a directory, with all its subdirectories;
+
+-   When creating/modifying a file within the directory, you ask the VCS to record the change;
+
+-   The VCS takes “snapshots” of the directory, which it saves in its own database.
+
+# Usage example
+
+-   I create a directory `hello_world` and a file `hello_world/hello.py`:
 
     ```python
     print("Hello, wold!")
     ```
 
--   Invoco il VCS per «salvare» un'istantanea della directory
-    `hello_world`
+-   I invoke the VCS to "save" a snapshot of the `hello_world` directory
 
--   Modifico il file `hello_world/hello.py` per correggere il messaggio:
+-   I modify the file `hello_world/hello.py` to correct the message:
 
     ```python
     print("Hello, world!")
     ```
 
--   Invoco di nuovo il VCS per «salvare» una nuova istantanea della
-    directory
+-   I invoke the VCS again to "save" a new snapshot of the directory
 
-# Esempio d'uso
+# Usage example
 
-Alla fine dell'esempio, il database del VCS contiene due istantanee:
+At the end of the example, the VCS database contains two snapshots:
 
-1.  File `hello_world/hello.py` con questo contenuto:
+1.  File `hello_world/hello.py` with this content:
 
     ```python
     print("Hello, wold!")
     ```
 
-2.  File `hello_world/hello.py` con questo contenuto:
+2.  File `hello_world/hello.py` with this content:
 
     ```python
     print("Hello, world!")
@@ -73,49 +76,46 @@ Alla fine dell'esempio, il database del VCS contiene due istantanee:
 
 # Commit
 
--   A ogni «istantanea» sono sempre associate dai VCS alcune informazioni aggiuntive:
+-   Each snapshot is always associated by VCS with some additional information:
 
-    -   Utente che ha eseguito l'istantanea
-    -   Data e ora dell'istantanea
+    -   User who performed the snapshot
+    -   Date and time of the snapshot
 
--   Nel gergo dei VCS, una istantanea si dice **commit**.
+-   In VCS jargon, a snapshot is called a **commit**.
 
-# Un semplice VCS (1/3)
+# A simple VCS (1/3)
 
--   Possiamo realizzare un semplice VCS in Linux/Mac OS X (da shell Bash/Zsh) usando due programmi da linea di comando: `date` (stampa data e ora) e `whoami` (stampa il nome dell'utente).
+-   We can create a simple VCS in Linux/Mac OS X using the Bash/Zsh shell and two command-line programs: `date` (prints date and time) and `whoami` (prints the user's name).
 
     ```sh
-    $ date +%Y-%m-%d  # Data nel formato ANNO-MESE-GIORNO
+    $ date +%Y-%m-%d  # Date in YEAR-MONTH-DAY format
     2025-02-26
     $ whoami
     tomasi
     ```
 
--   Usiamo la possibilità di shell come [Bash](https://www.gnu.org/software/bash/) di sostituire comandi usando `$()`:
+-   We use the ability of shells like [Bash](https://www.gnu.org/software/bash/) to substitute commands using `$()`:
 
     ```sh
-    $ echo "Ciao, io sono $(whoami) e oggi è $(date +%Y-%m-%d)"
-    Ciao, io sono tomasi e oggi è 2025-02-26
+    $ echo "Hello, I am $(whoami) and today is $(date +%Y-%m-%d)"
+    Hello, I am tomasi and today is 2025-02-26
     ```
 
-# Un semplice VCS (2/3)
+# A simple VCS (2/3)
 
--   Questo comando realizza una copia di backup dei file nella directory corrente:
+-   This command creates a backup copy of the files in the current directory:
 
     ```sh
     tar -c -f "/vcsdatabase/hello_world-$(date +%Y%m%d%H%M%S)-$(whoami).tar" *
     ```
 
--   Il comando crea in un folder `/vcsdatabase` un file `.tar` contenente
-    tutti i file della directory corrente
+-   The command creates a `.tar` file in a `/vcsdatabase` folder containing all the files of the current directory.
 
--   Il nome del file contiene il nome dell'utente e la data;
-    quest'ultima è codificata come un lungo numero (es.,
-    `20240926155130` per la data 2024-09-26, 15:51:30)
+-   The file name contains the user's name and the date; the latter is encoded as a long number (e.g., `20240926155130` for the date 2024-09-26, 15:51:30)
 
-# Un semplice VCS (3/3)
+# A simple VCS (3/3)
 
-È sempre utile associare un breve commento a un commit. Estendiamo la nostra idea in uno shell script chiamato `my_vcs.sh`:
+It is always useful to associate a brief comment with a commit. We extend our idea into a shell script called `my_vcs.sh`:
 
 ```sh
 #!/bin/bash
@@ -136,292 +136,274 @@ tar -c -f "$filename" *
 echo "File \"$filename\" created successfully"
 ```
 
-# Esempio d'uso
+# Example
 
 <asciinema-player src="cast/hello_world.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
 
-# Vantaggi di un VCS
+# Advantages of a VCS
 
--   Abbiamo un backup del codice: se cancelliamo per sbaglio un file sorgente dalla directory di lavoro, possiamo recuperarlo da `/vcsdatabase`
+-   We have a backup of the code: if we accidentally delete a source file from the working directory, we can recover it from `/vcsdatabase`.
 
--   Se ci accorgiamo che una modifica non funziona, possiamo ripristinare la versione precedente
+-   If we realize that a modification does not work, we can restore the previous version.
 
--   Possiamo ricostruire la storia dello sviluppo del codice, semplicemente guardando l'elenco dei file in `/vcsdatabase`:
-
-    ```
-    20240926153856-tomasi-first-release.tar
-    20240926155130-tomasi-fix-bug.tar
-    ```
-
--   Se ci accorgiamo dell'esistenza di un bug, possiamo controllare a ritroso in quale momento il bug è stato introdotto
-
-# Problemi del nostro VCS (1/4)
-
--   Se si usa un VCS, è probabilmente perché il progetto è complesso e ha molti file
-
--   Di solito le modifiche influenzano uno o comunque pochi file
-    alla volta
-
--   Ma la nostra implementazione con `tar` salva ogni volta **tutti i
-    file**: questo rischia di occupare molto spazio, e non è
-    necessario!
-
--   C'è anche un altro problema: se nel database ci fossero i file
+-   We can reconstruct the history of the code development simply by looking at the list of files in `/vcsdatabase`:
 
     ```
     20240926153856-tomasi-first-release.tar
     20240926155130-tomasi-fix-bug.tar
     ```
 
-    e volessimo capire cos'era il «bug» e com'è stato corretto, dovremmo confrontare uno a uno i file nell'ultimo `.tar` con i loro analoghi nel `.tar` precedente per capire cosa sia cambiato.
+-   If we discover the existence of a bug, we can check backwards to determine when the bug was introduced.
 
-# Problemi del nostro VCS (2/4)
+# Problems with our VCS (1/4)
 
--   Potremmo scrivere uno shell script che invoca `tar` salvando solo
-    i file effettivamente modificati (controllando ad esempio la data
-    di modifica di ciascun file con `ls -l`).
--   Ma neppure questo è ottimale: può darsi che un file molto grande
-    sia stato cambiato in **una sola riga**, e noi lo salveremmo per
-    intero!
--   (Ci sono in giro file di decine di migliaia di
-    linee di codice.
-    L'[amalgamation](https://www.sqlite.org/amalgamation.html) di
-    SQLite3 è un file in linguaggio C di 220.000 righe.)
+-   If a VCS is being used, it is probably because the project is complex and has many files.
 
-# Problemi del nostro VCS (3/4)
+-   Usually, modifications affect one or just a few files at a time.
 
--   Modifiche complesse sono solitamente implementate in modo graduale; ad esempio:
+-   However, our implementation with `tar` saves **all files** every time: this risks occupying a lot of space, and it is not necessary!
 
-    1.  Modifica che aggiunge la possibilità di salvare il lavoro in un file;
+-   There is also another issue: if the database contained the files
 
-    2.  Modifica che aggiunge la possibilità di caricare un file;
+    ```
+    20240926153856-tomasi-first-release.tar
+    20240926155130-tomasi-fix-bug.tar
+    ```
 
-    Se ciascuna delle due attività richiedesse una settimana di lavoro, il programmatore potrebbe voler eseguire un backup una volta terminato il primo punto, prima di passare al secondo.
+    and we wanted to understand what the "bug" was and how it was fixed, we would have to compare the files in the latest `.tar` one by one with their counterparts in the previous `.tar` to see what changed.
 
--   Il nostro sistema non consente di raggruppare modifiche logicamente legate tra loro: ogni file `tar` è indipendente dagli altri!
+# Problems with our VCS (2/4)
 
-# Problemi del nostro VCS (4/4)
+-   We could write a shell script that invokes `tar`, saving only the files that were actually modified (for example, by checking the modification date of each file with `ls -l`).
+-   But even this is not optimal: a very large file may have changed in **just one line**, yet we would save the entire file!
+-   (There are files with tens of thousands of lines of code.
+    The [amalgamation](https://www.sqlite.org/amalgamation.html) of SQLite3 is a C language file with 220,000 lines.)
 
--   Il nostro sistema non offre alcun controllo nel caso in cui più di una persona lavori al progetto.
+# Problems with our VCS (3/4)
 
--   Considerate questa situazione:
+-   Complex modifications are usually implemented gradually; for example:
 
-    -   A parte dal `.tar` con l'ultima versione del codice per correggere un bug;
+    1.  A modification that adds the ability to save work to a file;
 
-    -   B parte dallo stesso `.tar` per aggiungere una funzionalità al programma;
+    2.  A modification that adds the ability to load a file.
 
-    -   A usa `my_vcs.sh` per salvare la sua versione col bug corretto;
+    If each of these tasks required a week of work, the programmer might want to perform a backup after completing the first step, before moving on to the second.
 
-    -   B usa `my_vcs.sh` per salvare la sua versione con la nuova
-        funzionalità.
+-   Our system does not allow logically related modifications to be grouped together: each `tar` file is independent of the others!
 
-    Al termine ci sarà un file `.tar` col bug corretto ma senza la funzionalità, e un file `.tar` con la nuova funzionalità ma in cui il bug è ancora presente.
+# Problems with our VCS (4/4)
 
-# VCS professionali
+-   Our system does not provide any control when multiple people work on the project.
 
--   Esistono soluzioni per ciascuno dei problemi che abbiamo individuato nel nostro VCS.
+-   Consider this situation:
 
--   I VCS moderni hanno tutti queste caratteristiche:
+    -   A starts from the `.tar` with the latest version of the code to fix a bug.
 
-    -   Salvano solo le parti di file che sono cambiate (usando
-        strumenti simili al comando `diff` che c'è in Linux e Mac OS
-        X);
+    -   B starts from the same `.tar` to add a new feature to the program.
 
-    -   Consentono di raggruppare commit che sono logicamente legati
-        (es., salvataggio/caricamento file)
+    -   A uses `my_vcs.sh` to save their version with the bug fixed.
 
-    -   Nel caso in cui più programmatori lavorino allo stesso file,
-        controllano la consistenza delle modifiche
+    -   B uses `my_vcs.sh` to save their version with the new feature.
 
-# Tipi di VCS
+    In the end, there will be a `.tar` file with the bug fixed but without the new feature, and a `.tar` file with the new feature but where the bug is still present.
 
-Centralizzati
- : Il database (la nostra directory `/vcsdatabase`) risiede su un computer remoto, a cui tutti i programmatori accedono.
+# Professional VCS
 
-Distribuiti
- : Il database risiede sul computer locale; più programmatori che lavorano allo stesso codice hanno un proprio database, che sincronizzano tra loro periodicamente (di solito con un comando esplicito).
+-   There are solutions for each of the problems we identified in our VCS.
 
-# Alcuni VCS importanti
+-   Modern VCSs all have these features:
 
-| Nome      | Tipo        | Esempio                           |
+    -   They save only the parts of files that have changed (using tools similar to the `diff` command found in Linux and Mac OS X).
+
+    -   They allow logically related commits to be grouped together (e.g., saving/loading files).
+
+    -   When multiple programmers work on the same file, they check the consistency of modifications.
+
+# Types of VCS
+
+Centralized
+: The database (our `/vcsdatabase` directory) resides on a remote computer that all programmers access.
+
+Distributed
+: The database resides on the local computer; multiple programmers working on the same code each have their own database, which they synchronize with each other periodically (usually with an explicit command).
+
+# Some important VCS
+
+| Name      | Kind        | Example                           |
 |-----------+-------------|-----------------------------------|
-| [CVS](https://cvs.nongnu.org/) | Centralizzato | [OpenBSD](https://www.openbsd.org/) ([link](https://www.openbsd.org/anoncvs.html)) |
-| [Subversion](https://subversion.apache.org/) | Centralizzato | [FreePascal](https://www.freepascal.org/) ([fino al 2021](https://forum.lazarus.freepascal.org/index.php/topic,55532.0.html)), [GCC](https://gcc.gnu.org/) ([fino al 2019](https://gcc.gnu.org/wiki/GitConversion)) |
-| [GNU Bazaar](https://bazaar.canonical.com/en/) | Distribuito | [Ubuntu Linux](https://ubuntu.com/) ([fino al 2018](https://wiki.ubuntu.com/UbuntuDevelopment/MigratingFromBzrToGit)) |
-| [Mercurial](https://www.mercurial-scm.org/) | Distribuito | Facebook, Mozilla, [GNU Octave](https://octave.org/) ([link](https://www.octave.org/hg/octave)) |
-| [Fossil](https://www.fossil-scm.org/home/doc/trunk/www/index.wiki) | Distribuito | [SQLite](https://www.sqlite.org/) ([link](https://sqlite.org/src/doc/trunk/README.md)) |
-| [BitKeeper](https://www.bitkeeper.org/) | Distribuito | Kernel Linux ([fino al 2005](https://www.linuxjournal.com/content/git-origin-story)) |
-| [Git](https://git-scm.com/) | Distribuito | Troppi esempi! |
+| [CVS](https://cvs.nongnu.org/) | Centralized | [OpenBSD](https://www.openbsd.org/) ([link](https://www.openbsd.org/anoncvs.html)) |
+| [Subversion](https://subversion.apache.org/) | Centralized | [FreePascal](https://www.freepascal.org/) ([until 2021](https://forum.lazarus.freepascal.org/index.php/topic,55532.0.html)), [GCC](https://gcc.gnu.org/) ([until 2019](https://gcc.gnu.org/wiki/GitConversion)) |
+| [GNU Bazaar](https://bazaar.canonical.com/en/) | Distributed | [Ubuntu Linux](https://ubuntu.com/) ([until 2018](https://wiki.ubuntu.com/UbuntuDevelopment/MigratingFromBzrToGit)) |
+| [Mercurial](https://www.mercurial-scm.org/) | Distributed | Facebook, Mozilla, [GNU Octave](https://octave.org/) ([link](https://www.octave.org/hg/octave)) |
+| [Fossil](https://www.fossil-scm.org/home/doc/trunk/www/index.wiki) | Distributed | [SQLite](https://www.sqlite.org/) ([link](https://sqlite.org/src/doc/trunk/README.md)) |
+| [BitKeeper](https://www.bitkeeper.org/) | Distributed | Kernel Linux ([until 2005](https://www.linuxjournal.com/content/git-origin-story)) |
+| [Git](https://git-scm.com/) | Distributed | Too many! |
 
 # Git
 
--   Creato da Linus Torvalds, creatore di Linux
--   VCS distribuito
--   Estremamente versatile…
--   …ma molto complesso da usare!
--   Oggi è lo standard tra i VCS (purtroppo)
+-   Created by Linus Torvalds, the creator of Linux
+-   Distributed VCS
+-   Extremely versatile…
+-   …but very complex to use!
+-   Today, it is the standard among VCSs (unfortunately)
 
-# Usare Git (1/3)
+# Using Git (1/3)
 
--   Sotto sistemi Ubuntu/Mint Linux, installate Git con `sudo apt install git`
+-   On Ubuntu/Mint Linux systems, install Git with `sudo apt install git`
 
--   Appena installato, dovete configurare Git con la vostra identità. Avviate questi comandi:
+-   As soon as it is installed, you need to configure Git with your identity. Run these commands:
 
     ```
-    git config --global user.email "VOSTRAMAIL@BLABLA"
-    git config --global user.name "Nome Cognome"
+    git config --global user.email "YOUREMAIL@BLABLA"
+    git config --global user.name "First Last"
     ```
 
-    Questo permetterà a git di associare il vostro nome alle azioni che effettuerete sul repository. (È ovviamente superfluo se sapete che al repository lavorerete sempre e solo voi, ma Git è pensato per essere uno strumento *collaborativo*).
+    This allows Git to associate your name with the actions you perform on the repository. (Obviously, this is unnecessary if you know you'll always be the only one working on the repository, but Git is designed to be a *collaborative* tool.)
 
-#   Usare Git (2/3)
+# Using Git (2/3)
 
--   Per creare un database in una directory, eseguite
+-   To create a database in a directory, run
 
     ```
     git init
     ```
 
-    Questo creerà una directory nascosta `.git` (equivalente alla nostra `/vcsdatabase`).
+    This will create a hidden `.git` directory (equivalent to our `/vcsdatabase`).
 
--   La prima volta che eseguite `git init` potrebbe richiedere di specificare il vostro nome e indirizzo email.
+-   The first time you run `git init`, it may ask you to specify your name and email address.
 
-# Usare Git (3/3)
+# Using Git (3/3)
 
--   Quando volete fare un *commit*, dovete eseguire due operazioni:
+-   When you want to make a *commit*, you must perform two operations:
 
     ```
-    git add NOMEFILE1 NOMEFILE2…
+    git add FILENAME1 FILENAME2…
     git commit
     ```
 
-    Il primo comando prepara i file per «scattare l'istantanea»,
-    copiandoli nella *staging area*, la seconda effettua l'istantanea
-    vera e propria.
+    The first command prepares the files for "taking the snapshot,"
+    copying them to the *staging area*, while the second performs the actual snapshot.
 
--   Il comando `git commit` apre un editor per inserire una descrizione.
+-   The `git commit` command opens an editor to enter a description.
 
-# Come funziona Git (1/2)
+# How Git Works (1/2)
 
--   Ogni commit/istantanea è identificata da un lungo numero
-    esadecimale chiamato *hash* (es.,
+-   Each commit/snapshot is identified by a long hexadecimal number called a *hash* (e.g.,
     `2f2f2cb36bbf02eaf5629b6295e9a47684c16905`).
--   A ogni commit sono associati *due* hash:
+-   Each commit has *two* associated hashes:
 
-    -   Il proprio hash (ovvio!)
-    -   L'hash del commit precedente
+    -   Its own hash (obviously!)
+    -   The hash of the previous commit
 
--   L'hash dell'ultimo commit si chiama `HEAD`, ed è possibile
-    visualizzarla tramite il comando
+-   The hash of the latest commit is called `HEAD`, and it can be
+    viewed using the command
 
     ```
     git rev-parse HEAD
     ```
 
-# Come funziona Git (2/2)
+# How Git Works (2/2)
 
-Quando si esegue `git commit`, avvengono queste cose:
+When you run `git commit`, the following happens:
 
-1.   `git` analizza quali file sono stati modificati rispetto
-     all'ultimo commit (indicato da `HEAD`);
-2.   Crea un nuovo commit, salvando solo le modifiche rispetto al
-     commit `HEAD`;
-3.   Salva nel commit il valore `HEAD` come «hash precedente»
-3.   Crea una nuova hash per il commit;
-4.   Modifica `HEAD` in modo da puntare alla nuova hash.
+1.   `git` analyzes which files have been modified compared to
+     the last commit (indicated by `HEAD`);
+2.   It creates a new commit, saving only the changes relative to
+     the `HEAD` commit;
+3.   It saves the `HEAD` value in the commit as the "previous hash";
+4.   It generates a new hash for the commit;
+5.   It updates `HEAD` to point to the new hash.
 
-# Esempio {data-transition="none"}
+# Example {data-transition="none"}
 
 <!-- Immagini create con git-sim https://github.com/initialcommit-com/git-sim -->
 ![](./media/git-process-01.jpg){height=600px}
 
-# Esempio {data-transition="none"}
+# Example {data-transition="none"}
 
 ![](./media/git-process-02.jpg){height=600px}
 
-# Esempio {data-transition="none"}
+# Example {data-transition="none"}
 
 ![](./media/git-process-03.jpg){height=600px}
 
-# Esempio {data-transition="none"}
+# Example {data-transition="none"}
 
 ![](./media/git-process-04.jpg){height=600px}
 
-# Il nostro esempio con git
+# Our example with Git
 
 <asciinema-player src="cast/hello_world_git.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
 
-# Alcuni comandi utili
+# A few useful commands
 
--    `git status` mostra lo stato del repository (**molto utile!**)
--    `git log` stampa la lista di commit partendo dall'ultimo (`HEAD`)
-     e andando a ritroso
--    `git diff` mostra quali file sono stati cambiati dopo l'ultimo commit
--    `git mv` rinomina un file
--    `git rm` cancella un file
+-    `git status` shows the status of the repository (**extremely useful!**)
+-    `git log` prints the list of commits starting from the most recent one (`HEAD`) and going backwards in time
+-    `git diff` shows which changes have been made since the last commit
+-    `git mv` rename a file
+-    `git rm` delete a file
 
-# File da escludere
+# Files to exclude
 
--   I file generati automaticamente non dovrebbero essere inclusi in un repository (es., i file `*.o`, i backup, gli eseguibili, etc.)
--   Se si crea un file di testo di nome `.gitignore`, si possono elencare al suo interno i file da *escludere*. Ad esempio:
+-   Automatically generated files should not be included in a repository (e.g., `*.o` files, backups, executables, etc.).
+-   If you create a text file named `.gitignore`, you can list the files to *exclude* inside it. For example:
 
     ```
     *~
     *.o
     build/
     ```
--   Il file `.gitignore` va aggiunto al repository (`git add .gitignore`, seguito da `git commit`).
--   Potete generare questo file usando il sito [gitignore.io](https://gitignore.io/), oppure la vostra IDE.
+-   The `.gitignore` file should be added to the repository (`git add .gitignore`, followed by `git commit`).
+-   You can generate this file using the website [gitignore.io](https://gitignore.io/) or your IDE.
 
 # GitHub
 
-# Sistemi distribuiti
+# Distributed Systems
 
 ![](./media/distributed vcs.svg)
 
-# Introduzione a GitHub
+# Introduction to GitHub
 
 <iframe src="https://player.vimeo.com/video/513803423?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="960" height="540" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="anGitHub hello_world demo"></iframe>
 
-# Sincronizzare Git
+# Syncing Git
 
-Siccome Git è un sistema distribuito, quando ci si connette a un server remoto occorre *sincronizzare* il proprio database. Questi sono i comandi più importanti:
+Since Git is a distributed system, when you connect to a remote server you need to *sync* your database. These are the most important commands:
 
-- `git clone` crea una nuova directory basandosi su un database remoto, e scarica l'intero database in `.git`;
-- `git pull` sincronizza il proprio database in `.git` richiedendo le modifiche
-  da uno remoto;
-- `git push` invia le proprie modifiche locali in `.git` a un database remoto.
+- `git clone` creates a new directory based on a remote database, and downloads the entire database into `.git`;
+- `git pull` syncs your database in `.git` by requesting changes from a remote one;
+- `git push` sends your local changes in `.git` to a remote database.
 
-# Come funziona GitHub
+# How GitHub works
 
 ![](./media/distributed vcs.svg)
 
-# Come funziona GitHub
+# How GitHub works
 
 ![](./media/github-sketch.svg)
 
-# Software hosting basato su Git
+# Git-based hosting software
 
--   [GitHub](https://github.com) (Microsoft): il più diffuso
+-   [GitHub](https://github.com) (Microsoft): the most widespread
 -   [GitLab](https://about.gitlab.com/) (GitLab Inc.)
 -   [BitBucket](https://bitbucket.org/product) (Atlassian)
--   [SourceForge](https://sourceforge.net/) (Slashdot Media): il primo ad aver avuto grande diffusione, ora è poco usato
--   Esistono anche soluzioni self-hosted ([Gitea](https://github.com/go-gitea/gitea), [GitBucket](https://github.com/gitbucket/gitbucket), etc.)
+-   [SourceForge](https://sourceforge.net/) (Slashdot Media): the first to have widespread use, now little used
+-   Self-hosted solutions also exist ([Gitea](https://github.com/go-gitea/gitea), [GitBucket](https://github.com/gitbucket/gitbucket), etc.)
 
 # BitBucket
 
 <iframe src="https://player.vimeo.com/video/513805000" width="960" height="540" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
-# GitHub è distribuito?
+# Is GitHub distributed?
 
-GitHub rende Git “un po’ più centralizzato”:
+GitHub makes Git "a bit more centralized" and "less distributed":
 
-- Fornisce un indirizzo canonico (`https://github.com/nome/progetto`);
-- Stabilisce regole su chi può fare commit e quando;
-- Fornisce la possibilità di mostrare una pagina di presentazione del progetto;
-- …e molte altre caratteristiche che vedremo nelle prossime settimane.
+-   Provides a canonical address (`https://github.com/name/project`);
+-   Establishes rules on who can commit and when;
+-   Provides the ability to show a project presentation page;
+-   ...and many other features that we will see in the coming weeks.
 
-È interessante notare che GitHub potrebbe fornire tutte queste caratteristiche basandosi su qualsiasi altro VCS che non sia Git!
+It is interesting to note that GitHub could provide all these features based on any other VCS that is not Git!
 
 # Git
 
@@ -429,16 +411,16 @@ GitHub rende Git “un po’ più centralizzato”:
 
 
 
-# Guida per l'esercitazione
+# What to do today
 
 
-# Guida per l'esercitazione
+# What to do today
 
-1.  Creare un proprio account su GitHub (se non lo si ha già)
-2.  Creare un progetto vuoto e aggiungere `.gitignore`
-4.  Scrivere un programma (nel linguaggio di programmazione scelto) che stampi `Hello, wold!` [senza `r`], fare un commit (1) e pubblicarlo su GitHub
-5.  Sistemare l'errore nella scritta e fare un commit (2)
-6.  Aggiungere la possibilità di specificare un nome e fare un commit (3):
+1.  Create your own account on GitHub (if you don't already have one)
+2.  Create an empty project and add `.gitignore`
+4.  Write a program (in your chosen programming language) that prints `Hello, wold!` [without `r`], make a commit (1) and publish it on GitHub
+5.  Fix the error in the text and make a commit (2)
+6.  Add the ability to specify a name and make a commit (3):
 
     ```sh
     $ hello_world
@@ -447,36 +429,35 @@ GitHub rende Git “un po’ più centralizzato”:
     Hello, Maurizio!
     ```
 
-# Uso di IDE
+# Using IDEs
 
--   Se possibile, iniziate già oggi ad impratichirvi con un ambiente di sviluppo integrato (IDE) appropriato per il vostro linguaggio
--   Un’ottima scelta sono le IDE sviluppate da [JetBrains](https://www.jetbrains.com/); sono a pagamento, ma esistono [licenze gratuite per studenti](https://www.jetbrains.com/community/education/#students).
--   Ho realizzato un video che mostra come usare [Rider](https://www.jetbrains.com/rider/); è utile che lo guardino anche coloro che usano altri linguaggi, in modo da sapere quali caratteristiche cercare nelle IDE
+-   If possible, start practicing today with an integrated development environment (IDE) appropriate for your language
+-   An excellent choice are the IDEs developed by [JetBrains](https://www.jetbrains.com/); they are paid, but there are [free licenses for students](https://www.jetbrains.com/community/education/#students).
+-   I have created a video that shows how to use [Rider](https://www.jetbrains.com/rider/); it is useful for those who use other languages to watch it as well, to know what features to look for in IDEs
 
 ---
 
 <iframe src="https://player.vimeo.com/video/683431827?h=9e4de4dba1&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Come usare una IDE (JetBrains Rider)"></iframe>
 
 
+# Hints for C++
 
-# Indicazioni per C++
+# Instructions
 
-# Istruzioni
-
--   Installare CMake; sotto Linux Debian/Ubuntu/Mint basta eseguire
+-   Install CMake; on Linux Debian/Ubuntu/Mint just run
 
     ```
     sudo apt install cmake
     ```
 
--   Creare un'applicazione che produca un eseguibile. Strutturare il codice in questo modo:
+-   Create an application that produces an executable. Structure the code like this:
 
-    -   Un file `CMakeLists.txt` nella directory principale
-    -   Una directory `src` che contiene il file `main.cpp`
+    -   A `CMakeLists.txt` file in the root directory
+    -   A `src` directory that contains the `main.cpp` file
 
--   In `.gitignore` elencate `*.o`, il nome dell'eseguibile (es. `hello_world`), eventuali file di backup (`*.bak`, `*~` a seconda dell'editor che usate) e la directory `build` (oppure usate [gitignore.io](https://gitignore.io/) indicando `c++` e `cmake`).
+-   In `.gitignore` list `*.o`, the executable name (e.g. `hello_world`), any backup files (`*.bak`, `*~` depending on the editor you use) and the `build` directory (or use [gitignore.io](https://gitignore.io/) indicating `c++` and `cmake`).
 
-# Esempio di CMake per C++
+# CMake example for C++
 
 ```cmake
 cmake_minimum_required(VERSION 3.12)
@@ -494,92 +475,91 @@ set(CMAKE_CXX_STANDARD 20)   # Pick the standard you like
 add_executable(hello_world src/main.cpp)
 ```
 
-# Esempio: CMake e GNU Make
+# Example: CMake and GNU Make
 
 <asciinema-player src="cast/cmake-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
 
-(Nel vostro caso potrebbe comparire `build.ninja` anziché `Makefile`: in tal caso scrivete `ninja` invece di `make`).
+(In your case, CMake might output `build.ninja` instead of `Makefile`: in this case, run `ninja` instead of `make`.)
 
-# Riferimenti per CMake
+# Bibliography for CMake
 
-- [Documentazione ufficiale](https://cmake.org/documentation/) (abbastanza illeggibile, ma è la più aggiornata per definizione)
+- [Official manual](https://cmake.org/documentation/) (not very readable, but it’s the most up-to-date reference)
 - [*Professional CMake*](https://crascit.com/professional-cmake/) (C. Scott)
 - [*An Introduction to Modern CMake*](https://cliutils.gitlab.io/modern-cmake/)
 
-# Formattazione
+# Formatting
 
--   Se usate [CLion](https://www.jetbrains.com/clion/) (consigliatissimo!), potete formattare il codice usando il comando *Code*/*Reformat code* (Shift+Alt+L)
+-   If you use [CLion](https://www.jetbrains.com/clion/) (highly recommended!), you can format the code using the *Code*/*Reformat code* command (Shift+Alt+L)
 
--   Altrimenti, esiste il programma da linea di comando `clang-format`; installatelo con ```sudo apt install clang-format``. Se scrivete questo:
+-   Otherwise, there is the command-line program `clang-format`; install it with `sudo apt install clang-format`. If you write this:
 
     ```c++
     int sum  ( int a,int b    )    {    return a+ b;}
     ```
 
-    allora `clang-format` lo trasforma in
+    then `clang-format` transforms it into
     ```c++
     int sum(int a, int b) { return a + b; }
     ```
 
-# Formattazione
+# Formatting
 
--   Il programma `clang-format` si usa da linea di comando:
+-   The `clang-format` program is used from the command line:
 
     ```sh
     clang-format -i main.cpp
     ```
 
--   Se **non** usate CLion, dovrebbe essere possibile configurare il vostro editor perché invochi automaticamente `clang-format` ad ogni salvataggio. Alcuni ambienti di sviluppo come [Qt Creator](https://en.wikipedia.org/wiki/Qt_Creator) possono farlo automaticamente ad ogni salvataggio.
+-   If you do **not** use CLion, it should be possible to configure your editor to automatically invoke `clang-format` on every save. Some development environments like [Qt Creator](https://en.wikipedia.org/wiki/Qt_Creator) can do this automatically on every save.
 
--   Questi strumenti sono utilissimi per mantenere il codice pulito e chiaro da leggere: cercate di configurarli al meglio e di imparare ad usarli sin da subito.
+-   These tools are very useful for keeping the code clean and clear to read: try to configure them to the best of your ability and learn to use them right from the start.
 
+# Hints for C\#
 
-# Suggerimenti per C\#
+# Hints
 
-# Suggerimenti
-
--   Creare un'applicazione vuota e il file `.gitignore`; se usate `dotnet` da linea di comando, eseguite
+-   Create an empty application and the `.gitignore` file; if you use `dotnet` from the command line, run
 
     ```sh
     $ dotnet new console
     $ dotnet new gitignore
     ```
 
-    Se usate Rider, assicuratevi di attivare Git quando create il progetto.
+    If you use Rider, make sure to enable Git when you create the project.
 
--   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
+-   The application already prints `Hello World!`: change the message to `Hello, wold!` (otherwise today's exercise makes no sense!)
 
--   Compilate ed eseguite; da linea di comando, eseguite
+-   Compile and run; from the command line, run
 
     ```
     dotnet run
     ```
 
-    mentre sotto Rider premete Shift+F10.
+    If you are using Rider, just press Shift+F10.
 
-# Esempio
+# Example
 
 <asciinema-player src="cast/dotnet-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
 
-# Formattazione
+# Code formatting
 
--   Per formattare automaticamente il codice in Rider, eseguite *Code*/*Reformat code* (Shift+Alt+L)
+-   To automatically format the code in Rider, run *Code*/*Reformat code* (Shift+Alt+L)
 
--   Sotto Visual Studio Code, installate il package [C\#](https://code.visualstudio.com/docs/languages/csharp).
+-   In Visual Studio Code, install the [C#](https://code.visualstudio.com/docs/languages/csharp) package.
 
--   Per formattare il codice da linea di comando, installate `dotnet-format`:
+-   To format the code from the command line, install `dotnet-format`:
 
     ```sh
     $ dotnet tool install -g dotnet-format
     ```
 
-# Indicazioni per Julia
+# Hints for Julia
 
-# Istruzioni {#julia-main}
+# Instructions {#julia-main}
 
--   Creare un package usando il [manuale di Julia](https://julialang.github.io/Pkg.jl/v1/creating-packages/) (vedi l'esempio nella slide seguente)
+-   Create a package using the [Julia manual](https://julialang.github.io/Pkg.jl/v1/creating-packages/) (see the example in the next slide)
 
--   Creare un'applicazione `hello_world` (nella directory dove c'è `Project.toml`) in questo modo:
+-   Create a `hello_world` application (in the directory where `Project.toml` is located) like this:
 
     ```julia
     #!/usr/bin/env julia
@@ -598,13 +578,13 @@ add_executable(hello_world src/main.cpp)
 
 ---
 
-# Creazione di un package
+# Creating a package
 
 <asciinema-player src="cast/julia-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
 
-# Struttura della directory
+# The directory tree
 
--   Quando avrete completato l'esercizio, la directory dovrebbe avere questo aspetto:
+-   Once you have completed the exercise, the directory should have this shape:
 
     ```text
     $ tree hello_world
@@ -615,25 +595,25 @@ add_executable(hello_world src/main.cpp)
         └── hello_world.jl
     ```
 
--   La logica di questa struttura è che la libreria di funzioni venga implementata dentro `src`, mentre in `hello_world` vada messo il codice relativo alla parte eseguibile (es., interpretazione dei parametri da linea di comando).
+-   The logic of this structure is that the function library is implemented inside `src`, while the code related to the executable part (e.g., command-line parameter interpretation) goes into `hello_world`.
 
-# Formattazione
+# Formatting
 
--   Se usate Visual Studio Code, esiste il pacchetto [julia-vscode](https://www.julia-vscode.org/docs/stable/gettingstarted/).
+-   If you use Visual Studio Code, there is the [julia-vscode](https://www.julia-vscode.org/docs/stable/gettingstarted/) package.
 
--   Dovrebbe garantire la possibilità di formattare il codice, ma è bene che verifichiate che funzioni.
+-   It should guarantee the ability to format the code, but it is good to verify that it works.
 
--   Esiste anche un package autonomo, [Runic.jl](https://github.com/fredrikekre/Runic.jl).
+-   There is also an independent package, [Runic.jl](https://github.com/fredrikekre/Runic.jl).
 
-# Uso di package
+# Using packages
 
--   Aspetto fondamentale di Julia!
+-   Fundamental aspect of Julia!
 
--   Corrispondono ai *virtual environments* di Python
+-   They correspond to Python's *virtual environments*
 
--   Con `Pkg.generate` si crea un nuovo package, con `Pkg.activate` si attiva il package
+-   With `Pkg.generate` you create a new package, with `Pkg.activate` you activate the package
 
--   Lo script `hello_world` mostrato prima attiva il package e lo invoca:
+-   The `hello_world` script shown before activates the package and invokes it:
 
     ```julia
     # This activates the package in the current directory ("hello_world")
@@ -645,19 +625,18 @@ add_executable(hello_world src/main.cpp)
     ```
 
 
-# Suggerimenti per Java/Kotlin
+# Hints for Java/Kotlin
 
-# Suggerimenti
+# Hints
 
--   Creare un'applicazione Kotlin oppure Java in [IntelliJ IDEA](https://www.jetbrains.com/idea/):
+-   Create a Kotlin or Java application in [IntelliJ IDEA](https://www.jetbrains.com/idea/):
 
-    -   Se usate Kotlin, come *Build system* scegliete «Gradle Kotlin» (*non* usate il sistema di build interno di IntelliJ IDEA! È comodo ma troppo limitato per i nostri scopi!)
+    -   If you use Kotlin, choose "Gradle Kotlin" as the *Build system* (*do not* use IntelliJ IDEA's internal build system! It's convenient but too limited for our purposes!)
+    -   Use "Console application" as the template
 
-    -   Usate «Console application» come template
+-   The empty application prints `Hello World!`: first, change the message to `Hello, wold!`.
 
--   L'applicazione vuota stampa `Hello World!`: come prima cosa, cambiate il messaggio in `Hello, wold!`.
-
--   Per usare Git, potete anche fare affidamento al menu «VCS» di IntelliJ (gestisce automaticamente i `.gitignore`). È molto comodo, a volte forse troppo…
+-   To use Git, you can also rely on IntelliJ's "VCS" menu (it automatically manages `.gitignore`). It's very convenient, sometimes perhaps too much...
 
 ---
 
@@ -665,62 +644,61 @@ add_executable(hello_world src/main.cpp)
 ![](./media/intellij_new_kotlin_project.png)
 </center>
 
-# Compilare ed eseguire
+# Compiling and running
 
--   La directory che contiene il progetto ha un eseguibile, `gradlew`, che può essere usato per produrre una *distribution* nella directory `./build/distributions`:
+-   The directory containing the project has an executable, `gradlew`, which can be used to produce a *distribution* in the `./build/distributions` directory:
 
     ```
     gradlew assembleDist
     ```
 
--   Siccome è una funzione molto utile, esploratela! Create una distribuzione del vostro programma e cercate di capire come installarla e usarla.
+-   Since it is a very useful function, explore it! Create a distribution of your program and try to understand how to install and use it.
 
-# Suggerimenti
+# Suggestions
 
--   In Java e in Kotlin si fa grande affidamento sull'ambiente di sviluppo (IDE). Imparate a conoscere bene IntelliJ IDEA!
+-   In Java and Kotlin, there is great reliance on the integrated development environment (IDE). Learn to know IntelliJ IDEA well!
 
--   Abituatevi a invocare regolarmente il comando «Code | Reformat code» (Ctrl+Alt+L).
+-   Get used to regularly invoking the "Code | Reformat code" command (Ctrl+Alt+L).
 
+# Hints for Nim/D/Rust
 
-# Indicazioni per Nim/D/Rust
+# Hints (1/2)
 
-# Suggerimenti (1/2)
-
--   Creare un'applicazione vuota usando il package manager del vostro linguaggio. Nim usa `nimble`:
+-   Create an empty application using your language's package manager. Nim uses `nimble`:
 
     ```
     $ nimble init helloworld
     ```
 
--   D usa `dub`:
+-   D uses `dub`:
 
     ```
     $ dub init helloworld
     ```
 
--   Rust usa `cargo`:
+-   Rust uses `cargo`:
 
     ```
     $ cargo init helloworld
     ```
 
--   Sia con Nim che con D dovrete rispondere ad alcune domande. Se possibile, scegliete il default (ma per Nim assicuratevi di specificare che volete un `binary`).
+-   With both Nim and D you will have to answer some questions. If possible, choose the default (but for Nim make sure to specify that you want a `binary`).
 
-# Suggerimenti (2/2)
+# Hints (2/2)
 
--   L'applicazione stampa già `Hello World!`: cambiate il messaggio in `Hello, wold!` (altrimenti l'esercitazione di oggi non ha senso!)
+-   The application already prints `Hello World!`: change the message to `Hello, wold!` (otherwise today's exercise makes no sense!)
 
--   Per compilare ed eseguire, basta usare il comando `run` (identico in `nimble`, `dub` e `cargo`):
+-   To compile and run, just use the `run` command (identical in `nimble`, `dub` and `cargo`):
 
     ```
     $ cd helloworld
-    $ nimble run     # Oppure: dub run, oppure: cargo run
+    $ nimble run      # Or: dub run, or: cargo run
     ```
 
--   Sia per [D](https://intellij-dlanguage.github.io/) che per [Nim](https://plugins.jetbrains.com/plugin/15128-nim) esistono dei plugin per IntelliJ IDEA, l'IDE Java di JetBrains. Per Rust, potete usare CLion con il plugin [Rust](https://plugins.jetbrains.com/plugin/8182-rust/docs).
+-   For both [D](https://intellij-dlanguage.github.io/) and [Nim](https://plugins.jetbrains.com/plugin/15128-nim) there are plugins for IntelliJ IDEA, JetBrains' Java IDE. For Rust, you can use CLion with the [Rust](https://plugins.jetbrains.com/plugin/8182-rust/docs) plugin.
 
 ---
-title: "Esercitazione 1: Git e GitHub"
+title: "Laboratory 1: Git and GitHub"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
