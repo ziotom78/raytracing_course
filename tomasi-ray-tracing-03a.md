@@ -793,6 +793,16 @@ Code page 866 (cirillica)
 
 -   Da linea di comando potete usare il programma [`iconv`](https://en.wikipedia.org/wiki/Iconv)
 
+# Conclusioni
+
+-   È importante supportare Unicode nei propri programmi, **se questi devono gestire testo inserito dall'utente** (Spoiler: non è il caso del nostro ray-tracer, per fortuna!)
+
+-   Per usare Unicode, bisogna abbandonare una serie di convinzioni che noi italiani (americani/francesi/etc.) abbiamo ingranate
+
+-   Per esempio, [esistono lettere basate sull'alfabeto latino](https://devblogs.microsoft.com/oldnewthing/20241031-00/?p=110443) che hanno una **terza** grafia oltre alle maiuscole e minuscole
+
+-   Non serve conoscere così bene Unicode nelle nostre lezioni, ma raccomando a tutti di approfondire l'argomento! Alcuni riferimenti: [The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)](https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/), [Unicode programming, with examples](https://begriffs.com/posts/2019-05-23-unicode-icu.html)
+
 ---
 title: "Lezione 3"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
