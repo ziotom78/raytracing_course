@@ -263,7 +263,7 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 
 - We must handle floating-point numbers with special care!
 
-  <asciinema-player src="cast/floating-point-python.cast" rows="15" cols="80" font-size="medi</asciinema-player>
+  <asciinema-player src="cast/floating-point-python.cast" rows="15" cols="80" font-size="medium"></asciinema-player>
 
 # Tricks for floating-point values
 
