@@ -583,7 +583,7 @@ code is modified simultaneously by multiple people.</p></li>
 </section>
 <section class="slide level1">
 
-<p><asciinema-player src="cast/git-conflicts-96x27.cast" cols="96" rows="27"  font-size="medium"></asciinema-player></p>
+<p><asciinema-player src="cast/git-conflicts-96x27.cast" cols="96" rows="27" font-size="medium"></asciinema-player></p>
 </section>
 <section id="merge-commit" class="slide level1">
 <h1><em>Merge commit</em></h1>
@@ -853,6 +853,27 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a h
 </section>
 <section id="hints-for-c" class="slide level1">
 <h1>Hints for C++</h1>
+</section>
+<section id="numeric-types" class="slide level1">
+<h1>Numeric types</h1>
+<ul>
+<li><p>Be aware that C++ uses weird rules to establish the size of the
+types. Depending on the CPU/operating system/compiler you use,
+<code>int</code> might be a 16-bit, 32-bit, or 64-bit integer. This can
+cause many portability issues!</p></li>
+<li><p>The recommended way to overcome this problem is to always use the
+types defined in <code>&lt;cstdint&gt;</code>: <code>int8_t</code>,
+<code>uint8_t</code>, <code>int16_t</code>, <code>uint16_t</code>,
+etc.</p></li>
+<li><p>(This approach makes C++ more similar to Rust, which has built-in
+types like <code>u8</code>, <code>i8</code>, <code>u16</code>,
+<code>i16</code>, …)</p></li>
+<li><p>It’s ok to use <code>int</code> for the counter used in
+<code>for</code> loops (<code>for(int i{}; i &lt; …; i++)</code>), if
+you expect its maximum not to be too large, as the size of
+<code>int</code> is usually chosen to be the fastest integer type
+supported on the machine.</p></li>
+</ul>
 </section>
 <section id="using-cmake" class="slide level1">
 <h1>Using CMake</h1>
@@ -1548,9 +1569,9 @@ and set all colors to zero (black).</p></li>
 <section id="writing-tests-2" class="slide level1">
 <h1>Writing Tests</h1>
 <ul>
-<li><p>In Nim, you can use the [<code>assert</code>
-template](https://nim-lang.org/docs/assertions.html#assert.t%2Cuntyped%2Cstring]
-to run tests.</p></li>
+<li><p>In Nim, you can use the <a
+href="https://nim-lang.org/docs/assertions.html#assert.t%2Cuntyped%2Cstring"><code>assert</code>
+template</a> to run tests.</p></li>
 <li><p>The practice is to create Nim files inside the <code>tests</code>
 directory; if these files start with <code>t</code>, they are <a
 href="https://github.com/nim-lang/nimble#tests">automatically

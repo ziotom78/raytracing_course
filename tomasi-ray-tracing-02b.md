@@ -185,13 +185,11 @@ Can we avoid those repetitions?
   }
   ```
 
-- To verify the correctness of a function, we should call it with _non-trivial
-  data_ and check the result.
+- To verify the correctness of a function, we should call it with _non-trivial data_ and check the result.
 
 # How can we verify our code?
 
-- Once we have written some code, we must _verify_ its correctness by running it
-  on inputs for which we can reasonably foresee the expected outputs.
+- Once we have written some code, we must _verify_ its correctness by running it on inputs for which we can reasonably foresee the expected outputs.
 
 - The simplest way is to print the output and visually check it’s ok:
 
@@ -217,9 +215,7 @@ Can we avoid those repetitions?
 
 - Computers have been invented to avoid doing repetitive and boring stuff!
 
-- Every modern language offers some built-in system to run tests automatically.
-  (C++ is a notable exception, but there are lots of libraries that fill this
-  gap.)
+- Every modern language offers some built-in system to run tests automatically. (C++ is a notable exception, but there are lots of libraries that fill this gap.)
 
 # Automatic tests
 
@@ -244,9 +240,7 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 
 # Are we sure of our tests?
 
-- The fact that the new version of our Python scripts does not produce any
-  output is expected, as the implementation is bug-free. But if we get no
-  output, are we _really_ sure that the tests were executed as expected?
+- The fact that the new version of our Python scripts does not produce any output is expected, as the implementation is bug-free. But if we get no output, are we _really_ sure that the tests were executed as expected?
 
 - A common trick is to implement _wrong_ tests and make them fail:
 
@@ -265,23 +259,19 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 
 # Testing floating-point values
 
-- In the tests we are going to write, we will have to use logical operations and
-  comparisons (for Python, these are typically `==`, `<`, `>`, `<=`, `>=`, etc.)
+- In the tests we are going to write, we will have to use logical operations and comparisons (for Python, these are typically `==`, `<`, `>`, `<=`, `>=`, etc.)
 
 - We must handle floating-point numbers with special care!
 
-  <asciinema-player src="cast/floating-point-python.cast" rows="15" cols="80"
-        font-size="medi</asciinema-player>
+  <asciinema-player src="cast/floating-point-python.cast" rows="15" cols="80" font-size="medi</asciinema-player>
 
 # Tricks for floating-point values
 
 - Avoid numbers with a decimal part, like `2.1` or `5.09`, if possible
 
-- Small integer numbers like `16.0` are encoded without rounding, so prefer them
-  in tests, if possible (we did so for `Color` in our Python example)
+- Small integer numbers like `16.0` are encoded without rounding, so prefer them in tests, if possible (we did so for `Color` in our Python example)
 
-- As it’s not always possible to use integer numbers, implement a function
-  `are_close` (if your language doesn’t provide one already):
+- As it’s not always possible to use integer numbers, implement a function `are_close` (if your language doesn’t provide one already):
 
   ```python
   def are_close(x, y, epsilon = 1e-5):
@@ -316,8 +306,7 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
 
 # Repeating tests
 
-- We must verify that wrong coordinates are rejected both by `set_pixel` and
-  `get_pixel`:
+- We must verify that wrong coordinates are rejected both by `set_pixel` and `get_pixel`:
 
   ```python
   img = HdrImage(7, 4)
@@ -331,8 +320,7 @@ assert (2 * color1) == Color(2.0, 4.0, 6.0)
       img.set_pixel(-1, 0, Color())
   ```
 
-- We can improve our code and tests by _modularizing_ our implementation, i.e.,
-  we decompose it in simpler parts.
+- We can improve our code and tests by _modularizing_ our implementation, i.e., we decompose it in simpler parts.
 
 # New implementation
 
@@ -379,30 +367,22 @@ def set_pixel(self, x: int, y: int, new_color: Color):
 
 # Public/private methods
 
-- OOP programming encourages the declaration of some methods/fields as
-  “private”, so that they cannot be invoked outside a class.
+- OOP programming encourages the declaration of some methods/fields as “private”, so that they cannot be invoked outside a class.
 
-- However, this practice makes the implementation of unit tests more difficult.
-  Functions like `valid_coordinates` and `pixel_offset` should be declared
-  “private”, but in this way we cannot invoke them directly in tests!
+- However, this practice makes the implementation of unit tests more difficult. Functions like `valid_coordinates` and `pixel_offset` should be declared “private”, but in this way we cannot invoke them directly in tests!
 
-- The simplest solution is to define these functions as “public” so that we can
-  write tests in the usual way, but to prepend their name with an underscore
-  “`_`”. (In Computer Science, it is customary to consider names like
-  `_valid_coordinates` and `_pixel_offset` as private.)
+- The simplest solution is to define these functions as “public” so that we can write tests in the usual way, but to prepend their name with an underscore “`_`”. (In Computer Science, it is customary to consider names like `_valid_coordinates` and `_pixel_offset` as private.)
 
 # Support functions for tests
 
-- In our Python code, to check the correspondence between two colors, we used
-  `==`, which works because we specified integer numbers:
+- In our Python code, to check the correspondence between two colors, we used `==`, which works because we specified integer numbers:
 
 ```c++
 assert (color1 + color2) == Color(6.0, 8.0, 10.0)
 assert (2 * color1) == Color(2.0, 4.0, 6.0)
 ```
 
-- We will soon need to use $\pi$ in our calculations with colors, so define a
-  function that compares the “closeness” of two `Color` instances:
+- We will soon need to use $\pi$ in our calculations with colors, so define a function that compares the “closeness” of two `Color` instances:
 
 ```python
 def are_colors_close(a, b):
@@ -415,11 +395,9 @@ assert are_colors_close(color1, color2)
 
 - Writing good tests is one of the skills that this course aims to develop.
 
-- Therefore, **it is essential** that your repositories demonstrate a regular
-  implementation of tests, lesson by lesson.
+- Therefore, **it is essential** that your repositories demonstrate a regular implementation of tests, lesson by lesson.
 
-- Regularity in the implementation of tests and their quality is one of the
-  criteria by which you will be assessed in the exam.
+- Regularity in the implementation of tests and their quality is one of the criteria by which you will be assessed in the exam.
 
 - (Moreover, it will be a good showcase of your code cleanliness in the future!)
 
@@ -427,13 +405,11 @@ assert are_colors_close(color1, color2)
 
 - Your GitHub or LinkedIn profile may be reviewed during job interviews
 
-- If you take good care of the repository for this course, it may serve as a
-  "showcase" to include in your resume
+- If you take good care of the repository for this course, it may serve as a "showcase" to include in your resume
 
 - Therefore, avoid writing vague comments in your commits!
 
-- Refer to the blog post
-  [Writing good commit messages](https://kelvinromero.medium.com/writing-good-commit-messages-527679b1babb)
+- Refer to the blog post [Writing good commit messages](https://kelvinromero.medium.com/writing-good-commit-messages-527679b1babb)
 
 ---
 
@@ -441,22 +417,17 @@ assert are_colors_close(color1, color2)
 
 # Group Work
 
-- From now on, you will work in groups: each of you will have to choose a part
-  of the code to implement.
+- From now on, you will work in groups: each of you will have to choose a part of the code to implement.
 
-- We will start using the advanced features of Git to manage **conflicts**, that
-  is, situations in which a part of the code is modified simultaneously by
-  multiple people.
+- We will start using the advanced features of Git to manage **conflicts**, that is, situations in which a part of the code is modified simultaneously by multiple people.
 
 ---
 
-<asciinema-player src="cast/git-conflicts-96x27.cast" cols="96" rows="27"  font-size="medium"></asciinema-player>
+<asciinema-player src="cast/git-conflicts-96x27.cast" cols="96" rows="27" font-size="medium"></asciinema-player>
 
 # _Merge commit_
 
-<center>
-![](./media/merge-commit.svg)
-</center>
+<center> ![](./media/merge-commit.svg) </center>
 
 # Types of conflicts
 
@@ -670,6 +641,16 @@ def test_get_set_pixel():
 
 # Hints for C++
 
+# Numeric types
+
+-   Be aware that C++ uses weird rules to establish the size of the types. Depending on the CPU/operating system/compiler you use, `int` might be a 16-bit, 32-bit, or 64-bit integer. This can cause many portability issues!
+
+-   The recommended way to overcome this problem is to always use the types defined in `<cstdint>`: `int8_t`, `uint8_t`, `int16_t`, `uint16_t`, etc.
+
+-   (This approach makes C++ more similar to Rust, which has built-in types like `u8`, `i8`, `u16`, `i16`, …)
+
+-   It’s ok to use `int` for the counter used in `for` loops (`for(int i{}; i < …; i++)`), if you expect its maximum not to be too large, as the size of `int` is usually chosen to be the fastest integer type supported on the machine.
+
 # Using CMake
 
 - [CMake](https://cmake.org/) provides the ability to automatically run tests.
@@ -846,6 +827,7 @@ add_test(NAME colorTest
   - Define your own `my_assert` function (even better!);
   - Use a C++ testing library, such as [Catch2](https://github.com/catchorg/Catch2/tree/v2.x) (excellent!).
 - Lesson: **always** try to make one or more tests fail!
+
 
 # Hints for Julia
 
@@ -1266,7 +1248,7 @@ In this screenshot, JUnit’s version is 4.
 
 # Writing Tests
 
-- In Nim, you can use the [`assert` template](https://nim-lang.org/docs/assertions.html#assert.t%2Cuntyped%2Cstring] to run tests.
+- In Nim, you can use the [`assert` template](https://nim-lang.org/docs/assertions.html#assert.t%2Cuntyped%2Cstring) to run tests.
 
 - The practice is to create Nim files inside the `tests` directory; if these files start with `t`, they are [automatically executed](https://github.com/nim-lang/nimble#tests) by the command
 
