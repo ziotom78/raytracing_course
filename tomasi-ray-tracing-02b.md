@@ -479,26 +479,20 @@ assert are_colors_close(color1, color2)
 2. Structure the project as follows:
 
    - A library implementing `Color` and `HdrImage` classes, and their operations
-   - A console application that imports the library, but for now only prints
-     "Hello, world!"
+   - A console application that imports the library, but for now only prints "Hello, world!"
    - A series of automated tests for `Color` and `HdrImage` classes
 
-3. Commit the project to GitHub, add team members, and send an email to the
-   teacher ([maurizio.tomasi@unimi.it](mailto:maurizio.tomasi@unimi.it).)
+3. Commit the project to GitHub, add team members, and send an email to the teacher ([maurizio.tomasi@unimi.it](mailto:maurizio.tomasi@unimi.it).)
 
-4. Don't be afraid of creating conflicts and performing merge commits: the more
-   you practice with them, the easier it will be in the future.
+4. Don't be afraid of creating conflicts and performing merge commits: the more you practice with them, the easier it will be in the future.
 
 # Group work
 
-- In each group, only **one** person should create the project skeleton, create
-  the GitHub page, and save it.
+- In each group, only **one** person should create the project skeleton, create the GitHub page, and save it.
 
-- The other group members become project collaborators (see the following slide
-  for more information).
+- The other group members become project collaborators (see the following slide for more information).
 
-- Think about how to divide the work among group members; for example, for
-  `Color`:
+- Think about how to divide the work among group members; for example, for `Color`:
 
   1. Sum of two colors
   2. Product of two colors, and color-scalar product
@@ -513,13 +507,11 @@ assert are_colors_close(color1, color2)
 
 # Working in a Team
 
-- Each of you will need to run `git push` on your repository on GitHub to send
-  your changes (“commit”) to the server
+- Each of you will need to run `git push` on your repository on GitHub to send your changes (“commit”) to the server
 
 - Once this is done, your team members can download the changes using `git pull`
 
-- A way to divide the work is for one of you to implement a method (e.g.,
-  `valid_coordinates`) while the other writes the test **simultaneously**:
+- A way to divide the work is for one of you to implement a method (e.g., `valid_coordinates`) while the other writes the test **simultaneously**:
 
   - `valid_coordinates` + test;
   - `pixel_offset` + test;
@@ -527,12 +519,9 @@ assert are_colors_close(color1, color2)
 
 # Properties of `Color`
 
-- Three fields `r`, `g`, `b` of type 32-bit floating-point: they don't need 64
-  bits, and would actually waste memory and processing time
+- Three fields `r`, `g`, `b` of type 32-bit floating-point: they don't need 64 bits, and would actually waste memory and processing time
 
-- For OOP languages, don’t lose time writing getters and setters like `GetR`,
-  etc.: they are long to write, prone to errors, and make the code harder to
-  read
+- For OOP languages, don’t lose time writing getters and setters like `GetR`, etc.: they are long to write, prone to errors, and make the code harder to read
 
 - A method/function that checks if two colors are similar (useful for testing);
 
@@ -540,25 +529,17 @@ assert are_colors_close(color1, color2)
 
 - Multiplication of color and color or color and scalar;
 
-- If appropriate, implement a function that converts an object into a string
-  (e.g., `<r:1.0, g:3.0, b:4.0>`): it will be handy for debugging
+- If appropriate, implement a function that converts an object into a string (e.g., `<r:1.0, g:3.0, b:4.0>`): it will be handy for debugging
 
 # Memory usage
 
-- Most programming languages differentiate between _value_ and _reference
-  types_.
+- Most programming languages differentiate between _value_ and _reference types_.
 
-- _Value types_ are direct values that can be accessed directly, and are always
-  allocated on the stack: they are very fast to use, but cannot take up much
-  memory (usually only a few kilobytes).
+- _Value types_ are direct values that can be accessed directly, and are always allocated on the stack: they are very fast to use, but cannot take up much memory (usually only a few kilobytes).
 
-- _Reference types_ are pointers to the actual data, and can be allocated on the
-  stack or heap: they can consume all available memory, but are slower to access
-  and manipulate.
+- _Reference types_ are pointers to the actual data, and can be allocated on the stack or heap: they can consume all available memory, but are slower to access and manipulate.
 
-- Exceptions include languages based on the Java Virtual Machine (Java, Kotlin,
-  Scala, etc.), where there are only reference types (although the JVM may
-  automatically convert values to references if it deems it beneficial).
+- Exceptions include languages based on the Java Virtual Machine (Java, Kotlin, Scala, etc.), where there are only reference types (although the JVM may automatically convert values to references if it deems it beneficial).
 
 ---
 
@@ -594,9 +575,7 @@ the heap (one of the reasons why it is much slower than C++)
 
 # Stack size
 
-- For programs written in C/C++/Fortran/Julia, the stack size is set by the
-  operating system. On systems using Posix (such as Linux/macOS), you can find
-  the value in KB using the command `ulimit -s`:
+- For programs written in C/C++/Fortran/Julia, the stack size is set by the operating system. On systems using Posix (such as Linux/macOS), you can find the value in KB using the command `ulimit -s`:
 
   ```
   $ ulimit -s
@@ -607,25 +586,19 @@ the heap (one of the reasons why it is much slower than C++)
 
 - For the .NET platform (including Visual Basic and C#), a 1 MB stack is used.
 
-- The JVM (Java, Kotlin) uses a 1 MB stack, which is only used for primitive
-  types (integers, booleans, floating-point numbers).
+- The JVM (Java, Kotlin) uses a 1 MB stack, which is only used for primitive types (integers, booleans, floating-point numbers).
 
 # Value types
 
-- The `Color` class is quite small: it requires 3 floating-point numbers in
-  memory, making it a good candidate for a value type (this is not true for
-  `HdrImage`).
+- The `Color` class is quite small: it requires 3 floating-point numbers in memory, making it a good candidate for a value type (this is not true for `HdrImage`).
 
 - The way you ask for a value type depends on the programming language:
 
-  - In C++, both `struct` and `class` can be used (they are equivalent), but
-    when using them, avoid using `new` and `delete`.
-  - In C# and D, `struct` is used for value types (but not `class`), while
-    `class` is used for reference types.
+  - In C++, both `struct` and `class` can be used (they are equivalent), but when using them, avoid using `new` and `delete`.
+  - In C# and D, `struct` is used for value types (but not `class`), while `class` is used for reference types.
   - In Pascal, `object` or `record` can be used, but not `class`.
   - In Nim, `object` can be used, but not `ref object`.
-  - In Julia, the [`StaticArrays`](https://julialang.github.io/staticarrays.jl/)
-    package can be used.
+  - In Julia, the [`StaticArrays`](https://julialang.github.io/staticarrays.jl/) package can be used.
 
 # Test (1)
 
@@ -636,8 +609,7 @@ the heap (one of the reasons why it is much slower than C++)
   assert color.is_close(Color(1.0, 2.0, 3.0))
   ```
 
-- It is important to test that `is_close` returns `False` when necessary (note
-  that this is a **negative** test):
+- It is important to test that `is_close` returns `False` when necessary (note that this is a **negative** test):
 
   ```python
   assert not color.is_close(Color(3.0, 4.0, 5.0))  # First method
@@ -717,25 +689,19 @@ def test_get_set_pixel():
       └── colors.cpp     <-- Tests for the class "Color"
   ```
 
-- If you implement all the methods for `Colors` in `include/colors.h` (highly
-  recommended! this makes the code faster), there is no need of
-  `src/colors.cpp`.
+- If you implement all the methods for `Colors` in `include/colors.h` (highly recommended! this makes the code faster), there is no need of `src/colors.cpp`.
 
 # `CMakeLists.txt`
 
 - CMake will have to create three products:
 
-  1. A library that implements `Color`; choose a name for it (we will use
-     `trace`).
-  2. An executable program that uses the library, which we will call
-     `raytracer`. At the moment it is enough that it prints `Hello, world!`.
+  1. A library that implements `Color`; choose a name for it (we will use `trace`).
+  2. An executable program that uses the library, which we will call `raytracer`. At the moment it is enough that it prints `Hello, world!`.
   3. A program that runs the tests, which we will call `colorTest`.
 
-- To create programs we know that there is the `add_executable` command; for
-  libraries there is the analogous `add_library`.
+- To create programs we know that there is the `add_executable` command; for libraries there is the analogous `add_library`.
 
-- The dependencies between the `trace` library and programs are specified with
-  `target_link_libraries`.
+- The dependencies between the `trace` library and programs are specified with `target_link_libraries`.
 
 # Libraries and Executables
 
@@ -768,11 +734,9 @@ def test_get_set_pixel():
 
 - To run automatic tests, you need to invoke two commands in `CMakeLists.txt`:
 
-  1. `enable_testing` enables the ability to run tests, and should be written
-     immediately after the `project` command.
+  1. `enable_testing` enables the ability to run tests, and should be written immediately after the `project` command.
 
-  2. `add_test` specifies which of the executable files to produce actually runs
-     tests. (You can use it multiple times).
+  2. `add_test` specifies which of the executable files to produce actually runs tests. (You can use it multiple times).
 
 - In our case, we will invoke `add_test` only once to run `colorTest`.
 
@@ -875,32 +839,25 @@ add_test(NAME colorTest
 
 # Suggestions
 
-- If the build does **not** fail, it is probably because the `Release` build
-  type is used instead of `Debug`, and you used `assert` in your code.
+- If the build does **not** fail, it is probably because the `Release` build type is used instead of `Debug`, and you used `assert` in your code.
 - Solutions:
   - Change the `.yml` file to use `Debug` instead of `Release`;
   - Use `#undef NDEBUG` before `#include <cassert>` (better!);
   - Define your own `my_assert` function (even better!);
-  - Use a C++ testing library, such as
-    [Catch2](https://github.com/catchorg/Catch2/tree/v2.x) (excellent!).
+  - Use a C++ testing library, such as [Catch2](https://github.com/catchorg/Catch2/tree/v2.x) (excellent!).
 - Lesson: **always** try to make one or more tests fail!
 
 # Hints for Julia
 
 # Package Structure
 
-- Julia natively implements the required structure type (library, executable,
-  executable with tests):
+- Julia natively implements the required structure type (library, executable, executable with tests):
 
   - Each package can be used as a library;
-  - Packages can include a set of tests if they have a directory called `test`
-    inside;
-  - The script that implements `main`
-    [seen in the previous exercise](./tomasi-ray-tracing-01b.html#/julia-main)
-    can be used as an executable.
+  - Packages can include a set of tests if they have a directory called `test` inside;
+  - The script that implements `main` [seen in the previous exercise](./tomasi-ray-tracing-01b.html#/julia-main) can be used as an executable.
 
-- Creating a new package therefore configures everything already in the required
-  way, except for the executable.
+- Creating a new package therefore configures everything already in the required way, except for the executable.
 
 # Creating the Package
 
@@ -912,22 +869,18 @@ add_test(NAME colorTest
   Pkg.activate("Raytracer")
   ```
 
-- Julia supports color management through
-  [ColorTypes](https://github.com/JuliaGraphics/ColorTypes.jl) and
-  [Colors](https://juliagraphics.github.io/Colors.jl/stable/):
+- Julia supports color management through [ColorTypes](https://github.com/JuliaGraphics/ColorTypes.jl) and [Colors](https://juliagraphics.github.io/Colors.jl/stable/):
 
   ```julia
   Pkg.add("ColorTypes")
   Pkg.add("Colors")
   ```
 
-  This will modify `Project.toml` and add `Manifest.toml`, which should be saved
-  in Git (look at what they contain!).
+  This will modify `Project.toml` and add `Manifest.toml`, which should be saved in Git (look at what they contain!).
 
 # Color Operations
 
-- For today, there is no need to understand the difference between _value_ and
-  _reference types_, because you will be using Colors and ColorTypes.
+- For today, there is no need to understand the difference between _value_ and _reference types_, because you will be using Colors and ColorTypes.
 
 - The Colors library implements a series of template types:
 
@@ -939,19 +892,13 @@ add_test(NAME colorTest
   println(convert(XYZ, a)) # Convert a from RGB to XYZ space
   ```
 
-- However, the library does not implement the color operations that interest us
-  (sum, difference, product, comparison). Implement them yourself in the
-  `src/Raytracer.jl` file (the file name depends on your project name).
+- However, the library does not implement the color operations that interest us (sum, difference, product, comparison). Implement them yourself in the `src/Raytracer.jl` file (the file name depends on your project name).
 
 # Complications
 
-- The types in ColorTypes are
-  [_parametric_](https://docs.julialang.org/en/v1/manual/types/#Parametric-Types)
-  (like templates in C++): the `RGB` type is actually `RGB{T}`, with `T` as a
-  parameter.
+- The types in ColorTypes are [_parametric_](https://docs.julialang.org/en/v1/manual/types/#Parametric-Types) (like templates in C++): the `RGB` type is actually `RGB{T}`, with `T` as a parameter.
 
-- You need to redefine the fundamental operations `+`, `-`, `*` and `≈`
-  (`\approx`), which in Julia are present in the `Base` package.
+- You need to redefine the fundamental operations `+`, `-`, `*` and `≈` (`\approx`), which in Julia are present in the `Base` package.
 
   You will need to write something like this in `src/Raytracer.jl`:
 
@@ -965,8 +912,7 @@ add_test(NAME colorTest
 
 # Creating Tests
 
-- To implement the tests, create a `test/runtests.jl` file, so that the
-  directory structure is as follows:
+- To implement the tests, create a `test/runtests.jl` file, so that the directory structure is as follows:
 
   ```sh
   $ tree Raytracer
@@ -987,8 +933,7 @@ add_test(NAME colorTest
 
 # How to Write Tests
 
-- In the `runtests.jl` file, you need to write the test procedures. The Test
-  library implements the `@testset` (groups tests) and `@test` macros:
+- In the `runtests.jl` file, you need to write the test procedures. The Test library implements the `@testset` (groups tests) and `@test` macros:
 
   ```julia
   using Raytracer # Put the name you chose
@@ -1012,16 +957,12 @@ add_test(NAME colorTest
 
 # The `Manifest.toml` File
 
-- Julia uses the `Project.toml` file to indicate general information about the
-  package, and it can be edited.
-- The `Manifest.toml` file is generated automatically, and it pins the version
-  numbers of the dependencies used by your package.
+- Julia uses the `Project.toml` file to indicate general information about the package, and it can be edited.
+- The `Manifest.toml` file is generated automatically, and it pins the version numbers of the dependencies used by your package.
 - It is essential to add the `Project.toml` file to Git.
 - For `Manifest.toml` there are two possibilities:
-  1. If you believe it is **essential** that every user uses exactly your
-     versions of the dependencies, add it;
-  2. If you want to guarantee more versatility, exclude it from Git (thus adding
-     a line to `.gitignore`).
+  1. If you believe it is **essential** that every user uses exactly your versions of the dependencies, add it;
+  2. If you want to guarantee more versatility, exclude it from Git (thus adding a line to `.gitignore`).
 
 # Hints for C\#
 
@@ -1039,11 +980,9 @@ graph "" {
 
 - The `dotnet` command supports the creation of _solutions_ and _projects_.
 
-- A _progetto_ is anything that can be produced from source C\# files
-  (executables, libraries)…
+- A _progetto_ is anything that can be produced from source C\# files (executables, libraries)…
 
-- A _solution_ is a collection of projects. Each element of the diagram is a
-  _project_, and the whole diagram is a _solution_.
+- A _solution_ is a collection of projects. Each element of the diagram is a _project_, and the whole diagram is a _solution_.
 
 # Creating solutions/projects
 
@@ -1089,13 +1028,11 @@ dotnet add Trace.Tests/Trace.Tests.csproj reference Trace/Trace.csproj
 dotnet new gitignore
 ```
 
-Do everything from the command line and then open the project in Rider: it's
-more instructive!
+Do everything from the command line and then open the project in Rider: it's more instructive!
 
 # Directory tree
 
-- This solution has generic names for each file, so it is wise to change them
-  into something easier to recognize.
+- This solution has generic names for each file, so it is wise to change them into something easier to recognize.
 
 - Rename the files so that they have the following structure:
 
@@ -1140,15 +1077,13 @@ namespace Trace.Tests
 }
 ```
 
-You can run tests with `dotnet test`, but you can also use Rider (this is **so
-handy**! Refer to the slides for Kotlin.)
+You can run tests with `dotnet test`, but you can also use Rider (this is **so handy**! Refer to the slides for Kotlin.)
 
 # Hints for D
 
 # Definition of the types
 
-- Define `Color` as a `struct` and `HdrImage` as a `class`; for `Color`, include
-  defaults:
+- Define `Color` as a `struct` and `HdrImage` as a `class`; for `Color`, include defaults:
 
   ```d
   struct Color {
@@ -1156,21 +1091,15 @@ handy**! Refer to the slides for Kotlin.)
   };
   ```
 
-- Define `pixels` in `HdrImage` as a
-  [dynamic array](https://dlang.org/spec/arrays.html#dynamic-arrays)
+- Define `pixels` in `HdrImage` as a [dynamic array](https://dlang.org/spec/arrays.html#dynamic-arrays)
 
-- Define a constructor for `HdrImage` that requires `width` ed `height` and
-  initializes `pixels`
-  [allocating the correct length](https://dlang.org/spec/arrays.html#length-initialization).
-  Then set the color of every pixel to black.
+- Define a constructor for `HdrImage` that requires `width` ed `height` and initializes `pixels` [allocating the correct length](https://dlang.org/spec/arrays.html#length-initialization). Then set the color of every pixel to black.
 
 # Tests in D
 
-- D offers excellent support for tests via the keyword `unittest` (it’s
-  awesome!)
+- D offers excellent support for tests via the keyword `unittest` (it’s awesome!)
 
-- It’s not needed to define tests in separate files, as it is the case for C++
-  and C\#.
+- It’s not needed to define tests in separate files, as it is the case for C++ and C\#.
 
 - To run the tests, execute the command
 
@@ -1178,8 +1107,7 @@ handy**! Refer to the slides for Kotlin.)
   $ dub test
   ```
 
-- See the documentation for more information:
-  [Unit tests](https://dlang.org/spec/unittest.html)
+- See the documentation for more information: [Unit tests](https://dlang.org/spec/unittest.html)
 
 # Hints for Java/Kotlin
 
@@ -1187,22 +1115,17 @@ handy**! Refer to the slides for Kotlin.)
 
 - IntelliJ IDEA is based on Gradle, which is the analogous of CMake for C++.C++.
 
-- Gradle can be programmed using Groovy (a language derived from Java) or
-  Kotlin.
+- Gradle can be programmed using Groovy (a language derived from Java) or Kotlin.
 
-- As Java and Kotlin are highly modular, for this course there is no need to
-  differentiate between a library and an executable.
+- As Java and Kotlin are highly modular, for this course there is no need to differentiate between a library and an executable.
 
 - Therefore, you can create a project exactly like you did last week.
 
 # Creating classes
 
-In IntelliJ IDEA, you can create new classes via the Project window (on the
-left):
+In IntelliJ IDEA, you can create new classes via the Project window (on the left):
 
-<center>
-![](./media/kotlin-new-class.png){height=480}
-</center>
+<center> ![](./media/kotlin-new-class.png){height=480} </center>
 
 # The `Color` class
 
@@ -1220,13 +1143,11 @@ left):
   }
   ```
 
-- Define `is_close` and operators `plus` (sum of two colors) and `times`
-  (product between a color and a number).
+- Define `is_close` and operators `plus` (sum of two colors) and `times` (product between a color and a number).
 
 # The `HdrImage` class
 
-- Kotlin lets you to define classes in a compact form (a dream for whoever has
-  used Java!). Here is an example:
+- Kotlin lets you to define classes in a compact form (a dream for whoever has used Java!). Here is an example:
 
   ```kotlin
   class HdrImage(
@@ -1244,16 +1165,13 @@ left):
 
 - IntelliJ IDEA generates and handles tests automatically.
 
-- You should use [JUnit](https://junit.org/); if the IDE asks you which version
-  to use, pick 5.
+- You should use [JUnit](https://junit.org/); if the IDE asks you which version to use, pick 5.
 
 - Check the version you are using by opening menu «File | Project structure».
 
 ---
 
-<center>
-![](./media/kotlin-project-structure.png){height=560}
-</center>
+<center> ![](./media/kotlin-project-structure.png){height=560} </center>
 
 In this screenshot, JUnit’s version is 4.
 
@@ -1261,47 +1179,37 @@ In this screenshot, JUnit’s version is 4.
 
 - Right-click on a class name and pick _Generate_.
 
-- In the window, pick the right version for JUnit and choose the methods that
-  you want to test. (In our case, they are `is_close`, `plus`, and `times`).
+- In the window, pick the right version for JUnit and choose the methods that you want to test. (In our case, they are `is_close`, `plus`, and `times`).
 
-- Once you have implemented the tests using `assertTrue` and `assertFalse`, run
-  them using the icons on the left.
+- Once you have implemented the tests using `assertTrue` and `assertFalse`, run them using the icons on the left.
 
 ---
 
 # Generating tests
 
-<center>
-![](./media/kotlin-generate-test.png)
-</center>
+<center> ![](./media/kotlin-generate-test.png) </center>
 
 ---
 
 # Running tests
 
-<center>
-![](./media/kotlin-run-test.png)
-</center>
+<center> ![](./media/kotlin-run-test.png) </center>
 
 # Hints for Rust
 
 # Code Structure
 
-- For today, it is not necessary for you to structure the code into complex
-  modules.
+- For today, it is not necessary for you to structure the code into complex modules.
 
-- Create a `basictypes.rs` file in which you will define both the `Color` type
-  and the `HdrImage` type, along with all the tests associated with them.
+- Create a `basictypes.rs` file in which you will define both the `Color` type and the `HdrImage` type, along with all the tests associated with them.
 
-- You can leave the `main.rs` file intact for the moment (with the
-  `Hello, world!` message).
+- You can leave the `main.rs` file intact for the moment (with the `Hello, world!` message).
 
 - To automatically format the code, use the `cargo fmt` command.
 
 # Type Definition
 
-- For `Color`, derive the `Copy`, `Clone` and `Debug` traits to simplify your
-  life:
+- For `Color`, derive the `Copy`, `Clone` and `Debug` traits to simplify your life:
 
   ```rust
   #[derive(Copy, Clone, Debug)]
@@ -1314,14 +1222,11 @@ In this screenshot, JUnit’s version is 4.
 
 - For `HdrImage`, define the `pixels` member of type `Vec<Color>`.
 
-- Also define a function
-  `create_hdr_image(width: i32, height: i32) -> HdrImage`, which initializes
-  `pixels` correctly.
+- Also define a function `create_hdr_image(width: i32, height: i32) -> HdrImage`, which initializes `pixels` correctly.
 
 # Tests in Rust
 
-- Rust natively supports tests using the `#[cfg(test)]` and `#[test]`
-  annotations.
+- Rust natively supports tests using the `#[cfg(test)]` and `#[test]` annotations.
 
 - Tests can be executed automatically with the command
 
@@ -1329,11 +1234,7 @@ In this screenshot, JUnit’s version is 4.
   $ cargo test
   ```
 
-- Consult the
-  [Rust guide](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html);
-  a more in-depth discussion can be found in
-  [chapter 11](https://doc.rust-lang.org/book/ch11-00-testing.html) of _The Rust
-  Programming Language_ (Klabnik & Nichols).
+- Consult the [Rust guide](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html); a more in-depth discussion can be found in [chapter 11](https://doc.rust-lang.org/book/ch11-00-testing.html) of _The Rust Programming Language_ (Klabnik & Nichols).
 
 # Nim Suggestions
 
@@ -1341,11 +1242,9 @@ In this screenshot, JUnit’s version is 4.
 
 - Implementing the `Color` and `HdrImage` types should be elementary.
 
-- Make sure to use `object` and not `ref object` for Color, while for `HdrImage`
-  it is indifferent.
+- Make sure to use `object` and not `ref object` for Color, while for `HdrImage` it is indifferent.
 
-- Remember that in Nim you need to export both the types and their members,
-  using `*`:
+- Remember that in Nim you need to export both the types and their members, using `*`:
 
   ```nim
   type
@@ -1361,31 +1260,21 @@ In this screenshot, JUnit’s version is 4.
 
 - In Nim, constructors like in C++ are not needed.
 
-- The common practice is to define a `newMyType` function that creates the
-  `MyType` type.
+- The common practice is to define a `newMyType` function that creates the `MyType` type.
 
-- Therefore, add a `newHdrImage` procedure that accepts two parameters `width`
-  and `height`, initialize the `pixels` field using
-  [`newSeq`](https://nim-lang.org/docs/system.html#newSeq), and set all colors
-  to zero (black).
+- Therefore, add a `newHdrImage` procedure that accepts two parameters `width` and `height`, initialize the `pixels` field using [`newSeq`](https://nim-lang.org/docs/system.html#newSeq), and set all colors to zero (black).
 
 # Writing Tests
 
-- In Nim, you can use the [`assert`
-  template](https://nim-lang.org/docs/assertions.html#assert.t%2Cuntyped%2Cstring]
-  to run tests.
+- In Nim, you can use the [`assert` template](https://nim-lang.org/docs/assertions.html#assert.t%2Cuntyped%2Cstring] to run tests.
 
-- The practice is to create Nim files inside the `tests` directory; if these
-  files start with `t`, they are
-  [automatically executed](https://github.com/nim-lang/nimble#tests) by the
-  command
+- The practice is to create Nim files inside the `tests` directory; if these files start with `t`, they are [automatically executed](https://github.com/nim-lang/nimble#tests) by the command
 
   ```
   $ nimble test
   ```
 
-- To write tests for the `Color` and `HdrImage` types, create a
-  `tests/test_basictypes.nim` file like this:
+- To write tests for the `Color` and `HdrImage` types, create a `tests/test_basictypes.nim` file like this:
 
   ```nim
   import ../src/basictypes
