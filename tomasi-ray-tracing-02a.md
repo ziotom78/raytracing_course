@@ -365,10 +365,10 @@ $$
     <tr>
         <td>
             <canvas
-                id="monitor-calibration"
+                id="monitor-calibration-canvas"
                 width="300px"
                 height="300px"
-                style="image-rendering: pixelated">
+                style="image-rendering: pixelated; image-rendering: crisp-edges;">
             </canvas>
         </td>
         <td>
@@ -415,8 +415,9 @@ function redraw_gamma() {
   // Checkered image
   var cornerx = (checker_canvas_width - black_white_checkers.width) / 2;
   var cornery = (checker_canvas_height - black_white_checkers.height) / 2;
-  checker_canvas_ctx.drawImage(black_white_checkers,
-                               cornerx, cornery);
+
+  // Draw the pixel-perfect checkered pattern
+  checker_canvas_ctx.putImageData(black_white_checkers, cornerx, cornery);
 
   // Gamma plot
   gamma_canvas_ctx.clearRect(0, 0, gamma_canvas_width, gamma_canvas_height);
@@ -443,8 +444,15 @@ gamma_slider.oninput = function() {
 }
 
 document.addEventListener('monitor-calibration-state', function() {
-  var canvas = document.getElementById("monitor-calibration");
+  var canvas = document.getElementById("monitor-calibration-canvas");
   checker_canvas_ctx = canvas.getContext("2d");
+
+  // Disable antialiasing
+  checker_canvas_ctx.imageSmoothingEnabled = false;
+  checker_canvas_ctx.webkitImageSmoothingEnabled = false;
+  checker_canvas_ctx.mozImageSmoothingEnabled = false;
+  checker_canvas_ctx.msImageSmoothingEnabled = false;
+
   checker_canvas_width = canvas.width;
   checker_canvas_height = canvas.height;
 
@@ -453,9 +461,22 @@ document.addEventListener('monitor-calibration-state', function() {
   gamma_canvas_width = canvas.width;
   gamma_canvas_height = canvas.height;
 
-  black_white_checkers = new Image();
-  black_white_checkers.src = "./media/black-white-checkers.png";
-  black_white_checkers.addEventListener("load", redraw_gamma, false);
+  // Create checkered pattern pixel data
+  const size = checker_canvas_width - 100;
+  black_white_checkers = checker_canvas_ctx.createImageData(size, size);
+  const data = black_white_checkers.data;
+
+  for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+          const index = (y * size + x) * 4;
+          const color = (x % 2) ^ (y % 2) ? 255 : 0; // Alternating pattern
+
+          data[index] = color;      // Red
+          data[index + 1] = color;  // Green
+          data[index + 2] = color;  // Blue
+          data[index + 3] = 255;    // Alpha (fully opaque)
+      }
+  }
 
   refresh_gamma_text(0.5);
 });
