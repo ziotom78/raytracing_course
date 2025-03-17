@@ -126,7 +126,7 @@ Vivian Maier (1926–2009), Self-portrait
 -   *Advanced Global Illumination* (P. Dutré, K. Bala, P. Bekaert, 2nd ed.): we’ll use it for the most “physical” parts.
 -   *Realistic Ray Tracing* (P. Shirley, R. K. Morley, 2nd ed.): old-fashioned, it’s useful just as an introductory text.
 
-# Radiometry
+# Radiometry {#radiometry}
 
 # Light Propagation
 
@@ -178,7 +178,7 @@ Vivian Maier (1926–2009), Self-portrait
 
 ![](./media/flux.svg){height=260}
 
-# Radiance
+# Radiance {#radiance}
 
 -   This is what interests us!
 -   Flux $\Phi$ normalized over the **projected** surface per unit solid angle:
@@ -310,7 +310,7 @@ $$
 ![](./media/cornell-box-schema.svg){height=560}
 
 
-# The BRDF
+# The BRDF {#brdf}
 
 The Bidirectional Reflectance Distribution Function (BRDF) is the ratio $f_r(x, \Psi \rightarrow \Theta)$ between the *radiance* leaving a surface along $\Theta$ and the *irradiance* (flux normalized over $A$, $\mathrm{W}/\mathrm{m}^2$) received from a direction $\Psi$:
 
@@ -365,7 +365,7 @@ $$
 
 ![](./media/moana-frame.jpg)
 
-# Ideal Diffusive Surface
+# Ideal Diffusive Surface {#ideal-diffusive-surface}
 
 All incident radiation is distributed over the $2\pi$ hemisphere, so the BRDF is constant:
 $$
@@ -383,7 +383,7 @@ where $0 \leq \rho_d \leq 1$ is the fraction of incident energy that is reflecte
 
 -   Online libraries of BRDFs exist, usually obtained from laboratory measurements, almost all of which are paid.
 
-# The Rendering Equation
+# The Rendering Equation {#rendering-equation}
 
 # Formulation of the Equation
 

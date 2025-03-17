@@ -15,7 +15,7 @@
     \end{aligned}
     $$
 
-# Color Encoding
+# Color Encoding {#color-encoding}
 
 -   The quantities $\Phi$, $L$, etc. are all dependent on the wavelength $\lambda$ (radiance → *spectral radiance*)
 
@@ -214,7 +214,7 @@ L_X(x \rightarrow \Theta) = &L_{X,e}(x \rightarrow \Theta) +\\
 \end{aligned}
 $$
 
-# Rendering Equation
+# Rendering Equation {#relationship-between-radiance-and-rgb}
 
 -   If we denote with $R$, $G$ and $B$ the integrated and converted radiance in the RGB system, the rendering equation translates into a system of three equations.
 
@@ -228,7 +228,7 @@ $$
 
     where $\vec v \otimes \vec w$ indicates a "vector" given by the product of the components of $\vec v$ and $\vec w$.
 
-# Display devices
+# Display devices {#display-devices}
 
 # How a monitor operates
 
@@ -320,7 +320,7 @@ document.addEventListener('rgb-colors', function() {
 });
 </script>
 
-# Monitor Behavior
+# Monitor Behavior {#monitor-behavior}
 
 # Monitor Non-Linearity
 
@@ -611,7 +611,7 @@ P3
 ![](./media/tiny-image-6pixels.png)
 </center>
 
-# PFM File
+# PFM Files {#pfm-file-format}
 
 -   It is a type of file that is inspired by PPM, but it is an HDR format
 

@@ -1,31 +1,34 @@
-# Gestione degli errori
+# Error Handling {#error-handling}
 
-# Errori
+# Errors
 
--   Nella scorsa esercitazione abbiamo implementato il tipo `HdrImage`.
--   Questa settimana implementeremo le funzioni per scrivere e leggere file PFM.
--   Leggere e scrivere file è un'attività che è facilmente soggetta ad errori:
-    -   La directory in cui salvare il file non esiste, oppure è protetta da scrittura
-    -   Il file specificato dall'utente non esiste
-    -   Il file è danneggiato
-    -   Il file è in un formato valido ma che il nostro codice non è in grado di caricare (es., un file è codificato con colori XYZ, ma il nostro codice supporta solo RGB)
+-   In the last exercise we implemented the `HdrImage` type.
+-   This week we will implement the functions to read and write PFM files.
+-   Reading and writing files is an activity that is easily prone to errors:
+    -   The directory in which to save the file does not exist, or it is write-protected
+    -   The file specified by the user does not exist
+    -   The file is corrupted
+    -   The file is in a valid format but our code is not able to load it (e.g., a file is encoded with XYZ colors, but our code only supports RGB)
 
-# Tipi di errore
 
--   Gli errori possono essere suddivisi in due classi:
+# Types of errors
 
-    #.   Errori di pertinenza del programmatore
-    #.   Errori di pertinenza dell'utente
+-   Errors can be divided into two classes:
 
--   Un errore andrebbe gestito in funzione del suo tipo (primo o secondo).
+    #.  Programmer errors
+    #.  User’s errors
 
-# Errori del programmatore
+-   An error should be handled according to its type (first or second).
 
--   Si tratta di un errore logico del programma.
--   Un programma «perfetto» non dovrebbe mai avere errori logici.
--   Se si ha l'evidenza che è avvenuto un errore logico, sarebbe meglio segnalarlo **nel modo più rumoroso possibile**.
 
-# Esempio
+# Programmer errors
+
+-   This is a logical error in the program.
+-   A "perfect" program should never have logical errors.
+-   If there is evidence that a logical error has occurred, it would be better to report it **as loudly as possible**.
+
+
+# Example
 
 ```python
 my_list = [5, 3, 8, 4, 1, 9]
@@ -43,7 +46,7 @@ if not (len(my_list) == len(sorted_list)):
 <asciinema-player src="./cast/error_example1_83x23.asciinema" cols="83" rows="23" font-size="medium"></asciinema-player>
 
 
-# Esempio migliorato
+# Improved example
 
 ```python
 my_list = [5, 3, 8, 4, 1, 9]
@@ -62,37 +65,42 @@ assert len(my_list) == len(sorted_list)
 
 <asciinema-player src="./cast/error_example2_83x23.asciinema" cols="83" rows="23" font-size="medium"></asciinema-player>
 
-# Errori del programmatore
 
--   Tutti i linguaggi implementano funzioni che consentono di mandare in crash un programma (es., `assert` e `abort` in C/C++).
--   Queste istruzioni solitamente stampano a video una serie di dettagli sulla causa dell'errore, e sono pensate per essere usate insieme a un debugger.
--   Eseguire un debugger è sensato: se l'errore è logico, è il programmatore che deve mettere mano al codice, non l'utente!
--   Attenzione al fatto che alcune di queste funzioni potrebbero non essere compilate in modalità *release* (es., [`assert`](https://nim-lang.org/docs/assertions.html#assert.t,untyped,string) vs [`doAssert`](https://nim-lang.org/docs/assertions.html#doAssert.t%2Cuntyped%2Cstring) in Nim).
+# Programmer Errors
 
-# Errori dell'utente
+-   All languages implement functions that allow crashing a program (e.g., `assert` and `abort` in C/C++).
+-   These instructions usually print a series of details about the cause of the error to the screen and are intended to be used with a debugger.
+-   Running a debugger makes sense: if the error is logical, it is the programmer who must intervene on the code, not the user!
+-   Be aware that some of these functions may not be compiled in *release* mode (e.g., [`assert`](https://nim-lang.org/docs/assertions.html#assert.t,untyped,string) vs [`doAssert`](https://nim-lang.org/docs/assertions.html#doAssert.t%2Cuntyped%2Cstring) in Nim).
 
--   Sono errori causati da un input o un contesto sbagliato, e non per colpa di un errore nel programma:
-    -   L'utente chiede di leggere un file che non esiste;
-    -   L'utente chiede di scrivere un file su un supporto che non ha più spazio libero;
-    -   L'utente specifica un input scorretto;
-    -   L'utente chiede di usare una periferica (stampante?) non connessa al computer oppure spenta.
--   Vanno gestiti in modo molto diverso dagli errori del programmatore: non vogliamo che il programma vada in crash in questi casi!
 
-# Esempio
+# User Errors
+
+-   These are errors caused by incorrect input or context, and not due to an error in the program:
+    -   The user requests to read a file that does not exist;
+    -   The user requests to write a file to a medium that has no more free space;
+    -   The user specifies incorrect input;
+    -   The user requests to use a peripheral (printer?) that is not connected to the computer or is turned off.
+-   They should be handled very differently from programmer errors: we don't want the program to crash in these cases!
+
+
+# Example
 
 <asciinema-player src="./cast/user-error-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
 
-# Gestire errori dell'utente
 
--   Gli errori dell'utente sono **inevitabili**.
--   Se si ha evidenza che l'utente ha commesso un errore, ci sono diversi modi di reagire:
-    1.  Stampare un messaggio di errore, il più chiaro possibile;
-    2.  Chiedere all'utente di inserire di nuovo il dato scorretto;
-    3.  In certi contesti il codice può decidere autonomamente come correggere l'errore.
+# Handling User’s Errors
 
-        Ad esempio, se si chiede un valore numerico entro un certo intervallo $[a, b]$ e il valore fornito è $x > b$, si può porre $x = b$ e continuare.
+-   User’s errors are **inevitable**.
+-   If there is evidence that the user has made a mistake, there are several ways to react:
+    1.  Print an error message, as clear as possible;
+    2.  Ask the user to enter the incorrect data again;
+    3.  In certain contexts, the code can decide independently how to correct the error.
 
-# Correzione errori (1/2)
+        For example, if a numerical value is requested within a certain range $[a, b]$ and the value provided is $x > b$, we can set $x = b$ and continue.
+
+
+# Error Correction (1/2)
 
 ```python
 x = float(input("Insert a number: "))
@@ -103,7 +111,8 @@ else:
     print("Error, the second number cannot be zero!")
 ```
 
-# Correzione errori (2/2)
+
+# Error Correction (2/2)
 
 ```python
 x = float(input("Insert a number: "))
@@ -118,51 +127,77 @@ while True:
 print(f"The ratio {x} / {y} is {x / y}")
 ```
 
-# Programma corretto
+
+# Corrected Program
 
 <asciinema-player src="./cast/user-error-corrected-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
 
+(There is still room for improvement: the program would crash if the user enters `pippo` as input…)
 
-# Errori dell'utente nelle funzioni
+# User’s Errors in Functions
 
--   È solitamente molto semplice decidere come gestire gli errori dell'utente nel `main` di un programma.
--   È invece meno chiaro come gestire gli errori nell'input passato a una funzione o un metodo: chi è stato a passare l'input sbagliato, il programma chiamante o l'utente?
+-   It is usually very simple to decide how to handle user’s errors in the `main` function of a program.
+-   It is less clear, however, how to handle errors in the input passed to a function or method: who provided the wrong input, the calling program or the user?
 
-# Due possibilità
+
+# Example: root finding
+
+The method `Bisection::FindRoot()` searches for the root of a function within an interval `[a, b]`, provided that Weierstrass’ theorem holds.
+
+```c++
+double Bisection::FindRoot(double a, double b) {
+    if(f->Eval(a) * f->Eval(b) < 0) {
+        // Weierstrass’ theorem holds. Hurrah!
+    } else {
+        // The hypotheses of Weierstrass’ theorem do not hold here.
+        // What should I do now?
+    }
+}
+```
+
+# Example: root finding
 
 <table width="90%">
 <thead>
 <tr>
-<th>Primo caso</th>
-<th>Secondo caso</th>
+<th>First case</th>
+<th>Second case</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>
 ```c++
-double a, b;
-// The program calculates its own
-// values for a and b: if they are
-// wrong, blame the programmer!
-a = sin(3 * nu / 4 * k);
-b = cos(3 * nu + psi);
-bis.CercaZeri(a, b);
+int main() {
+  // …
+
+  double a, b;
+  // The program calculates its own
+  // values for a and b: if they are
+  // wrong, blame the programmer!
+  a = sin(3 * nu / 4 * k);
+  b = cos(3 * nu + psi);
+  bis.FindRoot(a, b);
+}
 ```
 
 </td>
 <td>
 
 ```c++
-double a, b;
-// The program asks the user for the
-// values for a and b: if they are
-// wrong, blame the user!
-cout << "Enter a: ";
-cin << a;
-cout << "Enter b: ";
-cin << b;
-bis.CercaZeri(a, b);
+int main() {
+  // …
+
+  double a, b;
+  // The program asks the user for the
+  // values for a and b: if they are
+  // wrong, blame the user!
+  cout << "Enter a: ";
+  cin << a;
+  cout << "Enter b: ";
+  cin << b;
+  bis.FindRoot(a, b);
+}
 ```
 </td>
 </tr>
@@ -170,29 +205,18 @@ bis.CercaZeri(a, b);
 </table>
 
 
-# Due possibilità
+# General Rule
 
-```c++
-double Bisezione::CercaZeri(double a, double b) {
-    if(f->Eval(a) * f->Eval(b) >= 0) {
-        // Il teorema degli zeri non è soddisfatto. Ma che faccio ora?
-    } else {
-        // Il teorema è soddisfatto, continuo l'esecuzione
-    }
-}
-```
+-   No function or method should do anything catastrophic (crash the program) or **visible** (print an error message to the screen); only the `main` function should.
+-   The **golden rule** is that a function should return a value that signals an error or raise an exception.
 
 
-# Regola generale
+# Exceptions {#exceptions}
 
--   Nessuna funzione o metodo dovrebbe fare qualcosa di catastrofico (mandare in crash il programma) o **visibile** (stampare un messaggio d'errore a video), solo il `main` dovrebbe.
--   La **regola aurea** è che la funzione restituisca un valore di ritorno che segnali l'errore, oppure che sollevi un'eccezione.
 
-# Eccezioni
+# Exceptions
 
-# Eccezioni
-
--   Una eccezione serve per «mandare in crash» un programma in modo controllato:
+-   An exception is used to «crash» a program in a controlled way:
 
     ```python
     def my_function(...):
@@ -200,17 +224,18 @@ double Bisezione::CercaZeri(double a, double b) {
             raise Exception("Error!")
     ```
 
--   A differenza di funzioni come `abort`, il crash può essere sospeso o interrotto (in gergo, «catturato»), e l'eccezione può segnalare il tipo di errore che ne ha causato la creazione.
+-   Unlike functions like `abort`, the crash can be suspended or interrupted (in jargon, «caught»), and the exception can signal the type of error that caused its creation.
 
 ---
 
 <asciinema-player src="./cast/exceptions-100x23.cast" cols="100" rows="23" font-size="18"></asciinema-player>
 
-# Tipi per eccezioni
 
--   Una eccezione è un tipo di *crash* che è **tipizzato** (es., `ValueError`)
+# Types for Exceptions
 
--   Questi tipi possono avere al loro interno informazioni aggiuntive:
+-   An exception is a type of *crash* that is **typed** (e.g., `ValueError`)
+
+-   These types can contain additional information:
 
     ```python
     class WrongNumber(Exception):
@@ -228,11 +253,12 @@ double Bisezione::CercaZeri(double a, double b) {
     # You entered a number that is too large: 5
     ```
 
-# Propagare eccezioni
 
--   Una eccezione che non viene catturata si diffonde lungo tutta la catena dei chiamanti
+# Propagating Exceptions
 
--   Essa può essere catturata a qualsiasi livello:
+-   An exception that is not caught propagates along the entire chain of callers.
+
+-   It can be caught at any level:
 
     ```python
     def f():
@@ -248,23 +274,26 @@ double Bisezione::CercaZeri(double a, double b) {
             print("Got an exception!")
     ```
 
-# Prestazioni
 
--   Le eccezioni rallentano i programmi, perché il compilatore deve inserire del codice «nascosto» che possa gestirle ([video di approfondimento](https://www.youtube.com/watch?v=Oy-VTqz1_58))
+# Performance
 
--   Alcuni linguaggi (Rust, Go…) non le supportano, in altri si possono disabilitare ([`noexcept`](https://en.cppreference.com/w/cpp/language/noexcept) in C++, [`nothrow`](https://dlang.org/spec/function.html#nothrow-functions) in D…)
+- Exceptions slow down programs because the compiler must insert "hidden" code to handle them ([in-depth video](https://www.youtube.com/watch?v=Oy-VTqz1_58))
 
--   Nel programma che svilupperemo useremo un approccio efficiente:
+- Some languages (Rust, Go…) do not support them, in others they can be disabled ([`noexcept`](https://en.cppreference.com/w/cpp/language/noexcept) in C++, [`nothrow`](https://dlang.org/spec/function.html#nothrow-functions) in D…)
 
-    -   Leggeremo input dall'utente, usando eccezioni per segnalare errori gravi;
-    -   Calcoleremo la soluzione dell'equazione del rendering, **evitando eccezioni** perché questa sarà la parte più lenta;
-    -   Salveremo il risultato in un file, usando nuovamente le eccezioni.
+- In the program we will develop we will use an efficient approach:
 
-# Alternative alle eccezioni
+    - We will read input from the user, using exceptions to signal serious errors;
+    - We will calculate the solution of the rendering equation, **avoiding exceptions** because this will be the slowest part;
+    - We will save the result to a file, using exceptions again.
 
-# Parametri d'errore
 
--   Si può accettare un parametro addizionale che segnali l'errore:
+# Alternatives to Exceptions
+
+
+# Error Parameters
+
+- An additional parameter can be accepted to signal the error:
 
     ```c++
     double Bisezione::CercaZeri(double a, double b, bool & error) {
@@ -280,11 +309,12 @@ double Bisezione::CercaZeri(double a, double b) {
     }
     ```
 
--   Al posto di un `bool` potete usare una classe per registrare il tipo di errore e informazioni complesse.
+- Instead of a `bool`, you can use a class to record the type of error and complex information.
 
-# Tipi *nullable*
 
--   Linguaggi come C\# e Kotlin definiscono il tipo *nullable*, che può essere usato con qualsiasi tipo, e ne indica l'*assenza*:
+# Nullable Types
+
+- Languages like C# and Kotlin define the *nullable* type, which can be used with any type, and indicates its *absence*:
 
     ```csharp
     // C# example
@@ -298,13 +328,14 @@ double Bisezione::CercaZeri(double a, double b) {
     }
     ```
 
--   In alternativa, può esserci un tipo definito nella libreria standard che implementa questa funzionalità ([`std::optional`](https://en.cppreference.com/w/cpp/utility/optional) in C++, [Option](https://nim-lang.org/docs/options.html) in Nim)
+- Alternatively, there may be a type defined in the standard library that implements this functionality ([`std::optional`](https://en.cppreference.com/w/cpp/utility/optional) in C++17, [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected) in C++23, [Option](https://nim-lang.org/docs/options.html) in Nim…)
 
-# Tipi `Result`
 
--   In Rust esiste il tipo `Result`, che è una versione più versatile dei *nullable* (nel C++23 c'è [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected)).
+# Result Types
 
--   Il tipo `Result` è un *sum type* (li vedremo meglio più avanti), e permette di associare un tipo `A` in caso di successo, e un tipo `B` in caso di fallimento:
+- In Rust there is the `Result` type, which is a more versatile version of *nullable* (like C++23’s [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected)).
+
+- The `Result` type is a *sum type* (we will see them better when we will discuss compiler theory), and allows you to associate a type `A` in case of success, and a type `B` in case of failure:
 
     ```rust
     pub struct OutputData {
@@ -320,34 +351,33 @@ double Bisezione::CercaZeri(double a, double b) {
     ```
 
 
+# Binary and Text Files {#binary-and-text-files}
 
-# File binari e di testo
+# Binary Files
 
-# File binari
+-   Binary files are the simplest type: they consist of a sequence of bytes (i.e., 8 bits written in sequence).
 
--   I file binari sono il tipo più semplice: consistono di una sequenza di byte (ossia, 8 bit scritti in sequenza).
+-   Each byte can contain an integer value in the range 0–255
 
--   Ogni byte può contenere un valore intero nell'intervallo 0–255
-
--   Per stampare il contenuto di un file binario potete usare il comando `xxd` (sotto Ubuntu, installatelo con `sudo apt install xxd`):
+-   To print the content of a binary file you can use the `xxd` command (on Ubuntu, install it with `sudo apt install xxd`):
 
     ```text
     $ xxd file.bin
     ```
 
-    (Su altri sistemi operativi potreste avere `hexdump` anziché `xxd`).
+    (On other operating systems you might have `hexdump` instead of `xxd`).
 
--   Salvare dati in un file binario vuol dire scrivere una sequenza di numeri binari sul disco fisso, memorizzati come byte.
+-   Saving data in a binary file means writing a sequence of binary numbers to the hard disk, stored as bytes.
 
----
 
-# Contenuto binario di un file
+# Binary Content of a File
 
 <asciinema-player src="./cast/binary-files-73x19.cast" cols="73" rows="19" font-size="medium"></asciinema-player>
 
-# Da binario a decimale
 
--   Per ragionare sui valori dei byte si usa la numerazione binaria, che ovviamente usa come base il numero 2:
+# From Binary to Decimal
+
+-   To reason about the values of bytes, binary numbering is used, which obviously uses the number 2 as its base:
 
     ```
     0  → 0
@@ -358,34 +388,35 @@ double Bisezione::CercaZeri(double a, double b) {
     …
     ```
 
--   Per un numero `dcba` espresso in una base $B$, il suo valore è
+-   For a number `dcba` expressed in base $B$, its value is
 
     $$
     \text{value} = a \times B^0 + b \times B^1 + c \times B^2 + d \times B^3.
     $$
 
-    Quindi il valore binario `100` corrisponde a $0 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 4.$
+    Therefore, the binary value `100` corresponds to $0 \times 2^0 + 0 \times 2^1 + 1\times 2^2 = 4.$
 
-# Notazione esadecimale
 
--   La notazione binaria è però scomoda, perché i numeri richiedono rapidamente molte cifre (8 cifre per un byte!).
+# Hexadecimal Notation
 
--   In alternativa alla notazione binaria si usa molto la notazione esadecimale (16), che usa le cifre
+-   Binary notation, however, is cumbersome because numbers quickly require many digits (131 in binary requires 8 digits!).
+
+-   As an alternative to binary notation, hexadecimal (base 16) notation is widely used, which uses the digits
 
     ```
     0 1 2 3 4 5 6 7 8 9 A B C D E F
     ```
 
--   La notazione esadecimale richiede 4 bit per cifra, perché $2^4 = 16$. Siccome un byte è composto da 8 bit, il valore di un byte è sempre codificabile usando solo due cifre esadecimali (`0xFF = 255`).
+-   Hexadecimal notation requires 4 bits per digit, because $2^4 = 16$. Since a byte is composed of 8 bits, the value of a byte can always be encoded using only two hexadecimal digits (`0xFF = 255`).
 
--   In C/C++/D/Nim/Rust/Julia/C\#/Kotlin, i numeri esadecimali si scrivono con `0x`, ad es. `0x1F67 = 8039` (in alcuni linguaggi `0b` introduce un numero binario).
+-   In C/C++/D/Nim/Rust/Julia/C#/Kotlin, hexadecimal numbers are written with `0x`, e.g., `0x1F67 = 8039` (in some languages `0b` introduces a binary number).
 
 
-# Ordine dei bit in un byte
+# Bit Order in a Byte
 
--   C'è sempre un'ambiguità di fondo nel raggruppamento dei bit in byte, e sta nel loro ordine.
+-   There's always an underlying ambiguity in grouping bits into bytes, and it lies in their order.
 
--   Se un byte è formato dalla sequenza di bit `0011 0101`, esistono due modi per interpretarlo:
+-   If a byte is formed by the bit sequence `0011 0101`, there are two ways to interpret it:
 
     $$
     \begin{aligned}
@@ -394,42 +425,46 @@ double Bisezione::CercaZeri(double a, double b) {
     \end{aligned}
     $$
 
-# «Endianness» dei bit
 
--   L'ordine dei bit in un byte è detto in gergo *bit-endianness*, termine tratto dai *Viaggi di Gulliver* (1726), di J. Swift:
+# Bit Endianness
 
-    1.  La codifica *big-endian* parte dalla potenza *maggiore* («big»);
-    2.  La codifica *little-endian* parte dalla potenza *minore* («little»).
+-   The order of bits in a byte is called *bit-endianness*, a term taken from *Gulliver's Travels* (1726) by J. Swift:
 
--   Le CPU Intel e AMD oggi usate nei personal computer usano tutte la codifica *little-endian*. La codifica *big-endian* è invece lo standard per le trasmissioni via rete (ed oggi è ancora impiegata in alcune CPU ARM).
+    1.  *Big-endian* encoding starts from the *highest* power ("big");
+    2.  *Little-endian* encoding starts from the *lowest* power ("little").
 
--   Fortunatamente, la *bit endianness* non sarà qualcosa di cui dovremo preoccuparci nel nostro codice, ma dovremo invece affrontare la *byte endianness*!
+-   Intel and AMD CPUs used in personal computers today all use *little-endian* encoding. *Big-endian* encoding is instead the standard for network transmissions (and is still used today in some ARM CPUs).
 
-# Usare più di 8 bit
+-   Fortunately, *bit endianness* will not be something we have to worry about in our code, but we will have to deal with *byte endianness*!
 
--   Un numero a 8 bit può assumere valori da 0 a 255
 
--   È un intervallo molto ridotto! Ma si possono combinare insieme più bytes
+# Using More Than 8 Bits
 
--   In C++ esistono i tipi `int16_t` (16 bit → 2 byte), `int32_t` (32 bit → 4 byte), `int64_t` (64 bit → 8 byte)
+-   An 8-bit number can take values from 0 to 255.
+
+-   That's a very small range! But you can combine multiple bytes together.
+
+-   In C++ there are the types `int16_t` (16 bits → 2 bytes), `int32_t` (32 bits → 4 bytes), `int64_t` (64 bits → 8 bytes).
 
     <center>
     ![](media/bytes-and-data-types.svg){ height=280px }
     </center>
 
-# Endianness dei byte
 
--   Se si combinano insieme più byte, c'è di nuovo il problema della *endianness*!
+# Byte Endianness
 
--   Ad esempio, il numero esadecimale a 16 bit 1F3D (2 byte) si codifica con la coppia di byte `1F 3D` (*big endian*) oppure `3D 1F` (*little endian*)?
+-   If you combine multiple bytes together, there's the *endianness* problem again!
 
--   Si parla anche in questo caso di codifica di byte *big endian* o *little endian*
+-   For example, the 16-bit hexadecimal number 1F3D (2 bytes) is encoded with the byte pair `1F 3D` (*big-endian*) or `3D 1F` (*little-endian*)?
 
--   A differenza della *bit endianness*, dovremo preoccuparci della *byte endianness* nella gestione dei file PFM 🙁
+-   In this case too, we speak of *big-endian* or *little-endian* byte encoding.
 
-# Dati binari e testuali
+-   Unlike *bit endianness*, we will have to worry about *byte endianness* when handling PFM files 🙁
 
--   Oltre al problema della *endianness*, bisogna anche capire come il proprio linguaggio gestisce i file binari. Guardate questo esempio in C++:
+
+# Binary and Text Data
+
+-   In addition to the *endianness* problem, you also need to understand how your language handles binary files. Look at this C++ example:
 
     ```c++
     #include <fstream>
@@ -441,25 +476,25 @@ double Bisezione::CercaZeri(double a, double b) {
     }
     ```
 
-    Il valore `138` è stato salvato in *forma testuale*! (Se invece usate il tipo `uint8_t`, il C++ userà l'usuale *forma binaria*)
+    The value `138` has been saved in *textual form*! (If you use the `uint8_t` type instead, C++ will use the usual *binary form*)
 
--   Vediamo dunque ora i segreti della codifica testuale.
+-   Let's now see the secrets of text encoding.
 
 
-# Codifica testuale
+# Text Encoding
 
-# Codifica testuale
+# Text Encoding
 
--   Il formato PFM è composto da una parte testuale e da una binaria
+-   The PFM format is composed of a textual part and a binary part
 
--   Voi però avete già avuto a che fare con file di testo: sono i vostri codici sorgente!
+-   But you have already dealt with text files: they are your source codes!
 
--   Alcuni di voi potrebbero anche avere avuto messaggi d'errore da Git a proposito di strane conversioni di caratteri `CRLF`
+-   Some of you may also have had error messages from Git regarding strange `CRLF` character conversions
 
--   Vediamo ora nel dettaglio la codifica testuale dei file, vi sarà molto utile soprattutto in questi due ambiti:
+-   Let's now see in detail the text encoding of files, it will be very useful especially in these two areas:
 
-    1. Commenti nel codice;
-    2. Scrittura di messaggi all'utente.
+    1.  Comments in the code;
+    2.  Writing messages to the user.
 
 ---
 
@@ -491,22 +526,22 @@ double Bisezione::CercaZeri(double a, double b) {
 ![](media/windows-linux-encoding-nim-terminal.png)
 </center>
 
+# Text Encoding
 
-# Codifica testuale
+-   Computer characters are encoded using numbers; the most common encoding is ASCII:
 
--   I caratteri del computer vengono codificati tramite numeri; la più usata è la codifica ASCII:
+    -   The letter `A` is encoded by the number 65, `B` by 66, `C` by 67, etc.;
+    -   The letter `a` is encoded by the number 97, `b` by 98, etc.;
+    -   The digit `0` is encoded by the number 48, `1` by 49, etc.
 
-    -  La lettera `A` è codificata dal numero 65, `B` da 66, `C` da 67, etc.;
-    -  La lettera `a` è codificata dal numero 97, `b` da 98, etc.;
-    -  La cifra `0` è codificata dal numero 48, `1` da 49, etc.
+-   Encoding a word like `Casa` means representing the word with the sequence of values `67 97 115 97 = 0x43 0x61 0x73 0x61`.
 
--   Codificare una parola come `Casa` vuol dire rappresentare la parola con la sequenza di valori `67 97 115 97 = 0x43 0x61 0x73 0x61`.
+-   These numeric codes are part of the ASCII standard, which specifies 128 characters. ([Here is the complete table](https://garbagecollected.org/2017/01/31/four-column-ascii/), well explained).
 
--   Questi codici numerici fanno parte dello standard ASCII, che specifica 128 caratteri. ([Qui c'è la tabella completa](https://garbagecollected.org/2017/01/31/four-column-ascii/), spiegata bene).
 
-# Codifica di testi
+# Encoding of Texts
 
--   Lo standard ASCII è semplicissimo, eppure sufficiente per codificare testi:
+-   The ASCII standard is very simple, yet sufficient for encoding texts:
 
     ```text
     Beauty - be not caused - It Is -
@@ -523,175 +558,200 @@ double Bisezione::CercaZeri(double a, double b) {
     (Emily Dickinson, 1863)
     ```
 
--   Ma come si codifica la fine della riga in ogni verso della poesia?
+-   How is the end of a line encoded in each verse of the poem?
 
--   In 128 valori è possibile codificare *tutti* i caratteri?
-
-
-# Ritorno a capo
-
--   Il modo per indicare un ritorno a capo dipende dal sistema operativo!
-
--   Nelle macchine da scrivere c'erano due operazioni da fare per iniziare una nuova riga (vedi [questo video YouTube](https://www.youtube.com/watch?v=r97JHr13T98)):
-
-    1.   Tornare al bordo del foglio (*carriage return*, movimento orizzontale);
-    2.   Muoversi alla riga successiva (*line feed*, movimento verticale).
-
--   Nella codifica ASCII c'è un carattere per ciascuno dei due comandi, che corrispondono a `13` (*carriage return*, indicato anche come `\r`) e `10` (*line feed*, indicato con `\n`). Questi erano indispensabili per i terminali *teletype*, e di solito `\r` precedeva `\n` perché richiedeva più tempo per essere eseguito.
+-   Is it possible to encode *all* characters using 128 values?
 
 
-# Terminale teletype [ASR-33](http://bytecollector.com/asr_33.htm)
+# Line Breaks
+
+-   The way to indicate a line break depends on the operating system!
+
+-   On typewriters, there were two operations required to start a new line (see [this YouTube video](https://www.youtube.com/watch?v=r97JHr13T98)):
+
+    1.  Return to the edge of the paper (*carriage return*, horizontal movement);
+    2.  Move to the next line (*line feed*, vertical movement).
+
+-   In ASCII encoding, there is a character for each of the two commands, corresponding to `13` (*carriage return*, also indicated as `\r`) and `10` (*line feed*, indicated by `\n`). These were essential for *teletype* terminals, and usually `\r` preceded `\n` because it took longer to execute.
+
+
+# Teletype Terminal [ASR-33](http://bytecollector.com/asr_33.htm)
 
 <center>
 ![](media/asr-33_vcf_02.jpg){height=520px}
 </center>
+See this [link](https://www.howtogeek.com/727213/what-are-teletypes-and-why-were-they-used-with-computers/) for some history on this type of terminal.
 
-Vedete questo [link](https://www.howtogeek.com/727213/what-are-teletypes-and-why-were-they-used-with-computers/) per un po' di storia su questo tipo di terminali.
+# Types of Newlines
 
-# Tipi di ritorno a capo
+-   Today, teletype terminals are no longer used, but `\n` and `\r` are still in use.
 
--   Oggi non si usano più terminali teletype, ma `\n` e `\r` sono ancora usati
+-   The type of newline depends on the operating system used:
 
--   Il tipo di ritorno a capo dipende dal sistema operativo utilizzato:
-
-    | Sistema operativo  | Codifica         |
+    | Operating System   | Encoding         |
     |--------------------|------------------|
     | MS-DOS, Windows    | `13 10` (`\r\n`) |
     | RISC OS            | `10 13` (`\n\r`) |
     | C64, macOS classic | `13` (`\r`)      |
     | Linux, Mac OS X    | `10` (`\n`)      |
 
--   Git si aspetta il formato Linux (`\n`) nei file aggiunti con `git add`
+-   Git expects the Linux format (`\n`) in files added with `git add`
 
-# Oltre i 127 caratteri
 
--   Anche se ASCII nacque per computer con 7 bit per byte, ben presto i produttori di computer si uniformarono per usare 8 bit in ogni byte (più comodo perché è una potenza di 2)
+# Beyond 127 Characters
 
--   Siccome $2^8 = 256$, questo vuol dire che i numeri 128–255 sono inutilizzati in ASCII: uno spreco!
+-   Even though ASCII was born for computers with 7 bits per byte, computer manufacturers soon standardized on using 8 bits in each byte (more convenient because it is a power of 2)
 
--   Per venire incontro alle esigenze degli utenti di lingua non inglese, si inventarono le *code page*
+-   Since $2^8 = 256$, this means that the numbers 128–255 are unused in ASCII: a waste!
 
--   Una *code page* è una tabella di corrispondenze tra i numeri 128–255 e dei caratteri
+-   To meet the needs of non-English speaking users, *code pages* were invented
 
-# Esempi di *code page*
+-   A *code page* is a table of correspondences between numbers 128–255 and characters
 
-Code page 850 (latina)
+
+# *Code page* examples
+
+Code page 850 (latin)
 
 ![](media/cp850.png)
 
-# Esempi di *code page*
 
-Code page 866 (cirillica)
+# *Code page* examples
+
+Code page 866 (cyrillic)
 
 ![](media/cp866.png)
 
-# Problemi delle *code page*
 
--   Se si esegue questo comando sotto un sistema MS-DOS che usa la *code page* 850:
+# Discussion: how would you implement code page support in your own code?
+
+
+# The C locale functions
+
+-   The C language implements the concept of “locale” through [`setlocale()`](https://en.cppreference.com/w/c/locale/setlocale).
+
+-   This is a *global* switch: it changes the locale everywhere in the code, not just within the function where `setlocale()` was called.
+
+-   Apart from country locales (Italy, France, etc.), there is a “special” locale called “C”, which is the [most basic](https://devblogs.microsoft.com/oldnewthing/20250206-00/?p=110846) and just follows the rules of the C language: no thousand separator, a dot to separate the decimal part from the integer part, and only ASCII letters (`a`…`z`) are considered by functions like [`towupper()`](https://en.cppreference.com/w/cpp/string/wide/towupper).
+
+-   Locales and code pages are probably one of C’s most spectacular failures.
+
+
+# Issues with *code pages*
+
+-   If this command is executed on an MS-DOS system using *code page* 850:
 
     ```
     c:\> echo è > file.txt
     ```
 
-    il primo byte del file avrebbe valore `130`, e verrebbe rappresentato correttamente:
+    the first byte of the file would have the value `130`, and would be displayed correctly:
 
     ```
     c:\> type file.txt
     è
     ```
 
--   Copiando però il file su un computer con *code page* 866, si otterrebbe questo:
+-   However, copying the file to a computer with *code page* 866, you would get this:
 
     ```
     c:\> type file.txt
     ѓ
     ```
 
-# Limiti delle *code page*
 
--   Abbiamo visto che ASCII è un sistema centrato sul sistema di scrittura usato negli USA, e non include caratteri accentati come «è», «é», «ü», «â», etc.
+# Issues with *code pages*
 
--   Il sistema delle *code page* ha mostrato ben presto i suoi limiti: come scrivere testi in cui si richiedono più scritture contemporaneamente?
+-   We have seen that ASCII is a system centered on the writing system used in the USA, and does not include accented characters such as «è», «é», «ü», «â», etc.
+
+-   The *code page* system soon showed its limits: how to write texts where multiple writing systems are required simultaneously?
 
     <center>![](media/narratological-commentary-to-odissey.png)</center>
 
--   Oltre agli accenti sulle lettere latine, esistono nel mondo molti altri alfabeti e simboli, sia contemporanei (greco, cirillico, cinese, i simboli matematici, etc.) che antichi (geroglifici egizi, caratteri cuneiformi accadici)
+-   In addition to accents on Latin letters, there are many other alphabets and symbols in the world, both contemporary (Greek, Cyrillic, Chinese, mathematical symbols, etc.) and ancient (Egyptian hieroglyphs, Akkadian cuneiform characters)
 
-# Lo standard Unicode
 
--   Standard internazionale nato nel 1991, che copre praticamente tutti i sistemi di scrittura oggi esistenti al mondo.
+# The Unicode Standard {#unicode}
 
--   Oggi è supportato quasi universalmente.
+-   International standard born in 1991, which covers practically all the writing systems existing in the world today.
 
--   Viene aggiornato periodicamente, circa una volta all'anno.
+-   Today it is almost universally supported.
 
--   Supporta sia scritture moderne (latino, cirillico, ebraico, arabo…) che antiche (geroglifici egizi: 𓀃, scrittura sumerico-accadica: 𒀄)
+-   It is updated periodically (about once a year).
 
--   Ha un ottimo supporto anche per caratteri matematici (∞, ∈, ∀), emoticons (😀, 😉), simboli musicali (♭, ♯, 𝄞), etc.
+-   It supports both modern scripts (Latin, Cyrillic, Hebrew, Arabic…) and ancient ones (Egyptian hieroglyphs: 𓀃, Sumerian-Akkadian script: 𒀄)
 
-# Versioni Unicode
+-   It also has excellent support for mathematical characters (∞, ∈, ∀), emoticons (😀, 😉), musical symbols (♭, ♯, 𝄞), etc.
 
-| Versione | Data           | Scritture | Caratteri |
-|----------|----------------|-----------|-----------|
-| 1.0      | Ottobre 1991   | 24        | 7,129     |
-| …        |                |           |           |
-| 13.0     | Marzo 2020     | 154       | 143,859   |
-| 14.0     | Settembre 2021 | 159       | 144,697   |
-| 15.0     | Settembre 2022 | 161       | 149,186   |
-| 15.1     | Settembre 2023 | 161       | 149,813   |
 
-# Esempi di caratteri Unicode
+# Unicode Releases
 
--   Lettera A maiuscola: `A` (65, uguale all'ASCII!);
--   Lettera A minuscola con accento acuto: `à` (224);
--   Lettera E maiuscola con accento grave: `É` (201);
--   Puntini di sospensione: `…` (8230);
--   Bemolle: `♭` (9837);
--   Faccina che ride: `😀` (128.512).
+| Version | Date           | Scripts | Characters |
+|---------|----------------|---------|------------|
+| 1.0     | October 1991   | 24      | 7,129      |
+| …       |                |         |            |
+| 14.0    | September 2021 | 159     | 144,697    |
+| 15.0    | September 2022 | 161     | 149,186    |
+| 15.1    | September 2023 | 161     | 149,813    |
+| 16.0    | September 2024 | 168     | 154,998    |
 
-# Codifica Unicode
 
--   Ogni carattere Unicode è associato a un valore numerico, chiamato *code point*.
+# Unicode Character Examples
 
--   Si possono [combinare insieme caratteri](https://en.wikipedia.org/wiki/Combining_character), ad esempio unendo `a` e `^` per formare `â`.
+-   Uppercase letter A: `A` (65, same as ASCII!);
+-   Lowercase letter A with acute accent: `à` (224);
+-   Uppercase letter E with grave accent: `É` (201);
+-   Ellipsis: `…` (8230);
+-   Flat symbol: `♭` (9837);
+-   Grinning face: `😀` (128,512).
 
--   Le lettere accentate più comuni hanno però una [codifica dedicata](https://en.wikipedia.org/wiki/Precomposed_character). Queste lettere sono quindi codificabili in **più modi** secondo lo standard Unicode. (Questo rende complicato confrontare due stringhe!)
 
--   Un *grafema* è il risultato di una combinazione di uno o più code point. Quindi la parola `così` è composta da quattro grafemi: `c`, `o`, `s` ed `ì` (che può essere il *code point* 236, oppure la combinazione dei code point `i` e `).
+# Unicode Encoding
 
--   La combinazione di caratteri diversi è molto importante in certe scritture come il cinese.
+-   Each Unicode character is associated with a numerical value, called a *code point*.
 
-# Codificare i *code point*
+-   Characters can be [combined together](https://en.wikipedia.org/wiki/Combining_character), for example by joining `a` and `^` to form `â`.
 
--   Lo standard Unicode possiede molti *code point*, e a ogni versione se ne aggiungono di nuovi.
+-   The most common accented letters, however, have a [dedicated encoding](https://en.wikipedia.org/wiki/Precomposed_character). These letters can therefore be encoded in **multiple ways** according to the Unicode standard. (This makes comparing two strings complicated!)
 
--   Questo pone un problema nella codifica dei *code point* su file: ASCII usava un byte per carattere perché il set era limitato. Ma per Unicode quanti byte per *code point* usare? Uno? Due? Cento?
+-   A *grapheme* is the result of a combination of one or more code points. Therefore, the word `così` is composed of four graphemes: `c`, `o`, `s`, and `ì` (which can be the *code point* 236, or the combination of the code points `i` and `´).
 
-    -   Se si scegliesse un valore basso, si limiterebbe l'estendibilità di Unicode.
-    -   Se si scegliesse un valore molto alto, i file di testo aumenterebbero inutilmente di dimensione.
+-   The combination of different characters is very important in certain scripts like Chinese.
 
-# Codifiche oggi usate
 
--   Storicamente sono state proposte varie codifiche per Unicode.
+# Encoding *Code Points*
 
--   Le più usate oggi sono le codifiche UTF (Unicode Transformation Format), che esistono in tre versioni:
+-   The Unicode standard has many *code points*, and new ones are added with each version.
 
-    -   UTF8 (usata nei sistemi Linux e Mac OS X);
-    -   UTF16 (usata in Windows);
-    -   UTF32 (molto comoda dal punto di vista del software).
+-   This poses a problem in encoding *code points* in files: ASCII used one byte per character because the set was limited. But for Unicode, how many bytes per *code point* should be used? One? Two? One hundred?
+
+    -   Choosing a low value would limit the extensibility of Unicode.
+    -   Choosing a very high value would unnecessarily increase the size of text files.
+
+
+# Encodings Used Today
+
+-   Historically, various encodings have been proposed for Unicode.
+
+-   The most used today are the UTF (Unicode Transformation Format) encodings, which exist in three versions:
+
+    -   UTF8 (used in Linux and macOS systems);
+    -   UTF16 (used in Windows);
+    -   UTF32 (very convenient from a software perspective).
+
 
 # UTF-8
 
--   È oggi la codifica più usata in assoluto (tranne che sotto Windows 😢).
+-   It is the most used encoding today (except under Windows 😢).
 
--   Il numero di byte usati per un *code point* è variabile da 1 a 4.
+-   The number of bytes used for a *code point* varies from 1 to 4.
 
--   È compatibile con la codifica ASCII: un file ASCII è automaticamente anche un file UTF-8 valido
+-   It is compatible with ASCII encoding: an ASCII file is automatically also a valid UTF-8 file.
 
--   Sfrutta il fatto che la codifica ASCII usa solo 7 degli 8 bit in un byte, e che i primi 127 *code point* Unicode sono uguali ai valori ASCII.
+-   It takes advantage of the fact that ASCII encoding uses only 7 of the 8 bits in a byte, and that the first 127 Unicode *code points* are the same as the ASCII values.
 
 
-# Codifica UTF-8
+# UTF-8 Encoding
 
 | Code point           | Byte 1     | Byte 2     | Byte 3     | Byte 4     |
 |----------------------|------------|------------|------------|------------|
@@ -719,92 +779,98 @@ Code page 866 (cirillica)
 </center>
 
 
-# Codifica UTF-16
+# UTF-16 Encoding
 
--   Funziona come la codifica UTF-8, ma si usano coppie di byte ($8 + 8 = 16$).
+-   It works like UTF-8 encoding, but uses pairs of bytes ($8 + 8 = 16$).
 
--   Un *code point* può essere codificato da due oppure quattro byte.
+-   A *code point* can be encoded by two or four bytes.
 
--   C'è qui però un problema di *endianness*: il valore `0x2A6C` si scrive come la coppia di byte `0x2A 0x6C` (*big endian*) oppure `0x6C 0x2A` (*little endian*)?
+-   There is a problem of *endianness* here: is the value `0x2A6C` written as the byte pair `0x2A 0x6C` (*big endian*) or `0x6C 0x2A` (*little endian*)?
 
--   Nei file di testo codificati con UTF-16 si inserisce all'inizio del file il cosiddetto BOM (*byte-order marker*) che corrisponde al *code point* `0xFEFF`. Se i primi due byte di un file sono `0xFE 0xFF`, allora il file usa *big endian*, se sono `0xFF 0xFE` usa *little endian*. (Anche UTF-8 ha un BOM: `0xEF 0xBB 0xBF`).
+-   In text files encoded with UTF-16, the so-called BOM (*byte-order marker*) is inserted at the beginning of the file, which corresponds to the *code point* `0xFEFF`. If the first two bytes of a file are `0xFE 0xFF`, then the file uses *big endian*; if they are `0xFF 0xFE`, it uses *little endian*. (UTF-8 also has a BOM: `0xEF 0xBB 0xBF`).
 
--   UTF-16 è usato da Windows e nei linguaggi basati su Java (Kotlin, Scala, etc.).
-
-# Codifica UTF-32
-
--   Ovviamente, usa 32 bit per *code point*.
-
--   In questo caso non c'è ambiguità: ogni code point usa esattamente quattro byte.
-
--   È ovviamente la codifica più inefficiente dal punto di vista dello spazio occupato: la poesia di Emily Dickinson occupa 232 byte in ASCII/UTF-8, ma ne occuperebbe 928 byte in UTF-32 (quattro volte tanto!)
-
--   È però la codifica più semplice: ogni code point occupa sempre lo spazio di un tipo `uint32_t` in C/C++.
-
-# File binari e testuali
-
--   Quanto detto oggi spiega perché è spesso più vantaggioso usare *file binari* anziché testuali: è molto più facile per un programma leggerli e scriverli!
-
--   Quasi tutti i formati grafici oggi usati (PNG, JPEG, GIF, etc.) si basano su codifiche binarie.
-
--   I file testuali hanno però alcuni vantaggi significativi:
-
-    -   Sono più facili da leggere e da scrivere per un essere umano;
-
-    -   Non hanno problemi di *endianness*.
-
--   Inoltre, c'è un tipo importante di file di testo che avete già iniziato ad usare: i vostri **codici sorgente**!
+-   UTF-16 is used by Windows and in Java-based languages (Kotlin, Scala, etc.).
 
 
-# Codifica di file sorgente
+# UTF-32 Encoding
 
--   Quasi tutti i linguaggi richiedono parole chiave e simboli che si limitano ad usare caratteri ASCII (alcuni consentono anche caratteri Unicode nei nomi di variabili e di funzioni, come Julia e Python)
+-   Obviously, it uses 32 bits per *code point*.
 
--   Però nelle slide mostrate prima abbiamo visto che nei programmi si possono inserire anche stringhe letterali:
+-   In this case, there is no ambiguity: each code point uses exactly four bytes.
+
+-   It is obviously the most inefficient encoding in terms of space occupied: Emily Dickinson's poem occupies 232 bytes in ASCII/UTF-8, but it would occupy 928 bytes in UTF-32 (four times as much!).
+
+-   However, it is the simplest encoding: each code point always occupies the space of a `uint32_t` type in C/C++.
+
+
+# Binary and Text Files
+
+-   What we discussed today explains why it is often more advantageous to use *binary files* instead of text files: it is much easier for a program to read and write them!
+
+-   Almost all graphic formats used today (PNG, JPEG, GIF, etc.) are based on binary encodings.
+
+-   However, text files have some significant advantages:
+
+    -   They are easier for a human to read and write;
+
+    -   They do not have *endianness* problems.
+
+-   Furthermore, there is an important type of text file that you have already started using: your **source code**!
+
+
+# Source File Encoding
+
+-   Almost all languages require keywords and symbols that are limited to ASCII characters (some also allow Unicode characters in variable and function names, such as Julia and Python)
+
+-   However, in the slides shown earlier we saw that literal strings can also be inserted into programs:
 
     ```python
     print("The calculation completed successfully! 😀")
     ```
 
--   Come assicurarsi che il codice sia interpretato correttamente?
+-   How to ensure that the code is interpreted correctly?
 
-# Codifiche di file sorgente
 
--   Alcuni linguaggi impongono una codifica (UTF-8 per [Nim](https://nim-lang.org/docs/manual.html#lexical-analysis-encoding) e  [Rust](https://doc.rust-lang.org/reference/input-format.html)…), UTF-16 per C# e Java/Kotlin)
+# Source File Encodings
 
--   [D](https://dlang.org/spec/lex.html#source_text) supporta tutto: UTF-8, UTF-16, UTF-32, con qualsiasi *endianness*
+-   Some languages impose an encoding (UTF-8 for [Nim](https://nim-lang.org/docs/manual.html#lexical-analysis-encoding) and [Rust](https://doc.rust-lang.org/reference/input-format.html)…), UTF-16 for C# and Java/Kotlin)
 
--   Python permette in linea di principio [qualsiasi codifica](https://peps.python.org/pep-0263/), indicata con un commento all'inizio del file:
+-   [D](https://dlang.org/spec/lex.html#source_text) supports everything: UTF-8, UTF-16, UTF-32, with any *endianness*
+
+-   Python, in principle, allows [any encoding](https://peps.python.org/pep-0263/), indicated by a comment at the beginning of the file:
 
     ```python
     #!/usr/bin/env python3
     # -*- encoding: utf-8 -*-
     ```
 
--   Il rapporto del C++ con Unicode è complicato! `clang` usa UTF-8, GCC la ammette da linea di comando (`-finput-charset=`)…
+-   C++'s relationship with Unicode is complicated! `clang` uses UTF-8, GCC allows it from the command line (`-finput-charset=`)…
 
-# Codifiche di file sorgente
 
--   Ma questo risolve solo parte del problema, perché se il programma stampa una stringa UTF-8, bisogna assicurarsi che il sistema su cui gira il programma riconosca UTF-8 (Vedi le schermate all'inizio di questa sezione).
+# Source File Encodings
 
--   Fate attenzione alla codifica usata dal vostro editor; alcuni editor permettono di specificare la codifica in un commento all'inizio del file (vedi il manuale di [Emacs](https://www.gnu.org/software/emacs/manual/html_node/emacs/Specify-Coding.html) e di [Vim](https://vim.fandom.com/wiki/How_to_make_fileencoding_work_in_the_modeline))
+-   But this only solves part of the problem because if the program prints a UTF-8 string, you must ensure that the system running the program recognizes UTF-8 (See the screenshots at the beginning of this section).
 
--   Tutti gli editor moderni consentono comunque di cambiare la codifica di un file
+-   Pay attention to the encoding used by your editor; some editors allow you to specify the encoding in a comment at the beginning of the file (see the manual for [Emacs](https://www.gnu.org/software/emacs/manual/html_node/emacs/Specify-Coding.html) and [Vim](https://vim.fandom.com/wiki/How_to_make_fileencoding_work_in_the_modeline))
 
--   Da linea di comando potete usare il programma [`iconv`](https://en.wikipedia.org/wiki/Iconv)
+-   All modern editors allow you to change the encoding of a file
 
-# Conclusioni
+-   From the command line, you can use the [`iconv`](https://en.wikipedia.org/wiki/Iconv) program
 
--   È importante supportare Unicode nei propri programmi, **se questi devono gestire testo inserito dall'utente** (Spoiler: non è il caso del nostro ray-tracer, per fortuna!)
 
--   Per usare Unicode, bisogna abbandonare una serie di convinzioni che noi italiani (americani/francesi/etc.) abbiamo ingranate
+# Conclusions
 
--   Per esempio, [esistono lettere basate sull'alfabeto latino](https://devblogs.microsoft.com/oldnewthing/20241031-00/?p=110443) che hanno una **terza** grafia oltre alle maiuscole e minuscole
+-   It is important to support Unicode in your programs, **if they need to handle user-entered text** (Spoiler: this is not the case for our ray-tracer, fortunately!)
 
--   Non serve conoscere così bene Unicode nelle nostre lezioni, ma raccomando a tutti di approfondire l'argomento! Alcuni riferimenti: [The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)](https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/), [Unicode programming, with examples](https://begriffs.com/posts/2019-05-23-unicode-icu.html)
+-   To use Unicode, we must abandon some assumptions that we Italians (Americans/French/etc.) have ingrained
+
+-   For example, [there are letters based on the Latin alphabet](https://devblogs.microsoft.com/oldnewthing/20241031-00/?p=110443) that have a **third** form in addition to uppercase and lowercase
+
+-   We don't need to know Unicode so well in our lessons, but I recommend everyone to explore the topic further! Some references: [The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)](https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/), [Unicode programming, with examples](https://begriffs.com/posts/2019-05-23-unicode-icu.html)
+
 
 ---
-title: "Lezione 3"
+title: "Lesson 3"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

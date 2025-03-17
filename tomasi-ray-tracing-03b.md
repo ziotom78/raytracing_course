@@ -1,18 +1,19 @@
-# Immagini PFM
+# PFM Images
 
-# Immagini PFM
+# PFM Images
 
--   La classe `HdrImage` deve essere in grado di caricare e salvare immagini su disco.
+-   The `HdrImage` class must be able to load and save images to disk.
 
--   Siccome `HdrImage` usa floating-point per le tre componenti di colore (rosso, verde, blu), occore un formato HDR, quindi PNG, JPEG e simili non vanno bene.
+-   Since `HdrImage` uses floating-point for the three color components (red, green, blue), an HDR format is required, so PNG, JPEG and the like are not suitable.
 
--   Noi useremo il formato PFM.
+-   We will use the PFM format.
 
-# Il formato PFM
 
--   Scrivere file PFM è relativamente banale, perché hanno un [formato](http://www.pauldebevec.com/Research/HDR/PFM/) molto semplice
+# The PFM Format
 
--   Un file PFM è un file **binario**, ma inizia come se fosse un file di testo (con caratteri ASCII, quindi non dobbiamo preoccuparci di Unicode):
+-   Writing PFM files is relatively trivial, because they have a very simple [format](http://www.pauldebevec.com/Research/HDR/PFM/)
+
+-   A PFM file is a **binary** file, but it starts as if it were a text file (with ASCII characters, so we don't have to worry about Unicode):
 
     ```text
     PF
@@ -20,34 +21,35 @@
     ±1.0
     ```
 
-    dove `width` ed `height` sono la larghezza (numero di colonne) e l'altezza (numero di righe) dell'immagine; seguono poi i valori RGB in binario.
+    where `width` and `height` are the width (number of columns) and height (number of rows) of the image; then the RGB values follow in binary.
 
--   I ritorni a capo nelle prime tre righe vanno codificati sempre e solo come `\n`.
+-   The newline characters in the first three lines must always and only be encoded as `\n`.
 
 
-# Il numero `±1.0`
+# The number `±1.0`
 
--   La terza riga dell'header del file deve contenere un numero positivo (es., `1.0`) oppure negativo.
+-   The third line of the file header must contain a positive (e.g., `1.0`) or negative number.
 
--   Questo numero serve per segnalare il modo in cui ciascuna delle componenti RGB di un colore (floating-point a 32 bit) viene codificata:
+-   This number is used to signal how each of the RGB components of a color (32-bit floating-point) is encoded:
 
-    1.  Un valore positivo indica che si usa la codifica *big endian*;
-    2.  Un valore negativo indica che si usa la codifica *little endian*.
+    1.  A positive value indicates that *big endian* encoding is used;
+    2.  A negative value indicates that *little endian* encoding is used.
 
--   In fase di scrittura potremmo scegliere uno dei due formati e non preoccuparci troppo, ma in fase di lettura dobbiamo gestirli entrambi!
+-   When writing, we could choose one of the two formats and not worry too much, but when reading, we must handle both!
 
-# Floating-point in binario
 
--   Dobbiamo però capire come salvare un floating-point in binario. In C++
+# Floating-point in binary
+
+-   However, we need to understand how to save a floating-point number in binary. In C++
 
     ```c++
     std::ofstream of{"file.pfm"};
     of << 1.3;
     ```
 
-    stampa i caratteri «`1`», «`.`» e «`3`» (codifica testuale!).
+    prints the characters «`1`», «`.`» and «`3`» (text encoding!).
 
--   Ogni linguaggio ha un approccio diverso; in Python ad esempio si usa [`struct`](https://docs.python.org/3/library/struct.html):
+-   Each language has a different approach; in Python for example [`struct`](https://docs.python.org/3/library/struct.html) is used:
 
     ```python
     def _write_float(stream, value):
@@ -57,27 +59,29 @@
         stream.write(struct.pack("<f", value))
     ```
 
-# Accesso ai file in Python
+
+# File Access in Python
 
 <asciinema-player src="./cast/binary-text-files-75x25.cast" cols="75" rows="25" font-size="medium"></asciinema-player>
 
 
-# API di `HdrImage`
+# `HdrImage` API {#hdrimage-api}
 
--   Il modo in cui un tipo di dato o una funzione deve essere usato dal programmatore si chiama *Application Program Interface* (API).
+-   The way a data type or function should be used by the programmer is called *Application Program Interface* (API).
 
--   Nel nostro caso, la API per scrivere un file PFM consiste nel modo in cui invocheremmo una funzione `write_pfm`:
+-   In our case, the API for writing a PFM file consists of how we would invoke a `write_pfm` function:
 
     ```python
     # Our API requires the name of the file
     img.write_pfm("output_file.pfm")
     ```
 
--   Il tipo di API dovrebbe essere modellato anche in funzione dei test che si devono scrivere su di essa.
+-   The API type should also be modeled based on the tests that need to be written on it.
 
-# Test ed API
 
--   Consideriamo il caso di `write_pfm`. Come dovremmo scrivere un test su questa funzione?
+# Tests and API
+
+-   Let's consider the case of `write_pfm`. How should we write a test for this function?
 
     ```python
     img = HdrImage(7, 4)
@@ -85,52 +89,53 @@
     assert ...  # Now what?
     ```
 
--   Se la funzione scrive su file, vuol dire che dovremmo poi *caricare* il file e verificare che sia stato scritto correttamente.
+-   If the function writes to a file, it means that we should then *load* the file and verify that it was written correctly.
 
--   Ciò significa che finché non abbiamo una routine parallela `read_pfm` non possiamo testare `write_pfm`?
-
-
-# Gestione dei file
-
--   Potete pensare a un file binario come a un vettore (array monodimensionale) di byte, in sequenza uno dopo l'altro. (Un file testuale è lo stesso, ma nella codifica UTF è una sequenza di *code point* anziché byte, e la cosa è un po' più complicata).
-
--   I linguaggi moderni introducono una astrazione: lo *stream*. (Ahimé, D non ce l'ha [nelle sue librerie standard](https://github.com/dlang/phobos/pull/3631): usate [stream.d](https://github.com/dlang/undeaD/blob/master/src/undead/stream.d))
-
--   Questa astrazione è molto utile nei test.
+-   Does this mean that until we have a parallel `read_pfm` routine we can't test `write_pfm`?
 
 
-# File e stream
+# File Management
 
--   Semplificando, uno *stream* è un oggetto in grado di compiere queste operazioni:
+-   You can think of a binary file as a vector (one-dimensional array) of bytes, one after the other. (A text file is the same, but in UTF encoding it is a sequence of *code points* rather than bytes, and it is a bit more complicated).
 
-    1.  Restituire un byte alla volta leggendolo da una sequenza;
-    2.  Scrivere un byte alla volta, aggiungendolo in coda a quelli già scritti.
+-   Modern languages introduce an abstraction: the *stream*. (Alas, D doesn't have it [in its standard libraries](https://github.com/dlang/phobos/pull/3631): use [stream.d](https://github.com/dlang/undeaD/blob/master/src/undead/stream.d))
 
--   Queste due operazioni sono quelle che tipicamente si fanno sui file, ma uno *stream* è applicabile anche ad altri contesti:
-
-    1.  Una connessione di rete a un server remoto funziona come uno stream;
-    2.  La stessa memoria RAM può essere considerata come uno stream; di conseguenza, una sequenza di byte in memoria può essere vista come uno stream, se il linguaggio lo supporta.
+-   This abstraction is very useful in tests.
 
 
-# Esempio in Python
+# Files and Streams
+
+-   Simply put, a *stream* is an object capable of performing these operations:
+
+    1.  Return one byte at a time by reading it from a sequence;
+    2.  Write one byte at a time, appending it to those already written.
+
+-   These two operations are those typically performed on files, but a *stream* is also applicable to other contexts:
+
+    1.  A network connection to a remote server works like a stream;
+    2.  The RAM itself can be considered as a stream; consequently, a sequence of bytes in memory can be seen as a stream, if the language supports it.
+
+
+# Example in Python
 
 <asciinema-player src="./cast/files-streams-75x25.cast" cols="75" rows="25" font-size="medium"></asciinema-player>
 
 
-# Stream, API e test
+# Streams, APIs and Testing
 
--   Potremmo pensare di modificare la nostra API in modo che scriva in un generico stream, come l'esempio `write_hello` nel video:
+-   We could consider modifying our API so that it writes to a generic stream, like the `write_hello` example in the video:
 
     ```python
     stream = CreateSomeStream(...)
     img.write_pfm(stream)
     ```
 
--   Quando il programma è in esecuzione, faremo in modo che `stream` sia un file vero.
+-   When the program is running, we'll make `stream` a real file.
 
--   Quando dobbiamo eseguire un test, possiamo invece fare in modo che `stream` sia una variabile in memoria. I byte non verranno quindi scritti su file, ma mantenuti in un vettore di byte, su cui eseguiremo degli `assert`.
+-   When we need to run a test, we can instead make `stream` an in-memory variable. The bytes will not be written to a file, but kept in a byte array, on which we will perform `assert`s.
 
-# Il metodo `write_pfm`
+
+# The `write_pfm` Method
 
 ```python
 def write_pfm(self, stream, endianness=Endianness.LITTLE_ENDIAN):
@@ -151,23 +156,24 @@ def write_pfm(self, stream, endianness=Endianness.LITTLE_ENDIAN):
             _write_float(stream, color.b, endianness)
 ```
 
-# Immagine per i test
 
--   Ho creato due file PFM con queste caratteristiche:
+# Test Images
 
-    -   Uno è codificato come *little endian* (`-1.0`), l'altro come *big endian* (`1.0`);
-    -   Matrice dei colori (RGB) di dimensione 3×2 pixel:
+-   I created two PFM files with these characteristics:
+
+    -   One is encoded as *little endian* (`-1.0`), the other as *big endian* (`1.0`);
+    -   Color matrix (RGB) of size 3×2 pixels:
 
         |    | #1              | #2              | #3              |
         |----|-----------------|-----------------|-----------------|
         | #A | (10, 20, 30)    | (40, 50, 60)    | (70, 80, 90)    |
         | #B | (100, 200, 300) | (400, 500, 600) | (700, 800, 900) |
 
--   È utile che abbiate i file sul vostro disco. Scaricateli con nome [`reference_le.pfm`](./media/reference_le.pfm) e [`reference_be.pfm`](./media/reference_be.pfm) e salvateli nel vostro repository, possibilmente nella stessa directory dei test.
+-   It is useful to have the files on your disk. Download them with the names [`reference_le.pfm`](./media/reference_le.pfm) and [`reference_be.pfm`](./media/reference_be.pfm) and save them in your repository, possibly in the same directory as the tests.
 
-# Scrittura del test (1/3)
+# Writing the test (1/3)
 
-Il primo approccio è quello di leggere il file `reference_le.pfm` e confrontarlo col file che *sarebbe* stato scritto da `write_pfm`:
+The first approach is to read the `reference_le.pfm` file and compare it with the file that *would have been* written by `write_pfm`:
 
 ```python
 img = HdrImage(3, 2)
@@ -188,9 +194,10 @@ with open("reference_le.pfm", "wb") as inpf:
 assert buf.getvalue() == reference_bytes
 ```
 
-# Scrittura dei test (2/3)
 
-Ma se eseguiamo `xxd` sul file `reference_le.pfm`, possiamo ottenere la sequenza di valori dei byte nel formato C/C++:
+# Test Writing (2/3)
+
+But if we run `xxd` on the file `reference_le.pfm`, we can get the sequence of byte values in C/C++ format:
 
 ```text
 $ xxd -i reference_le.pfm
@@ -206,9 +213,10 @@ unsigned char reference_le_pfm[] = {
 unsigned int reference_le_pfm_len = 84;
 ```
 
-# Scrittura dei test (3/3)
 
-Se inseriamo questa sequenza di byte nel nostro programma, possiamo fare un confronto diretto in memoria:
+# Test Writing (3/3)
+
+If we insert this byte sequence into our program, we can make a direct comparison in memory:
 
 ```python
 # Create "img" as in the previous case, then…
@@ -230,19 +238,21 @@ img.write_pfm(buf)
 assert buf.getvalue() == reference_bytes
 ```
 
-# Leggere file PFM
 
-# Lettura di file
+# Reading PFM Files
 
--   Veniamo ora al problema ben più difficile della *lettura* di file
+# File Reading
 
--   A differenza della scrittura, la lettura presenta più difficoltà:
-    -   Il file potrebbe essere in un formato errato (problemi nella copia, estensione sbagliata, etc.);
-    -   Dobbiamo essere in grado di leggere sia *little endian* che *big endian*, mentre in fase di scrittura avevamo libertà di scelta.
+-   Let's now address the much more challenging problem of *reading* files.
 
-# Costruttore o funzione?
+-   Unlike writing, reading presents more difficulties:
+    -   The file might be in an incorrect format (problems during copying, wrong extension, etc.);
+    -   We must be able to read both *little endian* and *big endian*, while during writing we had freedom of choice.
 
--   Si può implementare la lettura di un file PFM in un costruttore (esempio in C++):
+
+# Constructor or Function?
+
+-   Implementing the reading of a PFM file within a constructor is possible (example in C++):
 
     ```c++
     struct HdrImage {
@@ -254,7 +264,7 @@ assert buf.getvalue() == reference_bytes
     HdrImage img{myfile};
     ```
 
--   Ma si può anche pensare di implementare una funzione `read_pfm_file`:
+-   But one could also consider implementing a `read_pfm_file` function:
 
     ```c++
     HdrImage read_pfm_file(std::istream & stream);
@@ -263,20 +273,22 @@ assert buf.getvalue() == reference_bytes
     HdrImage img{read_pfm_file(myfile)};
     ```
 
-# Scelta della API
 
--   Il problema di scegliere tra le due possibilità riguarda la scelta della [API](./tomasi-ray-tracing-03b-image-files.html#/api-di-hdrimage).
+# Picking an API
 
--   La scelta dipende dal gusto personale e da altri possibili fattori:
-    1.  In linguaggi OOP può essere più naturale fornire un costruttore;
-    2.  In linguaggi più funzionali, come Nim e Rust, basta implementare una funzione;
-    3.  Se nel proprio linguaggio i costruttori esistono ma hanno limitazioni (es., in Python non si può fare overloading), implementate una funzione.
+-   The problem of picking which possibility is the best is related to the choice of an [API](./tomasi-ray-tracing-03b-image-files.html#/hdrimage-api).
 
-# Stream e file
+-   The choice depends on personal taste and other factors:
+    1.  In a OOP language, it’s more natural to provide a constructor;
+    2.  In procedural languages like Nim or Rust, it’s ok to implement a function;
+    3.  If your language limits the applicability of constructors (e.g., Python prevents overloading), just implement a function.
 
--   Nelle slide precedenti l'interfaccia in C++ per leggere un file è attraverso uno *stream* `std::istream`;
--   Come abbiamo visto, l'uso di stream semplifica la scrittura dei test (che non sono obbligati ad accedere al disco);
--   Garantisce anche maggiore versatilità: invece di leggere l'immagine da un file, potremmo leggerla da una connessione internet, o da un file compresso con GZip:
+
+# Stream and files
+
+-   In the previous slides, the C++ interface to read a file is through a *stream* (`std::istream`);
+-   We saw that streams simplify the creation of tests, as they do not need to read data from disk;
+-   Moreover, the code is more versatile: instead of reading data from disk, we could read it from an Internet connection or a compressed file:
 
     ```python
     import gzip
@@ -285,16 +297,17 @@ assert buf.getvalue() == reference_bytes
         read_pfm_file(inpf)
     ```
 
-# Lettura diretta di file
 
--   È però innegabile che sarebbe comodo poter aprire un file anche così:
+# Reading Files Directly
+
+-   Anyway, we cannot deny that it would be handy to open a file directly:
 
     ```python
     # How handy!
     image = read_pfm_file("image_file.pfm")
     ```
 
--   In C++ si potrebbe usare l'overloading per definire un nuovo costruttore:
+-   In C++, we could think of implementing an overloaded constructor:
 
     ```c++
     struct HdrImage {
@@ -307,11 +320,12 @@ assert buf.getvalue() == reference_bytes
     };
     ```
 
+
 # Stream e nomi di file
 
--   Purtroppo il codice C++ però è **errato** e non compila!
+-   Unfortunately this is not valid C++: the code does not compile!
 
--   L'oggetto `std::ifstream` creato nel secondo costruttore è temporaneo e non può essere passato al primo costruttore:
+-   The `std::ifstream` instance in the second constructor is temporary and cannot be passed to the first constructor:
 
     ```text
     $ g++ -c hdrimages.cpp
@@ -319,11 +333,12 @@ assert buf.getvalue() == reference_bytes
     hdrimages.cpp:33:58: error: cannot bind non-const lvalue reference of type ‘std::istream&’ {aka ‘std::basic_istream<char>&’} to an rvalue of type ‘std::basic_istream<char>’
     ```
 
--   Ci sono problemi simili anche in C\# e Kotlin (dove i costruttori secondari devono invocare quelli primari come prima cosa), ed è dovuto alle limitazioni del *constructor chaining*
+-   There are similar problems in C♯ and Kotlin, as secondar constructors must first call primary constructors before anything else. This problem is known as *constructor chaining issue*.
 
--   In questi casi potete usare una funzione esterna o un [*factory object*](https://kt.academy/article/ek-factory-functions) (a volte chiamato *companion object*)
+-   The easiest solution is to just implement a function/method and call it in both constructors. (Somebody likes to complicate things by implementing [*factory objects*](https://kt.academy/article/ek-factory-functions), also called *companion objects*.)
 
-# Risolvere il dilemma
+
+# The Solution of the Riddle
 
 ```c++
 struct HdrImage {
@@ -343,9 +358,10 @@ public:
 };
 ```
 
-# Il formato PFM
 
--   Ricordiamo com'è fatto il formato PFM:
+# The PFM File Format
+
+-   Let’s recall the shape of the PFM format:
 
     ```text
     PF
@@ -354,23 +370,25 @@ public:
     <binary data>
     ```
 
--   Il codice di lettura deve verificare le seguenti cose:
+-   The reading code must verify the following things:
 
-    1.  Il file deve iniziare con `PF\n`, altrimenti non è in formato PFM;
-    2.  La seconda riga deve contenere due numeri interi positivi;
-    3.  La terza riga deve contenere `1.0` o `-1.0`;
-    4.  I dati binari devono essere in numero sufficiente; nello specifico, ci aspettiamo $\text{width} \times \text{height}$ pixel, ciascuno composto da tre componenti (R, G, B) da 4 byte ciascuno, per un totale di $12 \times \text{width} \times \text{height}$ byte.
+    1.  The file must start with `PF\n`, otherwise it is not in PFM format;
+    2.  The second line must contain two positive integers;
+    3.  The third line must contain `1.0` or `-1.0`;
+    4.  The binary data must be sufficient; specifically, we expect $\text{width} \times \text{height}$ pixels, each composed of three components (R, G, B) of 4 bytes each, for a total of $12 \times \text{width} \times \text{height}$ bytes.
 
-# Gestione degli errori
 
--   La funzione che legge un file deve essere in grado di gestire condizioni di errore.
--   Abbiamo visto nella lezione di teoria che gli errori in una funzione di libreria non deve fare nulla di **distruttivo** né di **visibile**, perché non si può sapere a priori se l'errore è stato causato dal programmatore stesso o dall'utente.
--   Possiamo gestire le condizioni di errore usando le eccezioni, se il linguaggio le supporta (non è il caso di Rust).
--   Se usate le eccezioni, definite una nuova classe che sia usata per le eccezioni generate nella lettura di un file PFM.
+# Error Handling
+
+-   The function that reads a file must be able to handle error conditions.
+-   We saw in the theory lesson that errors in a library function should do nothing **destructive** or **visible**, because it is not possible to know in advance whether the error was caused by the programmer or the user.
+-   We can handle error conditions using exceptions if the language supports them (which is not the case with Rust).
+-   If you use exceptions, define a new class to handle exceptions generated while reading a PFM file.
+
 
 # `InvalidPfmFileFormat`
 
--   In Python basta creare una classe derivata da `Exception`:
+-   In Python, it is enough to create a class derived from `Exception`:
 
     ```python
     class InvalidPfmFileFormat(Exception):
@@ -378,15 +396,16 @@ public:
             super().__init__(error_message)
     ```
 
-    Notate che accettiamo un messaggio d'errore, in modo da identificare meglio quale problema sia sorto nella lettura del file PFM.
+    Note that we accept an error message to better identify which problem occurred when reading the PFM file.
 
--   Se possibile, seguite la stessa strategia per il vostro linguaggio, avendo magari l'accortezza di derivare la classe da un'eccezione preesistente adatta al contesto (es., `System.FormatException` in C\#, `RuntimeException` in Kotlin).
+-   If possible, follow the same strategy for your language, perhaps being careful to derive the class from a pre-existing exception suitable for the context (e.g., `System.FormatException` in C#, `RuntimeException` in Kotlin).
 
-# Condizioni di errore
 
--   Se gestiamo le condizioni di errore usando le eccezioni, possiamo decidere come gestire gli errori in funzione del contesto.
+# Error Conditions
 
--   Ad esempio, in un `main` che vuole aprire un file PFM passato dall'utente:
+-   If we handle error conditions using exceptions, we can decide how to handle errors depending on the context.
+
+-   For example, in a `main` that wants to open a PFM file provided by the user:
 
     ```python
     filename = sys.argv[1]
@@ -397,38 +416,41 @@ public:
         printf(f"impossible to open file {filename}, reason: {err}")
     ```
 
--   In uno *unit test* che deve aprire un file contenente dati di riferimento, **non** cattureremmo l'eccezione in un `try … except`.
+-   In a *unit test* that needs to open a file containing reference data, we would **not** catch the exception in a `try ... except`.
 
-# Altre eccezioni
 
--   Per interpretare un file PFM dovremo invocare funzioni della libreria standard del nostro linguaggio:
+# Other Exceptions
 
-    -   Leggere da uno *stream*;
-    -   Interpretare una stringa di byte come un numero (es., `320`);
+-   To interpret a PFM file, we will need to call standard library functions of our language:
 
--   In caso di errori, le stesse funzioni di base del linguaggio possono emettere delle eccezioni (es., `ValueError` se in Python si cerca di convertire in intero una stringa come `hello, world!`).
+    -   Reading from a *stream*;
+    -   Interpreting a byte string as a number (e.g., `320`);
 
--   Dobbiamo assicurarci di «catturare» queste eccezioni e convertirle in `InvalidPfmFileFprmat`, altrimenti il codice nella slide precedente non funzionerebbe più.
+-   In case of errors, the language's core functions can raise exceptions (e.g., `ValueError` in Python when trying to convert a string like `hello, world!` to an integer).
 
-# Esempio
+-   We need to ensure that we "catch" these exceptions and convert them into `InvalidPfmFileFormat`, otherwise, the code from the previous slide would no longer work.
+
+
+# Example
 
 <asciinema-player src="./cast/catching-exceptions-78x25.cast" cols="78" rows="25" font-size="medium"></asciinema-player>
 
-# Scrittura di test
 
--   Abbiamo visto nella scorsa lezione che è più facile scrivere test per funzioni di dimensioni ridotte.
+# Writing Tests
 
--   Nel nostro caso, la lettura di un file PFM potrebbe appoggiarsi alle seguenti funzioni:
+-   We saw in the last lesson that it is easier to write tests for smaller functions.
 
-    1.  Una funzione che legga un floating-point a 32 bit;
-    2.  Una funzione che legga una sequenza di bytes fino a `\n` (se il linguaggio non l'ha già);
-    3.  Una funzione che interpreti la riga con la dimensione dell'immagine;
-    4.  Una funzione che determini la *endianness* del file.
+-   In our case, reading a PFM file could rely on the following functions:
 
-    Ognuna di queste funzioni può essere testata in uno [*unit test*](./tomasi-ray-tracing-03b-image-files.html#/test) dedicato.
+    1.  A function that reads a 32-bit floating point;
+    2.  A function that reads a sequence of bytes up to `\n` (if the language does not already provide one);
+    3.  A function that interprets the line with the image dimensions;
+    4.  A function that determines the file *endianness*.
+
+    Each of these functions can be tested in a dedicated [*unit test*](./tomasi-ray-tracing-03b-image-files.html#/test).
 
 
-# Funzioni di supporto (1/4)
+# Support Functions (1/4)
 
 ```python
 def _read_line(stream):
@@ -441,6 +463,7 @@ def _read_line(stream):
         result += cur_byte
 ```
 
+
 # Test (1/4)
 
 ```python
@@ -451,7 +474,8 @@ def test_pfm_read_line():
     assert _read_line(line) == ""
 ```
 
-# Funzioni di supporto (2/4)
+
+# Support Functions (2/4)
 
 ```python
 _FLOAT_STRUCT_FORMAT = {
@@ -472,13 +496,15 @@ def _read_float(stream, endianness=Endianness.LITTLE_ENDIAN):
         raise InvalidPfmFileFormat("impossible to read binary data from the file")
 ```
 
+
 # Test (2/4)
 
--   Per `_read_float` possiamo evitare di implementare dei test: è una funzione che agisce semplicemente da *wrapper* a una funzione standard della libreria Python.
+-   We can avoid implementing tests for `_read_float`: it is a function that simply acts as a *wrapper* for a standard function in the Python library.
 
--   Verificheremo comunque il suo comportamento quando testeremo la lettura di un file PFM dall'inizio alla fine.
+-   We will still verify its behavior when we test reading a PFM file from start to finish.
 
-# Funzioni di supporto (3/4)
+
+# Support Functions (3/4)
 
 ```python
 def _parse_endianness(line: str):
@@ -494,6 +520,7 @@ def _parse_endianness(line: str):
     else:
         raise InvalidPfmFileFormat("invalid endianness specification, it cannot be zero")
 ```
+
 
 # Test (3/4)
 
@@ -511,7 +538,8 @@ def test_pfm_parse_endianness():
         _ = _parse_endianness("abc")
 ```
 
-# Funzioni di supporto (4/4)
+
+# Support Functions (4/4)
 
 ```python
 def _parse_img_size(line: str):
@@ -528,6 +556,7 @@ def _parse_img_size(line: str):
 
     return width, height
 ```
+
 
 # Test (4/4)
 
@@ -568,17 +597,18 @@ def read_pfm_image(stream):
 
 # Integration test
 
--   Abbiamo implementato test per tutte le funzioni su cui è costruita `read_pfm_image`: `_read_line`, `_parse_endianness`, etc.
+-   We have implemented tests for all the functions on which `read_pfm_image` is built: `_read_line`, `_parse_endianness`, etc.
 
--   Ma chi ci dice che abbiamo combinato bene le funzioni tra loro?
+-   But how can we be sure that we have correctly combined the functions?
 
--   È necessario andare oltre gli *unit test*, ed eseguire un test che metta in moto tutto il macchinario dall'inizio alla fine.
+-   It is necessary to go beyond *unit tests* and perform a test that runs the entire machinery from start to finish.
 
--   Un test su una funzione complessa, che invoca funzioni semplici già testate, si dice *integration test*.
+-   A test on a complex function that calls already tested simple functions is called an *integration test*.
 
--   Nello specifico, il nostro test deve verificare il funzionamento su file *little endian* ([`reference_le.pfm`](./media/reference_le.pfm)), su file *big endian* ([`reference_be.pfm`](./media/reference_be.pfm)), e anche su file errati.
+-   Specifically, our test must verify functionality on *little-endian* files ([`reference_le.pfm`](./media/reference_le.pfm)), *big-endian* files ([`reference_be.pfm`](./media/reference_be.pfm)), and also on invalid files.
 
-# Test per `read_pfm_file`
+
+# Tests for `read_pfm_file`
 
 ```python
 # This is the content of "reference_le.pfm" (little-endian file)
@@ -623,34 +653,126 @@ def test_pfm_read_wrong(self):
         _ = read_pfm_image(buf)
 ```
 
-# Guida per l'esercitazione
 
-# Guida per l'esercitazione
+# What to do today
 
-1.  Implementate le seguenti funzioni:
+# What to do today
 
-    -   lettura di una sequenza di 4 byte in un floating-point a 32 bit, tenendo conto della *endianness* (`_read_float` nell'esempio Python);
-    -   lettura di una sequenza di byte fino a `\n` o alla fine dello stream (`_read_line`);
-    -   lettura delle dimensioni dell'immagini da una stringa (`_parse_img_size`);
-    -   decodifica del tipo di *endianness* da una stringa (`_parse_endianness`).
+1.  Implement the following functions:
 
-2.  Implementate una funzione/metodo che legga un file PFM da uno *stream*.
+    -   Reading a sequence of 4 bytes into a 32-bit floating point, considering the *endianness* (`_read_float` in the Python example);
+    -   Reading a sequence of bytes up to `\n` or the end of the stream (`_read_line`);
+    -   Reading the image dimensions from a string (`_parse_img_size`);
+    -   Decoding the type of *endianness* from a string (`_parse_endianness`).
 
-3.  Implementate gli stessi test dell'esempio Python. Verificate anche che i vostri metodi segnalino correttamente gli errori.
+2.  Implement a function/method that reads a PFM file from a stream.
+
+3.  Implement the same tests as in the Python example. Also, verify that your methods correctly handle errors.
+
+# Hints for C++
+
+# The `HdrImage` Type
+
+-   Use `std::vector<Color>` for the array of colors in `HdrImage`;
+
+-   No need to implement `getWidth`, `setWidth`, etc. Just declare `width`, `height`, `pixels` as public members:
+
+    ```c++
+    struct HdrImage {
+        int width, height;
+        std::vector<Color> pixels;
+
+        // ...
+    };
+    ```
+
+-   It would be better to declare the `valid_coordinates`, `pixel_index`, `get_pixel`, and `set_pixel` methods in the `.h` file rather than in the `.cpp` file, so that they are *inline*.
+
+# Files and Streams
+
+-   For file access, C++ is not very sophisticated: you open the file for writing using `std::ofstream`.
+
+-   In-memory streams (like `ByteIO` in Python) are implemented by [`std::stringstream`](https://www.cplusplus.com/reference/sstream/stringstream/stringstream/) (in `<sstream>`):
+
+    ```c++
+    std::stringstream sstr;
+
+    sstr << "PF\n" << width << " " << height << "\n" << endianness;
+    std::string result{sstr.str()};  // "result" is an ASCII string that can
+    ```
 
 
-# Suggerimenti per Java/Kotlin
+# Writing Binary Data
+
+-   C++ does not offer many tools to decompose a `float` variable into its four bytes; use this implementation and study it carefully:
+
+    ```c++
+    #include <cstdint>  // It contains uint8_t
+
+    enum class Endianness { little_endian, big_endian };
+
+    void write_float(std::ostream &stream, float value, Endianness endianness) {
+      // Convert "value" in a sequence of 32 bit
+      uint32_t double_word{*((uint32_t *)&value)};
+
+      // Extract the four bytes in "double_word" using bit-level operators
+      uint8_t bytes[] = {
+          static_cast<uint8_t>(double_word & 0xFF),         // Least significant byte
+          static_cast<uint8_t>((double_word >> 8) & 0xFF),
+          static_cast<uint8_t>((double_word >> 16) & 0xFF),
+          static_cast<uint8_t>((double_word >> 24) & 0xFF), // Most significant byte
+      };
+
+      switch (endianness) {
+      case Endianness::little_endian:
+        for (int i{}; i < 4; ++i)    // Forward loop
+          stream << bytes[i];
+        break;
+
+      case Endianness::big_endian:
+        for (int i{3}; i >= 0; --i)  // Backward loop
+          stream << bytes[i];
+        break;
+      }
+    }
+
+    // You can use "write_float" to write little/big endian-encoded floats:
+    // write_float(stream, 10.0, Endianness::little_endian);
+    // write_float(stream, 10.0, Endianness::big_endian);
+    ```
 
 
-# File e stream
+# Big/little endian?
 
--   Java e Kotlin hanno le classi [`InputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html) e [`OutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html) (in `java.io`) per rappresentare uno stream. Queste vanno bene per i prototipi di `writeFloat` e `writePfm`.
+-   On the third line of the PFM file, you must write `1.0` or `-1.0` depending on the *endianness*.
 
--   Per aprire un file in scrittura c'è [`FileOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/FileOutputStream.html), che restituisce direttamente uno stream.
+-   The `write_float` function from the previous slide works in both cases, so you can choose one and use that.
 
--   Stream in memoria si creano con [`ByteArrayOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/ByteArrayOutputStream.html).
+-   If you are curious, the following function returns `true` when run on a *little endian* system, and `false` otherwise:
 
--   Per aprire un file, operare su esso e chiuderlo, Kotlin offre il comodissimo [`use`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/use.html), simile a `using` in C\#:
+
+    ```c++
+    bool is_little_endian() {
+      uint16_t word{0x1234};
+      uint8_t *ptr{(uint8_t *)&word};
+
+      return ptr[0] == 0x34;
+    }
+    ```
+
+
+# Hints for Java/Kotlin
+
+
+# Files and Streams
+
+-   Java and Kotlin have the classes [`InputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html) and [`OutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html) (in `java.io`) to represent a stream. These are suitable for the `writeFloat` and `writePfm` prototypes.
+
+-   To open a file for writing, there is [`FileOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/FileOutputStream.html), which directly returns a stream.
+
+-   In-memory streams are created with [`ByteArrayOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/ByteArrayOutputStream.html).
+
+-   To open a file, operate on it, and close it, Kotlin offers the very convenient [`use`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/use.html), similar to `using` in C#:
 
     ```kotlin
     FileOutputStream("out.pfm").use {
@@ -658,11 +780,12 @@ def test_pfm_read_wrong(self):
     }
     ```
 
-# Scrittura di file binari
 
--   La *endianness* è identificata dal tipo [`ByteOrder`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteOrder.html) in `java.nio` (una classe Java, ma in Kotlin si possono usare nativamente librerie Java)
+# Writing Binary Files
 
--   Per scrivere/leggere valori in formato binario c'è la classe [`ByteBuffer`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html), sempre in `java.nio`. Esempio in Kotlin:
+-   Endianness is identified by the [`ByteOrder`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteOrder.html) type in `java.nio` (a Java class, but you can natively use Java libraries in Kotlin).
+
+-   To write/read values in binary format, there is the [`ByteBuffer`](https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html) class, also in `java.nio`. Example in Kotlin:
 
     ```kotlin
     fun writeFloatToStream(stream: OutputStream, value: Float, order: ByteOrder) {
@@ -676,18 +799,20 @@ def test_pfm_read_wrong(self):
     }
     ```
 
-# Inizializzare `ByteBuffer`
 
--   I byte in Kotlin sono con segno (molto strano!)
+# Initializing `ByteBuffer`
 
--   Per inizializzare un array da valori esadecimali come quelli stampati da `xxd -i reference_be.pfm`, occorre una piccola funzione di aiuto:
+-   Bytes in Kotlin are signed (very strange!).
+
+-   To initialize an array from hexadecimal values like those printed by `xxd -i reference_be.pfm`, you need a small helper function:
 
     ```kotlin
     fun byteArrayOfInts(vararg ints: Int) =
         ByteArray(ints.size) { pos -> ints[pos].toByte() }
     ```
 
-# Contenuto di `reference_be.pfm`
+
+# Content of `reference_be.pfm`
 
 ```kotlin
 val reference_be = byteArrayOfInts(
@@ -701,38 +826,28 @@ val reference_be = byteArrayOfInts(
 )
 ```
 
-Fate lo stesso con `reference_le.pfm`.
+Do the same with `reference_le.pfm`.
 
-# Scrittura di testo
 
--   Java e Kotlin rappresentano internamente le stringhe di caratteri usando la codifica UTF-16.
+# Writing Text
 
--   Per trasformare la codifica in ASCII e poterla salvare in un file binario, Kotlin offre il comodissimo metodo `toByteArray()`:
+-   Java and Kotlin internally represent strings using UTF-16 encoding.
+
+-   To convert the encoding to ASCII so it can be saved in a binary file, Kotlin offers the very convenient `toByteArray()` method:
 
     ```kotlin
     val header = "PF\n$width $height\n$endianness\n"
     stream.write(header.toByteArray())
     ```
 
-# Suggerimenti per Nim
 
-# Librerie da usare
+# Hints for C#
 
--   Il codice di oggi dovrebbe essere molto semplice da implementare in Nim
+# Files and Streams
 
--   La libreria [endians](https://nim-lang.org/docs/endians.html) fornisce funzioni per convertire dati in formato *little*/*big endian*
+-   In C#, a stream is of type `Stream`, which is a base class from which [`FileStream`](https://docs.microsoft.com/en-us/dotnet/api/system.io.filestream?view=net-5.0) and [`MemoryStream`](https://docs.microsoft.com/en-us/dotnet/api/system.io.memorystream?view=net-5.0) derive.
 
--   La libreria [streams](https://nim-lang.org/docs/streams.html) implementa il concetto di *stream* sia associato ad un file che ad una stringa in memoria
-
-
-
-# Suggerimenti per C\#
-
-# File e stream
-
--   In C\#, uno stream è di tipo `Stream`, che è una classe base da cui deriva [`FileStream`](https://docs.microsoft.com/en-us/dotnet/api/system.io.filestream?view=net-5.0) e [`MemoryStream`](https://docs.microsoft.com/en-us/dotnet/api/system.io.memorystream?view=net-5.0);
-
--   Per aprire un file in scrittura, usate la keyword [`using`](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement):
+-   To open a file for writing, use the [`using`](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement) keyword:
 
     ```csharp
     var img = new HdrImage(7, 4);
@@ -743,11 +858,11 @@ Fate lo stesso con `reference_le.pfm`.
     }
     ```
 
-# Scrittura di dati binari
+# Writing Binary Data
 
--   La classe [`BitConverter`](https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter?view=net-5.0) implementa metodi per leggere e scrivere dati binari da stream.
+-   The [`BitConverter`](https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter?view=net-5.0) class implements methods for reading and writing binary data from streams.
 
--   Il seguente metodo scrive un numero floating-point a 32 bit in binario:
+-   The following method writes a 32-bit floating-point number in binary:
 
     ```csharp
     private static void writeFloat(Stream outputStream, float value)
@@ -757,41 +872,24 @@ Fate lo stesso con `reference_le.pfm`.
     }
     ```
 
--   Esiste la variabile `BitConverter.IsLittleEndian` per decidere se scrivere `1.0` o `-1.0` nel file PFM.
+-   The variable `BitConverter.IsLittleEndian` exists to decide whether to write `1.0` or `-1.0` in the PFM file.
 
-# Scrittura di testo
+# Writing Text
 
--   Il C\#, a differenza del C++, distingue tra stringhe (codificate in Unicode con UTF-16) e sequenze di byte.
+-   C#, unlike C++, distinguishes between strings (encoded in Unicode with UTF-16) and byte sequences.
 
--   Per scrivere correttamente l'header, la cosa più semplice è creare una stringa Unicode e poi convertirla in ASCII:
+-   To correctly write the header, the simplest thing is to create a Unicode string and then convert it to ASCII:
 
     ```csharp
     var header = Encoding.ASCII.GetBytes($"PF\n{width} {height}\n{endianness_value}\n");
     ```
 
-    dove `endianness_value` è un `double` che vale `1.0` oppure `-1.0`.
+    where `endianness_value` is a `double` that is either `1.0` or `-1.0`.
 
 
-# Suggerimenti per Rust
+# Streams
 
-# Uso di `enum` e `match`
-
--   Per specificare la *endianness* c'è il tipo [`ByteOrder`](https://docs.rs/endianness/latest/endianness/enum.ByteOrder.html) nella crate [endianness](https://docs.rs/endianness/latest/endianness/)
-
--   Con gli `enum` abituatevi ad usare `match` anziché `if`:
-
-    ```rust
-    fn endianness_number(endianness: &ByteOrder) -> f32 {
-        match endianness {
-            ByteOrder::LittleEndian => -1.0,
-            ByteOrder::BigEndian => 1.0,
-        }
-    }
-    ```
-
-# Stream
-
--   Usate i *traits* `Write` e `Read` per definire le funzioni che leggono e scrivono su uno stream. Ad esempio:
+-   Use the `Write` and `Read` *traits* to define functions that read and write to a stream. For example:
 
     ```rust
     fn write_float<T: Write>(
@@ -806,17 +904,18 @@ Fate lo stesso con `reference_le.pfm`.
     }
     ```
 
--   Potete rendere il codice più veloce usando [`BufWriter` e `BufReader`](https://doc.rust-lang.org/nightly/std/io/index.html#bufreader-and-bufwriter), ma non è necessario (non sarà certo questo il collo di bottiglia!).
+-   You can make the code faster using [`BufWriter` and `BufReader`](https://doc.rust-lang.org/nightly/std/io/index.html#bufreader-and-bufwriter), but it's not necessary (it certainly won't be the bottleneck!).
 
-# Suggerimenti per D
 
-# Stream
+# Hints for D
 
--   Purtroppo la versione più recente del linguaggio D [non supporta gli stream](https://forum.dlang.org/post/mailman.797.1513034483.9493.digitalmars-d-learn@puremagic.com) in maniera nativa
+# Streams
 
--   Ma non è un grosso danno, perché potete usare sequenze di byte dinamiche come `ubyte[]`; per la scrittura è ancora meglio un [`Appender`](https://dlang.org/library/std/array/appender.html) (più efficiente), oppure [`outbuffer`](https://dlang.org/phobos/std_outbuffer.html)
+-   Unfortunately, the most recent version of the D language [does not natively support streams](https://forum.dlang.org/post/mailman.797.1513034483.9493.digitalmars-d-learn@puremagic.com).
 
--   Il linguaggio fornisce il tipo [Endian](https://dlang.org/library/std/system/endian.html) e la libreria [std.bitmanip](https://dlang.org/phobos/std_bitmanip.html) che fornisce la funzione template `append`:
+-   But it's not a big deal, because you can use dynamic byte sequences like `ubyte[]`; for writing, an [`Appender`](https://dlang.org/library/std/array/appender.html) is even better (more efficient), or alternatively [`outbuffer`](https://dlang.org/phobos/std_outbuffer.html).
+
+-   The language provides the [Endian](https://dlang.org/library/std/system/endian.html) type and the [std.bitmanip](https://dlang.org/phobos/std_bitmanip.html) library, which provides the `append` template function:
 
     ```d
     auto stream = appender!(ubyte[])();
@@ -825,9 +924,9 @@ Fate lo stesso con `reference_le.pfm`.
     append!(uint, Endian.bigEndian)(stream, *cast(uint*)(&value));
     ```
 
-# Scrivere un file
+# Writing a File
 
--   Per scrivere un numero `float` in un `Appender`, potete usare questo codice:
+-   To write a `float` number to an `Appender`, you can use this code:
 
     ```d
     void write_float(Appender!(ubyte[]) appender, float value, Endian endianness) {
@@ -839,13 +938,13 @@ Fate lo stesso con `reference_le.pfm`.
     }
     ```
 
--   Notate che non si può passare il valore `endianness` a `append!`, perché essendo un template richiede che il valore sia noto in fase di compilazione.
+-   Note that you cannot pass the `endianness` value to `append!` because, being a template, it requires the value to be known at compile time.
 
--   Per scrivere l'header, potete inviare la stringa di file ASCII con la funzione `put`: `appender.put(cast(ubyte[])(header_string))`.
+-   To write the header, you can send the ASCII file string with the `put` function: `appender.put(cast(ubyte[])(header_string))`.
 
-# Leggere un file (1/2)
+# Reading a File (1/2)
 
--   È semplice interpretare un array di bytes come se fosse uno *stream*:
+-   It's simple to interpret a byte array as a *stream*:
 
     ```d
     class StringStream {
@@ -867,11 +966,11 @@ Fate lo stesso con `reference_le.pfm`.
     }
     ```
 
--   Aggiungete un metodo `read_line()` per maggiore comodità
+-   Add a `read_line()` method for convenience.
 
-# Leggere un file (2/2)
+# Reading a File (2/2)
 
--   Per leggere un `float`, usate questo metodo:
+-   To read a `float`, use this method:
 
     ```d
     float read_float(Endian endianness) {
@@ -885,7 +984,7 @@ Fate lo stesso con `reference_le.pfm`.
     }
     ```
 
--   Oltre a `decode_pfm(const ubyte[])`, potete implementare anche
+-   In addition to `decode_pfm(const ubyte[])`, you can also implement:
 
     ```d
     HdrImage decode_pfm_from_file(const string file_name) {
@@ -893,8 +992,37 @@ Fate lo stesso con `reference_le.pfm`.
     }
     ```
 
+
+# Hints for Nim
+
+# Libraries to use
+
+-   Today's code should be very simple to implement in Nim
+
+-   The library [endians](https://nim-lang.org/docs/endians.html) provides functions to convert data in *little*/*big endian* format
+
+-   The library [streams](https://nim-lang.org/docs/streams.html) implements the concept of *stream* both associated with a file and with a string in memory
+
+
+# Hints for Rust
+
+# Use of `enum` and `match`
+
+-   To specify the *endianness* there is the type [`ByteOrder`](https://docs.rs/endianness/latest/endianness/enum.ByteOrder.html) in the crate [endianness](https://docs.rs/endianness/latest/endianness/)
+
+-   With `enum`s get used to using `match` instead of `if`:
+
+    ```rust
+    fn endianness_number(endianness: &ByteOrder) -> f32 {
+        match endianness {
+            ByteOrder::LittleEndian => -1.0,
+            ByteOrder::BigEndian => 1.0,
+        }
+    }
+    ```
+
 ---
-title: "Esercitazione 3"
+title: "Laboratory 3"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

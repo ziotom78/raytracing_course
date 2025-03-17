@@ -22,7 +22,7 @@
 
 # How have you managed your projects so far?
 
-# Version control systems
+# Version control systems {#vcs}
 
 -   A version control system (VCS) records changes made to the code;
 
@@ -239,7 +239,7 @@ Distributed
 | [BitKeeper](https://www.bitkeeper.org/) | Distributed | Kernel Linux ([until 2005](https://www.linuxjournal.com/content/git-origin-story)) |
 | [Git](https://git-scm.com/) | Distributed | Too many! |
 
-# Git
+# Git {#git}
 
 -   Created by Linus Torvalds, the creator of Linux
 -   Distributed VCS
@@ -356,7 +356,7 @@ When you run `git commit`, the following happens:
 -   The `.gitignore` file should be added to the repository (`git add .gitignore`, followed by `git commit`).
 -   You can generate this file using the website [gitignore.io](https://gitignore.io/) or your IDE.
 
-# GitHub
+# GitHub {#github}
 
 # Distributed Systems
 

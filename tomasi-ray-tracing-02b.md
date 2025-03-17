@@ -10,7 +10,7 @@
   [black triangle](https://rampantgames.com/blog/?p=7745), to use a well-known
   meme.
 
-# How to handle colors
+# How to handle colors {#handling-colors}
 
 # Encoding a color
 
@@ -168,7 +168,7 @@ def set_pixel(self, x: int, y: int, new_color: Color):
 
 Can we avoid those repetitions?
 
-# Verifying your code
+# Verifying your code {#testing-principles}
 
 # Why should we verify our code?
 
@@ -415,7 +415,7 @@ assert are_colors_close(color1, color2)
 
 ![](media/bad-commit-messages.png)
 
-# Group Work
+# Group Work {#team-work-in-git}
 
 - From now on, you will work in groups: each of you will have to choose a part of the code to implement.
 
@@ -440,6 +440,7 @@ assert are_colors_close(color1, color2)
 3. Two developers implement incompatible functionalities:
    - Decide which functionality to maintain and which to discard…
    - …or one of the developers quits!
+
 
 # What to do today
 
@@ -1218,7 +1219,8 @@ In this screenshot, JUnit’s version is 4.
 
 - Consult the [Rust guide](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html); a more in-depth discussion can be found in [chapter 11](https://doc.rust-lang.org/book/ch11-00-testing.html) of _The Rust Programming Language_ (Klabnik & Nichols).
 
-# Nim Suggestions
+
+# Hints for Nim
 
 # Type Definition
 
