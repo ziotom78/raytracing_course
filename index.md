@@ -9,8 +9,8 @@
 |----------:|:-----------------------------------------------:|:-----------------------------------------------:|
 |         1 | [24 Febbraio 2025](tomasi-ray-tracing-01a.html) | [26 Febbraio 2025](tomasi-ray-tracing-01b.html) |
 |         2 | [10 Marzo 2025](tomasi-ray-tracing-02a.html)     | [12 Marzo 2025](tomasi-ray-tracing-02b.html)     |
+|         3 | [17 Marzo 2025](tomasi-ray-tracing-03a.html)    | [19 Marzo 2025](tomasi-ray-tracing-03b.html)    |
 <!--
-|         3 | [11 Marzo 2025](tomasi-ray-tracing-03a.html)    | [13 Marzo 2025](tomasi-ray-tracing-03b.html)    |
 |         4 | [18 Marzo 2025](tomasi-ray-tracing-04a.html)    | [20 Marzo 2025](tomasi-ray-tracing-04b.html)    |
 |         5 | [25 Marzo 2025](tomasi-ray-tracing-05a.html) | [27 Marzo 2025](tomasi-ray-tracing-05b.html) |
 |         6 | [3 Aprile 2025](tomasi-ray-tracing-06a.html) | [10 Aprile 2025](tomasi-ray-tracing-06b.html) |
@@ -27,25 +27,26 @@
 
 ## Parti richieste per l'esame
 
--   [Elementi di radiometria](tomasi-ray-tracing-01a.html#/radiometria): energia emessa, flusso, irradianza/emettenza
--   [Radianza e sue proprietà](tomasi-ray-tracing-01a.html#/radianza)
--   [Emettitori diffusi ideali](tomasi-ray-tracing-01a.html#/esempio)
--   [BRDF](tomasi-ray-tracing-01a.html#/la-brdf)
--   [Equazione del rendering](tomasi-ray-tracing-01a.html#/lequazione-del-rendering)
--   [Sistemi di controllo delle versioni](tomasi-ray-tracing-01b.html#/sistemi-di-controllo-delle-versioni)
+-   [Elementi di radiometria](tomasi-ray-tracing-01a.html#/radiometry)
+-   [Radianza e sue proprietà](tomasi-ray-tracing-01a.html#/radiance)
+-   [Emettitori diffusi ideali](tomasi-ray-tracing-01a.html#/ideal-diffusive-surface)
+-   [BRDF](tomasi-ray-tracing-01a.html#/brdf)
+-   [Equazione del rendering](tomasi-ray-tracing-01a.html#/rendering-equation)
+-   [Sistemi di controllo delle versioni](tomasi-ray-tracing-01b.html#/vcs)
 -   [Git](tomasi-ray-tracing-01b.html#git)
 -   [GitHub](tomasi-ray-tracing-01b.html#github)
--   [Codifica del colore](tomasi-ray-tracing-02a.html#/codifica-del-colore)
--   [Relazione tra radianza spettrale e colori RGB](tomasi-ray-tracing-02a.html#/da-l_lambda-a-rgb)
--   [Visualizzazione su dispositivi](tomasi-ray-tracing-02a.html#/visualizzazione-su-dispositivi)
--   [Comportamento dei monitor](tomasi-ray-tracing-02a.html#/comportamento-dei-monitor)
--   [Gestione dei colori](tomasi-ray-tracing-02b.html#/gestione-dei-colori)
--   [Test automatici](tomasi-ray-tracing-02b.html#/verifica-del-codice)
--   [Conflitti e *merging*](tomasi-ray-tracing-02b.html#/lavoro-in-gruppo)
+-   [Codifica del colore](tomasi-ray-tracing-02a.html#/color-encoding)
+-   [Relazione tra radianza spettrale e colori RGB](tomasi-ray-tracing-02a.html#/relationship-between-radiance-and-rgb)
+-   [Visualizzazione su dispositivi](tomasi-ray-tracing-02a.html#/display-devices)
+-   [Comportamento dei monitor](tomasi-ray-tracing-02a.html#/monitor-behavior)
+-   [Gestione dei colori](tomasi-ray-tracing-02b.html#/handling-colors)
+-   [Test automatici](tomasi-ray-tracing-02b.html#/testing-principles)
+-   [Conflitti e *merging*](tomasi-ray-tracing-02b.html#/team-work-in-git)
+-   [Gestione degli errori](tomasi-ray-tracing-03a.html#/error-handling)
+-   [Eccezioni](tomasi-ray-tracing-03a.html#/exceptions)
 <!--
--   [Gestione degli errori](tomasi-ray-tracing-03a.html#/gestione-degli-errori)
 -   [Tone mapping](tomasi-ray-tracing-04a.html#/tone-mapping)
--   [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenze-duso)
+-   [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenses)
 -   [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modellizzazione-di-oggetti)
 -   [Trasformazioni](tomasi-ray-tracing-05a.html#/trasformazioni): [di scala](tomasi-ray-tracing-05a.html#/trasformazioni-di-scala), [applicate a normali](tomasi-ray-tracing-05a.html#/trasformazioni-e-normali), [rotazioni](tomasi-ray-tracing-05a.html#/rotazioni), [traslazioni](tomasi-ray-tracing-05a.html#/traslazioni)
 -   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/numeri-di-versione)
@@ -74,11 +75,11 @@
 
 ## Parti non richieste per l'esame
 
-<!--
--   [Il formato PFM](tomasi-ray-tracing-02a.html#/file-pfm)
--   [File di testo e file binari](tomasi-ray-tracing-03a.html#/file-binari-e-di-testo)
--   [Lo standard Unicode](tomasi-ray-tracing-03a.html#/lo-standard-unicode)
+-   [Il formato PFM](tomasi-ray-tracing-02a.html#/pfm-file-format)
+-   [File di testo e file binari](tomasi-ray-tracing-03a.html#/binary-and-text-files)
+-   [Lo standard Unicode](tomasi-ray-tracing-03a.html#/unicode)
 -   [File e stream](tomasi-ray-tracing-03b.html#/file-e-stream)
+<!--
 -   [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
 -   [Numeri complessi e quaternioni](tomasi-ray-tracing-06a.html#/numeri-complessi-e-quaternioni)
 -   [Algebre di Clifford](tomasi-ray-tracing-06a.html#/algebre-di-clifford)
