@@ -576,6 +576,7 @@ def test_pfm_parse_img_size():
 ```python
 def read_pfm_image(stream):
     # The first bytes in a binary file are usually called «magic bytes»
+    # See https://hackers.town/@zwol/114155595855705796
     magic = _read_line(stream)
     if magic != "PF":
         raise InvalidPfmFileFormat("invalid magic in PFM file")

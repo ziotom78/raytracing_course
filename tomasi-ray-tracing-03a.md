@@ -569,7 +569,7 @@ int main() {
 
 -   On typewriters, there were two operations required to start a new line (see [this YouTube video](https://www.youtube.com/watch?v=r97JHr13T98)):
 
-    1.  Return to the edge of the paper (*carriage return*, horizontal movement);
+    1.  Return to the edge of the sheet (*carriage return*, horizontal movement);
     2.  Move to the next line (*line feed*, vertical movement).
 
 -   In ASCII encoding, there is a character for each of the two commands, corresponding to `13` (*carriage return*, also indicated as `\r`) and `10` (*line feed*, indicated by `\n`). These were essential for *teletype* terminals, and usually `\r` preceded `\n` because it took longer to execute.
@@ -708,13 +708,13 @@ Code page 866 (cyrillic)
 
 # Unicode Encoding
 
--   Each Unicode character is associated with a numerical value, called a *code point*.
+-   Each Unicode character is associated with a number, called *code point*.
 
 -   Characters can be [combined together](https://en.wikipedia.org/wiki/Combining_character), for example by joining `a` and `^` to form `â`.
 
 -   The most common accented letters, however, have a [dedicated encoding](https://en.wikipedia.org/wiki/Precomposed_character). These letters can therefore be encoded in **multiple ways** according to the Unicode standard. (This makes comparing two strings complicated!)
 
--   A *grapheme* is the result of a combination of one or more code points. Therefore, the word `così` is composed of four graphemes: `c`, `o`, `s`, and `ì` (which can be the *code point* 236, or the combination of the code points `i` and `´).
+-   A *grapheme* is the result of a combination of one or more code points. Therefore, the word `così` is composed of four graphemes: `c`, `o`, `s`, and `ì` (which can be the *code point* 236, or the combination of the code points `i` and `` ` ``).
 
 -   The combination of different characters is very important in certain scripts like Chinese.
 
@@ -727,6 +727,9 @@ Code page 866 (cyrillic)
 
     -   Choosing a low value would limit the extensibility of Unicode.
     -   Choosing a very high value would unnecessarily increase the size of text files.
+
+
+# Discussion: how would you solve this problem?
 
 
 # Encodings Used Today
