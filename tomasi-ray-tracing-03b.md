@@ -23,7 +23,7 @@
 
     where `width` and `height` are the width (number of columns) and height (number of rows) of the image; then the RGB values follow in binary.
 
--   The newline characters in the first three lines must always and only be encoded as `\n`.
+-   The newline characters in the first three lines must always and only be encoded as `0x0a` (`\n`). Thus, on Windows you must **not** write newlines using `0x0d 0x0a` (`\r\n`).
 
 
 # The number `±1.0`
@@ -40,7 +40,7 @@
 
 # Floating-point in binary
 
--   However, we need to understand how to save a floating-point number in binary. In C++
+-   You must be sure to floating-point numbers in binary! In C++,
 
     ```c++
     std::ofstream of{"file.pfm"};
@@ -98,7 +98,7 @@
 
 -   You can think of a binary file as a vector (one-dimensional array) of bytes, one after the other. (A text file is the same, but in UTF encoding it is a sequence of *code points* rather than bytes, and it is a bit more complicated).
 
--   Modern languages introduce an abstraction: the *stream*. (Alas, D doesn't have it [in its standard libraries](https://github.com/dlang/phobos/pull/3631): use [stream.d](https://github.com/dlang/undeaD/blob/master/src/undead/stream.d))
+-   Modern languages introduce an abstraction: the *stream*. (Alas, D doesn't have it [in its standard libraries](https://github.com/dlang/phobos/pull/3631): if you program in D, use [stream.d](https://github.com/dlang/undeaD/blob/master/src/undead/stream.d))
 
 -   This abstraction is very useful in tests.
 
@@ -197,7 +197,7 @@ assert buf.getvalue() == reference_bytes
 
 # Test Writing (2/3)
 
-But if we run `xxd` on the file `reference_le.pfm`, we can get the sequence of byte values in C/C++ format:
+Another approach is possible. If we run `xxd` on the file `reference_le.pfm`, we can get the sequence of byte values in C/C++ format:
 
 ```text
 $ xxd -i reference_le.pfm
@@ -252,7 +252,7 @@ assert buf.getvalue() == reference_bytes
 
 # Constructor or Function?
 
--   Implementing the reading of a PFM file within a constructor is possible (example in C++):
+-   Implementing PFM reading within a constructor is possible (C++):
 
     ```c++
     struct HdrImage {
@@ -264,7 +264,7 @@ assert buf.getvalue() == reference_bytes
     HdrImage img{myfile};
     ```
 
--   But one could also consider implementing a `read_pfm_file` function:
+-   It’s ok to define a `read_pfm_file` **function**:
 
     ```c++
     HdrImage read_pfm_file(std::istream & stream);
@@ -300,7 +300,7 @@ assert buf.getvalue() == reference_bytes
 
 # Reading Files Directly
 
--   Anyway, we cannot deny that it would be handy to open a file directly:
+-   Anyway, it would be really handy to open a file directly:
 
     ```python
     # How handy!
@@ -335,7 +335,7 @@ assert buf.getvalue() == reference_bytes
 
 -   There are similar problems in C♯ and Kotlin, as secondar constructors must first call primary constructors before anything else. This problem is known as *constructor chaining issue*.
 
--   The easiest solution is to just implement a function/method and call it in both constructors. (Somebody likes to complicate things by implementing [*factory objects*](https://kt.academy/article/ek-factory-functions), also called *companion objects*.)
+-   The easiest solution is to implement the functionality in a function/method and call it in both constructors.
 
 
 # The Solution of the Riddle
@@ -375,14 +375,14 @@ public:
     1.  The file must start with `PF\n`, otherwise it is not in PFM format;
     2.  The second line must contain two positive integers;
     3.  The third line must contain `1.0` or `-1.0`;
-    4.  The binary data must be sufficient; specifically, we expect $\text{width} \times \text{height}$ pixels, each composed of three components (R, G, B) of 4 bytes each, for a total of $12 \times \text{width} \times \text{height}$ bytes.
+    4.  The amount of binary data must be enough; we expect $\text{width} \times \text{height}$ pixels, each made of three components (R, G, B) of 4 bytes each, for a total of $12 \times \text{width} \times \text{height}$ bytes.
 
 
 # Error Handling
 
 -   The function that reads a file must be able to handle error conditions.
--   We saw in the theory lesson that errors in a library function should do nothing **destructive** or **visible**, because it is not possible to know in advance whether the error was caused by the programmer or the user.
--   We can handle error conditions using exceptions if the language supports them (which is not the case with Rust).
+-   In the [previous class](tomasi-ray-tracing-03a.html#/error-handling), we saw that errors in a library function should do nothing **destructive** or **visible**, because it is not possible to know in advance whether the error was caused by the programmer or the user.
+-   We can handle error conditions using exceptions if the language supports them, or any other form of error control, like [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected) in C++ or [`Result`](https://doc.rust-lang.org/std/result/) in Rust.
 -   If you use exceptions, define a new class to handle exceptions generated while reading a PFM file.
 
 
@@ -424,7 +424,7 @@ public:
 -   To interpret a PFM file, we will need to call standard library functions of our language:
 
     -   Reading from a *stream*;
-    -   Interpreting a byte string as a number (e.g., `320`);
+    -   Interpreting a byte string as a number (e.g., `320`).
 
 -   In case of errors, the language's core functions can raise exceptions (e.g., `ValueError` in Python when trying to convert a string like `hello, world!` to an integer).
 
@@ -499,9 +499,11 @@ def _read_float(stream, endianness=Endianness.LITTLE_ENDIAN):
 
 # Test (2/4)
 
--   We can avoid implementing tests for `_read_float`: it is a function that simply acts as a *wrapper* for a standard function in the Python library.
+-   In Python, we can avoid implementing tests for `_read_float`: it is a function that simply acts as a *wrapper* for a standard function in the Python library.
 
--   We will still verify its behavior when we test reading a PFM file from start to finish.
+-   However, if the standard library of your language does not provide a similar feature, you should test it…
+
+-   …but actually we will verify its behavior when we test reading a PFM file from start to finish, so you can avoid creating an unit test for it.
 
 
 # Support Functions (3/4)
@@ -672,23 +674,6 @@ def test_pfm_read_wrong(self):
 
 # Hints for C++
 
-# The `HdrImage` Type
-
--   Use `std::vector<Color>` for the array of colors in `HdrImage`;
-
--   No need to implement `getWidth`, `setWidth`, etc. Just declare `width`, `height`, `pixels` as public members:
-
-    ```c++
-    struct HdrImage {
-        int width, height;
-        std::vector<Color> pixels;
-
-        // ...
-    };
-    ```
-
--   It would be better to declare the `valid_coordinates`, `pixel_index`, `get_pixel`, and `set_pixel` methods in the `.h` file rather than in the `.cpp` file, so that they are *inline*.
-
 # Files and Streams
 
 -   For file access, C++ is not very sophisticated: you open the file for writing using `std::ofstream`.
@@ -699,7 +684,7 @@ def test_pfm_read_wrong(self):
     std::stringstream sstr;
 
     sstr << "PF\n" << width << " " << height << "\n" << endianness;
-    std::string result{sstr.str()};  // "result" is an ASCII string that can
+    std::string result{sstr.str()};  // "result" is an ASCII string
     ```
 
 
@@ -749,7 +734,7 @@ def test_pfm_read_wrong(self):
 
 -   The `write_float` function from the previous slide works in both cases, so you can choose one and use that.
 
--   If you are curious, the following function returns `true` when run on a *little endian* system, and `false` otherwise:
+-   Side note: the following function returns `true` when run on a *little endian* system, and `false` otherwise:
 
 
     ```c++
@@ -769,7 +754,7 @@ def test_pfm_read_wrong(self):
 
 -   Java and Kotlin have the classes [`InputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html) and [`OutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html) (in `java.io`) to represent a stream. These are suitable for the `writeFloat` and `writePfm` prototypes.
 
--   To open a file for writing, there is [`FileOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/FileOutputStream.html), which directly returns a stream.
+-   [`FileOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/FileOutputStream.html) opens a file for writing and returns a stream.
 
 -   In-memory streams are created with [`ByteArrayOutputStream`](https://docs.oracle.com/javase/7/docs/api/java/io/ByteArrayOutputStream.html).
 
@@ -842,7 +827,64 @@ Do the same with `reference_le.pfm`.
     ```
 
 
-# Hints for C#
+# Hints for Julia
+
+# Files and Streams
+
+- In Julia, streams are represented as subtypes of `IO`.
+
+- Instead of defining a `savepfm` function, provide a new definition of [`write`](https://docs.julialang.org/en/v1/base/io-network/#Base.write) using *multiple dispatch*:
+
+    ```julia
+    function write(io::IO, image::HdrImage)
+        # ...
+    end
+    ```
+
+    This way you will extend the `write` function (implemented by Julia for basic types) to your `HdrImage` type as well.
+
+# Writing Binary Files
+
+- To determine if the machine is *little endian* or *big endian*, there is the constant [`ENDIAN_BOM`](https://docs.julialang.org/en/v1/base/io-network/#Base.ENDIAN_BOM):
+
+    ```julia
+    const little_endian = ENDIAN_BOM == 0x04030201
+    ```
+
+- To convert a floating-point number to an integer and vice-versa, there is [`reinterpret`](https://docs.julialang.org/en/v1/base/arrays/#Base.reinterpret):
+
+    ```julia
+    # On little-endian machines
+    @assert reinterpret(UInt32, 1.0f0) == 0x3f800000
+    # On big-endian machines
+    @assert reinterpret(UInt32, 1.0f0) == 0x0000803f
+    ```
+
+# Conversions
+
+- You can convert an integer value from *big endian* or *little endian* to the local machine format with the functions `ntoh`, `hton`, `ltoh` and `htol`.
+
+- The letter `h` stands for «host», and indicates the machine on which the program is running.
+
+- Obviously, on *little endian* machines the functions `ltoh` and `htol` correspond to the identity; on *big endian* machines this applies to `ntoh` and `hton`.
+
+# Writing Text
+
+- Strings in Julia are of type `String`, and are encoded as UTF-8.
+
+- Characters are of type `Char`, but unlike C++ they are 32-bit values: in other words, they are Unicode *code points* stored using UTF-32.
+
+- To convert a string to a sequence of bytes, use [`transcode`](https://docs.julialang.org/en/v1/base/strings/#Base.transcode):
+
+    ```julia
+    bytebuf = transcode(UInt8, "PF\n$width $height\n$endianness\n")
+    open("out.pfm", "wb") do io
+        write(io, bytebuf)
+        # ...
+    end
+    ```
+
+# Hints for C\#
 
 # Files and Streams
 
@@ -886,26 +928,6 @@ Do the same with `reference_le.pfm`.
     ```
 
     where `endianness_value` is a `double` that is either `1.0` or `-1.0`.
-
-
-# Streams
-
--   Use the `Write` and `Read` *traits* to define functions that read and write to a stream. For example:
-
-    ```rust
-    fn write_float<T: Write>(
-        dest: &mut T,
-        value: f32,
-        endianness: &Endianness,
-    ) -> std::io::Result<usize> {
-        match endianness {
-            Endianness::LittleEndian => dest.write(&value.to_le_bytes()),
-            Endianness::BigEndian => dest.write(&value.to_be_bytes()),
-        }
-    }
-    ```
-
--   You can make the code faster using [`BufWriter` and `BufReader`](https://doc.rust-lang.org/nightly/std/io/index.html#bufreader-and-bufwriter), but it's not necessary (it certainly won't be the bottleneck!).
 
 
 # Hints for D
@@ -1021,6 +1043,25 @@ Do the same with `reference_le.pfm`.
         }
     }
     ```
+
+# Streams
+
+-   Use the `Write` and `Read` *traits* to define functions that read and write to a stream. For example:
+
+    ```rust
+    fn write_float<T: Write>(
+        dest: &mut T,
+        value: f32,
+        endianness: &Endianness,
+    ) -> std::io::Result<usize> {
+        match endianness {
+            Endianness::LittleEndian => dest.write(&value.to_le_bytes()),
+            Endianness::BigEndian => dest.write(&value.to_be_bytes()),
+        }
+    }
+    ```
+
+-   You can make the code faster using [`BufWriter` and `BufReader`](https://doc.rust-lang.org/nightly/std/io/index.html#bufreader-and-bufwriter), but it's not necessary (it certainly won't be the bottleneck!).
 
 ---
 title: "Laboratory 3"

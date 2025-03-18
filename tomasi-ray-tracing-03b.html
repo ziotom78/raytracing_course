@@ -159,7 +159,9 @@ width height
 (number of columns) and height (number of rows) of the image; then the
 RGB values follow in binary.</p></li>
 <li><p>The newline characters in the first three lines must always and
-only be encoded as <code>\n</code>.</p></li>
+only be encoded as <code>0x0a</code> (<code>\n</code>). Thus, on Windows
+you must <strong>not</strong> write newlines using
+<code>0x0d 0x0a</code> (<code>\r\n</code>).</p></li>
 </ul>
 </section>
 <section id="the-number-1.0" class="slide level1">
@@ -182,8 +184,7 @@ worry too much, but when reading, we must handle both!</p></li>
 <section id="floating-point-in-binary" class="slide level1">
 <h1>Floating-point in binary</h1>
 <ul>
-<li><p>However, we need to understand how to save a floating-point
-number in binary. In C++</p>
+<li><p>You must be sure to floating-point numbers in binary! In C++,</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>ofstream of<span class="op">{</span><span class="st">&quot;file.pfm&quot;</span><span class="op">};</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>of <span class="op">&lt;&lt;</span> <span class="fl">1.3</span><span class="op">;</span></span></code></pre></div>
@@ -245,7 +246,7 @@ and it is a bit more complicated).</p></li>
 <li><p>Modern languages introduce an abstraction: the <em>stream</em>.
 (Alas, D doesn’t have it <a
 href="https://github.com/dlang/phobos/pull/3631">in its standard
-libraries</a>: use <a
+libraries</a>: if you program in D, use <a
 href="https://github.com/dlang/undeaD/blob/master/src/undead/stream.d">stream.d</a>)</p></li>
 <li><p>This abstraction is very useful in tests.</p></li>
 </ul>
@@ -377,7 +378,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a hr
 </section>
 <section id="test-writing-23" class="slide level1">
 <h1>Test Writing (2/3)</h1>
-<p>But if we run <code>xxd</code> on the file
+<p>Another approach is possible. If we run <code>xxd</code> on the file
 <code>reference_le.pfm</code>, we can get the sequence of byte values in
 C/C++ format:</p>
 <pre class="text"><code>$ xxd -i reference_le.pfm
@@ -435,8 +436,8 @@ endian</em>, while during writing we had freedom of choice.</li>
 <section id="constructor-or-function" class="slide level1">
 <h1>Constructor or Function?</h1>
 <ul>
-<li><p>Implementing the reading of a PFM file within a constructor is
-possible (example in C++):</p>
+<li><p>Implementing PFM reading within a constructor is possible
+(C++):</p>
 <div class="sourceCode" id="cb11"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage <span class="op">{</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    HdrImage image<span class="op">(</span><span class="bu">std::</span>istream <span class="op">&amp;</span> stream<span class="op">);</span></span>
@@ -445,8 +446,8 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>ifstream myfile<span class="op">{</span><span class="st">&quot;input.pfm&quot;</span><span class="op">};</span></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>HdrImage img<span class="op">{</span>myfile<span class="op">};</span></span></code></pre></div></li>
-<li><p>But one could also consider implementing a
-<code>read_pfm_file</code> function:</p>
+<li><p>It’s ok to define a <code>read_pfm_file</code>
+<strong>function</strong>:</p>
 <div class="sourceCode" id="cb12"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>HdrImage read_pfm_file<span class="op">(</span><span class="bu">std::</span>istream <span class="op">&amp;</span> stream<span class="op">);</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -490,8 +491,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a h
 <section id="reading-files-directly" class="slide level1">
 <h1>Reading Files Directly</h1>
 <ul>
-<li><p>Anyway, we cannot deny that it would be handy to open a file
-directly:</p>
+<li><p>Anyway, it would be really handy to open a file directly:</p>
 <div class="sourceCode" id="cb14"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># How handy!</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> read_pfm_file(<span class="st">&quot;image_file.pfm&quot;</span>)</span></code></pre></div></li>
@@ -521,11 +521,8 @@ hdrimages.cpp:33:58: error: cannot bind non-const lvalue reference of type ‘st
 <li><p>There are similar problems in C♯ and Kotlin, as secondar
 constructors must first call primary constructors before anything else.
 This problem is known as <em>constructor chaining issue</em>.</p></li>
-<li><p>The easiest solution is to just implement a function/method and
-call it in both constructors. (Somebody likes to complicate things by
-implementing <a
-href="https://kt.academy/article/ek-factory-functions"><em>factory
-objects</em></a>, also called <em>companion objects</em>.)</p></li>
+<li><p>The easiest solution is to implement the functionality in a
+function/method and call it in both constructors.</p></li>
 </ul>
 </section>
 <section id="the-solution-of-the-riddle" class="slide level1">
@@ -562,10 +559,10 @@ PFM format;</li>
 <li>The second line must contain two positive integers;</li>
 <li>The third line must contain <code>1.0</code> or
 <code>-1.0</code>;</li>
-<li>The binary data must be sufficient; specifically, we expect <span
+<li>The amount of binary data must be enough; we expect <span
 class="math inline">\text{width} \times \text{height}</span> pixels,
-each composed of three components (R, G, B) of 4 bytes each, for a total
-of <span class="math inline">12 \times \text{width} \times
+each made of three components (R, G, B) of 4 bytes each, for a total of
+<span class="math inline">12 \times \text{width} \times
 \text{height}</span> bytes.</li>
 </ol></li>
 </ul>
@@ -575,12 +572,18 @@ of <span class="math inline">12 \times \text{width} \times
 <ul>
 <li>The function that reads a file must be able to handle error
 conditions.</li>
-<li>We saw in the theory lesson that errors in a library function should
-do nothing <strong>destructive</strong> or <strong>visible</strong>,
-because it is not possible to know in advance whether the error was
-caused by the programmer or the user.</li>
+<li>In the <a
+href="tomasi-ray-tracing-03a.html#/error-handling">previous class</a>,
+we saw that errors in a library function should do nothing
+<strong>destructive</strong> or <strong>visible</strong>, because it is
+not possible to know in advance whether the error was caused by the
+programmer or the user.</li>
 <li>We can handle error conditions using exceptions if the language
-supports them (which is not the case with Rust).</li>
+supports them, or any other form of error control, like <a
+href="https://en.cppreference.com/w/cpp/utility/expected"><code>std::expected</code></a>
+in C++ or <a
+href="https://doc.rust-lang.org/std/result/"><code>Result</code></a> in
+Rust.</li>
 <li>If you use exceptions, define a new class to handle exceptions
 generated while reading a PFM file.</li>
 </ul>
@@ -629,7 +632,7 @@ functions of our language:</p>
 <ul>
 <li>Reading from a <em>stream</em>;</li>
 <li>Interpreting a byte string as a number (e.g.,
-<code>320</code>);</li>
+<code>320</code>).</li>
 </ul></li>
 <li><p>In case of errors, the language’s core functions can raise
 exceptions (e.g., <code>ValueError</code> in Python when trying to
@@ -707,11 +710,14 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a h
 <section id="test-24" class="slide level1">
 <h1>Test (2/4)</h1>
 <ul>
-<li><p>We can avoid implementing tests for <code>_read_float</code>: it
-is a function that simply acts as a <em>wrapper</em> for a standard
-function in the Python library.</p></li>
-<li><p>We will still verify its behavior when we test reading a PFM file
-from start to finish.</p></li>
+<li><p>In Python, we can avoid implementing tests for
+<code>_read_float</code>: it is a function that simply acts as a
+<em>wrapper</em> for a standard function in the Python library.</p></li>
+<li><p>However, if the standard library of your language does not
+provide a similar feature, you should test it…</p></li>
+<li><p>…but actually we will verify its behavior when we test reading a
+PFM file from start to finish, so you can avoid creating an unit test
+for it.</p></li>
 </ul>
 </section>
 <section id="support-functions-34" class="slide level1">
@@ -889,28 +895,6 @@ that your methods correctly handle errors.</p></li>
 <section id="hints-for-c" class="slide level1">
 <h1>Hints for C++</h1>
 </section>
-<section id="the-hdrimage-type" class="slide level1">
-<h1>The <code>HdrImage</code> Type</h1>
-<ul>
-<li><p>Use <code>std::vector&lt;Color&gt;</code> for the array of colors
-in <code>HdrImage</code>;</p></li>
-<li><p>No need to implement <code>getWidth</code>,
-<code>setWidth</code>, etc. Just declare <code>width</code>,
-<code>height</code>, <code>pixels</code> as public members:</p>
-<div class="sourceCode" id="cb30"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage <span class="op">{</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> width<span class="op">,</span> height<span class="op">;</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>vector<span class="op">&lt;</span>Color<span class="op">&gt;</span> pixels<span class="op">;</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
-<li><p>It would be better to declare the <code>valid_coordinates</code>,
-<code>pixel_index</code>, <code>get_pixel</code>, and
-<code>set_pixel</code> methods in the <code>.h</code> file rather than
-in the <code>.cpp</code> file, so that they are
-<em>inline</em>.</p></li>
-</ul>
-</section>
 <section id="files-and-streams-1" class="slide level1">
 <h1>Files and Streams</h1>
 <ul>
@@ -920,11 +904,11 @@ for writing using <code>std::ofstream</code>.</p></li>
 implemented by <a
 href="https://www.cplusplus.com/reference/sstream/stringstream/stringstream/"><code>std::stringstream</code></a>
 (in <code>&lt;sstream&gt;</code>):</p>
-<div class="sourceCode" id="cb31"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>stringstream sstr<span class="op">;</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>sstr <span class="op">&lt;&lt;</span> <span class="st">&quot;PF</span><span class="sc">\n</span><span class="st">&quot;</span> <span class="op">&lt;&lt;</span> width <span class="op">&lt;&lt;</span> <span class="st">&quot; &quot;</span> <span class="op">&lt;&lt;</span> height <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span> <span class="op">&lt;&lt;</span> endianness<span class="op">;</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>string result<span class="op">{</span>sstr<span class="op">.</span>str<span class="op">()};</span>  <span class="co">// &quot;result&quot; is an ASCII string that can</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>stringstream sstr<span class="op">;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>sstr <span class="op">&lt;&lt;</span> <span class="st">&quot;PF</span><span class="sc">\n</span><span class="st">&quot;</span> <span class="op">&lt;&lt;</span> width <span class="op">&lt;&lt;</span> <span class="st">&quot; &quot;</span> <span class="op">&lt;&lt;</span> height <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span> <span class="op">&lt;&lt;</span> endianness<span class="op">;</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>string result<span class="op">{</span>sstr<span class="op">.</span>str<span class="op">()};</span>  <span class="co">// &quot;result&quot; is an ASCII string</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="writing-binary-data" class="slide level1">
@@ -933,39 +917,39 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb31-1"><a href="#
 <li><p>C++ does not offer many tools to decompose a <code>float</code>
 variable into its four bytes; use this implementation and study it
 carefully:</p>
-<div class="sourceCode" id="cb32"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cstdint&gt;</span><span class="pp">  </span><span class="co">// It contains uint8_t</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> <span class="kw">class</span> Endianness <span class="op">{</span> little_endian<span class="op">,</span> big_endian <span class="op">};</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> write_float<span class="op">(</span><span class="bu">std::</span>ostream <span class="op">&amp;</span>stream<span class="op">,</span> <span class="dt">float</span> value<span class="op">,</span> Endianness endianness<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Convert &quot;value&quot; in a sequence of 32 bit</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> double_word<span class="op">{*((</span><span class="dt">uint32_t</span> <span class="op">*)&amp;</span>value<span class="op">)};</span></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Extract the four bytes in &quot;double_word&quot; using bit-level operators</span></span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> bytes<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span><span class="op">&lt;</span><span class="dt">uint8_t</span><span class="op">&gt;(</span>double_word <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">),</span>         <span class="co">// Least significant byte</span></span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span><span class="op">&lt;</span><span class="dt">uint8_t</span><span class="op">&gt;((</span>double_word <span class="op">&gt;&gt;</span> <span class="dv">8</span><span class="op">)</span> <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">),</span></span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span><span class="op">&lt;</span><span class="dt">uint8_t</span><span class="op">&gt;((</span>double_word <span class="op">&gt;&gt;</span> <span class="dv">16</span><span class="op">)</span> <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">),</span></span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span><span class="op">&lt;</span><span class="dt">uint8_t</span><span class="op">&gt;((</span>double_word <span class="op">&gt;&gt;</span> <span class="dv">24</span><span class="op">)</span> <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">),</span> <span class="co">// Most significant byte</span></span>
-<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">};</span></span>
-<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span> <span class="op">(</span>endianness<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> Endianness<span class="op">::</span>little_endian<span class="op">:</span></span>
-<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i<span class="op">{};</span> i <span class="op">&lt;</span> <span class="dv">4</span><span class="op">;</span> <span class="op">++</span>i<span class="op">)</span>    <span class="co">// Forward loop</span></span>
-<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>      stream <span class="op">&lt;&lt;</span> bytes<span class="op">[</span>i<span class="op">];</span></span>
-<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> Endianness<span class="op">::</span>big_endian<span class="op">:</span></span>
-<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i<span class="op">{</span><span class="dv">3</span><span class="op">};</span> i <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">;</span> <span class="op">--</span>i<span class="op">)</span>  <span class="co">// Backward loop</span></span>
-<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>      stream <span class="op">&lt;&lt;</span> bytes<span class="op">[</span>i<span class="op">];</span></span>
-<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a><span class="co">// You can use &quot;write_float&quot; to write little/big endian-encoded floats:</span></span>
-<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a><span class="co">// write_float(stream, 10.0, Endianness::little_endian);</span></span>
-<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a><span class="co">// write_float(stream, 10.0, Endianness::big_endian);</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cstdint&gt;</span><span class="pp">  </span><span class="co">// It contains uint8_t</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> <span class="kw">class</span> Endianness <span class="op">{</span> little_endian<span class="op">,</span> big_endian <span class="op">};</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> write_float<span class="op">(</span><span class="bu">std::</span>ostream <span class="op">&amp;</span>stream<span class="op">,</span> <span class="dt">float</span> value<span class="op">,</span> Endianness endianness<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Convert &quot;value&quot; in a sequence of 32 bit</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint32_t</span> double_word<span class="op">{*((</span><span class="dt">uint32_t</span> <span class="op">*)&amp;</span>value<span class="op">)};</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Extract the four bytes in &quot;double_word&quot; using bit-level operators</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> bytes<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span><span class="op">&lt;</span><span class="dt">uint8_t</span><span class="op">&gt;(</span>double_word <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">),</span>         <span class="co">// Least significant byte</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span><span class="op">&lt;</span><span class="dt">uint8_t</span><span class="op">&gt;((</span>double_word <span class="op">&gt;&gt;</span> <span class="dv">8</span><span class="op">)</span> <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">),</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span><span class="op">&lt;</span><span class="dt">uint8_t</span><span class="op">&gt;((</span>double_word <span class="op">&gt;&gt;</span> <span class="dv">16</span><span class="op">)</span> <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">),</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>      <span class="kw">static_cast</span><span class="op">&lt;</span><span class="dt">uint8_t</span><span class="op">&gt;((</span>double_word <span class="op">&gt;&gt;</span> <span class="dv">24</span><span class="op">)</span> <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">),</span> <span class="co">// Most significant byte</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">};</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span> <span class="op">(</span>endianness<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> Endianness<span class="op">::</span>little_endian<span class="op">:</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i<span class="op">{};</span> i <span class="op">&lt;</span> <span class="dv">4</span><span class="op">;</span> <span class="op">++</span>i<span class="op">)</span>    <span class="co">// Forward loop</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>      stream <span class="op">&lt;&lt;</span> bytes<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> Endianness<span class="op">::</span>big_endian<span class="op">:</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i<span class="op">{</span><span class="dv">3</span><span class="op">};</span> i <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">;</span> <span class="op">--</span>i<span class="op">)</span>  <span class="co">// Backward loop</span></span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>      stream <span class="op">&lt;&lt;</span> bytes<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a><span class="co">// You can use &quot;write_float&quot; to write little/big endian-encoded floats:</span></span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a><span class="co">// write_float(stream, 10.0, Endianness::little_endian);</span></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a><span class="co">// write_float(stream, 10.0, Endianness::big_endian);</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="biglittle-endian" class="slide level1">
@@ -976,16 +960,16 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb32-1"><a href="#
 <em>endianness</em>.</p></li>
 <li><p>The <code>write_float</code> function from the previous slide
 works in both cases, so you can choose one and use that.</p></li>
-<li><p>If you are curious, the following function returns
-<code>true</code> when run on a <em>little endian</em> system, and
-<code>false</code> otherwise:</p>
-<div class="sourceCode" id="cb33"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> is_little_endian<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> word<span class="op">{</span><span class="bn">0x1234</span><span class="op">};</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> <span class="op">*</span>ptr<span class="op">{(</span><span class="dt">uint8_t</span> <span class="op">*)&amp;</span>word<span class="op">};</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> ptr<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">==</span> <span class="bn">0x34</span><span class="op">;</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<li><p>Side note: the following function returns <code>true</code> when
+run on a <em>little endian</em> system, and <code>false</code>
+otherwise:</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> is_little_endian<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint16_t</span> word<span class="op">{</span><span class="bn">0x1234</span><span class="op">};</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint8_t</span> <span class="op">*</span>ptr<span class="op">{(</span><span class="dt">uint8_t</span> <span class="op">*)&amp;</span>word<span class="op">};</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> ptr<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">==</span> <span class="bn">0x34</span><span class="op">;</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="hints-for-javakotlin" class="slide level1">
@@ -1001,19 +985,19 @@ href="https://docs.oracle.com/javase/7/docs/api/java/io/OutputStream.html"><code
 (in <code>java.io</code>) to represent a stream. These are suitable for
 the <code>writeFloat</code> and <code>writePfm</code>
 prototypes.</p></li>
-<li><p>To open a file for writing, there is <a
-href="https://docs.oracle.com/javase/7/docs/api/java/io/FileOutputStream.html"><code>FileOutputStream</code></a>,
-which directly returns a stream.</p></li>
+<li><p><a
+href="https://docs.oracle.com/javase/7/docs/api/java/io/FileOutputStream.html"><code>FileOutputStream</code></a>
+opens a file for writing and returns a stream.</p></li>
 <li><p>In-memory streams are created with <a
 href="https://docs.oracle.com/javase/7/docs/api/java/io/ByteArrayOutputStream.html"><code>ByteArrayOutputStream</code></a>.</p></li>
 <li><p>To open a file, operate on it, and close it, Kotlin offers the
 very convenient <a
 href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/use.html"><code>use</code></a>,
 similar to <code>using</code> in C#:</p>
-<div class="sourceCode" id="cb34"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>FileOutputStream<span class="op">(</span><span class="st">&quot;out.pfm&quot;</span><span class="op">).</span>use <span class="op">{</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    outStream <span class="op">-&gt;</span> outStream<span class="op">.</span>write<span class="op">(...)</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>FileOutputStream<span class="op">(</span><span class="st">&quot;out.pfm&quot;</span><span class="op">).</span>use <span class="op">{</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    outStream <span class="op">-&gt;</span> outStream<span class="op">.</span>write<span class="op">(...)</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="writing-binary-files" class="slide level1">
@@ -1026,16 +1010,16 @@ Java libraries in Kotlin).</p></li>
 <li><p>To write/read values in binary format, there is the <a
 href="https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html"><code>ByteBuffer</code></a>
 class, also in <code>java.nio</code>. Example in Kotlin:</p>
-<div class="sourceCode" id="cb35"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">writeFloatToStream</span><span class="op">(</span><span class="va">stream</span><span class="op">:</span> <span class="dt">OutputStream</span><span class="op">,</span> <span class="va">value</span><span class="op">:</span> <span class="dt">Float</span><span class="op">,</span> <span class="va">order</span><span class="op">:</span> <span class="dt">ByteOrder</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">bytes</span> <span class="op">=</span> ByteBuffer<span class="op">.</span>allocate<span class="op">(</span><span class="dv">4</span><span class="op">).</span>putFloat<span class="op">(</span>value<span class="op">).</span>array<span class="op">()</span> <span class="co">// Big endian</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>order <span class="op">==</span> ByteOrder<span class="op">.</span>LITTLE_ENDIAN<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>        bytes<span class="op">.</span>reverse<span class="op">()</span></span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    stream<span class="op">.</span>write<span class="op">(</span>bytes<span class="op">)</span></span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">writeFloatToStream</span><span class="op">(</span><span class="va">stream</span><span class="op">:</span> <span class="dt">OutputStream</span><span class="op">,</span> <span class="va">value</span><span class="op">:</span> <span class="dt">Float</span><span class="op">,</span> <span class="va">order</span><span class="op">:</span> <span class="dt">ByteOrder</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">bytes</span> <span class="op">=</span> ByteBuffer<span class="op">.</span>allocate<span class="op">(</span><span class="dv">4</span><span class="op">).</span>putFloat<span class="op">(</span>value<span class="op">).</span>array<span class="op">()</span> <span class="co">// Big endian</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>order <span class="op">==</span> ByteOrder<span class="op">.</span>LITTLE_ENDIAN<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>        bytes<span class="op">.</span>reverse<span class="op">()</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    stream<span class="op">.</span>write<span class="op">(</span>bytes<span class="op">)</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="initializing-bytebuffer" class="slide level1">
@@ -1045,23 +1029,23 @@ class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb35-1"><a h
 <li><p>To initialize an array from hexadecimal values like those printed
 by <code>xxd -i reference_be.pfm</code>, you need a small helper
 function:</p>
-<div class="sourceCode" id="cb36"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">byteArrayOfInts</span><span class="op">(</span><span class="kw">vararg</span> <span class="va">ints</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">=</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    ByteArray<span class="op">(</span>ints<span class="op">.</span>size<span class="op">)</span> <span class="op">{</span> pos <span class="op">-&gt;</span> ints<span class="op">[</span>pos<span class="op">].</span>toByte<span class="op">()</span> <span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">byteArrayOfInts</span><span class="op">(</span><span class="kw">vararg</span> <span class="va">ints</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">=</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    ByteArray<span class="op">(</span>ints<span class="op">.</span>size<span class="op">)</span> <span class="op">{</span> pos <span class="op">-&gt;</span> ints<span class="op">[</span>pos<span class="op">].</span>toByte<span class="op">()</span> <span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="content-of-reference_be.pfm" class="slide level1">
 <h1>Content of <code>reference_be.pfm</code></h1>
-<div class="sourceCode" id="cb37"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">reference_be</span> <span class="op">=</span> byteArrayOfInts<span class="op">(</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x50</span><span class="op">,</span> <span class="bn">0x46</span><span class="op">,</span> <span class="bn">0x0a</span><span class="op">,</span> <span class="bn">0x33</span><span class="op">,</span> <span class="bn">0x20</span><span class="op">,</span> <span class="bn">0x32</span><span class="op">,</span> <span class="bn">0x0a</span><span class="op">,</span> <span class="bn">0x31</span><span class="op">,</span> <span class="bn">0x2e</span><span class="op">,</span> <span class="bn">0x30</span><span class="op">,</span> <span class="bn">0x0a</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0xc8</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x43</span><span class="op">,</span> <span class="bn">0x48</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x43</span><span class="op">,</span> <span class="bn">0x96</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x43</span><span class="op">,</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0xc8</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x43</span><span class="op">,</span> <span class="bn">0xfa</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x44</span><span class="op">,</span> <span class="bn">0x16</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x44</span><span class="op">,</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x2f</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x44</span><span class="op">,</span> <span class="bn">0x48</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x44</span><span class="op">,</span> <span class="bn">0x61</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x41</span><span class="op">,</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x20</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x41</span><span class="op">,</span> <span class="bn">0xa0</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x41</span><span class="op">,</span> <span class="bn">0xf0</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span></span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x20</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span> <span class="bn">0x48</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span> <span class="bn">0x70</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span></span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x8c</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span> <span class="bn">0xa0</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span> <span class="bn">0xb4</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span></span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">reference_be</span> <span class="op">=</span> byteArrayOfInts<span class="op">(</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x50</span><span class="op">,</span> <span class="bn">0x46</span><span class="op">,</span> <span class="bn">0x0a</span><span class="op">,</span> <span class="bn">0x33</span><span class="op">,</span> <span class="bn">0x20</span><span class="op">,</span> <span class="bn">0x32</span><span class="op">,</span> <span class="bn">0x0a</span><span class="op">,</span> <span class="bn">0x31</span><span class="op">,</span> <span class="bn">0x2e</span><span class="op">,</span> <span class="bn">0x30</span><span class="op">,</span> <span class="bn">0x0a</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0xc8</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x43</span><span class="op">,</span> <span class="bn">0x48</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x43</span><span class="op">,</span> <span class="bn">0x96</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x43</span><span class="op">,</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0xc8</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x43</span><span class="op">,</span> <span class="bn">0xfa</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x44</span><span class="op">,</span> <span class="bn">0x16</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x44</span><span class="op">,</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x2f</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x44</span><span class="op">,</span> <span class="bn">0x48</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x44</span><span class="op">,</span> <span class="bn">0x61</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x41</span><span class="op">,</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x20</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x41</span><span class="op">,</span> <span class="bn">0xa0</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x41</span><span class="op">,</span> <span class="bn">0xf0</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x20</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span> <span class="bn">0x48</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span> <span class="bn">0x70</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    <span class="bn">0x8c</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span> <span class="bn">0xa0</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x42</span><span class="op">,</span> <span class="bn">0xb4</span><span class="op">,</span> <span class="bn">0x00</span><span class="op">,</span> <span class="bn">0x00</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
 <p>Do the same with <code>reference_le.pfm</code>.</p>
 </section>
 <section id="writing-text" class="slide level1">
@@ -1072,15 +1056,87 @@ encoding.</p></li>
 <li><p>To convert the encoding to ASCII so it can be saved in a binary
 file, Kotlin offers the very convenient <code>toByteArray()</code>
 method:</p>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">header</span> <span class="op">=</span> <span class="st">&quot;PF</span><span class="sc">\n</span><span class="ss">$width</span><span class="st"> </span><span class="ss">$height</span><span class="sc">\n</span><span class="ss">$endianness</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>stream<span class="op">.</span>write<span class="op">(</span>header<span class="op">.</span>toByteArray<span class="op">())</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="hints-for-julia" class="slide level1">
+<h1>Hints for Julia</h1>
+</section>
+<section id="files-and-streams-3" class="slide level1">
+<h1>Files and Streams</h1>
+<ul>
+<li><p>In Julia, streams are represented as subtypes of
+<code>IO</code>.</p></li>
+<li><p>Instead of defining a <code>savepfm</code> function, provide a
+new definition of <a
+href="https://docs.julialang.org/en/v1/base/io-network/#Base.write"><code>write</code></a>
+using <em>multiple dispatch</em>:</p>
 <div class="sourceCode" id="cb38"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">header</span> <span class="op">=</span> <span class="st">&quot;PF</span><span class="sc">\n</span><span class="ss">$width</span><span class="st"> </span><span class="ss">$height</span><span class="sc">\n</span><span class="ss">$endianness</span><span class="sc">\n</span><span class="st">&quot;</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>stream<span class="op">.</span>write<span class="op">(</span>header<span class="op">.</span>toByteArray<span class="op">())</span></span></code></pre></div></li>
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">write</span>(io<span class="op">::</span><span class="dt">IO</span>, image<span class="op">::</span><span class="dt">HdrImage</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div>
+<p>This way you will extend the <code>write</code> function (implemented
+by Julia for basic types) to your <code>HdrImage</code> type as
+well.</p></li>
+</ul>
+</section>
+<section id="writing-binary-files-1" class="slide level1">
+<h1>Writing Binary Files</h1>
+<ul>
+<li><p>To determine if the machine is <em>little endian</em> or <em>big
+endian</em>, there is the constant <a
+href="https://docs.julialang.org/en/v1/base/io-network/#Base.ENDIAN_BOM"><code>ENDIAN_BOM</code></a>:</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> little_endian <span class="op">=</span> <span class="cn">ENDIAN_BOM</span> <span class="op">==</span> <span class="bn">0x04030201</span></span></code></pre></div></li>
+<li><p>To convert a floating-point number to an integer and vice-versa,
+there is <a
+href="https://docs.julialang.org/en/v1/base/arrays/#Base.reinterpret"><code>reinterpret</code></a>:</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># On little-endian machines</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@assert</span> <span class="fu">reinterpret</span>(<span class="dt">UInt32</span>, <span class="fl">1.0f0</span>) <span class="op">==</span> <span class="bn">0x3f800000</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co"># On big-endian machines</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="pp">@assert</span> <span class="fu">reinterpret</span>(<span class="dt">UInt32</span>, <span class="fl">1.0f0</span>) <span class="op">==</span> <span class="bn">0x0000803f</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="conversions" class="slide level1">
+<h1>Conversions</h1>
+<ul>
+<li><p>You can convert an integer value from <em>big endian</em> or
+<em>little endian</em> to the local machine format with the functions
+<code>ntoh</code>, <code>hton</code>, <code>ltoh</code> and
+<code>htol</code>.</p></li>
+<li><p>The letter <code>h</code> stands for «host», and indicates the
+machine on which the program is running.</p></li>
+<li><p>Obviously, on <em>little endian</em> machines the functions
+<code>ltoh</code> and <code>htol</code> correspond to the identity; on
+<em>big endian</em> machines this applies to <code>ntoh</code> and
+<code>hton</code>.</p></li>
+</ul>
+</section>
+<section id="writing-text-1" class="slide level1">
+<h1>Writing Text</h1>
+<ul>
+<li><p>Strings in Julia are of type <code>String</code>, and are encoded
+as UTF-8.</p></li>
+<li><p>Characters are of type <code>Char</code>, but unlike C++ they are
+32-bit values: in other words, they are Unicode <em>code points</em>
+stored using UTF-32.</p></li>
+<li><p>To convert a string to a sequence of bytes, use <a
+href="https://docs.julialang.org/en/v1/base/strings/#Base.transcode"><code>transcode</code></a>:</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>bytebuf <span class="op">=</span> <span class="fu">transcode</span>(<span class="dt">UInt8</span>, <span class="st">&quot;PF</span><span class="sc">\n$</span>width<span class="st"> </span><span class="sc">$</span>height<span class="sc">\n$</span>endianness<span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">open</span>(<span class="st">&quot;out.pfm&quot;</span>, <span class="st">&quot;wb&quot;</span>) <span class="cf">do</span> io</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write</span>(io, bytebuf)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="hints-for-c-1" class="slide level1">
-<h1>Hints for C</h1>
+<h1>Hints for C#</h1>
 </section>
-<section id="files-and-streams-3" class="slide level1">
+<section id="files-and-streams-4" class="slide level1">
 <h1>Files and Streams</h1>
 <ul>
 <li><p>In C#, a stream is of type <code>Stream</code>, which is a base
@@ -1092,13 +1148,13 @@ derive.</p></li>
 <li><p>To open a file for writing, use the <a
 href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement"><code>using</code></a>
 keyword:</p>
-<div class="sourceCode" id="cb39"><pre
-class="sourceCode csharp"><code class="sourceCode cs"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> img <span class="op">=</span> <span class="kw">new</span> <span class="fu">HdrImage</span><span class="op">(</span><span class="dv">7</span><span class="op">,</span> <span class="dv">4</span><span class="op">);</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="op">(</span>Stream fileStream <span class="op">=</span> File<span class="op">.</span><span class="fu">OpenWrite</span><span class="op">(</span><span class="st">&quot;file.pfm&quot;</span><span class="op">))</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    img<span class="op">.</span><span class="fu">SavePfm</span><span class="op">(</span>fileStream<span class="op">);</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> img <span class="op">=</span> <span class="kw">new</span> <span class="fu">HdrImage</span><span class="op">(</span><span class="dv">7</span><span class="op">,</span> <span class="dv">4</span><span class="op">);</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="op">(</span>Stream fileStream <span class="op">=</span> File<span class="op">.</span><span class="fu">OpenWrite</span><span class="op">(</span><span class="st">&quot;file.pfm&quot;</span><span class="op">))</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    img<span class="op">.</span><span class="fu">SavePfm</span><span class="op">(</span>fileStream<span class="op">);</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="writing-binary-data-1" class="slide level1">
@@ -1110,56 +1166,34 @@ class implements methods for reading and writing binary data from
 streams.</p></li>
 <li><p>The following method writes a 32-bit floating-point number in
 binary:</p>
-<div class="sourceCode" id="cb40"><pre
-class="sourceCode csharp"><code class="sourceCode cs"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span> <span class="kw">static</span> <span class="dt">void</span> <span class="fu">writeFloat</span><span class="op">(</span>Stream outputStream<span class="op">,</span> <span class="dt">float</span> value<span class="op">)</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">var</span> seq <span class="op">=</span> BitConverter<span class="op">.</span><span class="fu">GetBytes</span><span class="op">(</span>value<span class="op">);</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    outputStream<span class="op">.</span><span class="fu">Write</span><span class="op">(</span>seq<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> seq<span class="op">.</span><span class="fu">Length</span><span class="op">);</span></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span> <span class="kw">static</span> <span class="dt">void</span> <span class="fu">writeFloat</span><span class="op">(</span>Stream outputStream<span class="op">,</span> <span class="dt">float</span> value<span class="op">)</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">var</span> seq <span class="op">=</span> BitConverter<span class="op">.</span><span class="fu">GetBytes</span><span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    outputStream<span class="op">.</span><span class="fu">Write</span><span class="op">(</span>seq<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> seq<span class="op">.</span><span class="fu">Length</span><span class="op">);</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>The variable <code>BitConverter.IsLittleEndian</code> exists to
 decide whether to write <code>1.0</code> or <code>-1.0</code> in the PFM
 file.</p></li>
 </ul>
 </section>
-<section id="writing-text-1" class="slide level1">
+<section id="writing-text-2" class="slide level1">
 <h1>Writing Text</h1>
 <ul>
 <li><p>C#, unlike C++, distinguishes between strings (encoded in Unicode
 with UTF-16) and byte sequences.</p></li>
 <li><p>To correctly write the header, the simplest thing is to create a
 Unicode string and then convert it to ASCII:</p>
-<div class="sourceCode" id="cb41"><pre
-class="sourceCode csharp"><code class="sourceCode cs"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> header <span class="op">=</span> Encoding<span class="op">.</span><span class="fu">ASCII</span><span class="op">.</span><span class="fu">GetBytes</span><span class="op">(</span>$<span class="st">&quot;PF</span><span class="sc">\n</span><span class="st">{width} {height}</span><span class="sc">\n</span><span class="st">{endianness_value}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> header <span class="op">=</span> Encoding<span class="op">.</span><span class="fu">ASCII</span><span class="op">.</span><span class="fu">GetBytes</span><span class="op">(</span>$<span class="st">&quot;PF</span><span class="sc">\n</span><span class="st">{width} {height}</span><span class="sc">\n</span><span class="st">{endianness_value}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span></code></pre></div>
 <p>where <code>endianness_value</code> is a <code>double</code> that is
 either <code>1.0</code> or <code>-1.0</code>.</p></li>
-</ul>
-</section>
-<section id="streams" class="slide level1">
-<h1>Streams</h1>
-<ul>
-<li><p>Use the <code>Write</code> and <code>Read</code> <em>traits</em>
-to define functions that read and write to a stream. For example:</p>
-<div class="sourceCode" id="cb42"><pre
-class="sourceCode rust"><code class="sourceCode rust"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> write_float<span class="op">&lt;</span>T<span class="op">:</span> <span class="bu">Write</span><span class="op">&gt;</span>(</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    dest<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> T<span class="op">,</span></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    endianness<span class="op">:</span> <span class="op">&amp;</span>Endianness<span class="op">,</span></span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="pp">std::io::</span><span class="dt">Result</span><span class="op">&lt;</span><span class="dt">usize</span><span class="op">&gt;</span> <span class="op">{</span></span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> endianness <span class="op">{</span></span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Endianness::</span>LittleEndian <span class="op">=&gt;</span> dest<span class="op">.</span>write(<span class="op">&amp;</span>value<span class="op">.</span>to_le_bytes())<span class="op">,</span></span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Endianness::</span>BigEndian <span class="op">=&gt;</span> dest<span class="op">.</span>write(<span class="op">&amp;</span>value<span class="op">.</span>to_be_bytes())<span class="op">,</span></span>
-<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>You can make the code faster using <a
-href="https://doc.rust-lang.org/nightly/std/io/index.html#bufreader-and-bufwriter"><code>BufWriter</code>
-and <code>BufReader</code></a>, but it’s not necessary (it certainly
-won’t be the bottleneck!).</p></li>
 </ul>
 </section>
 <section id="hints-for-d" class="slide level1">
 <h1>Hints for D</h1>
 </section>
-<section id="streams-1" class="slide level1">
+<section id="streams" class="slide level1">
 <h1>Streams</h1>
 <ul>
 <li><p>Unfortunately, the most recent version of the D language <a
@@ -1175,11 +1209,11 @@ href="https://dlang.org/library/std/system/endian.html">Endian</a> type
 and the <a
 href="https://dlang.org/phobos/std_bitmanip.html">std.bitmanip</a>
 library, which provides the <code>append</code> template function:</p>
-<div class="sourceCode" id="cb43"><pre
-class="sourceCode d"><code class="sourceCode d"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">auto</span> stream <span class="op">=</span> appender<span class="op">!(</span><span class="dt">ubyte</span><span class="op">[])();</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="dt">float</span> value <span class="op">=</span> <span class="fl">123.456</span><span class="op">;</span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co">// uint is a 4-byte integer</span></span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>append<span class="op">!(</span><span class="dt">uint</span><span class="op">,</span> Endian.bigEndian<span class="op">)(</span>stream<span class="op">,</span> <span class="op">*</span><span class="at">cast</span><span class="op">(</span><span class="dt">uint</span><span class="op">*)(&amp;</span>value<span class="op">));</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode d"><code class="sourceCode d"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">auto</span> stream <span class="op">=</span> appender<span class="op">!(</span><span class="dt">ubyte</span><span class="op">[])();</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="dt">float</span> value <span class="op">=</span> <span class="fl">123.456</span><span class="op">;</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co">// uint is a 4-byte integer</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>append<span class="op">!(</span><span class="dt">uint</span><span class="op">,</span> Endian.bigEndian<span class="op">)(</span>stream<span class="op">,</span> <span class="op">*</span><span class="at">cast</span><span class="op">(</span><span class="dt">uint</span><span class="op">*)(&amp;</span>value<span class="op">));</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="writing-a-file" class="slide level1">
@@ -1187,14 +1221,14 @@ class="sourceCode d"><code class="sourceCode d"><span id="cb43-1"><a href="#cb43
 <ul>
 <li><p>To write a <code>float</code> number to an <code>Appender</code>,
 you can use this code:</p>
-<div class="sourceCode" id="cb44"><pre
-class="sourceCode d"><code class="sourceCode d"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> write_float<span class="op">(</span>Appender<span class="op">!(</span><span class="dt">ubyte</span><span class="op">[])</span> appender<span class="op">,</span> <span class="dt">float</span> value<span class="op">,</span> Endian endianness<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> <span class="op">(</span>endianness <span class="op">==</span> Endian.bigEndian<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    append<span class="op">!(</span><span class="dt">uint</span><span class="op">,</span> Endian.bigEndian<span class="op">)(</span>appender<span class="op">,</span> <span class="op">*</span><span class="at">cast</span><span class="op">(</span><span class="dt">uint</span><span class="op">*)(&amp;</span>value<span class="op">));</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    append<span class="op">!(</span><span class="dt">uint</span><span class="op">,</span> Endian.littleEndian<span class="op">)(</span>appender<span class="op">,</span> <span class="op">*</span><span class="at">cast</span><span class="op">(</span><span class="dt">uint</span><span class="op">*)(&amp;</span>value<span class="op">));</span></span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode d"><code class="sourceCode d"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> write_float<span class="op">(</span>Appender<span class="op">!(</span><span class="dt">ubyte</span><span class="op">[])</span> appender<span class="op">,</span> <span class="dt">float</span> value<span class="op">,</span> Endian endianness<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> <span class="op">(</span>endianness <span class="op">==</span> Endian.bigEndian<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    append<span class="op">!(</span><span class="dt">uint</span><span class="op">,</span> Endian.bigEndian<span class="op">)(</span>appender<span class="op">,</span> <span class="op">*</span><span class="at">cast</span><span class="op">(</span><span class="dt">uint</span><span class="op">*)(&amp;</span>value<span class="op">));</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    append<span class="op">!(</span><span class="dt">uint</span><span class="op">,</span> Endian.littleEndian<span class="op">)(</span>appender<span class="op">,</span> <span class="op">*</span><span class="at">cast</span><span class="op">(</span><span class="dt">uint</span><span class="op">*)(&amp;</span>value<span class="op">));</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Note that you cannot pass the <code>endianness</code> value to
 <code>append!</code> because, being a template, it requires the value to
 be known at compile time.</p></li>
@@ -1207,24 +1241,24 @@ be known at compile time.</p></li>
 <h1>Reading a File (1/2)</h1>
 <ul>
 <li><p>It’s simple to interpret a byte array as a <em>stream</em>:</p>
-<div class="sourceCode" id="cb45"><pre
-class="sourceCode d"><code class="sourceCode d"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="wa">class</span> StringStream <span class="op">{</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint</span> curidx <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">ubyte</span><span class="op">[]</span> stream<span class="op">;</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">this</span><span class="op">(</span><span class="fu">const</span> <span class="dt">ubyte</span><span class="op">[]</span> _stream<span class="op">)</span> <span class="op">{</span> stream <span class="op">=</span> _stream<span class="op">;</span> <span class="op">}</span></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">bool</span> eof<span class="op">()</span> <span class="op">{</span> <span class="kw">return</span> curidx <span class="op">&gt;=</span> stream.<span class="dt">length</span><span class="op">;</span> <span class="op">}</span></span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">char</span> read_char<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span>curidx <span class="op">&lt;</span> stream.<span class="dt">length</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">char</span> result <span class="op">=</span> stream<span class="op">[</span>curidx<span class="op">];</span></span>
-<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>      curidx<span class="op">++;</span></span>
-<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>      <span class="kw">return</span> result<span class="op">;</span></span>
-<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="dv">0</span><span class="op">;</span>  <span class="co">// If we are at the end of the string, return 0</span></span>
-<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode d"><code class="sourceCode d"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="wa">class</span> StringStream <span class="op">{</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint</span> curidx <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">const</span> <span class="dt">ubyte</span><span class="op">[]</span> stream<span class="op">;</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">this</span><span class="op">(</span><span class="fu">const</span> <span class="dt">ubyte</span><span class="op">[]</span> _stream<span class="op">)</span> <span class="op">{</span> stream <span class="op">=</span> _stream<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">bool</span> eof<span class="op">()</span> <span class="op">{</span> <span class="kw">return</span> curidx <span class="op">&gt;=</span> stream.<span class="dt">length</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">char</span> read_char<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span>curidx <span class="op">&lt;</span> stream.<span class="dt">length</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">char</span> result <span class="op">=</span> stream<span class="op">[</span>curidx<span class="op">];</span></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>      curidx<span class="op">++;</span></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>      <span class="kw">return</span> result<span class="op">;</span></span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="dv">0</span><span class="op">;</span>  <span class="co">// If we are at the end of the string, return 0</span></span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Add a <code>read_line()</code> method for convenience.</p></li>
 </ul>
 </section>
@@ -1232,22 +1266,22 @@ class="sourceCode d"><code class="sourceCode d"><span id="cb45-1"><a href="#cb45
 <h1>Reading a File (2/2)</h1>
 <ul>
 <li><p>To read a <code>float</code>, use this method:</p>
-<div class="sourceCode" id="cb46"><pre
-class="sourceCode d"><code class="sourceCode d"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="dt">float</span> read_float<span class="op">(</span>Endian endianness<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint</span> result <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">for</span><span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">4</span><span class="op">;</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> <span class="op">(</span>result <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">)</span> <span class="op">+</span> read_char<span class="op">();</span> <span class="co">// Assume big endian here</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span><span class="op">(</span>endianness <span class="op">!=</span> Endian.bigEndian<span class="op">)</span> result <span class="op">=</span> result.swapEndian<span class="op">;</span></span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">return</span> <span class="op">*</span><span class="at">cast</span><span class="op">(</span><span class="dt">float</span><span class="op">*)(&amp;</span>result<span class="op">);</span></span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode d"><code class="sourceCode d"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="dt">float</span> read_float<span class="op">(</span>Endian endianness<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">uint</span> result <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">for</span><span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">4</span><span class="op">;</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> <span class="op">(</span>result <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">)</span> <span class="op">+</span> read_char<span class="op">();</span> <span class="co">// Assume big endian here</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span><span class="op">(</span>endianness <span class="op">!=</span> Endian.bigEndian<span class="op">)</span> result <span class="op">=</span> result.swapEndian<span class="op">;</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">return</span> <span class="op">*</span><span class="at">cast</span><span class="op">(</span><span class="dt">float</span><span class="op">*)(&amp;</span>result<span class="op">);</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>In addition to <code>decode_pfm(const ubyte[])</code>, you can
 also implement:</p>
-<div class="sourceCode" id="cb47"><pre
-class="sourceCode d"><code class="sourceCode d"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>HdrImage decode_pfm_from_file<span class="op">(</span><span class="fu">const</span> <span class="bu">string</span> file_name<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">return</span> decode_pfm<span class="op">(</span><span class="at">cast</span><span class="op">(</span><span class="fu">const</span><span class="op">(</span><span class="dt">ubyte</span><span class="op">)[])</span>read<span class="op">(</span>file_name<span class="op">));</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode d"><code class="sourceCode d"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>HdrImage decode_pfm_from_file<span class="op">(</span><span class="fu">const</span> <span class="bu">string</span> file_name<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">return</span> decode_pfm<span class="op">(</span><span class="at">cast</span><span class="op">(</span><span class="fu">const</span><span class="op">(</span><span class="dt">ubyte</span><span class="op">)[])</span>read<span class="op">(</span>file_name<span class="op">));</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="hints-for-nim" class="slide level1">
@@ -1279,13 +1313,35 @@ in the crate <a
 href="https://docs.rs/endianness/latest/endianness/">endianness</a></p></li>
 <li><p>With <code>enum</code>s get used to using <code>match</code>
 instead of <code>if</code>:</p>
-<div class="sourceCode" id="cb48"><pre
-class="sourceCode rust"><code class="sourceCode rust"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> endianness_number(endianness<span class="op">:</span> <span class="op">&amp;</span>ByteOrder) <span class="op">-&gt;</span> <span class="dt">f32</span> <span class="op">{</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> endianness <span class="op">{</span></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>        <span class="pp">ByteOrder::</span>LittleEndian <span class="op">=&gt;</span> <span class="op">-</span><span class="dv">1.0</span><span class="op">,</span></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>        <span class="pp">ByteOrder::</span>BigEndian <span class="op">=&gt;</span> <span class="dv">1.0</span><span class="op">,</span></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> endianness_number(endianness<span class="op">:</span> <span class="op">&amp;</span>ByteOrder) <span class="op">-&gt;</span> <span class="dt">f32</span> <span class="op">{</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> endianness <span class="op">{</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>        <span class="pp">ByteOrder::</span>LittleEndian <span class="op">=&gt;</span> <span class="op">-</span><span class="dv">1.0</span><span class="op">,</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>        <span class="pp">ByteOrder::</span>BigEndian <span class="op">=&gt;</span> <span class="dv">1.0</span><span class="op">,</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="streams-1" class="slide level1">
+<h1>Streams</h1>
+<ul>
+<li><p>Use the <code>Write</code> and <code>Read</code> <em>traits</em>
+to define functions that read and write to a stream. For example:</p>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> write_float<span class="op">&lt;</span>T<span class="op">:</span> <span class="bu">Write</span><span class="op">&gt;</span>(</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>    dest<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> T<span class="op">,</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    value<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    endianness<span class="op">:</span> <span class="op">&amp;</span>Endianness<span class="op">,</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="pp">std::io::</span><span class="dt">Result</span><span class="op">&lt;</span><span class="dt">usize</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> endianness <span class="op">{</span></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Endianness::</span>LittleEndian <span class="op">=&gt;</span> dest<span class="op">.</span>write(<span class="op">&amp;</span>value<span class="op">.</span>to_le_bytes())<span class="op">,</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Endianness::</span>BigEndian <span class="op">=&gt;</span> dest<span class="op">.</span>write(<span class="op">&amp;</span>value<span class="op">.</span>to_be_bytes())<span class="op">,</span></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<li><p>You can make the code faster using <a
+href="https://doc.rust-lang.org/nightly/std/io/index.html#bufreader-and-bufwriter"><code>BufWriter</code>
+and <code>BufReader</code></a>, but it’s not necessary (it certainly
+won’t be the bottleneck!).</p></li>
 </ul>
 </section>
     </div>
