@@ -1,10 +1,10 @@
-# Scrittura di immagini LDR
+# Writing LDR Images
 
-# Interfaccia del programma
+# Program Interface
 
--   Oggi implementeremo il codice del nostro programma (`main.py` nella versione Python).
+-   Today we will implement the code for our program (`main.py` in the Python version).
 
--   Il funzionamento del programma in questa versione sarà il seguente:
+-   The program will function as follows:
 
     ```text
     $ ./main.py input_file.pfm 0.3 1.0 output_file.png
@@ -13,21 +13,21 @@
     $
     ```
 
--   Lo scopo è quello di convertire un file PFM in un file PNG (o nel formato LDR che preferite). I valori `0.3` e `1.0` fanno riferimento al [fattore di scala](./tomasi-ray-tracing-05b-external-libraries.html#/normalizzazione) $a$ e a $\gamma$, rispettivamente.
+-   The goal is to convert a PFM file into a PNG file (or your preferred LDR format). The values `0.3` and `1.0` refer to the [scale factor](tomasi-ray-tracing-05b.html#/normalization) $a$ and $\gamma$, respectively.
 
-# Implementazione
+# Implementation
 
-Le attività da compiere sul codice sono le seguenti:
+The tasks to be performed on the code are the following:
 
-#.   Definire una funzione che calcoli la luminosità di un oggetto `Color`;
-#.   Definire una funzione che calcoli la luminosità media di un `HdrImage`;
-#.   Definire una funzione che normalizzi i valori di un `HdrImage` usando una certa luminosità media, opzionalmente passata come argomento;
-#.   Definire una funzione che applichi la correzione per le sorgenti luminose;
-#.   Implementare il `main` nel codice dell'applicazione.
+1.  Define a function that calculates the luminosity of a `Color` object;
+2.  Define a function that calculates the average luminosity of an `HdrImage`;
+3.  Define a function that normalizes the values of an `HdrImage` using a certain average luminosity, optionally passed as an argument;
+4.  Define a function that applies the correction for light sources;
+5.  Implement the `main` function in the application code.
 
-# Luminosità (1/2)
+# Luminosity (1/2)
 
--   Aggiungiamo un semplice metodo `luminosity` alla classe `Color`, che restituisce il valore della luminosità suggerito da Shirley & Morley:
+-   Let's add a simple `luminosity` method to the `Color` class, which returns the luminosity value suggested by Shirley & Morley:
 
     ```python
     class Color:
@@ -37,15 +37,15 @@ Le attività da compiere sul codice sono le seguenti:
             return (max(self.r, self.g, self.b) + min(self.r, self.g, self.b)) / 2
     ```
 
--   Se nel vostro linguaggio l'equivalente di `max` e `min` accetta solo due parametri (es., `minOf` e `maxOf` in Kotlin), potete usare l'equivalenza
+-   If the equivalent of `max` and `min` in your language only accepts two parameters (e.g., `minOf` and `maxOf` in Kotlin), you can use the equivalence
 
     $$
     \max\left\{a, b, c\right\} \equiv \max\bigl\{\max\left\{a, b\right\}, c\bigr\}.
     $$
 
-# Luminosità (2/2)
+# Luminosity (2/2)
 
--   Occorrono anche alcuni test per `Color.luminosity`:
+-   Some tests for `Color.luminosity` are also needed:
 
     ```python
     def test_luminosity():
@@ -56,9 +56,9 @@ Le attività da compiere sul codice sono le seguenti:
         assert pytest.approx(7.0) == col2.luminosity()
     ```
 
--   Il metodo `pytest.approx()` fa parte della libreria `pytest`, e corrisponde alla funzione `is_close` che avete implementato tempo fa.
+-   The `pytest.approx()` method is part of the `pytest` library and corresponds to the `is_close` function you implemented some time ago.
 
-# Luminosità media (1/2)
+# Average Luminosity (1/2)
 
 ```python
 class HdrImage:
@@ -72,7 +72,7 @@ class HdrImage:
         return math.pow(10, cumsum / len(self.pixels))
 ```
 
-# Luminosità media (2/2)
+# Average Luminosity (2/2)
 
 ```python
 def test_average_luminosity():
@@ -85,11 +85,11 @@ def test_average_luminosity():
     assert pytest.approx(100.0) == img.average_luminosity(delta=0.0)
 ```
 
-# Normalizzazione (1/3)
+# Normalization (1/3) {#normalization}
 
--   La funzione `normalize_image` calcola la luminosità media di un'immagine secondo l'[equazione corrispondente](tomasi-ray-tracing-05b-external-libraries.html#/normalizzazione).
+-   The `normalize_image` function calculates the average brightness of an image according to the [corresponding equation](tomasi-ray-tracing-05b.html#/normalization).
 
--   La funzione dovrebbe accettare il valore di $a$ come parametro di input (in `factor`):
+-   The function should accept the value of $a$ as an input parameter (in `factor`):
 
     ```python
     def normalize_image(self, factor, luminosity=None):
@@ -100,14 +100,14 @@ def test_average_luminosity():
             self.pixels[i] = self.pixels[i] * (factor / luminosity)
     ```
 
-# Normalizzazione (2/3)
+# Normalization (2/3)
 
--   È bene accettare la luminosità come parametro anziché calcolarla:
+-   It’s better to ask for the luminosity instead of calculating it:
 
-    -   Nei test, ci può fare comodo passare diversi valori per la luminosità;
-    -   L'utente potrebbe voler specificare questo valore.
+    -   In tests, it can be convenient to pass different values for the brightness;
+    -   The user might want to specify this value.
 
--   Se il vostro linguaggio supporta i tipi opzionali, potete chiamare la funzione `average_luminosity` se il parametro luminosità è nullo:
+-   If your language supports optional types, you can call the function `average_luminosity` if the brightness parameter is null:
 
     ```csharp
     // This is C#; in Kotlin it's almost the same.
@@ -119,7 +119,7 @@ def test_average_luminosity():
     }
     ```
 
-# Normalizzazione (3/3)
+# Normalization (3/3)
 
 ```python
 def test_normalize_image():
@@ -133,7 +133,7 @@ def test_normalize_image():
     assert img.get_pixel(1, 0).is_close(Color(0.5e4, 1.0e4, 1.5e4))
 ```
 
-# Punti luminosi (1/2)
+# Bright Spots (1/2) {#bright-spots}
 
 ```python
 def _clamp(x: float) -> float:
@@ -149,7 +149,7 @@ class HdrImage:
             self.pixels[i].b = _clamp(self.pixels[i].b)
 ```
 
-# Punti luminosi (2/2)
+# Bright Spots (2/2)
 
 ```python
 def test_clamp_image():
@@ -168,65 +168,65 @@ def test_clamp_image():
 ```
 
 
-# Gestione di dipendenze
+# Dependency Management
 
-# Gestione di dipendenze
+# Dependency Management
 
--   Implementare il codice per salvare un'immagine in uno dei formati LDR più diffusi (PNG, JPEG, TIFF, WebP) sarebbe interessantissimo, ma molto complesso!
--   Implementeremo questa funzionalità appoggiandoci a una libreria esterna
--   In questo modo impareremo come il linguaggio che stiamo usando consente di gestire le dipendenze
+-   Implementing code to save an image in one of the most common LDR formats (PNG, JPEG, TIFF, WebP) would be very interesting, but very complex!
+-   We will implement this functionality by relying on an external library.
+-   In this way, we will learn how the language we are using allows us to manage dependencies.
 
-# Librerie di sistema
+# System Libraries
 
 <center>![](media/dependencies-simple.svg)</center>
 
--   Questo genere di librerie di solito si installano usando in qualche modo `sudo`, come ad esempio `./configure && make && sudo make install`
+-   This kind of library is usually installed using `sudo` in some way, such as `./configure && make && sudo make install`.
 
--   Esempio: installare ROOT sul proprio sistema per lavorare alle esercitazioni di TNDS!
+-   Example: installing ROOT on your system to work on TNDS exercises!
 
-# Librerie di sistema
+# System Libraries
 
-Capita però spesso che si debbano usare librerie *incompatibili* nei propri codici! Supponiamo di avere numerosi oscilloscopi in un laboratorio di elettronica, e che usiamo la libreria `oscilloscope` per analizzarne le misure:
+However, it often happens that you have to use *incompatible* libraries in your code! Suppose we have numerous oscilloscopes in an electronics lab, and we use the `oscilloscope` library to analyze their measurements:
 
--   Sinora abbiamo utilizzato la versione 2.4 per scrivere molti codici di analisi usati regolarmente
+-   So far we have used version 2.4 to write a lot of analysis code that we use regularly.
 
--   È però uscita ormai da un po' la versione 3.0 di `oscilloscope`, che ha nuove funzionalità interessanti, ma non ho ancora fatto l'aggiornamento perché è incompatibile con la versione 2.4!
+-   However, version 3.0 of `oscilloscope` has been out for a while now, which has interesting new features, but I haven't upgraded yet because it's incompatible with version 2.4!
 
--   Sta per uscire la versione 4.0, ancora più potente, ma non supporterà più uno dei miei vecchi oscilloscopi, che mi è ancora indispensabile.
+-   Version 4.0 is about to be released, even more powerful, but it will no longer support one of my old oscilloscopes, which I still need.
 
 
-# Librerie locali
+# Local Libraries
 
-Le librerie locali risolvono questi problemi perché non vengono installate a livello di sistema, ma sono legate a un singolo *repository*:
+Local libraries solve these problems because they are not installed system-wide, but are linked to a single *repository*:
 
 <center>![](media/dependencies-complex.svg)</center>
 
--   Esempio: copia di una libreria *header-only* nel proprio progetto C++
+-   Example: copy of a *header-only* library into your C++ project.
 
--   Esempio: [*virtual environment*](https://docs.python.org/3/tutorial/venv.html) in Python
+-   Example: [*virtual environment*](https://docs.python.org/3/tutorial/venv.html) in Python.
 
-# Gestione di dipendenze
+# Dependency Management
 
--   Quasi tutti i linguaggi supportano una gestione di librerie «locali»
+-   Almost all languages support "local" library management.
 
--   Queste funzionalità sono solitamente implementate nei programmi che avete usato sinora per creare progetti (`nimble`, `gradle`, `dotnet`, `dub`, `cargo`…)
+-   These features are usually implemented in the programs you have used so far to create projects (`nimble`, `gradle`, `dotnet`, `dub`, `cargo`...).
 
--   Scegliete quindi una libreria che supporti la *scrittura* di immagini LDR e importatela nel vostro progetto come una dipendenza **locale** (niente `sudo`!)
+-   So choose a library that supports *writing* LDR images and import it into your project as a **local** dependency (no `sudo`!).
 
--   L'uso di librerie locali ci aiuterà molto quando affronteremo la *continuous integration*.
+-   The use of local libraries will help us a lot when we deal with *continuous integration*.
 
-# Produzione di immagini LDR
+# LDR Image Production
 
-# Conversione a LDR (1/3)
+# HDR→LDR Conversion (1/3)
 
--   Una volta applicata `normalize_image` e `clamp_image`, tutte le componenti RGB dei colori nella matrice saranno nell'intervallo [0, 1].
--   A questo punto la conversione nello spazio sRGB avviene tramite la [solita formula con γ](tomasi-ray-tracing-05b-ci-builds.html#/correzione-%CE%B3).
--   Il risultato della conversione è una matrice che va salvata in un formato grafico LDR: PNG, JPEG, WebP…
--   Per il salvataggio dovete scegliere una libreria appropriata.
+-   Once `normalize_image` and `clamp_image` have been applied, all RGB components of the colors in the matrix will be in the range [0, 1].
+-   At this point, the conversion to the sRGB space takes place via the [usual formula with γ](tomasi-ray-tracing-02a.html#/from-rgb-to-srgb).
+-   The result of the conversion is a matrix that must be saved in an LDR graphic format: PNG, JPEG, WebP...
+-   For saving, you need to choose an appropriate library.
 
-# Conversione a LDR (2/3)
+# HDR→LDR Conversion (2/3)
 
-| Linguaggio                                            | Librerie                                                                                               |
+| Language                                              | Libraries                                                                                              |
 |-------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
 | C\#                                                   | [ImageSharp](https://docs.sixlabors.com/articles/imagesharp/?tabs=tabid-1)                             |
 | D                                                     | [imageformats](https://code.dlang.org/packages/imageformats)                                           |
@@ -235,18 +235,18 @@ Le librerie locali risolvono questi problemi perché non vengono installate a li
 | Python                                                | [Pillow](https://pillow.readthedocs.io/en/stable/)                                                     |
 | Rust                                                  | [image](https://crates.io/crates/image)                                                                |
 
-Potete scegliere altre librerie, ma attenzione a scegliere quelle pixel-based!
+You can search for other libraries, but be sure to pick a pixel-based one!
 
-# Cosa ci serve
+# What do we need?
 
-Scegliete una libreria LDR che abbia queste caratteristiche:
+Choose an LDR library that has these characteristics:
 
--   Creazione di una immagine specificando numero di colonne (`width`) e numero di righe (`height`)
--   Impostazione del valore sRGB di un pixel date le sue coordinate `x` e `y`
--   Salvataggio dell'immagine in un formato grafico diffuso
--   Fate molta attenzione al sistema di coordinate: il pixel a `(0, 0)` è in alto a sinistra? in basso a sinistra? oppure…?
+-   Creation of an image by specifying the number of columns (`width`) and the number of rows (`height`)
+-   Setting the sRGB value of a pixel given its `x` and `y` coordinates
+-   Saving the image in a common graphic format
+-   Pay close attention to the coordinate system: is the pixel at `(0, 0)` at the top left? Bottom left? Or…?
 
-# Conversione a LDR (3/3)
+# HDR→LDR Conversion (3/3)
 
 ```python
 class HdrImage:
@@ -268,7 +268,7 @@ class HdrImage:
         img.save(stream, format=format)
 ```
 
-# Funzione `main` (1/2)
+# The `main` function (1/2)
 
 ```python
 from dataclasses import dataclass
@@ -299,9 +299,9 @@ class Parameters:
         self.output_png_file_name = sys.argv[4]
 ```
 
-(Anziché usare variabili globali per i parametri letti da `argv`, uso una `struct` che poi passo alle varie funzioni: è più facile scrivere test!)
+(Instead of using global variables for the parameters read from `argv`, I use a `struct` and pass it to other functions: it’s easier to write tests!)
 
-# Funzione `main` (2/2)
+# The `main` function (2/2)
 
 ```python
 def main(argv):
@@ -330,61 +330,72 @@ def main(argv):
     print(f'File "{parameters.output_png_file_name}" has been written to disk.')
 ```
 
-# Guida per l'esercitazione
 
-# Guida per l'esercitazione
+# What to do today
 
-#.  Definire una funzione che calcoli la luminosità di un oggetto `Color` e la luminosità media di un `HdrImage`;
-#.  Definire una funzione che normalizzi i valori di un `HdrImage` usando una certa luminosità media, opzionalmente passata come argomento;
-#.  Definire una funzione che applichi la correzione per le sorgenti luminose;
-#.  Implementare il `main` nel codice dell'applicazione, in modo che accetti 4 argomenti: il file PFM da leggere, il valore di $a$, il valore di γ, e il nome del file PNG/JPEG/etc. da creare.
-#.  Aggiungete *docstrings* a quelle classi, metodi, funzioni, tipi, etc. che vi sembrano bisognose di ciò, ma preoccupatevi che ciascun commento **non sia pedante**.
-#.  Scegliete insieme una [licenza d'uso](./tomasi-ray-tracing-04a.html#/licenze-duso).
+# What to do today
 
-# Immagini di riferimento
+1. Define a function that calculates the luminosity of a `Color` object and the average luminosity of an `HdrImage` and add tests;
+2. Define a function that normalizes the values of an `HdrImage` using a certain average luminosity, optionally passed as an argument and add tests;
+3. Define a function that applies the correction for light sources and add tests;
+4. Implement the `main` function in the application code, so that it accepts 4 arguments: the PFM file to read, the value of $a$, the value of γ, and the name of the PNG/JPEG/etc. file to create.
+5. Add *docstrings* to those classes, methods, functions, types, etc. that you feel need them, but make sure that each comment **is not pedantic**.
+6. Choose together a [usage license](./tomasi-ray-tracing-04a.html#/licenses).
 
--   Se vi serve un'immagine PFM realistica, potete usare  [memorial.pfm](http://www.pauldebevec.com/Research/HDR/memorial.pfm).
+# Reference Images
 
--   C'è anche il sito [Scenes for pbrt-v3](https://www.pbrt.org/scenes-v3.html).
+- If you need a realistic PFM image, you can use [memorial.pfm](http://www.pauldebevec.com/Research/HDR/memorial.pfm).
+
+- There is also the site [Scenes for pbrt-v3](https://www.pbrt.org/scenes-v3.html).
+
+# Hints for C++
+
+# Hints for C++
+
+-   Many code examples shown today were in C++, so you can start from them.
+
+-   [Awesome C++](https://github.com/fffaraz/awesome-cpp) is a treasure trove of C++ libraries. Have a look at the section [Image processing](https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#image-processing) to find a viable image processing library to use in your project.
+
+-   To document code, the most used tool is [Doxygen](https://github.com/doxygen/doxygen), but there are other choices available (See again the [section “Documentation” in the Awesome C++ website](https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#documentation).)
 
 
-# Indicazioni per D/Nim/Rust
+# Hints for D/Nim/Rust
 
-# Indicazioni per D/Nim/Rust
+# Hints for D/Nim/Rust
 
--   Potete installare librerie nel vostro progetto con il vostro package manager:
+- You can install libraries in your project with your package manager:
 
-    -   In Nim, usate `nimble install NAME`;
-    -   In Cargo, usate `cargo` seguendo [la guida](https://doc.rust-lang.org/cargo/guide/dependencies.html);
-    -   In D, usate `dub add NAME`.
+    - In Nim, use `nimble install NAME`;
+    - In Cargo, use `cargo` following [the guide](https://doc.rust-lang.org/cargo/guide/dependencies.html);
+    - In D, use `dub add NAME`.
 
--   Queste librerie saranno installate come dipendenze del vostro programma, e non a livello di sistema.
+- These libraries will be installed as dependencies of your program, and not system-wide.
 
-# Indicazioni per Java/Kotlin
+# Hints for Java/Kotlin
 
-# Indicazioni per Java/Kotlin
+# Hints for Java/Kotlin
 
--   A differenza di Python, C++, C\# e Julia, sia Java che Kotlin forniscono supporto per immagini PNG, JPEG, BMP e GIF tramite le librerie standard Java.
+- Unlike Python, C++, C# and Julia, both Java and Kotlin provide support for PNG, JPEG, BMP and GIF images through the standard Java libraries.
 
--   A voi servono le classi `java.awt.image.BufferedImage` (immagine LDR) e `javax.imageio.ImageIO` (la classe che implementa i metodi per leggere/scrivere immagini LDR su file).
+- You need the classes `java.awt.image.BufferedImage` (LDR image) and `javax.imageio.ImageIO` (the class that implements the methods for reading/writing LDR images to files).
 
-# Codificare il colore
+# Encoding Color
 
--   La classe `BufferedImage` permette di codificare il colore in tanti modi diversi. Se usate `TYPE_INT_RGB`, il colore non è una terna RGB ma un intero a 32 bit con questo formato:
+- The `BufferedImage` class allows you to encode color in many different ways. If you use `TYPE_INT_RGB`, the color is not an RGB triplet but a 32-bit integer with this format:
 
     ```
     00000000 rrrrrrrr gggggggg bbbbbbbb
     ```
 
-    dove `r` sono i bit del rosso, `g` quelli del verde e `b` quelli del blu. Di solito i colori si indicano usando la notazione esadecimale, perché in questo modo sono sempre a sei cifre, ad es. `0x12FA51`.
+    where `r` are the bits for red, `g` for green and `b` for blue. Usually colors are indicated using hexadecimal notation, because this way they are always six digits, e.g. `0x12FA51`.
 
--   Se `r`, `g` e `b` sono byte nell'intervallo [0, 255], potete usare una di queste due formule:
+- If `r`, `g` and `b` are bytes in the range [0, 255], you can use one of these two formulas:
 
     ```
     r * 65536 + g * 256 + b                    (r shl 16) + (g shl 8) + b
     ```
 
-# Esempio di codice Kotlin
+# Kotlin Code Example
 
 ```kotlin
 fun main(args: Array<String>) {
@@ -403,39 +414,39 @@ fun main(args: Array<String>) {
 }
 ```
 
-# Linea di comando
+# Command Line
 
--   Java e Kotlin hanno un modo un po' «barocco» di gestire i parametri da linea di comando.
+- Java and Kotlin have a somewhat «baroque» way of handling command line parameters.
 
--   Il vostro eseguibile *non può** essere eseguito come un normale eseguibile Python/C++/C\#:
+- Your executable *cannot* be run like a normal Python/C++/C# executable:
 
     ```text
     $ ./main.py input_file.pfm 0.3 1.0 output_file.png
     ```
 
-    perché è compilato per la JVM.
+    because it is compiled for the JVM.
 
--   Se usate Kotlin, bisogna passare da `gradlew`, che richiede che i parametri siano passati attraverso `--args`:
+- If you are using Kotlin, you have to go through `gradlew`, which requires that parameters be passed through `--args`:
 
     ```text
     ./gradlew run --args="input_file.pfm 0.3 1.0 output_file.png"
     ```
 
-# Indicazioni per C\#
+# Guidelines for C#
 
-# Importare librerie
+# Importing Libraries
 
--   La libreria ImageSharp supporta molti formati: JPEG, PNG, BMP, GIF, e TGA (un vecchio formato che non abbiamo trattato nella lezione di teoria).
+-   The ImageSharp library supports many formats: JPEG, PNG, BMP, GIF, and TGA (an older format that we didn't cover in the theory lesson).
 
--   In C\# si possono scaricare e installare automaticamente librerie, e specificare che vanno impiegate nei propri progetti senza bisogno di modificare Makefile e di usare `root-config`, `pkg-config` e cose simili.
+-   In C#, you can automatically download and install libraries and specify that they should be used in your projects without the need to modify Makefiles or use `root-config`, `pkg-config`, or similar tools.
 
--   Aggiungete il package [SixLabors.ImageSharp](https://docs.sixlabors.com/index.html) alla libreria di classi (che forse avete chiamato `Tracer`):
+-   Add the [SixLabors.ImageSharp](https://docs.sixlabors.com/index.html) package to the class library (which you may have named `Tracer`):
 
     ```text
     $ dotnet add package SixLabors.ImageSharp
     ```
 
-# Salvare file PNG
+# Saving PNG Files
 
 ```csharp
 // Create a sRGB bitmap
@@ -452,7 +463,7 @@ using (Stream fileStream = File.OpenWrite("output.png")) {
 ```
 
 ---
-title: "Esercitazione 4"
+title: "Laboratory 4"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

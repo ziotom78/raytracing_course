@@ -1,12 +1,12 @@
-# Forme geometriche
+# Geometric Shapes
 
 # «Cornell box»
 
 ![](./media/cornell-box-schema.svg){height=560}
 
-# Equazione del rendering
+# Rendering Equation {#rendering-equation}
 
--   Per risolvere l'equazione del rendering dobbiamo tracciare il percorso di raggi luminosi nello spazio tridimensionale e risolvere l'equazione del rendering:
+-   To solve the rendering equation, we need to trace the path of light rays in three-dimensional space and solve the rendering equation:
 
     $$
     \begin{aligned}
@@ -15,21 +15,21 @@
     \end{aligned}
     $$
 
--   L'integrale è calcolato sull'angolo solido, e non è molto agevole per la risoluzione numerica del problema: noi avremo una lista di **oggetti**, non di angoli solidi, su cui iterare.
+-   The integral is calculated over the solid angle, and it is not very convenient for the numerical solution of the problem: we will have a list of **objects**, not solid angles, to iterate over.
 
--   Cerchiamo dunque una formulazione alternativa che renda le cose più semplici.
+-   Therefore, we look for an alternative formulation that makes things simpler.
 
-# Forma alternativa
+# Alternative Form
 
--   Concentriamoci sul termine più complesso dell'equazione, ossia l'integrale:
+-   Let's focus on the most complex term of the equation, i.e., the integral:
 
     $$
     \int_{4\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
     $$
 
--   L'integrale è calcolato sull'intero angolo solido 4π, e il suo significato fisico è di tenere conto della radiazione che cade sul punto $x$ di una superficie.
+-   The integral is calculated over the entire solid angle 4π, and its physical meaning is to take into account the radiation falling on point $x$ of a surface.
 
--   Questa radiazione deve essere stata emessa da qualche elemento di superficie $\mathrm{d}\sigma'$ sulla scena, corrispondente a un punto $x'$ nello spazio (v. figura seguente).
+-   This radiation must have been emitted by some surface element $\mathrm{d}\sigma'$ on the scene, corresponding to a point $x'$ in space (see the following figure).
 
 ---
 
@@ -37,21 +37,21 @@
 ![](./media/rendering-equation-alternative-form.svg){height=560px}
 </center>
 
-# Forma alternativa
+# Alternative Form
 
--   Per definizione di angolo solido quindi, $\mathrm{d}\omega_\Psi$ si scrive così:
+-   By definition of solid angle, therefore, $\mathrm{d}\omega_\Psi$ is written as follows:
 
     $$
     \mathrm{d}\omega_\Psi = \frac{\mathrm{d}\sigma'\,\cos\theta_i'}{\left\|x - x'\right\|^2}.
     $$
 
--   Il termine integrale dell'equazione del rendering si riscrive quindi così:
+-   The integral term of the rendering equation can therefore be rewritten as follows:
 
     $$
     \int_{\sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x, x - x')\,\frac{\cos\theta_i\,\cos\theta'}{\left\|x - x'\right\|^2}\mathrm{d}\sigma',
     $$
 
-    dove $\sum S$ indica tutte le superfici **visibili** da $x$.
+    where $\sum S$ indicates all surfaces **visible** from $x$.
 
 ---
 
@@ -59,108 +59,109 @@
 ![](./media/rendering-equation-visibility.svg){height=560px}
 </center>
 
-# Funzione di visibilità
+# Visibility Function
 
--   Per risolvere questa ambiguità, si introduce solitamente una funzione di visibilità (*visibility function*) $v(x, x')$ definita in questo modo:
+-   To resolve this ambiguity, a visibility function $v(x, x')$ is usually introduced, defined as follows:
 
     $$
     v(x, x') = \begin{cases}
-    1\ &\text{ se $x'$ è visibile da $x$,}\\
-    0\ &\text{ se $x'$ non è visibile da $x$.}
+    1\ &\text{ if $x'$ is visible from $x$,}\\
+    0\ &\text{ if $x'$ is not visible from $x$.}
     \end{cases}
     $$
 
--   In questo modo si riscrive l'integrale sull'intero insieme dei punti $x'$:
+-   In this way, the integral is rewritten over the entire set of points $x'$:
 
     $$
     \int_{\forall x' \in \sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x, x - x')\,\frac{\cos\theta_i\,\cos\theta'}{\left\|x - x'\right\|^2}\,v(x, x')\,\mathrm{d}\sigma'.
     $$
 
-# Raggi e forme geometriche
+# Rays and Geometric Shapes
 
--   Vediamo quindi che in un codice di ray-tracing è necessario avere la possibilità di effettuare questi calcoli:
+-   We see that in a ray-tracing code it is necessary to be able to perform these calculations:
 
-    #.  Intersezione tra un raggio e una superficie;
-    #.  Determinazione della funzione di visibilità $v(x, x')$ tra due punti.
+    #.  Intersection between a ray and a surface;
+    #.  Determination of the visibility function $v(x, x')$ between two points.
 
--   Questi due problemi possono essere risolti in modo molto simile, ed è quello che vedremo nella lezione di oggi.
+-   These two problems can be solved in a very similar way, and that is what we will see in today's lesson.
 
-# Intersezioni tra raggi e forme geometriche
+# Ray/Shape Intersections {#intersections-btw-rays-and-shapes}
 
-# Rappresentazione di forme
+# Representation of Shapes
 
--   In un ray-tracer si rappresentano superfici tramite equazioni analitiche.
+-   In a ray-tracer, surfaces are represented by analytical equations.
 
--   L'intersezione tra raggi luminosi e forme è calcolata usando le regole della geometria analitica:
+-   The intersection between light rays and shapes is calculated using the rules of analytic geometry:
 
-    #.   Si rappresentano raggi e forme come equazioni in cui l'incognita è il punto $(x, y, z)$ dello spazio.
-    #.   Si risolve il sistema delle equazioni per il raggio e per la forma, in modo da trovare i punti $(x, y, z)$ in comune tra le due equazioni.
+    #.   Rays and shapes are represented as equations where the unknown is the point $(x, y, z)$ in space.
+    #.   The system of equations for the ray and for the shape is solved, in order to find the points $(x, y, z)$ in common between the two equations.
 
--   Grazie alla nostra implementazione delle trasformazioni affini, possiamo implementare solo le forme più semplici, che potranno poi essere modificate tramite concatenazioni di trasformazioni.
+-   Thanks to our implementation of affine transformations, we can implement only the simplest shapes, which can then be modified through concatenations of transformations.
 
-# Trasformazioni
+# Transformations
 
--   Solitamente le forme geometriche sono espresse in forme complesse; ad esempio, la sfera unitaria è rappresentata da una equazione implicita:
+-   Usually geometric shapes are expressed in complex forms; for example, the unit sphere is represented by an implicit equation:
 
     $$
     x^2 + y^2 + z^2 = 1.
     $$
 
--   Però noi sappiamo come applicare una trasformazione $T$ solo a punti, a vettori e a normali, non a equazioni implicite.
+-   However, we know how to apply a transformation $T$ only to points, vectors, and normals, not to implicit equations.
 
--   È più conveniente applicare ai raggi luminosi la trasformazione **inversa**: se $T$ trasforma il sistema di riferimento «privilegiato» di una forma nel sistema reale del mondo, $T^{-1}$ può trasformare un raggio $O + t \vec d$ nel sistema reale del mondo in quello privilegiato della forma.
+-   It is more convenient to apply the **inverse** transformation to the light rays: if $T$ transforms the "privileged" reference system of a shape into the real world system, $T^{-1}$ can transform a ray $O + t \vec d$ in the real world system into the privileged one of the shape.
 
-# Trasformare raggi
+# Transforming Rays
 
--   Supponiamo che $T$ sia la trasformazione da applicare alla superficie $S$. La superficie trasformata $T\cdot S$ è allora l'insieme di punti
+-   Suppose that $T$ is the transformation to be applied to the surface $S$. The transformed surface $T\cdot S$ is then the set of points
 
     $$
     T\cdot S = \left\{T x: x \in S\right\},
     $$
 
--   Se il raggio $O + t \vec d$ interseca $T\cdot S$ quando $t = \tilde t$, allora
+-   If the ray $O + t \vec d$ intersects $T\cdot S$ when $t = \tilde t$, then
 
     $$
     O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde t\,T^{-1} \vec d = \tilde x,
     $$
 
-    che equivale a formulare il problema dell'intersezione nel sistema di riferimento di $S$. Notate che $\tilde t$ **non cambia** tra le due formulazioni!
+    which is equivalent to formulating the intersection problem in the reference system of $S$. Note that $\tilde t$ **does not change** between the two formulations!
 
-# Tipi di forme
+# Types of Shapes
 
--   In questo corso discuteremo le seguenti forme geometriche:
+-   In this course we will discuss the following geometric shapes:
 
-    #.   Sfere;
-    #.   Piani;
+    #.   Spheres;
+    #.   Planes;
     #.   *Constructive Solid Geometry* (CSG);
-    #.   Cubi;
-    #.   Triangoli.
+    #.   Cubes;
+    #.   Triangles.
 
--   Tratteremo cubi e triangoli più avanti, dal momento che sono solitamente associati ad argomenti più avanzati (*bounding boxes* e *triangle meshes*).
+-   We will deal with cubes and triangles later, since they are usually associated with more advanced topics (*bounding boxes* and *triangle meshes*).
 
-# Sfere
 
-# Sfera unitaria
+# Spheres {#spheres}
 
--   L'equazione della sfera tridimensionale con centro $C$ e raggio $R$ è
+# Unit Sphere
+
+-   The equation of a three-dimensional sphere with center $C$ and radius $R$ is
 
     $$
     (x - c_x)^2 + (y - c_y)^2 + (z - c_z)^2 = R^2,
     $$
 
-    e deriva dalla definizione geometrica di sfera.
+    and it derives from the geometric definition of a sphere.
 
--   Ci limitiamo però a considerare solo la sfera unitaria centrata nell'origine:
+-   However, we will limit ourselves to considering only the unit sphere centered at the origin:
 
     $$
     x^2 + y^2 + z^2 = 1\ \rightarrow\ \left\|P - 0\right\|^2 = (P - 0) \cdot (P - 0) = 1,
     $$
 
-    dove $0$ è l'origine degli assi e $P$ è il generico punto della sfera. Potremo poi traslarla e trasformarla in un ellissoide mediante una trasformazione $T$.
+    where $0$ is the origin of the axes and $P$ is a generic point on the sphere. We can then translate and transform it into an ellipsoid using a transformation $T$.
 
-# Intersezione raggio-sfera
+# Ray-Sphere Intersection
 
--   Determinare l'intersezione tra un raggio ed una sfera richiede di risolvere contemporaneamente le equazioni
+-   Determining the intersection between a ray and a sphere requires solving the following equations simultaneously:
 
     $$
     \begin{cases}
@@ -169,47 +170,47 @@
     \end{cases}
     $$
 
--   Le incognite sono $P$ e $t$; quest'ultimo dice a che distanza dall'origine del raggio avviene l'intersezione con la sfera.
+-   The unknowns are $P$ and $t$; the latter indicates the distance from the origin of the ray at which the intersection with the sphere occurs.
 
-# Soluzione dell'equazione
+# Solving the Equation
 
--   Possiamo trovare $t$ sostituendo la seconda equazione nella prima:
+-   We can find $t$ by substituting the second equation into the first:
 
     $$
     (O + t\vec d - 0) \cdot (O + t\vec d - 0) - 1 = 0.
     $$
 
--   La scrittura $O - 0$ indica semplicemente che $O$ va considerato un *vettore* anziché un punto. Noi semplifichiamo la notazione così:
+-   The notation $O - 0$ simply indicates that $O$ should be considered a *vector* rather than a point. We simplify the notation as follows:
 
     $$
     O - 0 = \vec O,
     $$
 
-    che suggerisce che potremo usare la funzione/metodo `Point.toVec()`.
+    which suggests that we can use the `Point.toVec()` function/method.
 
-# Soluzione dell'equazione
+# Solving the Equation
 
--   Espandendo la definizione di prodotto scalare otteniamo
+-   Expanding the definition of the dot product, we obtain
 
     $$
     t^2 \left\|\vec d\right\|^2 + 2 t\,\vec O \cdot \vec d + \left\|\vec O\right\|^2 - 1 = 0,
     $$
 
--   È una equazione di secondo grado, e ammette quindi zero, una o due soluzioni:
+-   This is a quadratic equation, and therefore admits zero, one, or two solutions:
 
-    #.  Zero soluzioni: il raggio non colpisce la sfera;
-    #.  Una soluzione: il raggio è tangente alla sfera;
-    #.  Due soluzioni: il raggio colpisce la sfera, la attraversa e ne colpisce la superficie nella parte opposta.
+    1.  Zero solutions: the ray does not intersect the sphere;
+    2.  One solution: the ray is tangent to the sphere;
+    3.  Two solutions: the ray intersects the sphere, passes through it, and intersects its surface on the opposite side.
 
-# Intersezioni raggio-sfera
+# Ray-Sphere Intersections
 
--   Per distinguere i tre casi occorre il discriminante:
+-   To distinguish between the three cases, we need the discriminant:
 
     $$
     \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
     $$
 
--   Nel caso in cui $\Delta > 0$, le due intersezioni sono
+-   In the case where $\Delta > 0$, the two intersections are
 
     $$
     t = \begin{cases}
@@ -218,53 +219,53 @@
     \end{cases}
     $$
 
-# Intersezioni invalide
+# Invalid Intersections
 
--   Non tutte le intersezioni tra raggio e sfera sono valide: dipende anche dal punto di partenza del raggio.
+-   Not all intersections between a ray and a sphere are valid: it also depends on the starting point of the ray.
 
--   Inoltre non ha molto senso considerare le intersezioni tangenti, quindi noi le ignoreremo.
+-   Furthermore, it doesn't make much sense to consider tangent intersections, so we will ignore them.
 
     <center>
     ![](./media/ray-sphere-intersection.svg)
     </center>
 
 
-# Intersezioni valide
+# Valid Intersections
 
--   Il criterio per decidere se un'intersezione è valida dipende anche dai valori $t_\text{min}$ e $t_\text{max}$ del raggio $O + t \vec d$.
+-   The criterion for deciding whether an intersection is valid also depends on the values $t_\text{min}$ and $t_\text{max}$ of the ray $O + t \vec d$.
 
--   Mettendo insieme tutto ciò che abbiamo detto sinora, una intersezione per $t = \tilde t$ è valida solo se
+-   Putting together everything we have said so far, an intersection for $t = \tilde t$ is valid only if
 
     $$
     t_\text{min} \leq \tilde t \leq t_\text{max}
     $$
 
-    (usare < anziché ≤ non cambia nulla).
+    (using < instead of ≤ doesn't change anything).
 
--   Se le due intersezioni $t_1$ e $t_2$ soddisfano entrambe questo criterio, allora si considera il valore minore delle due, ossia $t_1$ (*criterio di visibilità*).
+-   If both intersections $t_1$ and $t_2$ satisfy this criterion, then the smaller of the two is considered, i.e., $t_1$ (*visibility criterion*).
 
 
-# Oltre le intersezioni
+# Beyond Intersections
 
--   Una volta individuato $t$ e di conseguenza il punto $P$, il lavoro però non è finito.
+-   Once $t$ and consequently the point $P$ have been identified, the work is not yet finished.
 
--   Per applicare la BRDF $f_r$ al punto è necessario conoscere anche la normale $\hat n$ alla superficie.
+-   To apply the BRDF $f_r$ to the point, it is also necessary to know the normal $\hat n$ to the surface.
 
--   Inoltre in generale la BRDF di una superficie dipende dal punto esatto di intersezione, che per una superficie è solitamente indicato come un punto **bidimensionale** $(u, v)$.
+-   Furthermore, in general, the BRDF of a surface depends on the exact point of intersection, which for a surface is usually indicated as a **two-dimensional** point $(u, v)$.
 
--   Vediamo questi due aspetti nel dettaglio, iniziando dalla normale.
+-   Let's look at these two aspects in detail, starting with the normal.
 
-# Normale di una sfera
+# Normal of a Sphere
 
--   Dato un punto $P$, ogni raggio è sempre normale alla superficie della sfera, quindi è semplice determinare la normale al punto $P$:
+-   Given a point $P$, any radius is always normal to the surface of the sphere, so it is easy to determine the normal at point $P$:
 
     $$
     \hat n_P = P - C,
     $$
 
-    dove $C$ è il centro della sfera.
+    where $C$ is the center of the sphere.
 
--   C'è però una ambiguità nel segno: sia $P - C$ che $C - P$ sono normali alla superficie. Ma la normale dovrebbe essere *entrante* o *uscente*?
+-   However, there is an ambiguity in the sign: both $P - C$ and $C - P$ are normal to the surface. But should the normal be *inward* or *outward*?
 
 ---
 
@@ -272,24 +273,24 @@
 ![](./media/sphere-normals.svg){height=560px}
 </center>
 
-# Normale di una sfera
+# Normal of a Sphere
 
--   La scelta della normale dipende dalla *direzione di arrivo $\vec d$ del raggio*.
+-   The choice of the normal depends on the *direction of arrival $\vec d$ of the ray*.
 
--   Possiamo quindi verificare il segno di
+-   We can therefore check the sign of
 
     $$
     \hat n \cdot \vec d = \left\|\hat n\right\|\cdot\left\|\vec d\right\|\,\cos\theta,
     $$
 
-    e se è positivo consideriamo $-\hat n$ anziché $\hat n$.
+    and if it is positive, we consider $-\hat n$ instead of $\hat n$.
 
 
-# Punto di intersezione
+# Intersection Point
 
--   Una volta determinato il punto di intersezione $P$ tra la sfera e il raggio, bisogna solitamente stimare la BRDF in $P$.
+-   Once the intersection point $P$ between the sphere and the ray is determined, it is usually necessary to estimate the BRDF at $P$.
 
--   Ma è scomodo farlo se $P$ è espresso in coordinate 3D!
+-   But it is inconvenient to do so if $P$ is expressed in 3D coordinates!
 
 ---
 
@@ -299,155 +300,156 @@
 
 ---
 
-# Punto di intersezione
+# Intersection Point
 
--   Più che il punto $P$, occorre piuttosto conoscere la posizione in coordinate bidimensionali sulla superficie della sfera.
+-   Rather than the point $P$, it is necessary to know the position in two-dimensional coordinates on the surface of the sphere.
 
--   Nel caso specifico della sfera si può usare la coppia latitudine-longitudine; nel caso generico di una superficie $S$ si cerca comunque una parametrizzazione bidimensionale $(u, v)$.
+-   In the specific case of the sphere, the latitude-longitude pair can be used; in the general case of a surface $S$, a two-dimensional parameterization $(u, v)$ is sought.
 
 ---
 
 
-# Superficie della sfera
+# Surface of the Sphere
 
--   Dato un punto $P$ sulla superficie della sfera, possiamo ricavare la colatitudine $\theta$ e la longitudine $\phi$ tramite la trigonometria:
+-   Given a point $P$ on the surface of the sphere, we can derive the colatitude $\theta$ and the longitude $\phi$ using trigonometry:
 
     $$
     \theta = \arccos p_z, \quad \phi = \arctan \frac{p_y}{p_x}.
     $$
 
--   L'intervallo di valori $\theta \in [0, \pi], \phi \in [0, 2\pi]$ è troppo specifico per la sfera, quindi di solito si usa la parametrizzazione
+-   The range of values $\theta \in [0, \pi], \phi \in [0, 2\pi]$ is too specific for the sphere, so the parameterization
 
     $$
     u = \frac\phi{2\pi} = \frac{\arctan p_y / p_x}{2\pi}, \quad v = \frac\theta\pi = \frac{\arccos p_z}\pi.
     $$
+ is usually used.
 
-# Piani
+# Planes {#planes}
 
-# Piano infinito
+# Infinite Plane
 
--   In geometria affine, un piano è definito tramite il suo vettore normale $\hat n$ e un punto $O$ attraverso cui passa il piano:
+-   In affine geometry, a plane is defined by its normal vector $\hat n$ and a point $O$ through which the plane passes:
 
     $$
     (P - O) \cdot \hat n = 0,
     $$
 
-    dove $P$ è il generico punto sul piano.
+    where $P$ is a generic point on the plane.
 
--   (Come potete intuire, in geometria algebrica invece i piani sono rappresentati mediante bivettori, e la loro equazione è identica a quella della retta: una meraviglia se si fanno calcoli a mano!)
+-   (As you can guess, in algebraic geometry, planes are represented by bivectors, and their equation is identical to that of a line: a marvel if you do calculations by hand!)
 
-# Piano standard
+# Standard Plane
 
--   Visto che possiamo sfruttare le trasformazioni, studiamo quindi il piano particolare che passa per l'origine ed è generato dagli assi $x$ e $y$ (ossia è perpendicolare all'asse $z$).
+-   Since we can exploit transformations, we study the particular plane that passes through the origin and is generated by the $x$ and $y$ axes (i.e., it is perpendicular to the $z$ axis).
 
--   In tal caso
+-   In this case
 
     $$
     (P - O) \cdot \hat n = 0\ \Rightarrow\ \vec P \cdot \hat e_z = 0,
     $$
 
-    che equivale a chiedere che
+    which is equivalent to requiring that
 
     $$
     P_z = 0.
     $$
 
-# Intersezione raggio-piano
+# Ray-Plane Intersection
 
--   L'intersezione tra il piano e il raggio $O + t \vec d$ è quindi banalissima: basta richiedere che la componente $z$ del punto lungo il raggio si annulli per qualche valore di $t$.
+-   The intersection between the plane and the ray $O + t \vec d$ is therefore very simple: just require that the $z$ component of the point along the ray vanishes for some value of $t$.
 
--   La soluzione analitica è
+-   The analytical solution is
 
     $$
     O_z + t d_z = 0\ \Rightarrow\ t = -\frac{O_z}{d_z},
     $$
 
-    che vale ovviamente solo se $d_z \not= 0$, ossia se la direzione $\vec d$ del raggio non è parallela al piano $xy$.
+    which is obviously valid only if $d_z \not= 0$, i.e., if the direction $\vec d$ of the ray is not parallel to the $xy$ plane.
 
 
-# Normali
+# Normals
 
--   La normale del piano è ovviamente $\pm \hat e_z$, dove il segno si determina con la medesima regola usata per la sfera.
+-   The normal of the plane is obviously $\pm \hat e_z$, where the sign is determined by the same rule used for the sphere.
 
--   Ma nel caso del piano la formula è ancora più semplice: se $\vec d$ è la direzione del raggio, allora la condizione per cambiare segno diventa
+-   But in the case of the plane, the formula is even simpler: if $\vec d$ is the direction of the ray, then the condition for changing the sign becomes
 
     $$
     \vec d \cdot \hat n < 0\ \Rightarrow\ d_z < 0.
     $$
 
-# Parametrizzazione del piano
+# Parameterization of the Plane
 
--   A differenza della sfera, un piano è una superficie infinita.
+-   Unlike the sphere, a plane is an infinite surface.
 
--   In questo caso si parametrizza il piano con condizioni periodiche:
+-   In this case, the plane is parameterized with periodic conditions:
 
     $$
     u = p_x - \lfloor p_x \rfloor,\quad v = p_y - \lfloor p_y \rfloor,
     $$
 
-    dove $\lfloor \cdot \rfloor$ indica l'arrotondamento per difetto, in modo che $u, v \in [0, 1)$ come nel caso della sfera.
+    where $\lfloor \cdot \rfloor$ indicates the floor function, so that $u, v \in [0, 1)$ as in the case of the sphere.
 
--   L'intera superficie del piano è quindi la ripetizione periodica della regione $[0, 1] \times [0, 1]$ (*tile pattern*).
+-   The entire surface of the plane is therefore the periodic repetition of the region $[0, 1] \times [0, 1]$ (*tile pattern*).
 
-# Parametrizzazione del piano
+# Parameterization of the Plane
 
 <center>![](./media/textured-plane.png)</center>
 
 
-# *Constructive Solid Geometry*
+# *Constructive Solid Geometry* {#constructive-solid-geometry}
 
 
 # *Constructive Solid Geometry*
 
--   Le forme viste finora sono semplicissime: sfere e piani.
+-The shapes seen so far are very simple: spheres and planes.
 
--   Vedremo in futuro che forme arbitrariamente complesse si possono approssimare con insiemi di triangoli.
+-   We will see in the future that arbitrarily complex shapes can be approximated with sets of triangles.
 
--   Oggi presentiamo una tecnica per costruire forme geometriche complesse a partire da forme semplici: la *Constructive Solid Geometry* (CSG).
+-   Today we present a technique to construct complex geometric shapes starting from simple shapes: *Constructive Solid Geometry* (CSG).
 
 
-# Operazioni Booleane
+# Boolean Operations
 
 <center>![](./media/boolean-operations.png)</center>
 
--   Unione
--   Differenza
--   Intersezione
+-   Union
+-   Difference
+-   Intersection
 
 
-# Unione
-
-<center>![](./media/boolean-operations-2d.svg)</center>
-
--   Si determinano le intersezioni con *tutte* le forme;
--   Si sceglie l'intersezione più prossima, assegnandole la BRDF della forma corrispondente.
-
-
-# Differenza
+# Union
 
 <center>![](./media/boolean-operations-2d.svg)</center>
 
--   Si determinano le intersezioni con le forme;
--   Si omettono le intersezioni interne alla forma #2 (C) e quelle sulla superficie di #2 che non sono interne a #1 (D).
+-   The intersections with *all* the shapes are determined;
+-   The closest intersection is chosen, assigning it the BRDF of the corresponding shape.
 
 
-# Intersezione
-
-<center>![](./media/boolean-operations-2d.svg)</center>
-
--   Si determinano le intersezioni con le forme;
--   Si considerano solo le intersezioni in una delle due forme che sono interne all'altra forma (il punto B interseca #2 ed è interno a #1, C interseca #1 ed è interno a #2).
-
-
-# Fusione
+# Difference
 
 <center>![](./media/boolean-operations-2d.svg)</center>
 
--   Funziona come un'unione, ma i punti interni B e C non vengono considerati.
--   È utile solo per materiali semitrasparenti.
+-   The intersections with the shapes are determined;
+-   The intersections internal to shape #2 (C) and those on the surface of #2 that are not internal to #1 (D) are omitted.
 
 
-# Gerarchie
+# Intersection
+
+<center>![](./media/boolean-operations-2d.svg)</center>
+
+-   The intersections with the shapes are determined;
+-   Only the intersections in one of the two shapes that are internal to the other shape are considered (point B intersects #2 and is internal to #1, C intersects #1 and is internal to #2).
+
+
+# Fusion
+
+<center>![](./media/boolean-operations-2d.svg)</center>
+
+-   It works like a union, but the internal points B and C are not considered.
+-   It is only useful for semi-transparent materials.
+
+
+# Hierarchies
 
 <center>![](./media/csg-tree.png){height=560px}</center>
 
@@ -459,7 +461,7 @@
 [[*Villarceau Circles*](http://hof.povray.org/Villarceau_Circles-CSG.html), by Tor Olav Kristensen (2004)]{style="float:right"}
 
 ---
-title: "Lezione 8"
+title: "Lesson 8"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

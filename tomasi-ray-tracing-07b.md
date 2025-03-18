@@ -1,34 +1,34 @@
-# Codice da implementare
+# Code to implement
 
-# Nuovi tipi
+# New types
 
--   Oggi implementeremo tre tipi molto semplici:
+-   Today we will implement three very simple types:
 
-    #.  Il tipo `Ray` rappresenta un raggio di luce;
-    #.  Il tipo `Camera` rappresenta l'osservatore/telecamera;
-    #.  Il tipo `ImageTracer` invia raggi dall'osservatore allo schermo.
+    1.  The `Ray` type represents a ray of light;
+    2.  The `Camera` type represents the observer/camera;
+    3.  The `ImageTracer` type sends rays from the observer to the screen.
 
--   Il tipo `Ray` deve essere molto efficiente, quindi è meglio che sia un *value type* come `Color`, `Vec`, etc. (vedi [lezione 02b](./tomasi-ray-tracing-02b.html#uso-della-memoria)).
+-   The `Ray` type must be very efficient, so it is better if it is a *value type* like `Color`, `Vec`, etc. (see [lesson 02b](./tomasi-ray-tracing-02b.html#memory-usage)).
 
--   I tipi `Camera` e `ImageTracer` non sono critici, e non serve che siano particolarmente ottimizzati.
+-   The `Camera` and `ImageTracer` types are not critical, and do not need to be particularly optimized.
 
--   Come al solito, potete fare riferimento al repository [pytracer](https://github.com/ziotom78/pytracer) per una implementazione in Python (ma non implementate i test nel modo usato lì!).
+-   As usual, you can refer to the [pytracer](https://github.com/ziotom78/pytracer) repository for a Python implementation (but do not implement the tests in the way used there!).
 
-# La classe `Ray`
+# The `Ray` class
 
--   Deve contenere i campi seguenti:
+-   It must contain the following fields:
 
-    #.  `origin`: oggetto di tipo `Point` (origine del raggio);
-    #.  `dir`: oggetto di tipo `Vec` (direzione del raggio);
-    #.  `tmin`: numero floating-point (distanza minima);
-    #.  `tmax`: numero floating-point (distanza massima);
-    #.  `depth`: intero.
+    1.  `origin`: object of type `Point` (origin of the ray);
+    2.  `dir`: object of type `Vec` (direction of the ray);
+    3.  `tmin`: floating-point number (minimum distance);
+    4.  `tmax`: floating-point number (maximum distance);
+    5.  `depth`: integer.
 
--   Potete fare in modo che gli ultimi tre campi abbiano come valori di default `tmin = 1e-5`, `tmax = +∞`, `depth = 0`.
+-   You can make the last three fields have default values of `tmin = 1e-5`, `tmax = +∞`, `depth = 0`.
 
--   Definite un metodo `at` che calcoli un punto lungo il raggio per un dato $t$, e un metodo `is_close` che verifichi se due raggi hanno `origin` e `dir` simili.
+-   Define an `at` method that calculates a point along the ray for a given $t$, and an `is_close` method that checks if two rays have similar `origin` and `dir`.
 
-# Implementazione di `Ray`
+# Implementation of `Ray`
 
 ```python
 from math import inf
@@ -49,7 +49,7 @@ class Ray:
         return self.origin + self.dir * t
 ```
 
-# Test per `Ray`
+# Tests for `Ray`
 
 ```python
 class TestRays(unittest.TestCase):
@@ -68,18 +68,18 @@ class TestRays(unittest.TestCase):
         assert ray.at(2.0).is_close(Point(9.0, 6.0, 6.0))
 ```
 
-# L'osservatore
+# The Observer
 
--   Vogliamo implementare due tipi di proiezioni nel nostro codice:
+-   We want to implement two kinds of projections in our code:
 
-    1.   Proiezione ortogonale
-    2.   Proiezione prospettica
+    1.  Orthogonal projection
+    2.  Perspective projection
 
--   Questa è una buona occasione per implementare il *polimorfismo*, ossia il fatto che il nome di una funzione corrisponda ad implementazioni diverse a seconda del tipo dell'oggetto
+-   This is a good opportunity to implement *polymorphism*, that is, the ability to have a single function name correspond to different implementations depending on the type of the object.
 
-# Esempio
+# Example
 
--   L'esempio più semplice (ma forse inatteso!) di polimorfismo è l'overloading:
+-   The simplest (but perhaps unexpected!) example of polymorphism is overloading:
 
     ```c++
     void print(int i) { std::cout << "Integer: " << i << "\n"; }
@@ -91,13 +91,13 @@ class TestRays(unittest.TestCase):
     }
     ```
 
--   La funzione `print` assume due *forme* a seconda che l'argomento sia un intero o un floating-point
+-   The function `print` takes two *forms* depending on whether the argument is an integer or a floating-point number.
 
--   La decisione di quale chiamata usare viene decisa dal compilatore in fase di compilazione
+-   The decision of which call to use is made by the compiler at compile time.
 
-# Proiezioni e polimorfismo
+# Projections and Polymorphism
 
--   Potremmo allora usare l'overloading per implementare le due proiezioni (ortogonale e prospettica):
+-   We could then use overloading to implement the two projections (orthogonal and perspective):
 
     ```c++
     struct OrthogonalCamera { /* ... */ };
@@ -112,11 +112,11 @@ class TestRays(unittest.TestCase):
     }
     ```
 
--   Ma che tipo stabiliamo per la variabile `cam`? `OrthogonalCamera` oppure `PerspectiveCamera`?
+-   But what type do we establish for the variable `cam`? `OrthogonalCamera` or `PerspectiveCamera`?
 
-# Polimorfismo dinamico (1/2)
+# Dynamic Polymorphism (1/2)
 
-La programmazione OOP consente di salvarsi da questo pasticcio introducendo un **terzo** tipo oltre a `OrthogonalCamera` oppure `PerspectiveCamera`, come mostra questo codice C++:
+OOP allows us to avoid this mess by introducing a **third** type in addition to `OrthogonalCamera` or `PerspectiveCamera`, as shown in this C++ code:
 
 ```c++
 struct Camera { virtual void fire_ray(...) = 0; };
@@ -131,18 +131,18 @@ int main() {
 }
 ```
 
-# Polimorfismo dinamico (2/2)
+# Dynamic Polymorphism (2/2)
 
-Ma la OOP non è l'unico mezzo per ottenere il polimorfismo dinamico, perché si può usare anche il *polimorfismo procedurale*. Ecco un esempio in C++:
+But OOP is not the only way to achieve dynamic polymorphism, because you can also use *procedural polymorphism*. Here is an example in C++:
 
 ```c++
-using FireRayProc = void(…);
+using FireRayProc = void(Type1 arg1, Type2 arg2);
 
-void fire_ray_orthogonal(…);
-void fire_ray_perspective(…);
+void fire_ray_orthogonal(Type1 arg1, Type2 arg2);
+void fire_ray_perspective(Type1 arg1, Type2 arg2);
 
 void fire_all_rays(FireRayProc fire_ray) {
-    // Use `fire_ray(…)` as any other function
+    // Use `fire_ray(arg1, arg2)` whenever appropriate
 }
 
 int main() {
@@ -155,22 +155,22 @@ int main() {
 }
 ```
 
-# Tipi di polimorfismo
+# Types of polymorphism
 
--   Riassumendo, ci sono due tipi di polimorfismo:
+-   In summary, there are two types of polymorphism:
 
-    1.  Polimorfismo statico (ossia in fase di compilazione): è il caso dell'*overloading*.
+    1.  Static polymorphism (i.e., at compile time): this is the case of *overloading*.
 
-    2.  Polimorfismo dinamico: è il caso della gerarchia di classi.
+    2.  Dynamic polymorphism: this is the case of class hierarchies.
 
--   A noi servirà il polimorfismo dinamico, che potete implementare sia usando costrutti OOP (indicato per linguaggi come Java e Kotlin) o usando la programmazione procedurale.
+-   We will need dynamic polymorphism, which you can implement either using OOP constructs (suitable for languages like Java and Kotlin) or using procedural programming.
 
 
-# Interfacce e *traits*
+# Interfaces and *traits*
 
--   Un caso molto comune è quello in cui la classe base è solo un *escamotage* per avere un tipo base, ma tutti i metodi sono virtuali puri (astratti).
+-   A very common case is when the base class is just a *workaround* to have a base type, but all methods are pure virtual (abstract).
 
--   Alcuni linguaggi moderni offrono meccanismi più leggeri chiamati *interfacce* (Go, C\#) o *traits* (Rust). Una *interfaccia* è l'analogo di una classe in cui tutti i metodi sono vuoti; ecco un esempio in Go:
+-   Some modern languages offer lighter mechanisms called *interfaces* (Go, C#) or *traits* (Rust). An *interface* is the analogue of a class where all methods are empty; here is an example in Go:
 
     ```go
     type camera interface { fire_ray(...) void }
@@ -181,11 +181,11 @@ int main() {
     func (cam perspective_camera) fire_ray(...) void { /* ... */ }
     ```
 
-# Le classi `*Camera`
+# The `*Camera` classes
 
--   Se volete usare un approccio OOP, `Camera` sarà il tipo da cui sono derivati i nuovi tipi `OrthogonalCamera` e `PerspectiveCamera`.
+-   If you want to use an OOP approach, `Camera` will be the type from which the new types `OrthogonalCamera` and `PerspectiveCamera` are derived.
 
--   L'idea è proprio di implementare la gerarchia di tipi che abbiamo visto:
+-   The idea is precisely to implement the type hierarchy we have seen:
 
     <center>
     ```{.graphviz im_fmt="svg" im_out="img" im_fname="camera-hierarchy"}
@@ -199,7 +199,7 @@ int main() {
     ```
     </center>
 
--   Usate quanto il vostro linguaggio permette per implementare il polimorfismo: gerarchia di classi in C\#/D/Java/Kotlin, [*traits*](https://doc.rust-lang.org/book/ch10-02-traits.html) in Rust, etc.
+-   Use whatever your language allows to implement polymorphism: class hierarchy in C#/D/Java/Kotlin, [*traits*](https://doc.rust-lang.org/book/ch10-02-traits.html) in Rust, etc.
 
 ---
 
@@ -235,30 +235,30 @@ $$
 P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0, -a, 0).
 $$
 
-# Orientare `Camera`
+# Orienting `Camera`
 
--   Gli unici parametri aggiustabili di `Camera` sono `d` (distanza schermo-osservatore) e `a` (*aspect ratio* dell'immagine).
+-   The only adjustable parameters of `Camera` are `d` (screen-observer distance) and `a` (image *aspect ratio*).
 
--   Il sistema di riferimento della slide precedente è rigido: è quindi molto facile da implementare, perché non serve memorizzare i vettori $\vec d$, $\vec u$ e $\vec v$.
+-   The reference system of the previous slide is rigid: it is therefore very easy to implement because there is no need to store the vectors $\vec d$, $\vec u$ and $\vec v$.
 
--   Per orientare una `Camera`, possiamo usare il tipo `Transformation` che abbiamo implementato settimana scorsa.
+-   To orient a `Camera`, we can use the `Transformation` type that we implemented last week.
 
--   Sugli oggetti di tipo `*Camera` deve essere possibile invocare un metodo `fire_ray` che accetta in input una coordinata $(u, v)$ e restituisce un oggetto `Ray`.
+-   It must be possible to invoke a `fire_ray` method on objects of type `*Camera` that accepts a coordinate $(u, v)$ as input and returns a `Ray` object.
 
 
-# Trasformazioni
+# Transformations
 
--   Se associamo una trasformazione $T$ all'osservatore, potremmo applicarla ai punti/vettori che definiscono l'osservatore, ossia $P$, $\vec d$, $\vec u$ e $\vec r$, e spostare/orientare l'osservatore.
+-   If we associate a transformation $T$ to the observer, we could apply it to the points/vectors that define the observer, namely $P$, $\vec d$, $\vec u$ and $\vec r$, and move/orient the observer.
 
--   Ma così è complicato calcolare le direzioni dei raggi che attraversano lo schermo nella funzione `fire_ray`!
+-   But this makes it complicated to calculate the directions of the rays that pass through the screen in the `fire_ray` function!
 
--   È meglio creare i raggi nel sistema di riferimento originale, e **poi** applicare la trasformazione al raggio: è più semplice e si fanno meno calcoli.
+-   It is better to create the rays in the original reference system, and **then** apply the transformation to the ray: it is simpler and requires fewer calculations.
 
--   Serve quindi implementare l'operatore `Transformation * Ray`, che applicherà la trasformazione $T$ sia a $O$ (origine) che a $\vec d$ (direzione del raggio).
+-   Therefore, we need to implement the `Transformation * Ray` operator, which will apply the transformation $T$ to both $O$ (origin) and $\vec d$ (ray direction).
 
-# Trasformare `Ray`
+# Transforming `Ray`
 
--   Questa è l'applicazione di una trasformazione a un raggio; potreste in alternativa ridefinire l'operatore `*` nel caso `Transform * Ray`:
+-   This is the application of a transformation to a ray; you could alternatively redefine the `*` operator in the `Transform * Ray` case:
 
     ```python
     class Ray:
@@ -272,10 +272,10 @@ $$
                        depth=self.depth)
     ```
 
--   Non è necessario trasformare `tmin` e `tmax`.
+-   It is not necessary to transform `tmin` and `tmax`.
 
 
-# Test per `transform`
+# Test for `transform`
 
 ```python
 def test_transform():
@@ -287,27 +287,27 @@ def test_transform():
     assert transformed.dir.is_close(Vec(6.0, -4.0, 5.0))
 ```
 
-#  Tipi di proiezioni
+# Types of Projections
 
 <center>
 ![](./media/projection-types.svg){height=480px}
 </center>
 
-# Coordinate dello schermo
+# Screen Coordinates
 
--   Per evitare confusione tra coordinate spaziali $(x, y, z)$ e coordinate 2D dello schermo, useremo le lettere $(u, v)$ per indicare punti dello schermo:
+-   To avoid confusion between spatial coordinates $(x, y, z)$ and 2D screen coordinates, we will use the letters $(u, v)$ to indicate screen points:
 
     <center>
     ![](./media/screen-coordinates.svg)
     </center>
 
-    Ad esempio, un raggio sparato verso $(u, v) = (0, 1)$ deve passare per il punto $P + \vec d - \vec r + \vec u$.
+    For example, a ray fired towards $(u, v) = (0, 1)$ must pass through the point $P + \vec d - \vec r + \vec u$.
 
 # `OrthogonalCamera`
 
--   Per costruirla serve il parametro `aspect_ratio` (un floating point, o un razionale come `16//9` in Julia) e `transformation`.
+-   To construct it, you need the `aspect_ratio` parameter (a floating point number, or a rational like `16//9` in Julia) and `transformation`.
 
--   Questa è una possibile implementazione in Python:
+-   This is a possible implementation in Python:
 
     ```python
     class OrthogonalCamera(Camera):
@@ -321,15 +321,15 @@ def test_transform():
             return Ray(origin=origin, dir=direction, tmin=1.0e-5).transform(self.transformation)
     ```
 
-# Test per l'osservatore
+# Tests for the Observer
 
--   È importante verificare che i quattro angoli dell'immagine siano proiettati in modo corretto. Scegliamo anche un *aspect ratio* diverso da 1.
+-   It is important to verify that the four corners of the image are projected correctly.  We also choose an *aspect ratio* different from 1.
 
--   Per `OrthogonalCamera` verifichiamo che i raggi siano paralleli tra loro: lo facciamo calcolandone il prodotto scalare e verificando che coincida col vettore nullo.
+-   For `OrthogonalCamera` we verify that the rays are parallel to each other: we do this by calculating their dot product and verifying that it coincides with the null vector.
 
--   (Per `PerspectiveCamera` verificheremo invece che tutti i raggi abbiano la medesima origine).
+-   (For `PerspectiveCamera` we will instead verify that all rays have the same origin).
 
-# Test per `OrthogonalCamera`
+# Tests for `OrthogonalCamera`
 
 ```python
 def test_orthogonal_camera(self):
@@ -352,9 +352,9 @@ def test_orthogonal_camera(self):
     assert ray4.at(1.0).is_close(Point(0.0, -2.0, 1.0))
 ```
 
-# Test per l'osservatore
+# Tests for the observer
 
--   Verifichiamo anche l'applicazione di una trasformazione:
+-   Let’s verify the correctness of transformations when applied to cameras:
 
     ```python
     def test_orthogonal_camera_transform():
@@ -364,14 +364,14 @@ def test_orthogonal_camera(self):
         assert ray.at(1.0).is_close(Point(0.0, -2.0, 0.0))
     ```
 
--   Per `PerspectiveCamera` il test sarà molto simile.
+-   Things are similar for `PerspectiveCamera`.
 
 
 # `PerspectiveCamera`
 
--   Oltre all'*aspect ratio* e alla trasformazione, la proiezione prospettica richiede anche la distanza $d$ tra lo schermo e l'osservatore.
+-   Apart from the *aspect ratio* and the transformation, perspective projections require the distance $d$ between the screen and the observer.
 
--   Questa è l'implementazione in Python:
+-   This is a possible implementation in Python:
 
     ```python
     class PerspectiveCamera(Camera):
@@ -387,7 +387,7 @@ def test_orthogonal_camera(self):
     ```
 
 
-# Test per `PerspectiveCamera`
+# Tests for `PerspectiveCamera`
 
 ```python
 def test_perspective_camera(self):
@@ -413,32 +413,32 @@ def test_perspective_camera(self):
 
 # `ImageTracer`
 
--   Ci manca ora l'ultimo tassello: una funzionalità che leghi il tipo `HdrImage` a uno dei tipi derivati da `Camera`.
+-   We are now missing the last piece: a functionality that links the `HdrImage` type to one of the types derived from `Camera`.
 
--   Il nuovo tipo `ImageTracer` si occuperà di inviare raggi ai pixel corrispondenti in un'immagine, facendo la conversione tra l'indice `(column, row)` di un pixel usati da `HdrImage` e i valori `(u, v)` che usa `Camera`.
+-   The new `ImageTracer` type will be responsible for sending rays to the corresponding pixels in an image, converting between the pixel index `(column, row)` used by `HdrImage` and the `(u, v)` values used by `Camera`.
 
--   Per comodità, definiamo due funzioni associate a `ImageTracer`:
+-   For convenience, we define two functions associated with `ImageTracer`:
 
-    #.   Una funzione `fire_ray` che invia un raggio verso un pixel specificato;
-    #.   Una funzione `fire_all_rays` che itera su tutti i pixel dell'immagine la chiamata a `fire_ray`.
+    1.  A `fire_ray` function that sends a ray towards a specified pixel;
+    2.  A `fire_all_rays` function that iterates over all the pixels of the image calling `fire_ray`.
 
 # `fire_ray`
 
--   La funzione `fire_ray` deve inviare un raggio verso un pixel dell'immagine.
+-   The `fire_ray` function must send a ray towards a pixel in the image.
 
--   A parte convertire le coordinate dallo spazio `(u, v)` allo spazio dei pixel, c'è il problema della *superficie* del pixel.
+-   Apart from converting the coordinates from the `(u, v)` space to the pixel space, there is the problem of the pixel's *surface*.
 
--   Un pixel non è infatti un punto, perché ha una certa area: in quale punto all'interno del pixel deve passare il raggio?
+-   A pixel is not in fact a point, because it has a certain area: at which point inside the pixel should the ray pass?
 
--   Per il momento faremo passare il raggio nel centro del pixel, ma facciamo in modo che si possa specificare una posizione *relativa* tramite due coordinate `(u_pixel, v_pixel)`, simili alle coordinate `(u, v)` ma riferite alla superficie del pixel anziché dell'immagine.
+-   For the moment we will make the ray pass through the center of the pixel, but let's make it possible to specify a *relative* position through two coordinates `(u_pixel, v_pixel)`, similar to the `(u, v)` coordinates but referring to the pixel surface instead of the image.
 
 # `fire_all_rays`
 
--   Una volta «lanciato» un raggio verso un pixel, la funzione `fire_all_rays` dovrebbe calcolare la soluzione dell'equazione del rendering
+-   Once a ray has been "cast" towards a pixel, the `fire_all_rays` function should calculate the solution to the rendering equation.
 
--   Implementeremo più metodi risolutivi, alcuni accurati ma lenti e altri grossolani ma velocissimi: quindi anche qui si può usare il polimorfismo.
+-   We will implement multiple solution methods, some accurate but slow and others coarse but very fast: therefore polymorphism can be used here as well.
 
--   Per il momento vi consiglio di impiegare un approccio procedurale: `fire_all_rays` accetta come argomento una **funzione** che viene invocata per ogni pixel/raggio dell'immagine e restituisce un oggetto di tipo `Color`.
+-   For the moment I recommend you use a procedural approach: `fire_all_rays` accepts as an argument a **function** that is invoked for each pixel/ray of the image and returns a `Color` object.
 
 
 # `ImageTracer` in Python
@@ -463,7 +463,7 @@ class ImageTracer:
                 self.image.set_pixel(col, row, color)
 ```
 
-# Test per `ImageTracer`
+# Tests for `ImageTracer`
 
 ```python
 def test_image_tracer(self):
@@ -482,23 +482,23 @@ def test_image_tracer(self):
 ```
 
 
-# Guida per l'esercitazione
+# What to do today
 
-# Guida per l'esercitazione
+# What to do today
 
--   Create un *branch* per il lavoro di oggi, che chiamerete `cameras`.
+-   Create a *branch* for today's work, which you will call `cameras`.
 
--   Implementate questi tipi:
+-   Implement these types:
 
-    #.  `Ray`;
-    #.  `Camera`, `OrthogonalCamera` e `PerspectiveCamera`;
-    #.  `ImageTracer`.
+    1.  `Ray`;
+    2.  `Camera`, `OrthogonalCamera`, and `PerspectiveCamera`;
+    3.  `ImageTracer`.
 
--   Implementate tutti i test. Quando avete terminato l'implementazione e i test passano con successo, chiudete il PR.
+-   Implement all the tests. When you have finished the implementation and the tests pass successfully, close the PR.
 
 
 ---
-title: "Esercitazione 7"
+title: "Laboratory 7"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

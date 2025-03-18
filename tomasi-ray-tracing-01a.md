@@ -373,7 +373,7 @@ f_r(x, \Psi \rightarrow \Theta) = \frac{\rho_d}\pi,
 $$
 where $0 \leq \rho_d \leq 1$ is the fraction of incident energy that is reflected.
 
-# Other BRDFs
+# Other BRDFs {#other-brdfs}
 
 -   A perfectly reflective surface is modeled by a Dirac Delta, that is, identically null except in the outgoing direction $R$ given by the reflection law:
     $$

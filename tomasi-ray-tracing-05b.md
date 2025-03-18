@@ -1,18 +1,12 @@
----
-title: "Esercitazione 5"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
+# Our Program
 
-# Il nostro programma
+-   With the addition of last week's features, we are ready to release the first version of our program!
 
--   Con l'aggiunta delle funzionalità di settimana scorsa, siamo pronti per rilasciare la prima versione del nostro programma!
+-   Currently, the program converts a PFM file into an LDR file (PNG, JPEG, etc.)
 
--   Al momento il programma converte un file PFM in un file LDR (PNG, JPEG, etc.)
+-   We will therefore release version 0.1.0.
 
--   Rilasceremo quindi la versione 0.1.0.
-
--   GitHub permette di rilasciare versioni tramite una specifica funzionalità.
+-   GitHub allows you to release versions through a specific feature.
 
 ---
 
@@ -32,27 +26,27 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ![](./media/github-release-3.png){height=720px}
 </center>
 
-# Pull requests
+# Pull Requests {#pull-requests}
 
-# Come funziona Git
+# How Git Works
 
--   Stiamo usando Git da alcune settimane, e dovremmo aver imparato come funziona.
+-   We have been using Git for a few weeks, and we should have learned how it works.
 
--   Abbiamo visto in particolare che Git salva ogni modifica del codice (il *commit*) legandola alla modifica precedente:
+-   In particular, we have seen that Git saves every code change (the *commit*) by linking it to the previous modification:
 
     <center>
     ![](./media/git-commit.svg)
     </center>
 
--   Oggi vedremo che questa struttura lineare può in realtà essere più complicata.
+-   Today we will see that this linear structure can actually be more complicated.
 
-# Modifiche complesse
+# Complex Changes
 
--   Nelle scorse lezioni abbiamo implementato il codice per leggere e scrivere file PFM.
+-   In the previous lessons, we implemented the code to read and write PFM files.
 
--   Ciascuno dei gruppi ha implementato questa funzionalità tramite una serie di commit.
+-   Each group implemented this functionality through a series of commits.
 
--   Questi commit erano *logicamente* legati tra loro, ma ciò non appare quando si apre la pagina dei commit di uno qualsiasi dei vostri repository (v. slide seguente).
+-   These commits were *logically* linked together, but this is not apparent when you open the commit page of any of your repositories (see the following slide).
 
 ---
 
@@ -60,102 +54,101 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ![](./media/pfm-commits.png)
 </center>
 
-# Branch
+# Branches
 
--   Git implementa il concetto di *branch* («ramo»), che è un modo di separare una sequenza di commit dal «tronco» principale del *master*:
+-   Git implements the concept of a *branch*, which is a way to separate a sequence of commits from the main *master* "trunk":
 
     <center>
     ![](./media/git-branch.svg)
     </center>
 
--   Tramite il comando `git branch NOME` si cambia il branch attivo; `git commit` aggiunge sempre in coda a questo branch.
+-   The `git branch NAME` command changes the active branch; `git commit` always adds to the end of this branch.
 
--   `HEAD` punta sempre all'ultimo commit del branch attivo.
+-   `HEAD` always points to the last commit of the active branch.
 
-# Esempio di branch
+# Branch Example
 
 <asciinema-player src="cast/git-branch-84x25.cast" cols="84" rows="25" font-size="medium"></asciinema-player>
 
-# Comandi per branch
+# Branch Commands
 
--   `git branch` elenca i branch (di default, all'inizio c'è solo `master`).
+-   `git branch` lists the branches (by default, at the beginning there is only `master`).
 
--   `git checkout -b NOME` crea un nuovo branch e lo rende attivo.
+-   `git checkout -b NAME` creates a new branch and makes it active.
 
--   `git checkout NOME` rende attivo il branch `NOME`, già esistente.
+-   `git checkout NAME` activates the already existing branch `NAME`.
 
--   `git merge NOME1 NOME2` incorpora le modifiche al branch `NOME1` dentro il branch `NOME2`; di solito `NOME2` è `master`.
+-   `git merge NAME1 NAME2` incorporates the changes from branch `NAME1` into branch `NAME2`; usually `NAME2` is `master`.
 
--   `git branch -d NOME` cancella un branch.
+-   `git branch -d NAME` deletes a branch.
 
--   Quando eseguite `git fetch` o `git pull` per scaricare nuovi commit da GitHub, vengono importati tutti i branch.
+-   When you run `git fetch` or `git pull` to download new commits from GitHub, all branches are imported.
 
-# Branch in GitHub
+# Branches in GitHub
 
--   GitHub permette di navigare all'interno dei branch tramite un bottone dedicato:
+-   GitHub allows you to navigate within the branches through a dedicated button:
 
     <center>
     ![](./media/github-branches-list.png){height=440px}
     </center>
 
--   La vera potenza dei branch sta però nei *pull request*.
+-   The real power of branches, however, lies in *pull requests*.
 
-# Pull request in GitHub
+# Pull Requests in GitHub
 
--   Un *pull request* è una richiesta di eseguire un comando `git merge` all'interno di `master`.
+-   A *pull request* is a request to execute a `git merge` command within `master`.
 
--   GitHub attiva un forum per ogni pull request, in modo che gli sviluppatori possano commentare l'opportunità o meno di eseguire `git merge`.
+-   GitHub activates a forum for each pull request so that developers can comment on whether or not to perform the `git merge`.
 
--   Nel momento in cui si fa il *merging*, è possibile (e consigliato) applicare lo *squashing*, che consiste nel fondere insieme tutti i commit in uno solo.
+-   When *merging*, it is possible (and recommended) to apply *squashing*, which consists of merging all commits into a single one.
 
--   Lo *squashing* è utilissimo per levare di mezzo i tanti commit con messaggi «*Small fixes*», «*Oops I forgot to add this*», etc.
+-   *Squashing* is very useful for getting rid of the many commits with messages like "*Small fixes*", "*Oops I forgot to add this*", etc.
 
-# Esempio di Pull request
+# Pull Request Example
 
 <iframe src="https://player.vimeo.com/video/535144283?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1440" height="622" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="How to create pull requests in GitHub"></iframe>
 
-# Altro esempio
+# Another Example
 
 <center>
 ![](./media/github-pull-request-healpix.png)
 </center>
 
-# Come usarli in pratica
+# How to Use Them in Practice
 
--   Se uno di voi crea un pull request su GitHub, gli altri possono aggiungere commit a quel pull request con i comandi
+-   If one of you creates a pull request on GitHub, others can add commits to that pull request with the commands
 
     ```text
     git fetch
-    git checkout NOME_PULL_REQUEST
+    git checkout PULL_REQUEST_NAME
     ```
 
-    come se fosse un branch creato da loro stessi (`git fetch` scarica da GitHub tutti i nuovi branch, inclusi i pull request).
+    as if it were a branch they created themselves (`git fetch` downloads all new branches from GitHub, including pull requests).
 
--   I pull request sono una delle caratteristiche fondamentali di GitHub!
+-   Pull requests are one of the fundamental features of GitHub!
 
--   Abituatevi ad usarli per ogni modifica «seria» del vostro codice.
+-   Get used to using them for every "serious" modification of your code.
 
--   **Ai colloqui di lavoro, chiedono spesso di mostrare qualche vostra PR!**
+-   **In job interviews, they often ask to see some of your PRs!**
 
+# Exercise Guide
 
-# Guida per l'esercitazione
+# Exercise Guide
 
-# Guida per l'esercitazione
+-   Start by "releasing" the 0.1.0 *release* of what you have written so far, and send the link of the GitHub repository to [maurizio.tomasi@unimi.it](mailto:maurizio.tomasi@unimi.it)
 
--   Iniziate col «rilasciare» la *release* 0.1.0 di quanto avete scritto sinora, e inviate il link del repository GitHub a [maurizio.tomasi@unimi.it](mailto:maurizio.tomasi@unimi.it)
+-   One of you should create a new pull request called `geometry`, and the others should invoke `git fetch` followed by `git checkout geometry`.
 
--   Uno di voi crei un nuovo pull request chiamato `geometry`, e gli altri invochino `git fetch` seguito da `git checkout geometry`.
+-   In the `geometry` branch, implement these types (following [Chapter 2](https://pbr-book.org/4ed/Geometry_and_Transformations.html) of Pharr, Jakobs & Humphreys):
 
--   Nel branch `geometry` implementate questi tipi (seguendo il [Capitolo 2](https://pbr-book.org/4ed/Geometry_and_Transformations.html) di Pharr, Jakobs & Humphreys):
+    1.  `Vec` (a three-dimensional vector).
+    2.  `Point` (a three-dimensional point).
+    3.  `Normal` (a normal vector).
+    4.  `Transformation` (a 4×4 matrix and its inverse).
 
-    #.  `Vec` (un vettore tridimensionale).
-    #.  `Point` (un punto tridimensionale).
-    #.  `Normal` (un vettore normale).
-    #.  `Transformation` (una matrice 4×4 e la sua inversa).
+# Why Three Types?
 
-# Perché tre tipi?
-
--   Potrebbe sembrare sciocco dover definire tre tipi `Vec`, `Point`, `Normal`: dopotutto le loro strutture sono identiche!
+-   It might seem silly to have to define three types `Vec`, `Point`, `Normal`: after all, their structures are identical!
 
     ```c++
     // C++ code
@@ -164,58 +157,58 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     struct Normal { float x, y, z; };
     ```
 
--   In alcuni ray-tracer in effetti si usa un solo tipo `Vec` per codificare vettori, punti e normali (e anche colori RGB!), ma l'uso di tipi distinti renderà il nostro codice più robusto e chiaro.
+-   In some ray-tracers, in fact, a single `Vec` type is used to encode vectors, points, and normals (and even RGB colors!), but the use of distinct types will make our code more robust and clear.
 
-# Metodi per `Vec`
+# Methods for `Vec`
 
-#. Conversione a stringa, es., `Vec(x=0.4, y=1.3, z=0.7)`;
-#. Confronto tra vettori (per i test), usando funzioni come `are_close`;
-#. Somma e differenza tra vettori;
-#. Prodotto per uno scalare e negazione (`Vec.neg()` restituisce $-v$);
-#. Prodotto scalare tra due vettori e prodotto vettoriale;
-#. Calcolo di $\left\|v\right\|^2$ (`squared_norm`) e di $\left\|v\right\|$ (`norm`);
-#. Funzione che normalizza il vettore: $v \rightarrow v / \left\|v\right\|$;
-#. Funzione che converte un `Vec` in una `Normal`.
+1. Conversion to string, e.g., `Vec(x=0.4, y=1.3, z=0.7)`;
+2. Comparison between vectors (for tests), using functions like `are_close`;
+3. Sum and difference between vectors;
+4. Product by a scalar and negation (`Vec.neg()` returns $-v$);
+5. Dot product between two vectors and cross product;
+6. Calculation of $\left\|v\right\|^2$ (`squared_norm`) and of $\left\|v\right\|$ (`norm`);
+7. Function that normalizes the vector: $v \rightarrow v / \left\|v\right\|$;
+8. Function that converts a `Vec` into a `Normal`.
 
-Fate riferimento ai test nel progetto [`pytracer`](https://github.com/ziotom78/pytracer) (file `test_all.py`).
+Refer to the tests in the [`pytracer`](https://github.com/ziotom78/pytracer) project (file `test_all.py`).
 
-# Metodi per `Point`
+# Methods for `Point`
 
-#. Conversione a stringa, es., `Point(x=0.4, y=1.3, z=0.7)`;
-#. Confronto tra punti (per i test);
-#. Somma tra `Point` e `Vec`, restituendo un `Point`;
-#. Differenza tra due `Point`, restituendo un `Vec`;
-#. Differenza tra `Point` e `Vec`, restituendo un `Point`;
-#. Conversione da `Point` a `Vec` (`Point.to_vec()`).
+1. Conversion to string, e.g., `Point(x=0.4, y=1.3, z=0.7)`;
+2. Comparison between points (for tests);
+3. Sum between `Point` and `Vec`, returning a `Point`;
+4. Difference between two `Point`s, returning a `Vec`;
+5. Difference between `Point` and `Vec`, returning a `Point`;
+6. Conversion from `Point` to `Vec` (`Point.to_vec()`).
 
-Fate riferimento ai test nel progetto [`pytracer`](https://github.com/ziotom78/pytracer) (file `test_all.py`).
+Refer to the tests in the [`pytracer`](https://github.com/ziotom78/pytracer) project (file `test_all.py`).
 
-# Metodi per `Normal`
+# Methods for `Normal`
 
-#. Conversione a stringa, es., `Normal(x=0.4, y=1.3, z=0.7)`;
-#. Confronto tra normali (per i test);
-#. Negazione di una normale ($-\vec n$);
-#. Moltiplicazione per uno scalare;
-#. Prodotto scalare `Vec·Normal` e prodotto vettore `Vec×Normal` e `Normal×Normal`;
-#. Calcolo di $\left\|n\right\|^2$ (`squared_norm`) e di $\left\|n\right\|$ (`norm`);
-#. Funzione che normalizza la normale: $n \rightarrow n / \left\|n\right\|$.
+1. Conversion to string, e.g., `Normal(x=0.4, y=1.3, z=0.7)`;
+2. Comparison between normals (for tests);
+3. Negation of a normal ($-\vec n$);
+4. Multiplication by a scalar;
+5. Dot product `Vec·Normal` and cross product `Vec×Normal` and `Normal×Normal`;
+6. Calculation of $\left\|n\right\|^2$ (`squared_norm`) and of $\left\|n\right\|$ (`norm`);
+7. Function that normalizes the normal: $n \rightarrow n / \left\|n\right\|$.
 
-Fate riferimento ai test nel progetto [`pytracer`](https://github.com/ziotom78/pytracer) (file `test_all.py`).
+Refer to the tests in the [`pytracer`](https://github.com/ziotom78/pytracer) project (file `test_all.py`).
 
-# Implementazione Python
+# Python Implementation
 
--   Mostrerò ora brevemente come implementare le operazioni matematiche su `Point`, `Vec` e `Normal`
+-   I will now briefly show how to implement the mathematical operations on `Point`, `Vec` and `Normal`.
 
--   Attenzione però: Python è un linguaggio *dinamico*, e permette di fare cose che non sono direttamente traducibili in altri linguaggi.
+-   Be careful though: Python is a *dynamic* language, and allows you to do things that are not directly translatable into other languages.
 
--   Questo è evidente nell'implementazione di metodi che sono molto simili tra `Point` e `Vec`, come la somma di due elementi:
+-   This is evident in the implementation of methods that are very similar between `Point` and `Vec`, like the sum of two elements:
 
-    #. `Point` + `Vec` → `Point`;
-    #. `Vec` + `Vec` → `Vec`.
+    1.  `Point` + `Vec` → `Point`;
+    2.  `Vec` + `Vec` → `Vec`.
 
--   Potete fare riferimento al codice completo di [`pytracer`](https://github.com/ziotom78/pytracer) (che useremo anche nelle prossime settimane).
+-   You can refer to the complete code of [`pytracer`](https://github.com/ziotom78/pytracer) (which we will also use in the coming weeks).
 
-# Implementazione Python
+# Python Implementation
 
 ```python
 def _are_xyz_close(a, b):   # No need to tell if it's a Point, Vec, Normal…
@@ -232,7 +225,7 @@ def _sub_xyz(a, b, return_type):
     return return_type(a.x - b.x, a.y - b.y, a.z - b.z)
 ```
 
-# Implementazione Python
+# Python Implementation
 
 ```python
 @dataclass
@@ -257,7 +250,7 @@ class Vec:
         return _add_xyz(self, other, Vec)
 ```
 
-# Altre operazioni su `Vec`
+# Other operations on `Vec`
 
 ```python
 def dot(self, other):
@@ -281,23 +274,23 @@ def normalize(self):
     z /= norm
 ```
 
-# Trasformazioni
+# Transformations
 
--   Bisogna implementare anche il tipo `Transformation`, che codifica una trasformazione.
+-   We also need to implement the `Transformation` type, which encodes a transformation.
 
--   Noi considereremo solo traslazioni, rotazioni attorno ai tre assi coordinati e trasformazioni di scala: questo ci semplificherà molto il lavoro!
+-   We will only consider translations, rotations around the three coordinate axes, and scaling transformations: this will greatly simplify our work!
 
--   Le trasformazioni possono essere applicate a tre oggetti matematici:
+-   Transformations can be applied to three mathematical objects:
 
-    #.  Punti (oggetti di tipo `Point`);
-    #.  Vettori (oggetti di tipo `Vec`);
-    #.  Normali (oggetti di tipo `Normal`).
+    1.  Points (objects of type `Point`);
+    2.  Vectors (objects of type `Vec`);
+    3.  Normals (objects of type `Normal`).
 
-# Il tipo `Transformation`
+# The `Transformation` Type
 
--   È spesso necessario avere a portata di mano sia la matrice $M$ (che implementa la trasformazione) che la sua inversa $M^{-1}$.
+-   It is often necessary to have both the matrix $M$ (which implements the transformation) and its inverse $M^{-1}$ readily available.
 
--   Il nostro tipo `Transformation` dovrà quindi tenere in memoria *entrambe* le matrici:
+-   Our `Transformation` type will therefore need to store *both* matrices:
 
     ```python
     class Transformation:
@@ -306,13 +299,13 @@ def normalize(self):
             self.invm = invm
     ```
 
-    dove `IDENTITY_MATR4x4` è una costante uguale alla matrice identità di dimensioni 4×4.
+    where `IDENTITY_MATR4x4` is a constant equal to the 4×4 identity matrix.
 
-# Consistenza
+# Consistency
 
--   Ovviamente, il fatto che dobbiamo passare sia $M$ che $M^{-1}$ pone un problema di consistenza! Come facciamo a sapere che i due parametri del costruttore siano corretti?
+-   Obviously, the fact that we have to pass both $M$ and $M^{-1}$ poses a consistency problem! How do we know that the two constructor parameters are correct?
 
--   Implementiamo un metodo che verifica che il prodotto delle due matrici dia la matrice identità 4×4 (utile nei test!):
+-   We implement a method that verifies that the product of the two matrices yields the 4×4 identity matrix (useful in tests!):
 
     ```python
     def is_consistent(self):
@@ -320,13 +313,13 @@ def normalize(self):
         return _are_matr_close(prod, IDENTITY_MATR4x4)
     ```
 
-    dove `_matr_prod` e `_are_matr_close` sono semplici metodi che operano su matrici 4×4.
+    where `_matr_prod` and `_are_matr_close` are simple methods that operate on 4×4 matrices.
 
-# Trasformazioni standard
+# Standard Transformations
 
--   Definiamo una serie di funzioni che costruiscono oggetti `Transformation` preoccupandosi di inizializzare correttamente $M$ e $M^{-1}$.
+-   We define a series of functions that construct `Transformation` objects, taking care to correctly initialize $M$ and $M^{-1}$.
 
--   Ad esempio, questa è l'implementazione di `translation` (traslazione per un vettore $\vec v$):
+-   For example, this is the implementation of `translation` (translation by a vector $\vec v$):
 
     ```python
     def translation(vec: Vec):
@@ -345,11 +338,11 @@ def normalize(self):
         )
     ```
 
-# Inversa
+# Inverse
 
--   Vedremo che è spesso necessario accedere anche all'inversa di una trasformazione.
+-   We will see that it is often necessary to access the inverse of a transformation.
 
--   Fortunatamente, dato che manteniamo in memoria sia $M$ che $M^{-1}$, questo compito è molto facile:
+-   Fortunately, since we store both $M$ and $M^{-1}$, this task is very easy:
 
     ```python
     class Transformation:
@@ -359,20 +352,20 @@ def normalize(self):
             return Transformation(m=self.invm, invm=self.m)
     ```
 
-# Prodotti
+# Products
 
--   È particolarmente critico implementare le funzioni per applicare una trasformazione a un oggetto geometrico.!
+-   It is particularly critical to implement the functions to apply a transformation to a geometric object!
 
--   Occorrerà implementare gli operatori di prodotto sui tipi `Point`, `Vec`, `Normal`:
+-   It will be necessary to implement the product operators on the `Point`, `Vec`, `Normal` types:
 
-    #.  `Transformation * Transformation → Transformation`; nel calcolare `invm`, ricordate che $(AB)^{-1} = B^{-1}A^{-1}$.
-    #.  `Transformation * Point → Point`.
-    #.  `Transformation * Vec → Vec`.
-    #.  `Transformation * Normal → Normal`.
+    1.  `Transformation * Transformation → Transformation`; when calculating `invm`, remember that $(AB)^{-1} = B^{-1}A^{-1}$.
+    2.  `Transformation * Point → Point`.
+    3.  `Transformation * Vec → Vec`.
+    4.  `Transformation * Normal → Normal`.
 
-# Punti e vettori
+# Points and Vectors
 
--   La differenza tra punti e vettori sta nell'ultimo coefficiente della rappresentazione:
+-   The difference between points and vectors lies in the last coefficient of the representation:
 
     $$
     P = \begin{pmatrix}
@@ -389,9 +382,9 @@ def normalize(self):
     \end{pmatrix}.
     $$
 
--   Dal punto di vista del codice, è meglio implementare *due* funzioni distinte per il prodotto: quella relativa ai vettori può risparmiare di iterare sull'ultima colonna delle matrici $M$ e $M^{-1}$.
+-   From a code perspective, it is better to implement *two* distinct functions for the product: the one for vectors can save iterating over the last column of the matrices $M$ and $M^{-1}$.
 
-# Trasformazione di un punto
+# Transformation of a Point
 
 ```python
 row0, row1, row2, row3 = self.m
@@ -406,9 +399,9 @@ else:
     return Point(newp.x / w, newp.y / w, newp.z / w)
 ```
 
-# Normalizzazione
+# Normalization
 
--   Nel caso in cui l'ultimo coefficiente del risultato non sia uguale a 1, è necessario normalizzare gli altri termini:
+-   In the case where the last coefficient of the result is not equal to 1, it is necessary to normalize the other terms:
 
     $$
     \begin{pmatrix}
@@ -425,11 +418,10 @@ else:
     \end{pmatrix}
     $$
 
--   (Nessuna delle trasformazioni che implementiamo porta a $\lambda \not= 1$, ma trasformazioni più generali possono farlo: implementare questa normalizzazione nel nostro codice lo rende *future-proof*).
+-   (None of the transformations we implement lead to $\lambda \not= 1$, but more general transformations can: implementing this normalization in our code makes it *future-proof*).
+# Normals
 
-# Normali
-
--   Abbiamo detto che dobbiamo implementare anche `Normal`, che ha struttura identica a `Vec` ma che richiederà meno operazioni:
+-   We said that we also need to implement `Normal`, which has the same structure as `Vec` but will require fewer operations:
 
     ```python
     @dataclass
@@ -439,11 +431,11 @@ else:
         z: float = 0.0
     ```
 
--   Una trasformazione applicata a una normale è identica all'applicazione di un vettore, ma bisogna usare la *trasposta* dell'*inversa*. Vediamo come si fa il calcolo.
+-   A transformation applied to a normal is identical to the application to a vector, but we must use the *transpose* of the *inverse*. Let's see how to do the calculation.
 
-# Inversa trasposta
+# Inverse Transpose
 
--   La matrice omogenea $M$ può essere rappresentata a blocchi:
+-   The homogeneous matrix $M$ can be represented in block form:
 
     $$
     M = \begin{pmatrix}
@@ -452,13 +444,13 @@ else:
     \end{pmatrix}
     $$
 
-    dove $\textcolor{#3434AD}{A}$ è una matrice 3×3.
+    where $\textcolor{#3434AD}{A}$ is a 3×3 matrix.
 
--   Si può [dimostrare facilmente](https://en.wikipedia.org/wiki/Invertible_matrix#Blockwise_inversion) che l'inversa di una matrice omogenea è ancora una matrice omogenea.
+-   It can be [easily shown](https://en.wikipedia.org/wiki/Invertible_matrix#Blockwise_inversion) that the inverse of a homogeneous matrix is still a homogeneous matrix.
 
-# Inversa trasposta
+# Inverse Transpose
 
--   La trasposta di una matrice omogenea non è però più omogenea, perché compaiono valori non nulli nell'ultima riga:
+-   The transpose of a homogeneous matrix, however, is no longer homogeneous, because non-zero values appear in the last row:
 
     $$
     M^t = \begin{pmatrix}
@@ -469,15 +461,15 @@ else:
     \end{pmatrix}.
     $$
 
--   Esplicitando il prodotto tra l'inversa trasposta e un vettore, si vede che l'ultimo coefficiente (omogeneo) non è più 0!
+-   By explicitly calculating the product between the inverse transpose and a vector, we see that the last (homogeneous) coefficient is no longer 0!
 
--   Questo però **non influisce** su $\hat n'$ (`n[3] == 0`): possiamo quindi ignorare il problema.
+-   However, this **does not affect** $\hat n'$ (`n[3] == 0`): we can therefore ignore the problem.
 
-# Implementazione
+# Implementation
 
--   È inutile costruire la matrice trasposta di `self.invm` e calcolare il prodotto di questa con la normale.
+-   It is useless to construct the transposed matrix of `self.invm` and calculate the product of this with the normal.
 
--   Vi consiglio di implementare il prodotto tra matrice e normale nel modo più diretto possibile:
+-   I suggest you implement the product between matrix and normal in the most direct way possible:
 
     ```python
     row0, row1, row2, _ = self.invm  # Take the *inverse*!
@@ -488,50 +480,111 @@ else:
                   z=n.x * row0[2] + n.y * row1[2] + n.z * row2[2])
     ```
 
-# Test
+# Tests
 
--   Il set completo di test si trova nel repository [pytracer](https://github.com/ziotom78/pytracer), nel file [test_all.py](https://github.com/ziotom78/pytracer/blob/41878248890338e62aa38c928c17561490c901b6/test_all.py#L202-L232).
+-   The complete set of tests is in the [pytracer](https://github.com/ziotom78/pytracer) repository, in the file [test_all.py](https://github.com/ziotom78/pytracer/blob/41878248890338e62aa38c928c17561490c901b6/test_all.py#L202-L232).
 
--   Implementate gli stessi test presenti in quel file.
+-   Implement the same tests present in that file.
 
-# Lavoro di gruppo
+# Group Work
 
-#. Uno di voi crea la *release* 0.1.0;
-#. Uno di voi crea un branch `geometry` e fa un *pull request*, che gli altri scaricano;
-#. Uno di voi implementa il tipo `Vec` (senza metodi o operatori!), uno `Point`, uno `Normal` e uno `Transformation`;
-#. Sincronizzatevi tra voi facendo un *merge*;
-#. Dividetevi l'implementazione dei vari metodi ed operatori.
+#. One of you creates the 0.1.0 *release*;
+#. One of you creates a `geometry` branch and makes a *pull request*, which the others download;
+#. One of you implements the `Vec` type (without methods or operators!), one `Point`, one `Normal` and one `Transformation`;
+#. Synchronize with each other by doing a *merge*;
+#. Divide the implementation of the various methods and operators among yourselves.
 
 
-# Indicazioni per D/Nim/Rust
+# Hints for C++
 
-# Matrici e trasformazioni
+# Type definitions
 
--   Può essere utile definire un tipo `HomMatrix` che implementi una matrice omogenea 4×4 insieme alle operazioni basilari su di essa
+-   It’s crucial that `Vec` and `Point` be efficient!
+-   Don’t worry to define classes with methods like `GetX`/`SetX`: just define `Vec` and `Point` as plain `struct`, or `class` with public members `x`, `y`, `z`.
+-   Define most (all?) of the methods as `inline` by declaring them in the `.h` file. This gives the C++ compiler many chances to optimize the code.
 
--   Il tipo `Transformation` conterrà quindi due campi `HomMatrix`, contenenti rispettivamente la matrice della trasformazione e la sua inversa
+# Not-recommended solution!
 
--   Attenzione a definire `HomMatrix` in modo da evitare l'allocazione di memoria nello *heap*, perché deve essere veloce da allocare:
+```c++
+class Vec {
+    // These are "private" members (the default visibility in "class")
+    float x, y, z;  // You can use "double", if you wish
 
-    -   Evitate di usare costrutti come `vector<vector<float>>` (C++) o `seq[seq[float]]` (Nim), perché i dati non sarebbero contigui in memoria
+public:
+    Vec(float _x = 0, float _y = 0, float _z = 0) : x{_x}, y{_y}, z{_z} {}
+    Vec(const Vec &); // Copy constructor; here it’s useless!
+    Vec(const Vec &&); // Move constructor; ditto!
 
-    -   Anzi, evitate del tutto `vector` (C++), `seq[]` (Nim) e simili, che internamente usano lo heap, e definite un semplice array di 16 elementi.
+    float getx() const { return x; }
+    void setx(float _x) { x = _x; }
+    // Etc.
+};
+```
 
-# Definizione dei tipi
+# Recommended solution
 
--   Potete prendere spunto dalle implementazioni nel documento [*A comparison between a few programming languages*](https://ziotom78.github.io/raytracing_course/language-comparison.html)
+```c++
+struct Vec {  // With "struct", everything is "public" by default
+    float x, y, z;
 
--   Può essere una buona occasione per ridurre la duplicazione del codice mediante le potenzialità di metaprogrammazione del vostro linguaggio…
+    Vec(float _x = 0, float _y = 0, float _z = 0) : x{_x}, y{_y}, z{_z} {}
+    // No need to define "getx", "setx", etc.
+};
+```
 
--   …ma se trovate difficoltà nell'usarle, non state ad impazzire e accontentatevi di usare codice duplicato! (In futuro, quando avrete studiato bene il linguaggio LISP, potrete rimediare 😀)
+# Avoiding repetitions
 
--   Mostro un esempio con Nim: è possibile ottenere risultati simili con Rust e con D
+-   You can use C++ templates to avoid defining over and over the same operations on `Point` and `Vec` types.
 
-# Definire i tipi con Nim
+-   This example shows how to apply the technique to the sum of two elements:
 
--   Vogliamo implementare una serie di operazioni sui tipi `Vec`, `Point`, `Normal`
+    ```c++
+    // This template…
+    template <typename In1, typename In2, typename Out>
+    Out _sum(const In1 &a, const In2 &b) {
+      return Out{a.x + b.x, a.y + b.y, a.z + b.z};
+    }
 
--   Nim ammette l'overloading degli operatori, quindi potremmo scrivere:
+    Point operator+(const Point &a, const Vec &b) {
+      return _sum<Point, Vec, Point>(a, b);   // …is used here…
+    }
+
+    Vec operator+(const Vec &a, const Vec &b) {
+      return _sum<Vec, Vec, Vec>(a, b);       // …and here
+    }
+    ```
+
+
+
+# Guidelines for D/Nim/Rust
+
+# Matrices and Transformations
+
+-   It may be useful to define a `HomMatrix` type that implements a 4×4 homogeneous matrix along with basic operations on it.
+
+-   The `Transformation` type will then contain two `HomMatrix` fields, containing the transformation matrix and its inverse, respectively.
+
+-   Be careful to define `HomMatrix` in a way that avoids memory allocation on the *heap*, because it needs to be fast to allocate:
+
+    -   Avoid using constructs like `vector<vector<float>>` (C++) or `seq[seq[float]]` (Nim), because the data would not be contiguous in memory.
+
+    -   In fact, avoid `vector` (C++), `seq[]` (Nim) and similar constructs altogether, as they internally use the heap, and define a simple array of 16 elements.
+
+# Type Definitions
+
+-   You can draw inspiration from the implementations in the document [*A comparison between a few programming languages*](https://ziotom78.github.io/raytracing_course/language-comparison.html).
+
+-   This could be a good opportunity to reduce code duplication by leveraging the metaprogramming capabilities of your language…
+
+-   …but if you find it difficult to use them, don't go crazy and just use duplicated code! (In the future, when you have studied the LISP language well, you can fix it 😀)
+
+-   I'll show an example with Nim: similar results can be achieved with Rust and D.
+
+# Defining Types with Nim
+
+-   We want to implement a series of operations on the `Vec`, `Point`, `Normal` types.
+
+-   Nim supports operator overloading, so we could write:
 
     ```nim
     proc `+`(a: Point, b: Vec): Point =   # Point + Vec → Point
@@ -546,25 +599,25 @@ else:
       result.z = a.z + b.z
     ```
 
-    ma ciò è noiosissimo!
+    but this is very tedious!
 
-# Metaprogrammazione
+# Metaprogramming
 
--   Per risparmiare le ripetizioni nella definizione di ``+`` possiamo usare la metaprogrammazione, ossia codice che non viene eseguito quando il programma viene avviato, ma mentre il programma viene compilato.
+-   To avoid repetition in the definition of `+`, we can use metaprogramming, which is code that is not executed when the program is launched, but while the program is being compiled.
 
--   Nim ammette tre costrutti diversi che implementano la metaprogrammazione:
+-   Nim supports three different constructs that implement metaprogramming:
 
-    #.   [*funzioni generiche*](https://nim-lang.org/docs/tut2.html#generics);
-    #.   [*template*](https://nim-lang.org/docs/tut2.html#templates);
-    #.   [*macro*](https://nim-lang.org/docs/tut3.html).
+    #.   [*Generic functions*](https://nim-lang.org/docs/tut2.html#generics);
+    #.   [*Templates*](https://nim-lang.org/docs/tut2.html#templates);
+    #.   [*Macros*](https://nim-lang.org/docs/tut3.html).
 
--   Vediamo in cosa consistono: in questo modo potrete poi cercare nella documentazione del vostro linguaggio se vengono supportati paradigmi simili
+-   Let's see what they consist of: this way you can then search the documentation of your language to see if similar paradigms are supported.
 
-# Funzioni generiche
+# Generic Functions
 
--   Una funzione generica non specifica un tipo preciso per i suoi dati
+-   A generic function does not specify a precise type for its data.
 
--   È utile quando le operazioni che volete fare devono potersi adattare a un tipo qualunque (come le *template function* in C++):
+-   It is useful when the operations you want to perform need to be adaptable to any type (like *template functions* in C++):
 
     ```nim
     proc mysum[T](a: T, b: T): T =
@@ -575,13 +628,13 @@ else:
     echo mysum(1.0, 2.0)   # …and on floats!
     ```
 
--   Non è indicato nel nostro caso, perché noi vogliamo specificare dei *vincoli* (ad esempio, non si può sommare un vettore a una normale!)
+-   It is not suitable in our case, because we want to specify *constraints* (for example, you cannot add a vector to a normal!).
 
-# Template
+# Templates
 
--   Un template è un pezzo di codice in cui alcune parti non sono specificate, e possono venire sostituite in seguito a seconda del bisogno
+-   A template is a piece of code where some parts are not specified and can be substituted later as needed.
 
--   Ecco un esempio:
+-   Here is an example:
 
     ```nim
     template define_double_proc(fname: untyped, t: typedesc) =
@@ -592,23 +645,23 @@ else:
     define_double_proc(double_float32, float32)
     ```
 
-    Ho definito due nuove funzioni `double_int` e `double_float32`, ma non ho specificato un'equivalente per `float32` o per `uint`
+    I have defined two new functions, `double_int` and `double_float32`, but I have not specified an equivalent for `float32` or for `uint`.
 
-# Macro
+# Macros
 
--   Una macro è una sequenza di istruzioni che generano codice pezzo per pezzo
+-   A macro is a sequence of instructions that generate code piece by piece.
 
--   È il paradigma di metaprogrammazione più sofisticato che sia disponibile in Nim
+-   It is the most sophisticated metaprogramming paradigm available in Nim.
 
--   Può essere usato per fare cose strabilianti (ad esempio, [modificare il linguaggio per supportare più costrutti OOP](https://nim-by-example.github.io/macros/))
+-   It can be used to do amazing things (for example, [modify the language to support more OOP constructs](https://nim-by-example.github.io/macros/)).
 
--   Vi consiglio però  di andarci cauti, perché è difficile fare il debug di macro, e il codice prodotto può essere illeggibile
+-   However, I advise you to be careful, because it is difficult to debug macros, and the generated code can be unreadable.
 
--   Un buon modo per capire come usare le macro è fare prima pratica con un linguaggio LISP ([Racket](https://racket-lang.org/), [Clojure](https://clojure.org/), [Scheme](https://www.scheme.com/tspl4/)…)
+-   A good way to understand how to use macros is to first practice with a LISP language ([Racket](https://racket-lang.org/), [Clojure](https://clojure.org/), [Scheme](https://www.scheme.com/tspl4/)…).
 
-# *Template* in Nim
+# *Templates* in Nim
 
-Quello che serve per definire velocemente operazioni matematiche su più tipi sono ovviamente i template:
+What we need to quickly define mathematical operations on multiple types are obviously templates:
 
 ```nim
 template define_sum(type1: typedesc, type2: typedesc, rettype: typedesc) =
@@ -623,9 +676,9 @@ define_sum(Point, Vec, Point)
 define_sum(Normal, Normal, Normal)
 ```
 
-# *Template* in Nim (2/2)
+# *Templates* in Nim (2/2)
 
-Possiamo spingerci oltre e rendere l'approccio estendibile anche al tipo di operazione, in modo che si possa usare il template anche per la sottrazione:
+We can go further and make the approach extensible to the type of operation as well, so that the template can also be used for subtraction:
 
 ```nim
 template define_3dop(fname: untyped, type1: typedesc, type2: typedesc, rettype: typedesc) =
@@ -643,9 +696,9 @@ define_3dop(`+`, Normal, Normal, Normal)
 define_3dop(`-`, Normal, Normal, Normal)
 ```
 
-# Uso in D
+# Templates in D
 
-In D i *mixin template* permettono di evitare la definizione duplicata di tanti metodi dentro `Vec`, `Point` e `Normal`;
+D provides *mixin template*, which can be exploited to avoid duplications in several methods of `Vec`, `Point`, and `Normal`:
 
 ```d
 mixin template defSumDiff(T, Ret) {
@@ -667,11 +720,11 @@ struct Point {
 }
 ```
 
-# Uso in Rust
+# Templates in Rust?
 
--   Purtroppo Rust non ha l'equivalente dei *template* di Nim e dei *template mixin* di D: dovrete usare per forza le macro!
+-   Unfortunately, Rust does not have anything equivalent to Nim’s templates and D’s mixins. You must use macros!
 
--   Non complicatevi troppo la vita cercando di combinare `Add` e `Sub`!
+-   Do not try to be too smart trying to combine `Add` and `Sub`!
 
     ```rust
     macro_rules! implement_sum(
@@ -692,16 +745,15 @@ struct Point {
     ```
 
 
-# Indicazioni per Java/Kotlin
+# Hints for Java/Kotlin
 
-# Indicazioni per Java/Kotlin
+# Hints for Java/Kotlin
+-   No special instructions for `Point`, `Vec`, `Normal`: the implementation should be fairly simple.
+-   Neither Java nor Kotlin support metaprogramming, so you will have to duplicate some functions, such as those that calculate `Point + Vec` and `Vec + Vec`.
 
--   Nessuna indicazione in particolare per `Point`, `Vec`, `Normal`: l'implementazione dovrebbe essere abbastanza semplice.
--   Né Java né Kotlin supportano la metaprogrammazione, quindi dovrete duplicare un po' di funzioni, come quelle che calcolano `Point + Vec` e `Vec + Vec`.
+# Transformations
 
-# Trasformazioni
-
-Per semplificare `Transformation`, vi consiglio di definire un tipo `HomMatrix` che implementi una matrice omogenea 4×4; usate internamente un array di 16 elementi come avevate fatto con `HdrImage`:
+To simplify `Transformation`, I suggest defining a type `HomMatrix` that implements a 4×4 homogeneous matrix; internally use a 16-element array as you did with `HdrImage`:
 
 ```kotlin
 // Kotlin
@@ -724,10 +776,24 @@ class HomMatrix(var elements: FloatArray) {
 ```
 
 
-# Indicazioni per C\#
+# Hints for C\#
 
-# Definizione dei tipi
+# Type Definition
 
--   Siccome `Vec`, `Point`, `Normal` e `Transformation` saranno molto utilizzati nei calcoli, è importante che siano classi estremamente efficienti.
--   Questo è quindi un caso in cui è meglio definire i tipi come *value types* usando `struct` anziché `class`.
--   Purtroppo C\# non implementa funzionalità di metaprogrammazione, quindi dovrete definire due volte le operazioni comuni tra `Point` e `Vec`, come la somma.
+-   Since `Vec`, `Point`, `Normal` and `Transformation` will be heavily used in calculations, it is important that they be extremely efficient classes.
+-   This is therefore a case where it is better to define the types as *value types* using `struct` instead of `class`.
+-   Unfortunately, C\# does not implement metaprogramming functionality, so you will have to define common operations between `Point` and `Vec`, such as addition, twice.
+
+# Hints for Julia
+# Type definitions
+
+-   To define the `Vec` and `Point` types you could use the [StaticArrays.jl](https://github.com/JuliaArrays/StaticArrays.jl) library, which implements highly efficient fixed-size arrays. It's a very efficient library, but **I don't recommend using it in this case**.
+-   The problem with StaticArrays.jl is that it doesn't allow you to exploit multiple dispatch: `Vec` and `Point` would be seen by Julia as the same type `SVector{3, Float32}`.
+-   It's better to define two new types with `struct`
+-   I recommend omitting `mutable`: you will encourage Julia to use them as *value types* instead of *reference types*.
+
+---
+title: "Laboratory 5"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

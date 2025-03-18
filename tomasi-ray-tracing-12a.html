@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Lezione 12</title>
+  <title>Lesson 12</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -29,8 +29,9 @@
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -41,7 +42,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -120,117 +121,110 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Lezione 12</h1>
-  <p class="subtitle">Analisi lessicale</p>
+  <h1 class="title">Lesson 12</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini
+fotorealistiche</p>
   <p class="author">Maurizio Tomasi <a
 href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="interpretare-file-di-testo" class="slide level1">
-<h1>Interpretare file di testo</h1>
+<section id="parsing-text-files" class="slide level1">
+<h1>Parsing Text Files</h1>
 </section>
-<section id="contesto-del-problema" class="slide level1">
-<h1>Contesto del problema</h1>
+<section id="problem-context" class="slide level1">
+<h1>Problem Context</h1>
 <ul>
-<li><p>Finora abbiamo creato immagini fotorealistiche modificando il
-comando <code>demo</code> del nostro raytracer.</p></li>
-<li><p>Dovreste aver ormai riscontrato tutti una certa farraginosità
-nella procedura! Tutte le volte che abbiamo voluto modificare
-l’immagine, occorreva compiere queste azioni:</p>
+<li><p>So far, we have created photorealistic images by modifying the
+<code>demo</code> command of our ray tracer.</p></li>
+<li><p>You should all have encountered a certain cumbersome procedure by
+now! Every time we wanted to modify the image, we had to perform these
+actions:</p>
 <ol>
-<li>Modificare il codice nel <code>main</code>;</li>
-<li>Ricompilare;</li>
-<li>Eseguire il codice e controllare il risultato.</li>
+<li>Modify the code in <code>main</code>;</li>
+<li>Recompile;</li>
+<li>Run the code and check the result.</li>
 </ol></li>
-<li><p>Questo approccio potrebbe non essere sostenibile: di fatto
-obblighiamo gli utenti a scrivere codice nel linguaggio di
-programmazione che abbiamo usato!</p></li>
+<li><p>This approach may not be sustainable: in fact, we force users to
+write code in the programming language we used!</p></li>
 </ul>
 </section>
-<section id="obbiettivo" class="slide level1">
-<h1>Obbiettivo</h1>
+<section id="objective" class="slide level1">
+<h1>Objective</h1>
 <ul>
-<li><p>Il nostro obbiettivo è di definire un <em>formato</em> per la
-descrizione delle scene, e di scrivere del codice per
-interpretarlo.</p></li>
-<li><p>Una volta implementato, l’utente userà un comune editor come
-Emacs o Visual Studio Code per creare un file, chiamato ad es.
-<code>scene.txt</code>, ed eseguirà il programma così:</p>
+<li><p>Our goal is to define a <em>format</em> for describing scenes and
+to write code to interpret it.</p></li>
+<li><p>Once implemented, the user will use a common editor like Emacs or
+Visual Studio Code to create a file, called e.g. <code>scene.txt</code>,
+and will run the program like this:</p>
 <pre><code>./myprogram render scene.txt</code></pre>
-<p>e gli oggetti <code>Shape</code> e <code>Material</code> saranno
-creati in memoria basandosi su quanto specificato in
-<code>scene.txt</code>. A differenza del comando <code>demo</code> però,
-è facile modificare <code>scene.txt</code>.</p></li>
-<li><p>Quello che ci aspetta è di fatto l’implementazione di un
-<em>compilatore</em>!</p></li>
+<p>and the <code>Shape</code> and <code>Material</code> objects will be
+created in memory based on what is specified in <code>scene.txt</code>.
+Unlike the <code>demo</code> command, however, it is easy to modify
+<code>scene.txt</code>.</p></li>
+<li><p>What awaits us is in fact the implementation of a
+<em>compiler</em>!</p></li>
 </ul>
 </section>
-<section id="categorie-di-utenti" class="slide level1">
-<h1>Categorie di utenti</h1>
+<section id="user-categories" class="slide level1">
+<h1>User Categories</h1>
 <ul>
-<li><p>Nel caso in cui il linguaggio usato sia Julia o Python, che
-ammette un uso interattivo, la soluzione migliore sarebbe quella di
-definire le scene direttamente sulla REPL (o in un notebook
-Jupyter/Pluto)!</p></li>
-<li><p>Ma nel caso di programmi scritti in C#, Nim o Rust, una soluzione
-del genere non è ovviamente percorribile.</p></li>
-<li><p>(Questo è vero a maggior ragione per quelli di voi che forniscono
-a ogni nuova <em>release</em> del codice i binari: in quel caso, i
-vostri utenti potrebbero non avere neppure i compilatori
-installati!)</p></li>
+<li><p>In the case where the language used is Julia or Python, which
+allows interactive use, the best solution would be to define the scenes
+directly on the REPL (or in a Jupyter/Pluto notebook)!</p></li>
+<li><p>But in the case of programs written in C#, Nim or Rust, such a
+solution is obviously not feasible.</p></li>
+<li><p>(This is even more true for those of you who provide binaries
+with each new <em>release</em> of the code: in that case, your users may
+not even have compilers installed!)</p></li>
 </ul>
 </section>
-<section id="valore-didattico-dellesercizio" class="slide level1">
-<h1>Valore didattico dell’esercizio</h1>
-<p>Implementare un compilatore è un’attività didatticamente molto
-utile:</p>
+<section id="pedagogical-value" class="slide level1">
+<h1>Pedagogical Value</h1>
+<p>Implementing a compiler is a very useful educational activity:</p>
 <ol type="1">
-<li><p>La teoria dei compilatori insegna come affrontare un problema
-complesso (la compilazione) scomponendolo in una serie di problemi
-semplici che vanno risolti in sequenza: ciò è molto istruttivo!</p></li>
-<li><p>Capirete meglio la sintassi dei linguaggi usati in questo
-corso.</p></li>
-<li><p>Intuirete perché in certi casi i compilatori producono errori
-fuorvianti.</p></li>
-<li><p>In caso di errori di sintassi, dovrete fornire all’utente
-informazioni chiare e precise (es., «alla riga NN manca una
-parentesi»).</p></li>
-<li><p>Creare nuovi linguaggi può essere molto divertente!</p></li>
+<li><p>Compiler theory teaches how to tackle a complex problem
+(compilation) by breaking it down into a series of simple problems that
+are solved sequentially: this is very instructive!</p></li>
+<li><p>You will better understand the syntax of the languages used in
+this course.</p></li>
+<li><p>You will understand why compilers sometimes produce misleading
+errors.</p></li>
+<li><p>In case of syntax errors, you will have to provide the user with
+clear and precise information (e.g., “a parenthesis is missing on line
+NN”).</p></li>
+<li><p>Creating new languages can be a lot of fun!</p></li>
 </ol>
 </section>
-<section id="tipi-di-linguaggi" class="slide level1">
-<h1>Tipi di linguaggi</h1>
+<section id="language-types" class="slide level1">
+<h1>Language Types</h1>
 <dl>
 <dt><em>General-purpose languages</em></dt>
 <dd>
-Questi sono i «linguaggi di programmazione» che conoscete bene (C++,
-Python, etc.). Sono chiamati <em>general-purpose</em> perché non sono
-pensati per un dominio specifico, potendo essere usati per creare
-videogiochi, sistemi operativi, librerie numeriche, applicazioni
-grafiche, etc.
+These are the “programming languages” you know well (C++, Python, etc.).
+They are called <em>general-purpose</em> because they are not designed
+for a specific domain, and can be used to create video games, operating
+systems, numerical libraries, graphical applications, etc.
 </dd>
-<dt><em>Domain-specific languages</em> (DSL)</dt>
+<dt><em>Domain-specific languages</em> (DSLs)</dt>
 <dd>
-Si tratta di linguaggi che risolvono un problema molto specifico, e la
-cui sintassi è pensata per esprimere il problema nel modo più naturale
-possibile.
+These are languages that solve a very specific problem, and whose syntax
+is designed to express the problem in the most natural way possible.
 </dd>
 </dl>
-<p>Nel nostro caso dovremo definire un DSL e implementare un compilatore
-per esso. Il nostro sarà un approccio con <em>molta</em> pratica e quel
-tanto che basta di teoria.</p>
+<p>In our case, we will have to define a DSL and implement a compiler
+for it. Our approach will be <em>very</em> practical with just enough
+theory.</p>
 </section>
-<section id="dsl-in-linguaggi-general-purpose" class="slide level1">
-<h1>DSL in linguaggi <em>general-purpose</em></h1>
+<section id="dsls-in-general-purpose-languages" class="slide level1">
+<h1>DSLs in <em>general-purpose</em> languages</h1>
 <ul>
-<li><p>Non dovreste stupirvi del fatto che oggi inventeremo un nuovo
-«linguaggio» per il nostro programma: è un’attività più comune di quanto
-si pensi (anche se i fisici non lo fanno quasi mai 🙁).</p></li>
-<li><p>È talmente comune che alcuni linguaggi <em>general-purpose</em>
-prevedono la possibilità di definire DSL <strong>al proprio
-interno</strong>: sono i linguaggi cosiddetti «metaprogrammabili» (es.,
-<a
+<li><p>You shouldn’t be surprised that today we will invent a new
+“language” for our program: it’s a more common activity than you might
+think (even though physicists almost never do it 🙁).</p></li>
+<li><p>It’s so common that some <em>general-purpose</em> languages allow
+you to define DSLs <strong>within themselves</strong>: these are the
+so-called “metaprogrammable” languages (e.g., <a
 href="https://gigamonkeys.com/book/practical-a-simple-database.html">Common
 LISP</a>, <a
 href="https://docs.julialang.org/en/v1/manual/metaprogramming/">Julia</a>,
@@ -239,39 +233,38 @@ href="https://www.raywenderlich.com/2780058-domain-specific-languages-in-kotlin-
 <a href="https://forum.nim-lang.org/t/2380">Nim</a>…).</p></li>
 </ul>
 </section>
-<section id="linguaggi-per-la-definizione-di-scene-3d"
-class="slide level1">
-<h1>Linguaggi per la definizione di scene 3D</h1>
+<section id="scene-definition-languages" class="slide level1">
+<h1>Scene Definition Languages</h1>
 </section>
-<section id="panoramica" class="slide level1">
-<h1>Panoramica</h1>
+<section id="overview" class="slide level1">
+<h1>Overview</h1>
 <ul>
-<li><p>A noi non interessano database né circuiti elettrici né pagine
-HTML: siamo interessati alla definizione di scene 3D.</p></li>
-<li><p>Per definire il nostro linguaggio dovremmo innanzitutto farci
-un’idea di cosa faccia la «concorrenza».</p></li>
-<li><p>Vediamo quindi come tre <em>renderer</em> permettono di
-specificare le scene che sono fornite come input: DBKTrace, POV-Ray e
-YafaRay. Ovviamente tutti questi programmi funzionano da linea di
-comando come farà il nostro:</p>
+<li><p>We are not interested in databases, electrical circuits, or HTML
+pages: we are interested in defining 3D scenes.</p></li>
+<li><p>To define our language, we should first get an idea of what the
+“competition” does.</p></li>
+<li><p>So let’s see how three <em>renderers</em> allow you to specify
+the scenes that are provided as input: DKBTrace, POV-Ray, and YafaRay.
+Obviously, all these programs work from the command line, as ours
+will:</p>
 <pre><code>$ program input_file</code></pre></li>
 </ul>
 </section>
 <section id="dkbtrace" class="slide level1">
 <h1>DKBTrace</h1>
 <ul>
-<li>Nel 1986 David K. Buck rilasciò DKBTrace, un ray-tracer che usava
-l’algoritmo di <em>point-light tracing</em>.</li>
-<li>Scritto in C.</li>
-<li>Il programma funzionava solo sul <a
-href="https://en.wikipedia.org/wiki/Amiga">Commodore Amiga</a>, un
-vecchio microcomputer molto usato all’epoca per la grafica.</li>
-<li>Lo sviluppatore abbandonò ben presto DKBTrace per lavorare a POV-Ray
-(che vedremo tra poco).</li>
+<li>In 1986, David K. Buck released DKBTrace, a ray tracer that used the
+<em>point-light tracing</em> algorithm.</li>
+<li>Written in C.</li>
+<li>The program only worked on the <a
+href="https://en.wikipedia.org/wiki/Amiga">Commodore Amiga</a>, an old
+microcomputer widely used at the time for graphics.</li>
+<li>The developer soon abandoned DKBTrace to work on POV-Ray (which
+we’ll see shortly).</li>
 </ul>
 </section>
-<section id="file-di-input" class="slide level1">
-<h1>File di input</h1>
+<section id="input-files" class="slide level1">
+<h1>Input files</h1>
 <pre class="text"><code>{ DKBTrace example file }
 INCLUDE &quot;colors.dat&quot;
 INCLUDE &quot;shapes.dat&quot;
@@ -308,24 +301,23 @@ END_OBJECT</code></pre>
 <section id="pov-ray" class="slide level1">
 <h1><a href="http://povray.org/">POV-Ray</a></h1>
 <ul>
-<li><p>POV-Ray risolve l’equazione del rendering usando il
-<em>point-light tracing</em> (ma che nel manuale di POV-Ray viene
-chiamato semplicemente <em>raytracing</em>), esattamente come
-DKBTrace.</p></li>
-<li><p>La prima versione è stata rilasciata nel 1991; al momento la
-versione più recente è la 3.7.0 (rilasciata nel 2013). La versione 3.8 è
-in fase di preparazione.</p></li>
-<li><p>In origine era stato scritto in C, e poi <a
-href="https://github.com/POV-Ray/povray/tree/3.7-stable">riscritto in
+<li><p>POV-Ray solves the rendering equation using <em>point-light
+tracing</em> (but which in the POV-Ray manual is simply called
+<em>raytracing</em>), just like DKBTrace.</p></li>
+<li><p>The first version was released in 1991; currently the most recent
+version is 3.7.0 (released in 2013). Version 3.8 is under
+development.</p></li>
+<li><p>Originally it was written in C, and then <a
+href="https://github.com/POV-Ray/povray/tree/3.7-stable">rewritten in
 C++</a>.</p></li>
-<li><p>A partire dalla versione 3.0 implementa l’algoritmo <a
+<li><p>Starting with version 3.0 it implements the <a
 href="https://en.wikipedia.org/wiki/Radiosity_(computer_graphics)"><em>radiosity</em></a>
-per simulare sorgenti diffuse in maniera simile al
+algorithm to simulate diffuse sources in a way similar to
 path-tracing.</p></li>
 </ul>
 </section>
-<section id="file-di-input-1" class="slide level1">
-<h1>File di input</h1>
+<section id="input-files-1" class="slide level1">
+<h1>Input files</h1>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode povray"><code class="sourceCode povray"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// POV-Ray example file</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ot">#include</span> <span class="st">&quot;colors.inc&quot;</span></span>
@@ -356,19 +348,18 @@ class="sourceCode povray"><code class="sourceCode povray"><span id="cb4-1"><a hr
 <section id="yafaray" class="slide level1">
 <h1><a href="http://www.yafaray.org/">YafaRay</a></h1>
 <ul>
-<li><p>Scritto in C++ (repository su <a
+<li><p>Written in C++ (repository hosted on <a
 href="https://github.com/YafaRay">GitHub</a>).</p></li>
-<li><p>Risolve l’equazione del rendering usando un algoritmo di
+<li><p>It solves the rendering equation using
 <em>path-tracing</em>.</p></li>
-<li><p>Può essere usato in <a
-href="https://www.blender.org/">Blender</a> come «motore» per il
-rendering.</p></li>
-<li><p>Il formato delle scene è <a
+<li><p>It can be used as a <a
+href="https://www.blender.org/">Blender</a> plug-in.</p></li>
+<li><p>The file format is based on <a
 href="https://en.wikipedia.org/wiki/XML">XML</a>.</p></li>
 </ul>
 </section>
-<section id="file-di-input-2" class="slide level1">
-<h1>File di input</h1>
+<section id="input-files-2" class="slide level1">
+<h1>Input files</h1>
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode xml"><code class="sourceCode xml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">scene</span>&gt;</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -435,83 +426,81 @@ class="sourceCode xml"><code class="sourceCode xml"><span id="cb5-1"><a href="#c
 <img data-src="media/yafray-example.webp" />
 </center>
 </section>
-<section id="il-nostro-formato" class="slide level1">
-<h1>Il «nostro» formato</h1>
+<section id="our-format" class="slide level1">
+<h1>Our Format</h1>
 </section>
-<section id="definire-il-formato" class="slide level1">
-<h1>Definire il formato</h1>
+<section id="defining-the-format" class="slide level1">
+<h1>Defining the Format</h1>
 <ul>
-<li><p>Ci aspetta ora un compito molto eccitante: definire il nostro
-formato!</p></li>
-<li><p>Potremmo ispirarci a formati molto semplici, come ad esempio il
-Wavefront OBJ che avevamo descritto <a
-href="./tomasi-ray-tracing-10a-other-shapes.html#wavefront-obj">tempo
-fa</a>: ogni riga contiene una lettera (<code>v</code>, <code>f</code>,
-<code>n</code>, etc.) seguita da una sequenza di numeri.</p></li>
-<li><p>Ad esempio, potremmo definire una BRDF diffusiva (<code>d</code>)
-con colore <span class="math inline">(0.3, 0.7, 0.5)</span> associata a
-una sfera (<code>s</code>) centrata in <span class="math inline">(1, 3,
-6)</span> di raggio <span class="math inline">r = 2</span> con un codice
-del genere:</p>
+<li><p>We now have a very exciting task: defining our format!</p></li>
+<li><p>We could draw inspiration from very simple formats, such as the
+Wavefront OBJ that we described <a
+href="./tomasi-ray-tracing-10a-other-shapes.html#wavefront-obj">earlier</a>:
+each line contains a letter (<code>v</code>, <code>f</code>,
+<code>n</code>, etc.) followed by a sequence of numbers.</p></li>
+<li><p>For example, we could define a diffuse BRDF (<code>d</code>) with
+color <span class="math inline">(0.3, 0.7, 0.5)</span> associated with a
+sphere (<code>s</code>) centered at <span class="math inline">(1, 3,
+6)</span> with radius <span class="math inline">r = 2</span> with code
+like this:</p>
 <pre class="text"><code>d 0.3 0.7 0.5
 s 1 3 6 2</code></pre>
-<p>Ma non sarebbe affatto leggibile! Proviamo a pensare a qualcosa di
-più elegante.</p></li>
+<p>But it wouldn’t be readable at all! Let’s try to think of something
+more elegant.</p></li>
 </ul>
 </section>
-<section id="come-implementare-il-formato" class="slide level1">
-<h1>Come implementare il formato</h1>
+<section id="how-to-implement-the-format" class="slide level1">
+<h1>How to Implement the Format</h1>
 <ul>
-<li><p>Un buon formato non deve essere ambiguo, e deve anche essere
-facile da imparare.</p></li>
-<li><p>Anziché usare lettere come <code>s</code> o <code>d</code> per
-indicare diverse entità (sfera o BRDF diffusiva), useremo stringhe di
-caratteri (<code>sphere</code> e <code>diffuse</code>)</p></li>
-<li><p>La scrittura <code>s 1 3 6 2</code> non è chiara, perché non si
-distingue il raggio dalle coordinate. Ispirandoci alla sintassi di
-Python e Julia, indicheremo punti e vettori con le parentesi quadre, ad
-es. <code>[1, 3, 6]</code>.</p></li>
-<li><p>Implementeremo anche la possibilità di associare un nome agli
-oggetti: in questo modo potremo fare riferimento a BRDF create in
-precedenza (es., <code>green_matte</code>) quando definiamo nuove
-<code>Shape</code>.</p></li>
+<li><p>A good format must not be ambiguous, and it must also be easy to
+learn.</p></li>
+<li><p>Instead of using letters like <code>s</code> or <code>d</code> to
+indicate different entities (sphere or diffuse BRDF), we will use
+strings (<code>sphere</code> and <code>diffuse</code>).</p></li>
+<li><p>The notation <code>s 1 3 6 2</code> is not clear because the
+radius is not distinguished from the coordinates. Inspired by the syntax
+of Python and Julia, we will indicate points and vectors with square
+brackets, e.g., <code>[1, 3, 6]</code>.</p></li>
+<li><p>We will also implement the ability to associate a name with
+objects: this way we can refer to previously created BRDFs (e.g.,
+<code>green_matte</code>) when we define new <code>Shape</code>
+objects.</p></li>
 </ul>
 </section>
-<section id="cosa-includere" class="slide level1">
-<h1>Cosa includere</h1>
+<section id="what-to-include" class="slide level1">
+<h1>What to Include</h1>
 <ul>
-<li><p>Il nostro formato serve per descrivere una scena, non per fare
-rendering!</p></li>
-<li><p>Per questo scopo, bisogna pensare a una sintassi per
-specificare:</p>
+<li><p>Our format is for describing a scene, not for rendering!</p></li>
+<li><p>For this purpose, we need to think of a syntax to specify:</p>
 <ul>
-<li>Osservatori;</li>
-<li>Forme (sfere, piani, e qualsiasi altro oggetto voi abbiate
-implementato);</li>
-<li>Trasformazioni;</li>
-<li>Vettori;</li>
-<li>BRDF, materiali e pigmenti;</li>
-<li>Colori;</li>
-<li>Numeri.</li>
+<li>Observers;</li>
+<li>Shapes (spheres, planes, and any other object you have
+implemented);</li>
+<li>Transformations;</li>
+<li>Vectors;</li>
+<li>BRDFs, materials, and pigments;</li>
+<li>Colors;</li>
+<li>Numbers.</li>
 </ul></li>
 </ul>
 </section>
-<section id="scelte-da-compiere" class="slide level1">
-<h1>Scelte da compiere</h1>
+<section id="choices-to-make" class="slide level1">
+<h1>Choices to Make</h1>
 <ul>
-<li><p>Dobbiamo definire una sintassi per creare oggetti, e ovviamente
-ci sono varie possibilità. Ad esempio, per definire una sfera potremmo
-usare una qualsiasi di queste quattro sintassi:</p>
+<li><p>We need to define a syntax for creating objects, and obviously
+there are various possibilities. For example, to define a sphere we
+could use any of these four syntaxes:</p>
 <pre class="text"><code>sphere [1 3 6] 2
 sphere([1, 3, 6], 2)
 create sphere with center [1, 3, 6] and radius 2</code></pre></li>
-<li><p>La scelta dell’una o dell’altra sintassi è in linea di principio
-completamente nelle nostre mani!</p></li>
-<li><p>Per Pytracer ho scelto la sintassi che ora illustro.</p></li>
+<li><p>The choice of one syntax or another is, in principle, entirely up
+to us!</p></li>
+<li><p>For Pytracer I chose the syntax that I will now
+illustrate.</p></li>
 </ul>
 </section>
-<section id="esempio-di-formato" class="slide level1">
-<h1>Esempio di formato</h1>
+<section id="example" class="slide level1">
+<h1>Example</h1>
 <div class="sourceCode" id="cb8"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Declare a floating-point variable named &quot;clock&quot;</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span> clock(<span class="dv">150</span>)</span>
@@ -550,118 +539,120 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a hr
 <span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ratio, and eye-screen distance</span></span>
 <span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>camera(perspective, rotation_z(<span class="dv">30</span>) <span class="op">*</span> translation([<span class="op">-</span><span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">1</span>]), <span class="fl">1.0</span>, <span class="fl">1.0</span>)</span></code></pre></div>
 </section>
-<section id="come-interpretare-il-formato" class="slide level1">
-<h1>Come interpretare il formato?</h1>
+<section id="how-to-interpret-the-format" class="slide level1">
+<h1>How to Interpret the Format?</h1>
 <ul>
-<li><p>Da un punto di vista puramente concettuale, il compito che ci
-aspetta non è poi così diverso da quello di leggere un file
-PFM…</p></li>
-<li><p>…con la differenza però che il file di input che consideriamo ora
-è molto più complesso e «duttile» del formato PFM!</p></li>
-<li><p>Questa maggiore versatilità comporta molti più rischi di errore:
-è facile per l’utente che crea una scena dimenticarsi una virgola, o
-confondere la notazione <code>&lt;&gt;</code> (colori) con
-<code>[]</code> (vettori). Dobbiamo quindi prestare grande cura alla
-segnalazione degli errori all’utente!</p></li>
-<li><p>Per interpretare questo tipo di file occorre procedere per
-gradi.</p></li>
+<li><p>From a purely conceptual point of view, the task ahead is not so
+different from reading a PFM file…</p></li>
+<li><p>…with the difference, however, that the input file we are
+considering now is much more complex and “flexible” than the PFM
+format!</p></li>
+<li><p>This greater versatility entails many more risks of error: it’s
+easy for the user creating a scene to forget a comma, or confuse the
+<code>&lt;&gt;</code> notation (colors) with <code>[]</code> (vectors).
+We must therefore pay great attention to reporting errors to the
+user!</p></li>
+<li><p>To interpret this type of file, it is necessary to proceed in
+stages.</p></li>
 </ul>
 </section>
-<section id="paragone-coi-compilatori" class="slide level1">
-<h1>Paragone coi compilatori</h1>
+<section id="comparison-with-compilers" class="slide level1">
+<h1>Comparison with Compilers</h1>
 <ul>
-<li><p>Il lavoro che ci aspetta è simile alla scrittura di un
-compilatore vero e proprio. Ad esempio, il comando <code>g++</code>
-legge in input file di testo fatti come il seguente:</p>
+<li><p>The work ahead is similar to writing a real compiler. For
+example, the <code>g++</code> command reads text files like the
+following:</p>
 <div class="sourceCode" id="cb9"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="at">const</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;The name of the program is &quot;</span> <span class="op">&lt;&lt;</span> argv<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>e produce in output un file eseguibile che contiene la sequenza di
-istruzioni macchina corrispondenti a questo codice C++.</p></li>
-<li><p>Nel nostro caso il codice deve costruire in memoria una serie di
-variabili che contengono le <code>Shape</code>, la <code>Camera</code> e
-i <code>Material</code> di cui è composta la scena.</p></li>
+<p>and produces an executable file containing the sequence of machine
+instructions corresponding to this C++ code.</p></li>
+<li><p>In our case, the code must construct in memory a series of
+variables that contain the <code>Shape</code>s, the <code>Camera</code>,
+and the <code>Material</code>s that make up the scene.</p></li>
 </ul>
 </section>
-<section id="terminologia" class="slide level1">
-<h1>Terminologia</h1>
-<p>Per chi lavora con interpreti/compilatori è prassi usare alcuni
-termini della linguistica:</p>
+<section id="terminology" class="slide level1">
+<h1>Terminology</h1>
+<p>For those who work with interpreters/compilers, it is common practice
+to use some linguistic terms:</p>
 <ul>
-<li>L’analisi del <strong>lessico</strong> studia la tipologia delle
-singole parole, e stabilisce ad esempio che la parola «invece» è
-corretta, mentre «invecie» è sbagliata.</li>
-<li>L’analisi della <strong>sintassi</strong> studia i rapporti tra gli
-elementi di una espressione, e stabilisce ad esempio che un verbo non
-può mai seguire un articolo («un mangeremmo»).</li>
-<li>L’analisi della <strong>semantica</strong> studia il rapporto tra
-una espressione come «la casa in fondo alla strada» e l’oggetto
-extra-linguistico a cui si fa riferimento (appunto, quella particolare
-casa in fondo alla strada).</li>
+<li><strong>Lexical</strong> analysis studies the typology of individual
+words and establishes, for example, that the word “invece” (Italian for
+“instead”) is correct, while “invecie” is incorrect. This is analogous
+to spelling and vocabulary in natural languages.</li>
+<li><strong>Syntactic</strong> analysis studies the relationships
+between the elements of an expression and establishes, for example, that
+a verb can never follow an article (“un mangeremmo” - a nonsensical
+Italian phrase). This is analogous to grammar in natural languages.</li>
+<li><strong>Semantic</strong> analysis studies the relationship between
+an expression like “the house at the end of the road” and the
+extra-linguistic object to which it refers (precisely, that particular
+house at the end of the road). This relates to the meaning conveyed by
+the expression.</li>
 </ul>
 </section>
-<section id="linguaggi-informatici" class="slide level1">
-<h1>Linguaggi informatici</h1>
-<p>Nel caso di un «linguaggio» informatico come il nostro, la sua
-analisi viene solitamente fatta seguendo lo stesso ordine della slide
-precedente:</p>
+<section id="computer-languages" class="slide level1">
+<h1>Computer Languages</h1>
+<p>In the case of a computer “language” like ours, its analysis is
+usually done in the same order as the previous slide:</p>
 <ol type="1">
-<li>Un’analisi <strong>lessicale</strong>, in cui si verifica che le
-singole «parole» siano scritte correttamente;</li>
-<li>Un’analisi <strong>sintattica</strong>, in cui si considera come le
-singole «parole» sono concatenate;</li>
-<li>Un’analisi <strong>semantica</strong>, il cui risultato è l’insieme
-di variabili in memoria del tipo corrispondente (nel nostro caso,
+<li>A <strong>lexical</strong> analysis, which verifies that the
+individual “words” are written correctly;</li>
+<li>A <strong>syntactic</strong> analysis, which considers how the
+individual “words” are concatenated;</li>
+<li>A <strong>semantic</strong> analysis, the result of which is the set
+of variables in memory of the corresponding type (in our case,
 <code>Sphere</code>, <code>Plane</code>, <code>SpecularBRDF</code>,
-etc.), come se fossero state dichiarate ed inizializzate direttamente
-nel nostro codice sorgente.</li>
+etc.), as if they had been declared and initialized directly in our
+source code.</li>
 </ol>
 </section>
-<section id="workflow-di-un-compilatore" class="slide level1">
-<h1>Workflow di un compilatore</h1>
+<section id="compiler-workflow" class="slide level1">
+<h1>Compiler Workflow</h1>
 <p><img
 data-src="pd-images/669b86cd9355d21d224ba8ab9f32750c892e8517.svg"
 data-im_fname="compiler-architecture" /></p>
 <ul>
-<li>Il <em>lexer</em> scompone il codice sorgente in elementi semplici,
-chiamati <em>token</em>, e segnala gli errori di natura lessicale;</li>
-<li>Il <em>parser</em> analizza la sequenza dei <em>token</em> per
-legarli tra loro e comprenderne la sintassi e la semantica;</li>
-<li>L’<em>AST builder</em> crea il cosiddetto <em>Abstract Syntax
-Tree</em> (non usato nel nostro caso);</li>
-<li>L’<em>optimizer</em> applica ottimizzazioni all’AST (non usato nel
-nostro caso);</li>
-<li>Dall’AST ottimizzato viene generato l’eseguibile (non usato nel
-nostro caso).</li>
+<li>The <em>lexer</em> breaks down the source code into simple elements,
+called <em>tokens</em>, and reports lexical errors;</li>
+<li>The <em>parser</em> analyzes the sequence of <em>tokens</em> to link
+them together and understand their syntax and semantics;</li>
+<li>The <em>AST builder</em> creates the so-called <em>Abstract Syntax
+Tree</em> (not used in our case);</li>
+<li>The <em>optimizer</em> applies optimizations to the AST (not used in
+our case);</li>
+<li>The executable is generated from the optimized AST (not used in our
+case).</li>
 </ul>
 </section>
-<section id="esempio-analisi-lessicale" class="slide level1">
-<h1>Esempio: analisi lessicale</h1>
+<section id="example-lexical-analysis" class="slide level1">
+<h1>Example: Lexical Analysis</h1>
 <ul>
-<li><p>Consideriamo la frase</p>
-<pre><code>Il bambino mangia la mela</code></pre></li>
-<li><p>Quello che farebbe un <em>lexer</em> della lingua italiana è
-produrre questa lista:</p>
+<li><p>Consider the sentence</p>
+<pre><code>The child eats the apple</code></pre></li>
+<li><p>What a <em>lexer</em> for the English language would do is
+produce this list:</p>
 <ol type="1">
-<li><code>Il</code>: articolo determinativo maschile singolare</li>
-<li><code>bambino</code>: nome comune di persona maschile singolare</li>
-<li><code>mangia</code>: voce del verbo mangiare, modo indicativo, tempo
-presente, terza persona singolare…</li>
+<li><code>The</code>: definite article</li>
+<li><code>child</code>: common noun, singular</li>
+<li><code>eats</code>: verb “to eat”, indicative mood, present tense,
+third person singular…</li>
 </ol></li>
 </ul>
 </section>
-<section id="esempio-analisi-lessicale-1" class="slide level1">
-<h1>Esempio: analisi lessicale</h1>
+<section id="example-lexical-analysis-1" class="slide level1">
+<h1>Example: Lexical Analysis</h1>
 <ul>
-<li><p>Consideriamo le prime righe dell’esempio mostrato poco fa:</p>
+<li><p>Let’s consider the first lines of the example shown earlier:</p>
 <pre class="text"><code># Declare a variable named &quot;clock&quot;
 float clock(150)</code></pre></li>
-<li><p>Il risultato dell’analisi lessicale delle linee sopra è la
-produzione della lista di token seguente (da cui sono già rimossi spazi
-bianchi e commenti):</p>
+<li><p>The result of the lexical analysis of the lines above is the
+production of the following token list (from which whitespace and
+comments have already been removed):</p>
 <div class="sourceCode" id="cb12"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>[</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    KeywordToken(TOKEN_FLOAT), <span class="co"># A &quot;keyword&quot;, because &quot;float&quot; is a reserved word</span></span>
@@ -672,41 +663,41 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a h
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div></li>
 </ul>
 </section>
-<section id="esempio-analisi-sintattica" class="slide level1">
-<h1>Esempio: analisi sintattica</h1>
+<section id="example-syntactic-analysis" class="slide level1">
+<h1>Example: Syntactic Analysis</h1>
 <ul>
-<li><p>Consideriamo la frase</p>
-<pre><code>Il bambino mangia la mela</code></pre></li>
-<li><p>L’analisi sintattica verifica che le concordanze siano corrette
-(articolo/nome, nome/verbo…)</p></li>
-<li><p>Determina quale è il soggetto e quale il complemento
-oggetto</p></li>
+<li><p>Consider the sentence</p>
+<pre><code>The child eats the apple</code></pre></li>
+<li><p>The syntactic analysis verifies that the agreements are correct
+(article/noun, noun/verb…)</p></li>
+<li><p>It determines which is the subject and which is the direct
+object</p></li>
 </ul>
 </section>
-<section id="esempio-analisi-sintattica-1" class="slide level1">
-<h1>Esempio: analisi sintattica</h1>
+<section id="example-syntactic-analysis-1" class="slide level1">
+<h1>Example: Syntactic Analysis</h1>
 <ul>
-<li><p>L’analisi sintattica parte dalla sequenza di token prodotta
-dall’analisi lessicale:</p>
+<li><p>Syntactic analysis starts from the sequence of tokens produced by
+lexical analysis:</p>
 <div class="sourceCode" id="cb14"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List of tokens for `float clock(150)`:</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>[</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    KeywordToken(TOKEN_FLOAT), IdentifierToken(<span class="st">&quot;clock&quot;</span>), SymbolToken(<span class="st">&quot;(&quot;</span>),</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    LiteralNumberToken(<span class="fl">150.0</span>), SymbolToken(<span class="st">&quot;)&quot;</span>),</span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div></li>
-<li><p>L’analisi sintattica deve verificare che la sequenza di token sia
-corretta: se il primo token è la parola chiave <code>float</code>,
-allora significa che stiamo definendo una variabile floating-point. È
-quindi necessario che il token successivo contenga il nome della
-variabile (deve essere un <em>identificatore</em>), seguito dal valore
-numerico racchiuso tra le parentesi.</p></li>
+<li><p>The syntactic analysis must verify that the token sequence is
+correct: if the first token is the keyword <code>float</code>, then it
+means that we are defining a floating-point variable. It is therefore
+necessary that the next token contains the name of the variable (it must
+be an <em>identifier</em>), followed by the numerical value enclosed in
+parentheses.</p></li>
 </ul>
 </section>
-<section id="errori-di-sintassi" class="slide level1">
-<h1>Errori di sintassi</h1>
+<section id="syntax-errors" class="slide level1">
+<h1>Syntax Errors</h1>
 <ul>
-<li><p>Prendendo spunto da questo esempio, considerate il seguente
-codice C++:</p>
+<li><p>Taking inspiration from this example, consider the following C++
+code:</p>
 <div class="sourceCode" id="cb15"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="cf">if</span><span class="op">;</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;Enter a number: &quot;</span><span class="op">;</span></span>
@@ -714,49 +705,47 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="cf">if</span> <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;The number is even</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span></code></pre></div></li>
-<li><p>Questo codice sopra è perfettamente comprensibile da un essere
-umano, ma il C++ lo vieta! (L’equivalente in Scheme sarebbe invece
-ok).</p></li>
-<li><p>L’errore è causato dal fatto che la sintassi del C++ richiede che
-il tipo della variabile (<code>int</code>) sia seguito da un
-<em>identificatore</em>, e non da una <em>keyword</em>
-(<code>if</code>).</p></li>
+<li><p>This code above is perfectly understandable by a human being, but
+C++ forbids it! (The equivalent in Scheme would be ok).</p></li>
+<li><p>The error is caused by the fact that C++ syntax requires that the
+variable type (<code>int</code>) be followed by an <em>identifier</em>,
+and not by a <em>keyword</em> (<code>if</code>).</p></li>
 </ul>
 </section>
-<section id="esempio-analisi-semantica" class="slide level1">
-<h1>Esempio: analisi semantica</h1>
+<section id="example-semantic-analysis" class="slide level1">
+<h1>Example: Semantic Analysis</h1>
 <pre class="text"><code># Declare a variable named &quot;clock&quot;
 float clock(150)</code></pre>
 <ul>
-<li><p>Il risultato dell’analisi sintattica dice che l’istruzione
-richiede di creare una variabile <code>clock</code> e di assegnarle il
-valore <code>150.0</code>.</p></li>
-<li><p>L’analisi semantica deve verificare che la definizione di questa
-variabile non crei inconsistenze. Ad esempio, potrebbe verificare che
-<code>clock</code> non fosse già stata definita in precedenza, e nel
-caso scegliere una di queste possibilità:</p>
+<li><p>The result of the syntactic analysis says that the instruction
+requires creating a variable <code>clock</code> and assigning it the
+value <code>150.0</code>.</p></li>
+<li><p>The semantic analysis must verify that the definition of this
+variable does not create inconsistencies. For example, it could check
+that <code>clock</code> has not already been defined previously, and in
+that case choose one of these possibilities:</p>
 <ol type="1">
-<li>Produrre un errore (è il caso del C++);</li>
-<li>Aggiornare il valore della variabile <code>clock</code> anziché
-definirne una nuova con lo stesso nome (è il caso del Python e di
+<li>Produce an error (this is the case in C++);</li>
+<li>Update the value of the variable <code>clock</code> instead of
+defining a new one with the same name (this is the case in Python and
 Scheme).</li>
 </ol></li>
 </ul>
 </section>
-<section id="implementazione" class="slide level1">
-<h1>Implementazione</h1>
+<section id="implementation" class="slide level1">
+<h1>Implementation</h1>
 </section>
-<section id="funzionamento-del-lexer" class="slide level1">
-<h1>Funzionamento del <em>lexer</em></h1>
+<section id="how-the-lexer-works" class="slide level1">
+<h1>How the <em>lexer</em> works</h1>
 <ul>
-<li><p>Il <em>lexer</em> è la parte di codice che si occupa dell’analisi
-lessicale.</p></li>
-<li><p>Il suo compito è di leggere da uno <em>stream</em> (tipicamente
-un file) e produrre in output una lista di <em>token</em>, classificati
-secondo il loro tipo.</p></li>
-<li><p>Per motivi di efficienza, i lexer <em>non</em> restituiscono una
-lista di token, ma leggono i <em>token</em> uno alla volta,
-restituendoli man mano che li interpretano, e si usano quindi così:</p>
+<li><p>The <em>lexer</em> is the part of the code that handles lexical
+analysis.</p></li>
+<li><p>Its task is to read from a <em>stream</em> (typically a file) and
+produce a list of <em>tokens</em> as output, classified according to
+their type.</p></li>
+<li><p>For efficiency reasons, lexers <em>do not</em> return a list of
+tokens, but read the <em>tokens</em> one at a time, returning them as
+they interpret them, and are therefore used like this:</p>
 <div class="sourceCode" id="cb17"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> read_token()</span>
@@ -766,41 +755,41 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a h
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    …</span></code></pre></div></li>
 </ul>
 </section>
-<section id="output-di-un-lexer" class="slide level1">
-<h1>Output di un <em>lexer</em></h1>
+<section id="output-of-a-lexer" class="slide level1">
+<h1>Output of a <em>lexer</em></h1>
 <ul>
-<li><p>Un <em>lexer</em> deve saper classificare i <em>token</em> a
-seconda del loro tipo.</p></li>
-<li><p>A seconda del linguaggio esistono vari tipi di token; nel nostro
-caso abbiamo:</p>
+<li><p>A <em>lexer</em> must be able to classify <em>tokens</em>
+according to their type.</p></li>
+<li><p>Depending on the language, there are various types of tokens; in
+our case we have:</p>
 <ol>
-<li><em>Keyword</em>: una parola chiave del linguaggio, come
-<code>sphere</code> e <code>diffuse</code>;</li>
-<li><em>Identifier</em>: il nome di una variabile/tipo/funzione come
+<li><em>Keyword</em>: a keyword of the language, such as
+<code>sphere</code> and <code>diffuse</code>;</li>
+<li><em>Identifier</em>: the name of a variable/type/function such as
 <code>clock</code>;</li>
-<li><em>Numeric literal</em>: un numero come <code>150</code>,
-possibilmente distinto tra <em>integer literal</em> e <em>floating-point
-literal</em> (noi non faremo distinzione);</li>
-<li><em>String literal</em>: una stringa di caratteri, solitamente
-racchiusa tra <code>"</code> (doppi apici) o <code>'</code> (singoli
-apici);</li>
-<li><em>Symbol</em>: un carattere non alfanumerico, come <code>(</code>,
-<code>+</code>, <code>,</code>, etc.) Non considereremo simboli composti
-da più caratteri (es., <code>&gt;=</code> in C++).</li>
+<li><em>Numeric literal</em>: a number such as <code>150</code>,
+possibly distinguished between <em>integer literal</em> and
+<em>floating-point literal</em> (we will not make a distinction);</li>
+<li><em>String literal</em>: a string of characters, usually enclosed in
+<code>"</code> (double quotes) or <code>'</code> (single quotes);</li>
+<li><em>Symbol</em>: a non-alphanumeric character, such as
+<code>(</code>, <code>+</code>, <code>,</code>, etc.) We will not
+consider symbols composed of multiple characters (e.g.,
+<code>&gt;=</code> in C++).</li>
 </ol></li>
 </ul>
 </section>
-<section id="tipi-di-token" class="slide level1">
-<h1>Tipi di <em>token</em></h1>
+<section id="types-of-tokens" class="slide level1">
+<h1>Types of <em>tokens</em></h1>
 <ul>
-<li><p>L’implementazione del tipo <code>Token</code> ci consente di
-approfondire il sistema dei tipi dei linguaggi che abbiamo usato nel
-corso.</p></li>
-<li><p>Seguendo un approccio OOP, i diversi tipi di <em>token</em>
-potrebbero essere classi derivate da un tipo base, <code>Token</code>
-appunto: si costruisce quindi una gerarchia di classi.</p></li>
-<li><p>Questa soluzione funziona, ed è ciò che ho usato in pytracer. Non
-è però la soluzione più comoda!</p></li>
+<li><p>The implementation of the <code>Token</code> type allows us to
+delve into the type system of the languages we have used in the
+course.</p></li>
+<li><p>Following an OOP approach, the different types of <em>tokens</em>
+could be classes derived from a base type, <code>Token</code> precisely:
+a class hierarchy is thus built.</p></li>
+<li><p>This solution works, and it is what I used in pytracer. However,
+it is not the most convenient solution!</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -834,67 +823,66 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a h
 <span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Etc.</span></span></code></pre></div>
 </section>
-<section id="tokens-e-gerarchie-di-classi" class="slide level1">
-<h1><em>Tokens</em> e gerarchie di classi</h1>
+<section id="tokens-and-class-hierarchies" class="slide level1">
+<h1><em>Tokens</em> and Class Hierarchies</h1>
 <ul>
-<li><p>Ci sono alcuni svantaggi nell’usare una gerarchia di classi:</p>
+<li><p>There are some disadvantages to using a class hierarchy:</p>
 <ol>
-<li>Il codice diventa molto verboso: si devono implementare tante
-classi, tutte molto simili tra loro.</li>
-<li>Le gerarchie di classi sono pensate per essere <em>estendibili</em>:
-posso sempre definire una nuova classe derivata da <code>Token</code>.
-Ma nel caso di un linguaggio, l’elenco dei tipi di token è fissato ed è
-molto difficile che cambi.</li>
+<li>The code becomes very verbose: you have to implement many classes,
+all very similar to each other.</li>
+<li>Class hierarchies are designed to be <em>extensible</em>: you can
+always define a new class derived from <code>Token</code>. But in the
+case of a language, the list of token types is fixed and very unlikely
+to change.</li>
 </ol></li>
-<li><p>Il tipo più indicato per un <em>token</em> è un <em>sum
-type</em>, chiamato anche <em>tagged union</em> o <em>object
-variant</em>, che si contrappone ai <em>product type</em> che tutti voi
-conoscete (probabilmente senza saperlo). Vediamo in cosa
-consistono.</p></li>
+<li><p>The most suitable type for a <em>token</em> is a <em>sum
+type</em>, also called a <em>tagged union</em> or <em>object
+variant</em>, which contrasts with the <em>product types</em> that you
+all know (probably without knowing it). Let’s see what they consist
+of.</p></li>
 </ul>
 </section>
 <section id="product-types" class="slide level1">
-<h1><em>Product types</em></h1>
+<h1><em>Product Types</em></h1>
 <ul>
-<li><p>Le <code>struct</code>/<code>class</code> di linguaggi come C++,
-Python e Julia sono <em>product types</em>, perché dal punto di vista
-formale sono un <strong>prodotto cartesiano</strong> tra
-insiemi.</p></li>
-<li><p>Consideriamo questa definizione in C++:</p>
+<li><p>The <code>struct</code>/<code>class</code> of languages like C++,
+Python, and Julia are <em>product types</em> because, from a formal
+point of view, they are a <strong>Cartesian product</strong> between
+sets.</p></li>
+<li><p>Consider this definition in C++:</p>
 <div class="sourceCode" id="cb19"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> MyStruct <span class="op">{</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span> <span class="co">// Can be any value in the set I of all 32-bit signed integers</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span> <span class="co">// Can be any value in the set B of all 8-bit unsigned bytes</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
-<p>Se l’insieme di tutti i valori assumibili da un <code>int32_t</code>
-e da un <code>uint8_t</code> è denominato rispettivamente con <span
-class="math inline">I</span> e <span class="math inline">B</span>,
-allora una variabile <code>MyStruct var</code> è tale per cui <span
+<p>If the set of all possible values of an <code>int32_t</code> and a
+<code>uint8_t</code> is denoted by <span class="math inline">I</span>
+and <span class="math inline">B</span> respectively, then a variable
+<code>MyStruct var</code> is such that <span
 class="math inline">\mathtt{var} \in I \times B</span>.</p></li>
 </ul>
 </section>
 <section id="sum-types" class="slide level1">
-<h1><em>Sum types</em></h1>
+<h1><em>Sum Types</em></h1>
 <ul>
-<li><p>Un <em>sum type</em> combina tra loro più tipi usando la
-<em>somma insiemistica</em> (ossia l’unione <span
-class="math inline">\cup</span>) anziché il prodotto
-cartesiano.</p></li>
-<li><p>Nel nostro esempio C++, i <em>sum types</em> si definiscono
-tramite la parola chiave <code>union</code> (molto appropriata!):</p>
+<li><p>A <em>sum type</em> combines multiple types using <em>set
+summation</em> (i.e., the union <span class="math inline">\cup</span>)
+instead of the Cartesian product.</p></li>
+<li><p>In our C++ example, <em>sum types</em> are defined using the
+keyword <code>union</code> (very appropriate!):</p>
 <div class="sourceCode" id="cb20"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> MyUnion <span class="op">{</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
-<li><p>In questo caso, la variabile <code>MyUnion var</code> è tale per
-cui <span class="math inline">\mathtt{var} \in I \cup B</span>: puo
-essere un <code>int32_t</code> <strong>oppure</strong> un
-<code>uint8_t</code>, ma non entrambi.</p></li>
+<li><p>In this case, the variable <code>MyUnion var</code> is such that
+<span class="math inline">\mathtt{var} \in I \cup B</span>: it can be an
+<code>int32_t</code> <strong>or</strong> a <code>uint8_t</code>, but not
+both.</p></li>
 </ul>
 </section>
-<section id="uso-di-union" class="slide level1">
-<h1>Uso di <code>union</code></h1>
+<section id="using-union" class="slide level1">
+<h1>Using <code>union</code></h1>
 <div class="sourceCode" id="cb21"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> MyUnion <span class="op">{</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span>   <span class="co">// This takes 4 bytes</span></span>
@@ -920,42 +908,40 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb21-1"><a href="#
 <span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> s<span class="op">.</span>c <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
 <span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
-<section id="sum-types-e-token" class="slide level1">
-<h1><em>Sum types</em> e <em>token</em></h1>
+<section id="sum-types-and-tokens" class="slide level1">
+<h1><em>Sum Types</em> and <em>Tokens</em></h1>
 <ul>
-<li><p>Un <em>token</em> è idealmente rappresentato da un <em>sum
-type</em>. Supponiamo di avere per semplicità due soli tipi di token,
-definiti in un codice C++:</p>
-<ol>
-<li><em>Literal number</em> (es., <code>150</code>), rappresentato in
-memoria come un <code>float</code>;</li>
-<li><em>Literal string</em> (es., <code>"filename.pfm"</code>),
-rappresentato da <code>std::string</code>;</li>
+<li><p>A <em>token</em> is ideally represented by a <em>sum type</em>.
+Suppose we have, for simplicity, only two types of tokens, defined in
+C++ code:</p>
+<ol type="1">
+<li><em>Literal number</em> (e.g., <code>150</code>), represented in
+memory as a <code>float</code>;</li>
+<li><em>Literal string</em> (e.g., <code>"filename.pfm"</code>),
+represented by <code>std::string</code>;</li>
 </ol></li>
-<li><p>Consideriamo ora una funzione <code>read_token(stream)</code> che
-restituisce il token successivo letto da <code>stream</code>: può
-restituire un <em>literal number</em> oppure un <em>literal
-string</em>.</p></li>
-<li><p>Se i numeri appartengono all’insieme <span
-class="math inline">N</span> e le stringhe a <span
-class="math inline">S</span>, allora è chiaro che il token
-<code>t</code> è tale per cui <span class="math inline">\mathtt{t} \in N
-\cup S</span>: può essere uno dei due tipi, ma non più tipi
-contemporaneamente. È quindi logicamente un <em>sum type</em>!</p></li>
+<li><p>Now consider a function <code>read_token(stream)</code> that
+returns the next token read from <code>stream</code>: it can return a
+<em>literal number</em> or a <em>literal string</em>.</p></li>
+<li><p>If numbers belong to the set <span class="math inline">N</span>
+and strings to <span class="math inline">S</span>, then it is clear that
+the token <code>t</code> is such that <span
+class="math inline">\mathtt{t} \in N \cup S</span>: it can be one of the
+two types, but not more than one type at the same time. It is therefore
+logically a <em>sum type</em>!</p></li>
 </ul>
 </section>
-<section id="sum-types-vs-gerarchie" class="slide level1">
-<h1><em>Sum types</em> vs gerarchie</h1>
+<section id="sum-types-vs-hierarchies" class="slide level1">
+<h1><em>Sum Types</em> vs Hierarchies</h1>
 <ul>
-<li><p>Una <code>union</code> racchiude all’interno di un’unica
-definizione tutti i tipi:</p>
+<li><p>A <code>union</code> encloses all types within a single
+definition:</p>
 <div class="sourceCode" id="cb22"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> MyUnion <span class="op">{</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span>   <span class="co">// This takes 4 bytes</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span>   <span class="co">// This takes 1 byte</span></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
-<li><p>È più semplice da leggere e da capire di una gerarchia di
-classi:</p>
+<li><p>It is easier to read and understand than a class hierarchy:</p>
 <div class="sourceCode" id="cb23"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Value <span class="op">{};</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -964,20 +950,20 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb23-1"><a href="#
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> UInt8Value <span class="op">:</span> Value <span class="op">{</span> <span class="dt">uint8_t</span> c<span class="op">;</span> <span class="op">};</span></span></code></pre></div></li>
 </ul>
 </section>
-<section id="sum-types-e-token-1" class="slide level1">
-<h1><em>Sum types</em> e <em>token</em></h1>
+<section id="sum-types-and-tokens-1" class="slide level1">
+<h1><em>Sum Types</em> and <em>Tokens</em></h1>
 <ul>
-<li><p>Potremmo allora definire il tipo <code>Token</code> in C++ nel
-modo seguente:</p>
+<li><p>We could then define the <code>Token</code> type in C++ as
+follows:</p>
 <div class="sourceCode" id="cb24"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> Token <span class="op">{</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>   <span class="dt">float</span> number<span class="op">;</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>   <span class="bu">std::</span>string string<span class="op">;</span></span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
-<li><p>Una volta assegnato un valore però non c’è modo di capire a quale
-dei due insiemi <span class="math inline">N</span> o <span
-class="math inline">S</span> appartenga l’elemento (le
-<code>union</code> non sono <em>tagged</em>):</p>
+<li><p>However, once a value is assigned, there is no way to understand
+which of the two sets <span class="math inline">N</span> or <span
+class="math inline">S</span> the element belongs to (<code>union</code>s
+are not <em>tagged</em>):</p>
 <div class="sourceCode" id="cb25"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>Token my_token<span class="op">;</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>my_token <span class="op">=</span> read_token<span class="op">(</span>stream<span class="op">);</span>  <span class="co">// Read the next token from the stream</span></span>
@@ -1032,32 +1018,31 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb26-1"><a href="#
 <section id="tagged-unions-in-cc-1" class="slide level1">
 <h1><em>Tagged unions</em> in C/C++</h1>
 <ul>
-<li><p>L’esempio mostra che per implementare una <em>tagged union</em>
-occorrono <em>tre</em> tipi:</p>
+<li><p>The example shows that to implement a <em>tagged union</em>
+<em>three</em> types are needed:</p>
 <ol>
-<li>Il tipo <code>Token</code> contiene al suo interno il cosiddetto
-<em>tag</em> (che indica se il token appartiene a <span
-class="math inline">N</span> o a <span
+<li>The <code>Token</code> type contains the so-called <em>tag</em>
+(which indicates whether the token belongs to <span
+class="math inline">N</span> or <span
 class="math inline">S</span>);</li>
-<li>Il tipo <code>TokenType</code> è il <em>tag</em>, ed un
-<code>enum</code> (C) o <code>enum class</code> (C++);</li>
-<li>Il tipo <code>TokenValue</code> è la <code>union</code> vera e
-propria, che in C++ va corredata di un costruttore e un distruttore di
-default per poter essere usata in <code>Token</code>.</li>
+<li>The <code>TokenType</code> type is the <em>tag</em>, and an
+<code>enum</code> (C) or <code>enum class</code> (C++);</li>
+<li>The <code>TokenValue</code> type is the actual <code>union</code>,
+which in C++ must be equipped with a default constructor and destructor
+to be used in <code>Token</code>.</li>
 </ol></li>
-<li><p>Tutto ciò è necessario in quei linguaggi che non supportano le
-<em>tagged union</em> (vedi <a
-href="https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/sum-types">questo
-post</a> per una panoramica dei linguaggi che hanno questa
-lacuna).</p></li>
-<li><p>Nim supporta in maniera nativa i tag: vedete la sezione del
-manuale <a
+<li><p>All this is necessary in those languages that do not support
+<em>tagged unions</em> (see <a
+href="https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/sum-types">this
+post</a> for an overview of the languages that have this
+shortcoming).</p></li>
+<li><p>Nim natively supports tags: see the <a
 href="https://nim-lang.org/docs/manual.html#types-object-variants"><em>Object
-variants</em></a></p></li>
+variants</em></a> section of the manual</p></li>
 </ul>
 </section>
-<section id="esaustività-dei-controlli" class="slide level1">
-<h1>Esaustività dei controlli</h1>
+<section id="exhaustiveness-of-checks" class="slide level1">
+<h1>Exhaustiveness of checks</h1>
 <div class="sourceCode" id="cb27"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Let&#39;s assume we have four token types</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> <span class="kw">class</span> TokenType <span class="op">{</span></span>
@@ -1076,36 +1061,35 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb27-1"><a href="#
 <span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
-<section id="sum-types-fatti-bene" class="slide level1">
-<h1><em>Sum types</em> fatti bene</h1>
+<section id="good-sum-types" class="slide level1">
+<h1>Good <em>sum types</em></h1>
 <ul>
-<li><p>Linguaggi come <a
-href="https://wiki.haskell.org/Algebraic_data_type">Haskell</a>, i
-derivati di ML (es., <a href="https://ocaml.org/">OCaml</a>, F#), <a
+<li><p>Languages like <a
+href="https://wiki.haskell.org/Algebraic_data_type">Haskell</a>, those
+derived from ML (es., <a href="https://ocaml.org/">OCaml</a>, F#), <a
 href="https://www.freepascal.org/docs-html/ref/refsu15.html">Pascal</a>,
 <a
 href="https://nim-lang.org/docs/tut2.html#object-oriented-programming-object-variants">Nim</a>,
 <a
 href="https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html">Rust</a>,
-etc., consentono di definire <em>sum types</em> in maniera molto più
-naturale.</p></li>
-<li><p>Ad esempio, ecco come definire il tipo <code>Token</code> in
-OCaml:</p>
+etc., implement <em>sum types</em> in a more natural way.</p></li>
+<li><p>For instance, in OCaml you can define a <code>Token</code> in
+this way:</p>
 <div class="sourceCode" id="cb28"><pre
 class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> token =</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    | LiteralNumber <span class="kw">of</span> <span class="dt">float</span></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    | LiteralString <span class="kw">of</span> <span class="dt">string</span></span>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    | Symbol <span class="kw">of</span> <span class="dt">char</span></span>
 <span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    | Keyword <span class="kw">of</span> <span class="dt">string</span>;</span></code></pre></div>
-<p>Non c’è bisogno di definire una lunga gerarchia di classi!</p></li>
+<p>No need to define a complex class hierarchy!</p></li>
 </ul>
 </section>
-<section id="esaustività-in-ocaml" class="slide level1">
-<h1>Esaustività in OCaml</h1>
+<section id="exhaustiveness-in-ocaml" class="slide level1">
+<h1>Exhaustiveness in OCaml</h1>
 <ul>
-<li><p>In linguaggi come <a href="https://ocaml.org/">OCaml</a> e <a
+<li><p>In languages like <a href="https://ocaml.org/">OCaml</a> and <a
 href="https://fsharpforfunandprofit.com/posts/discriminated-unions/">F#</a>,
-i controlli sui <em>sum types</em> sono esaustivi:</p>
+checks on <em>sum types</em> are exhaustive:</p>
 <div class="sourceCode" id="cb29"><pre
 class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> print_token tok = <span class="kw">match</span> tok <span class="kw">with</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>   | LiteralNumber a -&gt; <span class="dt">print_float</span> a</span>
@@ -1115,132 +1099,91 @@ class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb29-1"><a hre
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">(* Warning 8 [partial-match]: this pattern-matching is not exhaustive.</span></span>
 <span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"> * Here is an example of a case that is not matched:</span></span>
 <span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"> * Keyword _                                         *)</span></span></code></pre></div></li>
-<li><p>I <em>sum types</em> rappresentano gerarchie di classi «rigide»,
-dove c’è un solo antenato (<code>token</code>) e le classi figlie sono
-note a priori: proprio il caso dei token! Linguaggi come <a
-href="https://ocaml.org/">OCaml</a> sono infatti spesso usati per
-scrivere compilatori (es., <a
+<li><p><em>Sum types</em> represent “rigid” class hierarchies, where
+there is only one ancestor (<code>token</code>) and the child classes
+are known a priori: precisely the case of tokens! Languages like <a
+href="https://ocaml.org/">OCaml</a> are in fact often used to write
+compilers (e.g., <a
 href="http://www.fftw.org/fftw-paper-ieee.pdf">FFTW</a>, <a
 href="https://www.reddit.com/r/rust/comments/18b808/is_the_original_ocaml_compiler_still_available/">Rust</a>).</p></li>
 </ul>
 </section>
-<section id="sum-types-vs-gerarchie-1" class="slide level1">
-<h1><em>Sum types</em> vs gerarchie</h1>
+<section id="sum-types-vs-hierarchies-1" class="slide level1">
+<h1><em>Sum types</em> vs hierarchies</h1>
 <ul>
-<li><p>Un <em>sum type</em> come <code>union</code> in C/C++ è utile
-quando il numero di tipi (<code>LiteralToken</code>,
-<code>SymbolToken</code>, …) è limitato e non cambierà facilmente,
-mentre il numero di <em>metodi</em> da applicare a quel tipo (es.,
-<code>print_token</code>) può crescere indefinitamente.</p></li>
-<li><p>Una gerarchia di classi è utile nel caso contrario: il numero di
-tipi può crescere in numero potenzialmente illimitato, ma il numero di
-metodi è in linea di principio limitato. Un buon esempio è
-<code>Shape</code>: si possono definire infinite forme
-(<code>Sphere</code>, <code>Plane</code>, <code>Cone</code>,
-<code>Cylinder</code>, <code>Parabola</code>, etc.), ma il numero di
-operazioni da fare è limitato (<code>ray_intersection</code>,
-<code>is_point_inside</code>, etc.).</p></li>
+<li><p>A <em>sum type</em> like <code>union</code> in C/C++ is useful
+when the number of types (<code>LiteralToken</code>,
+<code>SymbolToken</code>, …) is limited and will not change easily,
+while the number of <em>methods</em> to apply to that type (e.g.,
+<code>print_token</code>) can grow indefinitely.</p></li>
+<li><p>A class hierarchy is useful in the opposite case: the number of
+types can grow potentially indefinitely, but the number of methods is in
+principle limited. A good example is <code>Shape</code>: you can define
+infinite shapes (<code>Sphere</code>, <code>Plane</code>,
+<code>Cone</code>, <code>Cylinder</code>, <code>Parabola</code>, etc.),
+but the number of operations to perform is limited
+(<code>ray_intersection</code>, <code>is_point_inside</code>,
+etc.).</p></li>
 </ul>
 </section>
-<section id="funzionamento-di-un-lexer" class="slide level1">
-<h1>Funzionamento di un <em>lexer</em></h1>
+<section id="how-a-lexer-works" class="slide level1">
+<h1>How a <em>Lexer</em> Works</h1>
 </section>
-<section id="funzionamento-di-un-lexer-1" class="slide level1">
-<h1>Funzionamento di un <em>lexer</em></h1>
+<section id="how-a-lexer-works-1" class="slide level1">
+<h1>How a <em>Lexer</em> Works</h1>
 <ul>
-<li><p>Il <em>lexer</em> legge i caratteri da uno stream, uno alla
-volta, e decide quali <em>token</em> creare a seconda dei caratteri in
-cui si imbatte.</p></li>
-<li><p>Ad esempio, la lettura del carattere <code>"</code> (doppio
-apice) in un codice C++ indica che si sta definendo una stringa di
-caratteri:</p>
+<li><p>The <em>lexer</em> reads characters from a stream, one at a time,
+and decides which <em>tokens</em> to create based on the characters it
+encounters.</p></li>
+<li><p>For example, reading the <code>"</code> character (double quote)
+in C++ code indicates that a character string is being defined:</p>
 <div class="sourceCode" id="cb30"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="at">const</span> <span class="dt">char</span> <span class="op">*</span> message <span class="op">=</span> <span class="st">&quot;error, you must specify an input file&quot;</span><span class="op">;</span></span></code></pre></div>
-<p>Quando i lexer usati nei compilatori C++ trovano un carattere
-<code>"</code>, essi continuano a leggere caratteri fino al successivo
-<code>"</code>, che segnala la fine della stringa, e restituiscono un
-token <em>string literal</em>.</p></li>
+<p>When lexers used in C++ compilers encounter a <code>"</code>
+character, they continue reading characters until the next
+<code>"</code>, which signals the end of the string, and return a
+<em>string literal</em> token.</p></li>
 </ul>
 </section>
-<section id="ambiguità-nei-lexer" class="slide level1">
-<h1>Ambiguità nei <em>lexer</em></h1>
+<section id="ambiguities-in-lexers" class="slide level1">
+<h1>Ambiguities in <em>Lexers</em></h1>
 <ul>
-<li><p>Il caso di uno <em>string literal</em> è semplice da affrontare:
-tutte le volte che ci si imbatte in un carattere <code>"</code>, si ha a
-che fare con questo tipo di <em>token</em>.</p></li>
-<li><p>Ma nella maggior parte dei casi un <em>lexer</em> deve affrontare
-ambiguità. Ad esempio, un carattere <code>a</code>…<code>z</code> indica
-che sta iniziando una <em>keyword</em> come <code>int</code>, oppure un
-<em>identifier</em> come <code>iterations_per_minute</code>?</p>
-<p>In questo caso si leggono caratteri finché appartengono alla lista
-dei caratteri validi in un identificatore (solitamente lettere
-maiuscole/minuscole, cifre e il carattere <code>_</code>), poi si
-confronta la stringa letta con la lista di possibili <em>keyword</em>
-ammesse dal linguaggio.</p></li>
+<li><p>The case of a <em>string literal</em> is simple to handle: every
+time a <code>"</code> character is encountered, we are dealing with this
+type of <em>token</em>.</p></li>
+<li><p>But in most cases a <em>lexer</em> must deal with ambiguities.
+For example, does an <code>a</code>…<code>z</code> character indicate
+that a <em>keyword</em> like <code>int</code> is starting, or an
+<em>identifier</em> like <code>iterations_per_minute</code>?</p>
+<p>In this case, characters are read as long as they belong to the list
+of valid characters in an identifier (</p></li>
 </ul>
 </section>
-<section id="tornare-indietro" class="slide level1">
-<h1>Tornare indietro</h1>
-<ul>
-<li><p>In un <em>lexer</em> (e vedremo che è così anche nei
-<em>parser</em>) è comoda la possibilità di far sì che un carattere
-appena letto dal file sia «dis-letto», ossia venga rimesso a posto:</p>
+<section id="reading-a-numeric-literal" class="slide level1">
+<h1>Reading a <em>numeric literal</em></h1>
 <div class="sourceCode" id="cb31"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> read_char(<span class="bu">file</span>)   <span class="co"># Suppose that this returns the character &quot;X&quot;</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>unread_char(<span class="bu">file</span>, c)  <span class="co"># Puts the &quot;X&quot; back into the file</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> read_char(<span class="bu">file</span>)   <span class="co"># Read the &quot;X&quot; again</span></span></code></pre></div>
-<p>Questo equivale a leggere un carattere in anticipo (operazione di
-<em>look ahead</em>), e permette di scrivere il <em>lexer</em> in
-maniera più elegante.</p></li>
-<li><p>L’operazione <code>unread_char</code> non altera il file:
-memorizza soltanto il carattere <code>X</code> in una variabile, e la
-restituisce alla successiva chiamata a <code>read_char</code>.</p></li>
-</ul>
-</section>
-<section id="uso-di-unread_char" class="slide level1">
-<h1>Uso di <code>unread_char</code></h1>
-<ul>
-<li><p>Perché <code>unread_char</code> è utile in un <em>lexer</em>?
-Vediamo per esempio questa espressione Python:</p>
-<div class="sourceCode" id="cb32"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="dv">15</span><span class="op">+</span><span class="dv">4</span></span></code></pre></div>
-<p>che è composta dei <em>token</em> <code>15</code> (<em>numeric
-literal</em>), <code>+</code> (<em>symbol</em>), <code>4</code>
-(<em>numeric literal</em>).</p></li>
-<li><p>Quando il <em>lexer</em> inizia il suo lavoro individua il
-carattere <code>1</code>, e capisce che deve creare un token <em>numeric
-literal</em>. A questo punto deve leggere i caratteri finché trova la
-prima non-cifra, che è <code>+</code>. La lettura di <code>+</code>
-segnala che l’intero è finito e va emesso un <em>literal number
-token</em>; ma <code>+</code> va rimesso a posto, perché farà parte del
-token successivo.</p></li>
-</ul>
-</section>
-<section id="lettura-di-un-numeric-literal" class="slide level1">
-<h1>Lettura di un <em>numeric literal</em></h1>
-<div class="sourceCode" id="cb33"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ch <span class="op">=</span> read_char()</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Very basic and ugly code! It does not interpret negative numbers!</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ch.isdigit():</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We have a numeric literal here!</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    literal <span class="op">=</span> ch</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">=</span> read_char()  <span class="co"># Read the next character</span></span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch.isdigit():</span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>            <span class="co"># We have got the next digit for the current numeric literal</span></span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>            literal <span class="op">+=</span> ch</span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>            <span class="co"># The number has ended, so put the last character back in place</span></span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.unread_char(ch)</span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> <span class="bu">int</span>(literal)</span>
-<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
-<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;invalid numeric literal </span><span class="sc">{</span>literal<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ch <span class="op">=</span> read_char()</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Very basic and ugly code! It does not interpret negative numbers!</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ch.isdigit():</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We have a numeric literal here!</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    literal <span class="op">=</span> ch</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">=</span> read_char()  <span class="co"># Read the next character</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch.isdigit():</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>            <span class="co"># We have got the next digit for the current numeric literal</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>            literal <span class="op">+=</span> ch</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>            <span class="co"># The number has ended, so put the last character back in place</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.unread_char(ch)</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> <span class="bu">int</span>(literal)</span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;invalid numeric literal </span><span class="sc">{</span>literal<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
 </section>
     </div>
   </div>

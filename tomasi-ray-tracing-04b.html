@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Esercitazione 4</title>
+  <title>Laboratory 4</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -29,8 +29,9 @@
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -120,7 +121,7 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Esercitazione 4</h1>
+  <h1 class="title">Laboratory 4</h1>
   <p class="subtitle">Calcolo numerico per la generazione di immagini
 fotorealistiche</p>
   <p class="author">Maurizio Tomasi <a
@@ -128,70 +129,68 @@ href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="scrittura-di-immagini-ldr" class="slide level1">
-<h1>Scrittura di immagini LDR</h1>
+<section id="writing-ldr-images" class="slide level1">
+<h1>Writing LDR Images</h1>
 </section>
-<section id="interfaccia-del-programma" class="slide level1">
-<h1>Interfaccia del programma</h1>
+<section id="program-interface" class="slide level1">
+<h1>Program Interface</h1>
 <ul>
-<li><p>Oggi implementeremo il codice del nostro programma
-(<code>main.py</code> nella versione Python).</p></li>
-<li><p>Il funzionamento del programma in questa versione sarà il
-seguente:</p>
+<li><p>Today we will implement the code for our program
+(<code>main.py</code> in the Python version).</p></li>
+<li><p>The program will function as follows:</p>
 <pre class="text"><code>$ ./main.py input_file.pfm 0.3 1.0 output_file.png
 File &#39;input_file.pfm&#39; has been read from disk
 File &#39;output_file.png&#39; has been written to disk
 $</code></pre></li>
-<li><p>Lo scopo è quello di convertire un file PFM in un file PNG (o nel
-formato LDR che preferite). I valori <code>0.3</code> e <code>1.0</code>
-fanno riferimento al <a
-href="./tomasi-ray-tracing-05b-external-libraries.html#/normalizzazione">fattore
-di scala</a> <span class="math inline">a</span> e a <span
-class="math inline">\gamma</span>, rispettivamente.</p></li>
+<li><p>The goal is to convert a PFM file into a PNG file (or your
+preferred LDR format). The values <code>0.3</code> and <code>1.0</code>
+refer to the <a href="tomasi-ray-tracing-05b.html#/normalization">scale
+factor</a> <span class="math inline">a</span> and <span
+class="math inline">\gamma</span>, respectively.</p></li>
 </ul>
 </section>
-<section id="implementazione" class="slide level1">
-<h1>Implementazione</h1>
-<p>Le attività da compiere sul codice sono le seguenti:</p>
-<ol>
-<li>Definire una funzione che calcoli la luminosità di un oggetto
-<code>Color</code>;</li>
-<li>Definire una funzione che calcoli la luminosità media di un
+<section id="implementation" class="slide level1">
+<h1>Implementation</h1>
+<p>The tasks to be performed on the code are the following:</p>
+<ol type="1">
+<li>Define a function that calculates the luminosity of a
+<code>Color</code> object;</li>
+<li>Define a function that calculates the average luminosity of an
 <code>HdrImage</code>;</li>
-<li>Definire una funzione che normalizzi i valori di un
-<code>HdrImage</code> usando una certa luminosità media, opzionalmente
-passata come argomento;</li>
-<li>Definire una funzione che applichi la correzione per le sorgenti
-luminose;</li>
-<li>Implementare il <code>main</code> nel codice dell’applicazione.</li>
+<li>Define a function that normalizes the values of an
+<code>HdrImage</code> using a certain average luminosity, optionally
+passed as an argument;</li>
+<li>Define a function that applies the correction for light
+sources;</li>
+<li>Implement the <code>main</code> function in the application
+code.</li>
 </ol>
 </section>
-<section id="luminosità-12" class="slide level1">
-<h1>Luminosità (1/2)</h1>
+<section id="luminosity-12" class="slide level1">
+<h1>Luminosity (1/2)</h1>
 <ul>
-<li><p>Aggiungiamo un semplice metodo <code>luminosity</code> alla
-classe <code>Color</code>, che restituisce il valore della luminosità
-suggerito da Shirley &amp; Morley:</p>
+<li><p>Let’s add a simple <code>luminosity</code> method to the
+<code>Color</code> class, which returns the luminosity value suggested
+by Shirley &amp; Morley:</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Color:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> luminosity(<span class="va">self</span>):</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="bu">max</span>(<span class="va">self</span>.r, <span class="va">self</span>.g, <span class="va">self</span>.b) <span class="op">+</span> <span class="bu">min</span>(<span class="va">self</span>.r, <span class="va">self</span>.g, <span class="va">self</span>.b)) <span class="op">/</span> <span class="dv">2</span></span></code></pre></div></li>
-<li><p>Se nel vostro linguaggio l’equivalente di <code>max</code> e
-<code>min</code> accetta solo due parametri (es., <code>minOf</code> e
-<code>maxOf</code> in Kotlin), potete usare l’equivalenza</p>
+<li><p>If the equivalent of <code>max</code> and <code>min</code> in
+your language only accepts two parameters (e.g., <code>minOf</code> and
+<code>maxOf</code> in Kotlin), you can use the equivalence</p>
 <p><span class="math display">
 \max\left\{a, b, c\right\} \equiv \max\bigl\{\max\left\{a, b\right\},
 c\bigr\}.
 </span></p></li>
 </ul>
 </section>
-<section id="luminosità-22" class="slide level1">
-<h1>Luminosità (2/2)</h1>
+<section id="luminosity-22" class="slide level1">
+<h1>Luminosity (2/2)</h1>
 <ul>
-<li><p>Occorrono anche alcuni test per
-<code>Color.luminosity</code>:</p>
+<li><p>Some tests for <code>Color.luminosity</code> are also needed:</p>
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_luminosity():</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    col1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
@@ -199,13 +198,13 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">2.0</span>) <span class="op">==</span> col1.luminosity()</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">7.0</span>) <span class="op">==</span> col2.luminosity()</span></code></pre></div></li>
-<li><p>Il metodo <code>pytest.approx()</code> fa parte della libreria
-<code>pytest</code>, e corrisponde alla funzione <code>is_close</code>
-che avete implementato tempo fa.</p></li>
+<li><p>The <code>pytest.approx()</code> method is part of the
+<code>pytest</code> library and corresponds to the <code>is_close</code>
+function you implemented some time ago.</p></li>
 </ul>
 </section>
-<section id="luminosità-media-12" class="slide level1">
-<h1>Luminosità media (1/2)</h1>
+<section id="average-luminosity-12" class="slide level1">
+<h1>Average Luminosity (1/2)</h1>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
@@ -217,8 +216,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> math.<span class="bu">pow</span>(<span class="dv">10</span>, cumsum <span class="op">/</span> <span class="bu">len</span>(<span class="va">self</span>.pixels))</span></code></pre></div>
 </section>
-<section id="luminosità-media-22" class="slide level1">
-<h1>Luminosità media (2/2)</h1>
+<section id="average-luminosity-22" class="slide level1">
+<h1>Average Luminosity (2/2)</h1>
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_average_luminosity():</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">2</span>, <span class="dv">1</span>)</span>
@@ -229,15 +228,15 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a hr
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(img.average_luminosity(delta<span class="op">=</span><span class="fl">0.0</span>))</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">100.0</span>) <span class="op">==</span> img.average_luminosity(delta<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div>
 </section>
-<section id="normalizzazione-13" class="slide level1">
-<h1>Normalizzazione (1/3)</h1>
+<section id="normalization" class="slide level1">
+<h1>Normalization (1/3)</h1>
 <ul>
-<li><p>La funzione <code>normalize_image</code> calcola la luminosità
-media di un’immagine secondo l’<a
-href="tomasi-ray-tracing-05b-external-libraries.html#/normalizzazione">equazione
-corrispondente</a>.</p></li>
-<li><p>La funzione dovrebbe accettare il valore di <span
-class="math inline">a</span> come parametro di input (in
+<li><p>The <code>normalize_image</code> function calculates the average
+brightness of an image according to the <a
+href="tomasi-ray-tracing-05b.html#/normalization">corresponding
+equation</a>.</p></li>
+<li><p>The function should accept the value of <span
+class="math inline">a</span> as an input parameter (in
 <code>factor</code>):</p>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_image(<span class="va">self</span>, factor, luminosity<span class="op">=</span><span class="va">None</span>):</span>
@@ -248,19 +247,19 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.pixels[i] <span class="op">=</span> <span class="va">self</span>.pixels[i] <span class="op">*</span> (factor <span class="op">/</span> luminosity)</span></code></pre></div></li>
 </ul>
 </section>
-<section id="normalizzazione-23" class="slide level1">
-<h1>Normalizzazione (2/3)</h1>
+<section id="normalization-23" class="slide level1">
+<h1>Normalization (2/3)</h1>
 <ul>
-<li><p>È bene accettare la luminosità come parametro anziché
-calcolarla:</p>
+<li><p>It’s better to ask for the luminosity instead of calculating
+it:</p>
 <ul>
-<li>Nei test, ci può fare comodo passare diversi valori per la
-luminosità;</li>
-<li>L’utente potrebbe voler specificare questo valore.</li>
+<li>In tests, it can be convenient to pass different values for the
+brightness;</li>
+<li>The user might want to specify this value.</li>
 </ul></li>
-<li><p>Se il vostro linguaggio supporta i tipi opzionali, potete
-chiamare la funzione <code>average_luminosity</code> se il parametro
-luminosità è nullo:</p>
+<li><p>If your language supports optional types, you can call the
+function <code>average_luminosity</code> if the brightness parameter is
+null:</p>
 <div class="sourceCode" id="cb7"><pre
 class="sourceCode csharp"><code class="sourceCode cs"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This is C#; in Kotlin it&#39;s almost the same.</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">NormalizeImage</span><span class="op">(</span><span class="dt">float</span> factor<span class="op">,</span> <span class="dt">float</span><span class="op">?</span> luminosity <span class="op">=</span> <span class="kw">null</span><span class="op">)</span></span>
@@ -271,8 +270,8 @@ class="sourceCode csharp"><code class="sourceCode cs"><span id="cb7-1"><a href="
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
-<section id="normalizzazione-33" class="slide level1">
-<h1>Normalizzazione (3/3)</h1>
+<section id="normalization-33" class="slide level1">
+<h1>Normalization (3/3)</h1>
 <div class="sourceCode" id="cb8"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_normalize_image():</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">2</span>, <span class="dv">1</span>)</span>
@@ -284,8 +283,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a hr
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.get_pixel(<span class="dv">0</span>, <span class="dv">0</span>).is_close(Color(<span class="fl">0.5e2</span>, <span class="fl">1.0e2</span>, <span class="fl">1.5e2</span>))</span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.get_pixel(<span class="dv">1</span>, <span class="dv">0</span>).is_close(Color(<span class="fl">0.5e4</span>, <span class="fl">1.0e4</span>, <span class="fl">1.5e4</span>))</span></code></pre></div>
 </section>
-<section id="punti-luminosi-12" class="slide level1">
-<h1>Punti luminosi (1/2)</h1>
+<section id="bright-spots" class="slide level1">
+<h1>Bright Spots (1/2)</h1>
 <div class="sourceCode" id="cb9"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _clamp(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> x)</span>
@@ -299,8 +298,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a hr
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.pixels[i].g <span class="op">=</span> _clamp(<span class="va">self</span>.pixels[i].g)</span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.pixels[i].b <span class="op">=</span> _clamp(<span class="va">self</span>.pixels[i].b)</span></code></pre></div>
 </section>
-<section id="punti-luminosi-22" class="slide level1">
-<h1>Punti luminosi (2/2)</h1>
+<section id="bright-spots-22" class="slide level1">
+<h1>Bright Spots (2/2)</h1>
 <div class="sourceCode" id="cb10"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_clamp_image():</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">2</span>, <span class="dv">1</span>)</span>
@@ -316,104 +315,100 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a h
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> (cur_pixel.g <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (cur_pixel.g <span class="op">&lt;=</span> <span class="dv">1</span>)</span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> (cur_pixel.b <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (cur_pixel.b <span class="op">&lt;=</span> <span class="dv">1</span>)</span></code></pre></div>
 </section>
-<section id="gestione-di-dipendenze" class="slide level1">
-<h1>Gestione di dipendenze</h1>
+<section id="dependency-management" class="slide level1">
+<h1>Dependency Management</h1>
 </section>
-<section id="gestione-di-dipendenze-1" class="slide level1">
-<h1>Gestione di dipendenze</h1>
+<section id="dependency-management-1" class="slide level1">
+<h1>Dependency Management</h1>
 <ul>
-<li>Implementare il codice per salvare un’immagine in uno dei formati
-LDR più diffusi (PNG, JPEG, TIFF, WebP) sarebbe interessantissimo, ma
-molto complesso!</li>
-<li>Implementeremo questa funzionalità appoggiandoci a una libreria
-esterna</li>
-<li>In questo modo impareremo come il linguaggio che stiamo usando
-consente di gestire le dipendenze</li>
+<li>Implementing code to save an image in one of the most common LDR
+formats (PNG, JPEG, TIFF, WebP) would be very interesting, but very
+complex!</li>
+<li>We will implement this functionality by relying on an external
+library.</li>
+<li>In this way, we will learn how the language we are using allows us
+to manage dependencies.</li>
 </ul>
 </section>
-<section id="librerie-di-sistema" class="slide level1">
-<h1>Librerie di sistema</h1>
+<section id="system-libraries" class="slide level1">
+<h1>System Libraries</h1>
 <center>
 <img data-src="media/dependencies-simple.svg" />
 </center>
 <ul>
-<li><p>Questo genere di librerie di solito si installano usando in
-qualche modo <code>sudo</code>, come ad esempio
-<code>./configure &amp;&amp; make &amp;&amp; sudo make install</code></p></li>
-<li><p>Esempio: installare ROOT sul proprio sistema per lavorare alle
-esercitazioni di TNDS!</p></li>
+<li><p>This kind of library is usually installed using <code>sudo</code>
+in some way, such as
+<code>./configure &amp;&amp; make &amp;&amp; sudo make install</code>.</p></li>
+<li><p>Example: installing ROOT on your system to work on TNDS
+exercises!</p></li>
 </ul>
 </section>
-<section id="librerie-di-sistema-1" class="slide level1">
-<h1>Librerie di sistema</h1>
-<p>Capita però spesso che si debbano usare librerie
-<em>incompatibili</em> nei propri codici! Supponiamo di avere numerosi
-oscilloscopi in un laboratorio di elettronica, e che usiamo la libreria
-<code>oscilloscope</code> per analizzarne le misure:</p>
+<section id="system-libraries-1" class="slide level1">
+<h1>System Libraries</h1>
+<p>However, it often happens that you have to use <em>incompatible</em>
+libraries in your code! Suppose we have numerous oscilloscopes in an
+electronics lab, and we use the <code>oscilloscope</code> library to
+analyze their measurements:</p>
 <ul>
-<li><p>Sinora abbiamo utilizzato la versione 2.4 per scrivere molti
-codici di analisi usati regolarmente</p></li>
-<li><p>È però uscita ormai da un po’ la versione 3.0 di
-<code>oscilloscope</code>, che ha nuove funzionalità interessanti, ma
-non ho ancora fatto l’aggiornamento perché è incompatibile con la
-versione 2.4!</p></li>
-<li><p>Sta per uscire la versione 4.0, ancora più potente, ma non
-supporterà più uno dei miei vecchi oscilloscopi, che mi è ancora
-indispensabile.</p></li>
+<li><p>So far we have used version 2.4 to write a lot of analysis code
+that we use regularly.</p></li>
+<li><p>However, version 3.0 of <code>oscilloscope</code> has been out
+for a while now, which has interesting new features, but I haven’t
+upgraded yet because it’s incompatible with version 2.4!</p></li>
+<li><p>Version 4.0 is about to be released, even more powerful, but it
+will no longer support one of my old oscilloscopes, which I still
+need.</p></li>
 </ul>
 </section>
-<section id="librerie-locali" class="slide level1">
-<h1>Librerie locali</h1>
-<p>Le librerie locali risolvono questi problemi perché non vengono
-installate a livello di sistema, ma sono legate a un singolo
-<em>repository</em>:</p>
+<section id="local-libraries" class="slide level1">
+<h1>Local Libraries</h1>
+<p>Local libraries solve these problems because they are not installed
+system-wide, but are linked to a single <em>repository</em>:</p>
 <center>
 <img data-src="media/dependencies-complex.svg" />
 </center>
 <ul>
-<li><p>Esempio: copia di una libreria <em>header-only</em> nel proprio
-progetto C++</p></li>
-<li><p>Esempio: <a
+<li><p>Example: copy of a <em>header-only</em> library into your C++
+project.</p></li>
+<li><p>Example: <a
 href="https://docs.python.org/3/tutorial/venv.html"><em>virtual
-environment</em></a> in Python</p></li>
+environment</em></a> in Python.</p></li>
 </ul>
 </section>
-<section id="gestione-di-dipendenze-2" class="slide level1">
-<h1>Gestione di dipendenze</h1>
+<section id="dependency-management-2" class="slide level1">
+<h1>Dependency Management</h1>
 <ul>
-<li><p>Quasi tutti i linguaggi supportano una gestione di librerie
-«locali»</p></li>
-<li><p>Queste funzionalità sono solitamente implementate nei programmi
-che avete usato sinora per creare progetti (<code>nimble</code>,
+<li><p>Almost all languages support “local” library management.</p></li>
+<li><p>These features are usually implemented in the programs you have
+used so far to create projects (<code>nimble</code>,
 <code>gradle</code>, <code>dotnet</code>, <code>dub</code>,
-<code>cargo</code>…)</p></li>
-<li><p>Scegliete quindi una libreria che supporti la <em>scrittura</em>
-di immagini LDR e importatela nel vostro progetto come una dipendenza
-<strong>locale</strong> (niente <code>sudo</code>!)</p></li>
-<li><p>L’uso di librerie locali ci aiuterà molto quando affronteremo la
+<code>cargo</code>…).</p></li>
+<li><p>So choose a library that supports <em>writing</em> LDR images and
+import it into your project as a <strong>local</strong> dependency (no
+<code>sudo</code>!).</p></li>
+<li><p>The use of local libraries will help us a lot when we deal with
 <em>continuous integration</em>.</p></li>
 </ul>
 </section>
-<section id="produzione-di-immagini-ldr" class="slide level1">
-<h1>Produzione di immagini LDR</h1>
+<section id="ldr-image-production" class="slide level1">
+<h1>LDR Image Production</h1>
 </section>
-<section id="conversione-a-ldr-13" class="slide level1">
-<h1>Conversione a LDR (1/3)</h1>
+<section id="hdrldr-conversion-13" class="slide level1">
+<h1>HDR→LDR Conversion (1/3)</h1>
 <ul>
-<li>Una volta applicata <code>normalize_image</code> e
-<code>clamp_image</code>, tutte le componenti RGB dei colori nella
-matrice saranno nell’intervallo [0, 1].</li>
-<li>A questo punto la conversione nello spazio sRGB avviene tramite la
-<a
-href="tomasi-ray-tracing-05b-ci-builds.html#/correzione-%CE%B3">solita
-formula con γ</a>.</li>
-<li>Il risultato della conversione è una matrice che va salvata in un
-formato grafico LDR: PNG, JPEG, WebP…</li>
-<li>Per il salvataggio dovete scegliere una libreria appropriata.</li>
+<li>Once <code>normalize_image</code> and <code>clamp_image</code> have
+been applied, all RGB components of the colors in the matrix will be in
+the range [0, 1].</li>
+<li>At this point, the conversion to the sRGB space takes place via the
+<a href="tomasi-ray-tracing-02a.html#/from-rgb-to-srgb">usual formula
+with γ</a>.</li>
+<li>The result of the conversion is a matrix that must be saved in an
+LDR graphic format: PNG, JPEG, WebP…</li>
+<li>For saving, you need to choose an appropriate library.</li>
 </ul>
 </section>
-<section id="conversione-a-ldr-23" class="slide level1">
-<h1>Conversione a LDR (2/3)</h1>
+<section id="hdrldr-conversion-23" class="slide level1">
+<h1>HDR→LDR Conversion (2/3)</h1>
 <table>
 <colgroup>
 <col style="width: 34%" />
@@ -421,8 +416,8 @@ formato grafico LDR: PNG, JPEG, WebP…</li>
 </colgroup>
 <thead>
 <tr class="header">
-<th>Linguaggio</th>
-<th>Librerie</th>
+<th>Language</th>
+<th>Libraries</th>
 </tr>
 </thead>
 <tbody>
@@ -457,25 +452,24 @@ href="https://github.com/jrenner/nim-simplepng">simplepng</a></td>
 </tr>
 </tbody>
 </table>
-<p>Potete scegliere altre librerie, ma attenzione a scegliere quelle
-pixel-based!</p>
+<p>You can search for other libraries, but be sure to pick a pixel-based
+one!</p>
 </section>
-<section id="cosa-ci-serve" class="slide level1">
-<h1>Cosa ci serve</h1>
-<p>Scegliete una libreria LDR che abbia queste caratteristiche:</p>
+<section id="what-do-we-need" class="slide level1">
+<h1>What do we need?</h1>
+<p>Choose an LDR library that has these characteristics:</p>
 <ul>
-<li>Creazione di una immagine specificando numero di colonne
-(<code>width</code>) e numero di righe (<code>height</code>)</li>
-<li>Impostazione del valore sRGB di un pixel date le sue coordinate
-<code>x</code> e <code>y</code></li>
-<li>Salvataggio dell’immagine in un formato grafico diffuso</li>
-<li>Fate molta attenzione al sistema di coordinate: il pixel a
-<code>(0, 0)</code> è in alto a sinistra? in basso a sinistra?
-oppure…?</li>
+<li>Creation of an image by specifying the number of columns
+(<code>width</code>) and the number of rows (<code>height</code>)</li>
+<li>Setting the sRGB value of a pixel given its <code>x</code> and
+<code>y</code> coordinates</li>
+<li>Saving the image in a common graphic format</li>
+<li>Pay close attention to the coordinate system: is the pixel at
+<code>(0, 0)</code> at the top left? Bottom left? Or…?</li>
 </ul>
 </section>
-<section id="conversione-a-ldr-33" class="slide level1">
-<h1>Conversione a LDR (3/3)</h1>
+<section id="hdrldr-conversion-33" class="slide level1">
+<h1>HDR→LDR Conversion (3/3)</h1>
 <div class="sourceCode" id="cb11"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
@@ -495,8 +489,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a h
 <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        img.save(stream, <span class="bu">format</span><span class="op">=</span><span class="bu">format</span>)</span></code></pre></div>
 </section>
-<section id="funzione-main-12" class="slide level1">
-<h1>Funzione <code>main</code> (1/2)</h1>
+<section id="the-main-function-12" class="slide level1">
+<h1>The <code>main</code> function (1/2)</h1>
 <div class="sourceCode" id="cb12"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -524,12 +518,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a h
 <span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="ss">f&quot;Invalid gamma (&#39;</span><span class="sc">{</span>sys<span class="sc">.</span>argv[<span class="dv">3</span>]<span class="sc">}</span><span class="ss">&#39;), it must be a floating-point number.&quot;</span>)</span>
 <span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.output_png_file_name <span class="op">=</span> sys.argv[<span class="dv">4</span>]</span></code></pre></div>
-<p>(Anziché usare variabili globali per i parametri letti da
-<code>argv</code>, uso una <code>struct</code> che poi passo alle varie
-funzioni: è più facile scrivere test!)</p>
+<p>(Instead of using global variables for the parameters read from
+<code>argv</code>, I use a <code>struct</code> and pass it to other
+functions: it’s easier to write tests!)</p>
 </section>
-<section id="funzione-main-22" class="slide level1">
-<h1>Funzione <code>main</code> (2/2)</h1>
+<section id="the-main-function-22" class="slide level1">
+<h1>The <code>main</code> function (2/2)</h1>
 <div class="sourceCode" id="cb13"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main(argv):</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    parameters <span class="op">=</span> Parameters()</span>
@@ -556,93 +550,113 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a h
 <span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&#39;File &quot;</span><span class="sc">{</span>parameters<span class="sc">.</span>output_png_file_name<span class="sc">}</span><span class="ss">&quot; has been written to disk.&#39;</span>)</span></code></pre></div>
 </section>
-<section id="guida-per-lesercitazione" class="slide level1">
-<h1>Guida per l’esercitazione</h1>
+<section id="what-to-do-today" class="slide level1">
+<h1>What to do today</h1>
 </section>
-<section id="guida-per-lesercitazione-1" class="slide level1">
-<h1>Guida per l’esercitazione</h1>
-<ol>
-<li>Definire una funzione che calcoli la luminosità di un oggetto
-<code>Color</code> e la luminosità media di un
-<code>HdrImage</code>;</li>
-<li>Definire una funzione che normalizzi i valori di un
-<code>HdrImage</code> usando una certa luminosità media, opzionalmente
-passata come argomento;</li>
-<li>Definire una funzione che applichi la correzione per le sorgenti
-luminose;</li>
-<li>Implementare il <code>main</code> nel codice dell’applicazione, in
-modo che accetti 4 argomenti: il file PFM da leggere, il valore di <span
-class="math inline">a</span>, il valore di γ, e il nome del file
-PNG/JPEG/etc. da creare.</li>
-<li>Aggiungete <em>docstrings</em> a quelle classi, metodi, funzioni,
-tipi, etc. che vi sembrano bisognose di ciò, ma preoccupatevi che
-ciascun commento <strong>non sia pedante</strong>.</li>
-<li>Scegliete insieme una <a
-href="./tomasi-ray-tracing-04a.html#/licenze-duso">licenza
-d’uso</a>.</li>
+<section id="what-to-do-today-1" class="slide level1">
+<h1>What to do today</h1>
+<ol type="1">
+<li>Define a function that calculates the luminosity of a
+<code>Color</code> object and the average luminosity of an
+<code>HdrImage</code> and add tests;</li>
+<li>Define a function that normalizes the values of an
+<code>HdrImage</code> using a certain average luminosity, optionally
+passed as an argument and add tests;</li>
+<li>Define a function that applies the correction for light sources and
+add tests;</li>
+<li>Implement the <code>main</code> function in the application code, so
+that it accepts 4 arguments: the PFM file to read, the value of <span
+class="math inline">a</span>, the value of γ, and the name of the
+PNG/JPEG/etc. file to create.</li>
+<li>Add <em>docstrings</em> to those classes, methods, functions, types,
+etc. that you feel need them, but make sure that each comment <strong>is
+not pedantic</strong>.</li>
+<li>Choose together a <a
+href="./tomasi-ray-tracing-04a.html#/licenses">usage license</a>.</li>
 </ol>
 </section>
-<section id="immagini-di-riferimento" class="slide level1">
-<h1>Immagini di riferimento</h1>
+<section id="reference-images" class="slide level1">
+<h1>Reference Images</h1>
 <ul>
-<li><p>Se vi serve un’immagine PFM realistica, potete usare <a
+<li><p>If you need a realistic PFM image, you can use <a
 href="http://www.pauldebevec.com/Research/HDR/memorial.pfm">memorial.pfm</a>.</p></li>
-<li><p>C’è anche il sito <a
+<li><p>There is also the site <a
 href="https://www.pbrt.org/scenes-v3.html">Scenes for
 pbrt-v3</a>.</p></li>
 </ul>
 </section>
-<section id="indicazioni-per-dnimrust" class="slide level1">
-<h1>Indicazioni per D/Nim/Rust</h1>
+<section id="hints-for-c" class="slide level1">
+<h1>Hints for C++</h1>
 </section>
-<section id="indicazioni-per-dnimrust-1" class="slide level1">
-<h1>Indicazioni per D/Nim/Rust</h1>
+<section id="hints-for-c-1" class="slide level1">
+<h1>Hints for C++</h1>
 <ul>
-<li><p>Potete installare librerie nel vostro progetto con il vostro
-package manager:</p>
+<li><p>Many code examples shown today were in C++, so you can start from
+them.</p></li>
+<li><p><a href="https://github.com/fffaraz/awesome-cpp">Awesome C++</a>
+is a treasure trove of C++ libraries. Have a look at the section <a
+href="https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#image-processing">Image
+processing</a> to find a viable image processing library to use in your
+project.</p></li>
+<li><p>To document code, the most used tool is <a
+href="https://github.com/doxygen/doxygen">Doxygen</a>, but there are
+other choices available (See again the <a
+href="https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#documentation">section
+“Documentation” in the Awesome C++ website</a>.)</p></li>
+</ul>
+</section>
+<section id="hints-for-dnimrust" class="slide level1">
+<h1>Hints for D/Nim/Rust</h1>
+</section>
+<section id="hints-for-dnimrust-1" class="slide level1">
+<h1>Hints for D/Nim/Rust</h1>
 <ul>
-<li>In Nim, usate <code>nimble install NAME</code>;</li>
-<li>In Cargo, usate <code>cargo</code> seguendo <a
-href="https://doc.rust-lang.org/cargo/guide/dependencies.html">la
-guida</a>;</li>
-<li>In D, usate <code>dub add NAME</code>.</li>
+<li><p>You can install libraries in your project with your package
+manager:</p>
+<ul>
+<li>In Nim, use <code>nimble install NAME</code>;</li>
+<li>In Cargo, use <code>cargo</code> following <a
+href="https://doc.rust-lang.org/cargo/guide/dependencies.html">the
+guide</a>;</li>
+<li>In D, use <code>dub add NAME</code>.</li>
 </ul></li>
-<li><p>Queste librerie saranno installate come dipendenze del vostro
-programma, e non a livello di sistema.</p></li>
+<li><p>These libraries will be installed as dependencies of your
+program, and not system-wide.</p></li>
 </ul>
 </section>
-<section id="indicazioni-per-javakotlin" class="slide level1">
-<h1>Indicazioni per Java/Kotlin</h1>
+<section id="hints-for-javakotlin" class="slide level1">
+<h1>Hints for Java/Kotlin</h1>
 </section>
-<section id="indicazioni-per-javakotlin-1" class="slide level1">
-<h1>Indicazioni per Java/Kotlin</h1>
+<section id="hints-for-javakotlin-1" class="slide level1">
+<h1>Hints for Java/Kotlin</h1>
 <ul>
-<li><p>A differenza di Python, C++, C# e Julia, sia Java che Kotlin
-forniscono supporto per immagini PNG, JPEG, BMP e GIF tramite le
-librerie standard Java.</p></li>
-<li><p>A voi servono le classi <code>java.awt.image.BufferedImage</code>
-(immagine LDR) e <code>javax.imageio.ImageIO</code> (la classe che
-implementa i metodi per leggere/scrivere immagini LDR su file).</p></li>
+<li><p>Unlike Python, C++, C# and Julia, both Java and Kotlin provide
+support for PNG, JPEG, BMP and GIF images through the standard Java
+libraries.</p></li>
+<li><p>You need the classes <code>java.awt.image.BufferedImage</code>
+(LDR image) and <code>javax.imageio.ImageIO</code> (the class that
+implements the methods for reading/writing LDR images to
+files).</p></li>
 </ul>
 </section>
-<section id="codificare-il-colore" class="slide level1">
-<h1>Codificare il colore</h1>
+<section id="encoding-color" class="slide level1">
+<h1>Encoding Color</h1>
 <ul>
-<li><p>La classe <code>BufferedImage</code> permette di codificare il
-colore in tanti modi diversi. Se usate <code>TYPE_INT_RGB</code>, il
-colore non è una terna RGB ma un intero a 32 bit con questo formato:</p>
+<li><p>The <code>BufferedImage</code> class allows you to encode color
+in many different ways. If you use <code>TYPE_INT_RGB</code>, the color
+is not an RGB triplet but a 32-bit integer with this format:</p>
 <pre><code>00000000 rrrrrrrr gggggggg bbbbbbbb</code></pre>
-<p>dove <code>r</code> sono i bit del rosso, <code>g</code> quelli del
-verde e <code>b</code> quelli del blu. Di solito i colori si indicano
-usando la notazione esadecimale, perché in questo modo sono sempre a sei
-cifre, ad es. <code>0x12FA51</code>.</p></li>
-<li><p>Se <code>r</code>, <code>g</code> e <code>b</code> sono byte
-nell’intervallo [0, 255], potete usare una di queste due formule:</p>
+<p>where <code>r</code> are the bits for red, <code>g</code> for green
+and <code>b</code> for blue. Usually colors are indicated using
+hexadecimal notation, because this way they are always six digits,
+e.g. <code>0x12FA51</code>.</p></li>
+<li><p>If <code>r</code>, <code>g</code> and <code>b</code> are bytes in
+the range [0, 255], you can use one of these two formulas:</p>
 <pre><code>r * 65536 + g * 256 + b                    (r shl 16) + (g shl 8) + b</code></pre></li>
 </ul>
 </section>
-<section id="esempio-di-codice-kotlin" class="slide level1">
-<h1>Esempio di codice Kotlin</h1>
+<section id="kotlin-code-example" class="slide level1">
+<h1>Kotlin Code Example</h1>
 <div class="sourceCode" id="cb16"><pre
 class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span> <span class="op">=</span> <span class="dv">800</span></span>
@@ -659,43 +673,43 @@ class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb16-1"><a h
 <span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    ImageIO<span class="op">.</span>write<span class="op">(</span>args<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="st">&quot;PNG&quot;</span><span class="op">,</span> stream<span class="op">)</span></span>
 <span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
-<section id="linea-di-comando" class="slide level1">
-<h1>Linea di comando</h1>
+<section id="command-line" class="slide level1">
+<h1>Command Line</h1>
 <ul>
-<li><p>Java e Kotlin hanno un modo un po’ «barocco» di gestire i
-parametri da linea di comando.</p></li>
-<li><p>Il vostro eseguibile *non può** essere eseguito come un normale
-eseguibile Python/C++/C#:</p>
+<li><p>Java and Kotlin have a somewhat «baroque» way of handling command
+line parameters.</p></li>
+<li><p>Your executable <em>cannot</em> be run like a normal
+Python/C++/C# executable:</p>
 <pre class="text"><code>$ ./main.py input_file.pfm 0.3 1.0 output_file.png</code></pre>
-<p>perché è compilato per la JVM.</p></li>
-<li><p>Se usate Kotlin, bisogna passare da <code>gradlew</code>, che
-richiede che i parametri siano passati attraverso
+<p>because it is compiled for the JVM.</p></li>
+<li><p>If you are using Kotlin, you have to go through
+<code>gradlew</code>, which requires that parameters be passed through
 <code>--args</code>:</p>
 <pre class="text"><code>./gradlew run --args=&quot;input_file.pfm 0.3 1.0 output_file.png&quot;</code></pre></li>
 </ul>
 </section>
-<section id="indicazioni-per-c" class="slide level1">
-<h1>Indicazioni per C#</h1>
+<section id="guidelines-for-c" class="slide level1">
+<h1>Guidelines for C</h1>
 </section>
-<section id="importare-librerie" class="slide level1">
-<h1>Importare librerie</h1>
+<section id="importing-libraries" class="slide level1">
+<h1>Importing Libraries</h1>
 <ul>
-<li><p>La libreria ImageSharp supporta molti formati: JPEG, PNG, BMP,
-GIF, e TGA (un vecchio formato che non abbiamo trattato nella lezione di
-teoria).</p></li>
-<li><p>In C# si possono scaricare e installare automaticamente librerie,
-e specificare che vanno impiegate nei propri progetti senza bisogno di
-modificare Makefile e di usare <code>root-config</code>,
-<code>pkg-config</code> e cose simili.</p></li>
-<li><p>Aggiungete il package <a
+<li><p>The ImageSharp library supports many formats: JPEG, PNG, BMP,
+GIF, and TGA (an older format that we didn’t cover in the theory
+lesson).</p></li>
+<li><p>In C#, you can automatically download and install libraries and
+specify that they should be used in your projects without the need to
+modify Makefiles or use <code>root-config</code>,
+<code>pkg-config</code>, or similar tools.</p></li>
+<li><p>Add the <a
 href="https://docs.sixlabors.com/index.html">SixLabors.ImageSharp</a>
-alla libreria di classi (che forse avete chiamato
+package to the class library (which you may have named
 <code>Tracer</code>):</p>
 <pre class="text"><code>$ dotnet add package SixLabors.ImageSharp</code></pre></li>
 </ul>
 </section>
-<section id="salvare-file-png" class="slide level1">
-<h1>Salvare file PNG</h1>
+<section id="saving-png-files" class="slide level1">
+<h1>Saving PNG Files</h1>
 <div class="sourceCode" id="cb20"><pre
 class="sourceCode csharp"><code class="sourceCode cs"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Create a sRGB bitmap</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> bitmap <span class="op">=</span> <span class="kw">new</span> Image<span class="op">&lt;</span>Rgb24<span class="op">&gt;(</span>Configuration<span class="op">.</span><span class="fu">Default</span><span class="op">,</span> width<span class="op">,</span> height<span class="op">);</span></span>

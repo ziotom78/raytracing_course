@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Lezione 6</title>
+  <title>Lesson 6</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -56,7 +56,7 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Lezione 6</h1>
+  <h1 class="title">Lesson 6</h1>
   <p class="subtitle">Calcolo numerico per la generazione di immagini
 fotorealistiche</p>
   <p class="author">Maurizio Tomasi <a
@@ -64,233 +64,178 @@ href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="animazioni" class="slide level1">
-<h1>Animazioni</h1>
+<section id="animations" class="slide level1">
+<h1>Animations</h1>
 </section>
-<section id="creazione-di-animazioni" class="slide level1">
-<h1>Creazione di animazioni</h1>
+<section id="creating-animations" class="slide level1">
+<h1>Creating animations</h1>
 <ul>
-<li><p>La matematica delle trasformazioni che abbiamo introdotto nella
-scorsa lezione permette di creare facilmente immagini
-<em>statiche</em>.</p></li>
-<li><p>Cosa cambierebbe se volessimo invece realizzare
-<strong>animazioni</strong>?</p></li>
-<li><p>Vediamo subito un esempio pratico.</p></li>
+<li><p>The mathematics of transformations that we introduced in the last
+lesson allows us to easily create <em>static</em> images.</p></li>
+<li><p>What would change if we wanted to create
+<strong>animations</strong> instead?</p></li>
+<li><p>Let’s see a practical example.</p></li>
 </ul>
 </section>
-<section id="trasformazioni-nel-tempo-12" class="slide level1">
-<h1>Trasformazioni nel tempo (1/2)</h1>
+<section id="transformations-over-time-12" class="slide level1">
+<h1>Transformations over time (1/2)</h1>
 <ul>
-<li><p>Consideriamo un oggetto 3D centrato nell’origine.</p></li>
-<li><p>Immaginiamo che al tempo <span class="math inline">t = 0</span>
-dell’animazione l’oggetto debba essere alla posizione <span
-class="math inline">\vec k_0</span>, e al tempo <span
-class="math inline">t = 1</span> alla posizione <span
+<li><p>Consider a 3D object centered at the origin.</p></li>
+<li><p>Imagine that at time <span class="math inline">t = 0</span> of
+the animation the object must be at position <span
+class="math inline">\vec k_0</span>, and at time <span
+class="math inline">t = 1</span> at position <span
 class="math inline">\vec k_1</span>.</p></li>
-<li><p>Se voglio generare il fotogramma dell’oggetto al tempo generico
-<span class="math inline">0 \leq t \leq 1</span>, la trasformazione
-<span class="math inline">A</span> è banalmente</p>
-<p><span class="math display">
-A(t) = T_{\vec k_0 + (\vec k_1 - \vec k_0) t} =
-\begin{pmatrix}
-1&amp;0&amp;0&amp;k_{0x} + (k_{1x} - k_{0x})t\\
-0&amp;1&amp;0&amp;k_{0y} + (k_{1y} - k_{0y})t\\
-0&amp;0&amp;1&amp;k_{0z} + (k_{1z} - k_{0z})t\\
-0&amp;0&amp;0&amp;1
-\end{pmatrix}.
-</span></p></li>
+<li><p>If I want to generate the frame of the object at a generic time
+<span class="math inline">0 \leq t \leq 1</span>, the transformation
+<span class="math inline">A</span> is trivially</p>
+<p>$$ A(t) = T_{k_0 + (k_1 - k_0) t} = \begin{pmatrix}
+1&amp;0&amp;0&amp;k_{0x} + (k_{1x} - k_{0x})t\ 0&amp;1&amp;0&amp;k_{0y}
++ (k_{1y} - k_{0y})t\ 0&amp;0&amp;1&amp;k_{0</p></li>
 </ul>
-</section>
-<section id="trasformazioni-nel-tempo-22" class="slide level1">
-<h1>Trasformazioni nel tempo (2/2)</h1>
-<ul>
-<li><p>Le trasformazioni di scala sono ugualmente facili da animare: per
-scalare da <span class="math inline">s_0</span> a <span
-class="math inline">s_1</span>, posso definire <span
-class="math inline">\xi(t) = s_0 + (s_1 - s_0) t</span> e la
-trasformazione è</p>
-<p><span class="math display">
-A(t) = M_{s_0 + (s_1 - s_0) t} = M_{\xi(t)} =
-\begin{pmatrix}
-\xi(t)&amp;0&amp;0&amp;0\\
-0&amp;\xi(t)&amp;0&amp;0\\
-0&amp;0&amp;\xi(t)&amp;0\\
-0&amp;0&amp;0&amp;1
-\end{pmatrix}.
-</span></p></li>
-<li><p>Ma per le rotazioni non esiste alcuna formula semplice!</p></li>
-</ul>
-</section>
-<section id="animare-rotazioni" class="slide level1">
-<h1>Animare rotazioni</h1>
-<ul>
-<li><p>Non basta interpolare i coefficienti di due matrici di rotazione
-<span class="math display">
-R(0) = \begin{pmatrix}
-m_{11}&amp;m_{12}&amp;m_{13}\\
-m_{21}&amp;m_{22}&amp;m_{23}\\
-m_{31}&amp;m_{32}&amp;m_{33}
-\end{pmatrix},\ %
-R(1) = \begin{pmatrix}
-m&#39;_{11}&amp;m&#39;_{12}&amp;m&#39;_{13}\\
-m&#39;_{21}&amp;m&#39;_{22}&amp;m&#39;_{23}\\
-m&#39;_{31}&amp;m&#39;_{32}&amp;m&#39;_{33}
-\end{pmatrix},\quad
-</span> con la formula <span class="math inline">m_{ij} +
-\bigl(m&#39;_{ij} - m_{ij}\bigr) t</span>, perché non è garantito che
-l’interpolazione sia ancora ortogonale (<span class="math inline">R(t)
-R(t)^t = I</span>).</p></li>
-<li><p>Non esiste un modo semplice per interpolare le matrici di
-rotazione!</p></li>
-</ul>
-</section>
-<section id="esempio" class="slide level1">
-<h1>Esempio</h1>
 <iframe src="https://player.vimeo.com/video/538566733?title=0&amp;byline=0&amp;portrait=0&amp;speed=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="896" height="504" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Scanning strategy of a CMB spacecraft (LiteBIRD-like)">
 </iframe>
 </section>
-<section id="esempio-1" class="slide level1">
-<h1>Esempio</h1>
+<section id="example" class="slide level1">
+<h1>Example</h1>
 <ul>
-<li><p>Il satellite <em>Planck</em> aveva a bordo uno <em>star
-tracker</em> che identificava l’orientamento del satellite rispetto alle
-stelle fisse.</p></li>
-<li><p>L’orientamento (<em>attitude</em>) era misurato 10 volte al
-secondo (i dati scientifici venivano campionati ~100 volte al secondo) e
-trasmesso alla stazione di terra:</p>
+<li><p>The <em>Planck</em> satellite had a <em>star tracker</em> on
+board that identified the satellite’s orientation with respect to the
+fixed stars.</p></li>
+<li><p>The orientation (<em>attitude</em>) was measured 10 times per
+second (the scientific data were sampled ~100 times per second) and
+transmitted to the ground station:</p>
 <center>
 <p><img data-src="./media/planck-attitude-quaternions.svg" /></p>
 </center></li>
-<li><p>A terra serve l’orientamento allo stesso campionamento del dato
-scientifico, quindi è necessario interpolare.</p></li>
-<li><p>Per fare ciò, la pipeline di <em>data reduction</em> di Planck
-usava i <strong>quaternioni</strong>.</p></li>
+<li><p>On the ground, the orientation is needed at the same sampling
+rate as the scientific data, so interpolation is necessary.</p></li>
+<li><p>To do this, the Planck <em>data reduction</em> pipeline used
+<strong>quaternions</strong>.</p></li>
 </ul>
 </section>
-<section id="numeri-complessi-e-quaternioni" class="slide level1">
-<h1>Numeri complessi e quaternioni</h1>
+<section id="complex-numbers-and-quaternions" class="slide level1">
+<h1>Complex Numbers and Quaternions</h1>
 </section>
-<section id="breve-panoramica-storica" class="slide level1">
-<h1>Breve panoramica storica</h1>
+<section id="brief-historical-overview" class="slide level1">
+<h1>Brief Historical Overview</h1>
 <ul>
-<li>Antica Grecia: primi esempi di regola del parallelogramma</li>
-<li>Fine ’600: <a
+<li>Ancient Greece: first examples of the parallelogram rule</li>
+<li>Late 17th century: <a
 href="https://en.wikipedia.org/wiki/Gottfried_Wilhelm_Leibniz">Leibniz</a>
-sollecita la creazione di un modo per legare algebra e geometria</li>
-<li>Fine ’700: <a
-href="https://en.wikipedia.org/wiki/Caspar_Wessel">Wessel</a> introduce
-la somma e il prodotto di numeri complessi, che lega a proprietà
-geometriche, e ipotizza i quaternioni</li>
+urged the creation of a way to link algebra and geometry</li>
+<li>Late 18th century: <a
+href="https://en.wikipedia.org/wiki/Caspar_Wessel">Wessel</a> introduced
+the sum and product of complex numbers, linking them to geometric
+properties, and hypothesized quaternions</li>
 <li>1843: <a
 href="https://en.wikipedia.org/wiki/William_Rowan_Hamilton">Hamilton</a>
-pubblica il suo primo lavoro sui quaternioni</li>
+published his first work on quaternions</li>
 <li>1844–1878: <a
-href="https://en.wikipedia.org/wiki/Hermann_Grassmann">Grassmann</a> e
+href="https://en.wikipedia.org/wiki/Hermann_Grassmann">Grassmann</a> and
 <a
 href="https://en.wikipedia.org/wiki/William_Kingdon_Clifford">Clifford</a>
-propongono l’algebra geometrica</li>
+proposed geometric algebra</li>
 <li>1861: <a
 href="https://en.wikipedia.org/wiki/James_Clerk_Maxwell">Maxwell</a>
-formula le equazioni dell’elettromagnetismo, usando il formalismo dei
-quaternioni di Hamilton</li>
-<li>Fine ’800: <a
-href="https://en.wikipedia.org/wiki/Josiah_Willard_Gibbs">Gibbs</a> ed
-<a href="https://en.wikipedia.org/wiki/Oliver_Heaviside">Heavyside</a>
-propongono il calcolo vettoriale moderno, che in pochi decenni diventa
-il linguaggio dominante nella fisica</li>
+formulated the equations of electromagnetism, using Hamilton’s
+quaternion formalism</li>
+<li>Late 19th century: <a
+href="https://en.wikipedia.org/wiki/Josiah_Willard_Gibbs">Gibbs</a> and
+<a href="https://en.wikipedia.org/wiki/Oliver_Heaviside">Heaviside</a>
+proposed modern vector calculus, which within a few decades became the
+dominant language in physics</li>
 </ul>
 </section>
-<section id="numeri-complessi-e-quaternioni-1" class="slide level1">
-<h1>Numeri complessi e quaternioni</h1>
+<section id="complex-numbers-and-quaternions-1" class="slide level1">
+<h1>Complex Numbers and Quaternions</h1>
 <ul>
-<li><p>Nella scorsa lezione abbiamo espresso le rotazioni in forma
-matriciale.</p></li>
-<li><p>È possibile anche esprimere le rotazioni usando numeri complessi
-(in 2D) o quaternioni (in 3D).</p></li>
-<li><p>I quaternioni hanno molti vantaggi rispetto alle matrici di
-rotazione 3D, e sono usati in molti ambiti. (Persino le equazioni di
-Maxwell furono inizialmente espresse con i quaternioni).</p></li>
-<li><p>Noi <strong>non</strong> useremo quaternioni nel nostro codice,
-quindi questo argomento non sarà richiesto all’esame. Se volete
-approfondire, due ottimi testi sono <a
+<li><p>In the last lecture, we expressed rotations in matrix
+form.</p></li>
+<li><p>It is also possible to express rotations using complex numbers
+(in 2D) or quaternions (in 3D).</p></li>
+<li><p>Quaternions have many advantages over 3D rotation matrices and
+are used in many fields. (Even Maxwell’s equations were initially
+expressed with quaternions).</p></li>
+<li><p>We <strong>will not</strong> use quaternions in our code, so this
+topic will not be required for the exam. If you want to learn more, two
+excellent texts are <a
 href="https://www.amazon.com/Visualizing-Quaternions-Kaufmann-Interactive-Technology/dp/0120884003"><em>Visualizing
-quaternions</em></a> (A. J. Hanson) e <a
+quaternions</em></a> (A. J. Hanson) and <a
 href="https://link.springer.com/book/10.1007/978-0-85729-760-0"><em>Quaternions
 for computer graphics</em></a> (J. A. Vince).</p></li>
 </ul>
 </section>
-<section id="numeri-complessi" class="slide level1">
-<h1>Numeri complessi</h1>
+<section id="complex-numbers" class="slide level1">
+<h1>Complex Numbers</h1>
 <ul>
-<li><p>L’algebra ℂ dei numeri complessi contiene elementi <span
+<li><p>The algebra ℂ of complex numbers contains elements <span
 class="math inline">z = (\Re z, \Im z) = (x, y)</span>.</p></li>
-<li><p>Il prodotto si definisce come</p>
+<li><p>The product is defined as</p>
 <p><span class="math display">
 z_1 \cdot z_2 = (\Re z_1\,\Re z_2 - \Im z_1\,\Im z_2, \Re z_1\,\Im z_2 +
 \Im z_1\,\Re z_2).
 </span></p></li>
-<li><p>Introducendo <span class="math inline">i</span> tale che <span
-class="math inline">i^2 = -1</span> e scrivendo i numeri complessi nella
-forma <span class="math inline">z = x + i y</span>, la formula del
-prodotto è più semplice da ricordare:</p>
+<li><p>Introducing <span class="math inline">i</span> such that <span
+class="math inline">i^2 = -1</span> and writing complex numbers in the
+form <span class="math inline">z = x + i y</span>, the product formula
+is easier to remember:</p>
 <p><span class="math display">
 (x_1 + i y_1) \cdot (x_2 + i y_2) = x_1 x_2 - y_1 y_2 + i \bigl(x_1 y_2
 + x_2 y_1\bigr).
 </span></p></li>
 </ul>
 </section>
-<section id="rotazioni-e-numeri-complessi" class="slide level1">
-<h1>Rotazioni e numeri complessi</h1>
+<section id="rotations-and-complex-numbers" class="slide level1">
+<h1>Rotations and Complex Numbers</h1>
 <ul>
-<li><p>Sul piano è possibile codificare una rotazione <span
-class="math inline">R(\theta)</span> attorno all’origine tramite il
-numero complesso</p>
+<li><p>On the plane, it is possible to encode a rotation <span
+class="math inline">R(\theta)</span> around the origin using the complex
+number</p>
 <p><span class="math display">
 r(\theta) = e^{i \theta} = \cos\theta + i\sin\theta
 </span></p>
-<p>se si associa al vettore da ruotare <span class="math inline">\vec{v}
-= x \hat e_x + y \hat e_z</span> il numero complesso</p>
+<p>if the vector to be rotated <span class="math inline">\vec{v} = x
+\hat e_x + y \hat e_z</span> is associated with the complex number</p>
 <p><span class="math display">
 z = x + iy.
 </span></p>
-<p>Sotto queste ipotesi, l’espressione <span
-class="math inline">r(\theta) \cdot z</span> è equivalente a <span
+<p>Under these assumptions, the expression <span
+class="math inline">r(\theta) \cdot z</span> is equivalent to <span
 class="math inline">R(\theta)\vec{v}</span>.</p></li>
-<li><p>Anziché i 4 coefficienti della matrice <span
-class="math inline">R(\theta)</span>, servono solo <span
-class="math inline">\Re z</span> e <span class="math inline">\Im
-z</span>.</p></li>
+<li><p>Instead of the 4 coefficients of the matrix <span
+class="math inline">R(\theta)</span>, only <span class="math inline">\Re
+z</span> and <span class="math inline">\Im z</span> are needed.</p></li>
 </ul>
 </section>
-<section id="da-2d-a-3d" class="slide level1">
-<h1>Da 2D a 3D</h1>
+<section id="from-2d-to-3d" class="slide level1">
+<h1>From 2D to 3D</h1>
 <ul>
-<li><p>I <a
-href="https://en.wikipedia.org/wiki/Quaternion"><em>quaternioni</em></a>
-generalizzano in 3D la capacità dei numeri complessi di codificare
-rotazioni. Sono stati proposti da <a
+<li><p><a
+href="https://en.wikipedia.org/wiki/Quaternion"><em>Quaternions</em></a>
+generalize the ability of complex numbers to encode rotations in 3D.
+They were proposed by <a
 href="https://en.wikipedia.org/wiki/William_Rowan_Hamilton">W. R. Hamilton</a>
-(quello dell’Hamiltoniana) nel 1843 proprio per estendere ℂ (“inventato”
-pochi decenni prima), e la loro algebra si indica con ℍ.</p></li>
-<li><p>Se un numero complesso <span class="math inline">z</span> è
-formato da due coefficienti (la parte reale <span
-class="math inline">\Re z</span> e la parte immaginaria <span
-class="math inline">\Im z</span>), un quaternione <span
-class="math inline">q \in \mathbb{H}</span> è composto da
-<strong>quattro</strong> coefficienti:</p>
+(the one from the Hamiltonian) in 1843 precisely to extend ℂ (“invented”
+a few decades earlier), and their algebra is indicated by ℍ.</p></li>
+<li><p>If a complex number <span class="math inline">z</span> is formed
+by two coefficients (the real part <span class="math inline">\Re
+z</span> and the imaginary part <span class="math inline">\Im z</span>),
+a quaternion <span class="math inline">q \in \mathbb{H}</span> is
+composed of <strong>four</strong> coefficients:</p>
 <p><span class="math display">
 q = (q_0, q_1, q_2, q_3) = \bigl(q_0, \vec{q}\bigr),
 </span></p>
-<p>Il termine <span class="math inline">q_0</span> è detto <em>parte
-scalare</em>, mentre <span class="math inline">\vec{q} = (q_1\ q_2\
-q_3)</span> è la <em>parte vettoriale</em>.</p></li>
+<p>The term <span class="math inline">q_0</span> is called the
+<em>scalar part</em>, while <span class="math inline">\vec{q} = (q_1\
+q_2\ q_3)</span> is the <em>vector part</em>.</p></li>
 </ul>
 </section>
-<section id="prodotto-di-quaternioni" class="slide level1">
-<h1>Prodotto di quaternioni</h1>
+<section id="quaternion-product" class="slide level1">
+<h1>Quaternion Product</h1>
 <ul>
-<li><p>Il prodotto <span class="math inline">p q</span> tra due
-quaternioni è definito così:</p>
+<li><p>The product <span class="math inline">p q</span> between two
+quaternions is defined as follows:</p>
 <p><span class="math display">
 p q = \begin{pmatrix}
 p_0 q_0 - p_1 q_1 - p_2 q_2 - p_3 q_3\\
@@ -299,21 +244,21 @@ p_2 q_0 + p_0 q_2 + p_3 q_1 - p_1 q_3\\
 p_3 q_0 + p_0 q_3 + p_1 q_2 - p_2 q_1
 \end{pmatrix}.
 </span></p></li>
-<li><p>Questo prodotto soddisfa tutte le proprietà di un’algebra
-associativa, ma <strong>non è commutativo</strong>: <span
-class="math inline">p q \not= q p</span>. (Prima algebra di questo tipo
-nella storia!).</p></li>
+<li><p>This product satisfies all the properties of an associative
+algebra but <strong>is not commutative</strong>: <span
+class="math inline">p q \not= q p</span>. (First algebra of this kind in
+history!).</p></li>
 </ul>
 </section>
-<section id="notazione-per-i-quaternioni" class="slide level1">
-<h1>Notazione per i quaternioni</h1>
+<section id="quaternion-notation" class="slide level1">
+<h1>Notation for Quaternions</h1>
 <ul>
-<li><p>Hamilton inventò una notazione molto comoda per i quaternioni:
+<li><p>Hamilton invented a very convenient notation for quaternions:
 <span class="math display">
 q = q_0 + q_1 \mathbf{i} + q_2 \mathbf{j} + q_3 \mathbf{k}.
 </span></p></li>
-<li><p>Se si definiscono le seguenti regole, il prodotto tra quaternioni
-della slide precedente deriva conseguentemente:</p>
+<li><p>If the following rules are defined, the product between
+quaternions from the previous slide follows consequently:</p>
 <p><span class="math display">
 \begin{aligned}
 \mathbf{i} \mathbf{i} &amp;= -1, &amp;\mathbf{i} \mathbf{j}
@@ -326,201 +271,148 @@ della slide precedente deriva conseguentemente:</p>
 </span></p></li>
 </ul>
 </section>
-<section id="prodotto-interno" class="slide level1">
-<h1>Prodotto interno</h1>
+<section id="inner-product" class="slide level1">
+<h1>Inner Product</h1>
 <ul>
-<li><p>È possibile definire un prodotto interno tra quaternioni:</p>
-<p><span class="math display">
-p \cdot q = p_0 q_0 + p_1 q_1 + p_2 q_2 + p_3 q_3 = p_0 q_0 + \vec{p}
-\cdot \vec{q},
-</span></p>
-<p>a cui è naturale associare una norma:</p>
-<p><span class="math display">
-\left\|q\right\| = \sqrt{q \cdot q} = \sqrt{q_0^2 + q_1^2 + q_2^2 +
-q_3^2} = \sqrt{q_0^2 + \left\|\vec{q}\right\|}.
-</span></p></li>
-<li><p>È definita anche l’operazione di coniugazione:</p>
-<p><span class="math display">
-q^* = (q_0, -q_1, -q_2, -q_3) = (q_0, -\vec{q}).
-</span></p></li>
+<li><p>It is possible to define an inner product between
+quaternions:</p>
+<p>$$ p q = p_0 q_0 + p_1 q_</p></li>
 </ul>
 </section>
-<section id="rotazioni-3d-con-quaternioni" class="slide level1">
-<h1>Rotazioni 3D con quaternioni</h1>
+<section id="are-quaternions-efficient" class="slide level1">
+<h1>Are Quaternions Efficient?</h1>
 <ul>
-<li><p>Dato un vettore normalizzato <span class="math inline">\hat
-n</span> e un angolo <span class="math inline">\theta</span>, ad esso si
-associa il quaternione</p>
-<p><span class="math display">
-r(\theta, \hat n) = \left(\cos\frac\theta2, \sin\frac\theta2\,\hat
-n\right),
-</span></p>
-<p>che rappresenta la rotazione di un angolo <span
-class="math inline">\theta</span> intorno a <span
-class="math inline">\hat n</span>.</p></li>
-<li><p>Se <span class="math inline">\left\|\hat n\right\| = 1</span>,
-vale ovviamente che <span class="math inline">\left\|r(\theta, \hat
-n)\right\| = 1</span>.</p></li>
-<li><p>Vediamo ora come rappresentare una rotazione 3D mediante <span
-class="math inline">r(\theta, \hat n)</span>.</p></li>
+<li><p>A rotation matrix must be stored by saving 9 coefficients in
+memory, while a quaternion requires only 4.</p></li>
+<li><p>Should we therefore use quaternions to represent rotations in our
+code?</p></li>
+<li><p>Generally <strong>no</strong>! If you explicitly write the
+sequence of operations needed to rotate a vector, you’ll see that the
+matrix representation requires fewer calculations.</p></li>
+<li><p>What are quaternions useful for, then?</p></li>
 </ul>
 </section>
-<section id="applicazione-della-rotazione." class="slide level1">
-<h1>Applicazione della rotazione.</h1>
-<ul>
-<li><p>Un generico vettore <span class="math inline">\vec v</span> viene
-ruotato in <span class="math inline">\vec v&#39;</span> tramite questo
-prodotto di tre quaternioni:</p>
-<p><span class="math display">
-\vec v&#39; = r(\theta, \hat n) \cdot (0, \vec v) \cdot r^{-1}(\theta,
-\hat n),
-</span> dove <span class="math inline">(0, \vec v)</span> rappresenta il
-quaternione associato a <span class="math inline">\vec
-v</span>.</p></li>
-<li><p>Intuitivamente, <span class="math inline">r(\theta, \hat
-n)</span> compare <strong>due</strong> volte nella formula perché
-dipende dall’angolo <span class="math inline">\theta/2</span>, e non
-semplicemente dall’angolo <span
-class="math inline">\theta</span>.</p></li>
-<li><p>Dalla formula è evidente che <span class="math inline">r(\theta,
-\hat n)</span> e <span class="math inline">-r(\theta, \hat n)</span>
-rappresentano la medesima rotazione.</p></li>
-</ul>
-</section>
-<section id="i-quaternioni-sono-efficienti" class="slide level1">
-<h1>I quaternioni sono efficienti?</h1>
-<ul>
-<li><p>Una matrice di rotazione deve essere memorizzata salvando in
-memoria 9 coefficienti, mentre un quaternione ne richiede appena
-4.</p></li>
-<li><p>Dovremmo quindi usare quaternioni per rappresentare le rotazioni
-nel nostro codice?</p></li>
-<li><p>In generale <strong>no</strong>! Se si scrive esplicitamente la
-sequenza di operazioni necessaria per ruotare un vettore, si può
-dimostrare che la rappresentazione matriciale richiede meno
-calcoli.</p></li>
-<li><p>A cosa sono utili allora i quaternioni?</p></li>
-</ul>
-</section>
-<section id="slerp" class="slide level1">
+<section id="slerp-and-rotations" class="slide level1">
 <h1><em>Slerp</em></h1>
 <ul>
-<li><p>Col termine <em>slerp</em> si intende l’interpolazione <span
-class="math inline">r(t)</span> tra due rotazioni <span
-class="math inline">r_1</span> e <span
+<li><p>The term <em>slerp</em> refers to the interpolation <span
+class="math inline">r(t)</span> between two rotations <span
+class="math inline">r_1</span> and <span
 class="math inline">r_2</span>.</p></li>
-<li><p>La formula di <span class="math inline">r(t) \in
-\mathbb{H}</span> per <span class="math inline">t \in [0, 1]</span> è
-banalmente</p>
+<li><p>The formula for <span class="math inline">r(t) \in
+\mathbb{H}</span> for <span class="math inline">t \in [0, 1]</span> is
+simply</p>
 <p><span class="math display">
 r(t) = \frac{\sin(1 - t)\theta}{\sin\theta}r_1 + \frac{\sin
 t\theta}{\sin\theta}r_2,
 </span></p>
-<p>dove <span class="math inline">\theta</span> è l’angolo tra i due
-quaternioni <span class="math inline">r_1</span> e <span
-class="math inline">r_2</span> (con <span
+<p>where <span class="math inline">\theta</span> is the angle between
+the two quaternions <span class="math inline">r_1</span> and <span
+class="math inline">r_2</span> (with <span
 class="math inline">\left\|r_1\right\| = \left\|r_2\right\| =
 1</span>):</p>
 <p><span class="math display">
 \theta = r_1 \cdot r_2.
 </span></p></li>
-<li><p>È facile dimostrare che <span class="math inline">r(t)</span>
-rappresenta una rotazione <span class="math inline">\forall t\in [0,
+<li><p>It is easy to show that <span class="math inline">r(t)</span>
+represents a rotation <span class="math inline">\forall t\in [0,
 1]</span>.</p></li>
 </ul>
 </section>
-<section id="esempio-di-slerp" class="slide level1">
-<h1>Esempio di slerp</h1>
+<section id="example-of-slerp" class="slide level1">
+<h1>Example of Slerp</h1>
 <p>
 <embed width="640px" height="640px" src="js/slerp.html"/>
 </p>
 </section>
-<section id="animare-le-trasformazioni" class="slide level1">
-<h1>Animare le trasformazioni</h1>
+<section id="animating-transformations" class="slide level1">
+<h1>Animating Transformations</h1>
 <ul>
-<li><p>Rappresentare le rotazioni con i quaternioni riempie l’ultimo
-“buco” che ci mancava: tutte le trasformazioni presentate nella lezione
-precedente sono facilmente interpolabili:</p>
+<li><p>Representing rotations with quaternions fills the last missing
+“hole”: all the transformations presented in the previous lesson are
+easily interpolable:</p>
 <ol type="1">
-<li>Traslazioni;</li>
-<li>Trasformazioni di scala;</li>
-<li>Rotazioni 🥳.</li>
+<li>Translations;</li>
+<li>Scale transformations;</li>
+<li>Rotations 🥳.</li>
 </ol></li>
-<li><p>La pagina <a
+<li><p>The page <a
 href="https://enkimute.github.io/LookMaNoMatrices/">Look, Ma, No
-Matrices!</a> mostra un simpatico esempio…</p></li>
-<li><p>…che usa un’estensione del concetto di “quaternione”, i
-<strong>multivettori</strong>, per generare gli effetti mostrati in
-fondo alla pagina.</p></li>
-<li><p>Vediamo quindi cosa sono i multivettori e le algebre di
-Clifford.</p></li>
+Matrices!</a> shows a nice example…</p></li>
+<li><p>…which uses an extension of the concept of “quaternion”,
+<strong>multivectors</strong>, to generate the effects shown at the
+bottom of the page.</p></li>
+<li><p>Let’s see then what multivectors and Clifford algebras
+are.</p></li>
 </ul>
 </section>
-<section id="algebre-di-clifford" class="slide level1">
-<h1>Algebre di Clifford</h1>
+<section id="clifford-algebras" class="slide level1">
+<h1>Clifford’s Algebras</h1>
 </section>
-<section id="limiti-della-geometria-classica" class="slide level1">
-<h1>Limiti della geometria classica</h1>
+<section id="limits-of-classical-geometry" class="slide level1">
+<h1>Limits of Classical Geometry</h1>
 <ul>
-<li><p>Esistono vettori e pseudovettori, che seguono regole di
-trasformazione diverse.</p></li>
-<li><p>Per descrivere le rotazioni su un piano 2D è necessario usare
-(pseudo)vettori 3D, come il <em>momento angolare</em> <span
-class="math inline">\vec{L} = \vec{r} \times \vec{p}</span> o il
-<em>momento torcente</em> <span class="math inline">\vec{\tau} = \vec r
-\times \vec F</span>.</p></li>
-<li><p>Il prodotto vettoriale è definibile solo per <span
-class="math inline">\mathbb{R}^3</span> (e <span
+<li><p>There exist vectors and pseudovectors, which follow different
+transformation rules.</p></li>
+<li><p>To describe rotations on a 2D plane, it is necessary to use 3D
+(pseudo)vectors, like <em>angular momentum</em> <span
+class="math inline">\vec{L} = \vec{r} \times \vec{p}</span> or
+<em>torque</em> <span class="math inline">\vec{\tau} = \vec r \times
+\vec F</span>.</p></li>
+<li><p>The cross product is definable only for <span
+class="math inline">\mathbb{R}^3</span> (and <span
 class="math inline">\mathbb{R}^7</span>, <a
-href="https://en.m.wikipedia.org/wiki/Seven-dimensional_cross_product">a
-causa degli ottonioni</a>…), e ha unità strane: se <span
-class="math inline">v</span> e <span class="math inline">w</span> sono
-in metri, <span class="math inline">v \times w</span> è in m².</p></li>
-<li><p>La rappresentazione delle rotazioni richiede algebre via via più
-complicate man mano che aumentano le dimensioni (numeri complessi,
-quaternioni…).</p></li>
-<li><p>Non è possibile invertire i prodotti tra vettori: se <span
-class="math inline">\vec a \times \vec x = \vec b</span> con <span
-class="math inline">\vec a</span> e <span class="math inline">\vec
-b</span> noti e <span class="math inline">x</span> vettore incognito,
-non c’è modo di ricostruire univocamente <span class="math inline">\vec
+href="https://en.m.wikipedia.org/wiki/Seven-dimensional_cross_product">due
+to octonions</a>…), and has strange units: if <span
+class="math inline">v</span> and <span class="math inline">w</span> are
+in meters, <span class="math inline">v \times w</span> is in
+m².</p></li>
+<li><p>The representation of rotations requires increasingly complicated
+algebras as the dimensions increase (complex numbers,
+quaternions…).</p></li>
+<li><p>It is not possible to invert products between vectors: if <span
+class="math inline">\vec a \times \vec x = \vec b</span> with <span
+class="math inline">\vec a</span> and <span class="math inline">\vec
+b</span> known and <span class="math inline">x</span> an unknown vector,
+there is no way to uniquely reconstruct <span class="math inline">\vec
 x</span>.</p></li>
 </ul>
 </section>
-<section id="algebra-geometrica" class="slide level1">
-<h1>Algebra geometrica</h1>
+<section id="geometric-algebra" class="slide level1">
+<h1>Geometric Algebra</h1>
 <ul>
-<li><p>Le <strong>algebre di Clifford</strong>, e in particolare
-l’<em>algebra geometrica</em>, superano tutti i problemi elencati nella
-slide precedente.</p></li>
-<li><p>Si tratta di una branca della matematica che rifonda l’algebra
-lineare classica, e fornisce un’interpretazione più intuitiva e coerente
-di certe proprietà geometriche. <a
+<li><p><strong>Clifford algebras</strong>, and in particular
+<em>geometric algebra</em>, overcome all the problems listed in the
+previous slide.</p></li>
+<li><p>It is a branch of mathematics that rebuilds classical linear
+algebra and provides a more intuitive and coherent interpretation of
+certain geometric properties. <a
 href="https://en.wikipedia.org/wiki/William_Kingdon_Clifford">Clifford</a>
-la propose nel 1878.</p></li>
-<li><p>L’<strong>algebra geometrica</strong> è l’applicazione delle
-algebre di Clifford al caso di <span
-class="math inline">\mathbb{R}^n</span>, ed è ciò che solitamente
-interessa ai fisici. Noi ci limiteremo a queste.</p></li>
+proposed it in 1878.</p></li>
+<li><p><strong>Geometric algebra</strong> is the application of Clifford
+algebras to the case of <span class="math inline">\mathbb{R}^n</span>,
+and is what usually interests physicists. We will limit ourselves to
+these.</p></li>
 </ul>
 </section>
-<section id="il-prodotto-esterno-o-di-grassmann" class="slide level1">
-<h1>Il prodotto esterno (o di Grassmann)</h1>
+<section id="the-exterior-product-or-grassmans" class="slide level1">
+<h1>The Exterior Product (or Grassman’s)</h1>
 </section>
-<section id="prodotto-tra-vettori" class="slide level1">
-<h1>Prodotto tra vettori</h1>
+<section id="product-between-vectors" class="slide level1">
+<h1>Product between Vectors</h1>
 <ul>
-<li><p>Il problema del prodotto vettoriale <span
-class="math inline">\times</span> è che è definito solo su ℝ³, mentre
-noi desideriamo un’algebra generale!</p></li>
-<li><p>Nel 1840, <a
+<li><p>The problem with the cross product <span
+class="math inline">\times</span> is that it is defined only on ℝ³,
+while we desire a general algebra!</p></li>
+<li><p>In 1840, <a
 href="https://en.wikipedia.org/wiki/Hermann_Grassmann">Hermann Günter
-Grassmann</a> (1809–1877) definì il prodotto esterno <span
-class="math inline">\vec v \wedge \vec w</span> tra due vettori <span
-class="math inline">v</span> e <span class="math inline">w</span> (oggi
-chiamato anche <em>prodotto di Grassmann</em>) come l’area orientata sul
-piano <span class="math inline">\mathrm{Span}(\vec v, \vec w)</span> con
-superficie</p>
+Grassmann</a> (1809–1877) defined the exterior product <span
+class="math inline">\vec v \wedge \vec w</span> between two vectors
+<span class="math inline">v</span> and <span
+class="math inline">w</span> (today also called the <em>Grassmann
+product</em>) as the oriented area on the plane <span
+class="math inline">\mathrm{Span}(\vec v, \vec w)</span> with surface
+area</p>
 <p><span class="math display">
 \left\|\vec v\right\|\,\left\|\vec w\right\|\,\sin\theta.
 </span></p>
@@ -529,166 +421,167 @@ superficie</p>
 </center></li>
 </ul>
 </section>
-<section id="aree-orientate" class="slide level1">
-<h1>Aree orientate</h1>
+<section id="oriented-areas" class="slide level1">
+<h1>Oriented Areas</h1>
 <ul>
-<li><p>Un’area orientata come <span class="math inline">\vec v \wedge
-\vec w</span> si dice <strong>bivettore</strong>.</p></li>
-<li><p>I bivettori sono orientati proprio come i comuni vettori:
-cambiare segno a un bivettore significa invertirne il verso di
-percorrenza (∧ è <strong>antisimmetrico</strong>).</p>
+<li><p>An oriented area like <span class="math inline">\vec v \wedge
+\vec w</span> is called a <strong>bivector</strong>.</p></li>
+<li><p>Bivectors are oriented just like ordinary vectors: changing the
+sign of a bivector means reversing its direction of travel (∧ is
+<strong>antisymmetric</strong>).</p>
 <center>
 <p><img data-src="./media/bivector-anticommutativity.svg" /></p>
 </center></li>
-<li><p>Questo è analogo a quanto succede con un vettore: <span
+<li><p>This is analogous to what happens with a vector: <span
 class="math inline">\vec v \rightarrow - \vec v</span>.</p></li>
-<li><p>Così come un vettore <span class="math inline">\vec v</span> non
-dipende dal punto di applicazione, un bivettore non dipende dal suo
-perimetro («forma»).</p></li>
+<li><p>Just as a vector <span class="math inline">\vec v</span> does not
+depend on the point of application, a bivector does not depend on its
+perimeter («shape»).</p></li>
 </ul>
 </section>
-<section id="forma-del-prodotto-esterno" class="slide level1">
-<h1>«Forma» del prodotto esterno</h1>
+<section id="shape-of-the-exterior-product" class="slide level1">
+<h1>«Shape» of the Exterior Product</h1>
 <center>
 <img data-src="./media/bivectors-meaning.svg" />
 </center>
-<p>Può suonare strano! Però ciò garantisce che <span
+<p>It may sound strange! However, this guarantees that <span
 class="math inline">(2\vec v) \wedge \vec w = \vec v \wedge (2\vec
 w)</span>.</p>
 </section>
-<section id="significato-del-prodotto-esterno" class="slide level1">
-<h1>Significato del prodotto esterno</h1>
+<section id="meaning-of-the-exterior-product" class="slide level1">
+<h1>Meaning of the Exterior Product</h1>
 <ul>
-<li><p>Queste sono le informazioni che codifica un prodotto esterno
-<span class="math inline">\vec v \wedge \vec w</span>:</p>
-<ol>
-<li>Estensione della superficie (es., 15 m²);</li>
-<li>Inclinazione del piano su cui si trova la superficie;</li>
-<li>Orientamento della superficie.</li>
+<li><p>This is the information encoded by an exterior product <span
+class="math inline">\vec v \wedge \vec w</span>:</p>
+<ol type="1">
+<li>Extent of the surface (e.g., 15 m²);</li>
+<li>Inclination of the plane on which the surface lies;</li>
+<li>Orientation of the surface.</li>
 </ol></li>
-<li><p>Queste informazioni non sono invece codificate:</p>
-<ol>
-<li>Forma della superficie;</li>
-<li>Posizione del piano rispetto all’origine degli assi.</li>
+<li><p>This information is <em>not</em> encoded:</p>
+<ol type="1">
+<li>Shape of the surface;</li>
+<li>Position of the plane with respect to the origin of the axes.</li>
 </ol></li>
-<li><p>Vediamo ora che è possibile definire le operazioni di prodotto
-scalare-bivettore e somma sui bivettori: ciò fa di essi uno
-<strong>spazio vettoriale</strong>.</p></li>
+<li><p>We now see that it is possible to define scalar-bivector product
+and addition operations on bivectors: this makes them a <strong>vector
+space</strong>.</p></li>
 </ul>
 </section>
-<section id="prodotto-scalare-bivettore" class="slide level1">
-<h1>Prodotto scalare-bivettore</h1>
+<section id="scalar-bivector-product" class="slide level1">
+<h1>Scalar-Bivector Product</h1>
 <ul>
-<li><p>L’espressione <span class="math inline">\lambda \vec v \wedge
-\vec w</span> con <span class="math inline">\lambda \in
-\mathbb{R}</span> è ancora un bivettore.</p></li>
-<li><p>L’area di <span class="math inline">\lambda \vec v \wedge \vec
-w</span> è <span class="math inline">\left|\lambda\right|</span> volte
-l’area di <span class="math inline">\vec v \wedge \vec
+<li><p>The expression <span class="math inline">\lambda \vec v \wedge
+\vec w</span> with <span class="math inline">\lambda \in
+\mathbb{R}</span> is still a bivector.</p></li>
+<li><p>The area of <span class="math inline">\lambda \vec v \wedge \vec
+w</span> is <span class="math inline">\left|\lambda\right|</span> times
+the area of <span class="math inline">\vec v \wedge \vec
 w</span>.</p></li>
-<li><p>Se <span class="math inline">\lambda &lt; 0</span>, il verso si
-inverte, altrimenti resta lo stesso.</p>
+<li><p>If <span class="math inline">\lambda &lt; 0</span>, the direction
+is reversed, otherwise it remains the same.</p>
 <center>
 <p><img data-src="./media/bivector-scalar-product.svg" /></p>
 </center></li>
 </ul>
 </section>
-<section id="somma-di-bivettori" class="slide level1">
-<h1>Somma di bivettori</h1>
+<section id="sum-of-bivectors" class="slide level1">
+<h1>Sum of Bivectors</h1>
 <center>
 <img data-src="./media/bivector-sum.svg" height="640" />
 </center>
 </section>
-<section id="somma-di-bivettori-1" class="slide level1">
-<h1>Somma di bivettori</h1>
+<section id="sum-of-bivectors-1" class="slide level1">
+<h1>Sum of Bivectors</h1>
 <ul>
-<li><p>Se due bivettori <span class="math inline">B_1</span> e <span
-class="math inline">B_2</span> sono coplanari, allora:</p>
-<ol>
-<li><span class="math inline">B_1 + B_2</span> è un bivettore sul
-medesimo piano;</li>
-<li>La sua superficie è pari alla somma con segno delle due (dove il
-segno è determinato dal verso).</li>
+<li><p>If two bivectors <span class="math inline">B_1</span> and <span
+class="math inline">B_2</span> are coplanar, then:</p>
+<ol type="1">
+<li><span class="math inline">B_1 + B_2</span> is a bivector on the same
+plane;</li>
+<li>Its surface area is equal to the signed sum of the two (where the
+sign is determined by the direction).</li>
 </ol></li>
-<li><p>Se non sono coplanari, si considera un vettore <span
-class="math inline">\vec w</span> allineato lungo la retta intersezione
-dei due piani e si individuano <span class="math inline">\vec u</span> e
-<span class="math inline">\vec v</span> tali che</p>
+<li><p>If they are not coplanar, a vector <span class="math inline">\vec
+w</span> is considered along the line of intersection of the two planes,
+and <span class="math inline">\vec u</span> and <span
+class="math inline">\vec v</span> are identified such that</p>
 <p><span class="math display">
 B_1 = \vec u \wedge \vec w,\quad B_2 = \vec v \wedge \vec w.
 </span></p>
-<p>Dalle proprietà di <span class="math inline">\wedge</span> segue che
-<span class="math inline">B_1 + B_2 = (\vec u + \vec v) \wedge \vec
-w</span>.</p></li>
+<p>From the properties of <span class="math inline">\wedge</span> it
+follows that <span class="math inline">B_1 + B_2 = (\vec u + \vec v)
+\wedge \vec w</span>.</p></li>
 </ul>
 </section>
-<section id="base-dei-bivettori" class="slide level1">
-<h1>Base dei bivettori</h1>
+<section id="basis-of-bivectors" class="slide level1">
+<h1>Basis of Bivectors</h1>
 <ul>
-<li><p>La formula della somma appare complicata, ma permette di
-costruire uno spazio vettoriale.</p></li>
-<li><p>Essendo uno spazio vettoriale, è possibile decomporre i bivettori
-usando <strong>basi</strong>, e in questo modo la somma è banale da
-capire: tanto semplice quanto sommare <span class="math inline">\vec v =
-3\hat e_1 + 2\hat e_2</span> a <span class="math inline">\vec w = -2\hat
-e_1 + \hat e_2</span>.</p></li>
-<li><p>Possiamo definire la <strong>base canonica</strong> come
-l’insieme dei tre bivettori di area unitaria sui piani <span
-class="math inline">xy</span>, <span class="math inline">yz</span> e
-<span class="math inline">xz</span>:</p>
+<li><p>The sum formula appears complicated, but it allows the
+construction of a vector space.</p></li>
+<li><p>Being a vector space, it is possible to decompose bivectors using
+<strong>bases</strong>, and in this way the sum is trivial to
+understand: as simple as adding <span class="math inline">\vec v = 3\hat
+e_1 + 2\hat e_2</span> to <span class="math inline">\vec w = -2\hat e_1
++ \hat e_2</span>.</p></li>
+<li><p>We can define the <strong>canonical basis</strong> as the set of
+the three bivectors of unit area on the <span
+class="math inline">xy</span>, <span class="math inline">yz</span> and
+<span class="math inline">xz</span> planes:</p>
 <p><span class="math display">
 \hat e_1 \wedge \hat e_2, \quad \hat e_2 \wedge \hat e_3, \quad \hat e_1
 \wedge \hat e_3.
 </span></p></li>
 </ul>
 </section>
-<section id="base-dei-bivettori-1" class="slide level1">
-<h1>Base dei bivettori</h1>
+<section id="basis-of-bivectors-1" class="slide level1">
+<h1>Basis of Bivectors</h1>
 <p><embed width="640px" height="640px" src="pd-images/9d2243027ec07b44597cce27ca5fd907dcb396fb.html"
 data-im_fname="bivector-basis" /></p>
 </section>
-<section id="somma-di-bivettori-2" class="slide level1">
-<h1>Somma di bivettori</h1>
+<section id="sum-of-bivectors-2" class="slide level1">
+<h1>Sum of Bivectors</h1>
 <ul>
-<li><p>Se si hanno due bivettori</p>
+<li><p>If we have two bivectors</p>
 <p><span class="math display">
 \begin{aligned}
 \vec v &amp;= 3 \hat e_1 \wedge \hat e_2 - \hat e_1 \wedge \hat e_3,\\
 \vec w &amp;= 2 \hat e_1 \wedge \hat e_2 + 4\hat e_1 \wedge \hat e_3,\\
 \end{aligned}
 </span></p>
-<p>allora la loro somma è</p>
+<p>then their sum is</p>
 <p><span class="math display">
 \vec v + \vec w = 5\hat e_1 \wedge \hat e_2 + 3\hat e_1 \wedge \hat e_3.
 </span></p></li>
-<li><p>È quindi banale fare calcoli con bivettori!</p></li>
+<li><p>It is therefore trivial to perform calculations with
+bivectors!</p></li>
 </ul>
 </section>
-<section id="multivettori" class="slide level1">
-<h1>Multivettori</h1>
+<section id="multivectors" class="slide level1">
+<h1>Multivectors</h1>
 <ul>
-<li><p>Il prodotto esterno può essere calcolato anche tra un bivettore e
-un vettore, e possiamo sfruttare la proprietà associativa:</p>
+<li><p>The outer product can also be calculated between a bivector and a
+vector, and we can exploit the associative property:</p>
 <p><span class="math display">
 \vec u \wedge \vec v \wedge \vec w = (\vec u \wedge \vec v) \wedge \vec
 w = \vec u \wedge (\vec v \wedge \vec w)</span></p></li>
-<li><p>Il trivettore <span class="math inline">\vec u \wedge \vec v
-\wedge \vec w</span> rappresenta un <em>volume orientato</em>.</p></li>
-<li><p>Applicando il prodotto esterno a ripetizione si possono generare
-trivettori, quadrivettori, etc. (Ecco perché si chiama
-<em>esterno</em>).</p></li>
-<li><p>In generale, si parla di <em>multivettori</em>, o <span
-class="math inline">k</span>-vettori: lo scalare è uno 0-vettore, i
-vettori sono 1-vettori, i bivettori sono 2-vettori, etc.</p></li>
+<li><p>The trivector <span class="math inline">\vec u \wedge \vec v
+\wedge \vec w</span> represents an <em>oriented volume</em>.</p></li>
+<li><p>By repeatedly applying the outer product, we can generate
+trivectors, quadrivectors, etc. (This is why it is called
+<em>outer</em>).</p></li>
+<li><p>In general, we speak of <em>multivectors</em>, or <span
+class="math inline">k</span>-vectors: a scalar is a 0-vector, vectors
+are 1-vectors, bivectors are 2-vectors, etc.</p></li>
 </ul>
 </section>
-<section id="esempi-di-calcolo" class="slide level1">
-<h1>Esempi di calcolo</h1>
+<section id="calculation-examples" class="slide level1">
+<h1>Calculation Examples</h1>
 <ul>
-<li><p>Consideriamo per esempio ℝ³ e la base canonica <span
+<li><p>Consider for example ℝ³ and the canonical basis <span
 class="math inline">\left\{\hat e_i\right\}</span>.</p></li>
-<li><p>Questi sono alcuni esempi di trivettori e di calcoli associati ad
-essi:</p>
+<li><p>These are some examples of trivectors and calculations associated
+with them:</p>
 <p><span class="math display">
 \begin{aligned}
 \hat e_1 \wedge \hat e_3 \wedge \hat e_2 &amp;= \hat e_1 \wedge (\hat
@@ -702,58 +595,56 @@ e_1 \wedge \hat e_3 = \hat e_1 \wedge \hat e_2 \wedge \hat e_3,\\
 e_1 \wedge (\hat e_2 \wedge \hat e_2) \wedge \hat e_3 = 0.\\
 \end{aligned}
 </span></p></li>
-<li><p>Dagli ultimi due esempi è facile convincersi che il prodotto
-esterno di quattro elementi della base si <strong>annulla
-sempre</strong>.</p></li>
+<li><p>From the last two examples, it is easy to see that the outer
+product of four elements of the basis is <strong>always
+zero</strong>.</p></li>
 </ul>
 </section>
-<section id="numerosità-dei-multivettori" class="slide level1">
-<h1>Numerosità dei multivettori</h1>
+<section id="number-of-multivectors" class="slide level1">
+<h1>Number of Multivectors</h1>
 <ul>
-<li><p>Non solo il prodotto esterno di quattro elementi della
-<strong>base</strong> è nullo: anche se si prendono quattro vettori
-qualsiasi in <span class="math inline">\mathbb{R}^3</span>, il loro
-prodotto è zero.</p></li>
-<li><p>È banale dimostrare che in uno spazio <span
-class="math inline">\mathbb{R}^n</span> il massimo grado dei
-multivettori è <span class="math inline">n</span></p></li>
-<li><p>Di conseguenza, in <span class="math inline">\mathbb{R}^3</span>
-solo i seguenti oggetti sono non banali:</p>
+<li><p>Not only is the outer product of four elements of the
+<strong>basis</strong> zero: even if we take any four vectors in <span
+class="math inline">\mathbb{R}^3</span>, their product is zero.</p></li>
+<li><p>It is trivial to show that in a space <span
+class="math inline">\mathbb{R}^n</span> the maximum grade of
+multivectors is <span class="math inline">n</span>.</p></li>
+<li><p>Consequently, in <span class="math inline">\mathbb{R}^3</span>
+only the following objects are non-trivial:</p>
 <ol>
-<li>Gli 0-vettori (scalari);</li>
-<li>I 1-vettori (vettori);</li>
-<li>I 2-vettori (bivettori), chiamati anche <em>pseudovettori</em>;</li>
-<li>I 3-vettori (trivettori), chiamati anche
-<em>pseudoscalari</em>.</li>
+<li>0-vectors (scalars);</li>
+<li>1-vectors (vectors);</li>
+<li>2-vectors (bivectors), also called <em>pseudovectors</em>;</li>
+<li>3-vectors (trivectors), also called <em>pseudoscalars</em>.</li>
 </ol></li>
 </ul>
 </section>
-<section id="il-prodotto-geometrico" class="slide level1">
-<h1>Il prodotto geometrico</h1>
+<section id="the-geometric-product" class="slide level1">
+<h1>The Geometric Product</h1>
 </section>
-<section id="nascita-dellalgebra-geometrica" class="slide level1">
-<h1>Nascita dell’algebra geometrica</h1>
+<section id="birth-of-geometric-algebra" class="slide level1">
+<h1>Birth of Geometric Algebra</h1>
 <ul>
-<li><p>Clifford partì dal prodotto esterno di Grassmann per definire un
-<strong>prodotto tra vettori</strong>, che rende lo spazio vettoriale
-<span class="math inline">\mathbb{R}^n</span>
-un’<strong>algebra</strong>.</p></li>
-<li><p>L’intuizione geniale di Clifford fu che il vecchio, “classico”
-prodotto scalare e il “nuovo” prodotto esterno di Grassmann sono
-intuitivamente legati tra loro, perché</p>
+<li><p>Clifford started from Grassmann’s outer product to define a
+<strong>product between vectors</strong>, which makes the vector space
+<span class="math inline">\mathbb{R}^n</span> an
+<strong>algebra</strong>.</p></li>
+<li><p>Clifford’s brilliant intuition was that the old, “classical”
+scalar product and Grassmann’s “new” outer product are intuitively
+related, because</p>
 <p><span class="math display">
 \vec{v} \cdot \vec{w} \propto \cos\theta, \quad \vec{v} \wedge \vec{w}
 \propto \sin\theta,
 </span></p>
-<p>ed ovviamente <span class="math inline">\sin^2\theta + \cos^2\theta =
+<p>and obviously <span class="math inline">\sin^2\theta + \cos^2\theta =
 1</span>.</p></li>
 </ul>
 </section>
-<section id="tabelle-di-moltiplicazione" class="slide level1">
-<h1>Tabelle di moltiplicazione</h1>
+<section id="multiplication-tables" class="slide level1">
+<h1>Multiplication Tables</h1>
 <ul>
-<li><p>La relazione si vede anche confrontando il modo in cui si
-combinano gli elementi della base canonica di ℝ³:</p>
+<li><p>The relationship can also be seen by comparing how the elements
+of the canonical basis of ℝ³ combine:</p>
 <p><span class="math display">
 \begin{matrix}
 \cdot&amp; e_1&amp; e_2&amp; e_3\\
@@ -769,103 +660,96 @@ e_2&amp; -e_1 \wedge e_2&amp; 0&amp; e_2 \wedge e_3\\
 e_3&amp; -e_1 \wedge e_3&amp; -e_2 \wedge e_3&amp; 0
 \end{matrix}
 </span></p></li>
-<li><p>È tentante l’idea di sommarli insieme, anche perché ciò ricorda
-la formula</p>
+<li><p>The idea of adding them together is tempting, also because it
+recalls the formula</p>
 <p><span class="math display">
 z = \left|z\right|\bigl(\cos\theta + i\sin\theta\bigr).
 </span></p></li>
 </ul>
 </section>
-<section id="prodotto-geometrico" class="slide level1">
-<h1>Prodotto geometrico</h1>
+<section id="geometric-product" class="slide level1">
+<h1>Geometric Product</h1>
 <ul>
-<li><p>Il <strong>prodotto geometrico</strong> è la somma del prodotto
-interno e del prodotto esterno:</p>
+<li><p>The <strong>geometric product</strong> is the sum of the inner
+product and the outer product:</p>
 <p><span class="math display">
 \vec v\,\vec w = \vec v \cdot \vec w + \vec v \wedge \vec w.
 </span></p></li>
-<li><p>Questo prodotto è definito su <span
-class="math inline">\mathbb{R}^n</span>, per qualsiasi valore di <span
-class="math inline">n \geq 1</span> (ma il caso <span
-class="math inline">n = 1</span> è banale), perché lo stesso prodotto
-esterno <span class="math inline">\vec v \wedge \vec w</span> è
-facilmente generalizzabile a <span class="math inline">n</span>
-dimensioni.</p></li>
-<li><p>Il prodotto geometrico definisce un’algebra associativa sullo
-spazio vettoriale.</p></li>
+<li><p>This product is defined on <span
+class="math inline">\mathbb{R}^n</span>, for any value of <span
+class="math inline">n \geq 1</span> (but the case <span
+class="math inline">n = 1</span> is trivial), because the outer product
+<span class="math inline">\vec v \wedge \vec w</span> itself is easily
+generalizable to <span class="math inline">n</span> dimensions.</p></li>
+<li><p>The geometric product defines an associative algebra on the
+vector space.</p></li>
 </ul>
 </section>
-<section id="prodotto-geometrico-1" class="slide level1">
-<h1>Prodotto geometrico</h1>
+<section id="geometric-product-1" class="slide level1">
+<h1>Geometric Product</h1>
 <ul>
-<li><p>Cosa significa sommare tra loro uno scalare come <span
-class="math inline">\vec v \cdot \vec w</span> e un bivettore come <span
+<li><p>What does it mean to add a scalar like <span
+class="math inline">\vec v \cdot \vec w</span> and a bivector like <span
 class="math inline">\vec v \wedge \vec w</span>?</p></li>
-<li><p>La «somma» si deve intendere in un senso non letterale, proprio
-come la somma della parte reale e immaginaria di un numero (<span
+<li><p>The «sum» must be understood in a non-literal sense, just like
+the sum of the real and imaginary parts of a number (<span
 class="math inline">z = x + iy</span>).</p></li>
-<li><p>In realtà <span class="math inline">z \in \mathbb{C}</span>
-rappresenta una coppia <span class="math inline">(x, y)</span>, che si
-scrive come <span class="math inline">x + iy</span> perché ciò è un
-aiuto mnemonico quando si devono calcolare somme e prodotti di numeri
-complessi.</p></li>
-<li><p>Allo stesso modo la scrittura <span class="math inline">\vec v
-\cdot \vec w + \vec v \wedge \vec w</span> è un aiuto mnemonico per
-ricordare come si sommano e moltiplicano tra loro prodotti
-geometrici.</p></li>
+<li><p>Actually, <span class="math inline">z \in \mathbb{C}</span>
+represents a pair <span class="math inline">(x, y)</span>, which is
+written as <span class="math inline">x + iy</span> because this is a
+mnemonic aid when calculating sums and products of complex
+numbers.</p></li>
+<li><p>Similarly, the notation <span class="math inline">\vec v \cdot
+\vec w + \vec v \wedge \vec w</span> is a mnemonic aid to remember how
+geometric products are added and multiplied.</p></li>
 </ul>
 </section>
-<section id="esistenza-dellinversa" class="slide level1">
-<h1>Esistenza dell’inversa</h1>
+<section id="existence-of-the-inverse" class="slide level1">
+<h1>Existence of the Inverse</h1>
 <ul>
-<li><p>Calcoliamo <span class="math inline">\vec v^2</span> per un
-generico vettore <span class="math inline">\vec v</span>:</p>
+<li><p>Let’s calculate <span class="math inline">\vec v^2</span> for a
+generic vector <span class="math inline">\vec v</span>:</p>
 <p><span class="math display">
 \vec v^2 = \vec v \vec v = \vec v \cdot \vec v + \vec v \wedge \vec v =
 \left\|\vec v\right\|^2 + 0 = \left\|\vec v\right\|^2.
 </span></p></li>
-<li><p>Questo risultato implica che <span class="math inline">\vec v /
-\left\|\vec v\right\|^2</span> sia l’inverso di <span
+<li><p>This result implies that <span class="math inline">\vec v /
+\left\|\vec v\right\|^2</span> is the inverse of <span
 class="math inline">\vec v</span>:</p>
 <p><span class="math display">
 \vec v \frac{\vec v}{\left\|\vec v\right\|^2} = \frac{\vec v \vec
 v}{\left\|\vec v\right\|^2} = 1,
 </span></p>
-<p>e quindi <span class="math inline">\vec v^{-1} = \vec v / \left\|\vec
-v\right\|^2</span>: come ogni algebra che si rispetti, <strong>esiste
-l’inversa</strong>!</p></li>
-</ul>
-</section>
-<section id="altri-esempi" class="slide level1">
-<h1>Altri esempi</h1>
-<ul>
-<li><p>Supponiamo che <span class="math inline">\vec v \perp \vec
-w</span>. Allora</p>
+<p>and therefore <span class="math inline">\vec v^{-1} = \vec v /
+\left\|\vec v\right\|^2</span>: like any respectable algebra,
+<strong>the inverse exists</strong>! # Other Examples</p></li>
+<li><p>Suppose that <span class="math inline">\vec v \perp \vec
+w</span>. Then</p>
 <p><span class="math display">
 \vec v \vec w = \vec v \cdot \vec w + \vec v \wedge \vec w = \vec v
 \wedge \vec w.
 </span></p>
-<p>Per vettori perpendicolari, il prodotto geometrico coincide con
-quello esterno.</p></li>
-<li><p>La base canonica <span class="math inline">\left\{\hat
-e_i\right\}</span> gode quindi delle seguenti proprietà:</p>
+<p>For perpendicular vectors, the geometric product coincides with the
+exterior product.</p></li>
+<li><p>The canonical basis <span class="math inline">\left\{\hat
+e_i\right\}</span> therefore has the following properties:</p>
 <p><span class="math display">
 \hat e_i \hat e_i = \left\|\hat e_i\right\|^2 = 1, \quad \hat e_i \hat
 e_j = \hat e_i \wedge \hat e_j = -\hat e_j \wedge \hat e_i = - \hat e_j
-\hat e_i\ \text{se $i \not= j$}.
+\hat e_i\ \text{if $i \not= j$}.
 </span></p></li>
 </ul>
 </section>
-<section id="prodotti-di-multivettori" class="slide level1">
-<h1>Prodotti di multivettori</h1>
+<section id="products-of-multivectors" class="slide level1">
+<h1>Products of Multivectors</h1>
 <ul>
-<li><p>Abbiamo detto che in <span
-class="math inline">\mathbb{R}^n</span> si possono avere multivettori di
-grado fino a <span class="math inline">n</span>, perché il prodotto
-esterno <span class="math inline">\wedge</span> di <span
-class="math inline">n + 1</span> vettori si annulla.</p></li>
-<li><p>Cosa succede al prodotto geometrico di quattro vettori
-ortonormali in ℝ³?</p>
+<li><p>We said that in <span class="math inline">\mathbb{R}^n</span>
+there can be multivectors of degree up to <span
+class="math inline">n</span>, because the exterior product <span
+class="math inline">\wedge</span> of <span class="math inline">n +
+1</span> vectors vanishes.</p></li>
+<li><p>What happens to the geometric product of four orthonormal vectors
+in <span class="math inline">\mathbb{R}^3</span>?</p>
 <p><span class="math display">
 \begin{aligned}
 \hat e_1 \hat e_2 \hat e_3 \hat e_3 &amp;= \hat e_1 \hat e_2 (\hat e_3
@@ -877,19 +761,19 @@ e_3,\\
 \hat e_3= \hat e_1 \hat e_1 \hat e_2 \hat e_3 = \hat e_2 \hat e_3.
 \end{aligned}
 </span></p></li>
-<li><p>Otteniamo sempre bivettori!</p></li>
+<li><p>We always get bivectors!</p></li>
 </ul>
 </section>
-<section id="esempi" class="slide level1">
-<h1>Esempi</h1>
+<section id="examples" class="slide level1">
+<h1>Examples</h1>
 <ul>
-<li><p>Se si sa operare sugli elementi di <span
-class="math inline">\left\{\hat e_i\right\}</span>, è facile fare
-calcoli su vettori arbitrari.</p></li>
-<li><p>Prendiamo ad esempio i vettori</p>
+<li><p>If you know how to operate on the elements of <span
+class="math inline">\left\{\hat e_i\right\}</span>, it is easy to
+perform calculations on arbitrary vectors.</p></li>
+<li><p>Take for example the vectors</p>
 <p><span class="math display">\vec v = 2\hat e_1 + \hat e_2,\quad \vec w
 = -\hat e_2.</span></p>
-<p>Allora:</p>
+<p>Then:</p>
 <p><span class="math display">
 \begin{aligned}
 \vec v \vec w &amp;= \bigl(2\hat e_1 + \hat e_2\bigr) \bigl(-\hat
@@ -902,56 +786,58 @@ e_2^2 = 5.\\
 </span></p></li>
 </ul>
 </section>
-<section id="algebra-geometrica-in-2d" class="slide level1">
-<h1>Algebra geometrica in 2D</h1>
+<section id="geometric-algebra-in-2d" class="slide level1">
+<h1>Geometric Algebra in 2D</h1>
 </section>
-<section id="multivettore-generale-in-2d" class="slide level1">
-<h1>Multivettore generale in 2D</h1>
+<section id="general-multivector-in-2d" class="slide level1">
+<h1>General Multivector in 2D</h1>
 <ul>
-<li><p>In ℝ² si possono avere solo 0-vettori (scalari), 1-vettori e
-2-vettori (bivettori).</p></li>
-<li><p>La forma generica di un multivettore è quindi</p>
+<li><p>In <span class="math inline">\mathbb{R}^2</span> you can only
+have 0-vectors (scalars), 1-vectors, and 2-vectors (bivectors).</p></li>
+<li><p>The general form of a multivector is therefore</p>
 <p><span class="math display">
 q = \alpha + \beta_1 \hat e_1 + \beta_2 \hat e_2 + \gamma \hat e_1 \hat
 e_2.
 </span></p></li>
-<li><p>Abbiamo <strong>quattro</strong> gradi di libertà. Come si
-comportano le sue quattro componenti?</p></li>
+<li><p>We have <strong>four</strong> degrees of freedom. How do its four
+components behave?</p></li>
 </ul>
 </section>
-<section id="sottoalgebre" class="slide level1">
-<h1>Sottoalgebre</h1>
+<section id="subalgebras" class="slide level1">
+<h1>Subalgebras</h1>
 <ul>
-<li><p>Notiamo innanzitutto che dalla scrittura</p>
+<li><p>First, we note that from the expression</p>
 <p><span class="math display">
 q = \alpha + \beta_1 \hat e_1 + \beta_2 \hat e_2 + \gamma \hat e_1 \hat
 e_2
 </span></p>
-<p>è possibile individuare quattro sottoinsiemi (sottoalgebre):</p>
-<ol>
-<li>Se <span class="math inline">\beta_1 = \beta_2 = \gamma = 0</span>,
-il sottoinsieme è isomorfo a ℝ.</li>
-<li>Se <span class="math inline">\alpha = \gamma = 0</span>, il
-sottoinsieme è isomorfo allo spazio vettoriale <span
+<p>it is possible to identify four subsets (subalgebras):</p>
+<ol type="1">
+<li>If <span class="math inline">\beta_1 = \beta_2 = \gamma = 0</span>,
+the subset is isomorphic to <span
+class="math inline">\mathbb{R}</span>.</li>
+<li>If <span class="math inline">\alpha = \gamma = 0</span>, the subset
+is isomorphic to the vector space <span
 class="math inline">\mathbb{R}^2</span>.</li>
-<li>Se <span class="math inline">\alpha = \beta_1 = \beta_2 = 0</span>,
-il sottoinsieme sembra ancora isomorfo a ℝ; questi multivettori si
-dicono <em>pseudoscalari</em>.</li>
+<li>If <span class="math inline">\alpha = \beta_1 = \beta_2 = 0</span>,
+the subset still seems isomorphic to <span
+class="math inline">\mathbb{R}</span>; these multivectors are called
+<em>pseudoscalars</em>.</li>
 </ol></li>
-<li><p>A parte questi casi banali, esistono altre sottoalgebre
-interessanti?</p></li>
+<li><p>Apart from these trivial cases, are there other interesting
+subalgebras?</p></li>
 </ul>
 </section>
-<section id="multivettori-e-numeri-complessi" class="slide level1">
-<h1>Multivettori e numeri complessi</h1>
+<section id="multivectors-and-complex-numbers" class="slide level1">
+<h1>Multivectors and Complex Numbers</h1>
 <ul>
-<li><p>Lo pseudoscalare <span class="math inline">\hat e_1 \hat
-e_2</span> si comporta come <span class="math inline">i</span>!</p>
+<li><p>The pseudoscalar <span class="math inline">\hat e_1 \hat
+e_2</span> behaves like <span class="math inline">i</span>!</p>
 <p><span class="math display">
 \bigl(\hat e_1 \hat e_2\bigr)^2 = \hat e_1 \hat e_2 \hat e_1 \hat e_2 =
 -\hat e_1 \hat e_2 \hat e_2 \hat e_1 = -1.
 </span></p></li>
-<li><p>Confrontiamo numeri complessi e multivettori con <span
+<li><p>Let’s compare complex numbers and multivectors with <span
 class="math inline">\beta_1 = \beta_2 = 0</span>:</p>
 <p><span class="math display">
 \begin{aligned}
@@ -960,18 +846,20 @@ class="math inline">\beta_1 = \beta_2 = 0</span>:</p>
 \hat e_2 - 6 \hat e_1 \hat e_2 + 2 = 5 - 5 \hat e_1 \hat e_2.
 \end{aligned}
 </span></p>
-<p>Coincidono! L’algebra con <span class="math inline">\beta_1 = \beta_2
-= 0</span> è isomorfa a ℂ, e si pone <span class="math inline">\hat e_1
-\hat e_2 = i</span>.</p></li>
+<p>They coincide! The algebra with <span class="math inline">\beta_1 =
+\beta_2 = 0</span> is isomorphic to <span
+class="math inline">\mathbb{C}</span>, and we set <span
+class="math inline">\hat e_1 \hat e_2 = i</span>.</p></li>
 </ul>
 </section>
-<section id="multivettori-e-rotazioni-2d" class="slide level1">
-<h1>Multivettori e rotazioni 2D</h1>
+<section id="multivectors-and-2d-rotations" class="slide level1">
+<h1>Multivectors and 2D Rotations</h1>
 <ul>
-<li><p>I numeri <span class="math inline">e^{i\theta}</span> ruotano
-punti sul piano ℂ. Funziona anche con multivettori?</p></li>
-<li><p>Vediamo innanzitutto una interessante proprietà del prodotto
-geometrico:</p>
+<li><p>The numbers <span class="math inline">e^{i\theta}</span> rotate
+points on the complex plane ℂ. Does this also work with
+multivectors?</p></li>
+<li><p>Let’s first see an interesting property of the geometric
+product:</p>
 <p><span class="math display">
 \begin{aligned}
 \vec u \vec v &amp;= \vec u \cdot \vec v + \vec u \wedge \vec v =\\
@@ -986,64 +874,64 @@ geometrico:</p>
 \left\|\vec v\right\| \cdot e^{\theta \hat e_1 \hat e_2},
 \end{aligned}
 </span></p>
-<p>che per <span class="math inline">\left\|\vec u\right\| = \left\|\vec
-v\right\| = 1</span> porta a <span class="math inline">\vec u \vec v =
-e^{i\theta}</span>, la rotazione per un angolo <span
+<p>which for <span class="math inline">\left\|\vec u\right\| =
+\left\|\vec v\right\| = 1</span> leads to <span class="math inline">\vec
+u \vec v = e^{i\theta}</span>, the rotation by an angle <span
 class="math inline">\theta</span>!</p></li>
 </ul>
 </section>
-<section id="multivettori-e-rotazione-2d" class="slide level1">
-<h1>Multivettori e rotazione 2D</h1>
+<section id="multivectors-and-2d-rotation" class="slide level1">
+<h1>Multivectors and 2D Rotation</h1>
 <ul>
-<li><p>Per ruotare un vettore <span class="math inline">\vec v</span> di
-un angolo θ attorno all’origine è sufficiente considerare due versori
-<span class="math inline">\hat u_1</span> e <span
-class="math inline">\hat u_2</span>, il cui angolo tra loro sia θ, e
-calcolare il multivettore ruotato <span class="math inline">\vec
-v&#39;</span> come</p>
+<li><p>To rotate a vector <span class="math inline">\vec v</span> by an
+angle θ around the origin, it is sufficient to consider two unit vectors
+<span class="math inline">\hat u_1</span> and <span
+class="math inline">\hat u_2</span>, whose angle between them is θ, and
+calculate the rotated multivector <span class="math inline">\vec
+v&#39;</span> as</p>
 <p><span class="math display">
 \vec v&#39; = \hat u_1 \hat u_2 \vec v = e^{i\theta} \vec v =
 \left(\cos\theta + i \sin\theta\right) \vec v.
 </span></p></li>
-<li><p>Questa formula vale solo nel caso 2D, ma si può riscrivere in
-forma generale.</p></li>
+<li><p>This formula is valid only in the 2D case, but it can be
+rewritten in a general form.</p></li>
 </ul>
 </section>
-<section id="rotazione-2d-alternativa" class="slide level1">
-<h1>Rotazione 2D alternativa</h1>
+<section id="alternative-2d-rotation" class="slide level1">
+<h1>Alternative 2D Rotation</h1>
 <ul>
-<li><p>Il prodotto tra due numeri complessi commuta, e così è anche
-nella sottoalgebra di Clifford che contiene multivettori nella forma
+<li><p>The product between two complex numbers commutes, and so it is
+also in the Clifford subalgebra that contains multivectors in the form
 <span class="math inline">\alpha + \hat e_1 \hat e_2
 \beta</span>.</p></li>
-<li><p>Nella formula <span class="math inline">\vec v&#39; = e^{i\theta}
-\vec v</span> però figura il <em>vettore</em> <span
-class="math inline">\vec v</span>, che non fa parte della sottoalgebra:
-in questo caso il prodotto non commuta!</p></li>
-<li><p>Si può dimostrare che in 2D vale <span class="math inline">z \vec
-v = \vec v z^*</span>, dove <span class="math inline">z^*</span> è il
-complesso coniugato.</p></li>
-<li><p>Se ci riconduciamo a una relazione simile a quella <a
-href="tomasi-ray-tracing-07a-clifford-algebras.html#/applicazione-della-rotazione">vista
-per i quaternioni</a>, ossia</p>
+<li><p>However, in the formula <span class="math inline">\vec v&#39; =
+e^{i\theta} \vec v</span> the <em>vector</em> <span
+class="math inline">\vec v</span> appears, which is not part of the
+subalgebra: in this case the product does not commute!</p></li>
+<li><p>It can be shown that in 2D, <span class="math inline">z \vec v =
+\vec v z^*</span> holds, where <span class="math inline">z^*</span> is
+the complex conjugate.</p></li>
+<li><p>If we reduce to a relationship similar to the one <a
+href="tomasi-ray-tracing-06a.html#/slerp-and-rotations">seen for
+quaternions</a>, namely</p>
 <p><span class="math display">
 \vec v&#39; = e^{i\theta} \vec v = e^{i\theta/2} e^{i\theta/2} \vec v =
 e^{i\theta/2}\vec v e^{-i\theta/2},
 </span></p>
-<p>vedremo che la formula ha un’applicazione molto più
-generale.</p></li>
+<p>we will see that the formula has a much more general
+application.</p></li>
 </ul>
 </section>
-<section id="algebra-geometrica-in-3d" class="slide level1">
-<h1>Algebra geometrica in 3D</h1>
+<section id="geometric-algebra-in-3d" class="slide level1">
+<h1>Geometric Algebra in 3D</h1>
 </section>
-<section id="multivettori-in-ℝ³" class="slide level1">
-<h1>Multivettori in ℝ³</h1>
+<section id="multivectors-in-ℝ³" class="slide level1">
+<h1>Multivectors in ℝ³</h1>
 <ul>
-<li><p>Consideriamo la base canonica <span
+<li><p>Let’s consider the canonical basis <span
 class="math inline">\left\{\hat e_i\right\}</span> in ℝ³.</p></li>
-<li><p>Il multivettore più generico che possiamo pensare deve avere
-questa forma:</p>
+<li><p>The most general multivector we can think of must have this
+form:</p>
 <p><span class="math display">
 \begin{aligned}
 &amp;\alpha +\\
@@ -1053,46 +941,45 @@ questa forma:</p>
 &amp;\delta \hat e_1 \hat e_2 \hat e_3.
 \end{aligned}
 </span></p></li>
-<li><p>Abbiamo <strong>otto</strong> gradi di libertà: 1 per gli
-scalari, 3 per i vettori, 3 per i bivettori e 1 per i trivettori
-(pseudoscalari). Vale ancora che <span class="math inline">(\hat e_1
-\hat e_2 \hat e_3)^2 = -1 \equiv i^2</span>.</p></li>
+<li><p>We have <strong>eight</strong> degrees of freedom: 1 for scalars,
+3 for vectors, 3 for bivectors, and 1 for trivectors (pseudoscalars). It
+still holds that <span class="math inline">(\hat e_1 \hat e_2 \hat
+e_3)^2 = -1 \equiv i^2</span>.</p></li>
 </ul>
 </section>
-<section id="multivettori-e-rotazioni-in-3d" class="slide level1">
-<h1>Multivettori e rotazioni in 3D</h1>
+<section id="multivectors-and-rotations-in-3d" class="slide level1">
+<h1>Multivectors and Rotations in 3D</h1>
 <ul>
-<li><p>Per specificare una rotazione in 3D occorre l’angolo e l’asse di
-rotazione.</p></li>
-<li><p>Ma nell’algebra geometrica non si specifica l’<em>asse</em>,
-bensì il <em>piano</em> di rotazione: un bivettore!</p></li>
-<li><p>Se il piano di rotazione è il bivettore <span
-class="math inline">\hat I</span>, il vettore <span
-class="math inline">\vec v</span> ruota in <span
-class="math inline">\vec v&#39;</span> tramite</p>
+<li><p>To specify a rotation in 3D, you need the angle and the axis of
+rotation.</p></li>
+<li><p>But in geometric algebra, you don’t specify the <em>axis</em>,
+but the <em>plane</em> of rotation: a bivector!</p></li>
+<li><p>If the rotation plane is the bivector <span
+class="math inline">\hat I</span>, the vector <span
+class="math inline">\vec v</span> rotates into <span
+class="math inline">\vec v&#39;</span> through</p>
 <p><span class="math display">
 \vec v&#39; = e^{-\hat I \theta/2} \vec v e^{\hat I \theta/2},
 </span></p>
-<p>che è l’espressione che <a
-href="tomasi-ray-tracing-07a-clifford-algebras.html#/rotazione-2d-alternativa">avevamo
-già visto</a> nel caso 2D, dove <span class="math inline">\hat I = i =
-\hat e_1 \hat e_2</span>: era il piano complesso. Abbiamo
-un’interpretazione geometrica della presenza di <span
+<p>which is the expression we <a
+href="tomasi-ray-tracing-06a.html#/alternative-2d-rotation">already
+saw</a> in the 2D case, where <span class="math inline">\hat I = i =
+\hat e_1 \hat e_2</span>: the basis bivector laying on the complex
+plane. We have a geometric interpretation of the presence of <span
 class="math inline">i</span>!</p></li>
 </ul>
 </section>
-<section id="meccanica-quantistica" class="slide level1">
-<h1>Meccanica quantistica</h1>
+<section id="quantum-mechanics" class="slide level1">
+<h1>Quantum Mechanics</h1>
 <ul>
-<li><p><a
-href="https://en.wikipedia.org/wiki/David_Hestenes">D. Hestenes</a>, che
-negli anni ’60-’70 ha riscoperto i lavori di Grassmann e Clifford, ha
-mostrato che il termine <span class="math inline">i</span>
-nell’equazione di Schrödinger <span class="math display">
+<li><p><a href="https://en.wikipedia.org/wiki/David_Hestenes">D.
+Hestenes</a>, who rediscovered the works of Grassmann and Clifford in
+the 1960s-1970s, showed that the term <span class="math inline">i</span>
+in the Schrödinger equation <span class="math display">
 H \left|\psi\right&gt; = i\hbar \frac{\mathrm{d}}{\mathrm{d}t}
 \left|\psi\right&gt;,
-</span> è legato alla medesima rotazione che nella teoria di Dirac-Pauli
-rappresenta lo spin.</p></li>
+</span> is related to the same rotation that represents spin in
+Dirac-Pauli theory.</p></li>
 <li><p><em>It is only in a theory with electron spin that one can see
 why the wave function is complex […] spin is not a mere add-on in
 quantum mechanics, [and] was inadvertently incorporated into the
@@ -1101,204 +988,198 @@ href="https://geocalc.clas.asu.edu/pdf/OerstedMedalLecture.pdf">Hestenes
 2002</a>)</p></li>
 </ul>
 </section>
-<section id="multivettori-e-quaternioni" class="slide level1">
-<h1>Multivettori e quaternioni</h1>
+<section id="multivectors-and-quaternions" class="slide level1">
+<h1>Multivectors and Quaternions</h1>
 <ul>
-<li><p>È facile dimostrare che</p>
+<li><p>It is easy to show that</p>
 <p><span class="math display">
 (\hat e_1 \hat e_2)^2 = -1,\quad (\hat e_2 \hat e_3)^2 = -1,\quad (\hat
 e_1 \hat e_3)^2 = -1,
 </span></p>
-<p>e quindi possiamo ottenere una sottoalgebra che è isomorfa
-all’algebra ℍ dei quaternioni ponendo</p>
+<p>and therefore we can obtain a subalgebra that is isomorphic to the
+quaternion algebra ℍ by setting</p>
 <p><span class="math display">
 \mathbf{i} = \hat e_2 \hat e_3, \quad \mathbf{j} = \hat e_1 \hat
 e_3,\quad \mathbf{k} = \hat e_1 \hat e_2.
 </span></p></li>
-<li><p>Com’è facile dimostrare, tutte le <a
-href="tomasi-ray-tracing-07a-clifford-algebras.html#/notazione-per-i-quaternioni">proprietà
-che avevamo elencato</a> continuano ad essere valide.</p></li>
+<li><p>As is easy to demonstrate, all the <a
+href="tomasi-ray-tracing-06a-clifford-algebras.html#/quaternion-notation">properties
+we had listed</a> continue to be valid.</p></li>
 </ul>
 </section>
-<section id="meccanica-quantistica-1" class="slide level1">
-<h1>Meccanica quantistica</h1>
+<section id="quantum-mechanics-1" class="slide level1">
+<h1>Quantum Mechanics</h1>
 <ul>
-<li><p>Ma le proprietà dei bivettori in ℝ³ sono le medesime che
-definiscono le <strong>matrici di Pauli</strong>, usate per descrivere
-l’accoppiamento tra lo spin e il campo e.m.:</p>
+<li><p>But the properties of bivectors in ℝ³ are the same that define
+the <strong>Pauli matrices</strong>, used to describe the coupling
+between spin and the electromagnetic field:</p>
 <p><span class="math display">
 \sigma_1 = \begin{pmatrix}0&amp; 1\\1&amp; 0\end{pmatrix}, \quad
 \sigma_2 = \begin{pmatrix}0&amp; -i\\i&amp; 0\end{pmatrix}, \quad
 \sigma_3 = \begin{pmatrix}1&amp; 0\\0&amp; -1\end{pmatrix}.
 </span></p></li>
-<li><p>Nell’ottica dell’algebra geometrica, il divario tra fisica
-classica e meccanica quantistica si riduce, perché quest’ultima si basa
-su bivettori sul campo <strong>reale</strong> ℝ come nel caso della
-meccanica classica (dove però i bivettori sono molto meno
-pervasivi)</p></li>
+<li><p>From the perspective of geometric algebra, the gap between
+classical physics and quantum mechanics is reduced, because the latter
+is based on bivectors on the <strong>real</strong> field ℝ as in the
+case of classical mechanics (where, however, bivectors are much less
+pervasive).</p></li>
 </ul>
 </section>
-<section id="prodotto-vettoriale" class="slide level1">
-<h1>Prodotto vettoriale</h1>
+<section id="vector-product" class="slide level1">
+<h1>Vector Product</h1>
 <ul>
-<li><p>In 3D esiste il prodotto vettoriale <span
-class="math inline">\vec u \times \vec v</span>. Cosa c’è di equivalente
-nell’algebra geometrica?</p></li>
-<li><p>La formula per il prodotto vettore nella geometria classica è</p>
+<li><p>In 3D there is the vector product <span class="math inline">\vec
+u \times \vec v</span>. What is the equivalent in geometric
+algebra?</p></li>
+<li><p>The formula for the vector product in classical geometry is</p>
 <p><span class="math display">
 \vec u \times \vec v = (u_2 v_3 - u_3 v_2) \hat e_1 + (u_3 v_1 - u_1
 v_3) \hat e_2 + (u_1 v_2 - u_2 v_1) \hat e_3.
 </span></p>
-<p>Se scriviamo esplicitamente il prodotto esterno, otteniamo</p>
+<p>If we explicitly write the exterior product, we get</p>
 <p><span class="math display">
 \vec u \wedge \vec v = (u_2 v_3 - u_3 v_2) \hat e_2 \hat e_3 + (u_3 v_1
 - u_1 v_3) \hat e_3 \hat e_1 + (u_1 v_2 - u_2 v_1) \hat e_1 \hat e_2.
 </span></p>
-<p>Non è la stessa cosa, ma siamo molto vicini!</p></li>
+<p>It’s not the same thing, but we’re very close!</p></li>
 </ul>
 </section>
-<section id="prodotto-esterno-e-vettoriale" class="slide level1">
-<h1>Prodotto esterno e vettoriale</h1>
+<section id="exterior-and-vector-product" class="slide level1">
+<h1>Exterior and Vector Product</h1>
 <ul>
-<li><p>Se <span class="math inline">i = \hat e_1 \hat e_2 \hat
-e_3</span>, si può verificare facilmente che</p>
+<li><p>If <span class="math inline">i = \hat e_1 \hat e_2 \hat
+e_3</span>, it can be easily verified that</p>
 <p><span class="math display">
 i\vec u \times \vec v = \vec u \wedge \vec v,
 </span></p>
-<p>e questa formula può essere usata come spunto per convertire nel
-formalismo dell’algebra geometrica le equazioni classiche che contengono
-<span class="math inline">\times</span> .</p></li>
-<li><p>Il prodotto esterno ha una serie di vantaggi su quello
-vettoriale:</p>
-<ol>
-<li>È definito su <span class="math inline">\mathbb{R}^n</span> per
-qualsiasi <span class="math inline">n</span>, mentre quello vettoriale
-solo per <span class="math inline">n = 3</span>.</li>
-<li>Il prodotto esterno è associativo, quello vettoriale no: <span
-class="math inline">u \times (v \times w) \not= (u \times v) \times
-w</span>. I calcoli sono quindi più semplici.</li>
+<p>and this formula can be used as a starting point to convert classical
+equations containing <span class="math inline">\times</span> into the
+formalism of geometric algebra.</p></li>
+<li><p>The exterior product has a number of advantages over the vector
+product:</p>
+<ol type="1">
+<li>It is defined on <span class="math inline">\mathbb{R}^n</span> for
+any <span class="math inline">n</span>, while the vector product is only
+defined for <span class="math inline">n = 3</span>.</li>
+<li>The exterior product is associative, while the vector product is
+not: <span class="math inline">u \times (v \times w) \not= (u \times v)
+\times w</span>. Calculations are therefore simpler.</li>
 </ol></li>
 </ul>
 </section>
-<section id="leggi-della-fisica-e" class="slide level1">
-<h1>Leggi della fisica e ∧</h1>
+<section id="laws-of-physics-and" class="slide level1">
+<h1>Laws of Physics and ∧</h1>
 <ul>
-<li><p>Il prodotto vettoriale compare in molte leggi della fisica:</p>
+<li><p>The vector product appears in many laws of physics:</p>
 <ul>
-<li><p>Dinamica del corpo rigido;</p></li>
-<li><p>Equazioni di Maxwell;</p></li>
-<li><p>Forza di Lorentz.</p></li>
+<li><p>Rigid body dynamics;</p></li>
+<li><p>Maxwell’s equations;</p></li>
+<li><p>Lorentz force.</p></li>
 </ul></li>
-<li><p>In tutti questi casi è possibile modificare le definizioni e le
-formule per usare il prodotto esterno anziché quello
-vettoriale.</p></li>
+<li><p>In all these cases it is possible to modify the definitions and
+formulas to use the exterior product instead of the vector
+product.</p></li>
 </ul>
 </section>
-<section id="dinamica-rotazionale" class="slide level1">
-<h1>Dinamica rotazionale</h1>
+<section id="rotational-dynamics" class="slide level1">
+<h1>Rotational Dynamics</h1>
 <ul>
-<li><p>Il <em>momento angolare</em> può essere definito come il
-bivettore <span class="math inline">\vec L = \vec r \wedge \vec
-p</span>:</p>
+<li><p>The <em>angular momentum</em> can be defined as the bivector
+<span class="math inline">\vec L = \vec r \wedge \vec p</span>:</p>
 <center>
 <p><img data-src="./media/rigid-body-rotation.svg" /></p>
 </center></li>
-<li><p>A differenza della definizione tradizionale (<span
-class="math inline">\vec L = \vec r \times \vec p</span>), qui <span
-class="math inline">\vec L</span> rappresenta una sezione orientata di
-piano, che è intuitivo: è il piano sul quale avviene la rotazione, e
-l’orientamento corrisponde al verso.</p></li>
+<li><p>Unlike the traditional definition (<span class="math inline">\vec
+L = \vec r \times \vec p</span>), here <span class="math inline">\vec
+L</span> represents an oriented section of a plane, which is intuitive:
+it is the plane on which the rotation takes place, and the orientation
+corresponds to the direction.</p></li>
 </ul>
 </section>
-<section id="riflessioni-e-momento-angolare" class="slide level1">
-<h1>Riflessioni e momento angolare</h1>
+<section id="reflections-and-angular-momentum" class="slide level1">
+<h1>Reflections and Angular Momentum</h1>
 <ul>
-<li><p>Ricordate l’immagine che illustrava la riflessione di
-pseudovettori?</p>
+<li><p>Remember the image that illustrated the reflection of
+pseudovectors?</p>
 <center>
 <p><img data-src="./media/auto-angular-momentum.svg" height="380" /></p>
 </center></li>
-<li><p>Se <span class="math inline">L</span> è un bivettore non c’è
-problema! Il piano su cui gira la ruota è perpendicolare allo schermo, e
-si riflette banalmente nello specchio.</p></li>
+<li><p>If <span class="math inline">L</span> is a bivector, there is no
+problem! The plane on which the wheel rotates is perpendicular to the
+screen, and it is trivially reflected in the mirror.</p></li>
 </ul>
 </section>
-<section id="equazioni-di-maxwell" class="slide level1">
-<h1>Equazioni di Maxwell</h1>
+<section id="maxwells-equations" class="slide level1">
+<h1>Maxwell’s Equations</h1>
 <ul>
-<li><p><span class="math inline">\vec E</span> è un vettore, ma <span
-class="math inline">\vec B</span> è un bivettore!</p>
+<li><p><span class="math inline">\vec E</span> is a vector, but <span
+class="math inline">\vec B</span> is a bivector!</p>
 <center>
 <p><img data-src="./media/B-pseudovector.svg" height="380" /></p>
 </center></li>
-<li><p>(Ma è più conveniente pensare in termini del multivettore <span
-class="math inline">\vec F = \vec E + i c \vec B</span>).</p></li>
+<li><p>(But it is more convenient to think in terms of the multivector
+<span class="math inline">\vec F = \vec E + i c \vec B</span>).</p></li>
 </ul>
 </section>
-<section id="multivettori-e-ray-tracing" class="slide level1">
-<h1>Multivettori e ray-tracing?</h1>
+<section id="multivectors-and-ray-tracing" class="slide level1">
+<h1>Multivectors and Ray Tracing?</h1>
 <ul>
-<li><p>L’algebra geometrica semplifica molto le equazioni geometriche
-che servono nel nostro corso.</p></li>
-<li><p>Ad esempio, scalari, vettori, piani e volumi potrebbero essere
-codificati da un solo tipo <code>Multivector</code>, e le trasformazioni
-(rotazioni, traslazioni, etc.) dovrebbero essere implementate una sola
-volta: che meraviglia!</p></li>
-<li><p>Però un multivettore in ℝ³ richiede ben 8 floating-point per
-essere memorizzato: visto che in un ray-tracer servono soprattutto
-vettori, ciò è uno spreco (la nostra struttura <code>Vec</code> richiede
-appena 3 floating point).</p></li>
-<li><p>È difficile (ma non impossibile) implementare programmi di
-ray-tracing che usano l’algebra geometrica e che siano
-efficienti.</p></li>
+<li><p>Geometric algebra greatly simplifies the geometric equations
+needed in our course.</p></li>
+<li><p>For example, scalars, vectors, planes, and volumes could be
+encoded by a single <code>Multivector</code> type, and transformations
+(rotations, translations, etc.) should be implemented only once: how
+wonderful!</p></li>
+<li><p>However, a multivector in ℝ³ requires 8 floating-point numbers to
+be stored: since ray tracers mostly use vectors, this is a waste (our
+<code>Vec</code> structure requires only 3 floating-point
+numbers).</p></li>
+<li><p>It is difficult (but not impossible) to implement efficient
+ray-tracing programs that use geometric algebra.</p></li>
 </ul>
 </section>
-<section id="approfondimenti-12" class="slide level1">
-<h1>Approfondimenti (1/2)</h1>
+<section id="further-reading-12" class="slide level1">
+<h1>Further Reading (1/2)</h1>
 <ul>
 <li><p><a href="https://www.youtube.com/watch?v=60z_hpEAtD8">A swift
-introduction to geometric algebra</a>: alcune idee e diagrammi di queste
-slide sono state prese da qui (video su YouTube, di circa 40
-minuti).</p></li>
+introduction to geometric algebra</a>: some ideas and diagrams in these
+slides were taken from here (YouTube video, about 40 minutes).</p></li>
 <li><p><a
 href="https://www.springer.com/gp/book/9783030017552"><em>Geometric
-Multiplication of Vectors</em></a> (M. Josipović): molto chiaro, punta a
-fornire un’idea intuitiva di come funzioni l’algebra
-geometrica.</p></li>
+Multiplication of Vectors</em></a> (M. Josipović): very clear, aims to
+provide an intuitive idea of how geometric algebra works.</p></li>
 <li><p><a
 href="https://www.routledge.com/Understanding-Geometric-Algebra-Hamilton-Grassmann-and-Clifford-for-Computer/Kanatani/p/book/9780367575823"><em>Understanding
-Geometric Algebra</em></a> (K. Kanatani): ha un taglio più sistematico
-di Josipović; mostra il legame tra matrici omogenee e algebra
-geometrica.</p></li>
+Geometric Algebra</em></a> (K. Kanatani): has a more systematic approach
+than Josipović; shows the link between homogeneous matrices and
+geometric algebra.</p></li>
 <li><p><a
 href="https://www.cambridge.org/core/books/geometric-algebra-for-physicists/FB8D3ACB76AB3AB10BA7F27505925091"><em>Geometric
-Algebra for Physicists</em></a> (C. Doran, A. Lasenby): mostra in che
-modo sia possibile riformulare le equazioni della fisica usando
-l’algebra geometrica. I campi studiati sono: meccanica classica,
-relatività speciale, elettromagnetismo, meccanica quantistica,
-formalismo Lagrangiano, gravitazione, etc.</p></li>
+Algebra for Physicists</em></a> (C. Doran, A. Lasenby): though
+introduction to GA and its applications to Physics. Includes classical
+mechanics, special relativity, electromagnetism, quantum mechanics,
+Lagrangian formalism, gravitation, etc.</p></li>
 </ul>
 </section>
-<section id="approfondimenti-22" class="slide level1">
-<h1>Approfondimenti (2/2)</h1>
+<section id="further-reading-22" class="slide level1">
+<h1>Further Reading (2/2)</h1>
 <ul>
 <li><p><a
 href="https://onlinelibrary.wiley.com/doi/book/10.1002/9781118078549"><em>Understanding
-geometric algebra for electromagnetic theory</em></a> (J. W. Arthur): è
-un testo di elettromagnetismo e relatività speciale che usa l’algebra
-geometrica sin dal primo capitolo.</p></li>
+geometric algebra for electromagnetic theory</em></a> (J. W. Arthur):
+this only deals with electromagnetism and special relativity.</p></li>
 <li><p><a
 href="https://www.springer.com/gp/book/9781848823785"><em>Geometric
 Algebra. An Algebraic System for Computer Games and Animation</em></a>
-(J. A. Vince): mostra come le equazioni tipiche usate nella grafica
-computerizzata (rotazioni, quaternioni, proiezioni, ray-tracing, etc.)
-possano essere riformulate usando i multivettori.</p></li>
+(J. A. Vince): shows how typical equations used in computer graphics
+(rotations, quaternions, projections, ray tracing, etc.) can be
+reformulated using multivectors.</p></li>
 <li><p><a
 href="https://en.wikipedia.org/wiki/A_History_of_Vector_Analysis"><em>A
-history of vector analysis</em></a> (M. J. Crowe): descrive la storia
-dell’analisi vettoriale, confrontando le algebre di Hamilton,
-Grassmann/Clifford, e il sistema vettoriale di Gibbs/Heavyside (che è
-quello «classico», nato però per ultimo).</p></li>
+history of vector analysis</em></a> (M. J. Crowe): describes the history
+of vector analysis, comparing the algebras of Hamilton,
+Grassmann/Clifford, and the vector system of Gibbs/Heavyside (which is
+the «classical» one, but was born last).</p></li>
 </ul>
 </section>
     </div>

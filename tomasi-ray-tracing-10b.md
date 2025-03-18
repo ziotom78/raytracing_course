@@ -1,173 +1,167 @@
----
-title: "Esercitazione 10"
-subtitle: "Numeri casuali e BRDF"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
+# Generating pseudorandom numbers {#random-numbers}
 
-# Generazione di numeri pseudocasuali
+# Pseudorandom numbers
 
-# Numeri pseudo-casuali
+-   You have surely already dealt with random numbers, probably to perform Monte Carlo simulations (see e.g. the TNDS course).
 
--   Avete sicuramente già avuto a che fare con numeri casuali, probabilmente per eseguire simulazioni Monte Carlo (vedi ad es. il corso di TNDS).
+-   In this course we will not address the problem of random number generation in detail, but we will use a series of results without proving them.
 
--   In questo corso non affronteremo in dettaglio il problema della generazione dei numeri casuali, ma useremo una serie di risultati senza dimostrarli.
-
--   Il contesto delle immagini fotorealistiche è interessante per verificare il funzionamento di un generatore di numeri casuali: se la qualità del generatore non è ottima, si vede subito!
+-   The context of photorealistic images is interesting to verify the operation of a random number generator: if the quality of the generator is not excellent, you can see it immediately!
 
 ---
 
 <center>![](./media/bad-random-generator.webp)</center>
 
-# Come funziona un generatore
+# How a generator works
 
--   Un generatore di numeri pseudo-casuali è solitamente implementato come una *state machine*, ossia un algoritmo che mantiene in memoria una informazione sul proprio stato, che viene aggiornata ogni volta che produce un nuovo numero.
+-   A pseudorandom number generator is usually implemented as a *state machine*, i.e., an algorithm that keeps information about its state in memory, which is updated every time it produces a new number.
 
--   I generatori usati oggi di solito producono numeri *interi* in un dato intervallo.
+-   The generators used today usually produce *integer* numbers in a given range.
 
--   Essendo soltanto pseudo-casuali, se si conosce l'ultimo numero estratto e lo stato di un generatore, si può predire quale sarà il numero successivo (*determinismo*). Questo può essere un vantaggio!
+-   Being only pseudo-random, if you know the last number drawn and the state of a generator, you can predict what the next number will be (*determinism*). This can be an advantage!
 
-# Qualità di un generatore
+# Quality of a generator
 
-#.  I numeri che produce dovrebbero essere «casuali»…
+#.  The numbers it produces should be "random"…
 
-#.  …ma anche predicibili!
+#.  …but also predictable!
 
-#.  I numeri presi a coppie/terne/quaterne/etc. dovrebbero continuare ad essere «casuali».
+#.  Numbers taken in pairs/triples/quadruples/etc. should continue to be "random".
 
-#.  Dovrebbe essere veloce da eseguire.
+#.  It should be fast to execute.
 
-#.  Dovrebbe essere possibile far avanzare velocemente il suo stato interno: questa proprietà viene detta «ricercabilità» (*seekability*).
+#.  It should be possible to quickly advance its internal state: this property is called "seekability".
 
-# 1. «Casualità»
+# 1. "Randomness"
 
--   Un generatore di numeri *pseudo*-casuali deterministico deve avere un certo periodo $N$: una volta estratti $N$ valori, è condannato a ripetere nuovamente la sequenza (oppure, in rari casi, a fermarsi).
--   È importante che i primi $N$ valori siano distribuiti il più uniformemente possibile.
--   È anche importante che il periodo sia sufficientemente lungo! Nello studio del satellite PICO avevamo riscontrato strani risultati, dovuti al fatto che il periodo del generatore era «solo» $2^{32}$ e quindi dopo un certo tempo il codice rivedeva da capo gli stessi numeri.
+-   A deterministic *pseudo*-random number generator must have a certain period $N$: once $N$ values have been extracted, it is doomed to repeat the sequence again (or, in rare cases, to stop).
+-   It is important that the first $N$ values are distributed as uniformly as possible.
+-   It is also important that the period is sufficiently long! In the study of the PICO satellite we had encountered strange results, due to the fact that the period of the generator was "only" $2^{32}$ and therefore after a certain time the code reviewed the same numbers from the beginning.
 
-# 2. Predicibilità
+# 2. Predictability
 
--   Siccome i numeri pseudo-casuali vengono impiegati per simulazioni al calcolatore, è importante poter fare il debugging del codice.
+-   Since pseudo-random numbers are used for computer simulations, it is important to be able to debug the code.
 
--   Se i numeri del generatore fossero *veramente* casuali e riscontrassimo un problema che emerge solo di tanto in tanto, il debugging sarebbe molto difficile!
+-   If the generator's numbers were *truly* random and we encountered a problem that only emerges from time to time, debugging would be very difficult!
 
--   Di solito i generatori richiedono di essere inizializzati con un «seme» (*seed*): se si fornisce due volte lo stesso seme, la sequenza di numeri è la stessa. Questo è *estremamente* utile!
+-   Usually generators require to be initialized with a "seed": if you provide the same seed twice, the sequence of numbers is the same. This is *extremely* useful!
 
-# 3. Dimensionalità
+# 3. Dimensionality
 
--   I numeri casuali vengono spesso usati per produrre vettori casuali, ossia campioni $x \in \mathbb{R}^n$, per qualche valore di $n$ (ad esempio, punti sul piano con $n = 2$, punti nello spazio con $n = 3$, etc.).
+-   Random numbers are often used to produce random vectors, i.e., samples $x \in \mathbb{R}^n$, for some value of $n$ (for example, points on the plane with $n = 2$, points in space with $n = 3$, etc.).
 
--   Un cattivo generatore di numeri casuali può funzionare perfettamente nel generare sequenze 1D, ma mostrare strane correlazioni quando usato per generare punti 2D.
+-   A bad random number generator can work perfectly in generating 1D sequences, but show strange correlations when used to generate 2D points.
 
--   Un generatore che mantiene le proprietà di «casualità» in $k$ dimensioni si dice che soddisfa l'*equidistribuzione $k$-dimensionale*.
+-   A generator that maintains the properties of "randomness" in $k$ dimensions is said to satisfy *$k$-dimensional equidistribution*.
 
 ---
 
-# Esempio
+# Example
 
--   Supponiamo che un generatore produca numeri a 32 bit in cui i primi 31 bit sono “casuali”, ma l'ultimo bit alterni regolarmente tra 0 ed 1:
+-   Suppose that a generator produces 32-bit numbers where the first 31 bits are "random", but the last bit regularly alternates between 0 and 1:
 
-    #.  1110111101100010110101110111001<font color=#f00>0</font> (numero pari)
-    #.  1010001010100100001000010111010<font color=#f00>1</font> (numero dispari)
-    #.  0100001101100101100111111000111<font color=#f00>0</font> (numero pari)
-    #.  0101011011001110101000110101011<font color=#f00>1</font> (numero dispari)
-    #.  Etc., in modo che **tutti** i valori tra 0 e 2³²−1 siano estratti una volta
+    1.  1110111101100010110101110111001<font color=#f00>0</font> (even number)
+    2.  1010001010100100001000010111010<font color=#f00>1</font> (odd number)
+    3.  0100001101100101100111111000111<font color=#f00>0</font> (even number)
+    4.  0101011011001110101000110101011<font color=#f00>1</font> (odd number)
+    5.  Etc., so that **all** values between 0 and 2³²−1 are extracted once
 
--   Se voglio produrre punti 2D $(x, y)$ casuali distribuiti uniformemente, le ascisse avranno sempre valore pari e le ordinate dispari ⇒ metà dei punti teoricamente possibili in realtà non verranno mai scelti!
+-   If I want to produce random 2D points $(x, y)$ uniformly distributed, the abscissas will always have an even value and the ordinates an odd value ⇒ half of the theoretically possible points will actually never be chosen!
 
 ---
 
 <center>![](./media/2d-randomness.png)</center>
 
-Un *randogramma* (v. O'Neill 2014).
+A *randogramma* (see O'Neill, 2014).
 
-# 4. Velocità
+# 4. Performance
 
--   Le applicazioni alla fisica dei metodi Monte Carlo richiedono di eseguire molte volte delle simulazioni, in modo da ridurre gli effetti del campionamento.
+-   Applications of Monte Carlo methods to physics require running many simulations to reduce the effects of sampling.
 
--   Un modo per avere grande velocità è usare operazioni logiche a livello di bit, che sono le più veloci realizzabili con le comuni CPU.
+-   One way to achieve high speed is to use bitwise logical operations, which are the fastest operations that can be performed on common CPUs.
 
--   Un generatore dovrebbe mantenere il proprio stato in una struttura di memoria il più piccola possibile: in questo modo è più facile per la CPU ottimizzarne l'esecuzione.
+-   A generator should keep its state in the smallest possible memory structure: this makes it easier for the CPU to optimize its execution.
 
 
-# 5. Ricercabilità
+# 5. Seekability
 
--   In un generatore ogni numero casuale viene ricavato dallo stato del generatore, e lo stato cambia per ogni nuovo numero generato. Di conseguenza, il valore casuale $x_{k + 1}$ dipende dalla conoscenza del valore $x_k$.
+-   In a generator, each random number is derived from the generator's state, and the state changes for each new number generated. Consequently, the random value $x_{k + 1}$ depends on the knowledge of the value $x_k$.
 
--   Se io volessi produrre $2\times 10^9$ numeri casuali avendo a disposizione due computer, potrei voler generare 10⁹ campioni sulla prima macchina e 10⁹ sulla seconda.
+-   If I wanted to produce $2\times 10^9$ random numbers using two computers, I might want to generate $10^9$ samples on the first machine and $10^9$ on the second.
 
--   Se però non si imposta correttamente il problema, c'è il rischio che le due sequenze di campioni siano correlate.
+-   However, if the problem is not set up correctly, there is a risk that the two sample sequences will be correlated.
 
-# Esempio
+# Example
 
--   Se assegno lo stesso *seed* ai due computer, ottengo la stessa sequenza: argh!
+-   If I assign the same *seed* to the two computers, I get the same sequence: argh!
 
--   Potrei allora assegnare il *seed* 5 al primo computer, e il *seed* 36 al secondo.
+-   I could then assign the *seed* 5 to the first computer and the *seed* 36 to the second.
 
--   Se però il generatore è tale per cui dopo il numero 5 estrae il numero 36, la sequenza di numeri generati è allora la seguente:
+-   However, if the generator is such that after the number 5 it extracts the number 36, the sequence of generated numbers is then the following:
 
     ```text
     computer #1:  5  36  17  29  45  …
     computer #2: 36  17  29  45   3  …
     ```
 
--   Ovviamente, questo sarebbe un problema anche se anziché 36 assegnassi 17, 29 o 45 al secondo computer.
+-   Obviously, this would also be a problem if I assigned 17, 29, or 45 to the second computer instead of 36.
 
--   Non basta dare un *seed* diverso ai due computer per ottenere sequenze indipendenti!
-
-
-# Soluzioni al problema
-
--   Una possibile soluzione è quella di avere un criterio per cui due stati del generatore siano *ortogonali*: ossia, non possono generare la stessa sequenza di campioni, neppure sfasata. Questi generatore tipicamente richiedono di essere inizializzati con *due* numeri iniziali: un identificativo della sequenza e il *seed*. Se si usano due identificativi diversi, le sequenze generate sono scorrelate.
-
--   Un'altra soluzione è quella di poter avanzare lo stato del generatore di $k$ passaggi in maniera rapida, *senza* effettivamente generare $k - 1$ numeri casuali e richiedendo un numero di operazioni ben minore di $\propto k$ (tipicamente vale che $\propto \log k$).
-
-# Generazione parallela
-
-Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ computer si può usare questa procedura:
-
-#.  Parto da un *seed* fissato, oppure casuale (ricavato dalla data e ora in cui è stato eseguito il programma), e creo lo stato iniziale del generatore;
-#.  Assegno a ognuno dei $k$ computer il compito di generare solo $N/k$ campioni, e copio lo *stesso* stato iniziale del generatore su ciascuno di essi;
-#.  Sul computer $i$-esimo avanzo lo stato del generatore di $i \times N / k$, usando l'algoritmo «veloce»;
-#.  Ogni generatore procede a generare i $N/k$ campioni.
+-   It is not enough to give a different *seed* to the two computers to obtain independent sequences!
 
 
-# Algoritmi
+# Solutions to the problem
 
--   Le librerie standard dei compilatori offrono funzionalità per la generazione dei numeri casuali, ma la qualità di questi generatori è molto diseguale!
+-   One possible solution is to have a criterion whereby two states of the generator are *orthogonal*: that is, they cannot generate the same sequence of samples, not even shifted. These generators typically require initialization with *two* initial numbers: a sequence identifier and the *seed*. If two different identifiers are used, the generated sequences are uncorrelated.
 
--   Nel 2014 Melissa O'Neill ha pubblicato [uno splendido articolo](https://www.pcg-random.org/paper.html) su una nuova famiglia di generatori di numeri casuali che soddisfa *tutte* le caratteristiche elencate prima, ed è rilasciato come libreria open-source sul sito [www.pcg-random.org](https://www.pcg-random.org/).
+-   Another solution is to be able to advance the state of the generator by $k$ steps quickly, *without* actually generating $k - 1$ random numbers and requiring a number of operations much less than $\propto k$ (typically $\propto \log k$).
 
--   In questo corso useremo quindi l'algoritmo PCG, che ha tutte le belle proprietà elencate prima.
+# Parallel Generation
 
+To generate a long sequence of $N$ random numbers by distributing it over $k$ computers, the following procedure can be used:
 
-# L'algoritmo PCG
-
--   L'algoritmo che implementeremo per generare numeri pseudo-casuali è descritto nello stesso articolo [O'Neill (2014)](https://www.pcg-random.org/paper.html).
-
--   Anche se potrebbero esistere implementazioni del PCG nel vostro linguaggio, è richiesto che lo implementiate da soli.
-
--   Ci sono infatti numerose varianti dell'algoritmo, che si distinguono per le dimensioni in bit delle quantità usate durante la generazione.
-
--   Faciliterà il lavoro dei vari gruppi se ciascuno userà il medesimo generatore col medesimo seed.
+1. Start with a fixed *seed*, or a random one (obtained from the date and time the program was executed), and create the initial state of the generator;
+2. Assign to each of the $k$ computers the task of generating only $N/k$ samples, and copy the *same* initial state of the generator to each of them;
+3. On the $i$-th computer, advance the generator state by $i \times N / k$, using the "fast" algorithm;
+4. Each generator proceeds to generate the $N/k$ samples.
 
 
-# Numeri *unsigned*
+# Algorithms
 
--   PCG, come molti algoritmi simili, richiede di fare calcoli con maschere di bit.
+-   The standard libraries of compilers offer functionality for generating random numbers, but the quality of these generators is very uneven!
 
--   Le maschere di bit si codificano solitamente con interi senza segno.
+-   In 2014, Melissa O'Neill published [a splendid article](https://www.pcg-random.org/paper.html) on a new family of random number generators that satisfies *all* the characteristics listed above, and it is released as an open-source library on the website [www.pcg-random.org](https://www.pcg-random.org/).
+
+-   In this course, we will therefore use the PCG algorithm, which has all the nice properties listed above.
+
+
+# The PCG Algorithm {#pcg-algorithm}
+
+-   The algorithm we will implement to generate pseudo-random numbers is described in the same article [O'Neill (2014)](https://www.pcg-random.org/paper.html).
+
+-   Even if there might be PCG implementations in your language, you are required to implement it yourself.
+
+-   There are in fact numerous variants of the algorithm, which are distinguished by the bit size of the quantities used during generation.
+
+-   It will make the work of the various groups easier if everyone uses the same generator with the same seed.
+
+
+# *Unsigned* Numbers
+
+-   PCG, like many similar algorithms, requires calculations with bit masks.
+
+-   Bit masks are usually encoded with unsigned integers.
 
 <center>
 ![](media/julia-signed-unsigned-int.png){width=480px}
 </center>
 
--   Un numero negativo come `-12` (`0b1100`) è codificato con il complemento a due: si invertono tutti i bit di `12` e si somma 1, a dare `0b11110100` (8 bit).
+-   A negative number like `-12` (`0b1100`) is encoded with two's complement: all bits of `12` are inverted and 1 is added, resulting in `0b11110100` (8 bits).
 
-# Operazioni sui bit
+# Bitwise Operations
 
 <small>
 
-| Nome             | Esempio (Julia)             |
+| Name             | Example (Julia)             |
 |------------------|-----------------------------|
 | And              | `0b1001 & 0b0011 == 0b0001` |
 | Or               | `0b1001 | 0b0011 == 0b1011` |
@@ -178,32 +172,31 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
 | Logical shift    | `0b1001 >>> 1 == 0b100`     |
 |                  | `Int8(-12) >>> 1 == 122`    |
 |                  | `Int16(-12) >>> 1 == 32762` |
+- In a right *arithmetic shift*, the new most significant bit is a copy of the old one, so as to preserve the sign.
 
-- Nell'*arithmetic shift* a destra, il nuovo bit più significativo è la copia del vecchio, in modo da preservare il segno.
-
-- Nel *logical shift* il nuovo bit più significativo è sempre zero, ed è sempre questo da usare nel PCG.
+- In a *logical shift*, the new most significant bit is always zero, and this is the one to use in PCG.
 
 </small>
 
-# Implementazione in Python
+# Implementation in Python
 
--   L'implementazione Python dell'algoritmo richiede delle operazioni che permettano di controllare il modo in cui Python esegue operazioni su interi.
+-   The Python implementation of the algorithm requires operations that allow control over how Python performs operations on integers.
 
--   A differenza dei linguaggi usati da voi, in Python esiste solo un tipo `int`, le cui dimensioni si adattano a seconda del numero che va memorizzato.
+-   Unlike the languages you use, in Python there is only one `int` type, whose size adapts depending on the number to be stored.
 
--   In Python non è possibile avere un overflow, perché l'interprete Python alloca sempre più spazio per non perdere cifre.
+-   Overflows are not possible in Python because the Python interpreter always allocates more space to avoid losing digits.
 
--   I linguaggi che usate ottimizzano invece le prestazioni, e possono subire overflow. Questi overflow sono non solo accettati, ma addirittura *richiesti* nell'algoritmo PCG.
+-   The languages you use, on the other hand, optimize for performance and can experience overflows. These overflows are not only accepted, but actually *required* in the PCG algorithm.
 
 ----
 
 <asciinema-player src="cast/overflow-python-julia-74x26.cast" cols="74" rows="26" font-size="medium"></asciinema-player>
 
-# Gestione degli interi
+# Integer Management
 
--   Per rendere Python più simile a Julia, si può implementare una funzione che mascheri i bit meno significativi, simulando i numeri a 64 e a 32 bit.
+-   To make Python behave more like Julia, you can implement a function that masks the least significant bits, simulating 64-bit and 32-bit numbers.
 
--   Un esempio di implementazione è il seguente:
+-   An example implementation is as follows:
 
     ```python
     def to_uint64(x: int) -> int:
@@ -211,21 +204,21 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
         return x & 0xffffffffffffffff
     ```
 
--   Ovviamente questo non è necessario se si usa un linguaggio che implementa tipi interi di dimensione fissata. Questo è il caso di tutti i linguaggi che state usando 😀.
+-   Obviously, this is not necessary if you are using a language that implements fixed-size integer types. This is the case with all the languages you are using 😀.
 
 
-# Interi usati dal PCG
+# Integers Used by PCG
 
--   L'algoritmo PCG che implementeremo è quello che genera numeri a 32 bit nell'intervallo $[0, 2^{32} - 1]$ (`uint32_t` in C++).
+-   The PCG algorithm we will implement is the one that generates 32-bit numbers in the range $[0, 2^{32} - 1]$ (`uint32_t` in C++).
 
--   La struttura dati usati dall'algoritmo PCG ha bisogno di memorizzare al suo interno due numeri interi `unsigned` a 64 bit.
+-   The data structure used by the PCG algorithm needs to store two 64-bit `unsigned` integers internally.
 
--   Familiarizzatevi con i tipi di interi senza segno forniti dal vostro linguaggio. (Linguaggi come Java non hanno interi senza segno, quindi bisogna cavarsela con quelli con segno 🙁; però Kotlin [li implementa](https://kotlinlang.org/docs/unsigned-integer-types.html) 🥳)
+-   Familiarize yourselves with the unsigned integer types provided by your language. (Languages like Java don't have unsigned integers, so you have to make do with signed ones 🙁; however, Kotlin [implements them](https://kotlinlang.org/docs/unsigned-integer-types.html) 🥳)
 
 
 # PCG in Python
 
--   Ecco l'implementazione del tipo `PCG` e del costruttore:
+-   Here is the implementation of the `PCG` type and the constructor:
 
     ```python
     @dataclass
@@ -241,10 +234,9 @@ Per generare una lunga sequenza di $N$ numeri casuali distribuendola su $k$ comp
             self.random()   # Throw a random number and discard it
     ```
 
--   In Python non possiamo specificare i bit che ci occorrono, ma nelle vostre implementazioni dovrete dichiarare `state` e `inc` come `unsigned` a 64 bit.
+-   In Python, we cannot specify the bits we need, but in your implementations, you will have to declare `state` and `inc` as 64-bit `unsigned` integers.
 
-# Il metodo `PCG.random`
-
+# The `PCG.random` Method
 
 ```python
 def random(self) -> int:  # 32-bit unsigned number (in Java, return a 64-bit number)
@@ -263,7 +255,7 @@ def random(self) -> int:  # 32-bit unsigned number (in Java, return a 64-bit num
     return to_uint32((xorshifted >> rot) | (xorshifted << ((-rot) & 31)))
 ```
 
-# Test per `PCG`
+# Tests for `PCG`
 
 ```python
 def test_random():
@@ -281,13 +273,13 @@ def test_random():
         assert expected == pcg.random()
 ```
 
-# Numeri floating-point
+# Floating-Point Numbers
 
--   Ovviamente il metodo `PCG.random` restituisce un numero *intero*.
+-   Obviously, the `PCG.random` method returns an *integer*.
 
--   Nella lezione di teoria però abbiamo sempre usato numeri pseudo-casuali $X_i$ distribuiti uniformemente su $[0, 1]$.
+-   In the theory lesson, however, we always used pseudo-random numbers $X_i$ uniformly distributed on $[0, 1]$.
 
--   Dal momento che l'implementazione PCG che stiamo usando è a 32 bit e ha periodo $2^{32} -1$, è sufficiente normalizzare i numeri interi restituiti dall'algoritmo per avere la distribuzione uniforme:
+-   Since the PCG implementation we are using is 32-bit and has a period of $2^{32} - 1$, it is sufficient to normalize the integers returned by the algorithm to obtain the uniform distribution:
 
     ```python
     def random_float(self) -> float:
@@ -296,56 +288,56 @@ def test_random():
 
 # *Seed*
 
--   Fate in modo che il costruttore del tipo `PCG` accetti come parametri di default i seguenti:
+-   Make sure that the constructor of the `PCG` type accepts the following default parameters:
 
     ```text
     init_state = 42
     init_seq = 54
     ```
 
--   In questo modo nei test basterà creare una variabile `PCG` col costruttore di default e il test sarà ripetibile (e confrontabile tra gruppi diversi!).
+-   This way, in the tests, it will be enough to create a `PCG` variable with the default constructor, and the test will be repeatable (and comparable between different groups!).
 
 
 # BRDFs
 
-# Tipi di dati
+# Data Types
 
--   Oggi inizieremo ad implementare il nostro path-tracer, e inizieremo da materiali, BRDFs e pigmenti. Ci serviranno questi tipi di dati primitivi:
+-   Today we will start implementing our path-tracer, and we will begin with materials, BRDFs, and pigments. We will need these primitive data types:
 
-    #.  Il tipo `Pigment` è **astratto**, e rappresenta il colore associato ad un punto particolare di una superficie $(u, v)$;
-    #.  Il tipo `BRDF` è **astratto**, e rappresenta la BRDF di un materiale, che deve contenere al suo interno un membro `Pigment`;
-    #.  Il tipo `Material` è **concreto**, e rappresenta l'unione della parte emissiva di un materiale (il termine $L_e$, che rappresentiamo ancora come un `Pigment`) e della sua BRDF.
+    #.  The `Pigment` type is **abstract** and represents the color associated with a particular point on a surface $(u, v)$;
+    #.  The `BRDF` type is **abstract** and represents the BRDF of a material, which must contain a `Pigment` member;
+    #.  The `Material` type is **concrete** and represents the union of the emissive part of a material (the $L_e$ term, which we still represent as a `Pigment`) and its BRDF.
 
--   Dai tipi astratti `Pigment` e `BRDF` derivereremo poi una serie di tipi concreti.
+-   From the abstract types `Pigment` and `BRDF`, we will then derive a series of concrete types.
 
 # `Pigment`
 
--   Il tipo base `Pigment` serve per calcolare un colore (tipo `Color`) associato con una coordinata $(u, v)$, tramite un metodo/funzione `get_color`, che associa un `Vec2D` a un `Color`.
+-   The base type `Pigment` is used to calculate a color (type `Color`) associated with a coordinate $(u, v)$, through a method/function `get_color`, which associates a `Vec2D` with a `Color`.
 
--   Dovreste quanto meno definire questi due tipi:
+-   You should at least define these two types:
 
-    -   `UniformPigment` (colore uniforme, il pigmento più semplice!);
-    -   `CheckeredPigment` (scacchiera, utile per il debugging).
+    -   `UniformPigment` (uniform color, the simplest pigment!);
+    -   `CheckeredPigment` (checkerboard, useful for debugging).
 
--   Potreste definire anche un `ImagePigment` che si costruisca a partire da una `HdrImage`: questo consente di creare effetti molto interessanti se applicate a sfere delle immagini contenenti [proiezioni equirettangolari](https://en.wikipedia.org/wiki/Equirectangular_projection). Usate come riferimento l'implementazione in [pytracer](https://github.com/ziotom78/pytracer/blob/f994f863bf2c37b3f3f73f681435895f8117c8fb/materials.py#L53-L73).
+-   You could also define an `ImagePigment` that is constructed from an `HdrImage`: this allows creating very interesting effects if applied to spheres with images containing [equirectangular projections](https://en.wikipedia.org/wiki/Equirectangular_projection). Use the implementation in [pytracer](https://github.com/ziotom78/pytracer/blob/f994f863bf2c37b3f3f73f681435895f8117c8fb/materials.py#L53-L73) as a reference.
 
-# Pigmento a scacchiera
+# Checkered Pigment
 
 <center>![](media/checkered-pigment.svg){height=420px}</center>
 
-Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono entrambi pari o dispari, il colore 2 negli altri casi. Il numero di divisioni dovrebbe essere impostabile nel costruttore.
+Color 1 is used in the squares where the row and column numbers are both even or odd, color 2 in the other cases. The number of divisions should be configurable in the constructor.
 
 # `BRDF`
 
--   Il tipo `BRDF` deve codificare la BRDF dell'equazione del rendering, ossia
+-   The `BRDF` type must encode the BRDF of the rendering equation, i.e.,
 
     $$
     f_r = f_r(x, \Psi \rightarrow \Theta).
     $$
 
--   La BRDF è per definizione uno scalare, ma per rappresentare la dipendenza dalla lunghezza d'onda $\lambda$, il codice Python restituisce un `Color` anziché un `float`: ogni componente (R/G/B) è la BRDF integrata su quella banda.
+-   The BRDF is by definition a scalar, but to represent the dependence on the wavelength $\lambda$, the Python code returns a `Color` instead of a `float`: each component (R/G/B) is the BRDF integrated over that band.
 
--   Questo è il prototipo di `BRDF.Eval` com'è implementato in [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L92-L98):
+-   This is the prototype of `BRDF.Eval` as implemented in [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L92-L98):
 
     ```python
     class BRDF:
@@ -353,13 +345,13 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
             # …
     ```
 
-# BRDF e `Pigment`
+# BRDF and `Pigment`
 
--   Il tipo `BRDF` dovrebbe contenere un tipo `Pigment` o un suo derivato (in C++ ad esempio si userebbe un puntatore, oppure `std::shared_ptr<Pigment>`).
+-   The `BRDF` type should contain a `Pigment` type or a derivative (in C++ for example, a pointer would be used, or `std::shared_ptr<Pigment>`).
 
--   Usate le componenti R/G/B restituite dal pigmento per un dato punto $(u, v)$ della superficie per «pesare» il contributo di $f_r$ alle varie frequenze (se una delle componenti RGB è nulla, tutti i fotoni in quella banda vengono assorbiti).
+-   Use the R/G/B components returned by the pigment for a given point $(u, v)$ on the surface to "weight" the contribution of $f_r$ to the various frequencies (if one of the RGB components is zero, all photons in that band are absorbed).
 
--   Questa è ad esempio l'implementazione della BRDF diffusa ($f_r = \rho_d / \pi$) in [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L101-L108), che di fatto assume $\rho_d = \rho_d(\lambda)$:
+-   This is, for example, the implementation of the diffuse BRDF ($f_r = \rho_d / \pi$) in [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L101-L108), which effectively assumes $\rho_d = \rho_d(\lambda)$:
 
     ```python
     class DiffuseBRDF(BRDF):
@@ -369,12 +361,12 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
 
 # `Material`
 
--   Il tipo `Material` deve racchiudere le informazioni sull'interazione tra punti della superficie e fotoni:
+-   The `Material` type must encompass the information about the interaction between surface points and photons:
 
-    #.  La BRDF $f_r = f_r(x, \Psi \rightarrow \Theta)$;
-    #.  La radianza emessa in funzione del punto sulla superficie: $L_e = L_e(u, v)$.
+    #.  The BRDF $f_r = f_r(x, \Psi \rightarrow \Theta)$;
+    #.  The emitted radiance as a function of the point on the surface: $L_e = L_e(u, v)$.
 
--   In [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L111-L115) è definito così:
+-   In [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L111-L115) it is defined as follows:
 
     ```python
     @dataclass
@@ -384,17 +376,17 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
         emitted_radiance: Pigment = UniformPigment(BLACK)  # A *pigment*!
     ```
 
-# Versatilità
+# Versatility
 
--   Il tipo `Pigment` non deve fare altro che restituire un colore data una coordinata $(u, v)$, quindi richiede solo un metodo `get_color`. (Potrebbe quindi essere ripensato come un [*oggetto funzione*](https://en.wikipedia.org/wiki/Function_object), volendo…)
+-   The `Pigment` type only needs to return a color given a coordinate $(u, v)$, so it only requires a `get_color` method. (It could therefore be rethought as a [*function object*](https://en.wikipedia.org/wiki/Function_object), if desired…)
 
--   Il tipo `BRDF` dovrà diventare più complesso di come l'abbiamo implementato oggi (in un path tracer **non serve valutare** $f_r$, e quindi useremo `BRDF.eval` per altri scopi!), quindi è meglio non usare scorciatoie.
+-   The `BRDF` type will have to become more complex than how we implemented it today (in a path tracer, it is **not necessary to evaluate** $f_r$, and therefore we will use `BRDF.eval` for other purposes!), so it is better not to use shortcuts.
 
--   Il tipo `Material` è semplicemente l'unione di una BRDF e di un pigmento (il termine $L_e$), e non andrà esteso.
+-   The `Material` type is simply the union of a BRDF and a pigment (the $L_e$ term), and will not be extended.
 
-# Modifiche a `Shape`
+# Updating `Shape`
 
--   Dovete anche modificare la definizione di `Shape` in modo che contenga al suo interno una istanza del tipo `Material`:
+-   You must add an instance of a `Material` inside `Shape`:
 
     ```python
     class Shape:
@@ -404,16 +396,16 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
             self.material = material
     ```
 
--   Il tipo `HitRecord` dovrebbe essere modificato in modo da contenere anche un puntatore all'oggetto `Shape` che è stato «colpito» dal raggio: in questo modo si potrà risalire al `Material` da usare durante la risoluzione dell'equazione del rendering (un'alternativa è salvare `Material` anziché `Shape`).
+-   The `HitRecord` type should be modified to also contain a pointer to the `Shape` object that was "hit" by the ray: this way it will be possible to trace back to the `Material` to use during the resolution of the rendering equation (an alternative is to save `Material` instead of `Shape`).
 
 
 # Flat-renderer
 
--   Ora che abbiamo attribuito un `Material` a ogni `Shape`, è possibile creare un renderer un po' più interessante del tipo on/off usato nel nostro demo.
+-   Now that we have assigned a `Material` to each `Shape`, it is possible to create a slightly more interesting renderer than the on/off type used in our demo.
 
--   Nello specifico, potremmo implementare un semplice renderer che, invece di usare i colori bianco e nero, assegna a un pixel il colore del `Pigment` calcolato nel punto dove il raggio colpisce l'oggetto.
+-   Specifically, we could implement a simple renderer that, instead of using black and white colors, assigns to a pixel the color of the `Pigment` calculated at the point where the ray hits the object.
 
--   Il codice di pytracer implementa una classe base, [`Renderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L24-L35), da cui derivano due classi [`OnOffRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L38-L49) e [`FlatRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L52-L69): quando si esegue il comando `demo` si può scegliere quale usare mediante il flag `--algorithm`.
+-   The pytracer code implements a base class, [`Renderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L24-L35), from which two classes derive: [`OnOffRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L38-L49) and [`FlatRenderer`](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/render.py#L52-L69): when running the `demo` command, you can choose which one to use via the `--algorithm` flag.
 
 ---
 
@@ -421,15 +413,16 @@ Il colore 1 viene usato nelle caselle in cui i numeri di riga e colonna sono ent
     <video src="media/flat-renderer.mp4" width="640" height="480" controls loop autoplay/>
 </center>
 
-(A causa del fatto che l'immagine è quasi completamente nera, il *tone mapping* fa saturare i colori se si usa il valore standard di luminosità; convertite l'immagine fissando una luminosità media di ~0.5).
+(Due to the image being almost completely black, the *tone mapping* saturates the colors if the standard brightness value is used; convert the image by setting an average brightness of ~0.5).
 
-# Generare animazioni
+# Generating Animations
 
--   Generare un'animazione lunga può essere molto tedioso.
+-   Generating a long animation can be very tedious.
 
--   Se la CPU del vostro computer supporta più *core* (molto probabile), potete usare [GNU Parallel](https://www.gnu.org/software/parallel/) (`sudo apt install parallel` sotto Debian/Ubuntu/Mint) per usare tutti i core e produrre tanti frame contemporaneamente: il vantaggio in termini di tempo è impressionante!
+-   If your computer's CPU supports multiple *cores* (very likely), you can use [GNU Parallel](https://www.gnu.org/software/parallel/) (`sudo apt install parallel` under Debian/Ubuntu/Mint) to use all cores and produce many frames simultaneously: the time savings are impressive!
 
--   Scrivete uno script `generate-image.sh` che produca una immagine dato un parametro numerico e rendetelo eseguibile con `chmod +x NOMEFILE`, poi eseguite il comando `parallel` in un modo simile a questo:
+-   Write a script `generate-image.sh` that produces an image given a numeric parameter and make it executable with `chmod +x FILENAME`, then run the `parallel` command in a way similar to this:
+
 
     ```text
     parallel -j NUM_OF_CORES ./generate-image.sh '{}' ::: $(seq 0 359)
@@ -456,17 +449,23 @@ time ./main.py demo --algorithm flat --angle-deg $angle \
 ```
 
 
-# Guida per l'esercitazione
+# What to do today
 
 
-# Cose da fare
+# What to do today
 
-#.  Implementate il generatore PCG.
-#.  Create un nuovo branch di nome `pathtracing`;
-#.  Create i tipi `Pigment`, `UniformPigment`, `CheckeredPigment` (se vi va, implementate anche `ImagePigment`);
-#.  Create i tipi `BRDF` e `DiffuseBRDF`;
-#.  Creare il tipo `Material`;
-#.  Modificate `Shape` perché contenga una istanza di `Material`;
-#.  Modificate `HitRecord` perché contenga un puntatore alla `Shape` colpita da un raggio;
-#.  Se vi va, implementate un flat-renderer (ma modificate anche il demo).
-#.  Implementate gli stessi test di [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/test_all.py#L729-L841).
+1. Implement the PCG generator.
+2. Create a new branch named `pathtracing`;
+3. Create the types `Pigment`, `UniformPigment`, `CheckeredPigment` (if you like, also implement `ImagePigment`);
+4. Create the types `BRDF` and `DiffuseBRDF`;
+5. Create the type `Material`;
+6. Modify `Shape` to contain an instance of `Material`;
+7. Modify `HitRecord` to contain a pointer to the `Shape` hit by a ray;
+8. If you like, implement a flat-renderer (in this case, update the demo).
+9. Implement the same tests as [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/test_all.py#L729-L841).
+
+---
+title: "Laboratory 10"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

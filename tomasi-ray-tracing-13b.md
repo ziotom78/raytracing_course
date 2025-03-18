@@ -1,12 +1,6 @@
----
-title: "Esercitazione 13"
-subtitle: "Analisi sintattica e semantica"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
+# Syntactic and lexical analysis
 
-# Analisi sintattica e lessicale
-
-# Esempio di formato
+# Example
 
 ```python
 # Declare a floating-point variable named "clock"
@@ -46,24 +40,24 @@ plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))
 camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 ```
 
-Questo è il tipo di file per cui oggi implementeremo il nostro *parser*, che effettuerà l'analisi semantica e lessicale del contenuto.
+This is the file type for which we will implement a *parser*, with the task to perform a semantic and syntactic analysis.
 
-# Struttura del *parser*
+# Structure of the *Parser*
 
--   Il nostro *parser* dovrà leggere in input la descrizione di una scena usando un `InputStream` e produrre una serie di oggetti in memoria:
+-   Our *parser* must read the description of a scene using an `InputStream` and allocate memory for several objects:
 
-    -   Una variabile di tipo `World`;
-    -   La definizione dell'osservatore;
-    -   Una tabella contenente tutti i `Material` definiti nella scena e associati al loro nome (es., `sky_material` nel nostro esempio);
-    -   Una tabella contenente tutte le variabili `float`.
+    -   An instance of the type `World`;
+    -   The definition of the observer;
+    -   A table containing all the instances of `Material` defined in the scene, together with their name. (E.g., `sky_material` in our canonical example);
+    -   A table containing all the `float` variables.
 
--   La tabella dei materiali e delle variabili non servirà per fare il *rendering* della scena, ma può essere utile per stampare a video una tabella riassuntiva, oppure per fare *debugging*.
+-   The table with materials and `float` variables will not be needed to render the scene, but it might be useful for printing a table to the console or to debug the code.
 
-# Il tipo `Scene`
+# The `Scene` type
 
--   Codificheremo quindi il risultato del *parsing* in un nuovo tipo, `Scene`
+-   We will save the results of the parsing stage in a new type, `Scene`.
 
--   In [pytracer](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L329L336), il tipo è definito così:
+-   In [pytracer](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L329L336), the type has the following definition:
 
     ```python
     class Scene:
@@ -75,11 +69,11 @@ Questo è il tipo di file per cui oggi implementeremo il nostro *parser*, che ef
         overridden_variables: Set[str] = field(default_factory=set)
     ```
 
-# Funzioni `expect_*`
+# The `expect_*` functions
 
--   Nella nostra grammatica, capita spesso che in certi punti la presenza di un simbolo, un identificatore, o una particolare *keyword* sia **obbligatoria**.
+-   In our grammar, it is often the case that a symbol, identifier, or keyword is **mandatory** at some point in the language.
 
--   È molto comodo implementare quindi funzioni come `expect_symbol`, `expect_number`, etc., che gestiscano eventuali condizioni in cui il *token* letto non è del tipo atteso, ad esempio:
+-   It is handy to implement functions like `expect_symbol`, `expect_number`, …, to handle the error condition where the token is of an unexpected type. Example:
 
     ```python
     def expect_symbol(s: InputStream, symbol: str):
@@ -89,17 +83,17 @@ Questo è il tipo di file per cui oggi implementeremo il nostro *parser*, che ef
             raise GrammarError(token.location, f"got '{token}' instead of '{symbol}'")
     ```
 
-# Funzione `expect_keyword`
+# The `expect_keyword` function
 
--   Se nel caso di simboli solitamente è richiesto l'uso di **un particolare simbolo** (es., la parentesi tonda aperta), nel caso delle keyword il nostro linguaggio ammette spesso diverse possibilità.
+-   It is usually the case that the grammar expect a precise symbol at some point, e.g., a comma. For keywords, our grammar often lets many different choices.
 
--   Ad esempio, nell'interpretare una BRDF, ci si può aspettare sia `diffuse` che `specular`.
+-   For instance, when defining a BRDF, the grammar either expects `diffuse` or `specular`.
 
--   La funzione [`expect_keywords`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L346-L358) dovrebbe quindi accettare come parametro una **lista** di keyword ammesse, anziché una sola. (Di solito questo è utile anche per i simboli, ma nel nostro caso specifico è inutile: laddove la nostra grammatica richiede un simbolo, questo è sempre univocamente determinato).
+-   The function [`expect_keywords`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L346-L358) should accept a **list** of permitted keywords, instead of just one. (Usually this is handy for symbols too, but in our grammar this is useless: every time a symbol is expected, its kind is uniquely determined.)
 
-# Lista di funzioni `expect_*`
+# List of functions `expect_*`
 
--   Il codice di [pytracer](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L339-L396) implementa queste funzioni:
+-   [Pytracer](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L339-L396) implements these functions:
 
     #.   `expect_symbol(s: InputStream, symbol: str)`
     #.   `expect_keywords(s: InputStream, keywords: List[KeywordEnum]) -> KeywordEnum`
@@ -107,11 +101,11 @@ Questo è il tipo di file per cui oggi implementeremo il nostro *parser*, che ef
     #.   `expect_string(s: InputStream) -> str`
     #.   `expect_identifier(s: InputStream) -> str`
 
--   Ovviamente avete la libertà di variare questo approccio come pensate sia meglio per il vostro linguaggio (esempio: potete rendere tutte queste funzioni dei metodi di `InputStream`).
+-   Obviously, you have complete freedom to adapt this approach according to your taste!
 
 # `expect_number`
 
--   La funzione [`expect_number`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L361-L374) è un po' più sofisticata delle altre, perché ammette sia *literal* che identificatori a variabili già definite:
+-   The function [`expect_number`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L361-L374) is slightly more complex, because it must accept both *literal numbers* and variables:
 
     ```python
     def expect_number(s: InputStream, scene: Scene) -> float:
@@ -127,13 +121,13 @@ Questo è il tipo di file per cui oggi implementeremo il nostro *parser*, che ef
         raise GrammarError(token.location, f"got '{token}' instead of a number")
     ```
 
--   È questo il motivo per cui richiede un parametro `Scene`.
+-   To handle variables, the function must accept an instance to `Scene`.
 
-# Funzioni `parse_*`
+# The `parse_*` functions
 
--   Le funzioni [`parse_*`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L399-L616) si occupano invece di interpretare *liste* di token, ed impiegano al loro interno le funzioni `expect_*`.
+-   The functions [`parse_*`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L399-L616) interpret *lists* of tokens, and they are built upon the `expect_*` functions.
 
--   Ad esempio, l'implementazione di [`parse_color`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L411-L420) in pytracer è fatta così:
+-   For instance, Pytracer implements [`parse_color`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L411-L420) in this way:
 
     ```python
     def parse_color(s: InputStream, scene: Scene) -> Color:
@@ -147,9 +141,9 @@ Questo è il tipo di file per cui oggi implementeremo il nostro *parser*, che ef
         return Color(red, green, blue)
     ```
 
--   L'uso di [`expect_number`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L361-L374) abilita la possibilità di usare variabili `float`.
+-   Using [`expect_number`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L361-L374) enables the possibility to use `float` variables for the RGB components.
 
-# Lista di funzioni `parse_*`
+# List of functions `parse_*`
 
 #.  ```parse_vector(s: InputStream, scene: Scene) -> Vec```
 #.  ```parse_color(s: InputStream, scene: Scene) -> Color```
@@ -161,26 +155,26 @@ Questo è il tipo di file per cui oggi implementeremo il nostro *parser*, che ef
 #.  ```parse_plane(s: InputStream, scene: Scene) -> Plane```
 #.  ```parse_camera(s: InputStream, scene) -> Camera```
 
-# La funzione `parse_scene`
+# The function `parse_scene`
 
--   La funzione [`parse_scene`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L571-L616) è quella più ad alto livello di tutte: deve interpretare la scena e produrre in output un oggetto `Scene`:
+-   The function [`parse_scene`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L571-L616) is at the highest level: it must interpret the scene and create an instance of `Scene`.
 
     ```python
     parse_scene(s: InputStream) -> Scene
     ```
 
--   Nella grammatica EBNF che abbiamo visto a lezione, una scene è una lista di zero o più definizioni di `float`/materiale/sfera/piano/osservatore (`scene ::= declaration*`). Dal punto di vista del codice, questo va scandito in un ciclo `while`.
+-   In the EBNF grammar we saw last time, a scene is a list of zero or more definitions of `float`/materials/spheres/planes/observers (`scene ::= declaration*`). The best option is to implement a `while` loop.
 
--   La stessa cosa vale per le definizioni EBNF ricorsive, come `transformation`, che in aggiunta deve usare il *look-ahead*.
+-   The same applies to recursive EBNF functions like `transformation`. The latter must use *look-ahead*.
 
 
-# *Look-ahead* di *token*
+# *Look-ahead* of tokens
 
-# Grammatica LL(1)
+# LL(1) grammars
 
--   Nella lezione di teoria abbiamo visto che la nostra è una grammatica di tipo LL(1): per interpretare correttamente le trasformazioni occorre a volte leggere in anticipo il *token* successivo.
+-   During the last class, we stressed that our grammar is of type LL(1): to correctly parse the tokens, sometimes we need to “peek” the next one before actually reading it.
 
--   Questa funzionalità va implementata in `InputStream`, tramite una funzione [`unread_token`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L323-L326) che si appoggia a un nuovo membro [`saved_token`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L181) da aggiungere a `InputStream`.
+-   This function can be implemented in `InputStream`. Pytracer uses the method [`unread_token`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L323-L326), which uses the data member [`saved_token`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L181).
 
 ---
 
@@ -206,30 +200,30 @@ class InputStream:
         self.saved_token = token
 ```
 
-# Implementazione di `main`
+# The `main` function
 
-# Da `demo` a `render`
+# From `demo` to `render`
 
--   Il `main` del vostro programma ha finora accettato due comandi:
+-   So far, the `main` function in your program accepted two verbs:
 
-    #.  `pfm2png`, per applicare il *tone mapping* a immagini HDR;
-    #.  `demo`, per generare l'immagine dimostrativa.
+    #.  `pfm2png`, to apply *tone mapping* to HDR images;
+    #.  `demo`, to generate a sample image.
 
--   Oggi dovete aggiungere il comando `render`, e fare in modo che accetti un file da linea di comando.
+-   Today you will add a new verb, `render`, which must accept a file name from the command line.
 
--   È ovviamente un'ottima idea aggiungere una cartella `examples` nel vostro repository, in cui aggiungere una immagine dimostrativa (o più di una!). In questo caso potreste anche decidere di togliere il comando `demo`, se volete.
+-   It would be nice to add a `examples` folder in your repository, containing one or more sample scenes. In this case, the `demo` verb becomes redundant, and if you prefer you can remove it.
 
-# Animazioni
+# Animations
 
--   Il [`main` di pytracer](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/main.py#L72-L192) ammette una funzionalità aggiuntiva che è comoda per le animazioni: si possono specificare i valori di variabili da linea di comando. Ad esempio:
+-   The [`main`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/main.py#L72-L192) in Pytracer enables a new feature that is handy for animations: you can define variables from the command line. For instance:
 
     ```
     ./main --declare-float=clock:150.0 examples/demo.txt
     ```
 
-    L'effetto di [`--declare-float`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/main.py#L118-L124) è quello di dichiarare una variabile `clock` e assegnarle il valore 150.0.
+    The switch [`--declare-float`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/main.py#L118-L124) declares a variable `clock` with the value 150.0.
 
--   Questo di per sè non genera animazioni, ma è molto comodo per realizzarle:
+-   This feature alone cannot create animations, but you can use it in a iteration:
 
     ```
     for angle in $(seq 0 359); do
@@ -237,36 +231,43 @@ class InputStream:
     done
     ```
 
-# Sovrascrivere variabili
+# Overwriting variables
 
--   Per semplificare l'esecuzione all'utente, è permesso **sovrascrivere** la definizione di una variabile come `clock`, se questa è già esistente nel file di input (`examples/demo.txt` in quest'esempio).
+-   To make the program easier to use, Pytracer lets the user to **overwrite** the value of a variable like `clock`, if this is already defined in the input file (in this case, `examples/demo.txt`).
 
--   In altre parole, il file con la scena può contenere al suo interno la definizione della variabile `clock`:
+-   This means that the scene file can contain the following definition:
 
     ```python
     float clock(150.0)
     ```
 
-    In presenza di `--declare-float=clock:0.0`, il valore 150 viene ignorato e il valore 0 viene usato al suo posto. Ma se non si passa questo argomento da linea di comando, la scena resta comunque interpretabile.
+    If the user calls the program with `--declare-float=clock:0.0`, the definition in the file is ignored and the value 0 is used instead of 150. The advantage is that the scene can be compiled without errors even if the user forgets to define `clock` on the command line.
 
-# Sovrascrivere variabili
+# Overwriting variables
 
--   Abbiamo però il problema dell'uovo e della gallina: i parametri da linea di comando sono interpretati *prima* di leggere il file della scena, ma le variabili sono create *durante* la lettura della scena. Se definiamo `clock` sia da linea di comando che nel file, avremo un errore (doppia definizione).
+-   We have a chicken-egg problem. Command line parameters are interpreted *before* the scene file is interpreted, but variables are created during the parsing stage! If we define `clock` both on the command line and in the file, we will raise an error (duplicated declaration).
 
--   Vi sono molte soluzioni per implementare la funzionalità descritta:
+-   There are a few possible solutions:
 
-    #.   Marcare le variabili definite da linea di comando con un flag Booleano; quando nel file della scena si ridefiniscono queste variabile, non viene prodotto un errore se questo flag è `True`.
-    #.   In fase di definizione di una variabile, si controlla se il valore è già stato letto da linea di comando: se sì, si ignora il valore letto nel file e si usa quello fornito dall'utente. ([Questo è quanto fa pytracer](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L595-L601)).
+    #.   Mark the variables defined on the command line with a Boolean switch. When variables are defined again during parsing, no error is raisen if this flag is `True`.
+    #.   When defining a variable, the code can check if the value was defined from the command line. ([This is the approach used by Pytracer](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L595-L601).)
 
 
-# Guida per l'esercitazione
+# What to do today
 
-# Guida per l'esercitazione
+# What to do today
 
-#.  Continuate a lavorare nel *branch* `scenefiles`;
-#.  Modificate `InputStream` in modo che consenta il *look-ahead* di token oltre che di caratteri;
-#.  Create le funzioni `expect_*` e `parse_*`;
-#.  Cambiate il comando `demo` nel `main` con `render`, e permettete di leggere la scena da file;
-#.  Create una directory `examples` che contenga uno o più esempi di scene;
-#.  Aggiornate la documentazione e il `CHANGELOG`;
-#.  Rilasciate la versione `1.0`: congratulazioni!
+#.  Keep working in the `scenefiles` *branch*;
+#.  Modify `InputStream` to support *look-ahead* of tokens;
+#.  Create the functions `expect_*` and `parse_*`;
+#.  Change the verb `demo` with `render` and make it read the scene from a file;
+#.  Create a folder `examples` and fill it with one or more scenes;
+#.  Update the documentation and the `CHANGELOG`;
+#.  Release version `1.0`: cheers!
+
+
+---
+title: "Laboratory 13"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

@@ -1,30 +1,24 @@
----
-title: "Lezione 13"
-subtitle: "Analisi sintattica e semantica – Conclusioni"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
+# Syntactic and Semantic Analysis
 
-# Analisi sintattica e semantica
+# Syntactic and Semantic Analysis
 
-# Analisi sintattica e semantica
+-   In the last lesson, we saw how to implement a lexical analysis of a source file that defines a 3D scene.
 
--   Nella scorsa lezione abbiamo visto come è possibile implementare un'analisi lessicale di un file sorgente che definisce la scena 3D.
+-   The *lexer* we implemented reads a sequence of characters from a *stream* (a file) and produces a sequence of *tokens* as output.
 
--   Il *lexer* che abbiamo implementato legge una sequenza di caratteri da uno *stream* (un file) e produce come output una sequenza di *token*.
+-   Today's task is to interpret the sequence of *tokens* (syntactic analysis) and from this build a series of objects of type `Shape`, `Material`, etc. in memory (semantic analysis).
 
--   Il compito di oggi è interpretare la sequenza di *token* (analisi sintattica) e da questa costruire in memoria una serie di oggetti di tipo `Shape`, `Material`, etc. (analisi semantica).
+# Syntactic Analysis
 
-# Analisi sintattica
+-   The syntax of a language can be divided into categories depending on the peculiarities of its syntax and how the tokens are concatenated: [LL(n)](https://en.wikipedia.org/wiki/LL_parser), [LR(n)](https://en.wikipedia.org/wiki/LR_parser), [GLR(n)](https://en.wikipedia.org/wiki/GLR_parser), [LALR(n)](https://en.wikipedia.org/wiki/LALR_parser), etc.
 
--   La sintassi di un linguaggio è divisibile in categorie a seconda delle peculiarità nella sua sintassi e nel modo in cui sono quindi concatenati i token: [LL(n)](https://en.wikipedia.org/wiki/LL_parser), [LR(n)](https://en.wikipedia.org/wiki/LR_parser), [GLR(n)](https://en.wikipedia.org/wiki/GLR_parser), [LALR(n)](https://en.wikipedia.org/wiki/LALR_parser), etc.
+-   Each of these families requires specific algorithms for parsing, and unfortunately, algorithms that work well for one family do not necessarily work well for others!
 
--   Ciascuna di queste famiglie richiede algoritmi specifici per l'analisi sintattica, e purtroppo algoritmi che vanno bene per una famiglia non vanno necessariamente bene per altre!
+-   Our language is of type LL(1), like the [Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)) language, and the corresponding algorithm for analyzing the grammar is among the simplest.
 
--   Il nostro linguaggio è di tipo LL(1), come il linguaggio [Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)), e l'algoritmo corrispondente per analizzare la grammatica è tra i più semplici.
+# How to Approach the Problem
 
-# Come affrontare il problema
-
--   Consideriamo questa definizione:
+-   Let's consider this definition:
 
     ```python
     material sky_material(
@@ -33,20 +27,20 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
     )
     ```
 
--   È una definizione che include elementi più complessi di un *token*:
+-   It is a definition that includes elements more complex than a *token*:
 
-    #.  Un materiale;
-    #.  Una BRDF (`diffuse`);
-    #.  Due pigmenti (`image` e `uniform`);
-    #.  Un colore, indicato con `<0.7, 0.5, 1>`.
+    1.  A material;
+    2.  A BRDF (`diffuse`);
+    3.  Two pigments (`image` and `uniform`);
+    4.  A color, indicated by `<0.7, 0.5, 1>`.
 
-# Approccio *top-down*
+# Top-Down Approach
 
--   È però semplice scrivere una funzione che analizzi la definizione di `sky_material` se essa può appoggiarsi su altre funzioni, ciascuna delle quali analizza *un elemento soltanto*.
+-   However, it is simple to write a function that analyzes the definition of `sky_material` if it can rely on other functions, each of which analyzes *only one element*.
 
--   Definiamo quindi una funzione `parse_color` che si occupa di interpretare una sequenza di *token* come un colore e di restituire l'oggetto `Color` corrispondente, una funzione `parse_pigment`, una funzione `parse_brdf`, etc.
+-   Therefore, we define a function `parse_color` that interprets a sequence of *tokens* as a color and returns the corresponding `Color` object, a function `parse_pigment`, a function `parse_brdf`, etc.
 
--   Queste funzioni avranno il compito di chiamarsi a vicenda, una dentro l'altra, in modo che quelle più ad alto livello come `parse_material` possano contare su quelle via via più semplici come `parse_color`.
+-   These functions will have the task of calling each other, one inside the other, so that higher-level functions like `parse_material` can rely on progressively simpler ones like `parse_color`.
 
 # `parse_color`
 
@@ -130,43 +124,43 @@ def parse_pigment(stream: InputStream) -> Pigment:
     return result
 ```
 
-# Analisi semantica e oltre
+# Semantic Analysis and Beyond
 
--   Il nostro «compilatore» è molto semplice, e non appena l'analisi sintattica capisce che si sta definendo una variabile/materiale/forma/osservatore crea immediatamente in memoria un oggetto corrispondente (es., `Color`).
+-   Our "compiler" is very simple, and as soon as the syntactic analysis understands that a variable/material/shape/observer is being defined, it immediately creates a corresponding object in memory (e.g., `Color`).
 
--   Compilatori più complessi creano in memoria una AST (Abstract Syntax Tree), che  è una rappresentazione del contenuto del file sorgente molto comoda per fare un'analisi *semantica*. (Nel nostro caso, analisi sintattica e semantica sono fuse insieme).
+-   More complex compilers create an AST (Abstract Syntax Tree) in memory, which is a representation of the source file content that is very convenient for performing *semantic* analysis. (In our case, syntactic and semantic analysis are merged together).
 
--   La AST viene poi passata come input alle fasi successive del compilatore (ottimizzatore, generatore di codice, etc.); sono loro a preoccuparsi di creare oggetti in memoria o salvare istruzioni in linguaggio macchina su file.
+-   The AST is then passed as input to the subsequent phases of the compiler (optimizer, code generator, etc.); they are responsible for creating objects in memory or saving machine language instructions to a file.
 
-# Tipi di grammatiche
+# Types of Grammars
 
-# Grammatiche LL(n)
+# LL(n) Grammars
 
--   In una grammatica LL(n), si analizzano i token «da sinistra a destra», ossia nell'ordine in cui sono prodotti dal *lexer*.
+-   In an LL(n) grammar, tokens are analyzed "from left to right," that is, in the order in which they are produced by the *lexer*.
 
--   Il numero $n$ nella scrittura LL(n) indica che per interpretare correttamente la sintassi servono $n$ token di *look-ahead*: ossia, si dà un'occhiata agli $n$ token successivi per interpretare il token corrente (simile a come funziona `unread_char` nel nostro *lexer*).
+-   The number $n$ in the notation LL(n) indicates that $n$ *look-ahead* tokens are needed to correctly interpret the syntax: that is, the $n$ subsequent tokens are examined to interpret the current token (similar to how `unread_char` works in our *lexer*).
 
--   Di conseguenza, il nostro formato per descrivere le scene è di tipo LL(1) perché:
+-   Consequently, our format for describing scenes is of type LL(1) because:
 
-    #.  Si analizza la sintassi leggendo un token alla volta e procedendo in ordine;
-    #.  Può essere necessario controllare il tipo del token successivo a quello corrente, ma non di più.
+    1. The syntax is analyzed by reading one token at a time and proceeding in order;
+    2. It may be necessary to check the type of the token following the current one, but no more than that.
 
-# Perché LL(1)?
+# Why LL(1)?
 
--   Spieghiamo ora in quali contesti è necessario usare il *look-ahead*.
+-   Let's now explain in which contexts it is necessary to use *look-ahead*.
 
--   Consideriamo questa definizione:
+-   Consider this definition:
 
     ```
     float clock(150)
     ```
 
-    In questo caso **non** è necessario un *look-ahead*:
+    In this case, *look-ahead* is **not** necessary:
 
-    #.  Il primo token è la *keyword* `float`, che indica che si sta definendo una variabile;
-    #.  So quindi che per forza i token successivi saranno l'*identificatore*, il simbolo `(`, un *numeric literal* e il simbolo `)`.
+    1. The first token is the keyword `float`, which indicates that a variable is being defined;
+    2. Therefore, I know that the subsequent tokens will necessarily be the *identifier*, the symbol `(`, a *numeric literal*, and the symbol `)`.
 
-# Dichiarazione di un `float`
+# Declaring a `float`
 
 ```python
 # Read the first token of the next statement. Only a handful of
@@ -194,18 +188,18 @@ elif …:  # Statements other than "float …" can be interpreted here
     …
 ```
 
-# Perché LL(1)?
+# Why LL(1)?
 
--   Consideriamo invece queste due definizioni:
+-   Let’s consider these definitions:
 
     ```python
     plane(sky_material, translation([0, 0, 100]))                        # Case #1
     plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))    # Case #2
     ```
 
--   Ovviamente dobbiamo scrivere una funzione `parse_plane` che al suo interno invoca una funzione `parse_transformation`.
+-   We must write a function `parse_plane` that calls a function `parse_transformation`.
 
--   Però la trasformazione presenta un problema: dopo i caratteri `…100])` non si può sapere se la trasformazione sia terminata, oppure se segua il simbolo `*` (composizione di trasformazioni): in quest'ultimo caso, `parse_transformation` avrebbe ancora lavoro da fare!
+-   But the transformation is problematic: after `…100])` we cannot tell if the definition is complete or if the `*` symbol (composition) follows. In the latter case, `parse_transformation` would still have work to do!
 
 ---
 
@@ -239,25 +233,25 @@ while True:
         break
 ```
 
-# Grammatiche EBNF
+# EBNF Grammars
 
-# Descrivere una grammatica
+# Describing a grammar
 
--   Per «grammatica» si intende l'insieme delle regole lessicali, sintattiche e semantiche di un linguaggio.
+-   By "grammar" we mean the set of lexical, syntactic, and semantic rules of a language.
 
--   Dal punto di vista dell'analisi sintattica, dovrebbe essere evidente che un parser ha bisogno in ogni istante di sapere qual è la lista di *token* ammissibili nel punto in cui è arrivato ad interpretare il codice sorgente.
+-   From the point of view of syntactic analysis, it should be evident that a parser needs to know at every moment what is the list of *tokens* admissible at the point where it has arrived in interpreting the source code.
 
--   Nella teoria dei compilatori sono state inventate alcune notazioni per descrivere la grammatica di linguaggi, che sono utilissime nel momento in cui si implementa un *lexer* o un *parser*.
+-   In compiler theory, some notations have been invented to describe the grammar of languages, which are very useful when implementing a *lexer* or a *parser*.
 
-# Grammatica EBNF
+# EBNF Grammar
 
--   La notazione che vedremo è detta *Extended Backus-Naur Form* (EBNF), ed è il risultato del lavoro di molte persone, tra cui [Niklaus Wirth](https://en.wikipedia.org/wiki/Niklaus_Wirth) (il creatore del linguaggio Pascal).
+-   The notation we will see is called *Extended Backus-Naur Form* (EBNF), and is the result of the work of many people, including [Niklaus Wirth](https://en.wikipedia.org/wiki/Niklaus_Wirth) (the creator of the Pascal language).
 
--   Non descriveremo EBNF in modo completo, ma la presenteremo solo nella misura in cui serve ai nostri scopi. È utile comprenderla perché spesso la documentazione dei linguaggi di programmazione contiene la loro grammatica (ad esempio [Nim](https://nim-lang.org/docs/manual.html#syntax-grammar), [C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/lexical-structure) e [Kotlin](https://kotlinlang.org/docs/reference/grammar.html); per Rust [ci stanno lavorando](https://github.com/rust-lang/wg-grammar), mentre [il manuale di D](https://dlang.org/spec/grammar.html) usa una sintassi diversa).
+-   We will not describe EBNF completely, but we will present it only insofar as it serves our purposes. It is useful to understand it because often the documentation of programming languages contains their grammar (for example [Nim](https://nim-lang.org/docs/manual.html#syntax-grammar), [C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/lexical-structure) and [Kotlin](https://kotlinlang.org/docs/reference/grammar.html); for Rust [they are working on it](https://github.com/rust-lang/wg-grammar), while [the D manual](https://dlang.org/spec/grammar.html) uses a different syntax).
 
--   Nella slide successiva è mostrata l'intera struttura sintattica della nostra grammatica in formato EBNF.
+-   The next slide shows the entire syntactic structure of our grammar in EBNF format.
 
-# EBNF del nostro formato
+# EBNF for our format
 
 ```python
 scene ::= declaration*
@@ -306,45 +300,45 @@ number ::= LITERAL_NUMBER | IDENTIFIER
 vector ::= "[" number "," number "," number "]"
 ```
 
-# Spiegazione di EBNF
+# EBNF Explanation
 
--   Il simbolo `::=` definisce un elemento della grammatica, ad esempio:
+-   The symbol `::=` defines a grammar element, for example:
 
     ```
     number ::= LITERAL_NUMBER | IDENTIFIER
     ```
 
--   Il simbolo `|` rappresenta una serie di alternative (*or* logico).
+-   The symbol `|` represents a series of alternatives (logical *or*).
 
--   Il simbolo `*` denota zero o più ripetizioni (`+` ne indica una o più):
+-   The symbol `*` denotes zero or more repetitions (`+` indicates one or more):
 
     ```
     scene ::= declaration*
     ```
 
--   Gli identificatori `MAIUSCOLI` identificano *token*, quelli `minuscoli` altri elementi definiti nella grammatica EBNF.
+-   `UPPERCASE` identifiers identify *tokens*, `lowercase` ones identify other elements defined in the EBNF grammar.
 
--   Sono possibili definizioni ricorsive:
+-   Recursive definitions are possible:
 
     ```
     transformation ::= basic_transformation | basic_transformation "*" transformation
     ```
 
-# Gestione degli errori di un compilatore
+# Compiler Error Handling {#compiler-errors}
 
-# Gestione degli errori
+# Error Handling
 
--   Il nostro codice solleva una eccezione tutte le volte che viene individuato un errore nel codice sorgente.
+-   Our code raises an exception whenever an error is detected in the source code.
 
--   È in grado di segnalare la riga e la colonna del *token* in corrispondenza del quale è stato trovato l'errore, e ciò è molto utile!
+-   It is able to report the row and column of the *token* where the error was found, which is very useful!
 
--   Ma questo modello di esecuzione impone che al primo errore la compilazione termini! I compilatori moderni come `g++` e `clang++` invece proseguono la compilazione andando in cerca anche degli errori successivi.
+-   But this execution model requires that compilation terminates at the first error! Modern compilers like `g++` and `clang++` instead continue compilation, looking for subsequent errors.
 
--   Per non fermarsi al primo errore occorre cercare un *termination token*, ossia un *token* che sia usato per terminare un comando: una volta trovato, si prosegue dal *token* successivo.
+-   To avoid stopping at the first error, we need to look for a *termination token*, i.e., a *token* that is used to terminate a command: once found, we continue from the next *token*.
 
-# *Termination tokens*
+# *Termination Tokens*
 
--   Nel linguaggio C++, due *termination tokens* molto usati sono il `;` (usato per terminare uno *statement*) e `}` (usato per terminare un blocco di codice. Ad esempio:
+-   In the C++ language, two frequently used *termination tokens* are `;` (used to terminate a *statement*) and `}` (used to terminate a block of code). For example:
 
     ```c++
     if (x < 0) {
@@ -353,34 +347,34 @@ vector ::= "[" number "," number "," number "]"
     x /= 1O * a;       // Uh-oh, I wrote a capital "o" instead of "0"
     ```
 
--   In un linguaggio come il nostro non è semplice individuare un *termination token*; la cosa migliore sarebbe richiedere la presenza di `;` alla fine di ogni *statement*, come nel C++, oppure obbligare a concludere le definizioni con un ritorno a capo (che sia codificato come un token `TOKEN_NEWLINE`).
+-   In a language like ours, it is not easy to identify a *termination token*; the best thing would be to require the presence of `;` at the end of each *statement*, as in C++, or to require definitions to be terminated by a newline character (encoded as a `TOKEN_NEWLINE` token).
 
-# Linguaggi a confronto
+# Language Comparison {#comparison-of-languages}
 
-# Complessità di un compilatore
+# Compiler Complexity
 
--   La produzione di *liste* di errori anziché di un solo errore alla volta è importante soprattutto in quei casi in cui il compilatore è molto lento da eseguire. Questo è il caso del C++ e di Rust.
+-   Producing *lists* of errors instead of just one error at a time is especially important in cases where the compiler is very slow to execute. This is the case with C++ and Rust.
 
--   Il nostro linguaggio sarà molto semplice da interpretare (non ha una semantica complessa, e non richiede la creazione di una AST né l'applicazione di un ottimizzatore): non vale quindi la pena preoccuparsi di implementare questa funzionalità.
+-   Our language will be very easy to interpret (it does not have complex semantics, and does not require the creation of an AST or the application of an optimizer): it is therefore not worth worrying about implementing this functionality.
 
--   Però cogliamo l'occasione per capire perché possano esserci grandi differenze nella velocità di compilazione di linguaggi!
+-   However, let's take this opportunity to understand why there can be large differences in the compilation speed of languages!
 
-# Complessità del C++
+# C++ Complexity
 
--   La grande complessità del C++ è legata soprattutto ai `template` e all'uso degli *header file*; rendiamoci conto di questa difficoltà già guardando alcuni semplici esempi.
+-   The great complexity of C++ is mainly related to `template`s and the use of *header files*; let's understand this difficulty by looking at some simple examples.
 
--   Considerate questa definizione, che mostra la difficoltà di interpretare `>>`:
+-   Consider this definition, which shows the difficulty of interpreting `>>`:
 
     ```c++
     std::vector<std::vector<double>> matrix = identity(3); // >> are *two* tokens
     std::cin >> matrix[0][0]; // Here >> is *one* token
     ```
 
--   È impossibile creare la sequenza di token corretta con l'approccio che abbiamo seguito, che divide rigidamente il *lexing* dal *parsing* (e infatti la prima riga non era ammessa dallo standard C++ fino a pochi anni fa).
+-   It is impossible to create the correct token sequence with the approach we have followed, which rigidly separates *lexing* from *parsing* (and in fact the first line was not allowed by the C++ standard until a few years ago).
 
-# Altre difficoltà dei `template`
+# Other `template` Difficulties
 
--   I template C++ rendono complessa anche l'analisi sintattica:
+-   C++ templates also make syntactic analysis complex:
 
     ```c++
     template<bool x86_64> struct MyStruct;
@@ -388,44 +382,43 @@ vector ::= "[" number "," number "," number "]"
     template<> struct MyStruct<true> { /* Fields valid on 64-bit machines */ };
     ```
 
--   Si tratta in pratica di *due* strutture con lo stesso nome (`MyStruct`). Questo può essere usato ad esempio nel codice seguente:
+-   These are practically *two* structures with the same name (`MyStruct`). This can be used for example in the following code:
 
     ```c++
     MyStruct<sizeof(size_t) > 4> A;  // On 64-bit machines use the extended definition
     ```
 
-    Ma a livello di sintassi, il termine `>` rende tutto complicato!
+    But at the syntax level, the `>` term makes everything complicated!
 
+# An important quote
 
-# Una testimonianza importante
-
-> I've become somewhat infamous about wanting to keep the language [Rust] LL(1) but the fact is that today one can't parse Rust very easily, much less pretty-print (thus auto-format) it, and this is an actual (and fairly frequent) source of problems. It's easier to work with than C++, but that's fairly faint praise. I lost almost every argument about this, from the **angle brackets for type parameters** [emphasis added] to the pattern-binding ambiguity to the semicolon and brace rules to ... ugh I don't even want to get into it. The grammar is not what I wanted. Sorry.
+> I've become somewhat infamous about wanting to keep the language [Rust] LL(1) but the fact is that today one can't parse Rust very easily, much less pretty-print (thus auto-format) it, and this is an actual (and fairly frequent) source of problems. It's easier to work with than C++, but that's fairly faint praise. I lost almost every argument about this, from the **angle brackets for type parameters** [emphasis added] to the pattern-binding ambiguity to the semicolon and brace rules to … ugh I don't even want to get into it. The grammar is not what I wanted. Sorry.
 
 <p style="text-align:right">[Graydon Hoare](https://graydon2.dreamwidth.org/307291.html), creatore del linguaggio Rust.</p>
 
 
-# Soluzioni al problema (1/2)
+# Solutions to the problem (1/2)
 
--   Quando sono stati introdotti i *template* in C++, è stata una [pessima](https://keleshev.com/parsing-ambiguity-type-argument-v-less-than) [scelta](https://stackoverflow.com/questions/7304699/what-are-all-the-syntax-problems-introduced-by-the-usage-of-angle-brackets-in-c) usare come simboli `<` e `>`, perché (1) erano già usati come operatori di confronto, e (2) esistevano già gli operatori `<<` e `>>`.
+-   When *templates* were introduced in C++, it was a [terrible](https://keleshev.com/parsing-ambiguity-type-argument-v-less-than) [choice](https://stackoverflow.com/questions/7304699/what-are-all-the-syntax-problems-introduced-by-the-usage-of-angle-brackets-in-c) to use `<` and `>` as symbols because (1) they were already used as comparison operators, and (2) the operators `<<` and `>>` already existed.
 
--   C\# soffre del medesimo problema, ma è meno grave (in C\# i *template* si chiamano *generics*):
+-   C# suffers from the same problem, but it is less severe (in C# *templates* are called *generics*):
 
-    1.  Per distinguere tra il caso in cui `>>` va interpretato come due token o come uno, la regola è che se il token successivo è `(`, `)`, `]`, `:`, `;`, `,`, `.`, `?`, `==` oppure `!=`, allora va interpretato come due token, altrimenti uno;
-    2.  Dentro `<>` si possono solo indicare tipi, non espressioni come `a > b`.
+    1.  To distinguish between the case where `>>` should be interpreted as two tokens or one, the rule is that if the next token is `(`, `)`, `]`, `:`, `;`, `,`, `.`, `?`, `==`, or `!=`, then it should be interpreted as two tokens, otherwise one;
+    2.  Inside `<>` you can only specify types, not expressions like `a > b`.
 
--   Pascal, Nim e Kotlin usano `shl` e `shr` per questi operatori.
+-   Pascal, Nim, and Kotlin use `shl` and `shr` for these operators.
 
-# Soluzioni al problema (2/2)
+# Solutions to the problem (2/2)
 
--   Il linguaggio D invece usa una [sintassi diversa](https://dlang.org/spec/template.html) per i *template*, e nell'esempio precedente scriverebbe
+-   The D language instead uses a [different syntax](https://dlang.org/spec/template.html) for *templates*, and in the previous example would write
 
     ```d
     MyStruct!(sizeof(size_t) > 4) A;
     ```
 
-    Questa sintassi è molto più semplice da analizzare!
+    This syntax is much easier to parse!
 
--   Rust usa `<>` come il C++, ma per rimuovere l'ambiguità richiede di scrivere `::<` nelle espressioni:
+-   Rust uses `<>` like C++, but to remove the ambiguity it requires writing `::<` in expressions:
 
     ```rust
     //      Here you can use <      Here you must use ::<
@@ -433,11 +426,9 @@ vector ::= "[" number "," number "," number "]"
     let x:    foo::Foo<Bar>     =     foo::Foo::<Bar>();
     ```
 
-# Esempio: variabili
+# Example: variables
 
--   Nel linguaggio Pascal le variabili si elencano dentro una clausola
-    `var`. Il nome della variabile viene per primo ed è chiaramente
-    separato dal tipo:
+-   In the Pascal language, variables are listed within a `var` clause. The variable name comes first and is clearly separated from the type:
 
     ```pascal
     var
@@ -446,152 +437,158 @@ vector ::= "[" number "," number "," number "]"
         x     : Real;
     ```
 
--   Questa sintassi è molto facile da interpretare: il Pascal è infatti progettato per essere semplice e nel contempo veloce da compilare.
+-   This syntax is very easy to interpret: Pascal is in fact designed to be simple and at the same time fast to compile.
 
--   Idee simili sono usate nei linguaggi Modula, Oberon, Ada, Nim e Kotlin.
+-   Similar ideas are used in the Modula, Oberon, Ada, Nim, and Kotlin languages.
 
 
-# Dichiarazioni in C++
+# Declarations in C++
 
--   In C/C++ invece le dichiarazioni di variabili sono complicate, perché l'identificatore che contiene il nome della variabile è messo in mezzo al tipo:
+-   In C/C++, variable declarations are complicated because the identifier containing the variable name is placed in the middle of the type:
 
     ```c
     int myvar[100];  /* More complicated: static const int * myvar[100] */
     ```
 
-    che dichiara un array di 100 variabili di tipo `int`.
+    which declares an array of 100 variables of type `int`.
 
--   I token che definiscono il tipo sono `int`, `[`, `100` e `]`, e si trovano sia a *sinistra* che a *destra* del nome della variabile: questo per il programmatore è complicato! (Provate a interpretare il caso *more complicated* da soli!)
+-   The tokens that define the type are `int`, `[`, `100`, and `]`, and are located both to the *left* and *right* of the variable name: this is complicated for the programmer! (Try to interpret the *more complicated* case yourself!)
 
-# Il caso di Go
+# The case of Go
 
--   Il linguaggio [Go](https://golang.org/), che è fortemente ispirato al C, rende più semplici le dichiarazioni usando una notazione diversa, più simile al Pascal:
+-   The [Go](https://golang.org/) language, which is strongly inspired by C, simplifies declarations by using a different notation, more similar to Pascal:
 
     ```go
     var myvar [100]int
     ```
 
--   La keyword `var` segnala al *parser* che si sta dichiarando una variabile.
+-   The `var` keyword signals to the *parser* that a variable is being declared.
 
--   I token che definiscono il tipo sono riportati tutti insieme, *dopo* l'identificatore che rappresenta il nome della variabile.
+-   The tokens that define the type are reported all together, *after* the identifier representing the variable name.
 
--   La scrittura `[100]int` segue l'ordine naturale delle parole: «un array di 100 valori `int`», ed è più facile da leggere per il programmatore (in C bisogna leggere a ritroso, da destra a sinistra).
+-   The notation `[100]int` follows the natural order of words: "an array of 100 `int` values", and is easier for the programmer to read (in C you have to read backwards, from right to left).
 
-# Testing di compilatori
+# Testing compilers {#compiler-testing}
 
 # Testing
 
--   La scrittura di test per un compilatore è una faccenda molto complessa, perché il numero di possibili errori è praticamente infinito!
+-   Writing tests for a compiler is a very complex matter, because the number of possible errors is practically infinite!
 
--   Non è possibile avere test completamente esaustivi; bisogna avere fantasia e prepararsi ad aggiungere molti nuovi test una volta che gli utenti inizieranno ad usare il proprio programma. (In pytracer ho implementato giusto il minimo sindacale, siete incoraggiati a scrivere più test!)
+-   It is not possible to have completely exhaustive tests; you need to be creative and be prepared to add many new tests once users start using your program. (In pytracer I have implemented just the bare minimum, you are encouraged to write more tests!)
 
--   Se siete curiosi, nella directory [`clang/test/Lexer`](https://github.com/llvm/llvm-project/tree/main/clang/test/Lexer) ci sono i file sorgente usati per i test del solo *lexer* di Clang!
-
-
-# Generazione automatica di compilatori
-
-# Generazione automatica
-
--   Esistono strumenti per generare automaticamente *lexer* e *parser*. Questi richiedono come file di input una grammatica (solitamente nella forma EBNF), e producono in output codice sorgente che interpreta la grammatica.
-
--   Due strumenti storicamente importanti sono `lex` e `yacc`, che oggi sono disponibili nelle versioni open source [Flex](https://en.wikipedia.org/wiki/Flex_(lexical_analyser_generator)) e [Bison](https://en.wikipedia.org/wiki/GNU_Bison) (generano codice C/C++).
-
--   [Lemon](https://sqlite.org/src/doc/trunk/doc/lemon.html) genera codice C, ed è stato usato per scrivere il parser SQL usato in SQLite.
-
--   [ANTLR](https://en.wikipedia.org/wiki/ANTLR) (C++, C\#, Java, Python) è la soluzione più completa e moderna.
-
--   Tenete però presente che la maggior parte della gente preferisce scrivere *lexer* e *parser* a mano…
+-   If you are curious, in the [`clang/test/Lexer`](https://github.com/llvm/llvm-project/tree/main/clang/test/Lexer) directory there are the source files used for the tests of only the Clang *lexer*!
 
 
-# Approfondimenti
+# Automatic Compiler Generation {#automatic-generation-of-compilers}
 
--   Il libro di Wirth [*Compiler Construction*](https://people.inf.ethz.ch/wirth/CompilerConstruction/) (Addison-Wesley, 1996) è di una chiarezza esemplare: in poche pagine come implementa un compilatore per il linguaggio [Oberon](https://en.wikipedia.org/wiki/Oberon_(programming_language)) (un linguaggio creato da Wirth come successore del Pascal).
+# Automatic Generation
 
--   Il testo «sacro» che illustra la teoria dei compilatori è il cosiddetto *dragon book* di Aho, Sethi, Lam & Ullman: *Compilers – Principles, Techniques and Tools* (Pearson Publishing, 2006).
+-   There are tools to automatically generate *lexers* and *parsers*. These tools require a grammar as input (usually in EBNF form), and produce source code that interprets the grammar.
 
--   Oggi i compilatori sono notevolmente più complessi a causa della necessaria integrazione con gli ambienti di sviluppo (PyCharm, CLion, IntelliJ IDEA, etc.). Guardate il video [*Anders Hejlsberg on Modern Compiler Construction*](https://www.youtube.com/watch?v=wSdV1M7n4gQ): apprezzerete molto di più quello che fanno le vostre IDE!
+-   Two historically important tools are `lex` and `yacc`, which are available today in the open-source versions [Flex](https://en.wikipedia.org/wiki/Flex_(lexical_analyser_generator)) and [Bison](https://en.wikipedia.org/wiki/GNU_Bison) (they generate C/C++ code).
 
-# Conclusioni del corso
+-   [Lemon](https://sqlite.org/src/doc/trunk/doc/lemon.html) generates C code and was used to write the SQL parser used in SQLite.
 
-# Conclusioni del corso
+-   [ANTLR](https://en.wikipedia.org/wiki/ANTLR) (C++, C#, Java, Python) is the most complete and modern solution.
 
--   Siamo arrivati alla fine del corso!
-
--   Una volta implementato il *parser*, potrete rilasciare la versione `1.0` del vostro programma, venderla alla Disney Studios, fare un sacco di soldi e vivere da nababbi per il resto della vostra vita!
-
--   Se invece avete intenzione di continuare a fare il mestiere del «fisico», prima di concludere è bene rivedere cosa abbiamo imparato in questo corso e come ciò vi possa essere utile in futuro, anche se questo non prevederà il *rendering* di scene 3D…
+-   Keep in mind, however, that most people prefer to write *lexers* and *parsers* by hand…
 
 
-# Le abilità più importanti
+# Further Study
 
--   Il codice va scritto poco alla volta, verificando con test ogni nuova *feature*: non si scrive tutto un programma da cima a fondo senza mai provarlo o compilarlo!
+-   Wirth's book [*Compiler Construction*](https://people.inf.ethz.ch/wirth/CompilerConstruction/) (Addison-Wesley, 1996) is remarkably clear: in a few pages it shows how to implement a compiler for the [Oberon](https://en.wikipedia.org/wiki/Oberon_(programming_language)) language (a language created by Wirth as a successor to Pascal).
 
--   Automatizzate i test mediante *CI builds*.
+-   The "sacred" text that illustrates compiler theory is the so-called *dragon book* by Aho, Sethi, Lam & Ullman: *Compilers – Principles, Techniques and Tools* (Pearson Publishing, 2006).
 
--   Usate sistemi di controllo versione per monitorare i cambiamenti.
-
--   Siate ordinati nell'uso di *issues*, *pull requests*, file `CHANGELOG`, etc.
-
--   Decidete sin da subito quale licenza usare per rilasciare il vostro codice.
-
--   Documentate il vostro lavoro (`README`, docstrings…).
-
--   Imparate a usare una IDE appropriata!
+-   Today, compilers are considerably more complex due to the necessary integration with development environments (PyCharm, CLion, IntelliJ IDEA, etc.). Watch the video [*Anders Hejlsberg on Modern Compiler Construction*](https://www.youtube.com/watch?v=wSdV1M7n4gQ): you will appreciate much more what your IDEs do!
 
 
-# Codici di simulazione
+# Course Conclusions
 
--   Nel caso specifico di codici di simulazione, scegliete bene il vostro [generatore di numeri casuali](tomasi-ray-tracing-11b.html#algoritmi)!
+# Course Conclusions
 
--   È importante che l'utente del vostro codice possa specificare il *seed* e, se il generatore lo prevede, l'identificatore della sequenza: questo permette la ripetibilità delle simulazioni, e ciò aiuta molto in fase di *debugging*.
+-   We've reached the end of the course!
 
--   Se si devono fare tante simulazioni, usate la possibilità dei computer moderni di fare calcoli in parallelo. Nei casi più semplici è sufficiente usare [GNU Parallel](tomasi-ray-tracing-11b.html#generare-animazioni).
+-   Once you've implemented the *parser*, you can release version `1.0` of your program, sell it to Disney Studios, make a ton of money, and live like royalty for the rest of your life!
 
-
-# Estendibilità
-
--   È molto probabile che gli utenti dei programmi che svilupperete provino ad usarli in contesti che voi non avevate previsto.
-
--   È importante quindi che il proprio programma abbia un certo grado di *versatilità*.
-
--   (Non bisogna però esagerare: più un programma è versatile, più e complesso da scrivere, e rischiate quindi di non arrivare mai a rilasciare la versione 1.0!)
-
-# I/O: usate degli standard!
-
--   Nel nostro progetto abbiamo implementato la possibilità di leggere la scena da un file. Questo è molto più versatile del semplice comando `demo`!
-
--   In maniera analoga, alcuni di voi hanno fatto in modo che il proprio programma salvasse immagini in più formati: non solo PFM, ma anche PNG, JPEG, etc.
-
--   In generale, è bene fare affidamento su formati diffusi (PNG, JPEG) piuttosto che su formati oscuri (PFM) o addirittura inventati da soli! Quest'ultima opzione è percorribile solo se non esistono formati adatti (è il caso del linguaggio per le scene che abbiamo inventato noi).
+-   If, however, you intend to continue working as a «physicist», before concluding, it's good to review what we've learned in this course and how it can be useful to you in the future, even if it doesn't involve *rendering* 3D scenes…
 
 
-# Possibili approcci
+# The Most Important Skills
 
--   La versatilità negli input/output di un programma si ottiene in vari modi:
+-   Write code little by little, verifying each new *feature* with tests: don't write an entire program from top to bottom without ever testing or compiling it!
 
-    #.  Usare un formato di dati generico già disponibile;
-    #.  Inventare un formato di dati *ad hoc* per il programma;
-    #.  Incorporare il compilatore/interprete di un linguaggio nel proprio programma;
-    #.  Creare *bindings* al nostro codice in un linguaggio interpretato (es. Python).
+-   Automate tests using *CI builds*.
 
--   Vediamo una ad una queste possibilità.
+-   Use version control systems to track changes.
 
-# 1. Usare un formato esistente
+-   Be organized in the use of *issues*, *pull requests*, `CHANGELOG` files, etc.
 
-# Esempio
+-   Decide from the start which license to use to release your code.
 
--   Considerate un programma che fa una simulazione di un fenomeno fisico, e stampa risultati a video:
+-   Document your work (`README`, docstrings…).
+
+-   Learn to use a proper IDE!
+
+
+# Simulation Codes
+
+-   In the specific case of simulation codes, choose your [random number generator](tomasi-ray-tracing-11b.html#algoritmi) carefully!
+
+-   It's important that the user of your code can specify the *seed* and, if the generator allows it, the sequence identifier: this allows for the repeatability of simulations, which helps a lot during *debugging*.
+
+-   If you have to run many simulations, use the ability of modern computers to perform calculations in parallel. In the simplest cases, it's enough to use [GNU Parallel](tomasi-ray-tracing-11b.html#generare-animazioni).
+
+
+# Extensibility
+
+-   It's very likely that the users of the programs you develop will try to use them in contexts you hadn't foreseen.
+
+-   Therefore, it's important that your program has a certain degree of *versatility*.
+
+-   (However, don't overdo it: the more versatile a program is, the more complex it is to write, and therefore you risk never releasing version 1.0!)
+
+# I/O: Use Standards!
+
+-   In our project, we implemented the ability to read the scene from a file. This is much more versatile than the simple `demo` command!
+
+-   Similarly, some of you have made it so that your program saves images in multiple formats: not just PFM, but also PNG, JPEG, etc.
+
+-   In general, it's good to rely on widespread formats (PNG, JPEG) rather than obscure formats (PFM) or even ones you invent yourself! This last option is viable only if there are no suitable formats (as is the case with the scene description language we invented).
+
+---
+
+![](media/thats_all_folks.png)
+
+# Deep Dive into Input and Output
+
+# Possible Approaches
+
+-   The versatility of a program's input/output can be achieved in various ways:
+
+    #.  Using an already available generic data format;
+    #.  Inventing a *custom* data format for the program;
+    #.  Embedding the compiler/interpreter of a language into the program;
+    #.  Creating *bindings* to our code in an interpreted language (e.g., Python).
+
+-   Let's examine these possibilities one by one.
+
+# 1. Using an Existing Format
+
+# Example
+
+-   Consider a program that simulates a physical phenomenon and prints results to the screen:
 
     ```
     $ ./myprogram
-    Calculating...
+    Calculating…
     Estimated temperature of the air: 296 K
     The speed of the particle is 8.156 m/s²
     Force: 156.0 N
     $
     ```
 
--   L'output del programma non è facilmente fruibile: i numeri sono difficili da recuperare in mezzo al testo. Un output migliore è il seguente:
+-   The program's output is not easily usable: numbers are difficult to extract from the text. A better output would be:
 
     ```
     $ ./myprogram
@@ -605,34 +602,34 @@ vector ::= "[" number "," number "," number "]"
 <asciinema-player src="cast/sc-im-84x19.cast" cols="84" rows="19" font-size="medium"></asciinema-player>
 
 
-# Usare un formato esistente
+# Using an Existing Format
 
--   Il vantaggio di formati esistenti è che sono leggibili anche da programmi diversi dal vostro: ad esempio, un file CSV è leggibile da Microsoft Excel, LibreOffice, Gnumeric, etc. Ciò è molto comodo soprattutto quando dovete condividere questi dati con altre persone.
+-   The advantage of existing formats is that they can be read by programs other than your own: for example, a CSV file can be read by Microsoft Excel, LibreOffice, Gnumeric, etc. This is especially convenient when you need to share data with others.
 
--   Se dovete solo salvare tabelle di numeri, le soluzioni migliori sono probabilmente file CSV (di testo) o file Excel (binari). La libreria Python [Pandas](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html) li supporta entrambi.
+-   If you only need to store numerical tables, the best solutions are probably CSV files (text-based) or Excel files (binary). The Python library [Pandas](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html) supports both.
 
--   Formati più compatti che vanno bene per dati tabulari e matriciali sono [FITS](https://en.wikipedia.org/wiki/FITS) (vecchio ma molto ben supportato) e [HDF5](https://en.wikipedia.org/wiki/Hierarchical_Data_Format) (più nuovo ed efficiente, meno supportato).
+-   More compact formats suitable for tabular and matrix data include [FITS](https://en.wikipedia.org/wiki/FITS) (old but well-supported) and [HDF5](https://en.wikipedia.org/wiki/Hierarchical_Data_Format) (newer and more efficient, though less widely supported).
 
 
-# Formati più complessi
+# More Complex Formats
 
--   I formati CSV ed Excel vanno bene per *memorizzare* numeri organizzati in tabelle, ma spesso si devono applicare filtri complessi e calcoli a questi dati.
+-   CSV and Excel are good for *storing* numbers organized in tables, but often, you need to apply complex filters and calculations to this data.
 
--   Un ottimo formato per questo scopo è [sqlite3](https://www.sqlite.org/index.html): a differenza di CSV ed Excel, offre eccellenti funzioni per fare ricerche e calcoli sui dati, ed è ottimizzato per grandi volumi di dati (fino a terabytes).
+-   A great format for this purpose is [sqlite3](https://www.sqlite.org/index.html): unlike CSV and Excel, it offers excellent functions for searching and computing data and is optimized for large data volumes (up to terabytes).
 
--   Se non è sufficiente un tipo tabellare, potete usare il formato [JSON](https://en.wikipedia.org/wiki/JSON), [YAML](https://en.wikipedia.org/wiki/YAML) (che avete già usato per le GitHub Actions) o [XML](https://en.wikipedia.org/wiki/XML): sono in grado di salvare tipi di dati molto diversi tra loro (persino liste e dizionari!).
+-   If a tabular format is insufficient, you can use [JSON](https://en.wikipedia.org/wiki/JSON), [YAML](https://en.wikipedia.org/wiki/YAML) (which you have already used for GitHub Actions), or [XML](https://en.wikipedia.org/wiki/XML): these can store very different data types (even lists and dictionaries!).
 
--   XML è il più complesso, ma implementa un sistema di controllo della «sintassi» nel file (detto [XML schema](https://en.wikipedia.org/wiki/XML_schema)) che lo rende molto più robusto (anche se più difficile da scrivere).
+-   XML is the most complex but implements a system for controlling the "syntax" of the file (called [XML schema](https://en.wikipedia.org/wiki/XML_schema)), making it much more robust (although harder to write).
 
 ---
 
 <asciinema-player src="cast/json-example-python-julia-78x20.cast" cols="78" rows="20" font-size="medium"></asciinema-player>
 
-Il vantaggio di usare un formato diffuso come JSON è che sono a disposizioni molti strumenti per visualizzarlo e modificarlo: vedete ad esempio [jq](https://stedolan.github.io/jq/).
+The advantage of using a common format like JSON is that many tools are available for viewing and editing it: see, for example, [jq](https://stedolan.github.io/jq/).
 
-# Il caso del nostro ray-tracer
+# The Case of Our Ray Tracer
 
--   Nel caso del nostro programma avremmo potuto usare il formato JSON:
+-   In our program, we could have used the JSON format:
 
     ```json
     { "camera": {
@@ -644,51 +641,51 @@ Il vantaggio di usare un formato diffuso come JSON è che sono a disposizioni mo
             "distance": 1.0,
             "aspect_ratio": 1.0
         },
-        ...
+        …
     }
     ```
 
--   Non serve un *lexer* e un *parser*, ma bisogna comunque validare il contenuto (es., `camera` deve contenere `projection`).
+-   No need for a *lexer* or *parser*, but the content must still be validated (e.g., `camera` must contain `projection`).
 
-# 2. Inventare un formato
+# 2. Inventing a Format
 
-# Inventare un formato
+# Inventing a Format
 
--   È la soluzione che abbiamo adottato per descrivere le scene tridimensionali nel nostro programma.
+-   This is the approach we adopted to describe 3D scenes in our program.
 
--   Attività molto creativa, ma ha alcuni potenziali problemi:
+-   It is a highly creative activity but has some potential issues:
 
-    -   Rischia di richiedere molto tempo allo sviluppatore…
+    -   It may take a lot of time for the developer…
 
-    -   …e richiede che l'utente impari la sintassi e la semantica del vostro linguaggio
+    -   …and requires users to learn the syntax and semantics of your language.
 
--   Noi l'abbiamo adottata a lezione per la sua valenza didattica (comprensione del funzionamento dei compilatori, gestione degli errori, …), e perché non è comunque facile usare un formato generico come JSON in questo contesto particolare.
+-   We adopted this approach in class for its educational value (understanding compilers, error handling, etc.) and because using a generic format like JSON in this specific context is not necessarily easier.
 
 
-# 3. Incorporare un linguaggio
+# 3. Embedding a Language
 
-# Incorporare un linguaggio
+# Embedding a Language
 
--   Una soluzione usata soprattutto per programmi vasti e complessi è quella di incorporare un interprete di un linguaggio «semplice» all'interno del proprio programma (questo tipo di interpreti è detto *embedded*).
+-   A solution often used in large and complex programs is to embed an interpreter of a "simple" language into the program (this type of interpreter is called *embedded*).
 
--   Esempi notevoli:
+-   Notable examples:
 
-    -   Microsoft [Visual Basic for Applications](https://en.wikipedia.org/wiki/Visual_Basic_for_Applications) (linguaggio BASIC incluso in Word, Excel e molte altre);
-    -   [AutoLISP](https://en.wikipedia.org/wiki/AutoLISP) (interprete LISP usato in AutoCAD);
-    -   [GNU Guile](https://www.gnu.org/software/guile/) (interprete Scheme usato in [The Gimp](https://docs.gimp.org/en/gimp-concepts-script-fu.html), [Lilypond](https://lilypond.org/doc/v2.18/Documentation/extending/scheme-tutorial), etc.)
-    -   Python (usato in [Blender](https://docs.blender.org/manual/en/latest/advanced/scripting/introduction.html), [Inkscape](https://wiki.inkscape.org/wiki/index.php/Python_modules_for_extensions), [The Gimp](https://www.gimp.org/docs/python/index.html), [Minecraft](https://projects.raspberrypi.org/en/projects/getting-started-with-minecraft-pi/4)).
+    -   Microsoft [Visual Basic for Applications](https://en.wikipedia.org/wiki/Visual_Basic_for_Applications) (BASIC language included in Word, Excel, and many others);
+    -   [AutoLISP](https://en.wikipedia.org/wiki/AutoLISP) (LISP interpreter used in AutoCAD);
+    -   [GNU Guile](https://www.gnu.org/software/guile/) (Scheme interpreter used in [The Gimp](https://docs.gimp.org/en/gimp-concepts-script-fu.html), [Lilypond](https://lilypond.org/doc/v2.18/Documentation/extending/scheme-tutorial), etc.);
+    -   Python (used in [Blender](https://docs.blender.org/manual/en/latest/advanced/scripting/introduction.html), [Inkscape](https://wiki.inkscape.org/wiki/index.php/Python_modules_for_extensions), [The Gimp](https://www.gimp.org/docs/python/index.html), [Minecraft](https://projects.raspberrypi.org/en/projects/getting-started-with-minecraft-pi/4)).
 
--   Vedi [*Programmable Applications: Interpreter Meets Interface*](https://dspace.mit.edu/handle/1721.1/5980) (Eisenberg, 1995).
+-   See [*Programmable Applications: Interpreter Meets Interface*](https://dspace.mit.edu/handle/1721.1/5980) (Eisenberg, 1995).
 
 ---
 
 <center>![](media/blender-python.webp){height=620px}</center>
 
-In Blender è possibile aprire un terminale Python in cui lanciare comandi per creare oggetti, modificarli, etc.
+In Blender, you can open a Python terminal to run commands for creating and modifying objects.
 
-# Logica di funzionamento
+# Functioning Logic
 
--   Il linguaggio incorporato nella applicazione è «esteso» con funzioni specifiche per manipolare gli oggetti gestiti dall'applicazione. Ad esempio, questo codice VBA può essere usato per modificare la cella `A1` di un foglio Excel:
+-   The language embedded in the application is "extended" with functions specific to manipulating the objects managed by the application. For example, this VBA code modifies cell `A1` in an Excel sheet:
 
     ```monobasic
     Sub Macro1()
@@ -697,13 +694,13 @@ In Blender è possibile aprire un terminale Python in cui lanciare comandi per c
     End Sub
     ```
 
--   Comodo per automatizzare task ripetitivi (es. creare oggetti ripetuti in programmi grafici come Blender).
+-   Useful for automating repetitive tasks (e.g., creating repeated objects in graphics programs like Blender).
 
--   Alcuni linguaggi ([GNU Guile](https://www.gnu.org/software/guile/), [Lua](https://www.lua.org/)…) sono pensati principalmente per usi *embedded*.
+-   Some languages ([GNU Guile](https://www.gnu.org/software/guile/), [Lua](https://www.lua.org/)…) are primarily designed for *embedded* use.
 
-# Esempio Python
+# Python Example
 
-Questo programma C inizializza l'interprete Python ed esegue un semplice script. Nella realtà, questo script potrebbe essere stato digitato dall'utente in una finestra di dialogo del programma:
+This C program initializes the Python interpreter and executes a simple script. In reality, this script could have been typed by the user in a program dialog window:
 
 ```c
 #define PY_SSIZE_T_CLEAN
@@ -730,76 +727,20 @@ main(int argc, char *argv[])
 }
 ```
 
-# Registrare funzioni
+# 4. Creating *Bindings*
 
-Si può estendere l'interprete Python perché riconosca nuove funzioni: è in questo modo che si rendono disponibili le funzionalità del proprio programma attraverso Python. Ecco un [esempio](https://docs.python.org/3/extending/embedding.html):
+# Creating *Bindings*
 
-```c
-static int numargs=0;
+-   A similar approach to embedded interpreters is making your code callable from an external language (usually Python).
 
-/* Return the number of arguments of the application command line */
-static PyObject*
-emb_numargs(PyObject *self, PyObject *args)
-{
-    if(!PyArg_ParseTuple(args, ":numargs"))
-        return NULL;
-    return PyLong_FromLong(numargs);
-}
+-   The difference from the previous solution is that in this case, you use the system-installed Python interpreter, not a dedicated one.
 
-/* This will enable the interpreter to understand the following script:
- *
- *     import emb
- *     print(emb.numargs())
- *
- */
-static PyMethodDef EmbMethods[] = {
-    {"numargs", emb_numargs, METH_VARARGS,
-     "Return the number of arguments received by the process."},
-    {NULL, NULL, 0, NULL}
-};
+-   The advantage is that you can combine your library with existing ones: this makes it much more versatile and is generally the preferred approach.
 
-static PyModuleDef EmbModule = {
-    PyModuleDef_HEAD_INIT, "emb", NULL, -1, EmbMethods,
-    NULL, NULL, NULL, NULL
-};
+-   This solution is easily achievable with languages like C++, Nim, Rust…; it is considerably more complex for Julia, C#, or Kotlin.
 
-static PyObject*
-PyInit_emb(void)
-{
-    return PyModule_Create(&EmbModule);
-}
-```
-
-# Il caso del nostro ray-tracer
-
--   Avremmo potuto allora rendere disponibili in Python funzioni come `create_sphere`, `create_brdf`, etc.
-
--   I file di input sarebbero stati normali script Python, che potevano impiegare tutte le potenzialità del linguaggio (variabili, funzioni, cicli `for`, etc.):
-
-    ```python
-    # A custom type "color" is available alongside with the usual "int", "float", etc.
-    black = color(0.0, 0.0, 0.0)
-
-    sphere_material = create_material(
-        brdf=diffuse_brdf(uniform_pigment(color(0.7, 0.5, 1.0))),
-        emitted_radiance=uniform_pigment(black),
-    )
-
-    # Create many objects using a `for` loop
-    for angle in [0, 90, 180, 270]:
-        create_sphere(sphere_material, rotation_x(angle) * translation(vec(10, 0, 0)))
-    ```
-
-# 4. Creare *bindings*
-
-# Creare *bindings*
-
--   Un approccio simile a quello degli interpreti *embedded* è quello di rendere il proprio codice invocabile da un linguaggio esterno (solitamente Python).
-
--   La differenza con la soluzione precedente è che in questo caso si usa l'interprete Python installato nel sistema, e non un interprete dedicato.
-
--   Il vantaggio è ovviamente che si possono combinare librerie già installate con la nostra: la soluzione è molto più versatile, ed è generalmente quella da preferire.
-
--   Questa soluzione è facilmente praticabile con linguaggi come C++, Nim, Rust…; è decisamente più complessa per Julia, C\# o Kotlin.
-
-# Fine!
+---
+title: "Lesson 13"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

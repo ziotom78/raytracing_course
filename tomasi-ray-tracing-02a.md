@@ -489,7 +489,7 @@ document.addEventListener('monitor-calibration-state', function() {
 -   The conversion is **not linear**, as is evident from its analytical expression
 -   What we have seen for the conversion $L_\lambda \rightarrow (R, G, B)$ does not apply to sRGB: we cannot write the rendering equation directly in the sRGB space!
 
-# Conversion from RGB to sRGB
+# Conversion from RGB to sRGB {#from-rgb-to-srgb}
 
 -   A simple approximation for the conversion from RGB, $(R, G, B)$, to sRGB, $(r, g, b)$, is the following:
     $$

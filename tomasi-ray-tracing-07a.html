@@ -64,20 +64,20 @@ href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="lequazione-del-rendering" class="slide level1">
-<h1>L’equazione del rendering</h1>
+<section id="the-rendering-equation" class="slide level1">
+<h1>The Rendering Equation</h1>
 </section>
-<section id="richiami" class="slide level1">
-<h1>Richiami</h1>
+<section id="review" class="slide level1">
+<h1>Review</h1>
 <ul>
-<li><p><strong>Radianza</strong> (flusso <span
-class="math inline">\Phi</span> in Watt normalizzato sulla superficie
-proiettata per unità di angolo solido): <span class="math display">
+<li><p><strong>Radiance</strong> (flux <span
+class="math inline">\Phi</span> in Watt normalized on the projected
+surface per unit solid angle): <span class="math display">
 L = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A^\perp}
   = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A\,\cos\theta},
 \qquad [L] = \mathrm{W}/\mathrm{m}^2/\mathrm{sr}.
 </span></p></li>
-<li><p>Equazione del rendering: <span class="math display">
+<li><p>Rendering equation: <span class="math display">
 \begin{aligned}
 L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 &amp;\int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
@@ -86,224 +86,224 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 </span></p></li>
 </ul>
 </section>
-<section id="richiami-1" class="slide level1">
-<h1>Richiami</h1>
+<section id="review-1" class="slide level1">
+<h1>Review</h1>
 <ul>
-<li><p>La Bidirectional Reflectance Distribution Function (BRDF), è il
-rapporto tra la <em>radianza</em> che abbandona una superficie lungo
-<span class="math inline">\Theta</span> rispetto all’<em>irradianza</em>
-ricevuta da una direzione <span class="math inline">\Psi</span>:</p>
+<li><p>The Bidirectional Reflectance Distribution Function (BRDF) is the
+ratio between the <em>radiance</em> leaving a surface along <span
+class="math inline">\Theta</span> with respect to the
+<em>irradiance</em> received from a direction <span
+class="math inline">\Psi</span>:</p>
 <p><span class="math display">
 f_r(x, \Psi \rightarrow \Theta) = \frac{\mathrm{d}L (x \rightarrow
 \Theta)}{
     L(x \leftarrow \Psi) \cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi
 },
-</span> dove <span class="math inline">\cos(N_x, \Psi)</span> è l’angolo
-tra la normale della superficie <span
-class="math inline">\mathrm{d}A</span> e la direzione incidente <span
+</span> where <span class="math inline">\cos(N_x, \Psi)</span> is the
+angle between the normal of the surface <span
+class="math inline">\mathrm{d}A</span> and the incident direction <span
 class="math inline">\Psi</span>.</p></li>
-<li><p>La BRDF descrive come una superficie «risponda» alla luce
-incidente.</p></li>
+<li><p>The BRDF describes how a surface “responds” to incident
+light.</p></li>
 </ul>
 </section>
-<section id="richiami-2" class="slide level1">
-<h1>Richiami</h1>
+<section id="review-2" class="slide level1">
+<h1>Review</h1>
 <p><img data-src="./media/brdf.svg" height="560" /></p>
 </section>
-<section id="soluzione-dellequazione" class="slide level1">
-<h1>Soluzione dell’equazione</h1>
+<section id="solution-of-the-rendering-equation" class="slide level1">
+<h1>Solving the Equation</h1>
 <ul>
-<li><p>In questa e nelle prossime lezioni scriveremo dei codici che
-risolveranno l’equazione in casi via via più complessi.</p></li>
-<li><p>Cerchiamo innanzitutto di capire come sia possibile risolvere
-<strong>analiticamente</strong> l’equazione.</p></li>
+<li><p>In this and the following lessons, we will write code that solves
+the equation in increasingly complex cases.</p></li>
+<li><p>Let’s first try to understand how it is possible to solve the
+equation <strong>analytically</strong>.</p></li>
 </ul>
 </section>
-<section id="esempi-banali" class="slide level1">
-<h1>Esempi banali</h1>
+<section id="trivial-examples" class="slide level1">
+<h1>Trivial Examples</h1>
 <ul>
-<li><p>Assenza di radiazione: in questo caso <span
-class="math inline">L_e = 0</span> e <span
-class="math inline">\forall\Psi: L(x \leftarrow \Psi) = 0</span>,
-quindi</p>
+<li><p>Absence of radiation: in this case <span class="math inline">L_e
+= 0</span> and <span class="math inline">\forall\Psi: L(x \leftarrow
+\Psi) = 0</span>, therefore</p>
 <p><span class="math display">
 L = 0.
 </span></p>
-<p>È una scena perfettamente buia: molto poco interessante!</p></li>
-<li><p>Se un punto emette radiazione isotropa con radianza <span
-class="math inline">L_e</span> in <span class="math inline">x_0</span>,
-allora in ogni altro punto <span class="math inline">x</span> dello
-spazio vale che</p>
+<p>It’s a perfectly dark scene: not very interesting!</p></li>
+<li><p>If a point emits isotropic radiation with radiance <span
+class="math inline">L_e</span> at <span class="math inline">x_0</span>,
+then at every other point <span class="math inline">x</span> in space it
+holds that</p>
 <p><span class="math display">
 L(x_0 \rightarrow \Theta) = L_e
 </span></p>
-<p>Tutto lo spazio è riempito dalla medesima radianza: poco
-interessante!</p></li>
+<p>All space is filled with the same radiance: not very
+interesting!</p></li>
 </ul>
 </section>
-<section id="punto-luminoso-e-piano" class="slide level1">
-<h1>Punto luminoso e piano</h1>
-<p>Piano infinito diffusivo ideale e non emettente (<span
-class="math inline">L_e = 0</span>) e una sferetta di raggio <span
-class="math inline">r</span> a una distanza <span class="math inline">d
-\gg r</span> dal piano che emette isotropicamente con radianza <span
+<section id="luminous-point-and-plane" class="slide level1">
+<h1>Luminous Point and Plane</h1>
+<p>An infinite ideal diffuse and non-emitting plane (<span
+class="math inline">L_e = 0</span>) and a small sphere of radius <span
+class="math inline">r</span> at a distance <span class="math inline">d
+\gg r</span> from the plane, emitting isotropically with radiance <span
 class="math inline">L_d</span>.</p>
 <p><img data-src="./media/plane.png" height="360" /></p>
 </section>
-<section id="comportamento-del-piano" class="slide level1">
-<h1>Comportamento del piano</h1>
+<section id="plane-behavior" class="slide level1">
+<h1>Plane Behavior</h1>
 <ul>
-<li><p>Il piano è una superficie diffusiva ideale, quindi</p>
+<li><p>The plane is an ideal diffuse surface, therefore</p>
 <p><span class="math display">
-f_r(x, \Psi \rightarrow \Theta) = \frac{\rho_d}\pi,\quad\text{con $0
+f_r(x, \Psi \rightarrow \Theta) = \frac{\rho_d}\pi,\quad\text{with $0
 \leq \rho_d \leq 1$.}
 </span></p></li>
-<li><p>Dato un punto <span class="math inline">x</span> sul piano,
-l’equazione del rendering implica che</p>
+<li><p>Given a point <span class="math inline">x</span> on the plane,
+the rendering equation implies that</p>
 <p><span class="math display">
 L(x \rightarrow \Theta) = \int_{2\pi} \frac{\rho_d}\pi\,L(x \leftarrow
 \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
 </span></p></li>
-<li><p>Qual è il valore di <span class="math inline">L(x \leftarrow
+<li><p>What is the value of <span class="math inline">L(x \leftarrow
 \Psi)</span>?</p></li>
 </ul>
 </section>
-<section id="radianza-entrante" class="slide level1">
-<h1>Radianza entrante</h1>
+<section id="incoming-radiance" class="slide level1">
+<h1>Incoming Radiance</h1>
 <p><embed width="640px" height="640px" src="pd-images/75998bf62ffb7e1660b921eccdc48bce752e38bb.html"
 data-im_fname="single-plane-and-light" /></p>
 </section>
-<section id="radianza-entrante-1" class="slide level1">
-<h1>Radianza entrante</h1>
+<section id="incoming-radiance-1" class="slide level1">
+<h1>Incoming Radiance</h1>
 <ul>
-<li><p>Il valore di <span class="math inline">L(x \leftarrow
-\Psi)</span> è <strong>nullo</strong>, tranne quando <span
-class="math inline">\Psi</span> punta verso la sorgente
-luminosa.</p></li>
-<li><p>Dividiamo il dominio dell’integrale: <span class="math display">
+<li><p>The value of <span class="math inline">L(x \leftarrow
+\Psi)</span> is <strong>zero</strong>, except when <span
+class="math inline">\Psi</span> points towards the light
+source.</p></li>
+<li><p>We divide the integration domain: <span class="math display">
 \int_{2\pi} = \int_{\Omega(d)} + \int_{2\pi - \Omega(d)},
-</span> dove <span class="math inline">\Omega(d)</span> è l’angolo
-solido della sfera alla distanza <span
+</span> where <span class="math inline">\Omega(d)</span> is the solid
+angle of the sphere at distance <span
 class="math inline">d</span>.</p></li>
-<li><p>Il secondo integrale, su <span class="math inline">2\pi -
-\Omega(d)</span>, è nullo, perché entro quell’angolo solido <span
+<li><p>The second integral, over <span class="math inline">2\pi -
+\Omega(d)</span>, is zero, because within that solid angle <span
 class="math inline">L(x \leftarrow \Psi) = 0</span>.</p></li>
 </ul>
 </section>
-<section id="radianza-entrante-2" class="slide level1">
-<h1>Radianza entrante</h1>
-<p>L’integrale sull’angolo solido <span
-class="math inline">\Omega(d)</span> è semplice se supponiamo che nel
-dominio siano costanti sia <span class="math inline">d</span> (distanza
-tra la sorgente e il punto <span class="math inline">x</span>) che
-l’angolo <span class="math inline">\theta</span> tra <span
-class="math inline">N_x</span> e <span class="math inline">\Psi</span>
-(la sfera è piccola): <span class="math display">
+<section id="incoming-radiance-2" class="slide level1">
+<h1>Incoming Radiance</h1>
+<p>The integral over the solid angle <span
+class="math inline">\Omega(d)</span> is simple if we assume that both
+<span class="math inline">d</span> (distance between the source and
+point <span class="math inline">x</span>) and the angle <span
+class="math inline">\theta</span> between <span
+class="math inline">N_x</span> and <span class="math inline">\Psi</span>
+(the sphere is small) are constant within the domain: <span
+class="math display">
 L(x \rightarrow \Theta) = \int_{\Omega(d)}
 \frac{\rho_d}\pi\,L_d\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi \approx
 \frac{\rho_d}\pi\,L_d\,\cos\theta \times \pi\left(\frac{r}d\right)^2,
-</span> dove <span class="math inline">\theta</span> è l’angolo tra la
-normale e la direzione della sferetta.</p>
+</span> where <span class="math inline">\theta</span> is the angle
+between the normal and the direction of the small sphere.</p>
 </section>
-<section id="proprietà-della-soluzione" class="slide level1">
-<h1>Proprietà della soluzione</h1>
+<section id="properties-of-the-solution" class="slide level1">
+<h1>Properties of the Solution</h1>
 <ul>
 <li><span class="math inline">L(x \rightarrow \Theta) \approx
 \rho_d\,L_d\,\cos\theta\,\left(\frac{r}d\right)^2.</span></li>
-<li>Anche se il punto emette isotropicamente e la superficie è diffusiva
-ideale, c’è comunque una dipendenza dal coseno di <span
+<li>Even though the point emits isotropically and the surface is ideally
+diffuse, there is still a dependence on the cosine of <span
 class="math inline">\theta</span>.</li>
-<li>La radianza riflessa è proporzionale alla superficie della sfera
-(<span class="math inline">\propto r^2</span>).</li>
-<li>All’aumentare di <span class="math inline">d</span>, la radiazione
-riflessa dal piano diminuisce come <span
-class="math inline">d^{-2}</span> (conservazione dell’energia).</li>
+<li>The reflected radiance is proportional to the surface area of the
+sphere (<span class="math inline">\propto r^2</span>).</li>
+<li>As <span class="math inline">d</span> increases, the radiance
+reflected from the plane decreases as <span
+class="math inline">d^{-2}</span> (conservation of energy).</li>
 </ul>
 </section>
-<section id="doppio-piano" class="slide level1">
-<h1>Doppio piano</h1>
-<p>Supponiamo ora di avere <em>due</em> piani diffusivi ideali, uno
-sotto e uno sopra:</p>
+<section id="two-planes" class="slide level1">
+<h1>Two Planes</h1>
+<p>Now suppose we have <em>two</em> ideal diffuse planes, one below and
+one above:</p>
 <p><img data-src="./media/double-plane.png" height="360" /></p>
-<p>Come si tratta questo caso?</p>
+<p>How do we handle this case?</p>
 </section>
-<section id="doppio-piano-1" class="slide level1">
-<h1>Doppio piano</h1>
+<section id="two-planes-1" class="slide level1">
+<h1>Two Planes</h1>
 <ul>
-<li><p>Consideriamo ancora il piano sottostante. Vale che:</p>
+<li><p>Let’s consider the bottom plane again. The following holds:</p>
 <p><span class="math display">
 L_\text{down}(x \rightarrow \Theta) = \int_{2\pi}
 \frac{\rho^\text{down}_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x,
 \Psi)\,\mathrm{d}\omega_\Psi.
 </span></p></li>
-<li><p>Ma ora il valore dell’integrale non è più dovuto al solo
-contributo della sferetta luminosa, perché c’è anche il piano
-superiore.</p></li>
-<li><p>Qual è il valore di <span class="math inline">L_\text{up}(x
-\leftarrow \Psi)</span> prodotto dal piano superiore?</p></li>
+<li><p>But now the value of the integral is no longer solely due to the
+contribution of the luminous sphere, because there is also the upper
+plane.</p></li>
+<li><p>What is the value of <span class="math inline">L_\text{up}(x
+\leftarrow \Psi)</span> produced by the upper plane?</p></li>
 </ul>
 </section>
-<section id="doppio-piano-2" class="slide level1">
-<h1>Doppio piano</h1>
+<section id="two-planes-2" class="slide level1">
+<h1>Two Planes</h1>
 <ul>
-<li><p>Il valore di <span class="math inline">L(x \leftarrow
-\Psi)</span> per il piano superiore si calcola con la stessa formula
-della slide precedente:</p>
+<li><p>The value of <span class="math inline">L(x \leftarrow
+\Psi)</span> for the upper plane is calculated using the same formula as
+in the previous slide:</p>
 <p><span class="math display">
 L_\text{up}(x \rightarrow \Theta) = \int_{2\pi}
 \frac{\rho^\text{up}_d}\pi\,L(x \leftarrow \Psi)\,\cos(N_x,
 \Psi)\,\mathrm{d}\omega_\Psi.
 </span></p></li>
-<li><p>Ma così ci invischiamo in un problema ricorsivo!</p></li>
+<li><p>But this leads us into a recursive problem!</p></li>
 </ul>
 </section>
-<section id="il-problema-generale" class="slide level1">
-<h1>Il problema generale</h1>
+<section id="the-general-problem" class="slide level1">
+<h1>The General Problem</h1>
 <ul>
-<li><p>Nel caso generale avviene che l’integrale da calcolare è
-<em>multiplo</em>:</p>
+<li><p>In the general case, the integral to be calculated is
+<em>multiple</em>:</p>
 <p><span class="math display">
 L(x \rightarrow \Theta) = \int_{\Omega^{(1)}_x} \int_{\Omega^{(2)}_x}
 \int_{\Omega^{(3)}_x} \ldots
 </span></p></li>
-<li><p>È un integrale a molte dimensioni (i termini successivi al primo
-sono sempre meno importanti e tendono a zero, quindi le dimensioni non
-sono <em>infinite</em>).</p></li>
+<li><p>It is a multi-dimensional integral (the terms after the first are
+increasingly less important and tend towards zero, so the dimensions are
+not <em>infinite</em>).</p></li>
 </ul>
 </section>
-<section id="il-problema-generale-1" class="slide level1">
-<h1>Il problema generale</h1>
+<section id="the-general-problem-1" class="slide level1">
+<h1>The General Problem</h1>
 <ul>
-<li><p>L’equazione del rendering è impossibile da risolvere
-analiticamente nel caso generale.</p></li>
-<li><p>Ecco quindi la necessità di usare il calcolo numerico!</p></li>
-<li><p>Ci sono svariati approcci alla soluzione dell’equazione del
-rendering.</p></li>
+<li><p>The rendering equation is impossible to solve analytically in the
+general case.</p></li>
+<li><p>Hence the need to use numerical computation!</p></li>
+<li><p>There are various approaches to solving the rendering
+equation.</p></li>
 </ul>
 </section>
-<section id="tipi-di-soluzioni" class="slide level1">
-<h1>Tipi di soluzioni</h1>
+<section id="types-of-solutions" class="slide level1">
+<h1>Types of Solutions</h1>
 <ul>
-<li><p>Ci sono svariati modi di risolvere l’equazione del rendering, e i
-loro nomi non sono sempre usati in modo consistente nella
-letteratura.</p></li>
-<li><p>Gli algoritmi si dividono in due grandi famiglie:</p>
+<li><p>There are various ways to solve the rendering equation, and their
+names are not always used consistently in the literature.</p></li>
+<li><p>The algorithms fall into two main families:</p>
 <dl>
 <dt><em>Image order</em></dt>
 <dd>
-La soluzione è calcolata per uno specifico osservatore.
+The solution is calculated for a specific observer.
 </dd>
 <dt><em>Object order</em></dt>
 <dd>
-La soluzione è indipendente dall’osservatore.
+The solution is independent of the observer.
 </dd>
 </dl></li>
-<li><p>Noi tratteremo in questo corso solo algoritmi di tipo <em>image
-order</em>, perché sono i più semplici da implementare.</p></li>
+<li><p>In this course, we will only cover <em>image order</em>
+algorithms because they are the easiest to implement.</p></li>
 </ul>
 </section>
-<section id="algoritmi-image-order" class="slide level1">
-<h1>Algoritmi <em>image order</em></h1>
+<section id="image-order-algorithms" class="slide level1">
+<h1>Image-order Algorithms</h1>
 </section>
 <section class="slide level1">
 
@@ -315,50 +315,48 @@ href="https://it.wikipedia.org/wiki/Leon_Battista_Alberti">Leon Battista
 Alberti</a>, <a href="https://it.wikipedia.org/wiki/De_pictura"><em>De
 pictura</em></a> (1435)</span></p>
 </section>
-<section id="descrizione-generale" class="slide level1">
-<h1>Descrizione generale</h1>
+<section id="general-description" class="slide level1">
+<h1>General Description</h1>
 <ul>
-<li><p>In un algoritmo <em>image order</em> si definisce la posizione di
-un osservatore della scena (il signore col bastone nel disegno di
-Alberti) e la direzione in cui osserva.</p></li>
-<li><p>Si definisce una superficie bidimensionale che rappresenta lo
-schermo.</p></li>
-<li><p>Si calcola la soluzione del rendering per i soli punti <span
-class="math inline">\vec x</span> sulle superfici <span
-class="math inline">S</span> della scena che sono visibili
-dall’osservatore attraverso lo schermo.</p></li>
+<li><p>In an <em>image order</em> algorithm, we define the position of
+an observer of the scene (the gentleman with the stick in Alberti’s
+drawing) and the direction in which they observe.</p></li>
+<li><p>A two-dimensional surface representing the screen is
+defined.</p></li>
+<li><p>The rendering solution is calculated only for the points <span
+class="math inline">\vec x</span> on the surfaces <span
+class="math inline">S</span> of the scene that are visible to the
+observer through the screen.</p></li>
 </ul>
 </section>
 <section id="forward-ray-tracing" class="slide level1">
-<h1><em>Forward</em> ray-tracing</h1>
+<h1>Forward Ray-Tracing</h1>
 <ul>
-<li><p>Nel modello di Alberti, l’occhio dell’osservatore riceve la
-radiazione proveniente dal mondo esterno.</p></li>
-<li><p>Una simulazione accurata della propagazione della luce dovrebbe
-quindi seguire queste fasi:</p>
+<li><p>In Alberti’s model, the observer’s eye receives the radiation
+coming from the outside world.</p></li>
+<li><p>An accurate simulation of light propagation should therefore
+follow these steps:</p>
 <ol>
-<li>Generare radiazione dalle sorgenti luminose.</li>
-<li>Tracciare il percorso della radiazione usando l’ottica
-geometrica.</li>
-<li>Ogni volta che un fotone raggiunge l’occhio dell’osservatore,
-registrare da che direzione proveniva e quale colore (SED)
-possedeva.</li>
+<li>Generate radiation from light sources.</li>
+<li>Trace the path of the radiation using geometrical optics.</li>
+<li>Every time a photon reaches the observer’s eye, record the direction
+it came from and its color (SED).</li>
 </ol></li>
-<li><p>Questo approccio è chiamato <em>foward ray-tracing</em>: si segue
-il naturale cammino dei raggi luminosi.</p></li>
+<li><p>This approach is called <em>forward</em> ray-tracing: it follows
+the natural path of light rays.</p></li>
 </ul>
 </section>
 <section id="backward-ray-tracing" class="slide level1">
-<h1><em>Backward</em> ray-tracing</h1>
+<h1>Backward Ray-Tracing</h1>
 <ul>
-<li><p>Il <em>backward</em> ray-tracing viene usato nei metodi <em>image
-oriented</em>.</p></li>
-<li><p>Esso consiste nel percorrere a ritroso il cammino di un raggio di
-luce, partendo dall’<em>occhio</em> dell’osservatore e raggiungendo la
-sorgente luminosa.</p></li>
-<li><p>È computazionalmente più vantaggioso del <em>forward</em> ray
-tracing, perché gran parte dei raggi luminosi emessi da una sorgente
-<em>non</em> raggiunge l’osservatore.</p></li>
+<li><p><em>Backward</em> ray-tracing is used in <em>image oriented</em>
+methods.</p></li>
+<li><p>It consists of tracing the path of a light ray backward, starting
+from the <em>eye</em> of the observer and reaching the light
+source.</p></li>
+<li><p>It is computationally more advantageous than <em>forward</em> ray
+tracing, because most of the light rays emitted from a source <em>do
+not</em> reach the observer.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -368,54 +366,50 @@ tracing, perché gran parte dei raggi luminosi emessi da una sorgente
 </center>
 </section>
 <section id="backward-ray-tracing-1" class="slide level1">
-<h1><em>Backward</em> ray-tracing</h1>
+<h1><em>Backward</em> Ray-Tracing</h1>
 <ul>
-<li><p>Consideriamo l’equazione del rendering nel contesto dell’immagine
-di Alberti.</p></li>
-<li><p>L’approccio del <em>backward</em> ray-tracing ci consente di
-risolvere l’equazione del rendering per le sole parti di superfici che
-sono visibili attraverso lo schermo.</p>
+<li><p>Let’s consider the rendering equation in the context of Alberti’s
+image.</p></li>
+<li><p>The <em>backward</em> ray-tracing approach allows us to solve the
+rendering equation only for the parts of surfaces that are visible
+through the screen.</p>
 <center>
 <p><img data-src="./media/leon-battista-alberti-piramide-visuale.webp"
 height="360" /></p>
 </center></li>
 </ul>
 </section>
-<section id="vantaggi-e-svantaggi" class="slide level1">
-<h1>Vantaggi e svantaggi</h1>
+<section id="advantages-and-disadvantages" class="slide level1">
+<h1>Advantages and Disadvantages</h1>
 <ul>
-<li><p>In questo corso implementeremo algoritmo di <em>backward</em>
-ray-tracing, ma questa non è sempre la scelta migliore!</p></li>
-<li><p>Il <em>forward</em> ray-tracing (combinato con l’approccio
-<em>object order</em>) è utile nelle animazioni:</p>
+<li><p>In this course, we will implement a <em>backward</em> ray-tracing
+algorithm, but this is not always the best choice!</p></li>
+<li><p><em>Forward</em> ray-tracing (combined with the <em>object
+order</em> approach) is useful in animations:</p>
 <ol>
-<li>Si risolve l’equazione del rendering per tutte le superfici della
-scena.</li>
-<li>Si generano <span class="math inline">N</span> fotogrammi
-dell’animazione senza dover ricalcolare la soluzione <span
-class="math inline">N</span> volte.</li>
+<li>The rendering equation is solved for all surfaces in the scene.</li>
+<li><span class="math inline">N</span> frames of the animation are
+generated without having to recalculate the solution <span
+class="math inline">N</span> times.</li>
 </ol>
-<p>Questo vale ovviamente solo nel caso in cui nulla nella scena cambi,
-tranne eventualmente la posizione dell’osservatore.</p></li>
-<li><p>Algoritmi molto usati di <em>forward</em> ray tracing sono <a
+<p>This obviously only applies if nothing in the scene changes, except
+possibly the observer’s position.</p></li>
+<li><p>Widely used <em>forward</em> ray tracing algorithms are <a
 href="https://en.wikipedia.org/wiki/Radiosity_(computer_graphics)">radiosity</a>
-e <a href="https://en.wikipedia.org/wiki/Photon_mapping">photon
+and <a href="https://en.wikipedia.org/wiki/Photon_mapping">photon
 mapping</a>.</p></li>
 </ul>
 </section>
-<section id="schermo-e-osservatore" class="slide level1">
-<h1>Schermo e osservatore</h1>
-</section>
-<section id="discretizzazione-dello-schermo" class="slide level1">
-<h1>Discretizzazione dello schermo</h1>
+<section id="screen-and-observer" class="slide level1">
+<h1>Screen and Observer</h1>
+<h2 id="screen-discretization">Screen Discretization</h2>
 <ul>
-<li><p>Alberti considerava uno schermo come una superficie disegnabile;
-la stessa idea si ritrova in <a
-href="https://www.metmuseum.org/art/collection/search/366555">alcune
-stampe di Dürer</a> (XVI secolo).</p></li>
-<li><p>Nella <em>computer graphics</em> si usa la stessa idea, con
-l’accortezza però di rappresentare lo schermo come una matrice discreta
-di punti.</p>
+<li><p>Alberti conceived of a screen as a drawable surface; the same
+idea is found in <a
+href="https://www.metmuseum.org/art/collection/search/366555">some Dürer
+prints</a> (16th century).</p></li>
+<li><p>In computer graphics, we use the same idea, with the caveat that
+the screen is represented as a discrete matrix of points.</p>
 <center>
 <p><img
 data-src="./media/leon-battista-alberti-piramide-visuale-modified.svg"
@@ -423,179 +417,151 @@ height="360" /></p>
 </center></li>
 </ul>
 </section>
-<section id="discretizzazione-dello-schermo-1" class="slide level1">
-<h1>Discretizzazione dello schermo</h1>
+<section class="slide level1">
+
+<h2 id="screen-discretization-1">Screen Discretization</h2>
 <ul>
-<li><p>L’osservatore di Alberti vedrebbe questo:</p>
+<li><p>Alberti’s observer would see this:</p>
 <center>
 <p><img data-src="./media/projection-pixel-cube.svg" /></p>
 </center></li>
-<li><p>I quadrati rappresentano i pixel in cui è suddiviso lo schermo.
-(Molto grossi! La risoluzione standard di un monitor recente è almeno
+<li><p>The squares represent the pixels the screen is divided into.
+(Very large! The standard resolution of a recent monitor is at least
 1920×1080).</p></li>
 </ul>
-</section>
-<section id="proiettare-raggi-luminosi" class="slide level1">
-<h1>Proiettare raggi luminosi</h1>
+<h2 id="projecting-light-rays">Projecting Light Rays</h2>
 <ul>
-<li><p>Se seguiamo l’approccio del <em>backward</em> ray-tracing,
-dobbiamo proiettare raggi attraverso i pixel dello schermo. Questo sarà
-l’algoritmo:</p>
+<li><p>Following the <em>backward</em> ray-tracing approach, we project
+rays through the screen pixels. The algorithm is as follows:</p>
 <ol>
-<li>Per ogni pixel generiamo un raggio che passi dal pixel.</li>
-<li>Ciascun raggio colpirà una superficie dell’ambiente in un punto
-<span class="math inline">\vec x</span>.</li>
-<li>Calcoliamo la soluzione dell’equazione del rendering in <span
-class="math inline">\vec x</span>, che è la radianza emessa in direzione
-dell’osservatore (ossia, passante attraverso il pixel dello
-schermo).</li>
-<li>Usiamo la radianza stimata per calcolare il colore RGB del
+<li>For each pixel, generate a ray passing through it.</li>
+<li>Each ray will hit a surface in the environment at a point <span
+class="math inline">\vec x</span>.</li>
+<li>Compute the solution to the rendering equation at <span
+class="math inline">\vec x</span>, which is the radiance emitted towards
+the observer (i.e., passing through the screen pixel).</li>
+<li>Use the estimated radiance to calculate the RGB color of the
 pixel.</li>
 </ol></li>
-<li><p>Questo è un approccio <em>generale</em>: non abbiamo ancora
-spiegato come risolvere l’equazione del rendering!</p></li>
+<li><p>This is a <em>general</em> approach: we haven’t yet explained how
+to solve the rendering equation!</p></li>
 </ul>
-</section>
-<section id="raggi-per-pixel" class="slide level1">
-<h1>Raggi per pixel</h1>
+<h2 id="ray-through-a-pixel">Ray throug a Pixel</h2>
 <ul>
-<li><p>Assumiamo che ogni raggio passi per il centro di un pixel:</p>
+<li><p>We assume that each ray passes through the center of a pixel:</p>
 <center>
 <p><img data-src="./media/projection-pixel-centers-cube.svg" /></p>
 </center></li>
-<li><p>Per un’immagine di risoluzione 1920×1080 occorre creare circa
-2×10⁶ raggi luminosi e risolvere altrettante volte l’equazione del
-rendering.</p></li>
+<li><p>For a 1920×1080 resolution image, we need to create about 2×10⁶
+light rays and solve the rendering equation as many times.</p></li>
 </ul>
-</section>
-<section id="raggi-luminosi" class="slide level1">
-<h1>Raggi luminosi</h1>
+<h2 id="light-rays">Light Rays</h2>
 <ul>
-<li><p>Quali caratteristiche deve avere la rappresentazione nella
-memoria di un computer di un raggio luminoso?</p>
+<li><p>How should a light ray be represented in computer memory?</p>
 <ol>
-<li>Origine <span class="math inline">O</span> (punto 3D);</li>
-<li>Direzione di propagazione <span class="math inline">\vec d</span>
-(vettore 3D);</li>
-<li>Minima distanza <span class="math inline">t_\text{min}</span>;</li>
-<li>Massima distanza <span class="math inline">t_\text{max}</span>;</li>
-<li>Profondità <span class="math inline">n</span>.</li>
+<li>Origin <span class="math inline">O</span> (3D point);</li>
+<li>Direction of propagation <span class="math inline">\vec d</span> (3D
+vector);</li>
+<li>Minimum distance <span class="math inline">t_\text{min}</span>;</li>
+<li>Maximum distance <span class="math inline">t_\text{max}</span>;</li>
+<li>Depth <span class="math inline">n</span>.</li>
 </ol></li>
-<li><p>Vediamo nel dettaglio ciascuna di queste proprietà.</p></li>
+<li><p>Let’s examine each of these properties in detail.</p></li>
 </ul>
-</section>
-<section id="origine-e-direzione" class="slide level1">
-<h1>Origine e direzione</h1>
+<h2 id="origin-and-direction">Origin and Direction</h2>
 <ul>
-<li><p>Siete probabilmente familiari con l’equazione canonica della
-retta che avete usato in geometria analitica (<span
-class="math inline">ax + by + c = 0</span>, oppure <span
-class="math inline">y = mx + q</span>), ma queste formule valgono solo
-in 2D e non sono orientate.</p></li>
-<li><p>Il cammino di un raggio luminoso è meglio rappresentato
-dall’equazione</p>
+<li><p>You are probably familiar with the canonical equation of a line
+used in analytic geometry (<span class="math inline">ax + by + c =
+0</span>, or <span class="math inline">y = mx + q</span>), but these
+formulas are valid only in 2D and are not oriented.</p></li>
+<li><p>The path of a light ray is better represented by the equation</p>
 <p><span class="math display">
 r(t) = O + t \vec d,
 </span></p>
-<p>dove <span class="math inline">O</span> è il punto di origine, <span
-class="math inline">\vec d</span> è la direzione, e <span
-class="math inline">t \in \mathbb{R}</span> un parametro.</p>
+<p>where <span class="math inline">O</span> is the origin point, <span
+class="math inline">\vec d</span> is the direction, and <span
+class="math inline">t \in \mathbb{R}</span> is a parameter.</p>
 <center>
 <p><img data-src="./media/ray-origin-dir.svg" height="120" /></p>
 </center></li>
 </ul>
-</section>
-<section id="intersezione-di-raggi" class="slide level1">
-<h1>Intersezione di raggi</h1>
+<h2 id="ray-intersection">Ray Intersection</h2>
 <ul>
-<li><p>Per il parametro <span class="math inline">t</span> deve
-ovviamente valere che <span class="math inline">t \geq
-0</span>.</p></li>
-<li><p>Dato un raggio luminoso che interseca una superficie <span
-class="math inline">S</span> in un punto P, vale che</p>
+<li><p>The parameter <span class="math inline">t</span> must obviously
+satisfy <span class="math inline">t \geq 0</span>.</p></li>
+<li><p>Given a light ray intersecting a surface <span
+class="math inline">S</span> at point P, we have</p>
 <p><span class="math display">
 P = r(t_P) = O + t_P \vec d
 </span></p>
-<p>per qualche valore <span class="math inline">t_P &gt; 0</span>.</p>
+<p>for some value <span class="math inline">t_P &gt; 0</span>.</p>
 <center>
 <p><img data-src="./media/ray-origin-dir-point.svg" height="180" /></p>
 </center></li>
 </ul>
-</section>
-<section id="distanza" class="slide level1">
-<h1>Distanza</h1>
+<h2 id="distance">Distance</h2>
 <ul>
-<li><p>Il valore di <span class="math inline">t_P</span> è
-concettualmente simile a un tempo, ma è un numero puro.</p></li>
-<li><p>Rappresenta la distanza tra l’origine <span
-class="math inline">O</span> e il punto <span
-class="math inline">P</span>, in unità di misura della lunghezza del
-vettore <span class="math inline">\vec d</span>.</p>
+<li><p>The value of <span class="math inline">t_P</span> is conceptually
+similar to time, but it’s a dimensionless quantity.</p></li>
+<li><p>It represents the distance between the origin <span
+class="math inline">O</span> and the point <span
+class="math inline">P</span>, in units of the length of the vector <span
+class="math inline">\vec d</span>.</p>
 <center>
 <p><img data-src="./media/ray-origin-dir-point.svg" height="180" /></p>
 </center></li>
 </ul>
-</section>
-<section id="distanza-minima" class="slide level1">
-<h1>Distanza minima</h1>
+<h2 id="minimum-distance">Minimum Distance</h2>
 <ul>
-<li><p>Dal punto di vista di un programma, è utile porre dei limiti alla
-distanza <span class="math inline">t</span>: ad esempio, è ovvio che
-siamo interessati solo alle intersezioni con <span class="math inline">t
-&gt; 0</span>.</p></li>
-<li><p>In alcuni casi ha senso anche imporre che <span
-class="math inline">t &gt; t_\text{pixel}</span>, ossia che il raggio
-abbia quantomeno superato lo schermo.</p>
+<li><p>From a programming perspective, it’s useful to set limits on the
+distance <span class="math inline">t</span>: for example, we are
+obviously only interested in intersections with <span
+class="math inline">t &gt; 0</span>.</p></li>
+<li><p>In some cases, it also makes sense to impose <span
+class="math inline">t &gt; t_\text{pixel}</span>, meaning that the ray
+has at least passed through the screen.</p>
 <center>
 <p><img data-src="./media/leon-battista-alberti-piramide-visuale.webp"
 height="320" /></p>
 </center></li>
 </ul>
-</section>
-<section id="distanza-massima" class="slide level1">
-<h1>Distanza massima</h1>
+<h2 id="maximum-distance">Maximum Distance</h2>
 <ul>
-<li><p>Analogamente, è sensato porre una distanza massima <span
+<li><p>Similarly, it makes sense to set a maximum distance <span
 class="math inline">t_\text{max}</span>.</p></li>
-<li><p>Questa distanza viene usata per quegli oggetti così lontani
-dall’osservatore che il loro contributo alla scena sia considerato
-trascurabile.</p></li>
-<li><p>Se non si è interessati a mettere un limite massimo alla distanza
-degli oggetti rappresentati, si può comunque porre <span
+<li><p>This distance is used for objects so far from the observer that
+their contribution to the scene is considered negligible.</p></li>
+<li><p>If we are not interested in setting a maximum limit on the
+distance of the represented objects, we can set <span
 class="math inline">t_\text{max} = +\infty</span>.</p>
-<p>(Lo standard IEEE per la rappresentazione dei numeri floating-point
-definisce i valori <code>+Inf</code>, <code>-Inf</code> e
-<code>Inf</code>, che sono utilissimi per questo scopo).</p></li>
+<p>(The IEEE standard for representing floating-point numbers defines
+the values <code>+Inf</code>, <code>-Inf</code>, and <code>Inf</code>,
+which are very useful for this purpose).</p></li>
 </ul>
-</section>
-<section id="profondità" class="slide level1">
-<h1>Profondità</h1>
+<h2 id="depth">Depth</h2>
 <ul>
-<li><p>L’ultimo parametro associato a un raggio è la profondità
-(<em>depth</em>) <span class="math inline">n</span>, un numero intero
-incrementato ogni volta che si crea un raggio da una riflessione:</p>
+<li><p>The last parameter associated with a ray is the <em>depth</em>
+<span class="math inline">n</span>, an integer incremented each time a
+ray is created from a reflection:</p>
 <center>
 <p><img data-src="./media/cornell-box-ray-depth.svg" height="380" /></p>
 </center></li>
-<li><p>Nei ray-tracer si pone solitamente un limite alla profondità
-massima.</p></li>
+<li><p>Ray tracers usually set a limit on the maximum depth.</p></li>
 </ul>
 </section>
-<section id="tipi-di-proiezione" class="slide level1">
-<h1>Tipi di proiezione</h1>
-</section>
-<section id="creazione-di-raggi" class="slide level1">
-<h1>Creazione di raggi</h1>
+<section id="projections" class="slide level1">
+<h1>Projections</h1>
+<h2 id="ray-generation">Ray Generation</h2>
 <ul>
-<li><p>Fissato lo schermo e il modo di rappresentare un raggio luminoso,
-resta il problema di <em>come</em> generare i raggi che attraversano lo
-schermo.</p></li>
-<li><p>Esistono molti modi per produrre questi raggi, e ciascuno di
-questi porta a una diversa rappresentazione.</p></li>
-<li><p>Noi ci concentreremo su due tipi di proiezioni:</p>
+<li><p>Having defined the screen and how to represent a light ray, the
+problem remains of <em>how</em> to generate the rays that pass through
+the screen.</p></li>
+<li><p>There are many ways to produce these rays, each leading to a
+different representation.</p></li>
+<li><p>We will focus on two types of projections:</p>
 <ol>
-<li><p>Proiezione ortogonale;</p></li>
-<li><p>Proiezione prospettica.</p></li>
+<li><p>Orthographic projection;</p></li>
+<li><p>Perspective projection.</p></li>
 </ol></li>
 </ul>
 </section>
@@ -604,16 +570,16 @@ questi porta a una diversa rappresentazione.</p></li>
 <center>
 <img data-src="./media/lego-instructions.webp" height="600" />
 </center>
-<p><span style="float:right">Istruzioni LEGO (proiezione
-ortogonale)</span></p>
+<p><span style="float:right">LEGO Instruction Manual (orthogonal
+projection)</span></p>
 </section>
 <section class="slide level1">
 
 <center>
 <img data-src="./media/populous2.png" height="600" />
 </center>
-<p><span style="float:right"><em>Populous 2</em> (proiezione
-ortogonale)</span></p>
+<p><span style="float:right"><em>Populous 2</em> (orthogonal
+projection)</span></p>
 </section>
 <section class="slide level1">
 
@@ -623,84 +589,84 @@ height="600" />
 </center>
 <p><span style="float:right"><em>La città nuova</em>, <a
 href="https://it.wikipedia.org/wiki/Antonio_Sant%27Elia">Antonio
-Sant’Elia</a> (1914, proiezione prospettica)</span></p>
+Sant’Elia</a> (1914, perspective projection)</span></p>
 </section>
-<section id="differenze" class="slide level1">
-<h1>Differenze</h1>
+<section id="differen" class="slide level1">
+<h1>Differen</h1>
 <center>
 <img data-src="./media/orthogonal-perspective-cube.svg" />
 </center>
 <ul>
-<li><p>La proiezione ortogonale preserva il parallelismo e le lunghezze:
-segmenti congruenti e paralleli nello spazio 3D restano congruenti e
-paralleli nel disegno.</p></li>
-<li><p>La proiezione prospettica rende gli oggetti lontani più piccoli:
-è più verosimile.</p></li>
+<li><p>Orthogonal projection preserves parallelism and lengths:
+congruent and parallel segments in 3D space remain congruent and
+parallel in the drawing.</p></li>
+<li><p>Perspective projection makes distant objects smaller: it is more
+realistic.</p></li>
 </ul>
 </section>
-<section id="proiezioni" class="slide level1">
-<h1>Proiezioni</h1>
+<section id="projections-1" class="slide level1">
+<h1>Projections</h1>
 <center>
 <img data-src="./media/projection-types.svg" height="480" />
 </center>
 </section>
-<section id="osservatore" class="slide level1">
-<h1>Osservatore</h1>
+<section id="observer" class="slide level1">
+<h1>Observer</h1>
 <ul>
-<li><p>Per implementare una proiezione è necessario definire la
-posizione dell’osservatore e la direzione in cui guarda.</p></li>
-<li><p>Un approccio molto usato è quello di usare queste quantità:</p>
-<ol>
-<li>Posizione dell’osservatore <span class="math inline">P</span> (punto
-3D);</li>
-<li>Direzione di vista <span class="math inline">\vec d</span> (vettore
-3D);</li>
-<li>Vettore «alto» <span class="math inline">\vec u</span> (vettore
-3D);</li>
-<li>Vettore «destra» <span class="math inline">\vec r</span> (vettore
-3D).</li>
+<li><p>To implement a projection, it is necessary to define the position
+of the observer and the direction in which they are looking.</p></li>
+<li><p>A widely used approach is to use these quantities:</p>
+<ol type="1">
+<li>Observer position <span class="math inline">P</span> (3D
+point);</li>
+<li>View direction <span class="math inline">\vec d</span> (3D
+vector);</li>
+<li>“Up” vector <span class="math inline">\vec u</span> (3D
+vector);</li>
+<li>“Right” vector <span class="math inline">\vec r</span> (3D
+vector).</li>
 </ol></li>
 </ul>
 </section>
-<section id="osservatore-1" class="slide level1">
-<h1>Osservatore</h1>
+<section id="observer-1" class="slide level1">
+<h1>Observer</h1>
 <p><embed width="640px" height="640px" src="pd-images/f2081bd50cb7f21e0691bac0b6c74281ad768427.html"
 data-im_fname="standard-observer" /></p>
 </section>
 <section id="aspect-ratio" class="slide level1">
-<h1><em>Aspect ratio</em></h1>
+<h1>Aspect Ratio</h1>
 </section>
-<section id="rapporto-di-forma" class="slide level1">
-<h1>Rapporto di forma</h1>
+<section id="aspect-ratio-1" class="slide level1">
+<h1>Aspect Ratio</h1>
 <ul>
-<li><p>Nella rappresentazione dei vettori che identificano
-l’osservatore, <span class="math inline">\vec r</span> e <span
-class="math inline">\vec u</span> avevano lunghezza diversa.</p></li>
-<li><p>Ciò è dovuto al fatto che gli schermi dei computer non sono
-quadrati.</p></li>
-<li><p>Il rapporto tra larghezza ed altezza è detto <em>aspect
-ratio</em>; se riferito a uno schermo, è detto <em>display aspect
+<li><p>In the representation of the vectors that identify the observer,
+<span class="math inline">\vec r</span> and <span
+class="math inline">\vec u</span> had different lengths.</p></li>
+<li><p>This is due to the fact that computer screens are not
+square.</p></li>
+<li><p>The ratio between width and height is called <em>aspect
+ratio</em>; if referring to a screen, it is called <em>display aspect
 ratio</em>.</p></li>
 </ul>
 </section>
-<section id="monitor-catodici" class="slide level1">
-<h1>Monitor catodici</h1>
+<section id="crt-monitors" class="slide level1">
+<h1>CRT Monitors</h1>
 <ul>
-<li><p>I vecchi monitor e televisori a tubo catodico avevano un
-<em>aspect ratio</em> di 4:3 (e anche pixel non quadrati, ma questo per
-fortuna oggi non è più vero…).</p></li>
-<li><p>I monitor moderni hanno un <em>aspect ratio</em> di 16:9 (più
-spesso) o 16:10.</p></li>
-<li><p>La tendenza delle case produttrici sembra essere quella di
-abbandonare il 16:9/16:10 e adottare il 3:2 (es. Microsoft
-Surface).</p></li>
-<li><p>I programmi di ray-tracing dovrebbero definire <span
-class="math inline">\vec r</span> in modo che</p>
+<li><p>Old CRT monitors and televisions had an <em>aspect ratio</em> of
+4:3 (and also non-square pixels, but fortunately this is no longer true
+today…).</p></li>
+<li><p>Modern monitors have an <em>aspect ratio</em> of 16:9 (more
+often) or 16:10.</p></li>
+<li><p>The trend of manufacturers seems to be to abandon 16:9/16:10 and
+adopt 3:2 (e.g., Microsoft Surface).</p></li>
+<li><p>Ray-tracing programs should define <span class="math inline">\vec
+r</span> so that</p>
 <p><span class="math display">
 \left\|\vec r\right\| = R_\text{display}\,\left\|\vec u\right\|,
 </span></p>
-<p>dove <span class="math inline">R_\text{display} = N_\text{columns} /
-N_\text{rows}</span> è l’<em>aspect ratio</em> dello schermo.</p></li>
+<p>where <span class="math inline">R_\text{display} = N_\text{columns} /
+N_\text{rows}</span> is the <em>aspect ratio</em> of the
+screen.</p></li>
 </ul>
 </section>
     </div>

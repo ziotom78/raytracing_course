@@ -1,28 +1,22 @@
----
-title: "Esercitazione 11"
-subtitle: "Path tracing (continua)"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
+# Implementing the Path Tracer
 
-# Implementare il path tracer
+# What have we learned
 
-# Cosa abbiamo imparato
+-   Today we will finally implement our *path tracer*, which concludes the discussion on the rendering equation
 
--   Oggi finalmente implementeremo il nostro *path tracer*, che conclude la discussione sull'equazione del rendering
+-   Even though there are still two weeks until the end of the course, we can already evaluate what we should have learned from the course
 
--   Anche se mancano ancora due settimane alla fine del corso, possiamo già valutare cosa dovremmo aver imparato dal corso
+-   Let's do it with a question…
 
--   Facciamolo con una domanda…
-
-# Quali bug vi aspettate oggi?
+# What bugs do you expect today?
 
 ::: notes
 
--   L'immagine non può uscire upside-down: abbiamo già dei test a riguardo
+-   The image cannot be upside-down: we already have tests for that
 
--   L'intersezione raggio-sfera è sicuramente giusta
+-   The ray-sphere intersection is definitely correct
 
--   I colori R e B non possono essere invertiti
+-   The R and B colors cannot be inverted
 
 -   Etc.
 
@@ -30,28 +24,28 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
 ---
 
-# Metodo di lavoro
+# Work Methodology
 
--   Abbiamo sempre implementato una funzionalità alla volta (salvataggio di immagini, *tone mapping*, proiezioni…) alla volta
+-   We have always implemented one feature at a time (saving images, *tone mapping*, projections…)
 
--   Per ogni caratteristica abbiamo implementato una serie di test
+-   For each feature, we implemented a series of tests
 
--   È per questo che ogni settimana avevamo la confidenza che quando ci appoggiavamo a codice scritto nelle settimane precedenti, esso era probabilmente “giusto”
+-   This is why every week we had the confidence that when we relied on code written in previous weeks, it was probably "correct"
 
--   È impossibile scrivere un codice così lungo come il vostro senza procedere così
+-   It is impossible to write code as long as yours without proceeding this way
 
--   **Questo è l'insegnamento più importante fornito da questo corso!**
+-   **This is the most important lesson provided by this course!**
 
 
-# Basi ortonormali (ONB)
+# Orthonormal Bases (ONB)
 
-# Creazioni di ONB
+# Creating ONBs
 
--   È conveniente usare l'algoritmo di [Duff et al. 2017](https://graphics.pixar.com/library/OrthonormalB/paper.pdf):
+-   It is convenient to use the algorithm from [Duff et al. 2017](https://graphics.pixar.com/library/OrthonormalB/paper.pdf):
 
     ```python
     def create_onb_from_z(normal: Union[Vec, Normal]) -> Tuple[Vec, Vec, Vec]:
-        # In Python non c'è la funzione `copysign` 🙁
+        # In Python there isn't a `copysign` function 🙁
         sign = 1.0 if (normal.z > 0.0) else -1.0
         a = -1.0 / (sign + normal.z)
         b = normal.x * normal.y * a
@@ -63,16 +57,15 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 
     ```
 
--   Quando invocate questa funzione, fate molta attenzione al fatto che il parametro `normal` deve essere già normalizzato!
+-   When calling this function, pay close attention to the fact that the `normal` parameter must already be normalized!
 
-# Test
+# Testing
 
--   Per verificare il funzionamento di `create_onb_from_z`, possiamo usare il *random testing* (un'idea apparentemente nata nel mondo del linguaggio [Haskell](https://www.haskell.org/), vedi [quickcheck](https://hackage.haskell.org/package/QuickCheck)).
+-   To verify the correct operation of `create_onb_from_z`, we can use *random testing* (an idea apparently originating in the world of the [Haskell](https://www.haskell.org/) language, see [quickcheck](https://hackage.haskell.org/package/QuickCheck)).
 
--   L'idea è quella di generare un gran numero di vettori casuali, passarli come parametri a `create_onb_from_z`, e verificare che il tipo di ritorno sia effettivamente una ONB. (Pare che Duff et al. abbiano scoperto così il bug nell'algoritmo di [Frisvad, 2012](http://orbit.dtu.dk/files/
-126824972/onb_frisvad_jgt2012_v2.pdf)).
+-   The idea is to generate a large number of random vectors, pass them as parameters to `create_onb_from_z`, and verify that the return type is indeed an ONB. (Apparently Duff et al. discovered the bug in the algorithm from [Frisvad, 2012](http://orbit.dtu.dk/files/126824972/onb_frisvad_jgt2012_v2.pdf) this way).
 
--   L'approccio generale del *random testing* è quello di generare input casuali, e verificare che gli output soddisfino certe proprietà. È conveniente soprattutto per funzioni matematiche, ma non è sempre la soluzione migliore.
+-   The general approach of *random testing* is to generate random inputs and verify that the outputs satisfy certain properties.  It is especially convenient for mathematical functions, but it is not always the best solution.
 
 ---
 
@@ -107,23 +100,22 @@ for i in range(100):
 
 # *Importance sampling*
 
-# Implementazione
-
--   Nella lezione di teoria abbiamo anticipato che il nostro *path tracer* userà il metodo Monte Carlo per stimare l'integrale dell'equazione del rendering:
+# Implementation
+-   In the theory lesson we anticipated that our *path tracer* will use the Monte Carlo method to estimate the integral of the rendering equation:
 
     $$
     \int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos\theta\,\mathrm{d}\omega_\Psi.
     $$
 
--   Per migliorare la varianza useremo l'*importance sampling*, impiegando la PDF
+-   To improve variance we will use *importance sampling*, employing the PDF
 
     $$
     p(\omega) \propto f_r \cdot \cos\theta.
     $$
 
-# Il tipo `BRDF`
+# The `BRDF` Type
 
--   Dobbiamo quindi aggiungere un metodo che si applichi ai tipi derivati da `BRDF` e che abbia [questa segnatura](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L103):
+-   We therefore need to add a method that applies to the types derived from `BRDF` and that has [this signature](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L103):
 
     ```python
     def scatter_ray(self,
@@ -135,13 +127,13 @@ for i in range(100):
     ) -> Ray
     ```
 
--   Ogni tipo derivato da `BRDF` (es., `DiffuseBRDF`, `SpecularBRDF`, etc.) dovrà ridefinire `scatter_ray`.
+-   Each type derived from `BRDF` (e.g., `DiffuseBRDF`, `SpecularBRDF`, etc.) will have to redefine `scatter_ray`.
 
 # `DiffuseBRDF`
 
--   Per la BRDF diffusa, abbiamo dedotto che $p(\omega) \propto \cos\theta$.
+-   For the diffuse BRDF, we deduced that $p(\omega) \propto \cos\theta$.
 
--   L'implementazione di [`DiffuseBRDF.scatter_ray`](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L117-L130) deve quindi usare l'[algoritmo che abbiamo ricavato](tomasi-ray-tracing-10a.html#risultato-di-phong) per la distribuzione di Phong con $n = 1$:
+-   The implementation of [`DiffuseBRDF.scatter_ray`](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L117-L130) must therefore use the [algorithm we derived](tomasi-ray-tracing-10a.html#risultato-di-phong) for the Phong distribution with $n = 1$:
 
     ```python
     def scatter_ray(self, pcg: PCG, incoming_dir: Vec,
@@ -160,9 +152,9 @@ for i in range(100):
 
 # `SpecularBRDF`
 
--   La generazione di raggi per la BRDF speculare è perfettamente deterministica, e non c'è un termine $\cos\theta$ con cui pesare il contributo del raggio.
+-   Ray generation for the specular BRDF is perfectly deterministic, and there is no $\cos\theta$ term to weight the ray's contribution.
 
--   L'implementazione di [`SpecularBRDF.scatter_ray`](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L151-L164) è quindi particolarmente semplice:
+-   The implementation of [`SpecularBRDF.scatter_ray`](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L151-L164) is therefore particularly simple:
 
     ```python
     def scatter_ray(self, pcg: PCG, incoming_dir: Vec,
@@ -179,20 +171,20 @@ for i in range(100):
 
 # *Path tracing*
 
-# Il tipo `PathTracer`
+# The `PathTracer` Type
 
--   Abbiamo finora definito due renderer: `OnOffRenderer` e `FlatRenderer`. Oggi implementiamo `PathTracer`.
+-   We have defined two renderers so far: `OnOffRenderer` and `FlatRenderer`. Today we implement `PathTracer`.
 
--   I parametri del costruttore sono i seguenti:
+-   The constructor parameters are as follows:
 
-    #.  L'oggetto `World` per cui fare il render;
-    #.  Il colore di background, usato per quelle direzioni lungo cui non ci sono intersezioni;
-    #.  Il generatore di numeri casuali da usare (tipo `PCG`);
-    #.  Numero di raggi da generare per il calcolo dell'integrale;
-    #.  Profondità massima dei raggi;
-    #.  Limite per la profondità oltre il quale usare la Roulette russa.
+    1.  The `World` object to render;
+    2.  The background color, used for those directions along which there are no intersections;
+    3.  The random number generator to use (`PCG` type);
+    4.  Number of rays to generate for the integral calculation;
+    5.  Maximum ray depth;
+    6.  Depth limit beyond which to use Russian Roulette.
 
-# [Implementazione](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126)
+# [Implementation](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126)
 
 ```python
 def __call__(self, ray: Ray) -> Color:
@@ -236,13 +228,14 @@ def __call__(self, ray: Ray) -> Color:
     return emitted_radiance + cum_radiance * (1.0 / self.num_of_rays)
 ```
 
-# Test
+# Test {#furnace-test}
 
--   Un metodo molto semplice per verificare il funzionamento di un *path tracer* è il cosiddetto *test della fornace*.
+-   A very simple method to verify the functioning of a *path tracer* is the so-called *furnace test*.
 
--   Si tratta di lanciare un raggio all'interno di un oggetto di forma arbitraria e BRDF diffusa con luminosità $L_e$ e riflettanza $\rho_d$ costanti.
+-   It consists of casting a ray inside an arbitrarily shaped object with diffuse BRDF and constant luminosity $L_e$ and reflectance $\rho_d$.
 
--   Il generico raggio percorrerà un cammino intrappolato nell'oggetto, e la radianza totale sarà uguale a
+-   The generic ray will follow a path trapped within the object, and the total radiance will be equal to
+
 
     $$
     L = L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\Bigr).
@@ -265,16 +258,16 @@ L &= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\Bigr)
 \end{aligned}
 $$
 
-# Test in pytracer
+# Tests in Pytracer
 
--   Il codice di pytracer implementa il test [`testFurnace`](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/test_all.py#L938-L962) che usa queste assunzioni:
+-   The pytracer code implements the test [`testFurnace`](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/test_all.py#L938-L962) which uses these assumptions:
 
-    #.  Crea una sfera centrata nell'origine;
-    #.  Lancia un raggio che parta dal centro della sfera;
-    #.  Invoca `PathTracer` fissando `max_depth=100` e assicurandosi che *non* venga usato l'algoritmo della roulette russa;
-    #.  Verifica che la radianza restituita corrisponda a $L_e / (1 - \rho_d)$.
+    1.  Creates a sphere centered at the origin;
+    2.  Casts a ray starting from the center of the sphere;
+    3.  Invokes `PathTracer` setting `max_depth=100` and ensuring that the Russian roulette algorithm is *not* used;
+    4.  Verifies that the returned radiance corresponds to $L_e / (1 - \rho_d)$.
 
--   Il test viene ripetuto un certo numero di volte usando valori casuali di $L_e$ e di $\rho_d$ (evitando di scegliere $\rho_d \approx 1$!).
+-   The test is repeated a number of times using random values of $L_e$ and $\rho_d$ (avoiding choosing $\rho_d \approx 1$!).
 
 ---
 
@@ -306,55 +299,53 @@ for i in range(5):
     assert pytest.approx(expected, 1e-3) == color.b
 ```
 
-# Il metodo `main`
+# The `main` Method
 
--   Ora che abbiamo un *path tracer*, è bene modificare il nostro comando `demo` in modo che crei un'immagine che metta meglio in luce il funzionamento dell'algoritmo.
+-   Now that we have a *path tracer*, it's good to modify our `demo` command so that it creates an image that better highlights how the algorithm works.
 
--   Potete sbizzarrirvi a definire la scena che preferite, usando le forme che avete implementato nel vostro codice (sfere, piani, triangoli, CSG, etc.).
+-   You can define any scene you like, using the shapes you have implemented in your code (spheres, planes, triangles, CSG, etc.).
 
--   La cosa importante è che definiate una grande superficie diffusiva (un piano o una sfera di raggio grande), che funga da sorgente luminosa e che abbia quindi una componente $L_e$ non trascurabile.
+-   The important thing is that you define a large diffuse surface (a plane or a large radius sphere), which acts as a light source and therefore has a non-negligible $L_e$ component.
 
--   In [pytracer](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/main.py#L116-L150) ho definito un piano per il suolo, una sfera per il cielo, e due sfere in primo piano: la prima ha una BRDF diffusiva, la seconda una BRDF riflessiva.
+-   In [pytracer](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/main.py#L116-L150) I defined a plane for the ground, a sphere for the sky, and two spheres in the foreground: the first has a diffuse BRDF, the second a reflective BRDF.
 
 ---
 
 <center>![](media/pytracer-demo-pathtracing.webp)</center>
 
 
-# Numeri casuali
+# Random Numbers
 
--   Fate in modo che si possano passare i due numeri che inizializzano il generatore `PCG` da linea di comando.
+-   Make sure that the two numbers that initialize the `PCG` generator can be passed from the command line.
 
--   Il numero che interessa di più è `init_seq`, perché identifica univocamente la sequenza di numeri generati dal `PCG`, e consente quindi di produrre immagini completamente decorrelate (che possono quindi essere mediate tra loro senza produrre *bias*).
+-   The most important number is `init_seq`, because it uniquely identifies the sequence of numbers generated by the `PCG`, and therefore allows the production of completely decorrelated images (which can then be averaged together without producing *bias*).
 
--   Mediare immagini diverse (prodotte contemporaneamente mediante [GNU Parallel](https://www.gnu.org/software/parallel/)) è un buon modo per ridurre la varianza senza aumentare il tempo di calcolo effettivo (*wall-clock time*).
-
-
-# *Profiling*
-
-# *Profiling*
-
--   Da oggi, il vostro codice dovrà fare molti calcoli!
-
--   Confrontate tra diversi gruppi le velocità del codice nel generare immagini simili, per capire se ci sono colli di bottiglia: con i linguaggi che usate, in teoria non dovrebbero esserci differenze significative
-
--   Se notate differenze, è necessario misurare quale parte del codice lo rallenta: è ciò che viene chiamato *profiling*
+-   Averaging different images (produced concurrently using [GNU Parallel](https://www.gnu.org/software/parallel/)) is a good way to reduce variance without increasing the actual computation time (*wall-clock time*).
 
 
-# Misura delle prestazioni
+# Profiling
 
--   Non è sufficiente sapere quanto tempo impieghi in tutto il vostro
-    codice per produrre un'immagine: occorre sapere quanto spende in
-    ciascuna funzione.
+# Profiling
 
--   Ci sono vari modi di misurarlo, e molti strumenti a disposizione: è impossibile essere esaustivi!
+-   From today, your code will have to do a lot of calculations!
 
--   Vi elenco alcune possibilità, e vi offro alcuni suggerimenti e trucchi
+-   Compare the code speeds of different groups in generating similar images, to understand if there are bottlenecks: with the languages you use, in theory there shouldn't be significant differences.
+
+-   If you notice differences, you need to measure which part of the code is slowing it down: this is what is called *profiling*.
 
 
-# Tipi di *profilers*
+# Performance Measurement
 
--   Il metodo più semplice è quello di circondare le funzioni «sospette» di essere colli di bottiglia con misure del tempo:
+-   It is not enough to know how long your entire code takes to produce an image: you need to know how much time it spends in each function.
+
+-   There are various ways to measure it, and many tools available: it's impossible to be exhaustive!
+
+-   I'll list some possibilities, and offer some tips and tricks.
+
+
+# Types of Profilers
+
+-   The simplest method is to surround the functions «suspected» of being bottlenecks with time measurements:
 
     ```python
     from time import perf_counter_ns   # Or: "monotonic". DO NOT USE ANYTHING ELSE!!
@@ -363,31 +354,37 @@ for i in range(5):
     elapsed_time = perf_counter_ns() - start
     ```
 
--   Esistono profiler che misurano il tempo cumulativo speso da ciascuna linea di codice: attenzione, perché possono rallentare molto il codice!
+-   There are profilers that measure the cumulative time spent by each line of code: be careful, because they can slow down the code a lot!
 
--   Sono anche disponibili profiler statistici, che sono meno accurati ma non rallentano significativamente il codice.
+-   Statistical profilers are also available, which are less accurate but do not significantly slow down the code.
 
-# Accorgimenti
+# Tips
 
--   Non misurate il tempo di *ogni* funzione, concentratevi solo su quelle che potrebbero essere problematiche. (Ad esempio, non importa che la funzione che interpreta la linea di comando sia veloce!)
+-   Don't measure the time of *every* function, just focus on the ones that could be problematic. (For example, it doesn't matter if the function that interprets the command line is fast!)
 
--   Spesso gli output dei profiler sono abbastanza illeggibili e troppo dettagliati: esistono però strumenti per estrarre grafici riassuntivi come i [flamegraph](http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html), che sono più facili da leggere.
+-   Often the output of profilers is quite unreadable and too detailed: however, there are tools to extract summary graphs such as [flamegraphs](http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html), which are easier to read.
 
--   Il sito [speedscope](https://www.speedscope.app/) fornisce un modo per produrre *flamegraphs* navigabili tramite browser, partendo dall'output di svariati profiler, e non richiede installazione.
+-   The [speedscope](https://www.speedscope.app/) site provides a way to produce navigable *flamegraphs* through a browser, starting from the output of various profilers, and does not require installation.
 
-# Guida per l'esercitazione
+# Guide for the Exercise
 
 
-# Cose da fare
+# Things to Do
 
-#.  Continuate il lavoro nel branch `pathtracing`;
-#.  Implementate una funzione per creare una base ortonormale partendo da un vettore normale (se nel vostro linguaggio non è semplice restituire tre valori di ritorno, implementate un nuovo tipo `ONB`);
-#.  Implementate il metodo `scatter_ray` che funzioni sui tipi BRDF, e implementate la BRDF speculare;
-#.  Implementate l'algoritmo di path tracing;
-#.  Modificate il demo in modo che abbia un cielo diffusivo in grado di illuminare la scena.
-#.  Fatto il *merging*, incrementate il numero di versione a `0.3.0` e aggiornate il file `CHANGELOG.md`.
+1.  Continue working in the `pathtracing` branch;
+2.  Implement a function to create an orthonormal basis starting from a normal vector (if in your language it is not easy to return three return values, implement a new `ONB` type);
+3.  Implement the `scatter_ray` method that works on BRDF types, and implement the specular BRDF;
+4.  Implement the path tracing algorithm;
+5.  Modify the demo so that it has a diffuse sky capable of illuminating the scene.
+6.  After *merging*, increment the version number to `0.3.0` and update the `CHANGELOG.md` file.
 
-# Aggiunte opzionali
+# Optional Additions
 
--   [Antialiasing](tomasi-ray-tracing-12a-path-tracing2.html#aliasing) (vedi la [PR#13 di pytracer](https://github.com/ziotom78/pytracer/pull/13));
--   [Point-light tracing](tomasi-ray-tracing-12a-path-tracing2.html#point-light-tracing-1) (vedi la [PR#14 di pytracer](https://github.com/ziotom78/pytracer/pull/14)).
+-   [Antialiasing](tomasi-ray-tracing-12a-path-tracing2.html#aliasing) (see [PR#13 of pytracer](https://github.com/ziotom78/pytracer/pull/13));
+-   [Point-light tracing](tomasi-ray-tracing-12a-path-tracing2.html#point-light-tracing-1) (see [PR#14 of pytracer](https://github.com/ziotom78/pytracer/pull/14)).
+
+---
+title: "Laboratory 11"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

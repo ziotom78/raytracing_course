@@ -1,12 +1,6 @@
----
-title: "Esercitazione 12"
-subtitle: "Analisi lessicale"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
+# Implementing a *lexer*
 
-# Implementazione di un *lexer*
-
-# Esempio di formato
+# Example
 
 ```python
 # Declare a floating-point variable named "clock"
@@ -46,25 +40,25 @@ plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))
 camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 ```
 
-Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di *token*.
+This is the kind of file for which our *lexer* will have to produce a list of *tokens*.
 
 
-# Gestione di errori
+# Error Handling
 
-# Condizioni di errore
+# Error Conditions
 
--   Già nella scrittura del *lexer*, prima di occuparsi dell'aspetto sintattico e semantico, è possibile imbattersi in errori nel codice.
+-   Even while writing the *lexer*, before dealing with the syntactic and semantic aspects, it is possible to encounter errors in the code.
 
--   Ad esempio, la presenza di un carattere come `@` non è ammessa nel nostro linguaggio, e già il *lexer* può individuare questo tipo di errore.
+-   For example, the presence of a character like `@` is not allowed in our language, and the *lexer* can already detect this type of error.
 
--   Un altro esempio è la dimenticanza di chiudere il doppio apice `"` alla fine di una stringa.
+-   Another example is forgetting to close a double quote `"` at the end of a string.
 
 
-# Come segnalare errori
+# How to Report Errors
 
--   Nei compilatori moderni, il tipo `Token` contiene al suo interno informazioni sulla posizione del token nel file sorgente (vedi ad esempio il tipo [`Token`](https://github.com/llvm/llvm-project/blob/llvmorg-10.0.0/clang/include/clang/Lex/Token.h) nella versione 10.0.0 del compilatore Clang: non è un'implementazione molto elegante, ma è ottimizzata per essere efficiente!).
+-   In modern compilers, the `Token` type contains information about the position of the token in the source file (see for example the [`Token`](https://github.com/llvm/llvm-project/blob/llvmorg-10.0.0/clang/include/clang/Lex/Token.h) type in version 10.0.0 of the Clang compiler: it's not a very elegant implementation, but it is optimized for efficiency!).
 
--   Questa informazione serve al *lexer* e al *parser* per stampare messaggi d'errore come il seguente (prodotto da Clang 10):
+-   This information is used by the *lexer* and the *parser* to print error messages like the following (produced by Clang 10):
 
     ```text
     test.cpp:31:15: error: no viable conversion from 'int' to 'std::string'
@@ -73,17 +67,17 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
                   ^         ~~~
     ```
 
-    dove viene indicato il nome del file (`test.cpp`), il numero della riga (`31`) e il numero della colonna (`15`) in cui è stato trovato l'errore.
+    where the file name (`test.cpp`), the line number (`31`), and the column number (`15`) where the error was found are indicated.
 
-# Tracciare posizioni
+# Tracking Positions
 
--   La posizione di un token in un file è identificata da tre informazioni:
+-   The position of a token in a file is identified by three pieces of information:
 
-    #.  Il nome del file sorgente (una stringa);
-    #.  Il numero della riga (un intero, numerato partendo da 1);
-    #.  Il numero della colonna (idem).
+    #.  The name of the source file (a string);
+    #.  The line number (an integer, starting from 1);
+    #.  The column number (same).
 
--   Il tipo `Token` dovrebbe quindi contenere questi tre campi. In PyTracer ho creato un tipo [`SourceLocation`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L20-L32). (Ma sarebbe più efficiente tenere una lista di nomi file, e usare qui un indice al file!)
+-   The `Token` type should therefore contain these three fields. In PyTracer I created a [`SourceLocation`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L20-L32) type. (But it would be more efficient to keep a list of file names, and use an index to the file here!)
 
     ```python
     @dataclass
@@ -93,9 +87,9 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
         col_num: int = 0
     ```
 
-# Posizioni e token
+# Positions and Tokens
 
--   Se usate una gerarchia di classi, mettete un campo di tipo `SourceLocation` nella classe base `Token`:
+-   If you use a class hierarchy, put a field of type `SourceLocation` in the base class `Token`:
 
     ```python
     @dataclass
@@ -104,56 +98,56 @@ Questo è il tipo di file per cui il nostro *lexer* dovrà produrre una lista di
         location: SourceLocation
     ```
 
--   Se usate i *sum types*, ricordatevi di usare i *tag* se il vostro linguaggio lo richiede (es., [Nim](https://nim-lang.org/docs/manual.html#types-object-variants)).
+-   If you use *sum types*, remember to use *tags* if your language requires it (e.g., [Nim](https://nim-lang.org/docs/manual.html#types-object-variants)).
 
-# Segnalare errori
+# Reporting Errors
 
--   Il modo più pratico per segnalare errori è quello di sollevare una eccezione: pytracer definisce [`GrammarError`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L149-L161).
+-   The most practical way to report errors is to raise an exception: pytracer defines [`GrammarError`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L149-L161).
 
--   All'eccezione si associa il messaggio di errore e un `SourceLocation`: così si può indicare all'utente la posizione in cui è stato riscontrato l'errore.
+-   The error message and a `SourceLocation` are associated with the exception: this way you can tell the user the location where the error was found.
 
--   Usare le eccezioni implica che non appena si trova un errore la compilazione si ferma. Questo non è molto *user-frendly*: se la compilazione è un processo lento (es., C++, Rust), sarebbe meglio produrre una *lista* di errori.
+-   Using exceptions implies that as soon as an error is found, compilation stops. This is not very *user-friendly*: if compilation is a slow process (e.g., C++, Rust), it would be better to produce a *list* of errors.
 
--   Noi non lo faremo: il nostro compilatore sarà molto veloce, e non è facile implementare un metodo per produrre una lista di errori, per il modo in cui si effettua l'analisi sintattica (v. la prossima lezione).
+-   We will not do this: our compiler will be very fast, and it is not easy to implement a method to produce a list of errors, because of the way parsing is performed (see the next lesson).
 
 
-# Definizione di `InputStream`
+# Definition of `InputStream`
 
-# Uso di *stream* nel *lexing*
+# Use of *streams* in *lexing*
 
--   Abbiamo visto nella lezione di teoria che è necessario leggere un carattere alla volta dal file sorgente.
+-   We saw in the theory lesson that it is necessary to read one character at a time from the source file.
 
--   È quindi l'ideale usare uno *stream* per leggere da file, con l'accortezza di aprire il file in modalità testo (non è un file binario come nel formato PFM!):
+-   It is therefore ideal to use a *stream* to read from a file, taking care to open the file in text mode (it is not a binary file like the PFM format!):
 
     ```python
     with open(file_name, "rt") as f:  # "rt" stands for "*R*ead *T*ext"
         …
     ```
 
--   A noi serve anche la possibilità di *look ahead*, ossia di leggere un carattere e rimetterlo a posto, nonché la capacità di tenere traccia della posizione nello *stream* in cui siamo arrivati (per produrre messaggi d'errore).
+-   We also need the possibility of *look ahead*, that is, to read a character and put it back, as well as the ability to keep track of the position in the *stream* where we have arrived (to produce error messages).
 
-# Definizione di `InputStream`
+# Definition of `InputStream`
 
--   Il tipo `InputStream` deve contenere questi campi:
+-   The `InputStream` type must contain these fields:
 
-    #.  Un campo `stream`, il cui tipo dipende dal linguaggio che usate: ad esempio `std::istream` in C++;
-    #.  Un campo `location` di tipo `SourceLocation`.
+    #.  A `stream` field, whose type depends on the language you use: for example `std::istream` in C++;
+    #.  A `location` field of type `SourceLocation`.
 
--   Oltre a questi campi ne servono altri per implementare il *look-ahead*.
+-   In addition to these fields, others are needed to implement *look-ahead*.
 
 
-# *Look ahead* di caratteri
+# Character *look ahead*
 
--   Ricordiamoci che `InputStream` deve offrire la possibilità di «rimettere a posto» un carattere tramite la funzione `unread_char`.
+-   Recall that `InputStream` must offer the possibility of «putting back» a character through the `unread_char` function.
 
--   Quando si rimette a posto un carattere, bisogna rimettere a posto anche la posizione nel file, ossia il campo `location`.
+-   When putting back a character, you must also put back the position in the file, i.e., the `location` field.
 
--   Questo significa che `InputStream` deve contenere anche i seguenti membri:
+-   This means that `InputStream` must also contain the following members:
 
-    #.  `saved_char` (che conterrà il carattere «dis-letto», oppure zero se non è stata chiamata `unread_char`);
-    #.  `saved_location`, che contiene il valore di `SourceLocation` associato a `saved_char`.
+    #.  `saved_char` (which will contain the «un-read» character, or zero if `unread_char` has not been called);
+    #.  `saved_location`, which contains the value of `SourceLocation` associated with `saved_char`.
 
-# Costruttore di `InputStream`
+# Constructor of `InputStream`
 
 ```python
 class InputStream:
@@ -168,17 +162,17 @@ class InputStream:
         self.tabulations = tabulations
 ```
 
-# Tracciamento della posizione
+# Position Tracking
 
--   È molto importante tracciare correttamente la posizione nel file, ossia aggiornare in modo appropriato il campo `location`.
+-   It is very important to correctly track the position in the file, i.e., to update the `location` field appropriately.
 
--   Queste le regole da seguire:
+-   These are the rules to follow:
 
-    #.  In presenza di un ritorno a capo come `\n`, si incrementa `line_num` e si resetta `col_num` a 1;
-    #.  In presenza di `\t` (tabulazione) si incrementa `col_num` di un valore convenzionale (solitamente 4 oppure 8);
-    #.  In tutti gli altri casi si incrementa `col_num` e si lascia intatto `line_num`.
+    #.  In the presence of a newline character like `\n`, increment `line_num` and reset `col_num` to 1;
+    #.  In the presence of `\t` (tab), increment `col_num` by a conventional value (usually 4 or 8);
+    #.  In all other cases, increment `col_num` and leave `line_num` untouched.
 
--   Questo approccio richiederebbe accorgimenti aggiuntivi per i [caratteri Unicode](./tomasi-ray-tracing-03a.html#lo-standard-unicode), ma il nostro formato ammette solo caratteri ASCII (per fortuna!).
+-   This approach would require additional measures for [Unicode characters](./tomasi-ray-tracing-03a.html#lo-standard-unicode), but our format only allows ASCII characters (fortunately!).
 
 ---
 
@@ -221,36 +215,35 @@ class InputStream:
         self.location = copy(self.saved_location)
 ```
 
-# Definizione di `Token`
+# The `Token` Type
 
-# Definizione di `Token`
+# The `Token` Type
+-   Decide whether to use a class hierarchy or a *tagged union* (*sum type*); in Python I used hierarchies because *sum types* don't exist ([link to the code](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146)).
 
--   Decidete se volete usare una gerarchia di classi o una *tagged union* (*sum type*); in Python ho usato le gerarchie perché non esistono i *sum types* ([link al codice](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L35-L146)).
+-   The token types to define are the following:
 
--   I tipi di token da definire sono i seguenti:
+    #.  *Keyword*: use an enumerated type (`enum` in [Nim](https://nim-lang.org/docs/manual.html#types-enumeration-types), [D](https://dlang.org/spec/enum.html), [C\#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum), [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), [Java](https://www.w3schools.com/java/java_enums.asp), `enum class` in [Kotlin](https://kotlinlang.org/docs/enum-classes.html)), because it will make the *parser* more efficient;
+    #.  *Identifier*: it's a string;
+    #.  *Literal string*: it's again a string;
+    #.  *Literal number*: a floating-point value;
+    #.  *Symbol*: a character;
+    #.  *Stop token* (see next slide).
 
-    #.  *Keyword*: usate un tipo enumerativo (`enum` in [Nim](https://nim-lang.org/docs/manual.html#types-enumeration-types), [D](https://dlang.org/spec/enum.html), [C\#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum), [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), [Java](https://www.w3schools.com/java/java_enums.asp), `enum class` in [Kotlin](https://kotlinlang.org/docs/enum-classes.html)), perché renderà il *parser* più efficiente;
-    #.  *Identificatore*: è una stringa;
-    #.  *Literal string*: è nuovamente una stringa;
-    #.  *Literal number*: un valore floating-point;
-    #.  *Symbol*: un carattere;
-    #.  *Stop token* (vedi slide seguente).
+# End of File
 
-# Fine del file
+-   The *lexer* needs to be able to signal when a file has ended.
 
--   È necessario che il *lexer* sappia segnalare quando un file è finito.
+-   In the pytracer code I implemented a new «special» *token*: [`StopToken`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L41-L45). It is emitted when the end of the file is reached.
 
--   Nel codice di pytracer ho implementato un nuovo *token* «speciale»: [`StopToken`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L41-L45). Esso viene emesso quando si è raggiunta la fine del file.
+-   The `StopToken` trick is not essential: you could simply check when the stream has reached the end…
 
--   Il trucco di `StopToken` non è indispensabile: si potrebbe semplicemente verificare quando lo stream è arrivato alla fine…
+-   …but it shows how flexible the concept of *token* can be. Tricks like this are very common in compilers (see for example how Python handles indentation changes [at the *lexer* level](https://riptutorial.com/python/example/8674/how-indentation-is-parsed)).
 
--   …ma mostra quanto possa essere duttile il concetto di *token*. Trucchi del genere sono molto diffusi nei compilatori (v. ad esempio come Python gestisce i cambi di indentazione [a livello di *lexer*](https://riptutorial.com/python/example/8674/how-indentation-is-parsed)).
+# Whitespace and Newlines
 
-# Spazi bianchi e ritorni a capo
+-   Our format ignores spaces, newlines between *tokens* and comments.
 
--   Il nostro formato ignora, spazi, ritorni a capo tra *token* e commenti.
-
--   Per implementare la funzione `read_token` ci serve una funzione che salti questi caratteri:
+-   To implement the `read_token` function we need a function that skips these characters:
 
     ```python
     WHITESPACE = " \t\n\r"
@@ -273,17 +266,17 @@ class InputStream:
         self.unread_char(ch)
     ```
 
-# Leggere un *token*
+# Reading a *token*
 
--   Dividete il metodo `read_token` in funzioni semplici [come ho fatto in pytracer](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L231-L284), in modo che sia più chiaro da leggere.
+-   Divide the `read_token` method into simple functions [as I did in pytracer](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L231-L284), so that it is clearer to read.
 
--   Dopo aver saltato ogni spazio bianco e commento, `read_token` deve leggere il primo carattere `c` e decidere che token vada creato:
+-   After skipping any whitespace and comments, `read_token` must read the first character `c` and decide which token should be created:
 
-    #.  Se è un simbolo (virgola, parentesi, etc.), restituisce un `SymbolToken`;
-    #.  Se è una cifra, restituisce un `LiteralNumberToken`;
-    #.  Se è `"`, restituisce un `LiteralStringToken`;
-    #.  Se è una sequenza di caratteri `a`…`z`, restituisce un `KeywordToken` se la sequenza è una parola chiave, `IdentifierToken` altrimenti;
-    #.  Se il file è finito, restituisce `StopToken`.
+    #.  If it is a symbol (comma, parenthesis, etc.), it returns a `SymbolToken`;
+    #.  If it is a digit, it returns a `LiteralNumberToken`;
+    #.  If it is `"`, it returns a `LiteralStringToken`;
+    #.  If it is a sequence of characters `a`…`z`, it returns a `KeywordToken` if the sequence is a keyword, `IdentifierToken` otherwise;
+    #.  If the file is finished, it returns `StopToken`.
 
 ---
 
@@ -324,24 +317,26 @@ def read_token(self) -> Token:
         # We got some weird character, like '@` or `&`
         raise GrammarError(self.location, f"Invalid character {ch}")
 ```
-
 # Test
 
--   Implementate due famiglie di test:
+- Implement two families of tests:
+    1. A [test for `InputStream`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1037-L1081), which verifies that the position in a file is tracked correctly even if there are newlines or `unread_char` is called;
+    2. A [test for `read_token`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1083-L1104), which verifies that spaces and comments are skipped and that the token sequence is produced correctly.
 
-    #.  Un [test per `InputStream`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1037-L1081), che verifichi che la posizione in un file sia tracciata correttamente anche in caso ci siano ritorni a capo o si invochi `unread_char`;
-    #.  Un [test per `read_token`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1083-L1104), che verifichi che spazi e commenti vengano saltati e che la sequenza di token sia prodotta correttamente.
-
--   La scrittura di questi test vi permetterà di familiarizzare con i tipi che avete definito (soprattutto se usate *sum types*!), in previsione della prossima lezione.
+- Writing these tests will allow you to familiarize yourself with the types you have defined (especially if you use *sum types*!), in preparation for the next lesson.
 
 
-# Guida per l'esercitazione
+# What to do today
 
-# Guida per l'esercitazione
+1. Create a new *branch* called `scenefiles`;
+2. Implement `SourceLocation`;
+3. Implement `GrammarError`;
+4. Implement `InputStream` and the associated functions/methods (especially `unread_char`!);
+5. Implement the `Token` type, making sure that all *token* types present in pytracer are included (there are six in total);
+6. Implement the function/method `read_token`.
 
-#.  Create un nuovo *branch* chiamato `scenefiles`;
-#.  Implementate `SourceLocation`;
-#.  Implementate `GrammarError`;
-#.  Implementate `InputStream` e le funzioni/metodi associati (soprattutto `unread_char`!);
-#.  Implementate il tipo `Token`, facendo attenzione che tutti i tipi di *token* presenti in pytracer (sono sei in tutto);
-#.  Implementate la funzione/metodo `read_token`.
+---
+title: "Laboratory 12"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

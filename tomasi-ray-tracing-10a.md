@@ -1,8 +1,8 @@
-# Path tracing
+# Path tracing {#path-tracing}
 
-# Equazione del rendering
+# Rendering Equation
 
--   Per risolvere l'equazione del rendering dobbiamo tracciare il percorso di raggi luminosi nello spazio tridimensionale e risolvere l'equazione del rendering:
+-   To solve the rendering equation we need to trace the path of light rays in three-dimensional space and solve the rendering equation:
 
     $$
     \begin{aligned}
@@ -11,23 +11,23 @@
     \end{aligned}
     $$
 
--   Esistono vari modi per risolvere l'equazione, ma noi ne implementeremo solo due: il path tracing e il point-light tracing.
+-   There are various ways to solve the equation, but we will implement only two: path tracing and point-light tracing.
 
 
-# Path tracing
+# Path Tracing
 
--   È il metodo concettualmente più semplice da implementare.
+-   It is conceptually the simplest method to implement.
 
--   È in grado di produrre soluzioni *unbiased* (senza effetti sistematici).
+-   It is able to produce *unbiased* solutions (without systematic effects).
 
--   È computazionalmente molto inefficiente.
+-   It is computationally very inefficient.
 
--   Ci sono molte tecniche per renderlo più veloce; noi implementeremo solo le più semplici (non è l'obbiettivo principale del corso!).
+-   There are many techniques to make it faster; we will implement only the simplest ones (it is not the main objective of the course!).
 
 
-# Path tracing
+# Path Tracing
 
--   Il termine più complesso dell'equazione del rendering è l'integrale
+-   The most complex term of the rendering equation is the integral
 
     $$
     \begin{aligned}
@@ -36,21 +36,21 @@
     \end{aligned}
     $$
 
-    che per semplicità consideriamo applicato a un materiale *opaco* e non trasparente (4π→2π).
+    which for simplicity we consider applied to an *opaque* and not transparent material (4π→2π).
 
--   Come abbiamo visto, esso è in realtà un integrale multiplo, su un numero arbitrario di dimensioni: in questi casi, gli integrali si stimano efficientemente usando metodi Monte Carlo (MC).
+-   As we have seen, it is actually a multiple integral, over an arbitrary number of dimensions: in these cases, integrals are efficiently estimated using Monte Carlo (MC) methods.
 
 
-# Path tracing e MC
+# Path Tracing and MC
 
--   L'algoritmo di *path tracing* è il seguente:
+-   The *path tracing* algorithm is as follows:
 
-    #.  Per ogni pixel dello schermo si proietta un raggio attraverso il pixel.
-    #.  Quando un raggio colpisce una superficie in un punto $P$, si valuta l'emissione $L_e$ al punto $P$.
-    #.  Si valuta l'integrale sul punto $P$ usando il metodo Monte Carlo, campionando l'angolo solido con $N$ nuovi raggi secondari che dipartono da $P$ lungo direzioni casuali.
-    #.  Per ogni raggio secondario si procede ricorsivamente.
+    #.  For each pixel on the screen, a ray is projected through the pixel.
+    #.  When a ray hits a surface at a point $P$, the emission $L_e$ at point $P$ is evaluated.
+    #.  The integral at point $P$ is evaluated using the Monte Carlo method, sampling the solid angle with $N$ new secondary rays that depart from $P$ along random directions.
+    #.  For each secondary ray, the process is repeated recursively.
 
--   L'algoritmo consente di ottenere una soluzione esatta per l'equazione del rendering, sebbene al prezzo di un grande tempo di calcolo.
+-   The algorithm allows to obtain an exact solution for the rendering equation, although at the cost of a large computation time.
 
 ---
 
@@ -59,84 +59,84 @@
 [An explanation of the rendering equation (Eric Arnebäck)](https://www.youtube.com/watch?v=eo_MTI-d28s)
 
 
-# Probabilità e Monte Carlo
+# Probability and Monte Carlo {#probability-and-mc}
 
-# Ripasso di probabilità
+# Probability Review
 
--   Data una variabile $X$, la *funzione di distribuzione cumulativa* (CDF) $P(x)$ è la probabilità che $X$ sia inferiore ad un valore $x$ fissato:
+-   Given a variable $X$, the *cumulative distribution function* (CDF) $P(x)$ is the probability that $X$ is less than a fixed value $x$:
 
     $$
     P(x) = \mathrm{Pr}\{X \leq x\}
     $$
 
--   La *funzione di densità di probabilità* (PDF) $p(x)$ è la derivata di $P(x)$, ed è tale che $p(x)\,\mathrm{d}x$ è la probabilità che $X$ stia nell'intervallo $[x, x + \mathrm{d}x]$:
+-   The *probability density function* (PDF) $p(x)$ is the derivative of $P(x)$, and is such that $p(x)\,\mathrm{d}x$ is the probability that $X$ is in the interval $[x, x + \mathrm{d}x]$:
 
     $$
     p(x) = \frac{\mathrm{d}P(x)}{\mathrm{d}x}.
     $$
 
 
-# Ripasso di probabilità
+# Probability Review
 
--   Siccome $\lim_{x \rightarrow -\infty} P(x) = 0$ e $\lim_{x \rightarrow +\infty} P(x) = 1$, ne segue che
+-   Since $\lim_{x \rightarrow -\infty} P(x) = 0$ and $\lim_{x \rightarrow +\infty} P(x) = 1$, it follows that
 
     $$
     \int_{\mathbb{R}} p(x)\,\mathrm{d}x = 1.
     $$
 
--   Dalla definizione segue che la probabilità che $X$ cada nell'intervallo $[a, b]$ è
+-   From the definition it follows that the probability that $X$ falls in the interval $[a, b]$ is
 
     $$
     P\bigl(X \in [a, b]\bigr) = P(b) - P(a) = \int_a^b p(x)\,\mathrm{d}x.
     $$
 
 
-# Ripasso di probabilità
+# Probability Review
 
--   Si definisce *valore di aspettazione* di una funzione $f(X)$ dipendente dalla variabile casuale $X$ con PDF $p(x)$ il valore
+-   The *expected value* of a function $f(X)$ dependent on the random variable $X$ with PDF $p(x)$ is defined as
 
     $$
     E_p[f] = \int_\mathbb{R}\,f(x)\,p(x)\,\mathrm{d}x.
     $$
 
--   Si definisce *varianza* di $f(X)$ rispetto a $p$ il valore
+-   The *variance* of $f(X)$ with respect to $p$ is defined as
 
     $$
     V_p[f] = E_p\left[\bigl(f(x) - E_p[f]\bigr)^2\right] = \int_\mathbb{R}\,\bigl(f(x) - E_p[f]\bigr)^2\,p(x)\,\mathrm{d}x.
     $$
 
--   La *deviazione standard* è definita come $\sqrt{V_p[f]}$.
+-   The *standard deviation* is defined as $\sqrt{V_p[f]}$.
 
 
-# Ripasso di probabilità
+# Probability Review
 
--   $E_p$ è un operatore lineare:
+-   $E_p$ is a linear operator:
 
     $$
     E_p[a f(x)] = a E_p[f(x)], \quad E[f(x) + g(x)] = E[f(x)] + E[g(x)].
     $$
 
--   Per la varianza (che **non è lineare!**) vale invece che
+-   For the variance (which is **not linear!**) it holds that
 
     $$
     V_p[a f(x)] = a^2 V_p[f(x)].
     $$
 
--   Da queste proprietà si ricava che
+-   From these properties it follows that
 
     $$
     V_p[f] = E_p\bigl[f^2(x)\bigr] - E_p\bigl[f(x)\bigr]^2.
     $$
 
-# Integrazione Monte Carlo
+# Monte Carlo Integration
 
-# Integrazione Monte Carlo
+# Monte Carlo Integration
 
--   Nell'algoritmo di *path tracing* si devono calcolare gli integrali che figurano nell'equazione del rendering
+-   In the *path tracing* algorithm, the integrals that appear in the rendering equation must be calculated
 
--   È un integrale ricorsivo, quindi a dimensione infinita: sono necessari metodi Monte Carlo.
+-   It is a recursive integral, therefore of infinite dimension: Monte Carlo methods are necessary.
 
--   Nei metodi Monte Carlo occorre controllare attentamente la varianza, perché se è eccessiva la qualità dell'immagine ne risente.
+-   In Monte Carlo methods, the variance must be carefully controlled, because if it is excessive the quality of the image suffers.
 
 ---
 
@@ -144,24 +144,24 @@
 ![](./media/becatti-sardena-scene.webp)
 </center>
 
-Se la varianza nella stima degli integrali è eccessiva, viene creata un'immagine sgranata.
+If the variance in the estimation of the integrals is excessive, a grainy image is created.
 
 
-# Varianza nei metodi MC
+# Variance in MC methods
 
--   Supponiamo di voler calcolare numericamente il valore dell'integrale
+-   Suppose we want to numerically calculate the value of the integral
 
     $$
     I = \int_a^b f(x)\,\mathrm{d}x
     $$
 
--   Il metodo della media fornisce una semplice approssimazione $F_N$ per $I$:
+-   The mean method provides a simple approximation $F_N$ for $I$:
 
     $$
     I = \int_a^b f(x)\,\mathrm{d}x \approx F_N \equiv (b - a) \cdot \left[\frac1N \sum_{i=1}^N f(X_i)\right],
     $$
 
-    dove $X_i$ sono $N$ numeri casuali con PDF costante $p(x) = 1 / (b - a)$.
+    where $X_i$ are $N$ random numbers with constant PDF $p(x) = 1 / (b - a)$.
 
 
 ---
@@ -175,37 +175,37 @@ E_p[F_N] &= E_p\left[\frac{b - a}N \sum_{i = 1}^N f(x_i)\right] =\\
 \end{aligned}
 $$
 
-# *Importance sampling*
+# Importance Sampling
 
--   È facile dimostrare che se $X$ segue una distribuzione arbitraria $p(x)$, un estimatore dell'integrale è
+-   It is easy to show that if $X$ follows an arbitrary distribution $p(x)$, an estimator of the integral is
 
     $$
     F_N = \frac1N \sum_{i = 1}^N \frac{f(X_i)}{p(X_i)},
     $$
 
-    a patto che $p(x) > 0$ quando $f(x) \not= 0$.
+    provided that $p(x) > 0$ when $f(x) \not= 0$.
 
--   Se si sceglie bene $p(x)$, è possibile aumentare l'accuratezza della stima. Nel caso in cui $f(x) = k \cdot p(x)$ infatti, il termine nella sommatoria è costante ($k$) e uguale all'integrale, quindi basta $N = 1$ per stimarlo!
+-   If $p(x)$ is chosen well, it is possible to increase the accuracy of the estimate. In the case where $f(x) = k \cdot p(x)$, in fact, the term in the sum is constant ($k$) and equal to the integral. Only $N = 1$ is needed to estimate it!
 
-# Esempio
+# Example
 
--   Vediamo un esempio pratico nel calcolo dell'integrale di $f(x) = \sqrt{x}\,\sin x$:
+-   Let's see a practical example in the calculation of the integral of $f(x) = \sqrt{x}\,\sin x$:
 
     $$
     \int_0^\pi f(x)\,\mathrm{d}x = \int_0^\pi \sqrt{x}\,\sin x\,\mathrm{d}x \approx 2.435.
     $$
 
--   Per usare l'*importance sampling* dobbiamo decidere quale $p(x)$ usare:
+-   To use importance sampling we must decide which $p(x)$ to use:
 
-    #.  $p(x) \propto \sqrt{x}\,\sin x$? (No, questa è proprio l'integranda!)
-    #.  $p(x) \propto \sqrt{x}$?
-    #.  $p(x) \propto \sin x$?
+    1.  $p(x) \propto \sqrt{x}\,\sin x$? (No, this is precisely the integrand!)
+    2.  $p(x) \propto \sqrt{x}$?
+    3.  $p(x) \propto \sin x$?
 
--   Per decidere è sempre bene fare il grafico dell'integranda $f(x)$.
+-   To decide, it is always good to plot the integrand $f(x)$.
 
 ---
 
--   Questo è il grafico di $f(x)$ e delle nostre ipotesi per $p(x)$:
+-   This is the graph of $f(x)$ and our hypotheses for $p(x)$:
 
     <center>
     ```{.gnuplot im_fmt="svg" im_out="img" im_fname="importance-sampling-demo1"}
@@ -219,33 +219,33 @@ $$
     ```
     </center>
 
--   Chiaramente l'opzione migliore è $p(x) \propto \sin x$, perché la sua forma ricorda quella di $f(x)$.
+-   Clearly the best option is $p(x) \propto \sin x$, because its shape resembles that of $f(x)$.
 
-# Esempio
+# Example
 
--   Normalizzando $p(x) \propto \sin x$ sul dominio di integrazione si ottiene che
+-   Normalizing $p(x) \propto \sin x$ over the integration domain, we obtain
 
     $$
     p(x) = \frac{\chi_{[0, \pi]}(x)}2 \sin x.
     $$
 
--   Dobbiamo ora ottenere numeri casuali $X_i$ che seguano questa distribuzione. Usiamo il metodo della funzione inversa, passando dalla PDF $p(x)$ alla CDF $P(x) = \mathrm{Pr}\{X \leq x\}$:
+-   We must now obtain random numbers $X_i$ that follow this distribution. We use the inverse transform sampling method, passing from the PDF $p(x)$ to the CDF $P(x) = \mathrm{Pr}\{X \leq x\}$:
 
     $$
-    P(x) = \int_{-\infty}^x p(x')\,\mathrm{d}x' = \frac12(1 - \cos x)\quad\text{ per }x \in [0, \pi].
+    P(x) = \int_{-\infty}^x p(x')\,\mathrm{d}x' = \frac12(1 - \cos x)\quad\text{ for }x \in [0, \pi].
     $$
 
-# Esempio
+# Example
 
--   Siccome $P(x) = \frac12 (1 - \cos x)$, allora
+-   Since $P(x) = \frac12 (1 - \cos x)$, then
 
     $$
     P^{-1}(y) = \arccos(1 - 2y).
     $$
 
--   Se quindi $Y_i$ è distribuito uniformemente su $[0, 1]$, allora $P^{-1}(Y_i) = X_i$ è distribuito secondo $p(x)$. (Vedremo tra poco come dimostrarlo rigorosamente).
+-   Therefore, if $Y_i$ is uniformly distributed over $[0, 1]$, then $P^{-1}(Y_i) = X_i$ is distributed according to $p(x)$. (We will see shortly how to rigorously demonstrate this).
 
--   Implementiamo ora un codice Python che calcoli l'integrale col metodo della media **senza** e **con** l'*importance sampling*, per verificare effettivamente quale sia il vantaggio.
+-   We now implement a Python code that calculates the integral using the mean method **without** and **with** importance sampling, to actually verify what the advantage is.
 
 ---
 
@@ -283,9 +283,9 @@ plt.legend()
 <center>![](./media/importance-sampling-demo.svg)</center>
 
 
-# Altra possibilità
+# Another option
 
--   Cosa cambierebbe se scegliessimo $p(x) \propto \sqrt x$? Potete verificare che il seguente codice Python implementa l'*importance sampling* in questo caso:
+-   What would change if we pick $p(x) \propto \sqrt x$? The following Python code implements *importance sampling* in this case:
 
     ```python
     def estimate_importance2(f, n):
@@ -298,7 +298,7 @@ plt.legend()
         return np.mean(f(xp) / (3 / (2 * np.pi ** 1.5) * np.sqrt(xp)))
     ```
 
--   Questa volta usiamo un istogramma per mostrare meglio come le stime Monte Carlo si distribuiscono attorno al valore vero.
+-   This time, we will use a histogram to show how the MC samples are distributed around the true value.
 
 ---
 
@@ -338,14 +338,14 @@ plt.ylabel("Estimated value for the integral")
 ![](./media/becatti-sardena-scene.webp)
 </center>
 
-Se scegliamo bene il modo in cui integriamo, possiamo quindi ridurre la varianza nei pixel dell'immagine prodotta dal nostro codice.
+If we choose the way we integrate carefully, we can reduce the variance in the pixels of the image produced by our code.
 
 
-# Implementazione del path tracing
+# Implementing Path Tracing
 
-# Applicazione al ray-tracing
+# Application to Ray Tracing
 
--   Consideriamo ora il problema dell'equazione del rendering:
+-   Let's consider the rendering equation:
 
     $$
     \begin{aligned}
@@ -354,120 +354,120 @@ Se scegliamo bene il modo in cui integriamo, possiamo quindi ridurre la varianza
     \end{aligned}
     $$
 
--   L'integrale è su due dimensioni ($\mathrm{d}\omega$ è un angolo solido), quindi ha senso usare il metodo della media.
+-   The integral is over two dimensions ($\mathrm{d}\omega$ is a solid angle), so it makes sense to use the mean value method.
 
-# Uso del metodo della media
+# Using the Mean Value Method
 
--   Si può stimare l'integrale con questa procedura:
+-   The integral can be estimated with this procedure:
 
-    #.  Si scelgono $N$ direzioni casuali $\Psi_i$ (o equivalentemente angoli solidi infinitesimi $\mathrm{d} \omega_i$);
-    #.  Si valuta l'integranda lungo le $N$ direzioni, ottenendo $N$ stime;
-    #.  Si applica il metodo della media calcolando la media di tutte le $N$ stime.
+    #.  Choose $N$ random directions $\Psi_i$ (or equivalently infinitesimal solid angles $\mathrm{d} \omega_i$);
+    #.  Evaluate the integrand along the $N$ directions, obtaining $N$ estimates;
+    #.  Apply the mean value method by calculating the average of all the $N$ estimates.
 
--   Ci sono però due complicazioni:
+-   However, there are two complications:
 
-    -   Come si scelgono le «direzioni casuali» $\Psi_i$? Qui siamo in 2D, non in 1D!
-    -   Come si valuta l'integranda, visto che è ricorsiva?
+    -   How do we choose the «random directions» $\Psi_i$? Here we are in 2D, not 1D!
+    -   How do we evaluate the integrand, since it is recursive?
 
-# Direzioni casuali
+# Random Directions {#random-directions}
 
--   Abbiamo sempre indicato le direzioni con gli angoli θ e φ, legati alle coordinate cartesiane tramite le relazioni sferiche con $r = 1$:
+-   We have always indicated directions with the angles θ and φ, related to Cartesian coordinates through spherical coordinates with $r = 1$:
 
     $$
     x = \sin\theta\cos\varphi, \quad y = \sin\theta\sin\varphi, \quad z = \cos\theta.
     $$
 
--   Se anche volessimo applicare il metodo della media *senza* importance sampling, dovremmo avere una probabilità $p(\omega)$ costante. Ma questo **non** coincide col chiedere che $p(\theta)$ e $p(\varphi)$ siano costanti!
+-   Even if we wanted to apply the mean value method *without* importance sampling, we should have a constant probability $p(\omega)$. But this does **not** coincide with requiring that $p(\theta)$ and $p(\varphi)$ be constant!
 
--   Dobbiamo scegliere le direzioni casuali in modo che $p(\omega)$ sia una costante, e per fare questo dobbiamo capire come i cambi di variabile agiscono sulle distribuzioni di probabilità in $n$ dimensioni.
+-   We must choose the random directions so that $p(\omega)$ is constant, and to do this we must understand how changes of variables act on probability distributions in $n$ dimensions.
 
-# Distribuzioni di probabilità 1D
+# 1D Probability Distributions
 
--   Se le variabili casuali $X_1, X_2, \ldots$ hanno distribuzione $p_X(x)$, e se definiamo una trasformazione *invertibile* $Y = f(X)$, per cui esista quindi $f^{-1}$ tale che $X = f^{-1}(Y)$, ci chiediamo: qual è la distribuzione $p_Y(y)$ degli $Y_i$?
+-   If the random variables $X_1, X_2, \ldots$ have a distribution $p_X(x)$, and if we define an *invertible* transformation $Y = f(X)$, for which there exists an $f^{-1}$ such that $X = f^{-1}(Y)$, we ask ourselves: what is the distribution $p_Y(y)$ of the $Y_i$?
 
--   Ci sono molti modi per calcolare $p_Y$. Il più semplice consiste nel calcolare direttamente la CDF degli $Y$:
+-   There are many ways to calculate $p_Y$. The simplest is to directly calculate the CDF of the $Y$:
 
     $$
     P_Y(y) = \mathrm{Pr}(Y \leq y) = \mathrm{Pr}\bigl(f(X) \leq y\bigr).
     $$
 
-    A questo punto possiamo applicare $f^{-1}$ ad entrambi i membri della disequazione $f(X) \leq y$, ma con un'accortezza.
+    At this point we can apply $f^{-1}$ to both sides of the inequality $f(X) \leq y$, but with a caveat.
 
-# Distribuzioni di probabilità 1D
+# 1D Probability Distributions
 
--   Se $f^{-1}$ è una funzione *crescente*, vale che
+-   If $f^{-1}$ is an *increasing* function, it holds that
 
     $$
     f(X) \leq y\quad\Rightarrow\quad X \leq f^{-1}(y).
     $$
 
--   Se invece è decrescente, vale che
+-   If it is decreasing instead, it holds that
 
     $$
     f(X) \leq y\quad\Rightarrow\quad X \geq f^{-1}(y).
     $$
 
--   Vediamo innanzitutto il caso in cui $f^{-1}$ è crescente.
+-   Let's first see the case where $f^{-1}$ is increasing.
 
-# Caso di inversa crescente
+# Case of Increasing Inverse
 
--   In questo caso
+-   In this case
 
     $$
     P_Y(y) = \mathrm{Pr}\bigl(f(X) \leq y\bigr) = \mathrm{Pr}\bigl(X \leq f^{-1}(y)\bigr) = P_X\bigl(f^{-1}(y)\bigr).
     $$
 
--   Dalla CDF $P_Y(y)$ possiamo passare alla PDF applicando la formula per la derivata di una funzione composta:
+-   From the CDF $P_Y(y)$ we can move to the PDF by applying the formula for the derivative of a composite function:
 
     $$
     p_Y(y) = P_Y'(y) = \frac{\mathrm{d} P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} = p_X\bigl(f^{-1}(y)\bigr)\cdot \frac{\mathrm{d}f^{-1}}{\mathrm{d}y}(y).
     $$
 
-# Caso di inversa decrescente
+# Case of Decreasing Inverse
 
--   Se $f^{-1}$ è una funzione decrescente, allora vale che
+-   If $f^{-1}$ is a decreasing function, then it holds that
 
     $$
     P_Y(y) = \mathrm{Pr}\bigl(X \geq f^{-1}(y)\bigr) = 1 - \mathrm{Pr}\bigl(X \leq f^{-1}(y)\bigr) = 1 - P_X\bigl(f^{-1}(y)\bigr).
     $$
 
--   Applicando di nuovo la derivata come nel caso precedente, otteniamo che
+-   Applying the derivative again as in the previous case, we get
 
     $$
     p_Y(y) = P_Y'(y) = \frac{\mathrm{d} P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} = -p_X\bigl(f^{-1}(y)\bigr)\cdot \frac{\mathrm{d}f^{-1}}{\mathrm{d}y}(y).
     $$
 
--   Notiamo però che la derivata di $f^{-1}$ in questo caso è *negativa*.
+-   Note, however, that the derivative of $f^{-1}$ is *negative* in this case.
 
-# Caso generale
+# General Case
 
--   Mettendo insieme i due casi, otteniamo che
+-   Combining the two cases, we get
 
     $$
     p_Y(y) = p_X\bigl(f^{-1}(y)\bigr)\cdot \left|\frac{\mathrm{d}f^{-1}}{\mathrm{d}y}(y)\right|,
     $$
 
-    che è corretto perché $p_Y(y)$ deve sempre essere positiva. Questa relazione inoltre preserva la normalizzazione di $p_Y$.
+    which is correct because $p_Y(y)$ must always be positive. This relationship also preserves the normalization of $p_Y$.
 
--   Un trucco mnemonico per ricordarla parte dal fatto che deve valere $p_Y(y)\,\left|\mathrm{d}y\right| = p_X(x)\,\left|\mathrm{d}x\right|$: da qui si ricava facilmente la relazione sopra.
+-   A mnemonic trick to remember it starts from the fact that $p_Y(y)\,\left|\mathrm{d}y\right| = p_X(x)\,\left|\mathrm{d}x\right|$ must hold: from here the above relationship is easily derived.
 
--   Vediamo ora qualche esempio pratico.
+-   Let's see some practical examples.
 
-# Esempi
+# Examples
 
-Supponiamo che le variabili $X$ siano distribuite uniformemente su $[0, 1]$, in modo che $p_X(x) = \chi_{[0, 1]}(x)$, e supponiamo che $Y = f(X)$. Di conseguenza:
+Suppose the variables $X$ are uniformly distributed on $[0, 1]$, so that $p_X(x) = \chi_{[0, 1]}(x)$, and suppose that $Y = f(X)$. Consequently:
 
-#.   Se $f(X) = X + 1$ e $f^{-1}(Y) = Y - 1$, allora $p_Y(y) = \chi_{[1, 2]}(y)$.
+#.   If $f(X) = X + 1$ and $f^{-1}(Y) = Y - 1$, then $p_Y(y) = \chi_{[1, 2]}(y)$.
 
-#.   Se $f(X) = 2X$ e $f^{-1}(Y) = Y / 2$, allora $p_Y(y) = \frac12 \chi_{[0, 2]}(y)$.
+#.   If $f(X) = 2X$ and $f^{-1}(Y) = Y / 2$, then $p_Y(y) = \frac12 \chi_{[0, 2]}(y)$.
 
-#.   Se $f(X) = X^2$ e $f^{-1}(Y) = \sqrt{Y}$, allora $p_Y(y) = \frac{\chi_{[0, 1]}(y)}{2\sqrt{y}}$.
+#.   If $f(X) = X^2$ and $f^{-1}(Y) = \sqrt{Y}$, then $p_Y(y) = \frac{\chi_{[0, 1]}(y)}{2\sqrt{y}}$.
 
-#.   Se $f(X) = e^{X - 1}$ e $f^{-1}(Y) = 1 + \log Y$, allora $p_Y(y) = \frac{\chi_{[1/e, 1]}(y)}y$.
+#.   If $f(X) = e^{X - 1}$ and $f^{-1}(Y) = 1 + \log Y$, then $p_Y(y) = \frac{\chi_{[1/e, 1]}(y)}y$.
 
-# Verifica in Python
+# Verification in Python
 
-Potete verificare numericamente la correttezza dei risultati nella slide precedente con questo programma Python, che estrae 100.000 numeri casuali, li trasforma e ne traccia l'istogramma:
+You can numerically verify the correctness of the results in the previous slide with this Python program, which extracts 100,000 random numbers, transforms them, and plots their histogram:
 
 ```python
 import numpy as np
@@ -496,25 +496,25 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
 
 <center>![](./media/distributions-python.svg)</center>
 
-# Distribuzioni di probabilità 2D
+# 2D Probability Distributions
 
--   Nel caso si debbano campionare angoli solidi, il problema è più complicato perché bisogna estrarre *coppie* di numeri casuali.
+-   Sampling solid angles is more complex because it requires drawing *pairs* of random numbers.
 
--   Fortunatamente la matematica è abbastanza simile a quella vista nel caso 1D; siccome sono in gioco integrali e cambi di variabile, è plausibile che nell'espressione debba comparire il determinante della Jacobiana:
+-   Fortunately, the math is similar to the 1D case. Since integrals and changes of variables are involved, the Jacobian determinant appears in the expression:
 
     $$
     p_Y(\vec y) = p_X\bigl(\vec{f}^{-1}(\vec y)\bigr)\cdot\left|\frac1{\det J(y)}\right|.
     $$
 
-# Coordinate polari
+# Polar Coordinates
 
--   Supponiamo di estrarre due numeri $r, \theta$ con una probabilità $p(r, \theta)$. Se $r, \theta$ sono le coordinate polari di un numero sul piano, allora il punto ha coordinate
+-   Suppose we draw two numbers $r, \theta$ with probability $p(r, \theta)$. If $r, \theta$ are the polar coordinates of a point on the plane, then the point has Cartesian coordinates
 
     $$
     x = r \cos \theta, \quad y = r \sin \theta.
     $$
 
--   Il determinante della matrice Jacobiana è
+-   The determinant of the Jacobian matrix is
 
     $$
     \det J = \det\begin{pmatrix}
@@ -527,121 +527,121 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
     \end{pmatrix} = r,
     $$
 
-    e di conseguenza vale $p(x, y) = p(r, \theta) / r$, ossia $p(r, \theta) = r\cdot p(x, y)$.
+    and consequently $p(x, y) = p(r, \theta) / r$, or $p(r, \theta) = r\cdot p(x, y)$.
 
-# Coordinate sferiche
+# Spherical Coordinates
 
--   Nel caso delle coordinate sferiche, vale che
+-   In the case of spherical coordinates, we have
 
     $$
     x = r \sin\theta\cos\varphi, \quad y = r \sin\theta\sin\varphi, \quad z = r \cos\theta,
     $$
 
-    e si ricava che $\det J = r^2 \sin\theta$.
+    and we find that $\det J = r^2 \sin\theta$.
 
--   Di conseguenza, vale la relazione
+-   Consequently, the following relation holds
 
     $$
     p(r, \theta, \varphi) = r^2 \sin\theta \cdot p(x, y, z),
     $$
 
-    che come nel caso polare può essere usata sia per ricavare $p(x, y, z)$ da $p(r, \theta, \varphi)$ che viceversa.
+    which, as in the polar case, can be used to derive $p(x, y, z)$ from $p(r, \theta, \varphi)$ and vice versa.
 
-# Campionare la semisfera
+# Sampling the Hemisphere
 
--   Torniamo al problema di estrarre direzioni casuali sulla semisfera $2\pi\,\text{sterad}$. Questo equivale ad estrarre coppie $\theta, \varphi$ tali che la probabilità sia uniforme.
+-   Let's return to the problem of drawing random directions on the $2\pi\,\text{steradian}$ hemisphere. This is equivalent to drawing pairs $\theta, \varphi$ such that the probability is uniform.
 
--   Siccome i generatori di numeri casuali permettono di estrarre *un solo numero alla volta*, dobbiamo seguire una strada per ricavare prima l'uno e poi l'altro.
+-   Since random number generators allow us to draw *only one number at a time*, we must follow a procedure to derive first one and then the other.
 
--   Per spiegare il procedimento, abbiamo bisogno di due nuovi concetti: la *funzione di densità marginale* e la *funzione di densità condizionale*.
+-   To explain the procedure, we need two new concepts: the *marginal probability density function* and the *conditional probability density function*.
 
-# Due nuove definizioni
+# Two New Definitions
 
--   Definiamo la *funzione di densità marginale* $p(x)$:
+-   We define the *marginal probability density function* $p(x)$:
 
     $$
     p(x) = \int_\mathbb{R} p(x, y)\,\mathrm{d}y,
     $$
 
-    che è la probabilità di ottenere $x$ indipendentemente dal valore di $y$.
+    which is the probability of obtaining $x$ independently of the value of $y$.
 
--   La *funzione di densità condizionale* $p(y | x)$ è la probabilità di ottenere $y$ nell'ipotesi che si sia ottenuto uno specifico valore $x$:
+-   The *conditional probability density function* $p(y | x)$ is the probability of obtaining $y$ given that a specific value $x$ has been obtained:
 
     $$
     p(y | x) = \frac{p(x, y)}{p(x)}\quad\Longleftrightarrow\quad p(x, y) = p(x) p(y | x).
     $$
 
-# Esempio: «Cornell box»
+# Example: «Cornell Box»
 
 ![](./media/cornell_box_physical_model_image11.jpg){height=560}
 
-# Schema del «Cornell box»
+# Schema of the «Cornell Box»
 
 ![](./media/cornell-box-schema.svg){height=560}
 
-# Esempio
+# Example
 
--   Facciamo un semplice esempio in cui $x$ e $y$ sono variabili discrete (Booleane) per capire le due definizioni.
+-   Let's consider a simple example where $x$ and $y$ are discrete (Boolean) variables to understand the two definitions.
 
--   Supponiamo che le due variabili $x$ e $y$ rappresentino questo:
+-   Suppose the two variables $x$ and $y$ represent the following:
 
-    #.  $x \in \{V, F\}$ determina se un raggio è partito dalla lampada sul soffitto;
-    #.  $y \in \{V, F\}$ determina se un raggio colpisce il cubo di destra.
+    1.  $x \in \{T, F\}$ determines whether a ray started from the lamp on the ceiling;
+    2.  $y \in \{T, F\}$ determines whether a ray hits the cube on the right.
 
--   Di conseguenza, $p(V, V)$ è la probabilità che un raggio parta dalla lampada e raggiunga il cubo di destra, $p(F, V)$ è la probabilità che un raggio colpisca lo stesso cubo ma **non** sia partito dalla lampada.
+-   Consequently, $p(T, T)$ is the probability that a ray starts from the lamp and reaches the right cube, $p(F, T)$ is the probability that a ray hits the same cube but did **not** start from the lamp.
 
-# Esempio
+# Example
 
--   La densità marginale $p(x) = \int p(x, y)\,\mathrm{d}y$ nel nostro esempio si interpreta così: $p(V)$ è la probabilità di che un raggio sia partito dalla lampada sul soffitto, indipendentemente da dove sia diretto.
+-   The marginal density $p(x) = \int p(x, y)\,\mathrm{d}y$ in our example is interpreted as follows: $p(T)$ is the probability that a ray started from the lamp on the ceiling, regardless of where it is directed.
 
--   La densità condizionale $p(y | x)$ è tale per cui $p(y = V | x = V)$ dice qual è la probabilità che un raggio partito dalla lampada ($x = V$) colpisca il cubo ($y = V$).
+-   The conditional density $p(y | x)$ is such that $p(y = T | x = T)$ tells us the probability that a ray starting from the lamp ($x = T$) hits the cube ($y = T$).
 
--   La densità condizionale $p(x | y)$ (con $x$ e $y$ scambiati) è tale per cui $p(y = V | x = V)$ dice qual è la probabilità che un raggio che ha colpito il cubo ($y = V$) sia partito dalla lampada ($x = V$).
+-   The conditional density $p(x | y)$ (with $x$ and $y$ swapped) is such that $p(x = T | y = T)$ tells us the probability that a ray that hit the cube ($y = T$) started from the lamp ($x = T$).
 
-# Applicazione alle direzioni
+# Application to Directions
 
--   Vediamo ora come estrarre una direzione casuale sulla semisfera 2π usando i concetti appena appresi.
+-   Now let's see how to draw a random direction on the $2\pi$ hemisphere using the concepts we just learned.
 
--   L'algoritmo è semplice:
+-   The algorithm is simple:
 
-    #.  Calcoliamo la *densità marginale* di una delle due variabili, ad esempio θ;
-    #.  Estraiamo un valore casuale per θ secondo quella densità marginale: è facile, perché ci siamo ricondotti a un caso 1D;
-    #.  Una volta noto θ, usiamo la *densità condizionale* per stimare la probabilità di ottenere φ dato il particolare θ che abbiamo appena ottenuto;
-    #.  Estraiamo φ seguendo la distribuzione appena ottenuta: anche qui siamo in un caso monodimensionale semplice da trattare!
+    1.  Calculate the *marginal density* of one of the two variables, for example $\theta$;
+    2.  Draw a random value for $\theta$ according to that marginal density: this is easy because we have reduced it to a 1D case;
+    3.  Once $\theta$ is known, use the *conditional density* to estimate the probability of obtaining $\varphi$ given the particular $\theta$ we just obtained;
+    4.  Draw $\varphi$ following the distribution just obtained: here too we are in a one-dimensional case that is easy to handle!
 
-# Applicazione alle direzioni
+# Application to Directions
 
--   Se sulla semisfera $\mathcal{H}^2$ deve valere che $p(\omega) = c$, allora
+-   If on the hemisphere $\mathcal{H}^2$ we must have $p(\omega) = c$, then
 
     $$
     \int_{\mathcal{H}^2} p(\omega)\,\mathrm{d}\omega = 1 \quad \Rightarrow \quad c\int_{\mathcal{H}^2}\mathrm{d}\omega = 1\quad\Rightarrow\quad c = \frac1{2\pi}.
     $$
 
--   Siccome $p(\omega) = 1 / (2\pi)$ e $\mathrm{d}\omega = \sin\theta\,\mathrm{d}\theta\,\mathrm{d}\varphi$, allora
+-   Since $p(\omega) = 1 / (2\pi)$ and $\mathrm{d}\omega = \sin\theta\,\mathrm{d}\theta\,\mathrm{d}\varphi$, then
 
     $$
     p(\omega)\mathrm{d}\omega = p(\theta, \varphi)\,\mathrm{d}\theta\,\mathrm{d}\varphi\quad\Rightarrow\quad p(\theta, \varphi) = \frac{\sin\theta}{2\pi}.
     $$
 
-# PDF di θ e φ
+# PDF of θ and φ
 
--   La densità marginale $p(\theta)$ è data da
+-   The marginal density $p(\theta)$ is given by
 
     $$
     p(\theta) = \int_0^{2\pi} p(\theta, \varphi)\,\mathrm{d}\varphi = \int_0^{2\pi} \frac{\sin\theta}{2\pi}\,\mathrm{d}\varphi = \sin\theta.
     $$
 
--   La densità condizionale $p(\varphi | \theta)$ è
+-   The conditional density $p(\varphi | \theta)$ is
 
     $$
     p(\varphi | \theta) = \frac{p(\theta, \varphi)}{p(\theta)} = \frac1{2\pi}.
     $$
 
-    Per φ quindi la PDF è costante, il che è sensato vista la simmetria della variabile.
+    Thus, the PDF for $\varphi$ is constant, which makes sense given the symmetry of the variable.
 
-# Campionare θ e φ
+# Sampling θ and φ
 
--   Per campionare θ e φ abbiamo bisogno della loro CDF, che è
+-   To sample $\theta$ and $\varphi$ we need their CDF, which is
 
     $$
     \begin{aligned}
@@ -650,16 +650,16 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
     \end{aligned}
     $$
 
--   Date due variabili $X_1, X_2$ distribuite su $[0, 1]$, le variabili θ e φ che corrispondono alle CDF appena calcolate sono
+-   Given two variables $X_1, X_2$ distributed on $[0, 1]$, the variables $\theta$ and $\varphi$ corresponding to the CDFs just calculated are
 
     $$
     \theta = P_\theta^{-1}(X_1) = \arccos (1 - X_1) = \arccos X'_1,\quad
     \varphi = P_\varphi^{-1}(X_2) = 2\pi X_2.
     $$
 
-# Direzioni casuali
+# Random Directions
 
-Questo codice Python genera una distribuzione di direzioni uniforme sull'angolo solido 2π:
+This Python code generates a uniform distribution of directions over the $2\pi$ solid angle:
 
 ```python
 import numpy as np
@@ -689,40 +689,40 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
 <iframe src="pd-images/uniform-hemisphere-distribution.html" width="640" height="640" frameborder="0"></iframe>
 
 
-# Distribuzione di Phong
+# Phong Distribution {#phong-distribution}
 
--   Una distribuzione più generale che ci servirà è la seguente:
+-   A more general distribution that we will need is the following:
 
     $$
     p(\omega) = k \cos^n\theta,
     $$
 
-    con $n$ numero intero. (La forma che abbiamo ottenuto in precedenza corrisponde al caso $n = 0$).
+    with $n$ an integer. (The form we obtained previously corresponds to the case $n = 0$).
 
--   La normalizzazione si ottiene al solito modo:
+-   Normalization is obtained in the usual way:
 
     $$
     \int_{\mathcal{H}^2} k \cos^n\theta\,\sin\theta\,\mathrm{d}\theta\,\mathrm{d}\varphi = \frac{2\pi}{n + 1}\quad\Rightarrow\quad k = \frac{n + 1}{2\pi}.
     $$
 
-# Distribuzione di Phong
+# Phong Distribution
 
--   La densità marginale di $\theta$ è
+-   The marginal density of $\theta$ is
 
     $$
     p(\theta) = (n + 1) \cos^n\theta\,\sin\theta.
     $$
 
--   La densità condizionale di $\varphi$ è nuovamente una costante, com'è evidente per la simmetria di $p(\omega)$:
+-   The conditional density of $\varphi$ is again a constant, as is evident from the symmetry of $p(\omega)$:
 
     $$
     p(\varphi | \theta) = \frac1{2\pi}.
     $$
 
 
-# Risultato di Phong
+# Phong Distribution
 
--   Ripetendo i calcoli si ottiene
+-   Repeating the calculations we obtain
 
     $$
     \begin{aligned}
@@ -731,77 +731,77 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
     \end{aligned}
     $$
 
-    dove ancora una volta $X_1$ e $X_2$ sono numeri casuali con distribuzione uniforme su $[0, 1]$.
+    where again $X_1$ and $X_2$ are random numbers with a uniform distribution on $[0, 1]$.
 
--   Questa distribuzione $p(\theta, \varphi)$ è chiamata *distribuzione di Phong*, e ci sarà molto utile.
+-   This distribution $p(\theta, \varphi)$ is called the *Phong distribution*.
 
 
-# Esempio con $n = 1$
+# Example with $n = 1$
 
 <iframe src="pd-images/cosine-hemisphere-distribution.html" width="560" height="560" frameborder="0"></iframe>
 
 
 # BRDF
 
-# Implementare una BRDF
+# Implementing a BRDF
 
--   Per risolvere l'equazione del rendering bisogna valutare il termine
+-   To solve the rendering equation, we need to evaluate the term
 
     $$
     f_r(x, \Psi \rightarrow \Theta),
     $$
 
-    che è un numero puro che «pesa» la quantità di radiazione proveniente dalla direzione $\Psi$ e riflessa verso $\Theta$.
+    which is a pure number that "weighs" the amount of radiation coming from direction $\Psi$ and reflected towards $\Theta$.
 
--   Siccome però $f_r$ dipende dalla frequenza $\lambda$, in realtà dovrebbe essere codificato come una funzione $f_r = f_r(\lambda)$…
+-   However, since $f_r$ depends on the frequency $\lambda$, it should actually be encoded as a function $f_r = f_r(\lambda)$…
 
--   …ma per le proprietà dell'occhio umano ci basta che $f_r$ restituisca *tre* valori: un numero puro per la componente R, uno per G, e uno per B.
+-   …but due to the properties of the human eye, it is sufficient for $f_r$ to return *three* values: a pure number for the R component, one for G, and one for B.
 
-# Caratteristiche della BRDF
+# BRDF Characteristics
 
--   Concettualmente, è utile dal punto di vista del codice considerare la BRDF di un materiale come composta da due tipi di informazioni:
+-   Conceptually, from a code perspective, it's useful to consider the BRDF of a material as composed of two types of information:
 
-    #.  Quelle proprietà che dipendono dall'angolo di incidenza della luce e dalla posizione dell'osservatore;
-    #.  Quelle proprietà che invece **non** dipendono dalla direzione, e che vengono identificate sotto il nome collettivo di *pigmento*.
+    #.  Those properties that depend on the angle of incidence of the light and the observer's position;
+    #.  Those properties that do **not** depend on the direction, and which are identified under the collective name of *pigment*.
 
--   È comodo quindi definire un tipo `BRDF` che ha al suo interno un sotto-tipo `Pigment`.
+-   It is therefore convenient to define a `BRDF` type that contains a `Pigment` subtype.
 
-# Tipi di pigmenti
+# Pigment Types
 
--   Il pigmento *non* dice quale sia l'aspetto finale del materiale, perché la maggiore o minore brillantezza/metallicità/… sono definite dalla BRDF.
+-   The pigment does *not* determine the final appearance of the material because the greater or lesser glossiness/metallic nature/… are defined by the BRDF.
 
--   I pigmenti sono solitamente usati per rappresentare la variabilità di una BRDF sulla superficie: sotto questa ipotesi, quello che cambia da punto a punto non è *tutta* la BRDF, ma solo il pigmento.
+-   Pigments are usually used to represent the variability of a BRDF on the surface: under this hypothesis, what changes from point to point is not the *entire* BRDF, but only the pigment.
 
--   Nella *computer graphics* sono solitamente definiti vari tipi di pigmenti:
+-   In *computer graphics*, various types of pigments are usually defined:
 
-    #.   Uniforme (chiamato anche *solid*, chissà perché).
-    #.   A scacchiera (*checkered*): molto utile per il debugging.
-    #.   Immagine (detto anche *textured*).
-    #.   [Procedurale](https://en.wikipedia.org/wiki/Procedural_texture) (v. il capitolo 5 di Shirley & Morley).
+    #.   Uniform (also called *solid*, who knows why).
+    #.   Checkered: very useful for debugging.
+    #.   Image (also called *textured*).
+    #.   [Procedural](https://en.wikipedia.org/wiki/Procedural_texture) (see chapter 5 of Shirley & Morley).
 
 ---
 
 <iframe src="https://player.vimeo.com/video/549664049?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1102" height="620" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Path-tracing example"></iframe>
 
-# Forma della BRDF
+# BRDF Form
 
--   La dipendenza direzionale della BRDF dipende sia dall'angolo di incidenza della luce rispetto alla normale $\hat n$, che dall'angolo di vista dell'osservatore, sempre rispetto a $\hat n$.
+-   The directional dependence of the BRDF depends both on the angle of incidence of the light with respect to the normal $\hat n$, and on the observer's viewing angle, also with respect to $\hat n$.
 
--   Abbiamo già visto alcuni tipi di BRDF nella prima lezione:
+-   We have already seen some types of BRDF in the first lesson:
 
-    #.   [Superficie diffusiva ideale](tomasi-ray-tracing-01a.html#/superficie-diffusiva-ideale);
-    #.   [Superficie riflettente](tomasi-ray-tracing-01a.html#/altre-brdf).
+    #.   [Ideal Diffuse Surface](tomasi-ray-tracing-01a.html#/ideal-diffusive-surface);
+    #.   [Reflective Surface](tomasi-ray-tracing-01a.html#/other-brdfs).
 
--   Nelle esercitazioni implementeremo le BRDF, insieme a un generatore di numeri casuali.
+-   In the exercises, we will implement BRDFs, along with a random number generator.
 
-# Esempio
+# Example
 
 <center>![](media/brdf-examples.webp)</center>
 
-Nella scena tutte le superfici sono diffusive ideali, tranne la sfera rossa che implementa una BRDF riflettente. L'ambiente è una sfera di raggio molto grande il cui materiale è basato su un [file HDR](https://blog.gregzaal.com/2017/01/17/blender-institute-hdri/) (tramite un pigmento *textured*).
+In the scene, all surfaces are ideal diffuse surfaces, except for the red sphere, which implements a reflective BRDF. The environment is a sphere of very large radius whose material is based on an [HDR file](https://blog.gregzaal.com/2017/01/17/blender-institute-hdri/) (using a *textured* pigment).
 
 ---
-title: "Lezione 10"
-subtitle: "Path tracing"
+title: "Lesson 10"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

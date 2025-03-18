@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Lezione 9</title>
+  <title>Lesson 9</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -121,8 +121,9 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Lezione 9</h1>
-  <p class="subtitle">Forme avanzate, debugging</p>
+  <h1 class="title">Lesson 9</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini
+fotorealistiche</p>
   <p class="author">Maurizio Tomasi <a
 href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
@@ -134,67 +135,66 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 <section id="axis-aligned-boxes-1" class="slide level1">
 <h1><em>Axis-aligned boxes</em></h1>
 <ul>
-<li><p>La forma cubica non è molto interessante di per sè, ma si presta
-ad alcune ottimizzazioni molto semplici.</p></li>
-<li><p>A causa del suo scopo particolare, tratteremo il caso dei cubi
-usando convenzioni diverse da quelle fatte per le sfere ed i piani:</p>
+<li><p>The cubic shape is not very interesting in itself, but it lends
+itself to some very simple optimizations.</p></li>
+<li><p>Due to its particular purpose, we will treat the case of cubes
+using different conventions than those made for spheres and planes:</p>
 <ol>
-<li>Non ci limiteremo al cubo di lato unitario con vertice
-nell’origine…</li>
-<li>…ma assumeremo che le facce siano parallele ai piani
-coordinati.</li>
+<li>We will not limit ourselves to the unit cube with a vertex at the
+origin…</li>
+<li>…but we will assume that the faces are parallel to the coordinate
+planes.</li>
 </ol></li>
-<li><p>Queste assunzioni sono indicate in letteratura col termine
-<em>axis-aligned box</em> (AAB).</p></li>
+<li><p>These assumptions are referred to in the literature as
+<em>axis-aligned bounding box</em> (AAB).</p></li>
 </ul>
 </section>
-<section id="rappresentazione-in-memoria" class="slide level1">
-<h1>Rappresentazione in memoria</h1>
+<section id="in-memory-representation" class="slide level1">
+<h1>In-memory representation</h1>
 <ul>
-<li><p>Un parallelepipedo con gli spigoli allineati lungo gli assi <span
-class="math inline">xyz</span> può essere definito dalle seguenti
-quantità:</p>
+<li><p>A parallelepiped with edges aligned along the <span
+class="math inline">xyz</span> axes can be defined by the following
+quantities:</p>
 <ol>
-<li>Il valore minimo e massimo delle <span
-class="math inline">x</span>;</li>
-<li>Il valore minimo e massimo delle <span
-class="math inline">y</span>;</li>
-<li>Il valore minimo e massimo delle <span
-class="math inline">z</span>.</li>
+<li>The minimum and maximum <span class="math inline">x</span>
+values;</li>
+<li>The minimum and maximum <span class="math inline">y</span>
+values;</li>
+<li>The minimum and maximum <span class="math inline">z</span>
+values.</li>
 </ol></li>
-<li><p>Equivalentemente, si possono memorizzare due vertici opposti del
-parallelepipedo, <span class="math inline">P_m</span> (valori minimi di
-<span class="math inline">x</span>, <span class="math inline">y</span> e
-<span class="math inline">z</span>) e <span
-class="math inline">P_M</span> (valori massimi).</p></li>
+<li><p>Equivalently, you can store two opposite vertices of the
+parallelepiped, <span class="math inline">P_m</span> (minimum values of
+<span class="math inline">x</span>, <span class="math inline">y</span>
+and <span class="math inline">z</span>) and <span
+class="math inline">P_M</span> (maximum values).</p></li>
 </ul>
 </section>
-<section id="intersezione-raggio-aab" class="slide level1">
-<h1>Intersezione raggio-AAB</h1>
+<section id="ray-aabb-intersection" class="slide level1">
+<h1>Ray-AABB intersection</h1>
 <ul>
-<li><p>Scriviamo il raggio come <span class="math inline">r: O + t \vec
+<li><p>Let’s write the ray as <span class="math inline">r: O + t \vec
 d</span>.</p></li>
-<li><p>Il calcolo è molto simile a quello fatto per il piano, se si
-considera una dimensione alla volta:</p>
+<li><p>The calculation is very similar to that done for the plane, if
+one dimension is considered at a time:</p>
 <center>
 <p><img data-src="./media/aab-ray-intersection.svg" /></p>
 </center></li>
 </ul>
 </section>
-<section id="intersezione-raggio-aab-1" class="slide level1">
-<h1>Intersezione raggio-AAB</h1>
+<section id="ray-aabb-intersection-1" class="slide level1">
+<h1>Ray-AABB intersection</h1>
 <ul>
-<li><p>Scriviamo con <span class="math inline">F_i</span> il generico
-punto del piano perpendicolare alla direzione <span
-class="math inline">i</span>-esima (sei piani in tutto), che avrà
-coordinate</p>
+<li><p>Let <span class="math inline">F_i</span> be a generic point on
+the plane perpendicular to the <span class="math inline">i</span>-th
+direction (six planes in total), which will have coordinates</p>
 <p><span class="math display">
 F_0 = (f_0^{\text{min}/\text{max}}, \cdot, \cdot), \quad F_1 = (\cdot,
 f_1^{\text{min}/\text{max}}, \cdot), \quad F_2 = (\cdot, \cdot,
 f_2^{\text{min}/\text{max}}).
 </span></p></li>
-<li><p>Lungo la coordinata <span class="math inline">i</span>-esima si
-intersecano <em>due</em> piani:</p>
+<li><p>Along the <span class="math inline">i</span>-th coordinate,
+<em>two</em> planes intersect:</p>
 <p><span class="math display">
 O + t_i \vec d = F^{\text{min}/\text{max}}_i\quad\Rightarrow\quad
 t_i^{\text{min}/\text{max}} = \frac{f_i^{\text{min}/\text{max}} -
@@ -202,65 +202,64 @@ O_i}{d_i}.
 </span></p></li>
 </ul>
 </section>
-<section id="intersezione-raggio-aab-2" class="slide level1">
-<h1>Intersezione raggio-AAB</h1>
+<section id="ray-aabb-intersection-2" class="slide level1">
+<h1>Ray-AABB intersection</h1>
 <ul>
-<li><p>Ogni direzione produce due intersezioni, quindi in totale si
-hanno sei potenziali intersezioni (una per ogni faccia del
-cubo).</p></li>
-<li><p>Ma non tutte le intersezioni sono corrette: esse sono calcolate
-per l’intero piano infinito su cui giace la faccia del cubo.</p></li>
-<li><p>Occorre quindi verificare per ciascun valore di <span
-class="math inline">t</span> se il punto <span
-class="math inline">P</span> corrispondente stia effettivamente su una
-delle facce del cubo.</p></li>
+<li><p>Each direction produces two intersections, so in total there are
+six potential intersections (one for each face of the cube).</p></li>
+<li><p>But not all intersections are correct: they are calculated for
+the entire infinite plane on which the face of the cube lies.</p></li>
+<li><p>It is therefore necessary to verify for each value of <span
+class="math inline">t</span> if the corresponding point <span
+class="math inline">P</span> actually lies on one of the faces of the
+cube.</p></li>
 </ul>
 </section>
-<section id="intersezione-raggio-aab-3" class="slide level1">
-<h1>Intersezione raggio-AAB</h1>
+<section id="ray-aabb-intersection-3" class="slide level1">
+<h1>Ray-AABB intersection</h1>
 <ul>
-<li>Nel caso dell’immagine precedente, in cui il raggio interseca il
-parallelepipedo, gli intervalli <span class="math inline">[t^{(1)}_i,
-t^{(2)}_i]</span> posseggono un tratto in comune tra loro:</li>
+<li>In the case of the previous image, where the ray intersects the
+parallelepiped, the intervals <span class="math inline">[t^{(1)}_i,
+t^{(2)}_i]</span> have a common section:</li>
 </ul>
 <center>
 <img data-src="./media/aab-ray-good-intersection.svg" />
 </center>
 <ul>
-<li>L’intersezione tra gli intervalli è un intervallo i cui estremi
-corrispondono ai punti di intersezione del raggio con l’AAB.</li>
+<li>The intersection of the intervals is an interval whose extremes
+correspond to the intersection points of the ray with the AABB.</li>
 </ul>
 </section>
-<section id="intersezione-raggio-aab-4" class="slide level1">
-<h1>Intersezione raggio-AAB</h1>
+<section id="ray-aabb-intersection-4" class="slide level1">
+<h1>Ray-AABB intersection</h1>
 <ul>
-<li>Nel caso in cui il raggio manchi il parallelepipedo, gli intervalli
-<span class="math inline">[t^{(1)}_i, t^{(2)}_i]</span> sono disgiunti
-tra loro:</li>
+<li>In the case where the ray misses the parallelepiped, the intervals
+<span class="math inline">[t^{(1)}_i, t^{(2)}_i]</span> are
+disjoint:</li>
 </ul>
 <center>
 <img data-src="./media/aab-ray-missed-intersection.svg" />
 </center>
 <ul>
-<li>Se quindi l’intersezione degli intervalli per i tre assi dà
-l’insieme vuoto, il raggio non colpisce l’AAB.</li>
+<li>Therefore, if the intersection of the intervals for the three axes
+gives the empty set, the ray does not hit the AABB.</li>
 </ul>
 </section>
 <section id="bounding-boxes" class="slide level1">
 <h1>Bounding boxes</h1>
 </section>
-<section id="complessità-del-rendering" class="slide level1">
-<h1>Complessità del rendering</h1>
+<section id="rendering-complexity" class="slide level1">
+<h1>Rendering complexity</h1>
 <ul>
-<li><p>Settimana scorsa abbiamo implementato il tipo <code>World</code>,
-che contiene una lista di oggetti</p></li>
-<li><p>Quando si calcola una intersezione con un oggetto,
-<code>World.ray_intersection</code> deve iterare su tutte le
-<code>Shape</code> di <code>World</code></p></li>
-<li><p>Se si decuplica il numero di <code>Shape</code>, decuplica anche
-il tempo necessario a produrre un’immagine…</p></li>
-<li><p>…ma già per risolvere l’equazione del rendering in casi semplici
-possono volerci anche ore!</p></li>
+<li><p>Last week we implemented the <code>World</code> type, which
+contains a list of objects</p></li>
+<li><p>When calculating an intersection with an object,
+<code>World.ray_intersection</code> must iterate over all the
+<code>Shape</code>s in <code>World</code></p></li>
+<li><p>If you increase the number of <code>Shape</code>s tenfold, the
+time required to produce an image also increases tenfold…</p></li>
+<li><p>…but even solving the rendering equation in simple cases can take
+hours!</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -268,8 +267,8 @@ possono volerci anche ore!</p></li>
 <center>
 <img data-src="./media/pathtracer100.webp" />
 </center>
-<p>Questa immagine contiene tre forme geometriche (due piani e una
-sfera), ed è stata calcolata in ~156 secondi.</p>
+<p>This image contains three geometric shapes (two planes and a sphere),
+and was calculated in ~156 seconds.</p>
 </section>
 <section class="slide level1">
 
@@ -284,35 +283,35 @@ island scene</em></a></h1>
 <img data-src="./media/moana-island-scene.webp" />
 </center>
 </section>
-<section id="ottimizzazioni" class="slide level1">
-<h1>Ottimizzazioni</h1>
+<section id="optimizations" class="slide level1">
+<h1>Optimizations</h1>
 <ul>
-<li><p>Con la nostra implementazione di <code>World</code>, il tempo
-necessario per il calcolo di un’immagine è all’incirca proporzionale al
-numero di intersezioni tra raggi e forme.</p></li>
-<li><p>Ma scene realistiche contengono moltissime forme!</p></li>
-<li><p><em>Moana island scene</em> è una scena composta da ~15 miliardi
-di forme base. Il tempo del rendering sarebbe dell’ordine di 25 000
-anni!</p></li>
-<li><p>Esistono però tecniche di ottimizzazione che consentono di
-ridurre molto il numero di intersezioni da calcolare. Una di queste si
-basa sugli <em>axis-aligned bounding boxes</em></p></li>
+<li><p>With our implementation of <code>World</code>, the time required
+to compute an image is roughly proportional to the number of ray-shape
+intersections.</p></li>
+<li><p>But realistic scenes contain many shapes!</p></li>
+<li><p><em>Moana island scene</em> is a scene composed of ~15 billion
+basic shapes. The rendering time would be on the order of 25,000
+years!</p></li>
+<li><p>However, there are optimization techniques that allow to greatly
+reduce the number of intersections to be calculated. One of these is
+based on <em>axis-aligned bounding boxes</em>.</p></li>
 </ul>
 </section>
 <section id="axis-aligned-bounding-box" class="slide level1">
 <h1><em>Axis-aligned bounding box</em></h1>
 <ul>
-<li><p>Gli <em>axis-aligned bounding box</em> (AABB) sono degli AAB che
-delimitano il volume occupato da oggetti.</p></li>
-<li><p>Sono molto usati nella <em>computer graphics</em> come meccanismo
-di ottimizzazione.</p></li>
-<li><p>Il principio è il seguente:</p>
+<li><p><em>Axis-aligned bounding boxes</em> (AABBs) are AABBs that
+delimit the volume occupied by objects.</p></li>
+<li><p>They are widely used in <em>computer graphics</em> as an
+optimization mechanism.</p></li>
+<li><p>The principle is as follows:</p>
 <ol>
-<li>Per ogni forma nello spazio si calcola il suo AABB;</li>
-<li>Quando si deve determinare l’intersezione tra un raggio e una forma,
-si verifica prima se il raggio interseca l’AABB;</li>
-<li>Se non lo interseca, si passa alla forma successiva, altrimenti si
-procede al calcolo dell’intersezione.</li>
+<li>For each shape in space, its AABB is calculated;</li>
+<li>When determining the intersection between a ray and a shape, it is
+first checked whether the ray intersects the AABB;</li>
+<li>If it does not intersect, we move on to the next shape, otherwise we
+proceed with the intersection calculation.</li>
 </ol></li>
 </ul>
 </section>
@@ -322,17 +321,17 @@ procede al calcolo dell’intersezione.</li>
 <img data-src="./media/bounding-volume.webp" height="540" />
 </center>
 </section>
-<section id="utilità-degli-aabb" class="slide level1">
-<h1>Utilità degli AABB</h1>
+<section id="usefulness-of-aabbs" class="slide level1">
+<h1>Usefulness of AABBs</h1>
 <ul>
-<li><p>Gli AABB sono utili solo per scene complesse, formate da molti
-oggetti non banali. Per scene semplici possono al contrario
-<strong>rallentare</strong> il rendering.</p></li>
-<li><p>Sono però molto utili con le <em>mesh</em> di triangoli e con
-oggetti CSG complessi.</p></li>
-<li><p>Se voleste supportare gli AABB nel vostro ray-tracer, dovreste
-aggiungere al tipo <code>Shape</code> un membro <code>aabb</code> da
-usare all’interno di <code>Shape.rayIntersection</code>:</p>
+<li><p>AABBs are useful only for complex scenes, made up of many
+non-trivial objects. For simple scenes they can actually <strong>slow
+down</strong> rendering.</p></li>
+<li><p>They are however very useful with triangle <em>meshes</em> and
+with complex CSG objects.</p></li>
+<li><p>If you want to support AABBs in your ray-tracer, you should add
+an <code>aabb</code> member to the <code>Shape</code> type to be used
+inside <code>Shape.rayIntersection</code>:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyComplexShape:</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
@@ -344,17 +343,17 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># etc.</span></span></code></pre></div></li>
 </ul>
 </section>
-<section id="triangoli-quadilateri-e-mesh" class="slide level1">
-<h1>Triangoli, quadilateri e <em>mesh</em></h1>
+<section id="triangles-and-meshes" class="slide level1">
+<h1>Triangles, quadrilaterals, and <em>meshes</em></h1>
 </section>
-<section id="modellizzazione-3d" class="slide level1">
-<h1>Modellizzazione 3D</h1>
+<section id="d-modeling" class="slide level1">
+<h1>3D Modeling</h1>
 <center>
 <img data-src="./media/blender-mesh-modeling.webp" />
 </center>
 </section>
-<section id="scanner-3d" class="slide level1">
-<h1>Scanner 3D</h1>
+<section id="d-scanners" class="slide level1">
+<h1>3D Scanners</h1>
 <center>
 <img data-src="./media/3d-scanners.webp" />
 </center>
@@ -364,62 +363,61 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <center>
 <img data-src="./media/stanford-bunny-triangles.png" />
 </center>
-<p>(Modello ottenuto dalla scansione di una statuetta di ceramica)</p>
+<p>(Model obtained from the scan of a ceramic statuette)</p>
 </section>
-<section id="triangoli" class="slide level1">
-<h1>Triangoli</h1>
-<p>I triangoli sono una forma geometrica molto usata nei programmi di
-modellizzazione e rendering 3D, per le molte loro proprietà:</p>
+<section id="triangles" class="slide level1">
+<h1>Triangles</h1>
+<p>Triangles are a geometric shape widely used in 3D modeling and
+rendering programs, due to their many properties:</p>
 <ol>
-<li>Sono la superficie piana con il minor numero di vertici (→
-efficienti da memorizzare).</li>
-<li>La loro rappresentazione nello spazio è univoca (per tre punti passa
-uno e un solo triangolo planare).</li>
-<li>La loro superficie è parametrizzabile in coordinate <span
-class="math inline">(u, v)</span> in forma molto semplice.</li>
-<li>Superfici complesse possono essere rappresentate come unione di più
-triangoli.</li>
+<li>They are the planar surface with the fewest vertices (→ efficient to
+store).</li>
+<li>Their representation in space is unique (one and only one planar
+triangle passes through three points).</li>
+<li>Their surface is parameterizable in <span class="math inline">(u,
+v)</span> coordinates in a very simple way.</li>
+<li>Complex surfaces can be represented as a union of multiple
+triangles.</li>
 </ol>
 </section>
-<section id="coordinate-baricentriche" class="slide level1">
-<h1>Coordinate baricentriche</h1>
+<section id="barycentric-coordinates" class="slide level1">
+<h1>Barycentric Coordinates</h1>
 <ul>
-<li><p>Le coordinate baricentriche sono state proposte da Möbius nel
-1827, ed esprimono i punti di un piano passante per i punti <span
-class="math inline">A, B, C</span> mediante l’espressione</p>
+<li><p>Barycentric coordinates were proposed by Möbius in 1827. They
+express the points of a plane passing through the points <span
+class="math inline">A, B, C</span> by means of the expression</p>
 <p><span class="math display">
 P(\alpha, \beta, \gamma) = \alpha A + \beta B + \gamma C,
 </span></p>
-<p>dove <span class="math inline">\alpha, \beta, \gamma \in
-\mathbb{R}</span> sono le <em>coordinate baricentriche</em>.</p></li>
-<li><p>Le coordinate baricentriche risultano molto utili per
-caratterizzare il triangolo di vertici <span class="math inline">A, B,
-C</span>: il punto <span class="math inline">P</span> è interno al
-triangolo se e solo se</p>
+<p>where <span class="math inline">\alpha, \beta, \gamma \in
+\mathbb{R}</span> are the <em>barycentric coordinates</em>.</p></li>
+<li><p>Barycentric coordinates are very useful for characterizing the
+triangle with vertices <span class="math inline">A, B, C</span>: the
+point <span class="math inline">P</span> is inside the triangle if and
+only if</p>
 <p><span class="math display">
 0 \le \alpha \le 1,\quad 0 \le \beta \le 1,\quad 0 \le \gamma \le 1,
 \quad \alpha + \beta + \gamma = 1.
 </span></p></li>
 </ul>
 </section>
-<section id="coordinate-nei-triangoli" class="slide level1">
-<h1>Coordinate nei triangoli</h1>
+<section id="coordinates-in-triangles" class="slide level1">
+<h1>Coordinates in Triangles</h1>
 <ul>
-<li><p>La condizione <span class="math inline">\alpha + \beta + \gamma =
-1</span> fa sì che i punti di un triangolo siano caratterizzati da due
-gradi di libertà, come dev’essere per una superficie
-bidimensionale.</p></li>
-<li><p>L’uguaglianza nelle prime tre disequazioni vale per i punti lungo
-il bordo del triangolo.</p></li>
-<li><p>Usando l’ultima uguaglianza, si ottiene una forma più
-significativa:</p>
+<li><p>The condition <span class="math inline">\alpha + \beta + \gamma =
+1</span> means that the points of a triangle are characterized by two
+degrees of freedom, as it should be for a two-dimensional
+surface.</p></li>
+<li><p>Equality in the first three inequalities holds for the points
+along the edge of the triangle.</p></li>
+<li><p>Using the last equality, a more meaningful form is obtained:</p>
 <p><span class="math display">
 P(\beta, \gamma) = A + \beta(B - A) + \gamma(C - A) = A + \beta \vec
 v_{AB} + \gamma \vec v_{AC},
 </span></p>
-<p>che esprime <span class="math inline">P</span> come <span
-class="math inline">A</span> più uno spostamento verso <span
-class="math inline">B</span> e uno verso <span
+<p>which expresses <span class="math inline">P</span> as <span
+class="math inline">A</span> plus a displacement towards <span
+class="math inline">B</span> and one towards <span
 class="math inline">C</span>.</p></li>
 </ul>
 </section>
@@ -429,27 +427,27 @@ class="math inline">C</span>.</p></li>
 <img data-src="./media/triangle-coordinates.svg" height="640" />
 </center>
 </section>
-<section id="coordinate-nei-triangoli-1" class="slide level1">
-<h1>Coordinate nei triangoli</h1>
+<section id="coordinates-in-triangles-1" class="slide level1">
+<h1>Coordinates in Triangles</h1>
 <ul>
-<li><p>Si può dimostrare che le coordinate baricentriche di un punto
-<span class="math inline">P</span> sono legate all’area <span
-class="math inline">\sigma</span> del triangolo e alle aree dei tre
-sotto-triangoli aventi come vertice il punto <span
-class="math inline">P</span> e due dei vertici:</p>
+<li><p>It can be shown that the barycentric coordinates of a point <span
+class="math inline">P</span> are related to the area <span
+class="math inline">\sigma</span> of the triangle and to the areas of
+the three sub-triangles having as vertex the point <span
+class="math inline">P</span> and two of the vertices:</p>
 <p><span class="math display">
 \alpha = \frac{\sigma_1}\sigma = 1 - \frac{\sigma_2 + \sigma_3}\sigma,
 \quad \beta = \frac{\sigma_2}\sigma, \quad \gamma =
 \frac{\sigma_3}\sigma.
 </span></p></li>
-<li><p>Se si assegna segno negativo alle aree che sono fuori dal
-triangolo, queste equazioni valgono per qualsiasi punto sul piano in cui
-giace il triangolo.</p></li>
+<li><p>If a negative sign is assigned to the areas that are outside the
+triangle, these equations hold for any point on the plane in which the
+triangle lies.</p></li>
 </ul>
 </section>
-<section id="esempio-interattivo" class="slide level1"
+<section id="interactive-example" class="slide level1"
 data-state="barycentric-coordinates-demo">
-<h1 data-state="barycentric-coordinates-demo">Esempio interattivo</h1>
+<h1 data-state="barycentric-coordinates-demo">Interactive Example</h1>
 <center>
 <canvas
         id="barycentric-coordinates-canvas"
@@ -459,65 +457,64 @@ data-state="barycentric-coordinates-demo">
 </center>
 <script type="text/javascript" src="./js/barycentric-coordinates.js"></script>
 </section>
-<section id="quadrilateri" class="slide level1">
-<h1>Quadrilateri</h1>
+<section id="quadrilaterals" class="slide level1">
+<h1>Quadrilaterals</h1>
 <ul>
-<li><p>Noi oggi ci concentreremo sui triangoli, ma i programmi di
-rendering offrono anche la possibilità di definire
-<em>quadrilateri</em>.</p></li>
-<li><p>Se ci si limita ai parallelogrammi, si possono rappresentare come
-l’unione di un vertice <span class="math inline">P</span> e due vettori
-<span class="math inline">\vec v</span> e <span class="math inline">\vec
-w</span>; in questo modo, i risultati che mostreremo oggi sono
-facilmente estendibili anche ad essi:</p>
+<li><p>We will focus on triangles today, but rendering programs also
+offer the possibility of defining <em>quadrilaterals</em>.</p></li>
+<li><p>If we limit ourselves to parallelograms, they can be represented
+as the union of a vertex <span class="math inline">P</span> and two
+vectors <span class="math inline">\vec v</span> and <span
+class="math inline">\vec w</span>; in this way, the results that we will
+show today are easily extendable to them as well:</p>
 <center>
 <p><img data-src="media/parallelogram.svg" /></p>
 </center></li>
 </ul>
 </section>
-<section id="intersezione-con-raggi" class="slide level1">
-<h1>Intersezione con raggi</h1>
+<section id="ray-intersection" class="slide level1">
+<h1>Ray Intersection</h1>
 <ul>
-<li><p>Vediamo ora come usare le coordinate baricentriche per calcolare
-efficientemente l’intersezione tra un triangolo e un raggio.</p></li>
-<li><p>A differenza di quanto fatto con le sfere e i piani, in questo
-caso non adotteremo un sistema di riferimento semplificato. Il motivo
-sarà chiaro quando spiegheremo le <em>mesh</em> di triangoli.</p></li>
-<li><p>Identificheremo quindi un triangolo tramite le coordinate dei tre
-punti <span class="math inline">A, B, C</span> (nove valori
-floating-point).</p></li>
+<li><p>Let’s now see how to use barycentric coordinates to efficiently
+calculate the intersection between a triangle and a ray.</p></li>
+<li><p>Unlike what we did with spheres and planes, in this case we will
+not adopt a simplified reference system. The reason will be clear when
+we explain triangle <em>meshes</em>.</p></li>
+<li><p>We will therefore identify a triangle by the coordinates of the
+three points <span class="math inline">A, B, C</span> (nine
+floating-point values).</p></li>
 </ul>
 </section>
-<section id="il-problema-analitico" class="slide level1">
-<h1>Il problema analitico</h1>
+<section id="the-analytical-problem" class="slide level1">
+<h1>The Analytical Problem</h1>
 <ul>
-<li><p>Consideriamo il raggio <span class="math inline">r(t): O + t \vec
-d</span> e il punto generico <span class="math inline">P(\beta,
-\gamma)</span> del triangolo. L’intersezione è data da</p>
+<li><p>Consider the ray <span class="math inline">r(t): O + t \vec
+d</span> and the generic point <span class="math inline">P(\beta,
+\gamma)</span> of the triangle. The intersection is given by</p>
 <p><span class="math display">
 A + \beta (B - A) + \gamma (C - A) = O + t \vec d,
 </span></p>
-<p>con il vincolo <span class="math inline">0 \leq (\beta, \gamma) \leq
-1</span>.</p></li>
-<li><p>Riordiniamo l’equazione in modo da spostare le tre incognite
-<span class="math inline">\beta</span>, <span
-class="math inline">\gamma</span> e <span class="math inline">t</span>
-sulla sinistra:</p>
+<p>with the constraint <span class="math inline">0 \leq (\beta, \gamma)
+\leq 1</span>.</p></li>
+<li><p>Let’s rearrange the equation to move the three unknowns <span
+class="math inline">\beta</span>, <span
+class="math inline">\gamma</span> and <span class="math inline">t</span>
+to the left:</p>
 <p><span class="math display">
 \beta (B - A) + \gamma (C - A) - t \vec d = O - A.
 </span></p></li>
 </ul>
 </section>
-<section id="forma-matriciale" class="slide level1">
-<h1>Forma matriciale</h1>
+<section id="matrix-form" class="slide level1">
+<h1>Matrix Form</h1>
 <ul>
-<li><p>L’equazione che abbiamo ottenuto è</p>
+<li><p>The equation we obtained is</p>
 <p><span class="math display">
 \beta (B - A) + \gamma (C - A) - t \vec d = O - A,
 </span></p>
-<p>che è un’equazione vettoriale nelle tre componenti <span
+<p>which is a vector equation in the three components <span
 class="math inline">x, y, z</span>.</p></li>
-<li><p>In forma matriciale, il sistema si riscrive così:</p>
+<li><p>In matrix form, the system can be rewritten as follows:</p>
 <p><span class="math display">
 \begin{pmatrix}
 b_x - a_x&amp; c_x - a_x&amp; d_x\\
@@ -534,10 +531,10 @@ o_x - a_x\\o_y - a_y\\o_z - a_z
 </span></p></li>
 </ul>
 </section>
-<section id="soluzione-analitica" class="slide level1">
-<h1>Soluzione analitica</h1>
+<section id="analytical-solution" class="slide level1">
+<h1>Analytical Solution</h1>
 <ul>
-<li><p>La soluzione dipende dal determinante della matrice M:</p>
+<li><p>The solution depends on the determinant of the matrix M:</p>
 <p><span class="math display">
 \det M = \det
 \begin{pmatrix}
@@ -546,32 +543,31 @@ b_y - a_y&amp; c_y - a_y&amp; d_y\\
 b_z - a_z&amp; c_z - a_z&amp; d_z\\
 \end{pmatrix},
 </span></p>
-<p>che deve essere diverso da zero, altrimenti il raggio è parallelo al
-piano del triangolo.</p></li>
-<li><p>La soluzione si ottiene facilmente con la <a
-href="https://en.wikipedia.org/wiki/Cramer%27s_rule">regola di
-Cramer</a>, che è inefficiente nel caso generale ma adeguata per matrici
-3×3 come è il caso qui.</p></li>
+<p>which must be different from zero, otherwise the ray is parallel to
+the plane of the triangle.</p></li>
+<li><p>The solution is easily obtained with <a
+href="https://en.wikipedia.org/wiki/Cramer%27s_rule">Cramer’s rule</a>,
+which is inefficient in the general case but adequate for 3×3 matrices
+as is the case here.</p></li>
 </ul>
 </section>
-<section id="soluzione-analitica-1" class="slide level1">
-<h1>Soluzione analitica</h1>
+<section id="analytical-solution-1" class="slide level1">
+<h1>Analytical Solution</h1>
 <ul>
-<li><p>Ovviamente, una volta ottenuta la soluzione è necessario
-verificare che</p>
+<li><p>Obviously, once the solution is obtained it is necessary to
+verify that</p>
 <p><span class="math display">
 t_\text{min} &lt; t &lt; t_\text{max}, \quad 0 \leq \beta \leq 1, \quad
 0 \leq \gamma \leq 1.
 </span></p></li>
-<li><p>La normale del triangolo si può ottenere facilmente dal prodotto
-vettoriale tra i due vettori allineati con i lati:</p>
+<li><p>The normal of the triangle can be easily obtained from the cross
+product between the two vectors aligned with the sides:</p>
 <p><span class="math display">
 \hat n = \pm (B - A) \times (C - A),
 </span></p>
-<p>dove il segno è determinato dalla direzione del raggio.</p></li>
-<li><p>Le coordinate <span class="math inline">(u, v)</span> possono
-essere poste uguali a <span class="math inline">(\beta,
-\gamma)</span>.</p></li>
+<p>where the sign is determined by the direction of the ray.</p></li>
+<li><p>The <span class="math inline">(u, v)</span> coordinates can be
+set equal to <span class="math inline">(\beta, \gamma)</span>.</p></li>
 </ul>
 </section>
 <section id="mesh" class="slide level1">
@@ -606,32 +602,32 @@ Pritchett, EGSR 2019)</a> </small></p>
 <section id="mesh-1" class="slide level1">
 <h1><em>Mesh</em></h1>
 <ul>
-<li><p>Le scene viste nelle slide precedenti sono formate dalla
-combinazione di molte forme semplici.</p></li>
-<li><p>Mantenere in memoria una lista di forme semplici richiede una
-serie di accorgimenti non banali.</p></li>
-<li><p>Oggi discuteremo delle <em>mesh</em>, in cui la forma elementare
-è appunto un triangolo planare. (Identico discorso si può fare per le
-<em>mesh</em> di quadrilateri, ma noi ci concentreremo per semplicità
-sui triangoli).</p></li>
+<li><p>The scenes seen in the previous slides are formed by the
+combination of many simple shapes.</p></li>
+<li><p>Keeping a list of simple shapes in memory requires a series of
+non-trivial measures.</p></li>
+<li><p>Today we will discuss <em>meshes</em>, in which the elementary
+shape is precisely a planar triangle. (The same discussion can be made
+for quadrilateral <em>meshes</em>, but for simplicity we will focus on
+triangles).</p></li>
 </ul>
 </section>
-<section id="memorizzare-triangoli" class="slide level1">
-<h1>Memorizzare triangoli</h1>
+<section id="storing-triangles" class="slide level1">
+<h1>Storing Triangles</h1>
 <ul>
-<li><p>Abbiamo visto come implementare il codice per calcolare
-l’intersezione tra raggio e triangolo nel caso generale in cui il
-triangolo sia codificato tramite i suoi tre vertici <span
-class="math inline">A</span>, <span class="math inline">B</span> e <span
-class="math inline">C</span>.</p></li>
-<li><p>Non abbiamo seguito l’approccio usato per sfere e piani di
-scegliere una forma «standard» (es., un triangolo sul piano <span
-class="math inline">xy</span>), perché questo avrebbe richiesto di
-memorizzare una trasformazione 4×4 e la sua inversa, per un totale di 32
-numeri floating-point (128 bytes a precisione singola).</p></li>
-<li><p>Memorizzare le tre coordinate di un triangolo richiede solo
-3×3×4 = 36 byte…</p></li>
-<li><p>…ma si può fare di meglio!</p></li>
+<li><p>We have seen how to implement the code to calculate the
+intersection between a ray and a triangle in the general case where the
+triangle is encoded by its three vertices <span
+class="math inline">A</span>, <span class="math inline">B</span>, and
+<span class="math inline">C</span>.</p></li>
+<li><p>We did not follow the approach used for spheres and planes of
+choosing a “standard” shape (e.g., a triangle on the <span
+class="math inline">xy</span> plane), because this would have required
+storing a 4×4 transformation and its inverse, for a total of 32
+floating-point numbers (128 bytes at single precision).</p></li>
+<li><p>Storing the three coordinates of a triangle requires only 3×3×4 =
+36 bytes…</p></li>
+<li><p>…but we can do better!</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -640,55 +636,55 @@ numeri floating-point (128 bytes a precisione singola).</p></li>
 <img data-src="./media/stanford-bunny-triangles.png" />
 </center>
 </section>
-<section id="memorizzazione-di-mesh" class="slide level1">
-<h1>Memorizzazione di <em>mesh</em></h1>
+<section id="mesh-storage" class="slide level1">
+<h1>Mesh Storage</h1>
 <ul>
-<li><p>In una <em>mesh</em> di triangoli si memorizzano i vertici in una
-lista ordinata <span class="math inline">P_k</span>, con <span
+<li><p>In a triangle <em>mesh</em>, the vertices are stored in an
+ordered list <span class="math inline">P_k</span>, with <span
 class="math inline">k = 1\ldots N</span>.</p></li>
-<li><p>I triangoli sono rappresentati da una terna di indici interi
-<span class="math inline">i_1, i_2, i_3</span> che rappresenta la
-posizione dei vertici <span class="math inline">P_{i_1}, P_{i_2},
-P_{i_3}</span> nella lista ordinata.</p></li>
-<li><p>Se si usano numeri interi a 32 bit per memorizzare gli indici,
-ogni triangolo richiede 3×4 = 12 bytes.</p></li>
-<li><p>Questo è vantaggioso se un vertice è condiviso da più triangoli,
-che è il caso generale.</p></li>
+<li><p>Triangles are represented by a triplet of integer indices <span
+class="math inline">i_1, i_2, i_3</span> which represents the position
+of the vertices <span class="math inline">P_{i_1}, P_{i_2},
+P_{i_3}</span> in the ordered list.</p></li>
+<li><p>If 32-bit integers are used to store the indices, each triangle
+requires 3×4 = 12 bytes.</p></li>
+<li><p>This is advantageous if a vertex is shared by multiple triangles,
+which is the general case.</p></li>
 </ul>
 </section>
 <section class="slide level1">
 
 <iframe src="https://player.vimeo.com/video/546494716?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1102" height="620" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Wireframe models in Blender">
 </iframe>
-<p>Modello: 44.000 vertici, 80.000 triangoli.</p>
+<p>Model: 44,000 vertices, 80,000 triangles.</p>
 </section>
-<section id="normali" class="slide level1">
-<h1>Normali</h1>
+<section id="normals" class="slide level1">
+<h1>Normals</h1>
 <p style="text-align:center">
 <img data-src="media/triangle-normals.png" height="240" />
 </p>
 <ul>
-<li><p>Un triangolo è una superficie piana, ed ogni punto della sua
-superficie possiede quindi la medesima normale <span
-class="math inline">\hat n</span>.</p></li>
-<li><p>Nel caso di <em>mesh</em> di triangoli, si possono usare le
-coordinate baricentriche del triangolo per simulare una superficie
-liscia: ciò è utile soprattutto quando la <em>mesh</em> è ottenuta dalla
-discretizzazione di una superficie liscia.</p></li>
+<li><p>A triangle is a planar surface, and therefore every point on its
+surface has the same normal <span class="math inline">\hat
+n</span>.</p></li>
+<li><p>In the case of triangle <em>meshes</em>, the barycentric
+coordinates of the triangle can be used to simulate a smooth surface:
+this is especially useful when the <em>mesh</em> is obtained from the
+discretization of a smooth surface.</p></li>
 </ul>
 </section>
 <section id="smooth-shading" class="slide level1">
-<h1>Smooth shading</h1>
+<h1>Smooth Shading</h1>
 <p style="text-align:center">
 <img data-src="media/triangle-normals.png" height="240" />
 </p>
 <ul>
-<li><p>Nel momento in cui si approssima una superficie liscia occorre
-calcolare sia i vertici dei triangoli che le normali sui
-vertici.</p></li>
-<li><p>In corrispondenza del punto <span class="math inline">P</span>
-definito da <span class="math inline">\alpha, \beta, \gamma</span> si
-assegna la normale</p>
+<li><p>When approximating a smooth surface, it is necessary to calculate
+both the vertices of the triangles and the normals at the
+vertices.</p></li>
+<li><p>At the point <span class="math inline">P</span> defined by <span
+class="math inline">\alpha, \beta, \gamma</span>, the normal is assigned
+as</p>
 <p><span class="math display">
 \hat n_P = \alpha \hat n_1 + \beta \hat n_2 + \gamma \hat n_3.
 </span></p></li>
@@ -699,18 +695,17 @@ assegna la normale</p>
 <iframe src="https://player.vimeo.com/video/546515481?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1138" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Flat and smooth shading in Blender">
 </iframe>
 </section>
-<section id="coordinate-u-v" class="slide level1">
-<h1>Coordinate <span class="math inline">(u, v)</span></h1>
+<section id="u-v-coordinates" class="slide level1">
+<h1><span class="math inline">(u, v)</span> Coordinates</h1>
 <ul>
-<li><p>Nel caso di una <em>mesh</em> ci sono infiniti modi possibili per
-creare una mappatura <span class="math inline">(u, v)</span> sulla
-superficie.</p></li>
-<li><p>Nelle <em>mesh</em> si fa in modo che ogni elemento della
-<em>mesh</em> copra una porzione specifica dell’intero spazio <span
+<li><p>In the case of a <em>mesh</em>, there are infinitely many
+possible ways to create a <span class="math inline">(u, v)</span>
+mapping on the surface.</p></li>
+<li><p>In <em>meshes</em>, each element of the <em>mesh</em> is made to
+cover a specific portion of the entire space <span
 class="math inline">[0, 1] \times [0, 1]</span>.</p></li>
-<li><p>Programmi di modellizzazione 3D come Blender permettono di
-modificare la mappatura <span class="math inline">(u, v)</span> di ogni
-elemento.</p></li>
+<li><p>3D modeling programs like Blender allow you to modify the <span
+class="math inline">(u, v)</span> mapping of each element.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -724,9 +719,9 @@ elemento.</p></li>
 href="https://en.wikipedia.org/wiki/Wavefront_.obj_file">Wavefront
 OBJ</a></h1>
 <ul>
-<li><p>È un formato molto semplice da caricare e utilizzato per
-memorizzare mesh (non solo di triangoli).</p></li>
-<li><p>Esempio (inizio del modello <code>minicooper.obj</code>):</p>
+<li><p>It’s a very simple format to load and used to store meshes (not
+just triangles).</p></li>
+<li><p>Example (beginning of the <code>minicooper.obj</code> model):</p>
 <pre class="text"><code># Vertexes
 v  20.851225 -39.649834 32.571609
 v  20.720263 -39.659435 32.675613
@@ -743,44 +738,44 @@ f 4//4 3//3 1//1
 f 5//5 4//4 1//1</code></pre></li>
 </ul>
 </section>
-<section id="file-obj" class="slide level1">
-<h1>File OBJ</h1>
+<section id="obj-files" class="slide level1">
+<h1>OBJ Files</h1>
 <ul>
-<li><p>Il modo più comodo di visualizzarli è usare <a
-href="https://www.blender.org/">Blender</a>, ovviamente! Sotto Linux
-potete anche impiegare <code>openctm-tools</code>, che è più agile (il
-comando <code>ctmviewer NOMEFILE</code> visualizza un file OBJ in una
-finestra interattiva).</p></li>
-<li><p>Il sito di <a
+<li><p>The easiest way to view them is to use <a
+href="https://www.blender.org/">Blender</a>, of course! Under Linux you
+can also use <code>openctm-tools</code>, which is more lightweight (the
+command <code>ctmviewer FILENAME</code> displays an OBJ file in an
+interactive window).</p></li>
+<li><p>The website of <a
 href="https://people.sc.fsu.edu/~jburkardt/data/obj/obj.html">J. Burkardt</a>
-contiene molti file OBJ scaricabili liberamente (ho preso da lì il
-modello della Mini Cooper).</p></li>
+contains many freely downloadable OBJ files (I took the Mini Cooper
+model from there).</p></li>
 </ul>
 </section>
-<section id="intersezione-con-raggi-1" class="slide level1">
-<h1>Intersezione con raggi</h1>
+<section id="ray-intersection-1" class="slide level1">
+<h1>Ray Intersection</h1>
 <ul>
-<li><p>Il calcolo dell’intersezione tra una <em>mesh</em> e un raggio
-non è semplice da implementare.</p></li>
-<li><p>Il problema è che gran parte del tempo richiesto per calcolare la
-soluzione dell’equazione del rendering viene speso per l’intersezione
-tra raggi e forme.</p></li>
-<li><p>All’aumentare delle forme aumenta necessariamente anche il tempo
-di calcolo.</p></li>
+<li><p>Calculating the intersection between a <em>mesh</em> and a ray is
+not easy to implement.</p></li>
+<li><p>The problem is that much of the time required to calculate the
+solution to the rendering equation is spent on ray-shape
+intersections.</p></li>
+<li><p>As the number of shapes increases, the computation time
+necessarily increases as well.</p></li>
 </ul>
 </section>
-<section id="aabb-e-mesh" class="slide level1">
-<h1>AABB e <em>mesh</em></h1>
+<section id="aabb-and-mesh" class="slide level1">
+<h1>AABB and <em>mesh</em></h1>
 <ul>
-<li><p>Gli AABB sono perfetti per essere applicati a <em>mesh</em>. (In
-questo caso non si applicano ovviamente ai <strong>singoli</strong>
-elementi, ma alla <em>mesh</em> nel suo complesso).</p></li>
-<li><p>Al momento del caricamento di una <em>mesh</em>, si può calcolare
-il suo AABB calcolando il valore minimo e il valore massimo delle
-coordinate di tutti i vertici.</p></li>
-<li><p>Nel caso dell’albero di <em>Oceania</em>, l’intersezione tra un
-raggio e i 18 milioni di elementi avverebbe solo per quei raggi
-effettivamente orientati verso quell’albero.</p></li>
+<li><p>AABBs are perfect for applying to <em>meshes</em>. (In this case
+they obviously do not apply to the <strong>individual</strong> elements,
+but to the <em>mesh</em> as a whole).</p></li>
+<li><p>When loading a <em>mesh</em>, its AABB can be calculated by
+calculating the minimum and maximum values of the coordinates of all
+vertices.</p></li>
+<li><p>In the case of the <em>Oceania</em> tree, the intersection
+between a ray and the 18 million elements would only occur for those
+rays actually oriented towards that tree.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -789,21 +784,21 @@ effettivamente orientati verso quell’albero.</p></li>
 <img data-src="./media/bounding-volume.webp" height="540" />
 </center>
 </section>
-<section id="oltre-le-aabb" class="slide level1">
-<h1>Oltre le AABB</h1>
+<section id="beyond-aabbs" class="slide level1">
+<h1>Beyond AABBs</h1>
 <ul>
-<li><p>Non è però sempre sufficiente usare gli AABB per le <em>mesh</em>
-perché queste siano efficienti.</p></li>
-<li><p>Sovente le scene sono occupate quasi completamente da un oggetto
-complesso, e in questo caso gli AABB non portano alcun vantaggio (è il
-caso dell’immagine precedente).</p></li>
-<li><p>È però possibile basarsi sull’idea degli AABB per implementare
-ottimizzazioni più sofisticate: quelle più usate impiegano i <a
-href="https://en.wikipedia.org/wiki/K-d_tree">KD-tree</a> e i <a
-href="https://en.wikipedia.org/wiki/Bounding_volume_hierarchy">BVH</a>.
-Vedere il <a
-href="https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration">libro
-di Pharr, Jakob &amp; Humphreys</a>.</p></li>
+<li><p>However, it is not always sufficient to use AABBs for
+<em>meshes</em> to be efficient.</p></li>
+<li><p>Scenes are often almost completely occupied by a complex object,
+and in this case AABBs do not provide any advantage (as in the previous
+image).</p></li>
+<li><p>However, it is possible to build on the idea of AABBs to
+implement more sophisticated optimizations: the most used ones employ <a
+href="https://en.wikipedia.org/wiki/K-d_tree">KD-trees</a> and <a
+href="https://en.wikipedia.org/wiki/Bounding_volume_hierarchy">BVHs</a>.
+See the <a
+href="https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration">book
+by Pharr, Jakob &amp; Humphreys</a>.</p></li>
 </ul>
 </section>
 <section id="debugging" class="slide level1">
@@ -814,54 +809,55 @@ di Pharr, Jakob &amp; Humphreys</a>.</p></li>
 <iframe width="1008" height="566" src="https://www.youtube.com/embed/4gNYTqn3qRc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
 </iframe>
 </section>
-<section id="introduzione-al-debugging" class="slide level1">
-<h1>Introduzione al debugging</h1>
+<section id="introduction-to-debugging" class="slide level1">
+<h1>Introduction to Debugging</h1>
 <ul>
-<li><p>Settimana scorsa avete corretto il vostro primo bug, che
-riguardava l’errato orientamento delle immagini salvate dal vostro
-codice.</p></li>
-<li><p>In generale un <em>bug</em> è un problema nel programma che lo fa
-funzionare in modo diverso da quello che ci si aspetta.</p></li>
-<li><p>È molto importante avere un approccio scientifico alla gestione
-dei bug! Nelle prossime slide vi darò alcune indicazioni
-generali.</p></li>
+<li><p>Last week you fixed your first bug, which concerned the incorrect
+orientation of the images saved by your code.</p></li>
+<li><p>In general, a <em>bug</em> is a problem in the program that makes
+it work differently than expected.</p></li>
+<li><p>It is very important to have a scientific approach to bug
+management! In the next slides I will give you some general
+guidelines.</p></li>
 </ul>
 </section>
-<section id="difetto-infezione-e-fallimento" class="slide level1">
-<h1>Difetto, infezione e fallimento</h1>
+<section id="fault-infection-and-failure" class="slide level1">
+<h1>Fault, Infection, and Failure</h1>
 <ul>
-<li><p>Il bellissimo libro di Zeller <a
-href="https://www.whyprogramsfail.com/"><em>Why programs fail: a guide
-to systematic debugging</em></a> spiega la scoperta di un <em>bug</em>
-come la combinazione di tre fattori:</p>
+<li><p>Zeller’s excellent book <a
+href="https://www.whyprogramsfail.com/"><em>Why Programs Fail: A Guide
+to Systematic Debugging</em></a> explains the discovery of a
+<em>bug</em> as the combination of three factors:</p>
 <ol type="1">
-<li><strong>Difetto</strong>: un errore nel modo in cui è scritto il
-codice;</li>
-<li><strong>Infezione</strong>: un certo input “attiva” il difetto ed
-altera il valore di alcune variabili rispetto al caso atteso;</li>
-<li><strong>Fallimento</strong>: l’esito del programma è sbagliato, o
-perché i risultati sono errati, o perché il programma va in crash.</li>
+<li><strong>Fault</strong>: an error in the way the code is
+written;</li>
+<li><strong>Infection</strong>: a certain input “activates” the fault
+and alters the value of some variables compared to the expected
+case;</li>
+<li><strong>Failure</strong>: the outcome of the program is wrong,
+either because the results are incorrect, or because the program
+crashes.</li>
 </ol></li>
-<li><p>Il <em>bug</em> sta nel difetto iniziale, ma se non c’è infezione
-o non c’è fallimento è difficile accorgersene!</p></li>
+<li><p>The <em>bug</em> lies in the initial fault, but if there is no
+infection or no failure, it is difficult to notice it!</p></li>
 </ul>
 </section>
-<section id="un-esempio-da-tnds" class="slide level1">
-<h1>Un esempio da TNDS</h1>
+<section id="an-example-from-numerical-analysis" class="slide level1">
+<h1>An Example from Numerical Analysis</h1>
 <ul>
-<li><p>Nel corso di TNDS si deve implementare un codice che calcoli il
-valore di</p>
+<li><p>In the Numerical Analysis course, you have to implement code that
+calculates the value of</p>
 <p><span class="math display">
 \int_0^\pi \sin x\,\mathrm{d}x
 </span></p>
-<p>usando la formula di Simpson:</p>
+<p>using Simpson’s rule:</p>
 <p><span class="math display">
 \int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[f(a) +
 4\sum_{i=1}^{n/2} f\bigl(x_{2i-1}\bigr) + 2\sum_{i=1}^{n/2 - 1}
 f\bigl(x_{2i}\bigr) + f(b)\right].
 </span></p></li>
-<li><p>Spesso l’implementazione è errata nonostante il risultato sia
-corretto (<span class="math inline">\int = 2</span>)!</p></li>
+<li><p>Often the implementation is wrong even though the result is
+correct (<span class="math inline">\int = 2</span>)!</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -872,13 +868,13 @@ corretto (<span class="math inline">\int = 2</span>)!</p></li>
 {\color{red}{2}}\sum_{i=1}^{n/2 - 1} f\bigl(x_{2i}\bigr) + f(b)\right].
 </span></p>
 <ul>
-<li><p>Spesso gli studenti scambiano il 4 con il 2.</p></li>
-<li><p>Questo porta a una <em>infezione</em>: il valore dell’espressione
-tra parentesi quadre è sbagliato.</p></li>
-<li><p>Ciò porta a un <em>fallimento</em>: il risultato dell’integrale è
-sbagliato.</p></li>
-<li><p>Di tutti i casi, questo è il più semplice: è immediato accorgersi
-del problema!</p></li>
+<li><p>Often students swap the 4 with the 2.</p></li>
+<li><p>This leads to an <em>infection</em>: the value of the expression
+in square brackets is wrong.</p></li>
+<li><p>This leads to a <em>failure</em>: the result of the integral is
+wrong.</p></li>
+<li><p>Of all the cases, this is the simplest: it is immediately obvious
+what the problem is!</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -889,15 +885,15 @@ del problema!</p></li>
 2\sum_{i=1}^{\color{red}{n/2 - 1}} f\bigl(x_{2i}\bigr) + f(b)\right].
 </span></p>
 <ul>
-<li><p>A volte gli studenti terminano una delle due sommatorie troppo
-presto (dimenticano l’ultimo termine) oppure troppo tardi (aggiungono un
-termine in più).</p></li>
-<li><p>Nel caso di <span class="math inline">\int_0^\pi \sin
-x\,\mathrm{d}x</span>, l’ultimo termine della sommatoria è per <span
-class="math inline">x \approx \pi</span>, quindi è molto piccolo: c’è
-una <em>infezione</em>, ma se si stampano poche cifre significative a
-video può essere che il risultato sia arrotondato al valore giusto, e
-non ci sia quindi un <em>fallimento</em>.</p></li>
+<li><p>Sometimes students terminate one of the two summations too early
+(they forget the last term) or too late (they add an extra
+term).</p></li>
+<li><p>In the case of <span class="math inline">\int_0^\pi \sin
+x\,\mathrm{d}x</span>, the last term of the summation is for <span
+class="math inline">x \approx \pi</span>, so it is very small: there is
+an <em>infection</em>, but if you print only a few significant digits on
+the screen, the result may be rounded to the correct value, and
+therefore there is no <em>failure</em>.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -908,91 +904,84 @@ non ci sia quindi un <em>fallimento</em>.</p></li>
 f\bigl(x_{2i}\bigr) + {\color{red}{f(b)}}\right].
 </span></p>
 <ul>
-<li><p>A volte gli studenti dimenticano di sommare <span
-class="math inline">f(a)</span> e/o <span
-class="math inline">f(b)</span>, o li moltiplicano per 2 o per
+<li><p>Sometimes students forget to add <span
+class="math inline">f(a)</span> and/or <span
+class="math inline">f(b)</span>, or they multiply them by 2 or
 4.</p></li>
-<li><p>Nel caso però di <span class="math inline">\int_0^\pi \sin
-x\,\mathrm{d}x</span>, il valore dell’espressione tra parentesi quadre è
-comunque giusto perché <span class="math inline">f(0) = f(\pi) =
+<li><p>However, in the case of <span class="math inline">\int_0^\pi \sin
+x\,\mathrm{d}x</span>, the value of the expression in square brackets is
+still correct because <span class="math inline">f(0) = f(\pi) =
 0</span>.</p></li>
-<li><p>In questo caso c’è un <em>difetto</em> ma non c’è una
-<em>infezione</em> né un <em>fallimento</em>: è il caso più difficile da
-individuare!</p></li>
+<li><p>In this case there is a <em>fault</em> but there is no
+<em>infection</em> nor a <em>failure</em>: this is the most difficult
+case to identify!</p></li>
 </ul>
 </section>
-<section id="issue-duplicate" class="slide level1">
-<h1><em>Issue</em> duplicate</h1>
+<section id="duplicate-issues" class="slide level1">
+<h1>Duplicate <em>Issues</em></h1>
 <ul>
-<li><p>È molto comune che un medesimo <em>difetto</em> porti a
-<em>fallimenti</em> diversi: ciò dipende infatti dai dati di input, dal
-tipo di azione che si esegue col programma, etc.</p></li>
-<li><p>È quindi molto comune che gli utenti aprano <em>issue</em>
-diverse che però sono causate dal medesimo <em>difetto</em>.</p></li>
-<li><p>Esempio: <a
-href="https://github.com/JuliaLang/julia/issues/48332">un crash in
-Julia</a> è causato dalla combinazione di due issue già segnalate in
-precedenza, che però a prima vista non sembravano correlate.</p></li>
-<li><p>GitHub consente di assegnare l’etichetta <em>Duplicated</em> alle
-<em>issue</em>:
+<li><p>It is very common for the same <em>fault</em> to lead to
+different <em>failures</em>: this depends on the input data, the type of
+action being performed with the program, etc.</p></li>
+<li><p>It is therefore very common for users to open different
+<em>issues</em> that are however caused by the same
+<em>fault</em>.</p></li>
+<li><p>Example: <a
+href="https://github.com/JuliaLang/julia/issues/48332">a crash in
+Julia</a> is caused by the combination of two previously reported
+issues, which at first glance did not seem related.</p></li>
+<li><p>GitHub allows you to assign the <em>Duplicated</em> label to
+<em>issues</em>:
 <img style="vertical-align:middle" src="media/github-duplicate.png"/></p></li>
 </ul>
 </section>
-<section id="come-segnalare-issue" class="slide level1">
-<h1>Come segnalare <em>issue</em></h1>
+<section id="how-to-report-issues" class="slide level1">
+<h1>How to Report <em>Issues</em></h1>
 <ul>
-<li><p>Quando si osserva un <em>fallimento</em> e si vuole aprire una
-<em>issue</em>, bisogna indicare:</p>
+<li><p>When you observe a <em>failure</em> and want to open an
+<em>issue</em>, you must indicate:</p>
 <ol type="1">
-<li>Lista di azioni che hanno portato al fallimento (inclusi tutti gli
-input!)</li>
-<li>Output del programma</li>
-<li>Descrizione del comportamento atteso e di quello invece
-osservato</li>
+<li>List of actions that led to the failure (including all inputs!)</li>
+<li>Program output</li>
+<li>Description of the expected behavior and the observed behavior
+instead</li>
 </ol>
-<p>Questo perché lo sviluppatore deve poter <strong>riprodurre</strong>
-il <em>fallimento</em> per individuare poi il <em>difetto</em> che l’ha
-causato.</p></li>
-<li><p>Se un utente vi segnala una issue senza che alcune di queste cose
-siano chiare, non fatevi scrupoli a chiedere maggiori dettagli.</p></li>
-<li><p>GitHub consente di configurare un <a
-href="https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository">modello
-per le <em>issue</em></a>.</p></li>
+<p>This is because the developer must be able to
+<strong>reproduce</strong> the <em>failure</em> in order to identify the
+<em>fault</em> that caused it.</p></li>
+<li><p>If a user reports an issue to you without some of these things
+being clear, do not hesitate to ask for more details.</p></li>
+<li><p>GitHub allows you to configure an <a
+href="https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository">issue
+template</a>.</p></li>
 </ul>
 </section>
-<section id="individuare-difetti-scientificamente-zeller"
+<section id="identifying-faults-scientifically-zeller"
 class="slide level1">
-<h1>Individuare <em>difetti</em> scientificamente (Zeller)</h1>
+<h1>Identifying <em>Faults</em> Scientifically (Zeller)</h1>
 <ol type="1">
-<li>Osservare/riprodurre un <em>fallimento</em></li>
-<li>Formulare un’ipotesi sul <em>difetto</em> che ha causato il
-<em>fallimento</em></li>
-<li>Usare l’ipotesi per fare una predizione</li>
-<li>Verificare l’ipotesi con esperimenti e ulteriori osservazioni:
-<ul>
-<li>Se l’ipotesi è confermata, raffinare la predizione</li>
-<li>Se l’ipotesi è invalidata, cercarne una alternativa</li>
-</ul></li>
-<li>Ripetere i passi 3 e 4 finché l’ipotesi non può più essere
-migliorata</li>
+<li>Observe/reproduce a <em>failure</em></li>
+<li>Formulate a hypothesis about the <em>fault</em> that caused the
+<em>failure</em></li>
+<li>Use the hypothesis to</li>
 </ol>
 </section>
-<section id="strumenti-di-debugging" class="slide level1">
-<h1>Strumenti di debugging</h1>
+<section id="debugging-tools" class="slide level1">
+<h1>Debugging tools</h1>
 <table>
 <colgroup>
-<col style="width: 16%" />
-<col style="width: 83%" />
+<col style="width: 24%" />
+<col style="width: 75%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>Tipo</th>
-<th>Esempi</th>
+<th>Type</th>
+<th>Examples</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Debugger simbolico</td>
+<td>SYmbolic debugger</td>
 <td><a href="https://sourceware.org/gdb/">GDB</a>, <a
 href="https://lldb.llvm.org/">LLDB</a></td>
 </tr>
@@ -1002,7 +991,7 @@ href="https://lldb.llvm.org/">LLDB</a></td>
 href="https://valgrind.org/docs/manual/mc-manual.html">Memcheck</a></td>
 </tr>
 <tr class="odd">
-<td>Analisi dinamica</td>
+<td>Dynamic analysis</td>
 <td><a
 href="https://valgrind.org/docs/manual/mc-manual.html">Valgrind</a></td>
 </tr>

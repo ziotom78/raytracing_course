@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Lezione 10</title>
+  <title>Lesson 10</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -29,8 +29,9 @@
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -120,8 +121,9 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Lezione 10</h1>
-  <p class="subtitle">Path tracing</p>
+  <h1 class="title">Lesson 10</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini
+fotorealistiche</p>
   <p class="author">Maurizio Tomasi <a
 href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
@@ -130,12 +132,12 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 <section id="path-tracing" class="slide level1">
 <h1>Path tracing</h1>
 </section>
-<section id="equazione-del-rendering" class="slide level1">
-<h1>Equazione del rendering</h1>
+<section id="rendering-equation" class="slide level1">
+<h1>Rendering Equation</h1>
 <ul>
-<li><p>Per risolvere l’equazione del rendering dobbiamo tracciare il
-percorso di raggi luminosi nello spazio tridimensionale e risolvere
-l’equazione del rendering:</p>
+<li><p>To solve the rendering equation we need to trace the path of
+light rays in three-dimensional space and solve the rendering
+equation:</p>
 <p><span class="math display">
 \begin{aligned}
 L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
@@ -143,29 +145,27 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
 \end{aligned}
 </span></p></li>
-<li><p>Esistono vari modi per risolvere l’equazione, ma noi ne
-implementeremo solo due: il path tracing e il point-light
-tracing.</p></li>
+<li><p>There are various ways to solve the equation, but we will
+implement only two: path tracing and point-light tracing.</p></li>
 </ul>
 </section>
 <section id="path-tracing-1" class="slide level1">
-<h1>Path tracing</h1>
+<h1>Path Tracing</h1>
 <ul>
-<li><p>È il metodo concettualmente più semplice da
-implementare.</p></li>
-<li><p>È in grado di produrre soluzioni <em>unbiased</em> (senza effetti
-sistematici).</p></li>
-<li><p>È computazionalmente molto inefficiente.</p></li>
-<li><p>Ci sono molte tecniche per renderlo più veloce; noi
-implementeremo solo le più semplici (non è l’obbiettivo principale del
-corso!).</p></li>
+<li><p>It is conceptually the simplest method to implement.</p></li>
+<li><p>It is able to produce <em>unbiased</em> solutions (without
+systematic effects).</p></li>
+<li><p>It is computationally very inefficient.</p></li>
+<li><p>There are many techniques to make it faster; we will implement
+only the simplest ones (it is not the main objective of the
+course!).</p></li>
 </ul>
 </section>
 <section id="path-tracing-2" class="slide level1">
-<h1>Path tracing</h1>
+<h1>Path Tracing</h1>
 <ul>
-<li><p>Il termine più complesso dell’equazione del rendering è
-l’integrale</p>
+<li><p>The most complex term of the rendering equation is the
+integral</p>
 <p><span class="math display">
 \begin{aligned}
 L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
@@ -173,33 +173,33 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
 \end{aligned}
 </span></p>
-<p>che per semplicità consideriamo applicato a un materiale
-<em>opaco</em> e non trasparente (4π→2π).</p></li>
-<li><p>Come abbiamo visto, esso è in realtà un integrale multiplo, su un
-numero arbitrario di dimensioni: in questi casi, gli integrali si
-stimano efficientemente usando metodi Monte Carlo (MC).</p></li>
+<p>which for simplicity we consider applied to an <em>opaque</em> and
+not transparent material (4π→2π).</p></li>
+<li><p>As we have seen, it is actually a multiple integral, over an
+arbitrary number of dimensions: in these cases, integrals are
+efficiently estimated using Monte Carlo (MC) methods.</p></li>
 </ul>
 </section>
-<section id="path-tracing-e-mc" class="slide level1">
-<h1>Path tracing e MC</h1>
+<section id="path-tracing-and-mc" class="slide level1">
+<h1>Path Tracing and MC</h1>
 <ul>
-<li><p>L’algoritmo di <em>path tracing</em> è il seguente:</p>
+<li><p>The <em>path tracing</em> algorithm is as follows:</p>
 <ol>
-<li>Per ogni pixel dello schermo si proietta un raggio attraverso il
+<li>For each pixel on the screen, a ray is projected through the
 pixel.</li>
-<li>Quando un raggio colpisce una superficie in un punto <span
-class="math inline">P</span>, si valuta l’emissione <span
-class="math inline">L_e</span> al punto <span
-class="math inline">P</span>.</li>
-<li>Si valuta l’integrale sul punto <span class="math inline">P</span>
-usando il metodo Monte Carlo, campionando l’angolo solido con <span
-class="math inline">N</span> nuovi raggi secondari che dipartono da
-<span class="math inline">P</span> lungo direzioni casuali.</li>
-<li>Per ogni raggio secondario si procede ricorsivamente.</li>
+<li>When a ray hits a surface at a point <span
+class="math inline">P</span>, the emission <span
+class="math inline">L_e</span> at point <span
+class="math inline">P</span> is evaluated.</li>
+<li>The integral at point <span class="math inline">P</span> is
+evaluated using the Monte Carlo method, sampling the solid angle with
+<span class="math inline">N</span> new secondary rays that depart from
+<span class="math inline">P</span> along random directions.</li>
+<li>For each secondary ray, the process is repeated recursively.</li>
 </ol></li>
-<li><p>L’algoritmo consente di ottenere una soluzione esatta per
-l’equazione del rendering, sebbene al prezzo di un grande tempo di
-calcolo.</p></li>
+<li><p>The algorithm allows to obtain an exact solution for the
+rendering equation, although at the cost of a large computation
+time.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -209,100 +209,99 @@ calcolo.</p></li>
 <p><a href="https://www.youtube.com/watch?v=eo_MTI-d28s">An explanation
 of the rendering equation (Eric Arnebäck)</a></p>
 </section>
-<section id="probabilità-e-monte-carlo" class="slide level1">
-<h1>Probabilità e Monte Carlo</h1>
+<section id="probability-and-mc" class="slide level1">
+<h1>Probability and Monte Carlo</h1>
 </section>
-<section id="ripasso-di-probabilità" class="slide level1">
-<h1>Ripasso di probabilità</h1>
+<section id="probability-review" class="slide level1">
+<h1>Probability Review</h1>
 <ul>
-<li><p>Data una variabile <span class="math inline">X</span>, la
-<em>funzione di distribuzione cumulativa</em> (CDF) <span
-class="math inline">P(x)</span> è la probabilità che <span
-class="math inline">X</span> sia inferiore ad un valore <span
-class="math inline">x</span> fissato:</p>
+<li><p>Given a variable <span class="math inline">X</span>, the
+<em>cumulative distribution function</em> (CDF) <span
+class="math inline">P(x)</span> is the probability that <span
+class="math inline">X</span> is less than a fixed value <span
+class="math inline">x</span>:</p>
 <p><span class="math display">
 P(x) = \mathrm{Pr}\{X \leq x\}
 </span></p></li>
-<li><p>La <em>funzione di densità di probabilità</em> (PDF) <span
-class="math inline">p(x)</span> è la derivata di <span
-class="math inline">P(x)</span>, ed è tale che <span
-class="math inline">p(x)\,\mathrm{d}x</span> è la probabilità che <span
-class="math inline">X</span> stia nell’intervallo <span
+<li><p>The <em>probability density function</em> (PDF) <span
+class="math inline">p(x)</span> is the derivative of <span
+class="math inline">P(x)</span>, and is such that <span
+class="math inline">p(x)\,\mathrm{d}x</span> is the probability that
+<span class="math inline">X</span> is in the interval <span
 class="math inline">[x, x + \mathrm{d}x]</span>:</p>
 <p><span class="math display">
 p(x) = \frac{\mathrm{d}P(x)}{\mathrm{d}x}.
 </span></p></li>
 </ul>
 </section>
-<section id="ripasso-di-probabilità-1" class="slide level1">
-<h1>Ripasso di probabilità</h1>
+<section id="probability-review-1" class="slide level1">
+<h1>Probability Review</h1>
 <ul>
-<li><p>Siccome <span class="math inline">\lim_{x \rightarrow -\infty}
-P(x) = 0</span> e <span class="math inline">\lim_{x \rightarrow +\infty}
-P(x) = 1</span>, ne segue che</p>
+<li><p>Since <span class="math inline">\lim_{x \rightarrow -\infty} P(x)
+= 0</span> and <span class="math inline">\lim_{x \rightarrow +\infty}
+P(x) = 1</span>, it follows that</p>
 <p><span class="math display">
 \int_{\mathbb{R}} p(x)\,\mathrm{d}x = 1.
 </span></p></li>
-<li><p>Dalla definizione segue che la probabilità che <span
-class="math inline">X</span> cada nell’intervallo <span
-class="math inline">[a, b]</span> è</p>
+<li><p>From the definition it follows that the probability that <span
+class="math inline">X</span> falls in the interval <span
+class="math inline">[a, b]</span> is</p>
 <p><span class="math display">
 P\bigl(X \in [a, b]\bigr) = P(b) - P(a) = \int_a^b p(x)\,\mathrm{d}x.
 </span></p></li>
 </ul>
 </section>
-<section id="ripasso-di-probabilità-2" class="slide level1">
-<h1>Ripasso di probabilità</h1>
+<section id="probability-review-2" class="slide level1">
+<h1>Probability Review</h1>
 <ul>
-<li><p>Si definisce <em>valore di aspettazione</em> di una funzione
-<span class="math inline">f(X)</span> dipendente dalla variabile casuale
-<span class="math inline">X</span> con PDF <span
-class="math inline">p(x)</span> il valore</p>
+<li><p>The <em>expected value</em> of a function <span
+class="math inline">f(X)</span> dependent on the random variable <span
+class="math inline">X</span> with PDF <span
+class="math inline">p(x)</span> is defined as</p>
 <p><span class="math display">
 E_p[f] = \int_\mathbb{R}\,f(x)\,p(x)\,\mathrm{d}x.
 </span></p></li>
-<li><p>Si definisce <em>varianza</em> di <span
-class="math inline">f(X)</span> rispetto a <span
-class="math inline">p</span> il valore</p>
+<li><p>The <em>variance</em> of <span class="math inline">f(X)</span>
+with respect to <span class="math inline">p</span> is defined as</p>
 <p><span class="math display">
 V_p[f] = E_p\left[\bigl(f(x) - E_p[f]\bigr)^2\right] =
 \int_\mathbb{R}\,\bigl(f(x) - E_p[f]\bigr)^2\,p(x)\,\mathrm{d}x.
 </span></p></li>
-<li><p>La <em>deviazione standard</em> è definita come <span
+<li><p>The <em>standard deviation</em> is defined as <span
 class="math inline">\sqrt{V_p[f]}</span>.</p></li>
 </ul>
 </section>
-<section id="ripasso-di-probabilità-3" class="slide level1">
-<h1>Ripasso di probabilità</h1>
+<section id="probability-review-3" class="slide level1">
+<h1>Probability Review</h1>
 <ul>
-<li><p><span class="math inline">E_p</span> è un operatore lineare:</p>
+<li><p><span class="math inline">E_p</span> is a linear operator:</p>
 <p><span class="math display">
 E_p[a f(x)] = a E_p[f(x)], \quad E[f(x) + g(x)] = E[f(x)] + E[g(x)].
 </span></p></li>
-<li><p>Per la varianza (che <strong>non è lineare!</strong>) vale invece
-che</p>
+<li><p>For the variance (which is <strong>not linear!</strong>) it holds
+that</p>
 <p><span class="math display">
 V_p[a f(x)] = a^2 V_p[f(x)].
 </span></p></li>
-<li><p>Da queste proprietà si ricava che</p>
+<li><p>From these properties it follows that</p>
 <p><span class="math display">
 V_p[f] = E_p\bigl[f^2(x)\bigr] - E_p\bigl[f(x)\bigr]^2.
 </span></p></li>
 </ul>
 </section>
-<section id="integrazione-monte-carlo" class="slide level1">
-<h1>Integrazione Monte Carlo</h1>
+<section id="monte-carlo-integration" class="slide level1">
+<h1>Monte Carlo Integration</h1>
 </section>
-<section id="integrazione-monte-carlo-1" class="slide level1">
-<h1>Integrazione Monte Carlo</h1>
+<section id="monte-carlo-integration-1" class="slide level1">
+<h1>Monte Carlo Integration</h1>
 <ul>
-<li><p>Nell’algoritmo di <em>path tracing</em> si devono calcolare gli
-integrali che figurano nell’equazione del rendering</p></li>
-<li><p>È un integrale ricorsivo, quindi a dimensione infinita: sono
-necessari metodi Monte Carlo.</p></li>
-<li><p>Nei metodi Monte Carlo occorre controllare attentamente la
-varianza, perché se è eccessiva la qualità dell’immagine ne
-risente.</p></li>
+<li><p>In the <em>path tracing</em> algorithm, the integrals that appear
+in the rendering equation must be calculated</p></li>
+<li><p>It is a recursive integral, therefore of infinite dimension:
+Monte Carlo methods are necessary.</p></li>
+<li><p>In Monte Carlo methods, the variance must be carefully
+controlled, because if it is excessive the quality of the image
+suffers.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -310,26 +309,26 @@ risente.</p></li>
 <center>
 <img data-src="./media/becatti-sardena-scene.webp" />
 </center>
-<p>Se la varianza nella stima degli integrali è eccessiva, viene creata
-un’immagine sgranata.</p>
+<p>If the variance in the estimation of the integrals is excessive, a
+grainy image is created.</p>
 </section>
-<section id="varianza-nei-metodi-mc" class="slide level1">
-<h1>Varianza nei metodi MC</h1>
+<section id="variance-in-mc-methods" class="slide level1">
+<h1>Variance in MC methods</h1>
 <ul>
-<li><p>Supponiamo di voler calcolare numericamente il valore
-dell’integrale</p>
+<li><p>Suppose we want to numerically calculate the value of the
+integral</p>
 <p><span class="math display">
 I = \int_a^b f(x)\,\mathrm{d}x
 </span></p></li>
-<li><p>Il metodo della media fornisce una semplice approssimazione <span
-class="math inline">F_N</span> per <span
+<li><p>The mean method provides a simple approximation <span
+class="math inline">F_N</span> for <span
 class="math inline">I</span>:</p>
 <p><span class="math display">
 I = \int_a^b f(x)\,\mathrm{d}x \approx F_N \equiv (b - a) \cdot
 \left[\frac1N \sum_{i=1}^N f(X_i)\right],
 </span></p>
-<p>dove <span class="math inline">X_i</span> sono <span
-class="math inline">N</span> numeri casuali con PDF costante <span
+<p>where <span class="math inline">X_i</span> are <span
+class="math inline">N</span> random numbers with constant PDF <span
 class="math inline">p(x) = 1 / (b - a)</span>.</p></li>
 </ul>
 </section>
@@ -347,96 +346,95 @@ f(x)\,\mathrm{d}x = I.
 </span></p>
 </section>
 <section id="importance-sampling" class="slide level1">
-<h1><em>Importance sampling</em></h1>
+<h1>Importance Sampling</h1>
 <ul>
-<li><p>È facile dimostrare che se <span class="math inline">X</span>
-segue una distribuzione arbitraria <span
-class="math inline">p(x)</span>, un estimatore dell’integrale è</p>
+<li><p>It is easy to show that if <span class="math inline">X</span>
+follows an arbitrary distribution <span class="math inline">p(x)</span>,
+an estimator of the integral is</p>
 <p><span class="math display">
 F_N = \frac1N \sum_{i = 1}^N \frac{f(X_i)}{p(X_i)},
 </span></p>
-<p>a patto che <span class="math inline">p(x) &gt; 0</span> quando <span
+<p>provided that <span class="math inline">p(x) &gt; 0</span> when <span
 class="math inline">f(x) \not= 0</span>.</p></li>
-<li><p>Se si sceglie bene <span class="math inline">p(x)</span>, è
-possibile aumentare l’accuratezza della stima. Nel caso in cui <span
-class="math inline">f(x) = k \cdot p(x)</span> infatti, il termine nella
-sommatoria è costante (<span class="math inline">k</span>) e uguale
-all’integrale, quindi basta <span class="math inline">N = 1</span> per
-stimarlo!</p></li>
+<li><p>If <span class="math inline">p(x)</span> is chosen well, it is
+possible to increase the accuracy of the estimate. In the case where
+<span class="math inline">f(x) = k \cdot p(x)</span>, in fact, the term
+in the sum is constant (<span class="math inline">k</span>) and equal to
+the integral. Only <span class="math inline">N = 1</span> is needed to
+estimate it!</p></li>
 </ul>
 </section>
-<section id="esempio" class="slide level1">
-<h1>Esempio</h1>
+<section id="example" class="slide level1">
+<h1>Example</h1>
 <ul>
-<li><p>Vediamo un esempio pratico nel calcolo dell’integrale di <span
-class="math inline">f(x) = \sqrt{x}\,\sin x</span>:</p>
+<li><p>Let’s see a practical example in the calculation of the integral
+of <span class="math inline">f(x) = \sqrt{x}\,\sin x</span>:</p>
 <p><span class="math display">
 \int_0^\pi f(x)\,\mathrm{d}x = \int_0^\pi \sqrt{x}\,\sin x\,\mathrm{d}x
 \approx 2.435.
 </span></p></li>
-<li><p>Per usare l’<em>importance sampling</em> dobbiamo decidere quale
-<span class="math inline">p(x)</span> usare:</p>
-<ol>
+<li><p>To use importance sampling we must decide which <span
+class="math inline">p(x)</span> to use:</p>
+<ol type="1">
 <li><span class="math inline">p(x) \propto \sqrt{x}\,\sin x</span>? (No,
-questa è proprio l’integranda!)</li>
+this is precisely the integrand!)</li>
 <li><span class="math inline">p(x) \propto \sqrt{x}</span>?</li>
 <li><span class="math inline">p(x) \propto \sin x</span>?</li>
 </ol></li>
-<li><p>Per decidere è sempre bene fare il grafico dell’integranda <span
+<li><p>To decide, it is always good to plot the integrand <span
 class="math inline">f(x)</span>.</p></li>
 </ul>
 </section>
 <section class="slide level1">
 
 <ul>
-<li><p>Questo è il grafico di <span class="math inline">f(x)</span> e
-delle nostre ipotesi per <span class="math inline">p(x)</span>:</p>
+<li><p>This is the graph of <span class="math inline">f(x)</span> and
+our hypotheses for <span class="math inline">p(x)</span>:</p>
 <center>
 <p><img
 data-src="pd-images/1433de1529e0045101dd2a5777ee7d806b8bd383.svg"
 data-im_fname="importance-sampling-demo1" /></p>
 </center></li>
-<li><p>Chiaramente l’opzione migliore è <span class="math inline">p(x)
-\propto \sin x</span>, perché la sua forma ricorda quella di <span
+<li><p>Clearly the best option is <span class="math inline">p(x) \propto
+\sin x</span>, because its shape resembles that of <span
 class="math inline">f(x)</span>.</p></li>
 </ul>
 </section>
-<section id="esempio-1" class="slide level1">
-<h1>Esempio</h1>
+<section id="example-1" class="slide level1">
+<h1>Example</h1>
 <ul>
-<li><p>Normalizzando <span class="math inline">p(x) \propto \sin
-x</span> sul dominio di integrazione si ottiene che</p>
+<li><p>Normalizing <span class="math inline">p(x) \propto \sin x</span>
+over the integration domain, we obtain</p>
 <p><span class="math display">
 p(x) = \frac{\chi_{[0, \pi]}(x)}2 \sin x.
 </span></p></li>
-<li><p>Dobbiamo ora ottenere numeri casuali <span
-class="math inline">X_i</span> che seguano questa distribuzione. Usiamo
-il metodo della funzione inversa, passando dalla PDF <span
-class="math inline">p(x)</span> alla CDF <span class="math inline">P(x)
-= \mathrm{Pr}\{X \leq x\}</span>:</p>
+<li><p>We must now obtain random numbers <span
+class="math inline">X_i</span> that follow this distribution. We use the
+inverse transform sampling method, passing from the PDF <span
+class="math inline">p(x)</span> to the CDF <span
+class="math inline">P(x) = \mathrm{Pr}\{X \leq x\}</span>:</p>
 <p><span class="math display">
 P(x) = \int_{-\infty}^x p(x&#39;)\,\mathrm{d}x&#39; = \frac12(1 - \cos
-x)\quad\text{ per }x \in [0, \pi].
+x)\quad\text{ for }x \in [0, \pi].
 </span></p></li>
 </ul>
 </section>
-<section id="esempio-2" class="slide level1">
-<h1>Esempio</h1>
+<section id="example-2" class="slide level1">
+<h1>Example</h1>
 <ul>
-<li><p>Siccome <span class="math inline">P(x) = \frac12 (1 - \cos
-x)</span>, allora</p>
+<li><p>Since <span class="math inline">P(x) = \frac12 (1 - \cos
+x)</span>, then</p>
 <p><span class="math display">
 P^{-1}(y) = \arccos(1 - 2y).
 </span></p></li>
-<li><p>Se quindi <span class="math inline">Y_i</span> è distribuito
-uniformemente su <span class="math inline">[0, 1]</span>, allora <span
-class="math inline">P^{-1}(Y_i) = X_i</span> è distribuito secondo <span
-class="math inline">p(x)</span>. (Vedremo tra poco come dimostrarlo
-rigorosamente).</p></li>
-<li><p>Implementiamo ora un codice Python che calcoli l’integrale col
-metodo della media <strong>senza</strong> e <strong>con</strong>
-l’<em>importance sampling</em>, per verificare effettivamente quale sia
-il vantaggio.</p></li>
+<li><p>Therefore, if <span class="math inline">Y_i</span> is uniformly
+distributed over <span class="math inline">[0, 1]</span>, then <span
+class="math inline">P^{-1}(Y_i) = X_i</span> is distributed according to
+<span class="math inline">p(x)</span>. (We will see shortly how to
+rigorously demonstrate this).</p></li>
+<li><p>We now implement a Python code that calculates the integral using
+the mean method <strong>without</strong> and <strong>with</strong>
+importance sampling, to actually verify what the advantage is.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -475,12 +473,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <img data-src="./media/importance-sampling-demo.svg" />
 </center>
 </section>
-<section id="altra-possibilità" class="slide level1">
-<h1>Altra possibilità</h1>
+<section id="another-option" class="slide level1">
+<h1>Another option</h1>
 <ul>
-<li><p>Cosa cambierebbe se scegliessimo <span class="math inline">p(x)
-\propto \sqrt x</span>? Potete verificare che il seguente codice Python
-implementa l’<em>importance sampling</em> in questo caso:</p>
+<li><p>What would change if we pick <span class="math inline">p(x)
+\propto \sqrt x</span>? The following Python code implements
+<em>importance sampling</em> in this case:</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_importance2(f, n):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n)</span>
@@ -490,8 +488,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># p(x) = 3/(2π^3/2) * √x</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean(f(xp) <span class="op">/</span> (<span class="dv">3</span> <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">**</span> <span class="fl">1.5</span>) <span class="op">*</span> np.sqrt(xp)))</span></code></pre></div></li>
-<li><p>Questa volta usiamo un istogramma per mostrare meglio come le
-stime Monte Carlo si distribuiscono attorno al valore vero.</p></li>
+<li><p>This time, we will use a histogram to show how the MC samples are
+distributed around the true value.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -531,16 +529,16 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <center>
 <img data-src="./media/becatti-sardena-scene.webp" />
 </center>
-<p>Se scegliamo bene il modo in cui integriamo, possiamo quindi ridurre
-la varianza nei pixel dell’immagine prodotta dal nostro codice.</p>
+<p>If we choose the way we integrate carefully, we can reduce the
+variance in the pixels of the image produced by our code.</p>
 </section>
-<section id="implementazione-del-path-tracing" class="slide level1">
-<h1>Implementazione del path tracing</h1>
+<section id="implementing-path-tracing" class="slide level1">
+<h1>Implementing Path Tracing</h1>
 </section>
-<section id="applicazione-al-ray-tracing" class="slide level1">
-<h1>Applicazione al ray-tracing</h1>
+<section id="application-to-ray-tracing" class="slide level1">
+<h1>Application to Ray Tracing</h1>
 <ul>
-<li><p>Consideriamo ora il problema dell’equazione del rendering:</p>
+<li><p>Let’s consider the rendering equation:</p>
 <p><span class="math display">
 \begin{aligned}
 L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
@@ -548,106 +546,103 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
 \end{aligned}
 </span></p></li>
-<li><p>L’integrale è su due dimensioni (<span
-class="math inline">\mathrm{d}\omega</span> è un angolo solido), quindi
-ha senso usare il metodo della media.</p></li>
+<li><p>The integral is over two dimensions (<span
+class="math inline">\mathrm{d}\omega</span> is a solid angle), so it
+makes sense to use the mean value method.</p></li>
 </ul>
 </section>
-<section id="uso-del-metodo-della-media" class="slide level1">
-<h1>Uso del metodo della media</h1>
+<section id="using-the-mean-value-method" class="slide level1">
+<h1>Using the Mean Value Method</h1>
 <ul>
-<li><p>Si può stimare l’integrale con questa procedura:</p>
+<li><p>The integral can be estimated with this procedure:</p>
 <ol>
-<li>Si scelgono <span class="math inline">N</span> direzioni casuali
-<span class="math inline">\Psi_i</span> (o equivalentemente angoli
-solidi infinitesimi <span class="math inline">\mathrm{d}
-\omega_i</span>);</li>
-<li>Si valuta l’integranda lungo le <span class="math inline">N</span>
-direzioni, ottenendo <span class="math inline">N</span> stime;</li>
-<li>Si applica il metodo della media calcolando la media di tutte le
-<span class="math inline">N</span> stime.</li>
+<li>Choose <span class="math inline">N</span> random directions <span
+class="math inline">\Psi_i</span> (or equivalently infinitesimal solid
+angles <span class="math inline">\mathrm{d} \omega_i</span>);</li>
+<li>Evaluate the integrand along the <span class="math inline">N</span>
+directions, obtaining <span class="math inline">N</span> estimates;</li>
+<li>Apply the mean value method by calculating the average of all the
+<span class="math inline">N</span> estimates.</li>
 </ol></li>
-<li><p>Ci sono però due complicazioni:</p>
+<li><p>However, there are two complications:</p>
 <ul>
-<li>Come si scelgono le «direzioni casuali» <span
-class="math inline">\Psi_i</span>? Qui siamo in 2D, non in 1D!</li>
-<li>Come si valuta l’integranda, visto che è ricorsiva?</li>
+<li>How do we choose the «random directions» <span
+class="math inline">\Psi_i</span>? Here we are in 2D, not 1D!</li>
+<li>How do we evaluate the integrand, since it is recursive?</li>
 </ul></li>
 </ul>
 </section>
-<section id="direzioni-casuali" class="slide level1">
-<h1>Direzioni casuali</h1>
+<section id="random-directions" class="slide level1">
+<h1>Random Directions</h1>
 <ul>
-<li><p>Abbiamo sempre indicato le direzioni con gli angoli θ e φ, legati
-alle coordinate cartesiane tramite le relazioni sferiche con <span
-class="math inline">r = 1</span>:</p>
+<li><p>We have always indicated directions with the angles θ and φ,
+related to Cartesian coordinates through spherical coordinates with
+<span class="math inline">r = 1</span>:</p>
 <p><span class="math display">
 x = \sin\theta\cos\varphi, \quad y = \sin\theta\sin\varphi, \quad z =
 \cos\theta.
 </span></p></li>
-<li><p>Se anche volessimo applicare il metodo della media <em>senza</em>
-importance sampling, dovremmo avere una probabilità <span
-class="math inline">p(\omega)</span> costante. Ma questo
-<strong>non</strong> coincide col chiedere che <span
-class="math inline">p(\theta)</span> e <span
-class="math inline">p(\varphi)</span> siano costanti!</p></li>
-<li><p>Dobbiamo scegliere le direzioni casuali in modo che <span
-class="math inline">p(\omega)</span> sia una costante, e per fare questo
-dobbiamo capire come i cambi di variabile agiscono sulle distribuzioni
-di probabilità in <span class="math inline">n</span>
-dimensioni.</p></li>
+<li><p>Even if we wanted to apply the mean value method <em>without</em>
+importance sampling, we should have a constant probability <span
+class="math inline">p(\omega)</span>. But this does <strong>not</strong>
+coincide with requiring that <span class="math inline">p(\theta)</span>
+and <span class="math inline">p(\varphi)</span> be constant!</p></li>
+<li><p>We must choose the random directions so that <span
+class="math inline">p(\omega)</span> is constant, and to do this we must
+understand how changes of variables act on probability distributions in
+<span class="math inline">n</span> dimensions.</p></li>
 </ul>
 </section>
-<section id="distribuzioni-di-probabilità-1d" class="slide level1">
-<h1>Distribuzioni di probabilità 1D</h1>
+<section id="d-probability-distributions" class="slide level1">
+<h1>1D Probability Distributions</h1>
 <ul>
-<li><p>Se le variabili casuali <span class="math inline">X_1, X_2,
-\ldots</span> hanno distribuzione <span
-class="math inline">p_X(x)</span>, e se definiamo una trasformazione
-<em>invertibile</em> <span class="math inline">Y = f(X)</span>, per cui
-esista quindi <span class="math inline">f^{-1}</span> tale che <span
-class="math inline">X = f^{-1}(Y)</span>, ci chiediamo: qual è la
-distribuzione <span class="math inline">p_Y(y)</span> degli <span
+<li><p>If the random variables <span class="math inline">X_1, X_2,
+\ldots</span> have a distribution <span
+class="math inline">p_X(x)</span>, and if we define an
+<em>invertible</em> transformation <span class="math inline">Y =
+f(X)</span>, for which there exists an <span
+class="math inline">f^{-1}</span> such that <span class="math inline">X
+= f^{-1}(Y)</span>, we ask ourselves: what is the distribution <span
+class="math inline">p_Y(y)</span> of the <span
 class="math inline">Y_i</span>?</p></li>
-<li><p>Ci sono molti modi per calcolare <span
-class="math inline">p_Y</span>. Il più semplice consiste nel calcolare
-direttamente la CDF degli <span class="math inline">Y</span>:</p>
+<li><p>There are many ways to calculate <span
+class="math inline">p_Y</span>. The simplest is to directly calculate
+the CDF of the <span class="math inline">Y</span>:</p>
 <p><span class="math display">
 P_Y(y) = \mathrm{Pr}(Y \leq y) = \mathrm{Pr}\bigl(f(X) \leq y\bigr).
 </span></p>
-<p>A questo punto possiamo applicare <span
-class="math inline">f^{-1}</span> ad entrambi i membri della
-disequazione <span class="math inline">f(X) \leq y</span>, ma con
-un’accortezza.</p></li>
+<p>At this point we can apply <span class="math inline">f^{-1}</span> to
+both sides of the inequality <span class="math inline">f(X) \leq
+y</span>, but with a caveat.</p></li>
 </ul>
 </section>
-<section id="distribuzioni-di-probabilità-1d-1" class="slide level1">
-<h1>Distribuzioni di probabilità 1D</h1>
+<section id="d-probability-distributions-1" class="slide level1">
+<h1>1D Probability Distributions</h1>
 <ul>
-<li><p>Se <span class="math inline">f^{-1}</span> è una funzione
-<em>crescente</em>, vale che</p>
+<li><p>If <span class="math inline">f^{-1}</span> is an
+<em>increasing</em> function, it holds that</p>
 <p><span class="math display">
 f(X) \leq y\quad\Rightarrow\quad X \leq f^{-1}(y).
 </span></p></li>
-<li><p>Se invece è decrescente, vale che</p>
+<li><p>If it is decreasing instead, it holds that</p>
 <p><span class="math display">
 f(X) \leq y\quad\Rightarrow\quad X \geq f^{-1}(y).
 </span></p></li>
-<li><p>Vediamo innanzitutto il caso in cui <span
-class="math inline">f^{-1}</span> è crescente.</p></li>
+<li><p>Let’s first see the case where <span
+class="math inline">f^{-1}</span> is increasing.</p></li>
 </ul>
 </section>
-<section id="caso-di-inversa-crescente" class="slide level1">
-<h1>Caso di inversa crescente</h1>
+<section id="case-of-increasing-inverse" class="slide level1">
+<h1>Case of Increasing Inverse</h1>
 <ul>
-<li><p>In questo caso</p>
+<li><p>In this case</p>
 <p><span class="math display">
 P_Y(y) = \mathrm{Pr}\bigl(f(X) \leq y\bigr) = \mathrm{Pr}\bigl(X \leq
 f^{-1}(y)\bigr) = P_X\bigl(f^{-1}(y)\bigr).
 </span></p></li>
-<li><p>Dalla CDF <span class="math inline">P_Y(y)</span> possiamo
-passare alla PDF applicando la formula per la derivata di una funzione
-composta:</p>
+<li><p>From the CDF <span class="math inline">P_Y(y)</span> we can move
+to the PDF by applying the formula for the derivative of a composite
+function:</p>
 <p><span class="math display">
 p_Y(y) = P_Y&#39;(y) = \frac{\mathrm{d}
 P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} = p_X\bigl(f^{-1}(y)\bigr)\cdot
@@ -655,73 +650,72 @@ P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} = p_X\bigl(f^{-1}(y)\bigr)\cdot
 </span></p></li>
 </ul>
 </section>
-<section id="caso-di-inversa-decrescente" class="slide level1">
-<h1>Caso di inversa decrescente</h1>
+<section id="case-of-decreasing-inverse" class="slide level1">
+<h1>Case of Decreasing Inverse</h1>
 <ul>
-<li><p>Se <span class="math inline">f^{-1}</span> è una funzione
-decrescente, allora vale che</p>
+<li><p>If <span class="math inline">f^{-1}</span> is a decreasing
+function, then it holds that</p>
 <p><span class="math display">
 P_Y(y) = \mathrm{Pr}\bigl(X \geq f^{-1}(y)\bigr) = 1 -
 \mathrm{Pr}\bigl(X \leq f^{-1}(y)\bigr) = 1 - P_X\bigl(f^{-1}(y)\bigr).
 </span></p></li>
-<li><p>Applicando di nuovo la derivata come nel caso precedente,
-otteniamo che</p>
+<li><p>Applying the derivative again as in the previous case, we get</p>
 <p><span class="math display">
 p_Y(y) = P_Y&#39;(y) = \frac{\mathrm{d}
 P_X\bigl(f^{-1}(y)\bigr)}{\mathrm{d}y} = -p_X\bigl(f^{-1}(y)\bigr)\cdot
 \frac{\mathrm{d}f^{-1}}{\mathrm{d}y}(y).
 </span></p></li>
-<li><p>Notiamo però che la derivata di <span
-class="math inline">f^{-1}</span> in questo caso è
-<em>negativa</em>.</p></li>
+<li><p>Note, however, that the derivative of <span
+class="math inline">f^{-1}</span> is <em>negative</em> in this
+case.</p></li>
 </ul>
 </section>
-<section id="caso-generale" class="slide level1">
-<h1>Caso generale</h1>
+<section id="general-case" class="slide level1">
+<h1>General Case</h1>
 <ul>
-<li><p>Mettendo insieme i due casi, otteniamo che</p>
+<li><p>Combining the two cases, we get</p>
 <p><span class="math display">
 p_Y(y) = p_X\bigl(f^{-1}(y)\bigr)\cdot
 \left|\frac{\mathrm{d}f^{-1}}{\mathrm{d}y}(y)\right|,
 </span></p>
-<p>che è corretto perché <span class="math inline">p_Y(y)</span> deve
-sempre essere positiva. Questa relazione inoltre preserva la
-normalizzazione di <span class="math inline">p_Y</span>.</p></li>
-<li><p>Un trucco mnemonico per ricordarla parte dal fatto che deve
-valere <span class="math inline">p_Y(y)\,\left|\mathrm{d}y\right| =
-p_X(x)\,\left|\mathrm{d}x\right|</span>: da qui si ricava facilmente la
-relazione sopra.</p></li>
-<li><p>Vediamo ora qualche esempio pratico.</p></li>
+<p>which is correct because <span class="math inline">p_Y(y)</span> must
+always be positive. This relationship also preserves the normalization
+of <span class="math inline">p_Y</span>.</p></li>
+<li><p>A mnemonic trick to remember it starts from the fact that <span
+class="math inline">p_Y(y)\,\left|\mathrm{d}y\right| =
+p_X(x)\,\left|\mathrm{d}x\right|</span> must hold: from here the above
+relationship is easily derived.</p></li>
+<li><p>Let’s see some practical examples.</p></li>
 </ul>
 </section>
-<section id="esempi" class="slide level1">
-<h1>Esempi</h1>
-<p>Supponiamo che le variabili <span class="math inline">X</span> siano
-distribuite uniformemente su <span class="math inline">[0, 1]</span>, in
-modo che <span class="math inline">p_X(x) = \chi_{[0, 1]}(x)</span>, e
-supponiamo che <span class="math inline">Y = f(X)</span>. Di
-conseguenza:</p>
+<section id="examples" class="slide level1">
+<h1>Examples</h1>
+<p>Suppose the variables <span class="math inline">X</span> are
+uniformly distributed on <span class="math inline">[0, 1]</span>, so
+that <span class="math inline">p_X(x) = \chi_{[0, 1]}(x)</span>, and
+suppose that <span class="math inline">Y = f(X)</span>.
+Consequently:</p>
 <ol>
-<li><p>Se <span class="math inline">f(X) = X + 1</span> e <span
-class="math inline">f^{-1}(Y) = Y - 1</span>, allora <span
+<li><p>If <span class="math inline">f(X) = X + 1</span> and <span
+class="math inline">f^{-1}(Y) = Y - 1</span>, then <span
 class="math inline">p_Y(y) = \chi_{[1, 2]}(y)</span>.</p></li>
-<li><p>Se <span class="math inline">f(X) = 2X</span> e <span
-class="math inline">f^{-1}(Y) = Y / 2</span>, allora <span
+<li><p>If <span class="math inline">f(X) = 2X</span> and <span
+class="math inline">f^{-1}(Y) = Y / 2</span>, then <span
 class="math inline">p_Y(y) = \frac12 \chi_{[0, 2]}(y)</span>.</p></li>
-<li><p>Se <span class="math inline">f(X) = X^2</span> e <span
-class="math inline">f^{-1}(Y) = \sqrt{Y}</span>, allora <span
+<li><p>If <span class="math inline">f(X) = X^2</span> and <span
+class="math inline">f^{-1}(Y) = \sqrt{Y}</span>, then <span
 class="math inline">p_Y(y) = \frac{\chi_{[0,
 1]}(y)}{2\sqrt{y}}</span>.</p></li>
-<li><p>Se <span class="math inline">f(X) = e^{X - 1}</span> e <span
-class="math inline">f^{-1}(Y) = 1 + \log Y</span>, allora <span
+<li><p>If <span class="math inline">f(X) = e^{X - 1}</span> and <span
+class="math inline">f^{-1}(Y) = 1 + \log Y</span>, then <span
 class="math inline">p_Y(y) = \frac{\chi_{[1/e, 1]}(y)}y</span>.</p></li>
 </ol>
 </section>
-<section id="verifica-in-python" class="slide level1">
-<h1>Verifica in Python</h1>
-<p>Potete verificare numericamente la correttezza dei risultati nella
-slide precedente con questo programma Python, che estrae 100.000 numeri
-casuali, li trasforma e ne traccia l’istogramma:</p>
+<section id="verification-in-python" class="slide level1">
+<h1>Verification in Python</h1>
+<p>You can numerically verify the correctness of the results in the
+previous slide with this Python program, which extracts 100,000 random
+numbers, transforms them, and plots their histogram:</p>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pylab <span class="im">as</span> plt</span>
@@ -750,34 +744,32 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <img data-src="./media/distributions-python.svg" />
 </center>
 </section>
-<section id="distribuzioni-di-probabilità-2d" class="slide level1">
-<h1>Distribuzioni di probabilità 2D</h1>
+<section id="d-probability-distributions-2" class="slide level1">
+<h1>2D Probability Distributions</h1>
 <ul>
-<li><p>Nel caso si debbano campionare angoli solidi, il problema è più
-complicato perché bisogna estrarre <em>coppie</em> di numeri
-casuali.</p></li>
-<li><p>Fortunatamente la matematica è abbastanza simile a quella vista
-nel caso 1D; siccome sono in gioco integrali e cambi di variabile, è
-plausibile che nell’espressione debba comparire il determinante della
-Jacobiana:</p>
+<li><p>Sampling solid angles is more complex because it requires drawing
+<em>pairs</em> of random numbers.</p></li>
+<li><p>Fortunately, the math is similar to the 1D case. Since integrals
+and changes of variables are involved, the Jacobian determinant appears
+in the expression:</p>
 <p><span class="math display">
 p_Y(\vec y) = p_X\bigl(\vec{f}^{-1}(\vec y)\bigr)\cdot\left|\frac1{\det
 J(y)}\right|.
 </span></p></li>
 </ul>
 </section>
-<section id="coordinate-polari" class="slide level1">
-<h1>Coordinate polari</h1>
+<section id="polar-coordinates" class="slide level1">
+<h1>Polar Coordinates</h1>
 <ul>
-<li><p>Supponiamo di estrarre due numeri <span class="math inline">r,
-\theta</span> con una probabilità <span class="math inline">p(r,
-\theta)</span>. Se <span class="math inline">r, \theta</span> sono le
-coordinate polari di un numero sul piano, allora il punto ha
-coordinate</p>
+<li><p>Suppose we draw two numbers <span class="math inline">r,
+\theta</span> with probability <span class="math inline">p(r,
+\theta)</span>. If <span class="math inline">r, \theta</span> are the
+polar coordinates of a point on the plane, then the point has Cartesian
+coordinates</p>
 <p><span class="math display">
 x = r \cos \theta, \quad y = r \sin \theta.
 </span></p></li>
-<li><p>Il determinante della matrice Jacobiana è</p>
+<li><p>The determinant of the Jacobian matrix is</p>
 <p><span class="math display">
 \det J = \det\begin{pmatrix}
 \partial_r x&amp; \partial_\theta x\\
@@ -788,152 +780,155 @@ x = r \cos \theta, \quad y = r \sin \theta.
 \sin\theta&amp; r\cos\theta
 \end{pmatrix} = r,
 </span></p>
-<p>e di conseguenza vale <span class="math inline">p(x, y) = p(r,
-\theta) / r</span>, ossia <span class="math inline">p(r, \theta) =
-r\cdot p(x, y)</span>.</p></li>
+<p>and consequently <span class="math inline">p(x, y) = p(r, \theta) /
+r</span>, or <span class="math inline">p(r, \theta) = r\cdot p(x,
+y)</span>.</p></li>
 </ul>
 </section>
-<section id="coordinate-sferiche" class="slide level1">
-<h1>Coordinate sferiche</h1>
+<section id="spherical-coordinates" class="slide level1">
+<h1>Spherical Coordinates</h1>
 <ul>
-<li><p>Nel caso delle coordinate sferiche, vale che</p>
+<li><p>In the case of spherical coordinates, we have</p>
 <p><span class="math display">
 x = r \sin\theta\cos\varphi, \quad y = r \sin\theta\sin\varphi, \quad z
 = r \cos\theta,
 </span></p>
-<p>e si ricava che <span class="math inline">\det J = r^2
+<p>and we find that <span class="math inline">\det J = r^2
 \sin\theta</span>.</p></li>
-<li><p>Di conseguenza, vale la relazione</p>
+<li><p>Consequently, the following relation holds</p>
 <p><span class="math display">
 p(r, \theta, \varphi) = r^2 \sin\theta \cdot p(x, y, z),
 </span></p>
-<p>che come nel caso polare può essere usata sia per ricavare <span
-class="math inline">p(x, y, z)</span> da <span class="math inline">p(r,
-\theta, \varphi)</span> che viceversa.</p></li>
+<p>which, as in the polar case, can be used to derive <span
+class="math inline">p(x, y, z)</span> from <span
+class="math inline">p(r, \theta, \varphi)</span> and vice
+versa.</p></li>
 </ul>
 </section>
-<section id="campionare-la-semisfera" class="slide level1">
-<h1>Campionare la semisfera</h1>
+<section id="sampling-the-hemisphere" class="slide level1">
+<h1>Sampling the Hemisphere</h1>
 <ul>
-<li><p>Torniamo al problema di estrarre direzioni casuali sulla
-semisfera <span class="math inline">2\pi\,\text{sterad}</span>. Questo
-equivale ad estrarre coppie <span class="math inline">\theta,
-\varphi</span> tali che la probabilità sia uniforme.</p></li>
-<li><p>Siccome i generatori di numeri casuali permettono di estrarre
-<em>un solo numero alla volta</em>, dobbiamo seguire una strada per
-ricavare prima l’uno e poi l’altro.</p></li>
-<li><p>Per spiegare il procedimento, abbiamo bisogno di due nuovi
-concetti: la <em>funzione di densità marginale</em> e la <em>funzione di
-densità condizionale</em>.</p></li>
+<li><p>Let’s return to the problem of drawing random directions on the
+<span class="math inline">2\pi\,\text{steradian}</span> hemisphere. This
+is equivalent to drawing pairs <span class="math inline">\theta,
+\varphi</span> such that the probability is uniform.</p></li>
+<li><p>Since random number generators allow us to draw <em>only one
+number at a time</em>, we must follow a procedure to derive first one
+and then the other.</p></li>
+<li><p>To explain the procedure, we need two new concepts: the
+<em>marginal probability density function</em> and the <em>conditional
+probability density function</em>.</p></li>
 </ul>
 </section>
-<section id="due-nuove-definizioni" class="slide level1">
-<h1>Due nuove definizioni</h1>
+<section id="two-new-definitions" class="slide level1">
+<h1>Two New Definitions</h1>
 <ul>
-<li><p>Definiamo la <em>funzione di densità marginale</em> <span
-class="math inline">p(x)</span>:</p>
+<li><p>We define the <em>marginal probability density function</em>
+<span class="math inline">p(x)</span>:</p>
 <p><span class="math display">
 p(x) = \int_\mathbb{R} p(x, y)\,\mathrm{d}y,
 </span></p>
-<p>che è la probabilità di ottenere <span class="math inline">x</span>
-indipendentemente dal valore di <span
+<p>which is the probability of obtaining <span
+class="math inline">x</span> independently of the value of <span
 class="math inline">y</span>.</p></li>
-<li><p>La <em>funzione di densità condizionale</em> <span
-class="math inline">p(y | x)</span> è la probabilità di ottenere <span
-class="math inline">y</span> nell’ipotesi che si sia ottenuto uno
-specifico valore <span class="math inline">x</span>:</p>
+<li><p>The <em>conditional probability density function</em> <span
+class="math inline">p(y | x)</span> is the probability of obtaining
+<span class="math inline">y</span> given that a specific value <span
+class="math inline">x</span> has been obtained:</p>
 <p><span class="math display">
 p(y | x) = \frac{p(x, y)}{p(x)}\quad\Longleftrightarrow\quad p(x, y) =
 p(x) p(y | x).
 </span></p></li>
 </ul>
 </section>
-<section id="esempio-cornell-box" class="slide level1">
-<h1>Esempio: «Cornell box»</h1>
+<section id="example-cornell-box" class="slide level1">
+<h1>Example: «Cornell Box»</h1>
 <p><img data-src="./media/cornell_box_physical_model_image11.jpg"
 height="560" /></p>
 </section>
-<section id="schema-del-cornell-box" class="slide level1">
-<h1>Schema del «Cornell box»</h1>
+<section id="schema-of-the-cornell-box" class="slide level1">
+<h1>Schema of the «Cornell Box»</h1>
 <p><img data-src="./media/cornell-box-schema.svg" height="560" /></p>
 </section>
-<section id="esempio-3" class="slide level1">
-<h1>Esempio</h1>
+<section id="example-3" class="slide level1">
+<h1>Example</h1>
 <ul>
-<li><p>Facciamo un semplice esempio in cui <span
-class="math inline">x</span> e <span class="math inline">y</span> sono
-variabili discrete (Booleane) per capire le due definizioni.</p></li>
-<li><p>Supponiamo che le due variabili <span
-class="math inline">x</span> e <span class="math inline">y</span>
-rappresentino questo:</p>
-<ol>
-<li><span class="math inline">x \in \{V, F\}</span> determina se un
-raggio è partito dalla lampada sul soffitto;</li>
-<li><span class="math inline">y \in \{V, F\}</span> determina se un
-raggio colpisce il cubo di destra.</li>
+<li><p>Let’s consider a simple example where <span
+class="math inline">x</span> and <span class="math inline">y</span> are
+discrete (Boolean) variables to understand the two definitions.</p></li>
+<li><p>Suppose the two variables <span class="math inline">x</span> and
+<span class="math inline">y</span> represent the following:</p>
+<ol type="1">
+<li><span class="math inline">x \in \{T, F\}</span> determines whether a
+ray started from the lamp on the ceiling;</li>
+<li><span class="math inline">y \in \{T, F\}</span> determines whether a
+ray hits the cube on the right.</li>
 </ol></li>
-<li><p>Di conseguenza, <span class="math inline">p(V, V)</span> è la
-probabilità che un raggio parta dalla lampada e raggiunga il cubo di
-destra, <span class="math inline">p(F, V)</span> è la probabilità che un
-raggio colpisca lo stesso cubo ma <strong>non</strong> sia partito dalla
-lampada.</p></li>
+<li><p>Consequently, <span class="math inline">p(T, T)</span> is the
+probability that a ray starts from the lamp and reaches the right cube,
+<span class="math inline">p(F, T)</span> is the probability that a ray
+hits the same cube but did <strong>not</strong> start from the
+lamp.</p></li>
 </ul>
 </section>
-<section id="esempio-4" class="slide level1">
-<h1>Esempio</h1>
+<section id="example-4" class="slide level1">
+<h1>Example</h1>
 <ul>
-<li><p>La densità marginale <span class="math inline">p(x) = \int p(x,
-y)\,\mathrm{d}y</span> nel nostro esempio si interpreta così: <span
-class="math inline">p(V)</span> è la probabilità di che un raggio sia
-partito dalla lampada sul soffitto, indipendentemente da dove sia
-diretto.</p></li>
-<li><p>La densità condizionale <span class="math inline">p(y | x)</span>
-è tale per cui <span class="math inline">p(y = V | x = V)</span> dice
-qual è la probabilità che un raggio partito dalla lampada (<span
-class="math inline">x = V</span>) colpisca il cubo (<span
-class="math inline">y = V</span>).</p></li>
-<li><p>La densità condizionale <span class="math inline">p(x | y)</span>
-(con <span class="math inline">x</span> e <span
-class="math inline">y</span> scambiati) è tale per cui <span
-class="math inline">p(y = V | x = V)</span> dice qual è la probabilità
-che un raggio che ha colpito il cubo (<span class="math inline">y =
-V</span>) sia partito dalla lampada (<span class="math inline">x =
-V</span>).</p></li>
+<li><p>The marginal density <span class="math inline">p(x) = \int p(x,
+y)\,\mathrm{d}y</span> in our example is interpreted as follows: <span
+class="math inline">p(T)</span> is the probability that a ray started
+from the lamp on the ceiling, regardless of where it is
+directed.</p></li>
+<li><p>The conditional density <span class="math inline">p(y | x)</span>
+is such that <span class="math inline">p(y = T | x = T)</span> tells us
+the probability that a ray starting from the lamp (<span
+class="math inline">x = T</span>) hits the cube (<span
+class="math inline">y = T</span>).</p></li>
+<li><p>The conditional density <span class="math inline">p(x | y)</span>
+(with <span class="math inline">x</span> and <span
+class="math inline">y</span> swapped) is such that <span
+class="math inline">p(x = T | y = T)</span> tells us the probability
+that a ray that hit the cube (<span class="math inline">y = T</span>)
+started from the lamp (<span class="math inline">x = T</span>).</p></li>
 </ul>
 </section>
-<section id="applicazione-alle-direzioni" class="slide level1">
-<h1>Applicazione alle direzioni</h1>
+<section id="application-to-directions" class="slide level1">
+<h1>Application to Directions</h1>
 <ul>
-<li><p>Vediamo ora come estrarre una direzione casuale sulla semisfera
-2π usando i concetti appena appresi.</p></li>
-<li><p>L’algoritmo è semplice:</p>
-<ol>
-<li>Calcoliamo la <em>densità marginale</em> di una delle due variabili,
-ad esempio θ;</li>
-<li>Estraiamo un valore casuale per θ secondo quella densità marginale:
-è facile, perché ci siamo ricondotti a un caso 1D;</li>
-<li>Una volta noto θ, usiamo la <em>densità condizionale</em> per
-stimare la probabilità di ottenere φ dato il particolare θ che abbiamo
-appena ottenuto;</li>
-<li>Estraiamo φ seguendo la distribuzione appena ottenuta: anche qui
-siamo in un caso monodimensionale semplice da trattare!</li>
+<li><p>Now let’s see how to draw a random direction on the <span
+class="math inline">2\pi</span> hemisphere using the concepts we just
+learned.</p></li>
+<li><p>The algorithm is simple:</p>
+<ol type="1">
+<li>Calculate the <em>marginal density</em> of one of the two variables,
+for example <span class="math inline">\theta</span>;</li>
+<li>Draw a random value for <span class="math inline">\theta</span>
+according to that marginal density: this is easy because we have reduced
+it to a 1D case;</li>
+<li>Once <span class="math inline">\theta</span> is known, use the
+<em>conditional density</em> to estimate the probability of obtaining
+<span class="math inline">\varphi</span> given the particular <span
+class="math inline">\theta</span> we just obtained;</li>
+<li>Draw <span class="math inline">\varphi</span> following the
+distribution just obtained: here too we are in a one-dimensional case
+that is easy to handle!</li>
 </ol></li>
 </ul>
 </section>
-<section id="applicazione-alle-direzioni-1" class="slide level1">
-<h1>Applicazione alle direzioni</h1>
+<section id="application-to-directions-1" class="slide level1">
+<h1>Application to Directions</h1>
 <ul>
-<li><p>Se sulla semisfera <span class="math inline">\mathcal{H}^2</span>
-deve valere che <span class="math inline">p(\omega) = c</span>,
-allora</p>
+<li><p>If on the hemisphere <span
+class="math inline">\mathcal{H}^2</span> we must have <span
+class="math inline">p(\omega) = c</span>, then</p>
 <p><span class="math display">
 \int_{\mathcal{H}^2} p(\omega)\,\mathrm{d}\omega = 1 \quad \Rightarrow
 \quad c\int_{\mathcal{H}^2}\mathrm{d}\omega = 1\quad\Rightarrow\quad c =
 \frac1{2\pi}.
 </span></p></li>
-<li><p>Siccome <span class="math inline">p(\omega) = 1 / (2\pi)</span> e
+<li><p>Since <span class="math inline">p(\omega) = 1 / (2\pi)</span> and
 <span class="math inline">\mathrm{d}\omega =
-\sin\theta\,\mathrm{d}\theta\,\mathrm{d}\varphi</span>, allora</p>
+\sin\theta\,\mathrm{d}\theta\,\mathrm{d}\varphi</span>, then</p>
 <p><span class="math display">
 p(\omega)\mathrm{d}\omega = p(\theta,
 \varphi)\,\mathrm{d}\theta\,\mathrm{d}\varphi\quad\Rightarrow\quad
@@ -941,29 +936,30 @@ p(\theta, \varphi) = \frac{\sin\theta}{2\pi}.
 </span></p></li>
 </ul>
 </section>
-<section id="pdf-di-θ-e-φ" class="slide level1">
-<h1>PDF di θ e φ</h1>
+<section id="pdf-of-θ-and-φ" class="slide level1">
+<h1>PDF of θ and φ</h1>
 <ul>
-<li><p>La densità marginale <span class="math inline">p(\theta)</span> è
-data da</p>
+<li><p>The marginal density <span class="math inline">p(\theta)</span>
+is given by</p>
 <p><span class="math display">
 p(\theta) = \int_0^{2\pi} p(\theta, \varphi)\,\mathrm{d}\varphi =
 \int_0^{2\pi} \frac{\sin\theta}{2\pi}\,\mathrm{d}\varphi = \sin\theta.
 </span></p></li>
-<li><p>La densità condizionale <span class="math inline">p(\varphi |
-\theta)</span> è</p>
+<li><p>The conditional density <span class="math inline">p(\varphi |
+\theta)</span> is</p>
 <p><span class="math display">
 p(\varphi | \theta) = \frac{p(\theta, \varphi)}{p(\theta)} =
 \frac1{2\pi}.
 </span></p>
-<p>Per φ quindi la PDF è costante, il che è sensato vista la simmetria
-della variabile.</p></li>
+<p>Thus, the PDF for <span class="math inline">\varphi</span> is
+constant, which makes sense given the symmetry of the variable.</p></li>
 </ul>
 </section>
-<section id="campionare-θ-e-φ" class="slide level1">
-<h1>Campionare θ e φ</h1>
+<section id="sampling-θ-and-φ" class="slide level1">
+<h1>Sampling θ and φ</h1>
 <ul>
-<li><p>Per campionare θ e φ abbiamo bisogno della loro CDF, che è</p>
+<li><p>To sample <span class="math inline">\theta</span> and <span
+class="math inline">\varphi</span> we need their CDF, which is</p>
 <p><span class="math display">
 \begin{aligned}
 P_\theta(\theta) &amp;= \int_0^\theta
@@ -972,19 +968,21 @@ P_\varphi(\varphi | \theta) &amp;= \int_0^\varphi
 \frac1{2\pi}\,\mathrm{d}\varphi&#39; = \frac{\varphi}{2\pi}.
 \end{aligned}
 </span></p></li>
-<li><p>Date due variabili <span class="math inline">X_1, X_2</span>
-distribuite su <span class="math inline">[0, 1]</span>, le variabili θ e
-φ che corrispondono alle CDF appena calcolate sono</p>
+<li><p>Given two variables <span class="math inline">X_1, X_2</span>
+distributed on <span class="math inline">[0, 1]</span>, the variables
+<span class="math inline">\theta</span> and <span
+class="math inline">\varphi</span> corresponding to the CDFs just
+calculated are</p>
 <p><span class="math display">
 \theta = P_\theta^{-1}(X_1) = \arccos (1 - X_1) = \arccos X&#39;_1,\quad
 \varphi = P_\varphi^{-1}(X_2) = 2\pi X_2.
 </span></p></li>
 </ul>
 </section>
-<section id="direzioni-casuali-1" class="slide level1">
-<h1>Direzioni casuali</h1>
-<p>Questo codice Python genera una distribuzione di direzioni uniforme
-sull’angolo solido 2π:</p>
+<section id="random-directions-1" class="slide level1">
+<h1>Random Directions</h1>
+<p>This Python code generates a uniform distribution of directions over
+the <span class="math inline">2\pi</span> solid angle:</p>
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pylab <span class="im">as</span> plt</span>
@@ -1012,17 +1010,18 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a hr
 <iframe src="pd-images/uniform-hemisphere-distribution.html" width="640" height="640" frameborder="0">
 </iframe>
 </section>
-<section id="distribuzione-di-phong" class="slide level1">
-<h1>Distribuzione di Phong</h1>
+<section id="phong-distribution" class="slide level1">
+<h1>Phong Distribution</h1>
 <ul>
-<li><p>Una distribuzione più generale che ci servirà è la seguente:</p>
+<li><p>A more general distribution that we will need is the
+following:</p>
 <p><span class="math display">
 p(\omega) = k \cos^n\theta,
 </span></p>
-<p>con <span class="math inline">n</span> numero intero. (La forma che
-abbiamo ottenuto in precedenza corrisponde al caso <span
-class="math inline">n = 0</span>).</p></li>
-<li><p>La normalizzazione si ottiene al solito modo:</p>
+<p>with <span class="math inline">n</span> an integer. (The form we
+obtained previously corresponds to the case <span class="math inline">n
+= 0</span>).</p></li>
+<li><p>Normalization is obtained in the usual way:</p>
 <p><span class="math display">
 \int_{\mathcal{H}^2} k
 \cos^n\theta\,\sin\theta\,\mathrm{d}\theta\,\mathrm{d}\varphi =
@@ -1030,27 +1029,26 @@ class="math inline">n = 0</span>).</p></li>
 </span></p></li>
 </ul>
 </section>
-<section id="distribuzione-di-phong-1" class="slide level1">
-<h1>Distribuzione di Phong</h1>
+<section id="phong-distribution-1" class="slide level1">
+<h1>Phong Distribution</h1>
 <ul>
-<li><p>La densità marginale di <span class="math inline">\theta</span>
-è</p>
+<li><p>The marginal density of <span class="math inline">\theta</span>
+is</p>
 <p><span class="math display">
 p(\theta) = (n + 1) \cos^n\theta\,\sin\theta.
 </span></p></li>
-<li><p>La densità condizionale di <span
-class="math inline">\varphi</span> è nuovamente una costante, com’è
-evidente per la simmetria di <span
-class="math inline">p(\omega)</span>:</p>
+<li><p>The conditional density of <span
+class="math inline">\varphi</span> is again a constant, as is evident
+from the symmetry of <span class="math inline">p(\omega)</span>:</p>
 <p><span class="math display">
 p(\varphi | \theta) = \frac1{2\pi}.
 </span></p></li>
 </ul>
 </section>
-<section id="risultato-di-phong" class="slide level1">
-<h1>Risultato di Phong</h1>
+<section id="phong-distribution-2" class="slide level1">
+<h1>Phong Distribution</h1>
 <ul>
-<li><p>Ripetendo i calcoli si ottiene</p>
+<li><p>Repeating the calculations we obtain</p>
 <p><span class="math display">
 \begin{aligned}
 \theta &amp;= \arccos\left[\bigl(1 - X_1\bigr)^{\frac1{n + 1}}\right] =
@@ -1058,79 +1056,74 @@ p(\varphi | \theta) = \frac1{2\pi}.
 \varphi &amp;= 2\pi X_2,
 \end{aligned}
 </span></p>
-<p>dove ancora una volta <span class="math inline">X_1</span> e <span
-class="math inline">X_2</span> sono numeri casuali con distribuzione
-uniforme su <span class="math inline">[0, 1]</span>.</p></li>
-<li><p>Questa distribuzione <span class="math inline">p(\theta,
-\varphi)</span> è chiamata <em>distribuzione di Phong</em>, e ci sarà
-molto utile.</p></li>
+<p>where again <span class="math inline">X_1</span> and <span
+class="math inline">X_2</span> are random numbers with a uniform
+distribution on <span class="math inline">[0, 1]</span>.</p></li>
+<li><p>This distribution <span class="math inline">p(\theta,
+\varphi)</span> is called the <em>Phong distribution</em>.</p></li>
 </ul>
 </section>
-<section id="esempio-con-n-1" class="slide level1">
-<h1>Esempio con <span class="math inline">n = 1</span></h1>
+<section id="example-with-n-1" class="slide level1">
+<h1>Example with <span class="math inline">n = 1</span></h1>
 <iframe src="pd-images/cosine-hemisphere-distribution.html" width="560" height="560" frameborder="0">
 </iframe>
 </section>
 <section id="brdf" class="slide level1">
 <h1>BRDF</h1>
 </section>
-<section id="implementare-una-brdf" class="slide level1">
-<h1>Implementare una BRDF</h1>
+<section id="implementing-a-brdf" class="slide level1">
+<h1>Implementing a BRDF</h1>
 <ul>
-<li><p>Per risolvere l’equazione del rendering bisogna valutare il
-termine</p>
+<li><p>To solve the rendering equation, we need to evaluate the term</p>
 <p><span class="math display">
 f_r(x, \Psi \rightarrow \Theta),
 </span></p>
-<p>che è un numero puro che «pesa» la quantità di radiazione proveniente
-dalla direzione <span class="math inline">\Psi</span> e riflessa verso
-<span class="math inline">\Theta</span>.</p></li>
-<li><p>Siccome però <span class="math inline">f_r</span> dipende dalla
-frequenza <span class="math inline">\lambda</span>, in realtà dovrebbe
-essere codificato come una funzione <span class="math inline">f_r =
+<p>which is a pure number that “weighs” the amount of radiation coming
+from direction <span class="math inline">\Psi</span> and reflected
+towards <span class="math inline">\Theta</span>.</p></li>
+<li><p>However, since <span class="math inline">f_r</span> depends on
+the frequency <span class="math inline">\lambda</span>, it should
+actually be encoded as a function <span class="math inline">f_r =
 f_r(\lambda)</span>…</p></li>
-<li><p>…ma per le proprietà dell’occhio umano ci basta che <span
-class="math inline">f_r</span> restituisca <em>tre</em> valori: un
-numero puro per la componente R, uno per G, e uno per B.</p></li>
+<li><p>…but due to the properties of the human eye, it is sufficient for
+<span class="math inline">f_r</span> to return <em>three</em> values: a
+pure number for the R component, one for G, and one for B.</p></li>
 </ul>
 </section>
-<section id="caratteristiche-della-brdf" class="slide level1">
-<h1>Caratteristiche della BRDF</h1>
+<section id="brdf-characteristics" class="slide level1">
+<h1>BRDF Characteristics</h1>
 <ul>
-<li><p>Concettualmente, è utile dal punto di vista del codice
-considerare la BRDF di un materiale come composta da due tipi di
-informazioni:</p>
+<li><p>Conceptually, from a code perspective, it’s useful to consider
+the BRDF of a material as composed of two types of information:</p>
 <ol>
-<li>Quelle proprietà che dipendono dall’angolo di incidenza della luce e
-dalla posizione dell’osservatore;</li>
-<li>Quelle proprietà che invece <strong>non</strong> dipendono dalla
-direzione, e che vengono identificate sotto il nome collettivo di
-<em>pigmento</em>.</li>
+<li>Those properties that depend on the angle of incidence of the light
+and the observer’s position;</li>
+<li>Those properties that do <strong>not</strong> depend on the
+direction, and which are identified under the collective name of
+<em>pigment</em>.</li>
 </ol></li>
-<li><p>È comodo quindi definire un tipo <code>BRDF</code> che ha al suo
-interno un sotto-tipo <code>Pigment</code>.</p></li>
+<li><p>It is therefore convenient to define a <code>BRDF</code> type
+that contains a <code>Pigment</code> subtype.</p></li>
 </ul>
 </section>
-<section id="tipi-di-pigmenti" class="slide level1">
-<h1>Tipi di pigmenti</h1>
+<section id="pigment-types" class="slide level1">
+<h1>Pigment Types</h1>
 <ul>
-<li><p>Il pigmento <em>non</em> dice quale sia l’aspetto finale del
-materiale, perché la maggiore o minore brillantezza/metallicità/… sono
-definite dalla BRDF.</p></li>
-<li><p>I pigmenti sono solitamente usati per rappresentare la
-variabilità di una BRDF sulla superficie: sotto questa ipotesi, quello
-che cambia da punto a punto non è <em>tutta</em> la BRDF, ma solo il
-pigmento.</p></li>
-<li><p>Nella <em>computer graphics</em> sono solitamente definiti vari
-tipi di pigmenti:</p>
+<li><p>The pigment does <em>not</em> determine the final appearance of
+the material because the greater or lesser glossiness/metallic nature/…
+are defined by the BRDF.</p></li>
+<li><p>Pigments are usually used to represent the variability of a BRDF
+on the surface: under this hypothesis, what changes from point to point
+is not the <em>entire</em> BRDF, but only the pigment.</p></li>
+<li><p>In <em>computer graphics</em>, various types of pigments are
+usually defined:</p>
 <ol>
-<li>Uniforme (chiamato anche <em>solid</em>, chissà perché).</li>
-<li>A scacchiera (<em>checkered</em>): molto utile per il
-debugging.</li>
-<li>Immagine (detto anche <em>textured</em>).</li>
+<li>Uniform (also called <em>solid</em>, who knows why).</li>
+<li>Checkered: very useful for debugging.</li>
+<li>Image (also called <em>textured</em>).</li>
 <li><a
-href="https://en.wikipedia.org/wiki/Procedural_texture">Procedurale</a>
-(v. il capitolo 5 di Shirley &amp; Morley).</li>
+href="https://en.wikipedia.org/wiki/Procedural_texture">Procedural</a>
+(see chapter 5 of Shirley &amp; Morley).</li>
 </ol></li>
 </ul>
 </section>
@@ -1139,36 +1132,34 @@ href="https://en.wikipedia.org/wiki/Procedural_texture">Procedurale</a>
 <iframe src="https://player.vimeo.com/video/549664049?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1102" height="620" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Path-tracing example">
 </iframe>
 </section>
-<section id="forma-della-brdf" class="slide level1">
-<h1>Forma della BRDF</h1>
+<section id="brdf-form" class="slide level1">
+<h1>BRDF Form</h1>
 <ul>
-<li><p>La dipendenza direzionale della BRDF dipende sia dall’angolo di
-incidenza della luce rispetto alla normale <span
-class="math inline">\hat n</span>, che dall’angolo di vista
-dell’osservatore, sempre rispetto a <span class="math inline">\hat
-n</span>.</p></li>
-<li><p>Abbiamo già visto alcuni tipi di BRDF nella prima lezione:</p>
+<li><p>The directional dependence of the BRDF depends both on the angle
+of incidence of the light with respect to the normal <span
+class="math inline">\hat n</span>, and on the observer’s viewing angle,
+also with respect to <span class="math inline">\hat n</span>.</p></li>
+<li><p>We have already seen some types of BRDF in the first lesson:</p>
 <ol>
-<li><a
-href="tomasi-ray-tracing-01a.html#/superficie-diffusiva-ideale">Superficie
-diffusiva ideale</a>;</li>
-<li><a href="tomasi-ray-tracing-01a.html#/altre-brdf">Superficie
-riflettente</a>.</li>
+<li><a href="tomasi-ray-tracing-01a.html#/ideal-diffusive-surface">Ideal
+Diffuse Surface</a>;</li>
+<li><a href="tomasi-ray-tracing-01a.html#/other-brdfs">Reflective
+Surface</a>.</li>
 </ol></li>
-<li><p>Nelle esercitazioni implementeremo le BRDF, insieme a un
-generatore di numeri casuali.</p></li>
+<li><p>In the exercises, we will implement BRDFs, along with a random
+number generator.</p></li>
 </ul>
 </section>
-<section id="esempio-5" class="slide level1">
-<h1>Esempio</h1>
+<section id="example-5" class="slide level1">
+<h1>Example</h1>
 <center>
 <img data-src="media/brdf-examples.webp" />
 </center>
-<p>Nella scena tutte le superfici sono diffusive ideali, tranne la sfera
-rossa che implementa una BRDF riflettente. L’ambiente è una sfera di
-raggio molto grande il cui materiale è basato su un <a
-href="https://blog.gregzaal.com/2017/01/17/blender-institute-hdri/">file
-HDR</a> (tramite un pigmento <em>textured</em>).</p>
+<p>In the scene, all surfaces are ideal diffuse surfaces, except for the
+red sphere, which implements a reflective BRDF. The environment is a
+sphere of very large radius whose material is based on an <a
+href="https://blog.gregzaal.com/2017/01/17/blender-institute-hdri/">HDR
+file</a> (using a <em>textured</em> pigment).</p>
 </section>
     </div>
   </div>

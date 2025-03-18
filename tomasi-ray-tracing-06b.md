@@ -1,57 +1,51 @@
----
-title: "Esercitazione 6"
-subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
+# CI builds {#ci-builds}
 
 # CI builds
 
-# CI builds
+-   When managing *pull requests*, it is necessary to be sure that the change does not worsen the code.
 
--   Nel momento in cui si gestiscono *pull request*, è necessario essere sicuri che la modifica non peggiori il codice.
+-   A basic requirement is that all tests continue to pass once the *pull request* is merged.
 
--   Un requisito basilare è che tutti i test continuino a passare una volta che viene incorporato il *pull request*.
-
--   GitHub consente di verificare automaticamente questo requisito, tramite i *Continuous Integration builds* (che GitHub chiama *GitHub actions*).
+-   GitHub allows you to automatically verify this requirement, using *Continuous Integration builds* (which GitHub calls *GitHub actions*).
 
 # Continuous Integration (CI)
 
--   È un termine che indica un metodo di lavoro in cui miglioramenti e modifiche al codice vengono incorporate il prima possibile nel branch `master`.
+-   It is a term that indicates a working method in which improvements and code changes are incorporated as soon as possible into the `master` branch.
 
--   Perché possano essere incorporati, occorre essere certi della loro qualità!
+-   Before they can be incorporated, it is necessary to be certain of their quality!
 
--   Un CI build consiste nel creare una macchina virtuale su cui si installa un sistema operativo «pulito» e su cui si installa il codice, lo si compila e si eseguono i test.
+-   A CI build consists of creating a virtual machine on which a «clean» operating system is installed and on which the code is installed, compiled, and the tests are run.
 
--   Al termine dell'esecuzione dei test, la macchina virtuale viene cancellata; se si esegue di nuovo il CI build, si ricomincia da capo.
+-   At the end of the test execution, the virtual machine is deleted; if the CI build is run again, it starts over.
 
-# Vantaggi dei CI build
+# Advantages of CI builds
 
--   Installano il codice su una macchina virtuale: più difficile combinare guai.
+-   They install the code on a virtual machine: it's harder to mess things up.
 
--   La macchina virtuale viene creata sempre da zero: più facile scoprire quali sono le dipendenze del codice. (Esempio: quale versione del compilatore C++ è stata installata? È stata installata la libreria `libgd`?)
+-   The virtual machine is always created from scratch: it's easier to discover the code's dependencies. (Example: which version of the C++ compiler was installed? Was the `libgd` library installed?)
 
--   Si possono creare più macchine virtuali con diversi sistemi operativi (Linux, Windows, Mac OS X…): il codice viene verificato su ciascuna di esse.
+-   You can create multiple virtual machines with different operating systems (Linux, Windows, Mac OS X…): the code is verified on each of them.
 
--   I CI builds possono venire eseguiti automaticamente da GitHub ogni volta che si apre un pull request, ogni volta che si fa un commit, etc.
+-   CI builds can be run automatically by GitHub every time a pull request is opened, every time a commit is made, etc.
 
 # CI builds in GitHub
 
--   Un CI build può essere creato ed eseguito in GitHub tramite [GitHub Actions](https://docs.github.com/en/actions), un servizio che include una serie di possibilità che vanno oltre i semplici CI build.
+-   A CI build can be created and executed in GitHub using [GitHub Actions](https://docs.github.com/en/actions), a service that includes several possibilities that go beyond simple CI builds.
 
--   Per attivare un CI build è sufficiente create una directory nascosta `.github/workflows` nel proprio repository, che contenga un file di testo in formato [YAML](https://en.wikipedia.org/wiki/YAML), che contenga queste informazioni:
+-   To activate a CI build, it is sufficient to create a hidden directory `.github/workflows` in your repository, containing a text file in [YAML](https://en.wikipedia.org/wiki/YAML) format, which contains this information:
 
-    #.   Quando eseguire l'azione (a ogni pull request? a ogni commit?)
-    #.   Quale sistema operativo usare (Linux? Windows? quale versione?)
-    #.   Quali pacchetti aggiuntivi installare (compilatore C++? Python?)
-    #.   Come compilare il codice ed eseguire i test?
+    #.   When to execute the action (on every pull request? on every commit?)
+    #.   Which operating system to use (Linux? Windows? which version?)
+    #.   Which additional packages to install (C++ compiler? Python?)
+    #.   How to compile the code and run the tests?
 
-# Il «Marketplace»
+# The «Marketplace»
 
--   GitHub Actions ha un «marketplace» che consente di configurare automaticamente con pochi click del mouse un CI build in funzione del linguaggio che usate.
+-   GitHub Actions has a «marketplace» that allows you to automatically configure a CI build with a few mouse clicks, depending on the language you use.
 
--   Sono disponibili azioni pre-configurate per molti linguaggi ed ambienti di sviluppo.
+-   Pre-configured actions are available for many languages and development environments.
 
--   Non è drammatico se non trovate un'azione che fa al caso vostro: è abbastanza semplice creare nuove azioni su misura, una volta che capite come fare a descriverle.
+-   It's not a problem if you don't find an action that suits your needs: it's quite simple to create new custom actions, once you understand how to describe them.
 
 ---
 
@@ -66,80 +60,101 @@ author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 </center>
 
 
-# Cosa si può fare in un CI build?
+# What can be done in a CI build?
 
--   Potete eseguire dei *linter* come [PyFlakes](https://pypi.org/project/pyflakes/) per Python o [CSA](https://clang-analyzer.llvm.org/) per C++.
+-   You can run *linters* like [PyFlakes](https://pypi.org/project/pyflakes/) for Python or [CSA](https://clang-analyzer.llvm.org/) for C++.
 
--   Se usate un tool per la formattazione automatica (come [black](https://github.com/psf/black) per Python o [clang-format](https://clang.llvm.org/docs/ClangFormat.html) per il C++), potete verificare che il codice sia formattato correttamente.
+-   If you use an automatic formatting tool (like [black](https://github.com/psf/black) for Python or [clang-format](https://clang.llvm.org/docs/ClangFormat.html) for C++), you can verify that the code is formatted correctly.
 
--   Si possono usare siti come [ReadTheDocs](https://about.readthedocs.com/?ref=readthedocs.org) per pubblicare il manuale dell'utente con [Sphinx](https://www.sphinx-doc.org/), [MkDocs](https://www.mkdocs.org/) o [Jupyter Book](https://jupyterbook.org/en/stable/intro.html), garantendo che vengano incluse le *docstrings* aggiornate.
+-   You can use sites like [ReadTheDocs](https://about.readthedocs.com/?ref=readthedocs.org) to publish the user manual with [Sphinx](https://www.sphinx-doc.org/), [MkDocs](https://www.mkdocs.org/) or [Jupyter Book](https://jupyterbook.org/en/stable/intro.html), ensuring that updated *docstrings* are included.
 
--   Si possono generare eseguibili pronti da scaricare: in questo modo l'utente non è obbligato ad installare un compilatore C++/Nim/Rust/…
+-   You can generate ready-to-download executables: this way the user is not obliged to install a C++/Nim/Rust/… compiler.
 
--   **L'unico requisito per questo corso è che si eseguano i test!**
-
-
-# Guida per l'esercitazione
+-   **The only requirement for this course is that you run the tests!**
 
 
-# Workflow in GitHub
+# What to do today
 
--   Aggiungete un *workflow* al vostro repository GitHub.
+# What to do today
 
--   Ci sono molti template disponibili in GitHub: scegliete il più appropriato.
+-   Add a *workflow* to your GitHub repository.
 
--   Il workflow deve eseguire le seguenti azioni:
+-   There are many templates available in GitHub: choose the most appropriate one.
 
-    1.  Scaricare il codice dal repository GitHub (verifica che non manchino file);
-    2.  Compilare il codice (verifica che non ci siano errori di sintassi);
-    3.  Eseguire i test (verifica che il codice funzioni a dovere).
+-   The workflow must perform the following actions:
 
--   Modificate un test in modo che fallisca e verificate che quando fate il commit ciò vi venga segnalato. (Poi rimettete a posto il test).
+    1.  Download the code from the GitHub repository (verify that no files are missing);
+    2.  Compile the code (verify that there are no syntax errors);
+    3.  Run the tests (verify that the code works properly).
 
-# Indicazioni per D/Nim/Rust
+-   Modify a test so that it fails and verify that when you commit this is reported to you. (Then fix the test).
 
-# GitHub Actions
-
--   Per D, potete usare [setup-dlang](https://github.com/dlang-community/setup-dlang)
-
--   Per Nim, esiste [Setup Nim Environment](https://github.com/marketplace/actions/setup-nim-environment)
-
--   Chi usa Rust ha già configurato una action, quindi tutto ok!
-
-# Indicazioni per Java/Kotlin
+# Hints for C++
 
 # GitHub Actions
 
--   Sia che usiate Java sia che usiate Kotlin, selezionate «Java with Gradle»:
+- Once you have saved the code in a GitHub repository, set up a new "Action" (see the following video).
+
+- The template is "CMake based projects" (ignore the fact that it seems to only support the C language):
+
+    <center>
+    ![](./media/cmake-github-action.png)
+    </center>
+
+---
+
+<iframe src="https://player.vimeo.com/video/520878087?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Setting up GitHub Actions for CMake-based projects"></iframe>
+
+# Hints for Java/Kotlin
+
+# GitHub Actions
+
+-   Whether you use Java or Kotlin, select «Java with Gradle»:
 
     <center>
     ![](./media/gradle-github-action.png)
     </center>
 
-    Se usate Kotlin, Gradle scaricherà automaticamente quanto serve per supportarlo.
+    If you use Kotlin, Gradle will automatically download what is needed to support it.
 
--   Il processo proverà a compilare il codice e a eseguire *tutti* i test nel repository
+-   The process will try to compile the code and run *all* the tests in the repository
 
-# Risoluzione dei problemi
+# Troubleshooting
 
--   Ricordatevi di aggiungere al commit i file in `gradle/wrapper/`
+-   Remember to add the files in `gradle/wrapper/` to the commit
 
--   Se in Kotlin avete problemi a causa della versione di Gradle, rigenerate `gradlew` da linea di comando così:
+-   If you have problems in Kotlin due to the Gradle version, regenerate `gradlew` from the command line like this:
 
     ```sh
     gradle wrapper --gradle-version 8.4
     ```
 
-    (Tenete presente che Gradle supporta Kotlin solo a partire dalla versione 5.3).
+    (Keep in mind that Gradle supports Kotlin only starting from version 5.3).
 
-# Indicazioni per C\#
+# Hints for C\#
 
 # GitHub Actions
 
--   Aggiungete una Action al repository GitHub, una volta che avete fatto il commit ed eseguito `git push`.
+-   Add an Action to the GitHub repository, once you have committed and executed `git push`.
 
--   Il modello è «.NET» (evitate il modello «.NET desktop», a noi serve quello per i programmi che funzionano da linea di comando):
+-   The template is «.NET» (avoid the «.NET desktop» template, we need the one for programs that work from the command line):
 
     <center>
     ![](./media/dotnet-github-action.png)
     </center>
+
+# Hints for D/Nim/Rust
+
+# GitHub Actions
+
+-   For D, you can use [setup-dlang](https://github.com/dlang-community/setup-dlang)
+
+-   For Nim, there is [Setup Nim Environment](https://github.com/marketplace/actions/setup-nim-environment)
+
+-   Those using Rust have already configured an action, so everything is ok!
+
+---
+title: "Laboratory 6"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

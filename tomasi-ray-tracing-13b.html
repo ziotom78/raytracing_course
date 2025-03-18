@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Esercitazione 13</title>
+  <title>Laboratory 13</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -29,8 +29,9 @@
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -41,7 +42,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -102,18 +103,19 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Esercitazione 13</h1>
-  <p class="subtitle">Analisi sintattica e semantica</p>
+  <h1 class="title">Laboratory 13</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini
+fotorealistiche</p>
   <p class="author">Maurizio Tomasi <a
 href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="analisi-sintattica-e-lessicale" class="slide level1">
-<h1>Analisi sintattica e lessicale</h1>
+<section id="syntactic-and-lexical-analysis" class="slide level1">
+<h1>Syntactic and lexical analysis</h1>
 </section>
-<section id="esempio-di-formato" class="slide level1">
-<h1>Esempio di formato</h1>
+<section id="example" class="slide level1">
+<h1>Example</h1>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Declare a floating-point variable named &quot;clock&quot;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span> clock(<span class="dv">150</span>)</span>
@@ -150,38 +152,35 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a camera</span></span>
 <span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>camera(perspective, rotation_z(<span class="dv">30</span>) <span class="op">*</span> translation([<span class="op">-</span><span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">1</span>]), <span class="fl">1.0</span>, <span class="fl">1.0</span>)</span></code></pre></div>
-<p>Questo è il tipo di file per cui oggi implementeremo il nostro
-<em>parser</em>, che effettuerà l’analisi semantica e lessicale del
-contenuto.</p>
+<p>This is the file type for which we will implement a <em>parser</em>,
+with the task to perform a semantic and syntactic analysis.</p>
 </section>
-<section id="struttura-del-parser" class="slide level1">
-<h1>Struttura del <em>parser</em></h1>
+<section id="structure-of-the-parser" class="slide level1">
+<h1>Structure of the <em>Parser</em></h1>
 <ul>
-<li><p>Il nostro <em>parser</em> dovrà leggere in input la descrizione
-di una scena usando un <code>InputStream</code> e produrre una serie di
-oggetti in memoria:</p>
+<li><p>Our <em>parser</em> must read the description of a scene using an
+<code>InputStream</code> and allocate memory for several objects:</p>
 <ul>
-<li>Una variabile di tipo <code>World</code>;</li>
-<li>La definizione dell’osservatore;</li>
-<li>Una tabella contenente tutti i <code>Material</code> definiti nella
-scena e associati al loro nome (es., <code>sky_material</code> nel
-nostro esempio);</li>
-<li>Una tabella contenente tutte le variabili <code>float</code>.</li>
+<li>An instance of the type <code>World</code>;</li>
+<li>The definition of the observer;</li>
+<li>A table containing all the instances of <code>Material</code>
+defined in the scene, together with their name. (E.g.,
+<code>sky_material</code> in our canonical example);</li>
+<li>A table containing all the <code>float</code> variables.</li>
 </ul></li>
-<li><p>La tabella dei materiali e delle variabili non servirà per fare
-il <em>rendering</em> della scena, ma può essere utile per stampare a
-video una tabella riassuntiva, oppure per fare
-<em>debugging</em>.</p></li>
+<li><p>The table with materials and <code>float</code> variables will
+not be needed to render the scene, but it might be useful for printing a
+table to the console or to debug the code.</p></li>
 </ul>
 </section>
-<section id="il-tipo-scene" class="slide level1">
-<h1>Il tipo <code>Scene</code></h1>
+<section id="the-scene-type" class="slide level1">
+<h1>The <code>Scene</code> type</h1>
 <ul>
-<li><p>Codificheremo quindi il risultato del <em>parsing</em> in un
-nuovo tipo, <code>Scene</code></p></li>
+<li><p>We will save the results of the parsing stage in a new type,
+<code>Scene</code>.</p></li>
 <li><p>In <a
 href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L329L336">pytracer</a>,
-il tipo è definito così:</p>
+the type has the following definition:</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Scene:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A scene read from a scene file&quot;&quot;&quot;</span></span>
@@ -192,16 +191,15 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    overridden_variables: Set[<span class="bu">str</span>] <span class="op">=</span> field(default_factory<span class="op">=</span><span class="bu">set</span>)</span></code></pre></div></li>
 </ul>
 </section>
-<section id="funzioni-expect_" class="slide level1">
-<h1>Funzioni <code>expect_*</code></h1>
+<section id="the-expect_-functions" class="slide level1">
+<h1>The <code>expect_*</code> functions</h1>
 <ul>
-<li><p>Nella nostra grammatica, capita spesso che in certi punti la
-presenza di un simbolo, un identificatore, o una particolare
-<em>keyword</em> sia <strong>obbligatoria</strong>.</p></li>
-<li><p>È molto comodo implementare quindi funzioni come
-<code>expect_symbol</code>, <code>expect_number</code>, etc., che
-gestiscano eventuali condizioni in cui il <em>token</em> letto non è del
-tipo atteso, ad esempio:</p>
+<li><p>In our grammar, it is often the case that a symbol, identifier,
+or keyword is <strong>mandatory</strong> at some point in the
+language.</p></li>
+<li><p>It is handy to implement functions like
+<code>expect_symbol</code>, <code>expect_number</code>, …, to handle the
+error condition where the token is of an unexpected type. Example:</p>
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expect_symbol(s: InputStream, symbol: <span class="bu">str</span>):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Read a token from `input_file` and check that it matches `symbol`.&quot;&quot;&quot;</span></span>
@@ -210,30 +208,28 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> GrammarError(token.location, <span class="ss">f&quot;got &#39;</span><span class="sc">{</span>token<span class="sc">}</span><span class="ss">&#39; instead of &#39;</span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss">&#39;&quot;</span>)</span></code></pre></div></li>
 </ul>
 </section>
-<section id="funzione-expect_keyword" class="slide level1">
-<h1>Funzione <code>expect_keyword</code></h1>
+<section id="the-expect_keyword-function" class="slide level1">
+<h1>The <code>expect_keyword</code> function</h1>
 <ul>
-<li><p>Se nel caso di simboli solitamente è richiesto l’uso di
-<strong>un particolare simbolo</strong> (es., la parentesi tonda
-aperta), nel caso delle keyword il nostro linguaggio ammette spesso
-diverse possibilità.</p></li>
-<li><p>Ad esempio, nell’interpretare una BRDF, ci si può aspettare sia
-<code>diffuse</code> che <code>specular</code>.</p></li>
-<li><p>La funzione <a
+<li><p>It is usually the case that the grammar expect a precise symbol
+at some point, e.g., a comma. For keywords, our grammar often lets many
+different choices.</p></li>
+<li><p>For instance, when defining a BRDF, the grammar either expects
+<code>diffuse</code> or <code>specular</code>.</p></li>
+<li><p>The function <a
 href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L346-L358"><code>expect_keywords</code></a>
-dovrebbe quindi accettare come parametro una <strong>lista</strong> di
-keyword ammesse, anziché una sola. (Di solito questo è utile anche per i
-simboli, ma nel nostro caso specifico è inutile: laddove la nostra
-grammatica richiede un simbolo, questo è sempre univocamente
-determinato).</p></li>
+should accept a <strong>list</strong> of permitted keywords, instead of
+just one. (Usually this is handy for symbols too, but in our grammar
+this is useless: every time a symbol is expected, its kind is uniquely
+determined.)</p></li>
 </ul>
 </section>
-<section id="lista-di-funzioni-expect_" class="slide level1">
-<h1>Lista di funzioni <code>expect_*</code></h1>
+<section id="list-of-functions-expect_" class="slide level1">
+<h1>List of functions <code>expect_*</code></h1>
 <ul>
-<li><p>Il codice di <a
-href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L339-L396">pytracer</a>
-implementa queste funzioni:</p>
+<li><p><a
+href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L339-L396">Pytracer</a>
+implements these functions:</p>
 <ol>
 <li><code>expect_symbol(s: InputStream, symbol: str)</code></li>
 <li><code>expect_keywords(s: InputStream, keywords: List[KeywordEnum]) -&gt; KeywordEnum</code></li>
@@ -241,18 +237,17 @@ implementa queste funzioni:</p>
 <li><code>expect_string(s: InputStream) -&gt; str</code></li>
 <li><code>expect_identifier(s: InputStream) -&gt; str</code></li>
 </ol></li>
-<li><p>Ovviamente avete la libertà di variare questo approccio come
-pensate sia meglio per il vostro linguaggio (esempio: potete rendere
-tutte queste funzioni dei metodi di <code>InputStream</code>).</p></li>
+<li><p>Obviously, you have complete freedom to adapt this approach
+according to your taste!</p></li>
 </ul>
 </section>
 <section id="expect_number" class="slide level1">
 <h1><code>expect_number</code></h1>
 <ul>
-<li><p>La funzione <a
+<li><p>The function <a
 href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L361-L374"><code>expect_number</code></a>
-è un po’ più sofisticata delle altre, perché ammette sia
-<em>literal</em> che identificatori a variabili già definite:</p>
+is slightly more complex, because it must accept both <em>literal
+numbers</em> and variables:</p>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> expect_number(s: InputStream, scene: Scene) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> input_file.read_token()</span>
@@ -265,20 +260,20 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> scene.float_variables[variable_name]</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> GrammarError(token.location, <span class="ss">f&quot;got &#39;</span><span class="sc">{</span>token<span class="sc">}</span><span class="ss">&#39; instead of a number&quot;</span>)</span></code></pre></div></li>
-<li><p>È questo il motivo per cui richiede un parametro
+<li><p>To handle variables, the function must accept an instance to
 <code>Scene</code>.</p></li>
 </ul>
 </section>
-<section id="funzioni-parse_" class="slide level1">
-<h1>Funzioni <code>parse_*</code></h1>
+<section id="the-parse_-functions" class="slide level1">
+<h1>The <code>parse_*</code> functions</h1>
 <ul>
-<li><p>Le funzioni <a
+<li><p>The functions <a
 href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L399-L616"><code>parse_*</code></a>
-si occupano invece di interpretare <em>liste</em> di token, ed impiegano
-al loro interno le funzioni <code>expect_*</code>.</p></li>
-<li><p>Ad esempio, l’implementazione di <a
+interpret <em>lists</em> of tokens, and they are built upon the
+<code>expect_*</code> functions.</p></li>
+<li><p>For instance, Pytracer implements <a
 href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L411-L420"><code>parse_color</code></a>
-in pytracer è fatta così:</p>
+in this way:</p>
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_color(s: InputStream, scene: Scene) <span class="op">-&gt;</span> Color:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    expect_symbol(input_file, <span class="st">&quot;&lt;&quot;</span>)</span>
@@ -289,13 +284,14 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a hr
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    blue <span class="op">=</span> expect_number(input_file, scene)</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    expect_symbol(input_file, <span class="st">&quot;&gt;&quot;</span>)</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Color(red, green, blue)</span></code></pre></div></li>
-<li><p>L’uso di <a
+<li><p>Using <a
 href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L361-L374"><code>expect_number</code></a>
-abilita la possibilità di usare variabili <code>float</code>.</p></li>
+enables the possibility to use <code>float</code> variables for the RGB
+components.</p></li>
 </ul>
 </section>
-<section id="lista-di-funzioni-parse_" class="slide level1">
-<h1>Lista di funzioni <code>parse_*</code></h1>
+<section id="list-of-functions-parse_" class="slide level1">
+<h1>List of functions <code>parse_*</code></h1>
 <ol>
 <li><code>parse_vector(s: InputStream, scene: Scene) -&gt; Vec</code></li>
 <li><code>parse_color(s: InputStream, scene: Scene) -&gt; Color</code></li>
@@ -308,41 +304,39 @@ abilita la possibilità di usare variabili <code>float</code>.</p></li>
 <li><code>parse_camera(s: InputStream, scene) -&gt; Camera</code></li>
 </ol>
 </section>
-<section id="la-funzione-parse_scene" class="slide level1">
-<h1>La funzione <code>parse_scene</code></h1>
+<section id="the-function-parse_scene" class="slide level1">
+<h1>The function <code>parse_scene</code></h1>
 <ul>
-<li><p>La funzione <a
+<li><p>The function <a
 href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L571-L616"><code>parse_scene</code></a>
-è quella più ad alto livello di tutte: deve interpretare la scena e
-produrre in output un oggetto <code>Scene</code>:</p>
+is at the highest level: it must interpret the scene and create an
+instance of <code>Scene</code>.</p>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>parse_scene(s: InputStream) <span class="op">-&gt;</span> Scene</span></code></pre></div></li>
-<li><p>Nella grammatica EBNF che abbiamo visto a lezione, una scene è
-una lista di zero o più definizioni di
-<code>float</code>/materiale/sfera/piano/osservatore
-(<code>scene ::= declaration*</code>). Dal punto di vista del codice,
-questo va scandito in un ciclo <code>while</code>.</p></li>
-<li><p>La stessa cosa vale per le definizioni EBNF ricorsive, come
-<code>transformation</code>, che in aggiunta deve usare il
+<li><p>In the EBNF grammar we saw last time, a scene is a list of zero
+or more definitions of
+<code>float</code>/materials/spheres/planes/observers
+(<code>scene ::= declaration*</code>). The best option is to implement a
+<code>while</code> loop.</p></li>
+<li><p>The same applies to recursive EBNF functions like
+<code>transformation</code>. The latter must use
 <em>look-ahead</em>.</p></li>
 </ul>
 </section>
-<section id="look-ahead-di-token" class="slide level1">
-<h1><em>Look-ahead</em> di <em>token</em></h1>
+<section id="look-ahead-of-tokens" class="slide level1">
+<h1><em>Look-ahead</em> of tokens</h1>
 </section>
-<section id="grammatica-ll1" class="slide level1">
-<h1>Grammatica LL(1)</h1>
+<section id="ll1-grammars" class="slide level1">
+<h1>LL(1) grammars</h1>
 <ul>
-<li><p>Nella lezione di teoria abbiamo visto che la nostra è una
-grammatica di tipo LL(1): per interpretare correttamente le
-trasformazioni occorre a volte leggere in anticipo il <em>token</em>
-successivo.</p></li>
-<li><p>Questa funzionalità va implementata in <code>InputStream</code>,
-tramite una funzione <a
-href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L323-L326"><code>unread_token</code></a>
-che si appoggia a un nuovo membro <a
-href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L181"><code>saved_token</code></a>
-da aggiungere a <code>InputStream</code>.</p></li>
+<li><p>During the last class, we stressed that our grammar is of type
+LL(1): to correctly parse the tokens, sometimes we need to “peek” the
+next one before actually reading it.</p></li>
+<li><p>This function can be implemented in <code>InputStream</code>.
+Pytracer uses the method <a
+href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L323-L326"><code>unread_token</code></a>,
+which uses the data member <a
+href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L181"><code>saved_token</code></a>.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -368,104 +362,100 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a hr
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="kw">not</span> <span class="va">self</span>.saved_token</span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.saved_token <span class="op">=</span> token</span></code></pre></div>
 </section>
-<section id="implementazione-di-main" class="slide level1">
-<h1>Implementazione di <code>main</code></h1>
+<section id="the-main-function" class="slide level1">
+<h1>The <code>main</code> function</h1>
 </section>
-<section id="da-demo-a-render" class="slide level1">
-<h1>Da <code>demo</code> a <code>render</code></h1>
+<section id="from-demo-to-render" class="slide level1">
+<h1>From <code>demo</code> to <code>render</code></h1>
 <ul>
-<li><p>Il <code>main</code> del vostro programma ha finora accettato due
-comandi:</p>
+<li><p>So far, the <code>main</code> function in your program accepted
+two verbs:</p>
 <ol>
-<li><code>pfm2png</code>, per applicare il <em>tone mapping</em> a
-immagini HDR;</li>
-<li><code>demo</code>, per generare l’immagine dimostrativa.</li>
+<li><code>pfm2png</code>, to apply <em>tone mapping</em> to HDR
+images;</li>
+<li><code>demo</code>, to generate a sample image.</li>
 </ol></li>
-<li><p>Oggi dovete aggiungere il comando <code>render</code>, e fare in
-modo che accetti un file da linea di comando.</p></li>
-<li><p>È ovviamente un’ottima idea aggiungere una cartella
-<code>examples</code> nel vostro repository, in cui aggiungere una
-immagine dimostrativa (o più di una!). In questo caso potreste anche
-decidere di togliere il comando <code>demo</code>, se volete.</p></li>
+<li><p>Today you will add a new verb, <code>render</code>, which must
+accept a file name from the command line.</p></li>
+<li><p>It would be nice to add a <code>examples</code> folder in your
+repository, containing one or more sample scenes. In this case, the
+<code>demo</code> verb becomes redundant, and if you prefer you can
+remove it.</p></li>
 </ul>
 </section>
-<section id="animazioni" class="slide level1">
-<h1>Animazioni</h1>
+<section id="animations" class="slide level1">
+<h1>Animations</h1>
 <ul>
-<li><p>Il <a
-href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/main.py#L72-L192"><code>main</code>
-di pytracer</a> ammette una funzionalità aggiuntiva che è comoda per le
-animazioni: si possono specificare i valori di variabili da linea di
-comando. Ad esempio:</p>
+<li><p>The <a
+href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/main.py#L72-L192"><code>main</code></a>
+in Pytracer enables a new feature that is handy for animations: you can
+define variables from the command line. For instance:</p>
 <pre><code>./main --declare-float=clock:150.0 examples/demo.txt</code></pre>
-<p>L’effetto di <a
+<p>The switch <a
 href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/main.py#L118-L124"><code>--declare-float</code></a>
-è quello di dichiarare una variabile <code>clock</code> e assegnarle il
-valore 150.0.</p></li>
-<li><p>Questo di per sè non genera animazioni, ma è molto comodo per
-realizzarle:</p>
+declares a variable <code>clock</code> with the value 150.0.</p></li>
+<li><p>This feature alone cannot create animations, but you can use it
+in a iteration:</p>
 <pre><code>for angle in $(seq 0 359); do
     ./main --declare-float=clock:$angle --pfm-output=image$angle.pfm examples/demo.txt
 done</code></pre></li>
 </ul>
 </section>
-<section id="sovrascrivere-variabili" class="slide level1">
-<h1>Sovrascrivere variabili</h1>
+<section id="overwriting-variables" class="slide level1">
+<h1>Overwriting variables</h1>
 <ul>
-<li><p>Per semplificare l’esecuzione all’utente, è permesso
-<strong>sovrascrivere</strong> la definizione di una variabile come
-<code>clock</code>, se questa è già esistente nel file di input
-(<code>examples/demo.txt</code> in quest’esempio).</p></li>
-<li><p>In altre parole, il file con la scena può contenere al suo
-interno la definizione della variabile <code>clock</code>:</p>
+<li><p>To make the program easier to use, Pytracer lets the user to
+<strong>overwrite</strong> the value of a variable like
+<code>clock</code>, if this is already defined in the input file (in
+this case, <code>examples/demo.txt</code>).</p></li>
+<li><p>This means that the scene file can contain the following
+definition:</p>
 <div class="sourceCode" id="cb10"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span> clock(<span class="fl">150.0</span>)</span></code></pre></div>
-<p>In presenza di <code>--declare-float=clock:0.0</code>, il valore 150
-viene ignorato e il valore 0 viene usato al suo posto. Ma se non si
-passa questo argomento da linea di comando, la scena resta comunque
-interpretabile.</p></li>
+<p>If the user calls the program with
+<code>--declare-float=clock:0.0</code>, the definition in the file is
+ignored and the value 0 is used instead of 150. The advantage is that
+the scene can be compiled without errors even if the user forgets to
+define <code>clock</code> on the command line.</p></li>
 </ul>
 </section>
-<section id="sovrascrivere-variabili-1" class="slide level1">
-<h1>Sovrascrivere variabili</h1>
+<section id="overwriting-variables-1" class="slide level1">
+<h1>Overwriting variables</h1>
 <ul>
-<li><p>Abbiamo però il problema dell’uovo e della gallina: i parametri
-da linea di comando sono interpretati <em>prima</em> di leggere il file
-della scena, ma le variabili sono create <em>durante</em> la lettura
-della scena. Se definiamo <code>clock</code> sia da linea di comando che
-nel file, avremo un errore (doppia definizione).</p></li>
-<li><p>Vi sono molte soluzioni per implementare la funzionalità
-descritta:</p>
+<li><p>We have a chicken-egg problem. Command line parameters are
+interpreted <em>before</em> the scene file is interpreted, but variables
+are created during the parsing stage! If we define <code>clock</code>
+both on the command line and in the file, we will raise an error
+(duplicated declaration).</p></li>
+<li><p>There are a few possible solutions:</p>
 <ol>
-<li>Marcare le variabili definite da linea di comando con un flag
-Booleano; quando nel file della scena si ridefiniscono queste variabile,
-non viene prodotto un errore se questo flag è <code>True</code>.</li>
-<li>In fase di definizione di una variabile, si controlla se il valore è
-già stato letto da linea di comando: se sì, si ignora il valore letto
-nel file e si usa quello fornito dall’utente. (<a
-href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L595-L601">Questo
-è quanto fa pytracer</a>).</li>
+<li>Mark the variables defined on the command line with a Boolean
+switch. When variables are defined again during parsing, no error is
+raisen if this flag is <code>True</code>.</li>
+<li>When defining a variable, the code can check if the value was
+defined from the command line. (<a
+href="https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L595-L601">This
+is the approach used by Pytracer</a>.)</li>
 </ol></li>
 </ul>
 </section>
-<section id="guida-per-lesercitazione" class="slide level1">
-<h1>Guida per l’esercitazione</h1>
+<section id="what-to-do-today" class="slide level1">
+<h1>What to do today</h1>
 </section>
-<section id="guida-per-lesercitazione-1" class="slide level1">
-<h1>Guida per l’esercitazione</h1>
+<section id="what-to-do-today-1" class="slide level1">
+<h1>What to do today</h1>
 <ol>
-<li>Continuate a lavorare nel <em>branch</em>
-<code>scenefiles</code>;</li>
-<li>Modificate <code>InputStream</code> in modo che consenta il
-<em>look-ahead</em> di token oltre che di caratteri;</li>
-<li>Create le funzioni <code>expect_*</code> e
+<li>Keep working in the <code>scenefiles</code> <em>branch</em>;</li>
+<li>Modify <code>InputStream</code> to support <em>look-ahead</em> of
+tokens;</li>
+<li>Create the functions <code>expect_*</code> and
 <code>parse_*</code>;</li>
-<li>Cambiate il comando <code>demo</code> nel <code>main</code> con
-<code>render</code>, e permettete di leggere la scena da file;</li>
-<li>Create una directory <code>examples</code> che contenga uno o più
-esempi di scene;</li>
-<li>Aggiornate la documentazione e il <code>CHANGELOG</code>;</li>
-<li>Rilasciate la versione <code>1.0</code>: congratulazioni!</li>
+<li>Change the verb <code>demo</code> with <code>render</code> and make
+it read the scene from a file;</li>
+<li>Create a folder <code>examples</code> and fill it with one or more
+scenes;</li>
+<li>Update the documentation and the <code>CHANGELOG</code>;</li>
+<li>Release version <code>1.0</code>: cheers!</li>
 </ol>
 </section>
     </div>

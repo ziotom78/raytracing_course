@@ -1,4 +1,4 @@
-# Tone mapping
+# Tone mapping {#tone-mapping}
 
 ---
 
@@ -8,92 +8,92 @@
 
 # Tone mapping
 
--   Una conversione da RGB a sRGB dovrebbe preservare la «tinta» complessiva di un'immagine.
--   Ecco perché non si parla di *tone mapping* per un singolo colore RGB, ma per una matrice di colori (ossia un'immagine).
--   Noi useremo il *tone mapping* descritto da [Shirley & Morley (2003)](https://books.google.it/books/about/Realistic_Ray_Tracing_Second_Edition.html?id=ywOtPMpCcY8C&redir_esc=y): è fisicamente meno preciso di altri metodi (es., la normalizzazione dello standard CIE usando D65), ma più intuitivo e più semplice da implementare.
+-   A conversion from RGB to sRGB should preserve the overall «hue» of an image.
+-   This is why we don't talk about *tone mapping* for a single RGB color, but for a matrix of colors (i.e., an image).
+-   We will use the *tone mapping* described by [Shirley & Morley (2003)](https://books.google.it/books/about/Realistic_Ray_Tracing_Second_Edition.html?id=ywOtPMpCcY8C&redir_esc=y): it is physically less accurate than other methods (e.g., CIE standard normalization using D65), but more intuitive and easier to implement.
 
-# Algoritmo di tone mapping
+# Tone Mapping Algorithm
 
-1.  Stabilire un valore «medio» per l'irradianza misurata in corrispondenza di ogni pixel dell'immagine;
-2.  Normalizzare il colore di ogni pixel a questo valore medio;
-3.  Applicare una correzione ai punti di maggiore luminosità.
+1.  Establish an «average» value for the irradiance measured at each pixel of the image;
+2.  Normalize the color of each pixel to this average value;
+3.  Apply a correction to the brightest spots.
 
-# Valore medio
+# Average Value
 
--   Il valore «neutro» per la radianza è definito dalla media logaritmica della luminosità $l_i$ dei pixel (con $i = 1\ldots N$):
+-   The «neutral» value for radiance is defined by the logarithmic average of the pixel luminosity $l_i$ (with $i = 1\ldots N$):
     $$
     \left<l\right> = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
     $$
-    dove $\delta \ll 1$ evita la singolarità di $\log_{10} x$ in $x = 0$.
+    where $\delta \ll 1$ avoids the singularity of $\log_{10} x$ at $x = 0$.
 
--   A ciascun pixel sono però associati tre valori scalari (R, G, B). Quale valore usare per la luminosità $l_i$?
+-   However, each pixel is associated with three scalar values (R, G, B). Which value should be used for the luminosity $l_i$?
 
-# Luminosità
+# Luminosity
 
-Media aritmetica
+Arithmetic Mean
 : $l_i = \frac{R_i + G_i + B_i}3$;
 
-Media pesata
-: $l_i = \frac{w_R R_i + w_G G_i + w_B B_i}{w_R + w_G + w_B}$, data una terna di valori positivi $(w_R, w_G, w_B)$;
+Weighted Average
+: $l_i = \frac{w_R R_i + w_G G_i + w_B B_i}{w_R + w_G + w_B}$, given a triplet of positive values $(w_R, w_G, w_B)$;
 
-Distanza dall'origine
+Distance from the Origin
 : $l_i = \sqrt{R_i^2 + G_i^2 + B_i^2}$;
 
-Funzione di luminosità
+Luminosity Function
 : $l_i = \frac{\max(R_i, G_i, B_i) + \min(R_i, G_i, B_i)}2$
 
-Shirley & Morley usano l'ultima definizione perché sostengono che, nonostante non sia fisicamente significativa, produca risultati visivamente migliori.
+Shirley & Morley use the last definition because they claim that, despite not being physically meaningful, it produces visually better results.
 
-# Perché la media logaritmica?
+# Why the Logarithmic Average?
 
--   Non abbiamo ancora giustificato la formula
+-   We have not yet justified the formula
     $$
     \left<l\right> = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
     $$
 
--   Essa è plausibile perché la risposta dell'occhio a uno stimolo $S$ è logaritmica (*leggi di Weber-Fechner*):
+-   It is plausible because the eye's response to a stimulus $S$ is logarithmic (*Weber-Fechner law*):
     $$
     p = k \log_{10} \frac{S}{S_0}
     $$
-    dove $p$ è il valore percepito, e $S$ è l'intensità dello stimolo.
+    where $p$ is the perceived value, and $S$ is the intensity of the stimulus.
 
-# Proprietà della media logaritmica
+# Properties of the Logarithmic Average
 
--   La media logaritmica è una media sugli *esponenti*, mentre la media aritmetica è una media sui valori;
+-   The logarithmic average is an average of the *exponents*, while the arithmetic average is an average of the values;
 
--   Nel caso i valori siano $10^2$, $10^4$ e $10^6$, la media logaritmica è
+-   If the values are $10^2$, $10^4$ and $10^6$, the logarithmic average is
     $$
     10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
     $$
-    mentre la media aritmetica è $(10^2 + 10^4 + 10^6)/3 \approx 10^6/3$.
+    while the arithmetic average is $(10^2 + 10^4 + 10^6)/3 \approx 10^6/3$.
 
 
-# Normalizzazione
+# Normalization
 
--   Una volta stimato il valore medio, i valori R, G, B dell'immagine sono aggiornati tramite la trasformazione
+-   Once the average value is estimated, the R, G, B values of the image are updated through the transformation
 
     $$
     R_i \rightarrow a \times \frac{R_i}{\left<l\right>},
     $$
 
-    dove $a$ è un valore impostabile dall'utente.
+    where $a$ is a user-settable value.
 
--   Curiosamente, nel loro libro Shirley & Morley suggeriscono $a = 0.18$; in realtà non esiste un valore «giusto», e $a$ si deve scegliere a seconda dell'immagine.
+-   Curiously, in their book Shirley & Morley suggest $a = 0.18$; in reality there is no «right» value, and $a$ must be chosen depending on the image.
 
 
-# Punti luminosi
+# Bright Spots
 
 <center>![](./media/bright-light-in-room.jpg){height=520}</center>
 
-Sono notoriamente difficili da trattare!
+These are notoriously difficult to handle!
 
-# Punti luminosi
+# Bright Spots
 
-Shirley & Morley suggeriscono di applicare ai valori R, G, B di ogni punto dell'immagine la trasformazione
+Shirley & Morley suggest to apply the following transformation to the R, G, B components of each pixel:
 $$
-R_i \rightarrow \frac{R_i}{1 + R_i},
+R_i \rightarrow \frac{R_i}{1 + R_i}.
 $$
-che ha le seguenti caratteristiche:
+The equation has these properties:
 $$
 \begin{aligned}
 R_i \ll 1 &\Rightarrow R_i \rightarrow R_i,\\
@@ -101,7 +101,7 @@ R_i \gg 1 &\Rightarrow R_i \rightarrow 1.
 \end{aligned}
 $$
 
-# Punti luminosi
+# Bright Spots
 
 <center>
 ```{.gnuplot im_fmt="svg" im_out="img" im_fname="bright-point-transformation"}
@@ -112,17 +112,17 @@ plot [0:10] [] x/(1 + x) lw 4
 ```
 </center>
 
-# Correzione γ
+# γ correction
 
--   Potremmo voler applicare una correzione γ ai valori dell'immagine.
+-   We might want to apply a gamma correction to the image values.
 
--   Se in corrispondenza di un segnale $x$ il monitor emette un flusso
+-   If for a signal $x$ the monitor emits a flux
 
     $$
     \Phi \propto x^\gamma,
     $$
 
-    allora i valori RGB da salvare nell'immagine LDR devono essere
+    then the RGB values to be saved in the LDR image must be
 
     $$
     r = \left[2^8\times R^{1/\gamma}\right],\quad
@@ -137,19 +137,19 @@ plot [0:10] [] x/(1 + x) lw 4
 </center>
 
 
-# Documentazione
+# Documentation
 
-# Commenti nel codice
+# Comments in code
 
--   Tutti sanno che è importante scrivere commenti nel codice!
+-   Everyone knows how important it is to write comments in the code!
 
--   Un commento aiuta chi legge il codice a capire cosa quel codice faccia
+-   A comment helps those reading the code understand what that code does.
 
--   Può aiutare voi stessi! Se tra un anno leggerete il codice scritto oggi, siete sicuri che ricorderete perché l'avevate scritto così?
+-   It can help you too! If you read the code you wrote today in a year, are you sure you will remember why you wrote it that way?
 
-# Commenti da evitare
+# Comments to avoid
 
--   I commenti però non devono essere pedanti: non è necessario commentare cose ovvie, magari evitando di commentare cose importanti
+-   Comments, however, should not be pedantic: it is not necessary to comment on obvious things, perhaps avoiding commenting on important things.
 
     ```c++
     // Initialize variable "a" and set it to zero
@@ -162,15 +162,15 @@ plot [0:10] [] x/(1 + x) lw 4
     // One year from now: «Wait! but… why were we doing this calculation in the first place?»
     ```
 
--   Se in una funzione sentite che è necessario mettere molti commenti per renderla chiara, forse la funzione non è scritta bene
+-   If you feel the need to put a lot of comments in a function to make it clear, perhaps the function is not written well.
 
 # *Docstrings*
 
--   Gli editor moderni sono in grado di leggere commenti messi in testa a classi/metodi/funzioni/tipi, e visualizzarli in certi contesti (ad esempio quando spostate il mouse su una chiamata di funzione)
+-   Modern editors are able to read comments placed at the beginning of classes/methods/functions/types, and display them in certain contexts (for example, when you hover the mouse over a function call).
 
--   Abituatevi a fare affidamento a questa caratteristica: vi insegnerà come scrivere meglio i commenti, e vi evita di andare avanti e indietro nel codice
+-   Get used to relying on this feature: it will teach you how to write comments better and prevent you from going back and forth in the code.
 
--   Di solito, per dichiarare una *docstring* dovete iniziare un commento con un carattere o una stringa speciale, ad esempio:
+-   Usually, to declare a *docstring*, you must start a comment with a special character or string, for example:
 
     ```c++
     // Plain comment in C++
@@ -185,14 +185,14 @@ plot [0:10] [] x/(1 + x) lw 4
 <iframe src="https://player.vimeo.com/video/683431827?h=9e4de4dba1&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479#t=12m00s" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Come usare una IDE (JetBrains Rider)"></iframe>
 
 
-# Il file README
+# The README File
 
--   Quando si pubblica un progetto su GitHub, è fondamentale includere un README:
-    -   La quantità di FOSS (Free and Open Source Software) su Internet è impressionante;
-    -   Gli utenti hanno bisogno di capire in poco tempo se un progetto fa al caso loro o no;
-    -   Un README oggi combina la funzione di un annuncio pubblicitario (nel senso buono!) e di primo manuale d'uso.
--   È quindi indispensabile avere un `README` nei propri repository.
--   In effetti, quando create un nuovo repository in GitHub, vi viene proposto di generarne uno automaticamente!
+-   When publishing a project on GitHub, it is essential to include a README:
+    -   The amount of FOSS (Free and Open Source Software) on the Internet is impressive;
+    -   Users need to understand quickly whether a project is right for them or not;
+    -   A README today combines the function of an advertisement (in a good way!) and a first user manual.
+-   It is therefore essential to have a `README` in your repositories.
+-   In fact, when you create a new repository on GitHub, you are prompted to generate one automatically!
 
 ---
 
@@ -200,110 +200,107 @@ plot [0:10] [] x/(1 + x) lw 4
 ![](./media/github-new-repository.png)
 </center>
 
-# Scopo del README
+# Purpose of the README
 
--   È il primo documento in cui si imbatte un potenziale utente.
--   Deve comunicare in maniera concisa questi concetti:
-    1.  A cosa serve il programma;
-    2.  Cosa richiede per funzionare (Windows? Linux? una GPU? una
-        stampante?);
-    3.  Come si installa;
-    4.  Esempi pratici che mostrino cos'è in grado di fare il
-        programma (possibilmente più d'uno: partire da casi semplici e mostrare sinteticamente almeno un caso realistico);
-    5.  Licenza d'uso.
--   Non deve addentrarsi troppo nei dettagli.
+-   It's the first document a potential user encounters.
+-   It must concisely communicate these concepts:
+    1.  What the program is for;
+    2.  What it requires to work (Windows? Linux? a GPU? a printer?);
+    3.  How to install it;
+    4.  Practical examples showing what the program can do (possibly more than one: starting from simple cases and synthetically showing at least one realistic case);
+    5.  Usage license.
+-   It shouldn't go into too much detail.
 
 ---
 
--   Cercate di essere *chiari* ma anche *sintetici*!
--   Esempio negativo ([`boost.array`](https://www.boost.org/doc/libs/1_74_0/doc/html/array.html)). L'introduzione inizia così:
+-   Try to be *clear* but also *concise*!
+-   Negative example ([`boost.array`](https://www.boost.org/doc/libs/1_74_0/doc/html/array.html)). The introduction begins like this:
 
     > The C++ Standard Template Library STL as part of the C++
     > Standard Library provides a framework for processing algorithms
     > on different kind of containers. However, ordinary arrays don't
     > provide the interface of STL containers (although, they provide
     > the iterator interface of STL containers).
+A whole paragraph, and it still doesn't say what the library does!
+(It's not even mentioned in the next paragraph…)
 
-    Un intero paragrafo, e ancora non si dice cosa faccia la libreria!
-    (Non viene detto neppure nel paragrafo successivo…)
-
-# Esempio: [emcee](https://emcee.readthedocs.io/en/stable/)
+# Example: [emcee](https://emcee.readthedocs.io/en/stable/)
 
 <center>
 ![](./media/emcee-readme.png){height=620px}
 </center>
 
-# Struttura di un README
+# Structure of a README
 
--   Struttura consigliata dal sito [Make a README](https://www.makeareadme.com/):
-    1.  Nome e descrizione;
-    2.  Istruzioni di installazione;
-    3.  Esempi d'uso;
-    4.  Come contribuire al repository;
-    5.  Licenza d'uso.
--   Il sito [Awesome README](https://github.com/matiassingers/awesome-readme) è una miniera di suggerimenti e di link a README di progetti veri da imitare (come [joe](https://github.com/karan/joe#readme): bellissimo!).
+-   Recommended structure from the [Make a README](https://www.makeareadme.com/) website:
+    1.  Name and description;
+    2.  Installation instructions;
+    3.  Usage examples;
+    4.  How to contribute to the repository;
+    5.  License.
+-   The [Awesome README](https://github.com/matiassingers/awesome-readme) website is a goldmine of suggestions and links to real-world project READMEs to imitate (like [joe](https://github.com/karan/joe#readme): beautiful!).
 
-# Come scrivere documentazione?
+# How to write documentation?
 
-# Scrivere testo
+# Writing text
 
--   In passato, i README e i manuali d'uso erano semplici file di testo.
--   Abbiamo però visto che i README usati oggi includono grafica, codice evidenziato, titoli, etc. (Lo stesso vale per i manuali d'uso!)
--   Che facciamo, noi fisici dobbiamo scrivere tutto in LaTeX?!?
+-   In the past, READMEs and user manuals were simple text files.
+-   However, we have seen that READMEs used today include graphics, highlighted code, titles, etc. (The same applies to user manuals!)
+-   What do we do, as physicists, do we have to write everything in LaTeX?!?
 
-# Linguaggi di markup
+# Markup languages
 
--   Non bisogna essere così disperati per dover usare il LaTeX!
--   Negli anni sono nati una serie di linguaggi di markup con cui scrivere semplicemente del testo strutturato:
-    -   [Markdown](https://en.wikipedia.org/wiki/Markdown) (estensione `.md`, es. `README.md`);
-    -   [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) (estensione `.rst`), molto usato nel mondo Python;
-    -   [Asciidoc](https://en.wikipedia.org/wiki/AsciiDoc) (estensione `.adoc` oppure `.txt`);
-    -   [Org-mode](https://en.wikipedia.org/wiki/Org-mode) (estensione `.org`);
+-   There's no need to despair and resort to LaTeX!
+-   Over the years, a series of markup languages have emerged that allow you to easily write structured text:
+    -   [Markdown](https://en.wikipedia.org/wiki/Markdown) (`.md` extension, e.g., `README.md`);
+    -   [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) (`.rst` extension), widely used in the Python world;
+    -   [Asciidoc](https://en.wikipedia.org/wiki/AsciiDoc) (`.adoc` or `.txt` extension);
+    -   [Org-mode](https://en.wikipedia.org/wiki/Org-mode) (`.org` extension);
     -   etc.
--   Il più usato in assoluto è senza dubbio Markdown.
+-   The most widely used is undoubtedly Markdown.
 
-# Markdown
+# Markdown {#markdown}
 
--   Di solito i documenti a corredo di un programma vengono scritti in Markdown (è la scelta di default in GitHub).
+-   Usually, the documents accompanying a program are written in Markdown (it's the default choice on GitHub).
 
--   Usando [pandoc](https://pandoc.org/), un file `.md` può essere convertito in:
+-   The standard tool to work with Markdown is [pandoc](https://pandoc.org/), which can convert `.md` file into:
 
-    -   Pagine HTML (queste slide, fatte con [Reveal.js](https://revealjs.com/), ne sono un esempio!);
-    -   LaTeX, incluso Beamer
+    -   HTML pages (these slides, made with [Reveal.js](https://revealjs.com/), are an example!);
+    -   LaTeX, including Beamer
         ([ctan.org/pkg/beamer](https://ctan.org/pkg/beamer));
-    -   File Microsoft Word;
-    -   Ebook in formato `.epub`;
+    -   Microsoft Word files;
+    -   Ebooks in `.epub` format;
     -   Etc.
 
--   Pandoc implementa una versione estesa di Markdown, e supporta equazioni come $\int x^2\,\mathrm{d}x$ e caratteri Unicode (UTF-8).
+-   Pandoc implements an extended version of Markdown, and supports equations like $\int x^2\,\mathrm{d}x$ and Unicode characters (UTF-8).
 
-# Installazione di Pandoc
+# Installing Pandoc
 
--   Pandoc (su sistemi Debian/Ubuntu/Mint):
+-   Pandoc (on Debian/Ubuntu/Mint systems):
 
     ```
     sudo apt install pandoc
     ```
 
--   TeX/LaTeX (idem):
+-   TeX/LaTeX (same):
 
     ```
     sudo apt install texlive-full
     ```
 
-# Esempio di Markdown
+# Markdown Example
 
--   Se avete installato Pandoc, create un file `README.md` con questo contenuto:
+-   If you have installed Pandoc, create a file `README.md` with this content:
 
     ```markdown
-    # Titolo
+    # Title
 
-    Testo in *italico*, **grassetto**, `monospaced`. Lista:
-    -   Primo
-    -   Secondo
+    Text in *italic*, **bold**, `monospaced`. List:
+    -   First
+    -   Second
     ```
 
--   Convertitelo in un file HTML/Word/LaTeX con
+-   Convert it to an HTML/Word/LaTeX file with
 
     ```
     $ pandoc -t html5 --standalone -o README.html README.md
@@ -329,107 +326,12 @@ plot [0:10] [] x/(1 + x) lw 4
 ![](./media/pandoc-readme-word.png)
 </center>
 
-# Alcuni trucchi (1/4)
-
--   Pandoc implementa una versione molto estesa di Markdown: consultate la [guida](https://pandoc.org/MANUAL.html#pandocs-markdown).
-
--   Usando `--standalone` viene generato un documento completo; è utile coi formati HTML o LaTeX.
-
--   Se si sceglie il formato LaTeX ma si specifica come output un file con estensione `.pdf`, il file viene compilato automaticamente usando pdfLaTeX (esempio visto prima).
-
-# Alcuni trucchi (2/4)
-
-```markdown
-I ritorni a capo sono interpretati come in LaTeX:
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-aliquip ex ea commodo consequat.
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-cupidatat non proident, sunt in culpa qui officia deserunt mollit
-anim id est laborum.
-```
-
-(Purtroppo, come vedremo tra un attimo, questo non è vero se il file Markdown viene visualizzato in GitHub…)
-
-# Alcuni trucchi (3/4)
-
-```markdown
-Si possono associare più paragrafi a una lista puntata:
-
--   Punto uno, con sottopunti:
-
-    -   Primo
-    -   Secondo
-
-    Questo è un nuovo paragrafo del primo punto, seguito da codice C++:
-
-    ```c++
-    int main() {
-        return 0;
-    }
-    ```
-
--   Punto secondo
-```
-
-# Alcuni trucchi (4/4)
-
-```markdown
----
-title: "Dei delitti e delle pene"
-subtitle: "Nuova edizione corretta e accresciuta"
-author: "Cesare Beccaria"
-year: 1764
-colorlinks: true
-...
-
-# A chi legge
-
-Alcuni avanzi di leggi di un antico popolo conquistatore fatte
-compilare da un principe che dodici secoli fa regnava in
-Costantinopoli, frammischiate poscia co’ riti longobardi, ed involte
-in farraginosi volumi di privati ed oscuri interpreti, formano quella
-tradizione di opinioni che da una gran parte dell’Europa ha tuttavia
-il nome di leggi; ed è cosa funesta quanto comune al dì d’oggi che una
-opinione di Carpzovio, un uso antico accennato da Claro, un tormento
-con iraconda compiacenza suggerito da Farinaccio sieno le leggi a cui
-con sicurezza obbediscono coloro che tremando dovrebbono reggere le
-vite e le fortune degli uomini. [Etc.]
-```
-
-# Personalizzazione
-
--   L'output di pandoc può essere personalizzato.
-
--   Per ogni formato di output è presente un *template*, che può essere ispezionato col comando `--print-default-template`:
-
-    ```text
-    $ pandoc --print-default-template=latex | head
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
-\PassOptionsToPackage{hyphens}{url}
-$if(colorlinks)$
-\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
-$endif$
-$if(dir)$
-$if(latex-dir-rtl)$
-\PassOptionsToPackage{RTLdocument}{bidi}
-$endif$
-    ```
-
--   Si può passare un template personalizzato con `--template=FILE`.
-
 
 # Markdown in GitHub (1/2)
 
--   In GitHub non serve convertire con `pandoc` i file Markdown come `README.md`, perché implementa un convertitore interno a HTML.
+-   In GitHub, you don't need to convert Markdown files like `README.md` with `pandoc` because it implements an internal HTML converter.
 
--   Se si carica in un repository un file con nome `README.md`, GitHub
-    lo mostrerà automaticamente nella pagina principale:
+-   If you upload a file named `README.md` to a repository, GitHub will automatically display it on the main page:
 
     <center>
     ![](./media/harlequin-readme.png){height=320}
@@ -437,8 +339,9 @@ $endif$
 
 # Markdown in GitHub (2/2)
 
--   GitHub interpreta il Markdown in modo lievemente diverso da Pandoc: consultate la guida [GitHub Flavored Markdown Spec](https://github.github.com/gfm/).
--   In particolare, non potete usare ritorni a capo all'interno di un paragrafo: nel testo seguente, la poesia viene riprodotta da GitHub con i versi separati ciascuno nella propria riga:
+-   GitHub interprets Markdown slightly differently from Pandoc: consult the [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) guide.
+
+-   In particular, you cannot use line breaks within a paragraph: in the following text, the poem is rendered by GitHub with each verse on its own line:
 
     ```markdown
     Voi, che sapete che cosa è amor,
@@ -447,186 +350,188 @@ $endif$
     è per me nuovo, capir nol so.
     ```
 
-    (`pandoc` lo trasformerebbe invece in un paragrafo unico).
+    (`pandoc` would instead transform it into a single paragraph).
 
-# Licenze d'uso
+# Other tools
 
-# Licenze d'uso
+-   [Quarto](https://quarto.org/) builds on Pandoc to produce complex documents (papers, books, technical manuals…)
+-   [Typst](https://typst.app/) is mainly an alternative to LaTeX, as it (currently) targets PDF. It is superb to produce scientific documents
 
--   Una «licenza d'uso» spiega agli utenti che scaricano un programma
-    cosa gli sia lecito fare e cosa no.
--   È da sempre usata nel software commerciale.
--   È diventata sempre più importante anche in ambito accademico:
-    -   Alcune istituzioni lo richiedono (ma non UniMI);
-    -   Può mettere al riparo l'autore da sorprese spiacevoli.
--   Nei programmi FOSS è solitamente scritta in un file `LICENSE`,
-    `LICENSE.txt` o `LICENSE.md` (in Markdown).
--   Un'ottima spiegazione è presente nell'articolo [*A Quick Guide to Software Licensing for the Scientist-Programmer*](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002598) (Morin, Urban & Sliz, 2012).
 
-# Importa a un fisico?
+# Software Licenses {#licenses}
 
--   Nel mondo della ricerca si scrive moltissimo codice.
+# Software Licenses
 
--   Lo scopo principale è di eseguire simulazioni e analisi, che vengono poi descritte in un articolo.
+-   A "software license" explains to the users who downloaded a program what they are allowed to do and what they are not.
+-   It has always been used in commercial software.
+-   It has become increasingly important also in academia:
+    -   Some institutions require it (but not UniMI);
+    -   It can protect the author from unpleasant surprises.
+-   In FOSS programs, licenses are usually written in a `LICENSE`, `LICENSE.txt`, or `LICENSE.md` file (in Markdown).
+-   An excellent explanation is present in the article [*A Quick Guide to Software Licensing for the Scientist-Programmer*](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002598) (Morin, Urban & Sliz, 2012).
 
--   È importante che i risultati siano riproducibili: un lettore dovrebbe essere in grado di eseguire il medesimo programma usato dagli autori e ottenere gli stessi risultati.
+# Does it matter to a physicist?
 
--   Il programma dovrebbe essere quindi distribuito insieme al suo codice sorgente: in questo modo i lettori possono verificarne la correttezza.
+-   A lot of code is written in the research world.
 
--   Una licenza stabilisce quali sono i diritti del creatore del programma e quali i diritti dell'utente, ed è quindi **molto importante** anche per i fisici!
+-   The main purpose is to perform simulations and analyses, which are then described in an article.
 
-# Importa all'utente?
+-   It is important that the results are reproducible: a reader should be able to run the same program used by the authors and obtain the same results.
 
--   Supponiamo che voi stiate facendo un lavoro per cui vi serve un certo tipo di programma/libreria.
+-   The program should therefore be distributed along with its source code: in this way, readers can verify its correctness.
 
--   Avete trovato un programma/libreria su internet che sembra proprio fare al caso vostro.
+-   A license establishes the rights of the program's creator and the rights of the user, and is therefore **very important** for physicists too!
 
--   Prima di usarlo, dovete però rispondere alle seguenti domande:
+# Does it matter to the user?
 
-    -   Ho il permesso di scaricarlo?
-    -   Ho il permesso di compilarlo?
-    -   Ho il permesso di eseguirlo?
-    -   Ho il permesso di pubblicare i risultati che ho ottenuto con questo programma?
+-   Suppose you are doing a job that requires a certain type of program/library.
 
-# Il caso di GitHub
+-   You have found a program/library on the internet that seems to be just what you need.
 
--   Quando vi siete registrati su GitHub, avete dovuto sottoscrivere i suoi [*Terms of service*](https://docs.github.com/en/github/site-policy/github-terms-of-service).
+-   Before using it, however, you must answer the following questions:
 
--   Quanti di voi li hanno letti? 👀
+    -   Do I have permission to download it?
+    -   Do I have permission to compile it?
+    -   Do I have permission to run it?
+    -   Do I have permission to publish the results I obtained with this program?
 
--   Sapete cosa potrebbe fare l'utente quadratico medio col codice che avete pubblicato su GitHub per questo corso?
+# The Case of GitHub
+
+-   When you registered on GitHub, you had to agree to its [*Terms of service*](https://docs.github.com/en/github/site-policy/github-terms-of-service).
+
+-   How many of you have read them? 👀
+
+-   Do you know what the average user could do with the code you published on GitHub for this course?
 
 # *GitHub's terms of service*
 
--   Anche se avete pubblicato codice su GitHub, voi restate i proprietari del codice.
+-   Even if you have published code on GitHub, you remain the owner of the code.
 
--   Ma date ovviamente a GitHub il diritto di mantenere sul loro server una copia del codice (in legalese si chiama «content», perché include anche altri tipi di file, come immagini e testo Markdown).
+-   But you obviously give GitHub the right to keep a copy of the code on their server (in legal terms it's called "content," because it also includes other types of files, such as images and Markdown text).
 
--   Date anche l'autorizzazione a GitHub per [**visualizzare**](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#5-license-grant-to-other-users) il vostro *content*, e a permettere agli utenti di scaricarlo.
+-   You also give GitHub permission to [**display**](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#5-license-grant-to-other-users) your *content*, and to allow users to download it.
 
--   Ciò che **non** garantite necessariamente agli utenti è di poter compilare, modificare o eseguire il vostro codice, e tantomeno di poter usare i risultati prodotti da esso in una pubblicazione!
+-   What you do **not** necessarily guarantee to users is the ability to compile, modify, or run your code, let alone use the results produced by it in a publication!
 
-# I vostri repository
+# Your repositories
 
--   Per come vi ho chiesto di creare i vostri repository, immagino che nessuno di voi abbia aggiunto un file `LICENSE` o `LICENSE.md`.
+-   From the way I asked you to create your repositories, I imagine that none of you have added a `LICENSE` or `LICENSE.md` file.
 
--   Si tratta di un file di testo che specifica quali sono i diritti dell'utente: se questo file non esiste nel repository, l'utente **non** è autorizzato a compilare il vostro codice, né ad eseguirlo, etc. Dovete dare il vostro consenso esplicito!
+-   This is a text file that specifies the user's rights: if this file does not exist in the repository, the user is **not** authorized to compile your code, nor to run it, etc. You must give your explicit consent!
 
--   Se non siete esperti in questioni legali, è meglio che non scriviate da voi questo file. (Altrimenti potreste [scrivere abomini](https://github.com/ErikMcClure/bad-licenses)!)
+-   If you are not an expert in legal matters, it is best that you do not write this file yourself. (Otherwise, you could [write abominations](https://github.com/ErikMcClure/bad-licenses)!)
 
--   Esistono molti tipi di licenze pronte per essere usate, e i file `LICENSE` sono solitamente prodotti tramite copia-e-incolla. Vediamo quindi quali licenze possono essere usate nel vostro lavoro.
+-   There are many types of ready-to-use licenses, and `LICENSE` files are usually produced by copy-and-paste. So let's see which licenses can be used in your work.
 
-# Tipi di licenze
+# Types of licenses
 
 Proprietary
-: Sono usate per programmi come Microsoft Word, Apple Mac OS X, Adobe Photoshop, etc. Si trovano anche in ambito accademico.
+: These are used for programs like Microsoft Word, Apple Mac OS X, Adobe Photoshop, etc. They are also found in academia.
 
 Permissive
-: Sono le licenze più usate in ambito accademico: sostanzialmente, dicono che col programma si può fare un po' di tutto.
+: These are the most used licenses in academia: basically, they say that you can do almost anything with the program.
 
 Copyleft
-: È una licenza molto usata nel mondo FOSS, e ci sono casi in cui è obbligatoria anche in ambito accademico.
+: This is a license widely used in the FOSS world, and there are cases where it is mandatory even in academia.
 
-# Le *Proprietary licenses*
+# Proprietary licenses
 
--   Includono una lista di ciò che l'utente può fare; ciò che non è elencato, è implicitamente escluso.
+-   They include a list of what the user can do; what is not listed is implicitly excluded.
 
--   Non sempre permettono all'utente di ottenere una copia del codice sorgente; quando ciò è previsto, è di solito solo per *lettura* e *verifica*.
+-   They do not always allow the user to obtain a copy of the source code; when this is provided, it is usually only for *reading* and *verification*.
 
--   È un tipo di licenza usata in ambito accademico (ad es., nelle facoltà molto legate all'industria, come quelle di ingegneria), anche se non molto comune nell'ambito della fisica.
+-   It is a type of license used in academia (e.g., in faculties closely linked to industry, such as engineering), although not very common in physics.
+# *Permissive Licenses*
 
-# Le *Permissive licenses*
+-   This is a family of licenses that provides maximum freedom to the user.
 
--   È una famiglia di licenze che fornisce la massima libertà all'utente.
-
--   I tipi più famosi sono:
-    -   [MIT](https://opensource.org/licenses/MIT) (usato da [Julia](https://github.com/JuliaLang/julia/blob/master/LICENSE.md) e da [dotnet](https://github.com/dotnet/roslyn/blob/main/License.txt));
+-   The most famous types are:
+    -   [MIT](https://opensource.org/licenses/MIT) (used by [Julia](https://github.com/JuliaLang/julia/blob/master/LICENSE.md) and [dotnet](https://github.com/dotnet/roslyn/blob/main/License.txt));
     -   [BSD](https://opensource.org/licenses/BSD-3-Clause);
-    -   [Apache License]() (usato da [Kotlin](https://github.com/JetBrains/kotlin/tree/master/license) e [clang](https://clang.llvm.org/));
+    -   [Apache License]() (used by [Kotlin](https://github.com/JetBrains/kotlin/tree/master/license) and [clang](https://clang.llvm.org/));
     -   [Academic Free License](https://opensource.org/licenses/AFL-3.0).
 
--   L'utente può acquisire il codice sorgente, compilarlo, eseguirlo, etc.
+-   The user can acquire the source code, compile it, run it, etc.
 
--   In generale, in queste licenze si dice cosa è proibito, e ciò che non è elencato è implicitamente ammesso.
+-   In general, these licenses state what is prohibited, and anything not listed is implicitly permitted.
 
-# Uso di *permissive licenses*
+# Using *Permissive Licenses*
 
--   Non è proibito che l'utente modifichi il codice e lo redistribuisca a sua volta…
+-   The user is not prohibited from modifying the code and redistributing it...
 
--   …e non viene vietato che l'utente incorpori il codice all'interno del *suo* programma, che venga poi rilasciato in una *proprietary license*.
+-   ...and the user is not prohibited from incorporating the code into *their* program, which is then released under a *proprietary license*.
 
--   L'unico requisito esplicito è che venga mantenuta l'attribuzione del codice: non posso prendere il codice di Tizio e pubblicarlo dicendo che è mio.
+-   The only explicit requirement is that the code attribution be maintained: I cannot take someone else's code and publish it claiming it as my own.
 
-# *Copyleft licenses*
+# *Copyleft Licenses*
 
--   È un tipo di *Permissive license* che però pone vincoli importanti al modo in cui il codice viene redistribuito.
+-   This is a type of *Permissive License* that, however, places important restrictions on how the code is redistributed.
 
--   Se il codice di una *copyleft license* viene usato all'interno di un codice, anche quest'ultimo deve essere rilasciato con una *copyleft license* (ma non è obbligatorio rilasciarlo!).
+-   If code under a *copyleft license* is used within another codebase, the latter must also be released under a *copyleft license* (but it is not mandatory to release it!).
 
--   L'esempio più famoso è la [GNU Public License](https://opensource.org/licenses/gpl-license), usata per Linux, Emacs, Bash e il vostro amato GCC. È detta *viral license*: se un programma «tocca» del codice *copyleft*, diventa automaticamente *copyleft* lui stesso, anche se si limita a linkarlo. (Molti la detestano per questo!)
+-   The most famous example is the [GNU Public License](https://opensource.org/licenses/gpl-license), used for Linux, Emacs, Bash, and your beloved GCC. It is called a *viral license*: if a program "touches" *copyleft* code, it automatically becomes *copyleft* itself, even if it merely links to it. (Many detest it for this!)
 
 # European Union Public License (EUPL)
 
--   È una licenza open software progettata dall'Unione Europea, e sono disponibili traduzioni legalizzate nelle 23 lingue della UE!
+-   It is an open-source software license designed by the European Union, and legalized translations are available in the 23 languages of the EU!
 
--   Proposta nel 2007, oggi è arrivata alla versione 1.2
+-   Proposed in 2007, it has now reached version 1.2.
 
--   Compatibile con la GPL, la LGPL e la AGPL (oltre ad altre), ma non è virale… e questa è una buona cosa!
+-   Compatible with GPL, LGPL, and AGPL (as well as others), but it is not viral... and this is a good thing!
 
--   Vediamo le differenze tra la EUPL e la GPL, che è la licenza *copyleft* più famosa di tutte
+-   Let's see the differences between EUPL and GPL, which is the most famous *copyleft* license of all.
 
 # EUPL vs GPL
 
--   È compatibile con la legislazione europea, contrariamente alla GPL, che ha alcune parti che potrebbero non essere applicabili nella UE
+-   It is compatible with European legislation, unlike the GPL, which has some parts that may not be applicable in the EU.
 
--   Pur essendo *copyleft*, non è virale: si può scrivere un programma che si interfaccia a un programma EUPL e scegliere la licenza che si vuole, perché è prevista un'eccezione esplicita nel testo.
+-   Despite being *copyleft*, it is not viral: you can write a program that interfaces with an EUPL program and choose the license you want because an explicit exception is provided in the text.
 
--   Copre esplicitamente il caso dei cosiddetti SaaS (“Software as a Service”), che sono i programmi che non sono eseguiti sul proprio computer ma funzionano all'interno di un browser. (Uno dei motivi per cui la AGPL è stata scritta è proprio per colmare questa lacuna della GPL).
+-   It explicitly covers the case of so-called SaaS ("Software as a Service"), which are programs that are not run on your own computer but work within a browser. (One of the reasons why AGPL was written was precisely to fill this gap in the GPL).
 
--   È la licenza “raccomandata” in un gran numero di paesi (tra cui [l'Italia](https://joinup.ec.europa.eu/collection/eupl/news/agid-guidelines)) per il software usato nella pubblica amministrazione (*obbligatoria* in Spagna!).
+-   It is the "recommended" license in a large number of countries (including [Italy](https://joinup.ec.europa.eu/collection/eupl/news/agid-guidelines)) for software used in public administration (*mandatory* in Spain!).
 
-# Ulteriori informazioni sulla EUPL
+# Further Information on the EUPL
 
--   L'Unione Europea mette a disposizione un [corso gratuito ufficiale sulla EUPL](https://academy.europa.eu/courses/the-european-union-public-license-eupl)! (Chi completa il quiz con il 60% almeno di risposte esatte ottiene un attestato)
+-   The European Union offers a [free official course on the EUPL](https://academy.europa.eu/courses/the-european-union-public-license-eupl)! (Those who complete the quiz with at least 60% correct answers get a certificate.)
 
--   [Discussione sulla EUPL](https://discourse.writefreesoftware.org/t/eupl-a-better-choice-for-european-citizens/43/9) sul sito [writefreesoftware.org](https://discourse.writefreesoftware.org)
+-   [Discussion on the EUPL](https://discourse.writefreesoftware.org/t/eupl-a-better-choice-for-european-citizens/43/9) on the [writefreesoftware.org](https://discourse.writefreesoftware.org) website.
 
--   Spiegazione in termini semplici del motivo per cui la viralità della GPL non è compatibile con la legislazione europea: [Why viral licensing is a ghost](https://joinup.ec.europa.eu/collection/eupl/news/why-viral-licensing-ghost).
+-   Simple explanation of why the virality of the GPL is not compatible with European legislation: [Why viral licensing is a ghost](https://joinup.ec.europa.eu/collection/eupl/news/why-viral-licensing-ghost).
 
--   Interessante [discussione più generale](https://discourse.julialang.org/t/package-licenses-contemplations-and-considerations/117922) sul forum Julia
+-   Interesting [more general discussion](https://discourse.julialang.org/t/package-licenses-contemplations-and-considerations/117922) on the Julia forum.
 
-# Che licenza usare?
+# Which License to Use?
 
--   Per il codice sviluppato in questo corso, in linea di principio potreste usare a vostro piacimento una *permissive* o *copyleft license*.
+-   For the code developed in this course, in principle, you could use a *permissive* or *copyleft license* at your discretion.
 
--   Ma se nelle prossime lezioni userete librerie esterne (verrà il momento), dovrete fare attenzione che la licenza della libreria sia compatibile:
+-   But if in the next lessons you use external libraries (the time will come), you will have to be careful that the library's license is compatible:
+    -   If your code uses a *copyleft license*, you must verify its compatibility with that of the library;
+    -   If your code uses a *permissive license*, in general, you cannot use libraries with a *copyleft license* unless you change your license.
 
-    -   Se il vostro codice usa una *copyleft license*, dovete verificarne la compatibilità con quella della libreria;
-    -   Se il vostro codice usa una *permissive license*, in generale non potete usare librerie con licenza *copyleft* a meno di non cambiare la vostra licenza.
+-   You can use the sites [TLDRLegal](https://tldrlegal.com/) and [Choose an open source license](https://choosealicense.com/) to decide. If you really don't know what to use, the safest choice is probably the EUPL.
 
--   Potete usare i siti [TLDRLegal](https://tldrlegal.com/) e [Choose an open source license](https://choosealicense.com/) per decidere. Se proprio non sapete cosa usare, la scelta più sicura è probabilmente la EUPL.
+# How to "Use" a License?
 
-# Come «usare» una licenza?
+-   The [Open Source Initiative](https://opensource.org/) website provides a template for various licenses, and the EU provides an [interactive](https://joinup.ec.europa.eu/collection/eupl/solution/joinup-licensing-assistant/jla-find-and-compare-software-licenses) one!
 
--   Il sito [Open Source Initiative](https://opensource.org/) riporta un template di varie licenze, e la UE ne fornisce uno [interattivo](https://joinup.ec.europa.eu/collection/eupl/solution/joinup-licensing-assistant/jla-find-and-compare-software-licenses)!
+-   To apply a license to your code, you must take the following steps:
 
--   Per applicare una licenza al vostro codice, dovete compiere i seguenti passaggi:
+    1.  Choose the license. We take the EUPL 1.2 as an example, described on the [OSI](https://opensource.org/license/eupl-1-2) website.
+    2.  The website <https://license.md> provides the text of various open-source licenses in text or Markdown format. From this site, you can download the text of the [EUPL 1.2](https://license.md/licenses/european-union-public-license-1-2/), which we use as an example.
+    3.  Save the license text in the file `LICENSE` (if it is in ASCII format) or `LICENSE.md` (if it is in Markdown) inside your repository.
+    4.  Most licenses recommend including a short text in a comment at the top of *every* source file in your repository.
 
-    1.   Scegliete la licenza. Noi prendiamo come esempio la EUPL 1.2, descritta sul sito [OSI](https://opensource.org/license/eupl-1-2).
-    2.   Il sito <https://license.md> fornisce il testo di diverse licenze open-source in formato testo o Markdown. Da questo sito si può scaricare il testo della [EUPL 1.2](https://license.md/licenses/european-union-public-license-1-2/), che usiamo come esempio.
-    3.   Salvate il testo della licenza nel file `LICENSE` (se è in formato ASCII) o `LICENSE.md` (se in Markdown) dentro il vostro repository.
-    4.   La maggior parte delle licenze consiglia di riportare un breve testo in un commento in cima a *ogni* file sorgente del vostro repository.
+# Beyond the `LICENSE.md` File
 
-# Oltre il file `LICENSE.md`
+-   It is common practice to also include a copy of the license in a comment at the beginning of each source file: this way, anyone who copies a file from a repository into their own code "brings" the license with them.
 
--   È comune la prassi di inserire anche una copia della licenza in un commento in testa a ogni file sorgente: in questo modo chi copia un file da un repository nel proprio codice si “porta dietro” la licenza
+-   However, it is not necessary (I never do it...); alternatively, you can insert a short message: *This file is released under a ... license. See LICENSE.md*.
 
--   Non è però necessario (io non lo faccio mai…); alternativamente potete inserire un breve messaggio: *This file is released under a … license. See LICENSE.md*.
-
--   Ci sono metodi più strutturati per riportare il tipo di licenza nel codice. Un esempio è [SPDX](https://spdx.dev/), uno standard seguito anche dal [kernel Linux](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2c1212de6) che permette di processare le informazioni sulle licenze in modo automatico (ad esempio da uno script)
+-   There are more structured methods for reporting the license type in the code. One example is [SPDX](https://spdx.dev/), a standard also followed by the [Linux kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2c1212de6), which allows license information to be processed automatically (e.g., by a script).
 
 ---
-title: "Lezione 4"
+title: "Lesson 4"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

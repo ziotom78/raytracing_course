@@ -47,30 +47,30 @@
 <!--
 -   [Tone mapping](tomasi-ray-tracing-04a.html#/tone-mapping)
 -   [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenses)
--   [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modellizzazione-di-oggetti)
--   [Trasformazioni](tomasi-ray-tracing-05a.html#/trasformazioni): [di scala](tomasi-ray-tracing-05a.html#/trasformazioni-di-scala), [applicate a normali](tomasi-ray-tracing-05a.html#/trasformazioni-e-normali), [rotazioni](tomasi-ray-tracing-05a.html#/rotazioni), [traslazioni](tomasi-ray-tracing-05a.html#/traslazioni)
--   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/numeri-di-versione)
+-   [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modeling-objects)
+-   [Trasformazioni](tomasi-ray-tracing-05a.html#/transformations): [di scala](tomasi-ray-tracing-05a.html#/scaling-transformations), [applicate a normali](tomasi-ray-tracing-05a.html#/transformations-and-normals), [rotazioni](tomasi-ray-tracing-05a.html#/rotations), [traslazioni](tomasi-ray-tracing-05a.html#/translations)
+-   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/version-numbers)
 -   [*Branch* e *pull requests*](tomasi-ray-tracing-05b.html#/pull-requests)
 -   [*CI builds*](tomasi-ray-tracing-06b.html#/ci-builds)
--   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-07a.html#/soluzione-dellequazione)
--   [Algoritmi *image order*](tomasi-ray-tracing-07a.html#/algoritmi-image-order)
--   [Schermi virtuali e osservatori](tomasi-ray-tracing-07a.html#/schermo-e-osservatore)
--   [Proiezioni prospettiche ed ortogonali](tomasi-ray-tracing-07a.html#/tipi-di-proiezione)
+-   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-07a.html#/solution-of-the-rendering-equation)
+-   [Algoritmi *image order*](tomasi-ray-tracing-07a.html#/image-order-algorithms)
+-   [Schermi virtuali e osservatori](tomasi-ray-tracing-07a.html#/screen-and-observer)
+-   [Proiezioni prospettiche ed ortogonali](tomasi-ray-tracing-07a.html#/projections)
 -   [*Aspect ratio*](tomasi-ray-tracing-07a.html#/aspect-ratio)
--   [Forma alternativa dell'equazione del rendering e funzione di visibilità](tomasi-ray-tracing-08a.html#/equazione-del-rendering)
--   [Intersezioni tra raggi e forme geometriche](tomasi-ray-tracing-08a.html#/intersezioni-tra-raggi-e-forme-geometriche): [sfere](tomasi-ray-tracing-08a.html#/sfere), [piani](tomasi-ray-tracing-08a.html#/piani)
+-   [Forma alternativa dell'equazione del rendering e funzione di visibilità](tomasi-ray-tracing-08a.html#/rendering-equation)
+-   [Intersezioni tra raggi e forme geometriche](tomasi-ray-tracing-08a.html#/intersections-btw-rays-and-shapes): [sfere](tomasi-ray-tracing-08a.html#/spheres), [piani](tomasi-ray-tracing-08a.html#/planes)
 -   [Constructive Solid Geometry](tomasi-ray-tracing-08a.html#/constructive-solid-geometry)
 -   [Debugging: difetto, infezione, fallimento](tomasi-ray-tracing-09a.html#/debugging)
 -   [Algoritmo di path tracing](tomasi-ray-tracing-10a.html#/path-tracing)
--   [Probabilità e Monte Carlo](tomasi-ray-tracing-10a.html#/probabilit%C3%A0-e-monte-carlo): CDF, PDF, valore di aspettazione, varianza, deviazione standard, metodo della media, *importance sampling*, densità marginale e condizionale
--   [Direzioni casuali](tomasi-ray-tracing-10a.html#/direzioni-casuali): distribuzione uniforme e distribuzione di Phong
+-   [Probabilità e Monte Carlo](tomasi-ray-tracing-10a.html#/probability-and-mc): CDF, PDF, valore di aspettazione, varianza, deviazione standard, metodo della media, *importance sampling*, densità marginale e condizionale
+-   [Direzioni casuali](tomasi-ray-tracing-10a.html#/random-directions): distribuzione uniforme e distribuzione di Phong
 -   [BRDF e pigmenti](tomasi-ray-tracing-10a.html#/brdf)
--   [Generazione di numeri pseudo-casuali](tomasi-ray-tracing-10b.html#/generazione-di-numeri-pseudocasuali)
--   [*Importance sampling* nell'equazione del rendering](tomasi-ray-tracing-11a.html#/integrale-mc)
--   [Roulette russa](tomasi-ray-tracing-11a.html#/roulette-russa)
--   [*Antialiasing*](tomasi-ray-tracing-11a.html#/aliasing-e-antialiasing)
--   [Test della fornace](tomasi-ray-tracing-11b.html#/test-1)
--   [Terminologia nella teoria dei compilatori](tomasi-ray-tracing-12a.html#/terminologia): lessico, sintassi, semantica, *token*, [*look-ahead*](tomasi-ray-tracing-12a.html#/tornare-indietro)
+-   [Generazione di numeri pseudo-casuali](tomasi-ray-tracing-10b.html#/random-numbers)
+-   [*Importance sampling* nell'equazione del rendering](tomasi-ray-tracing-11a.html#/mc-integrals-and-importance-sampling)
+-   [Roulette russa](tomasi-ray-tracing-11a.html#/russian-roulette)
+-   [*Antialiasing*](tomasi-ray-tracing-11a.html#/antialiasing)
+-   [Test della fornace](tomasi-ray-tracing-11b.html#/furnace-test)
+-   [Terminologia nella teoria dei compilatori](tomasi-ray-tracing-12a.html#/terminology): lessico, sintassi, semantica, *token*, *look-ahead*
 -->
 
 ## Parti non richieste per l'esame
@@ -81,25 +81,24 @@
 -   [File e stream](tomasi-ray-tracing-03b.html#/file-e-stream)
 <!--
 -   [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
--   [Numeri complessi e quaternioni](tomasi-ray-tracing-06a.html#/numeri-complessi-e-quaternioni)
--   [Algebre di Clifford](tomasi-ray-tracing-06a.html#/algebre-di-clifford)
+-   [Numeri complessi e quaternioni](tomasi-ray-tracing-06a.html#/complex-numbers-and-quaternions)
+-   [Algebre di Clifford](tomasi-ray-tracing-06a.html#/clifford-algebras)
 -   [*Issues*](tomasi-ray-tracing-08b.html#/issues)
 -   [*Change log*](tomasi-ray-tracing-08b.html#/changelog)
 -   [*Axis-aligned boxes*](tomasi-ray-tracing-09a.html#/axis-aligned-boxes)
--   [Triangoli, quadilateri e *mesh*](tomasi-ray-tracing-09a.html#/triangoli-quadilateri-e-mesh)
--   [Generatore PCG](tomasi-ray-tracing-10b.html#/lalgoritmo-pcg)
--   [Basi ortonormali arbitrarie](tomasi-ray-tracing-11a.html#/basi-ortonormali-onb-arbitrarie)
--   [BRDF riflettente](tomasi-ray-tracing-11a.html#/brdf-riflettente)
--   [Algoritmi di illuminazione diretta](tomasi-ray-tracing-11a.html#/illuminazione-diretta)
+-   [Triangoli, quadilateri e *mesh*](tomasi-ray-tracing-09a.html#/triangles-and-meshes)
+-   [Generatore PCG](tomasi-ray-tracing-10b.html#/pcg-algorithm)
+-   [Basi ortonormali arbitrarie](tomasi-ray-tracing-11a.html#/orthonormal-basis)
+-   [Algoritmi di illuminazione diretta](tomasi-ray-tracing-11a.html#/direct-illumination)
 -   [*Photon mapping*](tomasi-ray-tracing-11a.html#/photon-mapping)
 -   [*Stratified sampling*](tomasi-ray-tracing-11a.html#/stratified-sampling)
 -   [*Point-light tracing*](tomasi-ray-tracing-11a.html#/point-light-tracing)
--   [Panoramica sulla definizione di scene](tomasi-ray-tracing-12a.html#/linguaggi-per-la-definizione-di-scene-3d): DKBTrace, POV-Ray, YafaRay
--   [Gerarchie di classi e *sum types*](tomasi-ray-tracing-12a.html#/tokens-e-gerarchie-di-classi)
--   [Gestione degli errori di un compilatore](tomasi-ray-tracing-13a.html#/gestione-degli-errori-di-un-compilatore)
--   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/linguaggi-a-confronto)
--   [Testing di compilatori](tomasi-ray-tracing-13a.html#/testing-di-compilatori)
--   [Generazione automatica di compilatori](tomasi-ray-tracing-13a.html#/generazione-automatica-di-compilatori)
+-   [Panoramica sulla definizione di scene](tomasi-ray-tracing-12a.html#/scene-definition-languages): DKBTrace, POV-Ray, YafaRay
+-   [Gerarchie di classi e *sum types*](tomasi-ray-tracing-12a.html#/tokens-and-class-hierarchies)
+-   [Gestione degli errori di un compilatore](tomasi-ray-tracing-13a.html#/compiler-errors)
+-   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/comparison-of-languages)
+-   [Testing di compilatori](tomasi-ray-tracing-13a.html#/compiler-testing)
+-   [Generazione automatica di compilatori](tomasi-ray-tracing-13a.html#/automatic-generation-of-compilers)
 -->
 
 ---

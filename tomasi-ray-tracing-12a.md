@@ -1,87 +1,81 @@
----
-title: "Lezione 12"
-subtitle: "Analisi lessicale"
-author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
-...
+# Parsing Text Files
 
-# Interpretare file di testo
+# Problem Context
 
-# Contesto del problema
+-   So far, we have created photorealistic images by modifying the `demo` command of our ray tracer.
 
--   Finora abbiamo creato immagini fotorealistiche modificando il comando `demo` del nostro raytracer.
+-   You should all have encountered a certain cumbersome procedure by now! Every time we wanted to modify the image, we had to perform these actions:
 
--   Dovreste aver ormai riscontrato tutti una certa farraginosità nella procedura! Tutte le volte che abbiamo voluto modificare l'immagine, occorreva compiere queste azioni:
+    #.  Modify the code in `main`;
+    #.  Recompile;
+    #.  Run the code and check the result.
 
-    #.  Modificare il codice nel `main`;
-    #.  Ricompilare;
-    #.  Eseguire il codice e controllare il risultato.
+-   This approach may not be sustainable: in fact, we force users to write code in the programming language we used!
 
--   Questo approccio potrebbe non essere sostenibile: di fatto obblighiamo gli utenti a scrivere codice nel linguaggio di programmazione che abbiamo usato!
+# Objective
 
-# Obbiettivo
+-   Our goal is to define a *format* for describing scenes and to write code to interpret it.
 
--   Il nostro obbiettivo è di definire un *formato* per la descrizione delle scene, e di scrivere del codice per interpretarlo.
-
--   Una volta implementato, l'utente userà un comune editor come Emacs o Visual Studio Code per creare un file, chiamato ad es. `scene.txt`, ed eseguirà il programma così:
+-   Once implemented, the user will use a common editor like Emacs or Visual Studio Code to create a file, called e.g. `scene.txt`, and will run the program like this:
 
     ```
     ./myprogram render scene.txt
     ```
 
-    e gli oggetti `Shape` e `Material` saranno creati in memoria basandosi su quanto specificato in `scene.txt`. A differenza del comando `demo` però, è facile modificare `scene.txt`.
+    and the `Shape` and `Material` objects will be created in memory based on what is specified in `scene.txt`. Unlike the `demo` command, however, it is easy to modify `scene.txt`.
 
--   Quello che ci aspetta è di fatto l'implementazione di un *compilatore*!
+-   What awaits us is in fact the implementation of a *compiler*!
 
-# Categorie di utenti
+# User Categories
 
--   Nel caso in cui il linguaggio usato sia Julia o Python, che ammette un uso interattivo, la soluzione migliore sarebbe quella di definire le scene direttamente sulla REPL (o in un notebook Jupyter/Pluto)!
+-   In the case where the language used is Julia or Python, which allows interactive use, the best solution would be to define the scenes directly on the REPL (or in a Jupyter/Pluto notebook)!
 
--   Ma nel caso di programmi scritti in C\#, Nim o Rust, una soluzione del genere non è ovviamente percorribile.
+-   But in the case of programs written in C#, Nim or Rust, such a solution is obviously not feasible.
 
--   (Questo è vero a maggior ragione per quelli di voi che forniscono a ogni nuova *release* del codice i binari: in quel caso, i vostri utenti potrebbero non avere neppure i compilatori installati!)
+-   (This is even more true for those of you who provide binaries with each new *release* of the code: in that case, your users may not even have compilers installed!)
 
-# Valore didattico dell'esercizio
+# Pedagogical Value
 
-Implementare un compilatore è un'attività didatticamente molto utile:
+Implementing a compiler is a very useful educational activity:
 
-1.  La teoria dei compilatori insegna come affrontare un problema complesso (la compilazione) scomponendolo in una serie di problemi semplici che vanno risolti in sequenza: ciò è molto istruttivo!
+1.  Compiler theory teaches how to tackle a complex problem (compilation) by breaking it down into a series of simple problems that are solved sequentially: this is very instructive!
 
-2.  Capirete meglio la sintassi dei linguaggi usati in questo corso.
+2.  You will better understand the syntax of the languages used in this course.
 
-3.  Intuirete perché in certi casi i compilatori producono  errori fuorvianti.
+3.  You will understand why compilers sometimes produce misleading errors.
 
-4.  In caso di errori di sintassi, dovrete fornire all'utente informazioni chiare e precise (es., «alla riga NN manca una parentesi»).
+4.  In case of syntax errors, you will have to provide the user with clear and precise information (e.g., "a parenthesis is missing on line NN").
 
-5.  Creare nuovi linguaggi può essere molto divertente!
+5.  Creating new languages can be a lot of fun!
 
 
-# Tipi di linguaggi
+# Language Types
 
 *General-purpose languages*
-: Questi sono i «linguaggi di programmazione» che conoscete bene (C++, Python, etc.).  Sono chiamati *general-purpose* perché non sono pensati per un dominio specifico, potendo essere usati per creare videogiochi, sistemi operativi, librerie numeriche, applicazioni grafiche, etc.
+: These are the "programming languages" you know well (C++, Python, etc.). They are called *general-purpose* because they are not designed for a specific domain, and can be used to create video games, operating systems, numerical libraries, graphical applications, etc.
 
-*Domain-specific languages* (DSL)
-: Si tratta di linguaggi che risolvono un problema molto specifico, e la cui sintassi è pensata per esprimere il problema nel modo più naturale possibile.
+*Domain-specific languages* (DSLs)
+: These are languages that solve a very specific problem, and whose syntax is designed to express the problem in the most natural way possible.
 
-Nel nostro caso dovremo definire un DSL e implementare un compilatore per esso. Il nostro sarà un approccio con *molta* pratica e quel tanto che basta di teoria.
-
-
-# DSL in linguaggi *general-purpose*
-
--   Non dovreste stupirvi del fatto che oggi inventeremo un nuovo «linguaggio» per il nostro programma: è un'attività più comune di quanto si pensi (anche se i fisici non lo fanno quasi mai 🙁).
-
--   È talmente comune che alcuni linguaggi *general-purpose* prevedono la possibilità di definire DSL **al proprio interno**: sono i linguaggi cosiddetti «metaprogrammabili» (es., [Common LISP](https://gigamonkeys.com/book/practical-a-simple-database.html), [Julia](https://docs.julialang.org/en/v1/manual/metaprogramming/), [Kotlin](https://www.raywenderlich.com/2780058-domain-specific-languages-in-kotlin-getting-started), [Nim](https://forum.nim-lang.org/t/2380)…).
+In our case, we will have to define a DSL and implement a compiler for it. Our approach will be *very* practical with just enough theory.
 
 
-# Linguaggi per la definizione di scene 3D
+# DSLs in *general-purpose* languages
 
-# Panoramica
+-   You shouldn't be surprised that today we will invent a new "language" for our program: it's a more common activity than you might think (even though physicists almost never do it 🙁).
 
--   A noi non interessano database né circuiti elettrici né pagine HTML: siamo interessati alla definizione di scene 3D.
+-   It's so common that some *general-purpose* languages allow you to define DSLs **within themselves**: these are the so-called "metaprogrammable" languages (e.g., [Common LISP](https://gigamonkeys.com/book/practical-a-simple-database.html), [Julia](https://docs.julialang.org/en/v1/manual/metaprogramming/), [Kotlin](https://www.raywenderlich.com/2780058-domain-specific-languages-in-kotlin-getting-started), [Nim](https://forum.nim-lang.org/t/2380)…).
 
--   Per definire il nostro linguaggio dovremmo innanzitutto farci un'idea di cosa faccia la «concorrenza».
 
--   Vediamo quindi come tre *renderer* permettono di specificare le scene che sono fornite come input: DBKTrace, POV-Ray e  YafaRay. Ovviamente tutti questi programmi funzionano da linea di comando come farà il nostro:
+# Scene Definition Languages {#scene-definition-languages}
+
+# Overview
+
+-   We are not interested in databases, electrical circuits, or HTML pages: we are interested in defining 3D scenes.
+
+-   To define our language, we should first get an idea of what the "competition" does.
+
+-   So let's see how three *renderers* allow you to specify the scenes that are provided as input: DKBTrace, POV-Ray, and YafaRay. Obviously, all these programs work from the command line, as ours will:
 
     ```
     $ program input_file
@@ -89,12 +83,13 @@ Nel nostro caso dovremo definire un DSL e implementare un compilatore per esso. 
 
 # DKBTrace
 
--   Nel 1986 David K. Buck rilasciò DKBTrace, un ray-tracer che usava l'algoritmo di *point-light tracing*.
--   Scritto in C.
--   Il programma funzionava solo sul [Commodore Amiga](https://en.wikipedia.org/wiki/Amiga), un vecchio microcomputer molto usato all'epoca per la grafica.
--   Lo sviluppatore abbandonò ben presto DKBTrace per lavorare a POV-Ray (che vedremo tra poco).
+-   In 1986, David K. Buck released DKBTrace, a ray tracer that used the *point-light tracing* algorithm.
+-   Written in C.
+-   The program only worked on the [Commodore Amiga](https://en.wikipedia.org/wiki/Amiga), an old microcomputer widely used at the time for graphics.
+-   The developer soon abandoned DKBTrace to work on POV-Ray (which we'll see shortly).
 
-# File di input
+
+# Input files
 
 ```text
 { DKBTrace example file }
@@ -133,15 +128,15 @@ END_OBJECT
 
 # [POV-Ray](http://povray.org/)
 
--   POV-Ray risolve l'equazione del rendering usando il *point-light tracing* (ma che nel manuale di POV-Ray viene chiamato semplicemente *raytracing*), esattamente come DKBTrace.
+-   POV-Ray solves the rendering equation using *point-light tracing* (but which in the POV-Ray manual is simply called *raytracing*), just like DKBTrace.
 
--   La prima versione è stata rilasciata nel 1991; al momento la versione più recente è la 3.7.0 (rilasciata nel 2013). La versione 3.8 è in fase di preparazione.
+-   The first version was released in 1991; currently the most recent version is 3.7.0 (released in 2013). Version 3.8 is under development.
 
--   In origine era stato scritto in C, e poi [riscritto in C++](https://github.com/POV-Ray/povray/tree/3.7-stable).
+-   Originally it was written in C, and then [rewritten in C++](https://github.com/POV-Ray/povray/tree/3.7-stable).
 
--   A partire dalla versione 3.0 implementa l'algoritmo [*radiosity*](https://en.wikipedia.org/wiki/Radiosity_(computer_graphics)) per simulare sorgenti diffuse in maniera simile al path-tracing.
+-   Starting with version 3.0 it implements the [*radiosity*](https://en.wikipedia.org/wiki/Radiosity_(computer_graphics)) algorithm to simulate diffuse sources in a way similar to path-tracing.
 
-# File di input
+# Input files
 
 ```povray
 // POV-Ray example file
@@ -172,15 +167,15 @@ light_source { <2, 4, -3> color White }
 
 # [YafaRay](http://www.yafaray.org/)
 
--   Scritto in C++ (repository su [GitHub](https://github.com/YafaRay)).
+-   Written in C++ (repository hosted on [GitHub](https://github.com/YafaRay)).
 
--   Risolve l'equazione del rendering usando un algoritmo di *path-tracing*.
+-   It solves the rendering equation using *path-tracing*.
 
--   Può essere usato in [Blender](https://www.blender.org/) come «motore» per il rendering.
+-   It can be used as a [Blender](https://www.blender.org/) plug-in.
 
--   Il formato delle scene è [XML](https://en.wikipedia.org/wiki/XML).
+-   The file format is based on [XML](https://en.wikipedia.org/wiki/XML).
 
-# File di input
+# Input files
 
 ```xml
 <scene>
@@ -247,50 +242,50 @@ light_source { <2, 4, -3> color White }
 
 <center>![](media/yafray-example.webp)</center>
 
-# Il «nostro» formato
+# Our Format
 
-# Definire il formato
+# Defining the Format
 
--   Ci aspetta ora un compito molto eccitante: definire il nostro formato!
+-   We now have a very exciting task: defining our format!
 
--   Potremmo ispirarci a formati molto semplici, come ad esempio il Wavefront OBJ che avevamo descritto [tempo fa](./tomasi-ray-tracing-10a-other-shapes.html#wavefront-obj): ogni riga contiene una lettera (`v`, `f`, `n`, etc.) seguita da una sequenza di numeri.
+-   We could draw inspiration from very simple formats, such as the Wavefront OBJ that we described [earlier](./tomasi-ray-tracing-10a-other-shapes.html#wavefront-obj): each line contains a letter (`v`, `f`, `n`, etc.) followed by a sequence of numbers.
 
--   Ad esempio, potremmo definire una BRDF diffusiva (`d`) con colore $(0.3, 0.7, 0.5)$ associata a una sfera (`s`) centrata in $(1, 3, 6)$ di raggio $r = 2$ con un codice del genere:
+-   For example, we could define a diffuse BRDF (`d`) with color $(0.3, 0.7, 0.5)$ associated with a sphere (`s`) centered at $(1, 3, 6)$ with radius $r = 2$ with code like this:
 
     ```text
     d 0.3 0.7 0.5
     s 1 3 6 2
     ```
 
-    Ma non sarebbe affatto leggibile! Proviamo a pensare a qualcosa di più elegante.
+    But it wouldn't be readable at all! Let's try to think of something more elegant.
 
-# Come implementare il formato
+# How to Implement the Format
 
--   Un buon formato non deve essere ambiguo, e deve anche essere facile da imparare.
+-   A good format must not be ambiguous, and it must also be easy to learn.
 
--   Anziché usare lettere come `s` o `d` per indicare diverse entità (sfera o BRDF diffusiva), useremo stringhe di caratteri (`sphere` e `diffuse`)
+-   Instead of using letters like `s` or `d` to indicate different entities (sphere or diffuse BRDF), we will use strings (`sphere` and `diffuse`).
 
--   La scrittura `s 1 3 6 2` non è chiara, perché non si distingue il raggio dalle coordinate. Ispirandoci alla sintassi di Python e Julia, indicheremo punti e vettori con le parentesi quadre, ad es. `[1, 3, 6]`.
+-   The notation `s 1 3 6 2` is not clear because the radius is not distinguished from the coordinates. Inspired by the syntax of Python and Julia, we will indicate points and vectors with square brackets, e.g., `[1, 3, 6]`.
 
--   Implementeremo anche la possibilità di associare un nome agli oggetti: in questo modo potremo fare riferimento a BRDF create in precedenza (es., `green_matte`) quando definiamo nuove `Shape`.
+-   We will also implement the ability to associate a name with objects: this way we can refer to previously created BRDFs (e.g., `green_matte`) when we define new `Shape` objects.
 
-# Cosa includere
+# What to Include
 
--   Il nostro formato serve per descrivere una scena, non per fare rendering!
+-   Our format is for describing a scene, not for rendering!
 
--   Per questo scopo, bisogna pensare a una sintassi per specificare:
+-   For this purpose, we need to think of a syntax to specify:
 
-    - Osservatori;
-    - Forme (sfere, piani, e qualsiasi altro oggetto voi abbiate implementato);
-    - Trasformazioni;
-    - Vettori;
-    - BRDF, materiali e pigmenti;
-    - Colori;
-    - Numeri.
+    - Observers;
+    - Shapes (spheres, planes, and any other object you have implemented);
+    - Transformations;
+    - Vectors;
+    - BRDFs, materials, and pigments;
+    - Colors;
+    - Numbers.
 
-# Scelte da compiere
+# Choices to Make
 
--   Dobbiamo definire una sintassi per creare oggetti, e ovviamente ci sono varie possibilità. Ad esempio, per definire una sfera potremmo usare una qualsiasi di queste quattro sintassi:
+-   We need to define a syntax for creating objects, and obviously there are various possibilities. For example, to define a sphere we could use any of these four syntaxes:
 
     ```text
     sphere [1 3 6] 2
@@ -298,12 +293,12 @@ light_source { <2, 4, -3> color White }
     create sphere with center [1, 3, 6] and radius 2
     ```
 
--   La scelta dell'una o dell'altra sintassi è in linea di principio completamente nelle nostre mani!
+-   The choice of one syntax or another is, in principle, entirely up to us!
 
--   Per Pytracer ho scelto la sintassi che ora illustro.
+-   For Pytracer I chose the syntax that I will now illustrate.
 
 
-# Esempio di formato
+# Example
 
 ```python
 # Declare a floating-point variable named "clock"
@@ -344,19 +339,19 @@ plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))
 camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 ```
 
-# Come interpretare il formato?
+# How to Interpret the Format?
 
--   Da un punto di vista puramente concettuale, il compito che ci aspetta non è poi così diverso da quello di leggere un file PFM…
+- From a purely conceptual point of view, the task ahead is not so different from reading a PFM file…
 
--   …con la differenza però che il file di input che consideriamo ora è molto più complesso e «duttile» del formato PFM!
+- …with the difference, however, that the input file we are considering now is much more complex and "flexible" than the PFM format!
 
--   Questa maggiore versatilità comporta molti più rischi di errore: è facile per l'utente che crea una scena dimenticarsi una virgola, o confondere la notazione `<>` (colori) con `[]` (vettori). Dobbiamo quindi prestare grande cura alla segnalazione degli errori all'utente!
+- This greater versatility entails many more risks of error: it's easy for the user creating a scene to forget a comma, or confuse the `<>` notation (colors) with `[]` (vectors). We must therefore pay great attention to reporting errors to the user!
 
--   Per interpretare questo tipo di file occorre procedere per gradi.
+- To interpret this type of file, it is necessary to proceed in stages.
 
-# Paragone coi compilatori
+# Comparison with Compilers
 
--   Il lavoro che ci aspetta è simile alla scrittura di un compilatore vero e proprio. Ad esempio, il comando `g++` legge in input file di testo fatti come il seguente:
+- The work ahead is similar to writing a real compiler. For example, the `g++` command reads text files like the following:
 
     ```c++
     #include <iostream>
@@ -366,27 +361,27 @@ camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
     }
     ```
 
-    e produce in output un file eseguibile che contiene la sequenza di istruzioni macchina corrispondenti a questo codice C++.
+    and produces an executable file containing the sequence of machine instructions corresponding to this C++ code.
 
--   Nel nostro caso il codice deve costruire in memoria una serie di variabili che contengono le `Shape`, la `Camera` e i `Material` di cui è composta la scena.
+- In our case, the code must construct in memory a series of variables that contain the `Shape`s, the `Camera`, and the `Material`s that make up the scene.
 
-# Terminologia
+# Terminology {#terminology}
 
-Per chi lavora con interpreti/compilatori è prassi usare alcuni termini della linguistica:
+For those who work with interpreters/compilers, it is common practice to use some linguistic terms:
 
--   L'analisi del **lessico** studia la tipologia delle singole parole, e stabilisce ad esempio che la parola «invece» è corretta, mentre «invecie» è sbagliata.
--   L'analisi della **sintassi** studia i rapporti tra gli elementi di una espressione, e stabilisce ad esempio che un verbo non può mai seguire un articolo («un mangeremmo»).
--   L'analisi della **semantica** studia il rapporto tra una espressione come «la casa in fondo alla strada» e l'oggetto extra-linguistico a cui si fa riferimento (appunto, quella particolare casa in fondo alla strada).
+- **Lexical** analysis studies the typology of individual words and establishes, for example, that the word "invece" (Italian for "instead") is correct, while "invecie" is incorrect.  This is analogous to spelling and vocabulary in natural languages.
+- **Syntactic** analysis studies the relationships between the elements of an expression and establishes, for example, that a verb can never follow an article ("un mangeremmo" - a nonsensical Italian phrase). This is analogous to grammar in natural languages.
+- **Semantic** analysis studies the relationship between an expression like "the house at the end of the road" and the extra-linguistic object to which it refers (precisely, that particular house at the end of the road). This relates to the meaning conveyed by the expression.
 
-# Linguaggi informatici
+# Computer Languages
 
-Nel caso di un «linguaggio» informatico come il nostro, la sua analisi viene solitamente fatta seguendo lo stesso ordine della slide precedente:
+In the case of a computer "language" like ours, its analysis is usually done in the same order as the previous slide:
 
-1.  Un'analisi **lessicale**, in cui si verifica che le singole «parole» siano scritte correttamente;
-2.  Un'analisi **sintattica**, in cui si considera come le singole «parole» sono concatenate;
-3.  Un'analisi **semantica**, il cui risultato è l'insieme di variabili in memoria del tipo corrispondente (nel nostro caso, `Sphere`, `Plane`, `SpecularBRDF`, etc.), come se fossero state dichiarate ed inizializzate direttamente nel nostro codice sorgente.
+1.  A **lexical** analysis, which verifies that the individual "words" are written correctly;
+2.  A **syntactic** analysis, which considers how the individual "words" are concatenated;
+3.  A **semantic** analysis, the result of which is the set of variables in memory of the corresponding type (in our case, `Sphere`, `Plane`, `SpecularBRDF`, etc.), as if they had been declared and initialized directly in our source code.
 
-# Workflow di un compilatore
+# Compiler Workflow
 
 ```{.graphviz im_fmt="svg" im_out="img" im_fname="compiler-architecture"}
 graph "" {
@@ -406,36 +401,36 @@ graph "" {
 }
 ```
 
--   Il *lexer* scompone il codice sorgente in elementi semplici, chiamati *token*, e segnala gli errori di natura lessicale;
--   Il *parser* analizza la sequenza dei *token* per legarli tra loro e comprenderne la sintassi e la semantica;
--   L'*AST builder* crea il cosiddetto *Abstract Syntax Tree* (non usato nel nostro caso);
--   L'*optimizer* applica ottimizzazioni all'AST (non usato nel nostro caso);
--   Dall'AST ottimizzato viene generato l'eseguibile (non usato nel nostro caso).
+-   The *lexer* breaks down the source code into simple elements, called *tokens*, and reports lexical errors;
+-   The *parser* analyzes the sequence of *tokens* to link them together and understand their syntax and semantics;
+-   The *AST builder* creates the so-called *Abstract Syntax Tree* (not used in our case);
+-   The *optimizer* applies optimizations to the AST (not used in our case);
+-   The executable is generated from the optimized AST (not used in our case).
 
-# Esempio: analisi lessicale
+# Example: Lexical Analysis
 
--   Consideriamo la frase
+-   Consider the sentence
 
     ```
-    Il bambino mangia la mela
+    The child eats the apple
     ```
 
--   Quello che farebbe un *lexer* della lingua italiana è produrre questa lista:
+-   What a *lexer* for the English language would do is produce this list:
 
-    1.  `Il`: articolo determinativo maschile singolare
-    2.  `bambino`: nome comune di persona maschile singolare
-    3.  `mangia`: voce del verbo mangiare, modo indicativo, tempo presente, terza persona singolare…
+    1.  `The`: definite article
+    2.  `child`: common noun, singular
+    3.  `eats`: verb "to eat", indicative mood, present tense, third person singular…
 
-# Esempio: analisi lessicale
+# Example: Lexical Analysis
 
--   Consideriamo le prime righe dell'esempio mostrato poco fa:
+-   Let's consider the first lines of the example shown earlier:
 
     ```text
     # Declare a variable named "clock"
     float clock(150)
     ```
 
--   Il risultato dell'analisi lessicale delle linee sopra è la produzione della lista di token seguente (da cui sono già rimossi spazi bianchi e commenti):
+-   The result of the lexical analysis of the lines above is the production of the following token list (from which whitespace and comments have already been removed):
 
     ```python
     [
@@ -447,22 +442,22 @@ graph "" {
     ]
     ```
 
-# Esempio: analisi sintattica
+# Example: Syntactic Analysis
 
--   Consideriamo la frase
+-   Consider the sentence
 
     ```
-    Il bambino mangia la mela
+    The child eats the apple
     ```
 
--   L'analisi sintattica verifica che le concordanze siano corrette (articolo/nome, nome/verbo…)
+-   The syntactic analysis verifies that the agreements are correct (article/noun, noun/verb…)
 
--   Determina quale è il soggetto e quale il complemento oggetto
+-   It determines which is the subject and which is the direct object
 
 
-# Esempio: analisi sintattica
+# Example: Syntactic Analysis
 
--   L'analisi sintattica parte dalla sequenza di token prodotta dall'analisi lessicale:
+-   Syntactic analysis starts from the sequence of tokens produced by lexical analysis:
 
     ```python
     # List of tokens for `float clock(150)`:
@@ -472,12 +467,12 @@ graph "" {
     ]
     ```
 
--   L'analisi sintattica deve verificare che la sequenza di token sia corretta: se il primo token è la parola chiave `float`, allora significa che stiamo definendo una variabile floating-point. È quindi necessario che il token successivo contenga il nome della variabile (deve essere un *identificatore*), seguito dal valore numerico racchiuso tra le parentesi.
+-   The syntactic analysis must verify that the token sequence is correct: if the first token is the keyword `float`, then it means that we are defining a floating-point variable. It is therefore necessary that the next token contains the name of the variable (it must be an *identifier*), followed by the numerical value enclosed in parentheses.
 
 
-# Errori di sintassi
+# Syntax Errors
 
--   Prendendo spunto da questo esempio, considerate il seguente codice C++:
+-   Taking inspiration from this example, consider the following C++ code:
 
     ```c++
     int if;
@@ -488,34 +483,35 @@ graph "" {
         std::cout << "The number is even\n";
     ```
 
--   Questo codice sopra è perfettamente comprensibile da un essere umano, ma il C++ lo vieta! (L'equivalente in Scheme sarebbe invece ok).
+-   This code above is perfectly understandable by a human being, but C++ forbids it! (The equivalent in Scheme would be ok).
 
--   L'errore è causato dal fatto che la sintassi del C++ richiede che il tipo della variabile (`int`) sia seguito da un *identificatore*, e non da una *keyword* (`if`).
+-   The error is caused by the fact that C++ syntax requires that the variable type (`int`) be followed by an *identifier*, and not by a *keyword* (`if`).
 
 
-# Esempio: analisi semantica
+# Example: Semantic Analysis
 
 ```text
 # Declare a variable named "clock"
 float clock(150)
 ```
 
--   Il risultato dell'analisi sintattica dice che l'istruzione richiede di creare una variabile `clock` e di assegnarle il valore `150.0`.
+-   The result of the syntactic analysis says that the instruction requires creating a variable `clock` and assigning it the value `150.0`.
 
--   L'analisi semantica deve verificare che la definizione di questa variabile non crei inconsistenze. Ad esempio, potrebbe verificare che `clock` non fosse già stata definita in precedenza, e nel caso scegliere una di queste possibilità:
+-   The semantic analysis must verify that the definition of this variable does not create inconsistencies. For example, it could check that `clock` has not already been defined previously, and in that case choose one of these possibilities:
 
-    1.  Produrre un errore (è il caso del C++);
-    2.  Aggiornare il valore della variabile `clock` anziché definirne una nuova con lo stesso nome (è il caso del Python e di Scheme).
+    1.  Produce an error (this is the case in C++);
+    2.  Update the value of the variable `clock` instead of defining a new one with the same name (this is the case in Python and Scheme).
 
-# Implementazione
 
-# Funzionamento del *lexer*
+# Implementation
 
--   Il *lexer* è la parte di codice che si occupa dell'analisi lessicale.
+# How the *lexer* works
 
--   Il suo compito è di leggere da uno *stream* (tipicamente un file) e produrre in output una lista di *token*, classificati secondo il loro tipo.
+-   The *lexer* is the part of the code that handles lexical analysis.
 
--   Per motivi di efficienza, i lexer *non* restituiscono una lista di token, ma leggono i *token* uno alla volta, restituendoli man mano che li interpretano, e si usano quindi così:
+-   Its task is to read from a *stream* (typically a file) and produce a list of *tokens* as output, classified according to their type.
+
+-   For efficiency reasons, lexers *do not* return a list of tokens, but read the *tokens* one at a time, returning them as they interpret them, and are therefore used like this:
 
     ```python
     while True:
@@ -526,25 +522,25 @@ float clock(150)
         …
     ```
 
-# Output di un *lexer*
+# Output of a *lexer*
 
--   Un *lexer* deve saper classificare i *token* a seconda del loro tipo.
+-   A *lexer* must be able to classify *tokens* according to their type.
 
--   A seconda del linguaggio esistono vari tipi di token; nel nostro caso abbiamo:
+-   Depending on the language, there are various types of tokens; in our case we have:
 
-    #.  *Keyword*: una parola chiave del linguaggio, come `sphere` e `diffuse`;
-    #.  *Identifier*: il nome di una variabile/tipo/funzione come `clock`;
-    #.  *Numeric literal*: un numero come `150`, possibilmente distinto tra *integer literal* e *floating-point literal* (noi non faremo distinzione);
-    #.  *String literal*: una stringa di caratteri, solitamente racchiusa tra `"` (doppi apici) o `'` (singoli apici);
-    #.  *Symbol*: un carattere non alfanumerico, come `(`, `+`, `,`, etc.) Non considereremo simboli composti da più caratteri (es., `>=` in C++).
+    #.  *Keyword*: a keyword of the language, such as `sphere` and `diffuse`;
+    #.  *Identifier*: the name of a variable/type/function such as `clock`;
+    #.  *Numeric literal*: a number such as `150`, possibly distinguished between *integer literal* and *floating-point literal* (we will not make a distinction);
+    #.  *String literal*: a string of characters, usually enclosed in `"` (double quotes) or `'` (single quotes);
+    #.  *Symbol*: a non-alphanumeric character, such as `(`, `+`, `,`, etc.) We will not consider symbols composed of multiple characters (e.g., `>=` in C++).
 
-# Tipi di *token*
+# Types of *tokens*
 
--   L'implementazione del tipo `Token` ci consente di approfondire il sistema dei tipi dei linguaggi che abbiamo usato nel corso.
+-   The implementation of the `Token` type allows us to delve into the type system of the languages we have used in the course.
 
--   Seguendo un approccio OOP, i diversi tipi di *token* potrebbero essere classi derivate da un tipo base, `Token` appunto: si costruisce quindi una gerarchia di classi.
+-   Following an OOP approach, the different types of *tokens* could be classes derived from a base type, `Token` precisely: a class hierarchy is thus built.
 
--   Questa soluzione funziona, ed è ciò che ho usato in pytracer. Non è però la soluzione più comoda!
+-   This solution works, and it is what I used in pytracer. However, it is not the most convenient solution!
 
 ---
 
@@ -579,21 +575,21 @@ class SymbolToken(Token):
 ```
 
 
-# *Tokens* e gerarchie di classi
+# *Tokens* and Class Hierarchies {#tokens-and-class-hierarchies}
 
--   Ci sono alcuni svantaggi nell'usare una gerarchia di classi:
+-   There are some disadvantages to using a class hierarchy:
 
-    #.  Il codice diventa molto verboso: si devono implementare tante classi, tutte molto simili tra loro.
-    #.  Le gerarchie di classi sono pensate per essere *estendibili*: posso sempre definire una nuova classe derivata da `Token`. Ma nel caso di un linguaggio, l'elenco dei tipi di token è fissato ed è molto difficile che cambi.
+    #.  The code becomes very verbose: you have to implement many classes, all very similar to each other.
+    #.  Class hierarchies are designed to be *extensible*: you can always define a new class derived from `Token`. But in the case of a language, the list of token types is fixed and very unlikely to change.
 
--   Il tipo più indicato per un *token* è un *sum type*, chiamato anche *tagged union* o *object variant*, che si contrappone ai *product type* che tutti voi conoscete (probabilmente senza saperlo). Vediamo in cosa consistono.
+-   The most suitable type for a *token* is a *sum type*, also called a *tagged union* or *object variant*, which contrasts with the *product types* that you all know (probably without knowing it). Let's see what they consist of.
 
 
-# *Product types*
+# *Product Types*
 
--   Le `struct`/`class` di linguaggi come C++, Python e Julia sono *product types*, perché dal punto di vista formale sono un **prodotto cartesiano** tra insiemi.
+-   The `struct`/`class` of languages like C++, Python, and Julia are *product types* because, from a formal point of view, they are a **Cartesian product** between sets.
 
--   Consideriamo questa definizione in C++:
+-   Consider this definition in C++:
 
     ```c++
     struct MyStruct {
@@ -602,14 +598,14 @@ class SymbolToken(Token):
     };
     ```
 
-    Se l'insieme di tutti i valori assumibili da un `int32_t` e da un `uint8_t` è denominato rispettivamente con $I$ e $B$, allora una variabile `MyStruct var` è tale per cui $\mathtt{var} \in I \times B$.
+    If the set of all possible values of an `int32_t` and a `uint8_t` is denoted by $I$ and $B$ respectively, then a variable `MyStruct var` is such that $\mathtt{var} \in I \times B$.
 
 
-# *Sum types*
+# *Sum Types*
 
--   Un *sum type* combina tra loro più tipi usando la *somma insiemistica* (ossia l'unione $\cup$) anziché il prodotto cartesiano.
+-   A *sum type* combines multiple types using *set summation* (i.e., the union $\cup$) instead of the Cartesian product.
 
--   Nel nostro esempio C++, i *sum types* si definiscono tramite la parola chiave `union` (molto appropriata!):
+-   In our C++ example, *sum types* are defined using the keyword `union` (very appropriate!):
 
     ```c++
     union MyUnion {
@@ -618,9 +614,9 @@ class SymbolToken(Token):
     };
     ```
 
--   In questo caso, la variabile `MyUnion var` è tale per cui $\mathtt{var} \in I \cup B$: puo essere un `int32_t` **oppure** un `uint8_t`, ma non entrambi.
+-   In this case, the variable `MyUnion var` is such that $\mathtt{var} \in I \cup B$: it can be an `int32_t` **or** a `uint8_t`, but not both.
 
-# Uso di `union`
+# Using `union`
 
 ```c++
 union MyUnion {
@@ -648,20 +644,20 @@ int main() {
 }
 ```
 
-# *Sum types* e *token*
+# *Sum Types* and *Tokens*
 
--   Un *token* è idealmente rappresentato da un *sum type*. Supponiamo di avere per semplicità due soli tipi di token, definiti in un codice C++:
+-   A *token* is ideally represented by a *sum type*. Suppose we have, for simplicity, only two types of tokens, defined in C++ code:
 
-    #.  *Literal number* (es., `150`), rappresentato in memoria come un `float`;
-    #.  *Literal string* (es., `"filename.pfm"`), rappresentato da `std::string`;
+    1.  *Literal number* (e.g., `150`), represented in memory as a `float`;
+    2.  *Literal string* (e.g., `"filename.pfm"`), represented by `std::string`;
 
--   Consideriamo ora una funzione `read_token(stream)` che restituisce il token successivo letto da `stream`: può restituire un *literal number* oppure un *literal string*.
+-   Now consider a function `read_token(stream)` that returns the next token read from `stream`: it can return a *literal number* or a *literal string*.
 
--   Se i numeri appartengono all'insieme $N$ e le stringhe a $S$, allora è chiaro che il token `t` è tale per cui $\mathtt{t} \in N \cup S$: può essere uno dei due tipi, ma non più tipi contemporaneamente. È quindi logicamente un *sum type*!
+-   If numbers belong to the set $N$ and strings to $S$, then it is clear that the token `t` is such that $\mathtt{t} \in N \cup S$: it can be one of the two types, but not more than one type at the same time. It is therefore logically a *sum type*!
 
-# *Sum types* vs gerarchie
+# *Sum Types* vs Hierarchies
 
--   Una `union` racchiude all'interno di un'unica definizione tutti i tipi:
+-   A `union` encloses all types within a single definition:
 
     ```c++
     union MyUnion {
@@ -670,7 +666,7 @@ int main() {
     };
     ```
 
--   È più semplice da leggere e da capire di una gerarchia di classi:
+-   It is easier to read and understand than a class hierarchy:
 
     ```c++
     struct Value {};
@@ -681,9 +677,9 @@ int main() {
     ```
 
 
-# *Sum types* e *token*
+# *Sum Types* and *Tokens*
 
--   Potremmo allora definire il tipo `Token` in C++ nel modo seguente:
+-   We could then define the `Token` type in C++ as follows:
 
     ```c++
     union Token {
@@ -692,7 +688,7 @@ int main() {
     };
     ```
 
--   Una volta assegnato un valore però non c'è modo di capire a quale dei due insiemi $N$ o $S$ appartenga l'elemento (le `union` non sono *tagged*):
+-   However, once a value is assigned, there is no way to understand which of the two sets $N$ or $S$ the element belongs to (`union`s are not *tagged*):
 
     ```c++
     Token my_token;
@@ -748,18 +744,18 @@ int main() {
 
 # *Tagged unions* in C/C++
 
--   L'esempio mostra che per implementare una *tagged union* occorrono *tre* tipi:
+-   The example shows that to implement a *tagged union* *three* types are needed:
 
-    #.  Il tipo `Token` contiene al suo interno il cosiddetto *tag* (che indica se il token appartiene a $N$ o a $S$);
-    #.  Il tipo `TokenType` è il *tag*, ed un `enum` (C) o `enum class` (C++);
-    #.  Il tipo `TokenValue` è la `union` vera e propria, che in C++ va corredata di un costruttore e un distruttore di default per poter essere usata in `Token`.
+    #.  The `Token` type contains the so-called *tag* (which indicates whether the token belongs to $N$ or $S$);
+    #.  The `TokenType` type is the *tag*, and an `enum` (C) or `enum class` (C++);
+    #.  The `TokenValue` type is the actual `union`, which in C++ must be equipped with a default constructor and destructor to be used in `Token`.
 
--   Tutto ciò è necessario in quei linguaggi che non supportano le *tagged union* (vedi [questo post](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/sum-types) per una panoramica dei linguaggi che hanno questa lacuna).
+-   All this is necessary in those languages that do not support *tagged unions* (see [this post](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/sum-types) for an overview of the languages that have this shortcoming).
 
--   Nim supporta in maniera nativa i tag: vedete la sezione del manuale [*Object variants*](https://nim-lang.org/docs/manual.html#types-object-variants)
+-   Nim natively supports tags: see the [*Object variants*](https://nim-lang.org/docs/manual.html#types-object-variants) section of the manual
 
 
-# Esaustività dei controlli
+# Exhaustiveness of checks
 
 ```c++
 // Let's assume we have four token types
@@ -781,11 +777,11 @@ void print_token(const Token & t) {
 ```
 
 
-# *Sum types* fatti bene
+# Good *sum types*
 
--   Linguaggi come [Haskell](https://wiki.haskell.org/Algebraic_data_type), i derivati di ML (es., [OCaml](https://ocaml.org/), F\#), [Pascal](https://www.freepascal.org/docs-html/ref/refsu15.html), [Nim](https://nim-lang.org/docs/tut2.html#object-oriented-programming-object-variants), [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), etc., consentono di definire *sum types* in maniera molto più naturale.
+-   Languages like [Haskell](https://wiki.haskell.org/Algebraic_data_type), those derived from ML (es., [OCaml](https://ocaml.org/), F\#), [Pascal](https://www.freepascal.org/docs-html/ref/refsu15.html), [Nim](https://nim-lang.org/docs/tut2.html#object-oriented-programming-object-variants), [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), etc., implement *sum types* in a more natural way.
 
--   Ad esempio, ecco come definire il tipo `Token` in OCaml:
+-   For instance, in OCaml you can define a `Token` in this way:
 
     ```ocaml
     type token =
@@ -795,11 +791,11 @@ void print_token(const Token & t) {
         | Keyword of string;
     ```
 
-    Non c'è bisogno di definire una lunga gerarchia di classi!
+    No need to define a complex class hierarchy!
 
-# Esaustività in OCaml
+# Exhaustiveness in OCaml
 
--   In linguaggi come [OCaml](https://ocaml.org/) e [F\#](https://fsharpforfunandprofit.com/posts/discriminated-unions/), i controlli sui *sum types* sono esaustivi:
+-   In languages like [OCaml](https://ocaml.org/) and [F#](https://fsharpforfunandprofit.com/posts/discriminated-unions/), checks on *sum types* are exhaustive:
 
     ```ocaml
     let print_token tok = match tok with
@@ -812,66 +808,40 @@ void print_token(const Token & t) {
      * Keyword _                                         *)
     ```
 
--   I *sum types* rappresentano gerarchie di classi «rigide», dove c'è un solo antenato (`token`) e le classi figlie sono note a priori: proprio il caso dei token! Linguaggi come [OCaml](https://ocaml.org/) sono infatti spesso usati per scrivere compilatori (es., [FFTW](http://www.fftw.org/fftw-paper-ieee.pdf),  [Rust](https://www.reddit.com/r/rust/comments/18b808/is_the_original_ocaml_compiler_still_available/)).
+-   *Sum types* represent "rigid" class hierarchies, where there is only one ancestor (`token`) and the child classes are known a priori: precisely the case of tokens! Languages like [OCaml](https://ocaml.org/) are in fact often used to write compilers (e.g., [FFTW](http://www.fftw.org/fftw-paper-ieee.pdf),  [Rust](https://www.reddit.com/r/rust/comments/18b808/is_the_original_ocaml_compiler_still_available/)).
 
 
-# *Sum types* vs gerarchie
+# *Sum types* vs hierarchies
 
--   Un *sum type* come `union` in C/C++ è utile quando il numero di tipi (`LiteralToken`, `SymbolToken`, …) è limitato e non cambierà facilmente, mentre il numero di *metodi* da applicare a quel tipo (es., `print_token`) può crescere indefinitamente.
+-   A *sum type* like `union` in C/C++ is useful when the number of types (`LiteralToken`, `SymbolToken`, …) is limited and will not change easily, while the number of *methods* to apply to that type (e.g., `print_token`) can grow indefinitely.
 
--   Una gerarchia di classi è utile nel caso contrario: il numero di tipi può crescere in numero potenzialmente illimitato, ma il numero di metodi è in linea di principio limitato. Un buon esempio è `Shape`: si possono definire infinite forme (`Sphere`, `Plane`, `Cone`, `Cylinder`, `Parabola`, etc.), ma il numero di operazioni da fare è limitato (`ray_intersection`, `is_point_inside`, etc.).
+-   A class hierarchy is useful in the opposite case: the number of types can grow potentially indefinitely, but the number of methods is in principle limited. A good example is `Shape`: you can define infinite shapes (`Sphere`, `Plane`, `Cone`, `Cylinder`, `Parabola`, etc.), but the number of operations to perform is limited (`ray_intersection`, `is_point_inside`, etc.).
 
 
-# Funzionamento di un *lexer*
+# How a *Lexer* Works
 
-# Funzionamento di un *lexer*
+# How a *Lexer* Works
 
--   Il *lexer* legge i caratteri da uno stream, uno alla volta, e decide quali *token* creare a seconda dei caratteri in cui si imbatte.
+-   The *lexer* reads characters from a stream, one at a time, and decides which *tokens* to create based on the characters it encounters.
 
--   Ad esempio, la lettura del carattere `"` (doppio apice) in un codice C++ indica che si sta definendo una stringa di caratteri:
+-   For example, reading the `"` character (double quote) in C++ code indicates that a character string is being defined:
 
     ```c++
     const char * message = "error, you must specify an input file";
     ```
 
-    Quando i lexer usati nei compilatori C++ trovano un carattere `"`, essi  continuano a leggere caratteri fino al successivo `"`, che segnala la fine della stringa, e restituiscono un token *string literal*.
+    When lexers used in C++ compilers encounter a `"` character, they continue reading characters until the next `"`, which signals the end of the string, and return a *string literal* token.
 
-# Ambiguità nei *lexer*
+# Ambiguities in *Lexers*
 
--   Il caso di uno *string literal* è semplice da affrontare: tutte le volte che ci si imbatte in un carattere `"`, si ha a che fare con questo tipo di *token*.
+-   The case of a *string literal* is simple to handle: every time a `"` character is encountered, we are dealing with this type of *token*.
 
--   Ma nella maggior parte dei casi un *lexer* deve affrontare ambiguità. Ad esempio, un carattere `a`…`z` indica che sta iniziando una *keyword*  come `int`, oppure un *identifier* come `iterations_per_minute`?
+-   But in most cases a *lexer* must deal with ambiguities. For example, does an `a`...`z` character indicate that a *keyword* like `int` is starting, or an *identifier* like `iterations_per_minute`?
 
-    In questo caso si leggono caratteri finché appartengono alla lista dei caratteri validi in un identificatore (solitamente lettere maiuscole/minuscole, cifre e il carattere `_`), poi si confronta la stringa letta con la lista di possibili *keyword* ammesse dal linguaggio.
-
-# Tornare indietro
-
--   In un *lexer* (e vedremo che è così anche nei *parser*) è comoda la possibilità di far sì che un carattere appena letto dal file sia «dis-letto», ossia venga rimesso a posto:
-
-    ```python
-    c = read_char(file)   # Suppose that this returns the character "X"
-    unread_char(file, c)  # Puts the "X" back into the file
-    c = read_char(file)   # Read the "X" again
-    ```
-
-    Questo equivale a leggere un carattere in anticipo (operazione di *look ahead*), e permette di scrivere il *lexer* in maniera più elegante.
-
--   L'operazione `unread_char` non altera il file: memorizza soltanto il carattere `X` in una variabile, e la restituisce alla successiva chiamata a `read_char`.
-
-# Uso di `unread_char`
-
--   Perché `unread_char` è utile in un *lexer*? Vediamo per esempio questa espressione Python:
-
-    ```python
-    15+4
-    ```
-
-    che è composta dei *token* `15` (*numeric literal*), `+` (*symbol*), `4` (*numeric literal*).
-
--   Quando il *lexer* inizia il suo lavoro individua il carattere `1`, e capisce che deve creare un token *numeric literal*. A questo punto deve leggere i caratteri finché trova la prima non-cifra, che è `+`. La lettura di `+` segnala che l'intero è finito e va emesso un *literal number token*; ma `+` va rimesso a posto, perché farà parte del token successivo.
+    In this case, characters are read as long as they belong to the list of valid characters in an identifier (
 
 
-# Lettura di un *numeric literal*
+# Reading a *numeric literal*
 
 ```python
 ch = read_char()
@@ -897,3 +867,9 @@ if ch.isdigit():
     except ValueError:
         print(f"invalid numeric literal {literal}")
 ```
+
+---
+title: "Lesson 12"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
+author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
+...

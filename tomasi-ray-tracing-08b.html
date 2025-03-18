@@ -29,8 +29,9 @@
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -131,33 +132,33 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 <section id="issues" class="slide level1">
 <h1>Issues</h1>
 </section>
-<section id="un-bug-nel-codice" class="slide level1">
-<h1>Un bug nel codice!</h1>
+<section id="a-bug-in-the-code" class="slide level1">
+<h1>A bug in the code!</h1>
 <ul>
-<li><p>Il codice Python di settimana scorsa conteneva volutamente un
-errore nell’implementazione del metodo
-<code>ImageTracer.fire_ray</code>:</p>
+<li><p>Last week’s Python code intentionally contained an error in the
+implementation of the <code>ImageTracer.fire_ray</code> method:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> (<span class="va">self</span>.image.width <span class="op">-</span> <span class="dv">1</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> (<span class="va">self</span>.image.height <span class="op">-</span> <span class="dv">1</span>)</span></code></pre></div></li>
-<li><p>L’errore sta nel fatto che le righe in <code>HdrImage</code> sono
-numerate dall’<em>alto</em>, non dal <em>basso</em>, mentre la
-coordinata <span class="math inline">v</span> cresce verso
-l’<em>alto</em>. Nella seconda riga invece, la variabile <code>v</code>
-cresce quando cresce <code>row</code>: questo è sbagliato!</p></li>
+<li><p>The error lies in the fact that the rows in <code>HdrImage</code>
+are numbered from the <em>top</em>, not the <em>bottom</em>, while the
+<span class="math inline">v</span> coordinate increases
+<em>upwards</em>. In the second line, however, the variable
+<code>v</code> increases as <code>row</code> increases: this is
+wrong!</p></li>
 </ul>
 </section>
-<section id="cosa-fare-con-i-bug" class="slide level1">
-<h1>Cosa fare con i bug</h1>
+<section id="what-to-do-with-bugs" class="slide level1">
+<h1>What to do with bugs</h1>
 <ul>
-<li><p>L’esistenza di questo bug provoca un ribaltamento verticale delle
-immagini: l’alto e il basso sono scambiati!</p></li>
-<li><p>Eppure abbiamo implementato dei test!</p></li>
-<li><p>Perché non ce ne siamo accorti?</p></li>
+<li><p>The existence of this bug causes a vertical flip of the images:
+the top and bottom are swapped!</p></li>
+<li><p>Yet we implemented tests!</p></li>
+<li><p>Why didn’t we notice?</p></li>
 </ul>
 </section>
-<section id="test-della-scorsa-lezione" class="slide level1">
-<h1>Test della scorsa lezione</h1>
+<section id="tests-from-last-lesson" class="slide level1">
+<h1>Tests from last lesson</h1>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># These were the tests we implemented last week</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> HdrImage(width<span class="op">=</span><span class="dv">4</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
@@ -175,80 +176,76 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(image.width):</span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> image.get_pixel(col, row) <span class="op">==</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span></code></pre></div>
 </section>
-<section id="test-incompleti" class="slide level1">
-<h1>Test incompleti</h1>
+<section id="incomplete-tests" class="slide level1">
+<h1>Incomplete Tests</h1>
 <ul>
-<li><p>I nostri test non verificavano il corretto orientamento
-dell’immagine: erano <strong>incompleti</strong></p></li>
-<li><p>Questo genere di problemi è comune anche in progetti
-professionali: c’è una potenziale condizione di errore che i test non
-coprono, che non viene quindi scoperta durante
-l’implementazione.</p></li>
-<li><p>Oggi vediamo qual è il modo giusto di correggere l’errore; nella
-prossima lezione di teoria discuteremo di “debugging” a un livello più
-alto.</p></li>
+<li><p>Our tests did not verify the correct orientation of the image:
+they were <strong>incomplete</strong>.</p></li>
+<li><p>This kind of problem is common even in professional projects:
+there is a potential error condition that the tests do not cover, which
+is therefore not discovered during implementation.</p></li>
+<li><p>Today we will see the right way to correct the error; in the next
+theory lesson we will discuss “debugging” at a higher level.</p></li>
 </ul>
 </section>
-<section id="correggere-un-bug" class="slide level1">
-<h1>Correggere un bug</h1>
-<p>Correzioni in un repository pubblico come GitHub richiedono questi
-passaggi:</p>
+<section id="correcting-a-bug" class="slide level1">
+<h1>Correcting a Bug</h1>
+<p>Corrections in a public repository like GitHub require these
+steps:</p>
 <ol>
-<li><p>Segnalare il problema su GitHub, aprendo una <em>issue</em>
-(sinonimi: <em>bug report</em> o <em>ticket</em>). Alla issue sarà
-assegnato un numero unico, ad es. #156.</p></li>
-<li><p>Creare una branch nel repository, chiamandola ad esempio
+<li><p>Report the problem on GitHub by opening an <em>issue</em>
+(synonyms: <em>bug report</em> or <em>ticket</em>). The issue will be
+assigned a unique number, e.g. #156.</p></li>
+<li><p>Create a branch in the repository, calling it for example
 <code>fix156</code>.</p></li>
-<li><p>Modificare i test in modo che evidenzino l’errore: una volta
-implementati, questi nuovi test devono ovviamente fallire.</p></li>
-<li><p>Solo una volta che i nuovi test sono implementati si può
-correggere il bug.</p></li>
-<li><p>Quando i nuovi test passano, aprire una PR legata al branch, e se
-tutto funziona (inclusi i <em>CI builds</em>) aggiornare il
-<code>CHANGELOG</code>, fare il <em>merge</em>, e chiudere la
-<em>issue</em>.</p></li>
+<li><p>Modify the tests so that they highlight the error: once
+implemented, these new tests must obviously fail.</p></li>
+<li><p>Only once the new tests are implemented can the bug be
+fixed.</p></li>
+<li><p>When the new tests pass, open a PR linked to the branch, and if
+everything works (including the <em>CI builds</em>) update the
+<code>CHANGELOG</code>, merge, and close the <em>issue</em>.</p></li>
 </ol>
 </section>
-<section id="aprire-una-issue" class="slide level1">
-<h1>Aprire una <em>issue</em></h1>
+<section id="opening-an-issue" class="slide level1">
+<h1>Opening an <em>Issue</em></h1>
 <iframe src="https://player.vimeo.com/video/544935196?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="672" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="How to open a new issue in GitHub">
 </iframe>
 </section>
-<section id="creare-un-nuovo-test" class="slide level1">
-<h1>Creare un nuovo test</h1>
+<section id="creating-a-new-test" class="slide level1">
+<h1>Creating a New Test</h1>
 <ul>
-<li><p>Il test che avevamo scritto per <code>ImageTracer</code> non era
-esaustivo…</p></li>
-<li><p>…ma era comunque già abbastanza complesso, perché verificava due
-cose distinte:</p>
+<li><p>The test we had written for <code>ImageTracer</code> was not
+exhaustive…</p></li>
+<li><p>…but it was already quite complex, because it verified two
+distinct things:</p>
 <ol>
-<li><p>La correttezza della gestione di <code>u_pixel</code> e
+<li><p>The correctness of the handling of <code>u_pixel</code> and
 <code>v_pixel</code></p></li>
-<li><p>Il fatto che <code>ImageTracer.fire_all_rays</code> fosse in
-grado di «visitare» tutti i pixel dell’immagine.</p></li>
+<li><p>The fact that <code>ImageTracer.fire_all_rays</code> was able to
+“visit” all the pixels of the image.</p></li>
 </ol></li>
-<li><p>Non conviene che aggiungiamo materiale a questo test, altrimenti
-in caso in futuro fallisse sarebbe meno immediato capire <em>dove</em>
-si trovi il problema.</p></li>
+<li><p>It is not advisable to add material to this test, otherwise if it
+fails in the future it would be less immediate to understand
+<em>where</em> the problem lies.</p></li>
 </ul>
 </section>
-<section id="lavoro-da-fare" class="slide level1">
-<h1>Lavoro da fare</h1>
+<section id="work-to-do" class="slide level1">
+<h1>Work to Do</h1>
 <ul>
-<li><p>Quello che faremo ora è dividere il test in tre sotto-test:</p>
+<li><p>What we will do now is divide the test into three sub-tests:</p>
 <ol>
-<li>Le due verifiche già esistenti, che vanno però divise in due test
-distinti;</li>
-<li>Un nuovo test che fallisca a causa del bug che abbiamo
-evidenziato.</li>
+<li>The two existing checks, which however must be divided into two
+distinct tests;</li>
+<li>A new test that fails due to the bug we highlighted.</li>
 </ol></li>
-<li><p>Nell’implementare questo test in Python, ho usato una
-caratteristica del framework di test (<code>unittest</code>) che
-probabilmente esiste anche nei vostri framework.</p></li>
+<li><p>In implementing this test in Python, I used a feature of the
+testing framework (<code>unittest</code>) that probably also exists in
+your frameworks.</p></li>
 </ul>
 </section>
-<section id="ripetizioni-ineleganti" class="slide level1">
-<h1>Ripetizioni ineleganti</h1>
+<section id="inelegant-repetitions" class="slide level1">
+<h1>Inelegant Repetitions</h1>
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_uv_sub_mapping():</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create the objects to test</span></span>
@@ -274,16 +271,15 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <section id="set-up-e-tear-down" class="slide level1">
 <h1><em>Set-up</em> e <em>tear-down</em></h1>
 <ul>
-<li><p>L’ineleganza sta nel fatto che dobbiamo creare in ogni test gli
-oggetti <code>image</code>, <code>camera</code> e
-<code>tracer</code>.</p></li>
-<li><p>I framework di test (non tutti 🙁) forniscono di solito la
-possibilità di invocare procedure di <em>set-up</em> per creare gli
-oggetti su cui si eseguono poi i test.</p></li>
-<li><p>(Analogamente, questi framework implementano anche la possibilità
-di invocare procedure di <em>tear-down</em> alla fine dei test, con lo
-scopo ad esempio di cancellare file temporanei creati durante i test
-stessi).</p></li>
+<li><p>The inelegance lies in the fact that we must create the
+<code>image</code>, <code>camera</code>, and <code>tracer</code> objects
+in every test.</p></li>
+<li><p>Test frameworks (not all 🙁) usually provide the ability to
+invoke <em>set-up</em> procedures to create the objects on which the
+tests are then executed.</p></li>
+<li><p>(Similarly, these frameworks also implement the ability to invoke
+<em>tear-down</em> procedures at the end of the tests, for example to
+delete temporary files created during the tests themselves).</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -316,45 +312,43 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.width):</span>
 <span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                <span class="cf">assert</span> <span class="va">self</span>.image.get_pixel(col, row) <span class="op">==</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span></code></pre></div>
 </section>
-<section id="creazione-di-un-pr" class="slide level1">
-<h1>Creazione di un PR</h1>
+<section id="creating-a-pr" class="slide level1">
+<h1>Creating a PR</h1>
 <center>
 <img data-src="./media/github-fix-issue.png" height="560" />
 </center>
 </section>
-<section id="correzione-del-bug" class="slide level1">
-<h1>Correzione del bug</h1>
+<section id="correcting-a-bug-1" class="slide level1">
+<h1>Correcting a bug</h1>
 <ul>
-<li><p>Questa è la correzione per il metodo
+<li><p>These are the correct instructions to use in
 <code>ImageTracer.fire_ray</code>:</p>
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> <span class="va">self</span>.image.width</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> <span class="fl">1.0</span> <span class="op">-</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> <span class="va">self</span>.image.height</span></code></pre></div></li>
-<li><p>Facendo il commit, si vede che ora il test passa:</p>
+<li><p>If we commit this, the test will now pass:</p>
 <center>
 <p><img data-src="./media/github-issue-bugfix.png" height="280" /></p>
 </center></li>
 </ul>
 </section>
-<section id="chiusura-del-bug" class="slide level1">
-<h1>Chiusura del bug</h1>
+<section id="bug-closure" class="slide level1">
+<h1>Bug Closure</h1>
 <ul>
-<li><p>A questo punto il bug è sistemato, e possiamo procedere a
-chiudere la <em>issue</em></p></li>
-<li><p>È molto importante però prima dare un’occhiata complessiva alla
-PR, per verificare che sia chiaramente leggibile. In particolare,
-selezionate il tab <em>Files changed</em> e leggetelo con occhio
-critico:</p>
+<li><p>At this point the bug is fixed, and we can proceed to close the
+<em>issue</em>.</p></li>
+<li><p>It is very important, however, to first take a general look at
+the PR to verify that it is clearly legible. In particular, select the
+<em>Files changed</em> tab and read it critically:</p>
 <ol type="1">
-<li><p>I file che vengono modificati sono quelli che mi aspetto, o è
-presente qualche altra modifica a cui stavo lavorando quando il bug è
-stato scoperto? (Vedi <a
-href="https://github.com/litebird/litebird_sim/pull/232">questo
-esempio</a>).</p></li>
-<li><p>Chi vedrà queste modifiche, sarà in grado di capirle senza
-leggere l’intero codice?</p></li>
+<li><p>Are the files being modified the ones I expect, or are there
+other changes that I was working on when the bug was discovered? (See <a
+href="https://github.com/litebird/litebird_sim/pull/232">this
+example</a>).</p></li>
+<li><p>Will those who see these changes be able to understand them
+without reading the entire codebase?</p></li>
 </ol></li>
-<li><p>Evitate di includere modifiche «gratuite»…</p></li>
+<li><p>Avoid including «gratuitous» changes…</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -363,70 +357,71 @@ leggere l’intero codice?</p></li>
 <img data-src="media/github-pr-last-check-before-merging.png"
 height="680" />
 </center>
-<p>Esempio preso da un PR di <a
+<p>Example taken from a PR of <a
 href="https://github.com/ziotom78/pytracer/pull/10/files">pytracer</a></p>
 </section>
-<section id="chiusura-del-bug-1" class="slide level1">
-<h1>Chiusura del bug</h1>
+<section id="closing-a-bug" class="slide level1">
+<h1>Closing a bug</h1>
 <iframe src="https://player.vimeo.com/video/544950712?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="672" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="How to close an issue in GitHub">
 </iframe>
 </section>
-<section id="traccia-dei-bug" class="slide level1">
-<h1>Traccia dei bug</h1>
+<section id="bug-tracking" class="slide level1">
+<h1>Bug Tracking</h1>
 <ul>
-<li><p>GitHub tiene traccia dei bug di un repository nella pagina
-dedicata: è possibile consultare quindi quali bug siano aperti e quali
-siano stati già chiusi.</p></li>
-<li><p>Ma, come nel caso dei <em>commit</em>, una lista di bug è ben
-povera, e non racconta una «storia».</p></li>
-<li><p>Vediamo ora lo scopo del file CHANGELOG.md, che è una forma di
-documentazione.</p></li>
+<li><p>GitHub tracks a repository’s bugs on a dedicated page: you can
+see which bugs are open and which have been closed.</p></li>
+<li><p>But, as with <em>commits</em>, a list of bugs is quite poor, and
+doesn’t tell a “story.”</p></li>
+<li><p>Let’s see now the purpose of the CHANGELOG.md file, which is a
+form of documentation.</p></li>
 </ul>
 </section>
 <section id="changelog" class="slide level1">
 <h1>CHANGELOG</h1>
 <ul>
-<li><p>Tutti i repository pubblici dovrebbero avere un file
-<code>CHANGELOG</code>/<code>NEWS</code>/<code>HISTORY</code>/…, che
-elenca i bug corretti e le nuove caratteristiche del codice elencati in
-funzione del numero di versione.</p></li>
-<li><p>Vedete ad esempio il file <a
+<li><p>All public repositories should have a
+<code>CHANGELOG</code>/<code>NEWS</code>/<code>HISTORY</code>/… file,
+which lists the bugs fixed and the new features of the code, listed by
+version number.</p></li>
+<li><p>See for example the <a
 href="https://github.com/JuliaLang/julia/blob/master/HISTORY.md"><code>HISTORY.md</code></a>
-del compilatore Julia</p></li>
+file of the Julia compiler</p></li>
 </ul>
 </section>
 <section id="changelog-1" class="slide level1">
 <h1>CHANGELOG</h1>
 <ul>
-<li><p>In un file <code>CHANGELOG</code> occorre indicare tutte le
-correzioni e modifiche fatte al codice.</p></li>
-<li><p>Non serve essere verbosi: basta una o due righe per modifica, se
-si inserisce il link alla <em>issue</em>/<em>pull request</em></p></li>
-<li><p>Va scritto in ordine <strong>cronologico inverso</strong>: le
-modifiche più recenti stanno in cima. In questo modo è più semplice per
-chi legge vedere quali sono le novità dell’ultima versione (che
-verosimilmente è quella che si vuole scaricare).</p></li>
-<li><p>Di solito si divide in sezioni, una per ogni versione del codice.
-La prima sezione si chiama di solito <code>HEAD</code>, e contiene le
-correzioni e le modifiche che finiranno nella prossima futura versione
-del codice.</p></li>
+<li><p>In a <code>CHANGELOG</code> file you should indicate all the
+corrections and modifications made to the code.</p></li>
+<li><p>No need to be verbose: one or two lines per change are
+sufficient, if you include the link to the <em>issue</em>/<em>pull
+request</em></p></li>
+<li><p>It should be written in <strong>reverse chronological
+order</strong>: the most recent changes are at the top. This makes it
+easier for the reader to see what’s new in the latest version (which is
+likely the one they want to download).</p></li>
+<li><p>It is usually divided into sections, one for each version of the
+code. The first section is usually called <code>HEAD</code>, and
+contains the corrections and modifications that will end up in the next
+future version of the code.</p></li>
 </ul>
 </section>
-<section id="changelog-di-healpix.jl" class="slide level1">
-<h1>CHANGELOG di <a
+<section id="changelog-of-healpix.jl" class="slide level1">
+<h1>CHANGELOG of <a
 href="https://github.com/ziotom78/Healpix.jl">Healpix.jl</a></h1>
 <center>
 <img data-src="./media/healpixjl-changelog.png" />
 </center>
 </section>
-<section id="changelog-di-pytracer" class="slide level1">
-<h1>CHANGELOG di <a
+<section id="changelog-of-pytracer" class="slide level1">
+<h1>CHANGELOG of <a
 href="https://github.com/ziotom78/pytracer">pytracer</a></h1>
 <ul>
-<li><p>Nel repository di <a
-href="https://github.com/ziotom78/pytracer">pytracer</a> c’è un file
-<code>CHANGELOG.md</code>, scritto in Markdown, che potete usare come
-ispirazione. In particolare, il «nostro» bug figura così:</p>
+<li><p>In the <a
+href="https://github.com/ziotom78/pytracer">pytracer</a> repository
+there is a <code>CHANGELOG.md</code> file, written in Markdown, which
+you can use as inspiration. In particular, “our” bug appears like
+this:</p>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>…</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -435,39 +430,35 @@ class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb6-1"><
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Version 0.1.0</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>First release of the code</span></code></pre></div></li>
-<li><p>Ricordatevi d’ora in poi che <strong>l’ultimo commit in un
-PR</strong> dovrà sempre essere l’aggiornamento di
+<li><p>Remember from now on that <strong>the last commit in a
+PR</strong> should always be the update of
 <code>CHANGELOG.md</code>!</p></li>
 </ul>
 </section>
-<section id="cose-da-fare-oggi" class="slide level1">
-<h1>Cose da fare oggi</h1>
-</section>
-<section id="il-nostro-triangolo-nero" class="slide level1">
-<h1>Il nostro “<a href="https://rampantgames.com/blog/?p=7745">triangolo
-nero</a>”!</h1>
+<section id="our-black-triangle" class="slide level1">
+<h1>Our “<a href="https://rampantgames.com/blog/?p=7745">black
+triangle</a>”!</h1>
 <center>
 <img data-src="./media/pytracer-first-image.png" />
 </center>
 </section>
-<section id="geometria" class="slide level1">
-<h1>Geometria</h1>
+<section id="geometry" class="slide level1">
+<h1>Geometry</h1>
 <p><embed width="640px" height="640px" src="pd-images/f0c42b9c8202a1ba84c09e1a7f5f70fa96adf3fe.html"
 data-im_fname="first-image-geometry" /></p>
 </section>
-<section id="forme" class="slide level1">
-<h1>Forme</h1>
+<section id="shapes" class="slide level1">
+<h1>Shapes</h1>
 <ul>
-<li><p>Dobbiamo implementare delle forme nel nostro codice.</p></li>
-<li><p>Per oggi basta implementare un tipo <code>Sphere</code>; se
-volete, aggiungete anche un <code>Plane</code> (è molto veloce da
-aggiungere).</p></li>
-<li><p>Create un tipo astratto <code>Shape</code>, che implementi il
-metodo (astratto) <code>ray_intersection</code>. Questo accetta come
-parametro un parametro <code>Ray</code> e restituisce un tipo
-<code>HitRecord</code>. Se il vostro linguaggio lo supporta, potete
-rendere il tipo di ritorno <em>nullable</em> (c’è/non c’è
-intersezione).</p></li>
+<li><p>We need to implement shapes in our code.</p></li>
+<li><p>For today, it is sufficient to implement a <code>Sphere</code>
+type; if you want, add also a <code>Plane</code> (it’s very quick to
+add).</p></li>
+<li><p>Create an abstract type <code>Shape</code>, which implements the
+(abstract) method <code>ray_intersection</code>. This accepts a
+<code>Ray</code> parameter and returns a <code>HitRecord</code> type. If
+your language supports it, you can make the return type
+<em>nullable</em> (intersection exists/doesn’t exist).</p></li>
 </ul>
 </section>
 <section id="shape-in-python" class="slide level1">
@@ -485,36 +476,35 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a hr
 <section id="hitrecord" class="slide level1">
 <h1><code>HitRecord</code></h1>
 <ul>
-<li><p>Per restituire le informazioni su una intersezione, è buona norma
-usare un tipo dedicato: <code>HitRecord</code>.</p></li>
-<li><p>Il tipo deve contenere queste informazioni:</p>
-<ol>
-<li><code>world_point</code>: punto 3D in cui è avvenuta l’intersezione
+<li><p>To return information about an intersection, it’s good practice
+to use a dedicated type: <code>HitRecord</code>.</p></li>
+<li><p>This type should contain the following information:</p>
+<ol type="1">
+<li><code>world_point</code>: 3D point where the intersection occurred
 (<code>Point</code>);</li>
-<li><code>normal</code>: normale della superficie all’intersezione
+<li><code>normal</code>: surface normal at the intersection
 (<code>Normal</code>);</li>
-<li><code>surface_point</code>: coordinate <span class="math inline">(u,
-v)</span> dell’intersezione (nuovo tipo <code>Vec2d</code>);</li>
-<li><code>t</code>: parametro del raggio associato
-all’intersezione;</li>
-<li><code>ray</code>: raggio di luce che ha causato l’intersezione.</li>
+<li><code>surface_point</code>: <span class="math inline">(u, v)</span>
+coordinates of the intersection (new type <code>Vec2d</code>);</li>
+<li><code>t</code>: ray parameter associated with the intersection;</li>
+<li><code>ray</code>: the light ray that caused the intersection.</li>
 </ol></li>
-<li><p>Per i test è utile che implementi un metodo
-<code>is_close</code>/<code>are_close</code>.</p></li>
+<li><p>For testing, it’s helpful if it implements an
+<code>is_close</code>/<code>are_close</code> method.</p></li>
 </ul>
 </section>
 <section id="sphere-in-python" class="slide level1">
 <h1><code>Sphere</code> in Python</h1>
 <ul>
-<li><p>Il numero di intersezioni tra il raggio <span
-class="math inline">O + t \vec d</span> e la sfera dipende dal segno
-di</p>
+<li><p>The number of intersections between the ray <span
+class="math inline">O + t \vec d</span> and the sphere depends on the
+sign of</p>
 <p><span class="math display">
 \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec
 d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
 </span></p></li>
-<li><p>Nel caso in cui <span class="math inline">\Delta &gt; 0</span>,
-le due intersezioni sono</p>
+<li><p>If <span class="math inline">\Delta &gt; 0</span>, the two
+intersections are</p>
 <p><span class="math display">
 t = \begin{cases}
 t_1 &amp;= \frac{-\vec O \cdot d - \sqrt{\Delta / 4}}{\left\|\vec
@@ -528,15 +518,15 @@ d\right\|^2}.
 <section id="sphere-in-python-1" class="slide level1">
 <h1><code>Sphere</code> in Python</h1>
 <ul>
-<li><p>Dovete <strong>antitrasformare</strong> il raggio prima di
-calcolare l’intersezione:</p>
+<li><p>You must <strong>inverse transform</strong> the ray before
+calculating the intersection:</p>
 <div class="sourceCode" id="cb8"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ray_intersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Optional[HitRecord]:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    inv_ray <span class="op">=</span> ray.transform(<span class="va">self</span>.transformation.inverse())</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span></code></pre></div></li>
-<li><p>Quando avete calcolato <code>t1</code> e <code>t2</code>, dovete
-determinare quale delle due intersezioni è la più vicina all’origine del
-raggio:</p>
+<li><p>Once you have calculated <code>t1</code> and <code>t2</code>, you
+must determine which of the two intersections is closest to the ray
+origin:</p>
 <div class="sourceCode" id="cb9"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (t1 <span class="op">&gt;</span> inv_ray.tmin) <span class="kw">and</span> (t1 <span class="op">&lt;</span> inv_ray.tmax):</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    first_hit_t <span class="op">=</span> t1</span>
@@ -546,28 +536,28 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a hr
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span>   <span class="co"># The ray missed the sphere</span></span></code></pre></div></li>
 </ul>
 </section>
-<section id="normali-e-coordinate-uv" class="slide level1">
-<h1>Normali e coordinate UV</h1>
+<section id="normals-and-uv-coordinates" class="slide level1">
+<h1>Normals and UV Coordinates</h1>
 <ul>
-<li><p>Dovete implementare il calcolo della normale al punto di
-intersezione; nel codice di <a
+<li><p>You must implement the calculation of the normal at the
+intersection point; in the <a
 href="https://github.com/ziotom78/pytracer/blob/d12284d0c60965e48b004a305d6ba8e28c13f757/shapes.py#L42-L51">pytracer</a>
-ciò è fatto all’interno di <code>_sphere_normal</code>:</p>
+code this is done inside <code>_sphere_normal</code>:</p>
 <div class="sourceCode" id="cb10"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _sphere_normal(point: Point, ray_dir: Vec) <span class="op">-&gt;</span> Normal:</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> Normal(point.x, point.y, point.z)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result <span class="cf">if</span> (point.to_vec().dot(ray_dir) <span class="op">&lt;</span> <span class="fl">0.0</span>) <span class="cf">else</span> <span class="op">-</span>result</span></code></pre></div></li>
-<li><p>Serve anche il codice che calcola il punto di intersezione sulla
-superficie della sfera, in coordinate <span class="math inline">(u,
-v)</span>, per cui è utile un nuovo tipo <code>Vec2d</code>:</p>
+<li><p>You also need code that calculates the intersection point on the
+sphere’s surface, in <span class="math inline">(u, v)</span>
+coordinates, for which a new <code>Vec2d</code> type is useful:</p>
 <div class="sourceCode" id="cb11"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _sphere_point_to_uv(point: Point) <span class="op">-&gt;</span> Vec2d:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> atan2(point.y, point.x) <span class="op">/</span> (<span class="fl">2.0</span> <span class="op">*</span> pi)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Vec2d(u<span class="op">=</span>u <span class="cf">if</span> u <span class="op">&gt;=</span> <span class="fl">0.0</span> <span class="cf">else</span> u <span class="op">+</span> <span class="fl">1.0</span>, v<span class="op">=</span>acos(point.z) <span class="op">/</span> pi)</span></code></pre></div></li>
 </ul>
 </section>
-<section id="creazione-di-hitrecord" class="slide level1">
-<h1>Creazione di <code>HitRecord</code></h1>
+<section id="creating-hitrecord" class="slide level1">
+<h1>Creating <code>HitRecord</code></h1>
 <div class="sourceCode" id="cb12"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>hit_point <span class="op">=</span> inv_ray.at(first_hit_t)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> HitRecord(</span>
@@ -578,67 +568,66 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a h
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    ray<span class="op">=</span>ray,</span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </section>
-<section id="test-per-sphere-12" class="slide level1">
-<h1>Test per <code>Sphere</code> (1/2)</h1>
+<section id="tests-for-sphere-12" class="slide level1">
+<h1>Tests for <code>Sphere</code> (1/2)</h1>
 <ul>
-<li>Il raggio con <span class="math inline">O = (0, 0, 2)</span> e <span
-class="math inline">\vec d = -\hat e_z</span> deve intersecare la sfera
-unitaria nel punto <span class="math inline">P = (0, 0, 1)</span> con
-normale <span class="math inline">\hat n = \hat e_z</span>.</li>
-<li>Il raggio con <span class="math inline">O = (3, 0, 0)</span> e <span
-class="math inline">\vec d = -\hat e_x</span> deve intersecare la sfera
-unitaria nel punto <span class="math inline">P = (1, 0, 0)</span> con
-normale <span class="math inline">\hat n = \hat e_x</span>.</li>
-<li>Il raggio con <span class="math inline">O = (0, 0, 0)</span> e <span
-class="math inline">\vec d = \hat e_x</span> deve intersecare la sfera
-unitaria in <span class="math inline">P = (1, 0, 0)</span> con normale
-<span class="math inline">\hat n = -\hat e_x</span> (il raggio è
-<em>interno</em> alla sfera).</li>
+<li>The ray with <span class="math inline">O = (0, 0, 2)</span> and
+<span class="math inline">\vec d = -\hat e_z</span> must intersect the
+unit sphere at point <span class="math inline">P = (0, 0, 1)</span> with
+normal <span class="math inline">\hat n = \hat e_z</span>.</li>
+<li>The ray with <span class="math inline">O = (3, 0, 0)</span> and
+<span class="math inline">\vec d = -\hat e_x</span> must intersect the
+unit sphere at point <span class="math inline">P = (1, 0, 0)</span> with
+normal <span class="math inline">\hat n = \hat e_x</span>.</li>
+<li>The ray with <span class="math inline">O = (0, 0, 0)</span> and
+<span class="math inline">\vec d = \hat e_x</span> must intersect the
+unit sphere at <span class="math inline">P = (1, 0, 0)</span> with
+normal <span class="math inline">\hat n = -\hat e_x</span> (the ray is
+<em>inside</em> the sphere).</li>
 </ul>
-<p>In tutti questi casi verificate anche le coordinate <span
-class="math inline">(u, v)</span> e il valore di <span
+<p>In all these cases, also verify the <span class="math inline">(u,
+v)</span> coordinates and the value of <span
 class="math inline">t</span>.</p>
 </section>
-<section id="test-per-sphere-22" class="slide level1">
-<h1>Test per <code>Sphere</code> (2/2)</h1>
+<section id="tests-for-sphere-22" class="slide level1">
+<h1>Tests for <code>Sphere</code> (2/2)</h1>
 <ul>
-<li>Applicate una traslazione <span class="math inline">\vec t = (10, 0,
-0)</span> alla sfera e intersecatela con il raggio con <span
-class="math inline">O = (10, 0, 2)</span> e <span
+<li>Apply a translation <span class="math inline">\vec t = (10, 0,
+0)</span> to the sphere and intersect it with the ray with <span
+class="math inline">O = (10, 0, 2)</span> and <span
 class="math inline">\vec d = -\hat e_z</span>.</li>
-<li>Intersecate la stessa sfera traslata con il raggio con <span
-class="math inline">O = (13, 0, 0)</span> e <span
-class="math inline">\vec d = -\hat e_x</span>. L’intersezione dovrebbe
-essere <span class="math inline">P = (11, 0, 0)</span> con normale <span
+<li>Intersect the same translated sphere with the ray with <span
+class="math inline">O = (13, 0, 0)</span> and <span
+class="math inline">\vec d = -\hat e_x</span>. The intersection should
+be <span class="math inline">P = (11, 0, 0)</span> with normal <span
 class="math inline">\hat n = \hat e_x</span>.</li>
-<li>Verificate che non vi siano potenziali intersezioni con la sfera
-<strong>non</strong> traslata, usando questi raggi:
-<ol>
-<li>Raggio con <span class="math inline">O = (0, 0, 2)</span> e <span
+<li>Verify that there are no potential intersections with the
+<strong>untranslated</strong> sphere, using these rays:
+<ol type="1">
+<li>Ray with <span class="math inline">O = (0, 0, 2)</span> and <span
 class="math inline">\vec d = -\hat e_z</span>;</li>
-<li>Raggio con <span class="math inline">O = (-10, 0, 0)</span> e <span
+<li>Ray with <span class="math inline">O = (-10, 0, 0)</span> and <span
 class="math inline">\vec d = -\hat e_z</span>;</li>
 </ol></li>
 </ul>
-<p>In tutti questi casi verificate anche le coordinate <span
-class="math inline">(u, v)</span> e il valore di <span
+<p>In all these cases, also verify the <span class="math inline">(u,
+v)</span> coordinates and the value of <span
 class="math inline">t</span>.</p>
 </section>
-<section id="il-tipo-world" class="slide level1">
-<h1>Il tipo <code>World</code></h1>
+<section id="the-world-type" class="slide level1">
+<h1>The <code>World</code> Type</h1>
 <ul>
-<li>Una scena è composta da tante forme.</li>
-<li>Ci occorre un tipo che contenga questa lista di forme: il tipo
-<code>World</code>.</li>
-<li>Esso deve mantenere al suo interno una lista di oggetti
-<code>Shape</code>: abbiate cura a dichiarare correttamente questa
-lista, perché alcuni linguaggi potrebbero richiedere cautele particolari
-per liste di oggetti astratti (es., un <a
-href="https://doc.rust-lang.org/book/ch17-02-trait-objects.html">vettore
-di <em>traits</em></a> in Rust).</li>
-<li>Deve implementare un metodo <code>ray_intersection</code> che iteri
-sulle forme, cerchi le intersezioni, e restituisca quella più vicina
-all’origine del raggio.</li>
+<li>A scene is composed of many shapes.</li>
+<li>We need a type to contain this list of shapes: the
+<code>World</code> type.</li>
+<li>It must maintain a list of <code>Shape</code> objects: take care to
+declare this list correctly, as some languages may require special care
+for lists of abstract objects (e.g., a <a
+href="https://doc.rust-lang.org/book/ch17-02-trait-objects.html">trait
+object vector</a> in Rust).</li>
+<li>It must implement a <code>ray_intersection</code> method that
+iterates over the shapes, searches for intersections, and returns the
+one closest to the ray origin.</li>
 </ul>
 </section>
 <section id="world-in-python" class="slide level1">
@@ -664,50 +653,51 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a h
 <span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> closest</span></code></pre></div>
 </section>
-<section id="il-nostro-demo" class="slide level1">
-<h1>Il nostro demo</h1>
+<section id="our-demo" class="slide level1">
+<h1>Our demo</h1>
 <center>
 <img data-src="./media/pytracer-first-image.png" />
 </center>
-<p>L’asimmetria nella disposizione delle sfere consente di individuare
-errori nell’ordinamento delle righe/colonne dell’immagine.</p>
+<p>The asymmetry in the arrangement of the spheres allows for the
+identification of errors in the ordering of the rows/columns of the
+image.</p>
 </section>
-<section id="la-scena" class="slide level1">
-<h1>La scena</h1>
+<section id="the-scene" class="slide level1">
+<h1>The Scene</h1>
 <ul>
-<li>Posizionate le sfere ai vertici del cubo con spigoli <span
+<li>Position the spheres at the vertices of the cube with edges <span
 class="math inline">(\pm 0.5, \pm 0.5, \pm 0.5)</span>.</li>
-<li>Ciascuna sfera deve avere raggio 1/10.</li>
-<li>L’osservatore deve essere spostato di <span
-class="math inline">-\hat e_x</span>, ossia la sua posizione deve essere
-<span class="math inline">(-2, 0, 0)</span> e il centro dello schermo
-<span class="math inline">(-1, 0, 0)</span>.</li>
-<li>Scegliete voi se usare <code>OrthogonalCamera</code> o
+<li>Each sphere must have a radius of 1/10.</li>
+<li>The observer should be moved by <span class="math inline">-\hat
+e_x</span>, meaning their position should be <span
+class="math inline">(-2, 0, 0)</span> and the center of the screen <span
+class="math inline">(-1, 0, 0)</span>.</li>
+<li>Choose whether to use <code>OrthogonalCamera</code> or
 <code>PerspectiveCamera</code>.</li>
 </ul>
 </section>
-<section id="il-main" class="slide level1">
-<h1>Il <code>main</code></h1>
+<section id="the-main" class="slide level1">
+<h1>The <code>main</code></h1>
 <ul>
-<li>Il nostro <code>main</code> è stato sinora in grado di convertire
-un’immagine PFM in un altro formato (PNG, JPEG, WebP, etc.)</li>
-<li>Dobbiamo ora cambiare l’interfaccia del programma in modo che
-permetta di usare due modalità:
+<li>Our <code>main</code> has so far been able to convert a PFM image
+into another format (PNG, JPEG, WebP, etc.)</li>
+<li>We must now change the program’s interface so that it allows the use
+of two modes:
 <ol>
-<li>Conversione da PFM ad altri formati (la vecchia modalità);</li>
-<li>Una nuova modalità <code>demo</code>, dove genera l’immagine
-descritta poco fa.</li>
+<li>Conversion from PFM to other formats (the old mode);</li>
+<li>A new <code>demo</code> mode, where it generates the image described
+above.</li>
 </ol></li>
 </ul>
 </section>
-<section id="esempio-in-python" class="slide level1">
-<h1>Esempio in Python</h1>
+<section id="example-in-python" class="slide level1">
+<h1>Example in Python</h1>
 <ul>
-<li><p>In Python ho usato la libreria Click, che permette di costruire
-interfacce utente da linea di comando che supportano le cosiddette
-<em>actions</em> (altre librerie li chiamano <em>verbs</em>).</p></li>
-<li><p>Dopo il nome dell’eseguibile va riportato un comando, seguito
-opzionalmente da parametri:</p>
+<li><p>In Python, I used the Click library, which allows building
+command-line user interfaces that support so-called <em>actions</em>
+(other libraries call them <em>verbs</em>).</p></li>
+<li><p>After the executable name, a command should be provided,
+optionally followed by parameters:</p>
 <pre class="text"><code>./main.py pfm2png input.pfm output.png
 ./main.py demo --width=480 --height=480
 ./main.py --help
@@ -718,61 +708,62 @@ opzionalmente da parametri:</p>
 
 <p><asciinema-player src="cast/python-click-cli-example-88x27.cast" cols="88" rows="27" font-size="medium"></asciinema-player></p>
 </section>
-<section id="possibili-interfacce" class="slide level1">
-<h1>Possibili interfacce</h1>
+<section id="possible-interfaces" class="slide level1">
+<h1>Possible Interfaces</h1>
 <ul>
-<li><p><em>Actions</em> esattamente come Click (se la vostra libreria li
-supporta);</p></li>
-<li><p>Due eseguibili separati: <code>demo</code> e
+<li><p><em>Actions</em> exactly like Click (if your library supports
+them);</p></li>
+<li><p>Two separate executables: <code>demo</code> and
 <code>pfm2png</code></p></li>
-<li><p>Richiesta di input da terminale (sconsigliato):</p>
+<li><p>Requesting input from the terminal (not recommended):</p>
 <div class="sourceCode" id="cb15"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;What do you want to do? (demo/pfm2png)&quot;</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>choice <span class="op">=</span> <span class="bu">input</span>(choice)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> choice <span class="op">==</span> <span class="st">&quot;demo&quot;</span>:</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># …</span></span></code></pre></div></li>
-<li><p>Eccetera…</p></li>
+<li><p>Et cetera…</p></li>
 </ul>
 </section>
-<section id="comando-demo" class="slide level1">
-<h1>Comando <code>demo</code></h1>
-<ol>
-<li>Inizializzare un oggetto <code>World</code> con le 10 sfere nelle
-posizioni indicate;</li>
-<li>Creare un oggetto <code>OrthogonalCamera</code> o
-<code>PerspectiveCamera</code> (<a
+<section id="demo-command" class="slide level1">
+<h1><code>demo</code> Command</h1>
+<ol type="1">
+<li>Initialize a <code>World</code> object with the 10 spheres in the
+indicated positions;</li>
+<li>Create an <code>OrthogonalCamera</code> or
+<code>PerspectiveCamera</code> object (<a
 href="https://github.com/ziotom78/pytracer/blob/d12284d0c60965e48b004a305d6ba8e28c13f757/main.py#L125-L130">pytracer</a>
-consente all’utente di scegliere);</li>
-<li>(Opzionale) Potete provare a ruotare l’osservatore per ottenere
-angolazioni più interessanti (v. seguito);</li>
-<li>Create un oggetto <code>ImageTracer</code>;</li>
-<li>Fare un tracing dell’immagine, usando un criterio «on/off» (v. slide
-seguente);</li>
-<li>Salvare l’immagine PFM;</li>
-<li>(Opzionale) Convertite immediatamente l’immagine in PNG usando
-valori di default per il tone-mapping.</li>
+allows the user to choose);</li>
+<li>(Optional) You can try rotating the observer to obtain more
+interesting angles (see below);</li>
+<li>Create an <code>ImageTracer</code> object;</li>
+<li>Perform image tracing, using an “on/off” criterion (see next
+slide);</li>
+<li>Save the PFM image;</li>
+<li>(Optional) Immediately convert the image to PNG using default values
+for tone-mapping.</li>
 </ol>
 </section>
 <section id="on-off-tracing" class="slide level1">
-<h1>On-off tracing</h1>
+<h1>On-Off Tracing</h1>
 <ul>
-<li><p>Un ray-tracer on/off controlla se il raggio ha colpito una
-superficie, e in caso positivo colora il pixel con un colore arbitrario
-(bianco), altrimenti lo colora col colore di sfondo (nero).</p></li>
-<li><p>Nel nostro caso è sufficiente invocare <code>fire_all_rays</code>
-passando come argomento una funzione di una riga:</p>
+<li><p>An on/off ray-tracer checks if the ray has hit a surface, and if
+so, colors the pixel with an arbitrary color (white), otherwise it
+colors it with the background color (black).</p></li>
+<li><p>In our case, it is sufficient to invoke
+<code>fire_all_rays</code> by passing a one-line function as an
+argument:</p>
 <div class="sourceCode" id="cb16"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>tracer.fire_all_rays(<span class="kw">lambda</span> ray: WHITE <span class="cf">if</span> world.ray_intersection(ray) <span class="cf">else</span> BLACK)</span></code></pre></div></li>
 </ul>
 </section>
-<section id="animazioni" class="slide level1">
-<h1>Animazioni</h1>
+<section id="animations" class="slide level1">
+<h1>Animations</h1>
 <ul>
-<li><p>Nella modalità <code>demo</code>, il codice Python permette di
-modificare l’orientazione dell’osservatore rispetto agli assi tramite il
-flag <code>--angle-deg</code>.</p></li>
-<li><p>Questo può essere usato per generare delle animazioni tramite
-semplici script Bash:</p>
+<li><p>In <code>demo</code> mode, the Python code allows modifying the
+orientation of the observer relative to the axes using the
+<code>--angle-deg</code> flag.</p></li>
+<li><p>This can be used to generate animations through simple Bash
+scripts:</p>
 <div class="sourceCode" id="cb17"><pre
 class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> angle <span class="kw">in</span> <span class="va">$(</span><span class="fu">seq</span> 0 359<span class="va">)</span><span class="kw">;</span> <span class="cf">do</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Angle with three digits, e.g. angle=&quot;1&quot; → angleNNN=&quot;001&quot;</span></span>
@@ -786,29 +777,28 @@ class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#
 <span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    spheres-perspective.mp4</span></code></pre></div></li>
 </ul>
 </section>
-<section id="proiezione-prospettica" class="slide level1">
-<h1>Proiezione prospettica</h1>
+<section id="perspective-projection" class="slide level1">
+<h1>Perspective Projection</h1>
 <video src="./media/spheres-perspective.mp4" width="640px" height="480px" controls loop autoplay/>
 </section>
-<section id="proiezione-ortogonale" class="slide level1">
-<h1>Proiezione ortogonale</h1>
+<section id="orthogonal-projection" class="slide level1">
+<h1>Orthogonal Projection</h1>
 <video src="./media/spheres-orthogonal.mp4" width="640px" height="480px" controls loop autoplay/>
 </section>
-<section id="guida-per-lesercitazione" class="slide level1">
-<h1>Guida per l’esercitazione</h1>
+<section id="what-to-do-today" class="slide level1">
+<h1>What to do today</h1>
 </section>
-<section id="cose-da-fare" class="slide level1">
-<h1>Cose da fare</h1>
-<ol>
-<li>Correggere il bug della scorsa volta aprendo una
-<em>issue</em>;</li>
-<li>Creare un file <code>CHANGELOG.md</code>;</li>
-<li>Lavorare su un nuovo branch <code>demo</code>;</li>
-<li>Creare i tipi <code>Shape</code>, <code>Sphere</code>,
-<code>World</code>, <code>Vec2d</code>;</li>
-<li>Implementare il comando <code>demo</code>, nel modo in cui preferite
-(potete cercare una libreria per interpretare la linea di comando);</li>
-<li>Aprire una PR e aggiornare il file <code>CHANGELOG.md</code>.</li>
+<section id="what-to-do-today-1" class="slide level1">
+<h1>What to do today</h1>
+<ol type="1">
+<li>Fix the bug from last time by opening an <em>issue</em>;</li>
+<li>Create a <code>CHANGELOG.md</code> file;</li>
+<li>Work on a new <code>demo</code> branch;</li>
+<li>Create the <code>Shape</code>, <code>Sphere</code>,
+<code>World</code>, <code>Vec2d</code> types;</li>
+<li>Implement the <code>demo</code> command, in the way you prefer (you
+can look for a library to interpret the command line);</li>
+<li>Open a PR and update the <code>CHANGELOG.md</code> file.</li>
 </ol>
 </section>
     </div>

@@ -1,26 +1,26 @@
-# Issues
+# Issues {#issues}
 
-# Un bug nel codice!
+# A bug in the code!
 
--   Il codice Python di settimana scorsa conteneva volutamente un errore nell'implementazione del metodo `ImageTracer.fire_ray`:
+-   Last week's Python code intentionally contained an error in the implementation of the `ImageTracer.fire_ray` method:
 
     ```python
     u = (col + u_pixel) / (self.image.width - 1)
     v = (row + v_pixel) / (self.image.height - 1)
     ```
 
--   L'errore sta nel fatto che le righe in `HdrImage` sono numerate dall'*alto*, non dal *basso*, mentre la coordinata $v$ cresce verso l'*alto*. Nella seconda riga invece, la variabile `v` cresce quando cresce `row`: questo è sbagliato!
+-   The error lies in the fact that the rows in `HdrImage` are numbered from the *top*, not the *bottom*, while the $v$ coordinate increases *upwards*. In the second line, however, the variable `v` increases as `row` increases: this is wrong!
 
-# Cosa fare con i bug
+# What to do with bugs
 
--   L'esistenza di questo bug provoca un ribaltamento verticale delle immagini: l'alto e il basso sono scambiati!
+-   The existence of this bug causes a vertical flip of the images: the top and bottom are swapped!
 
--   Eppure abbiamo implementato dei test!
+-   Yet we implemented tests!
 
--   Perché non ce ne siamo accorti?
+-   Why didn't we notice?
 
 
-# Test della scorsa lezione
+# Tests from last lesson
 
 ```python
 # These were the tests we implemented last week
@@ -41,57 +41,57 @@ for row in range(image.height):
 ```
 
 
-# Test incompleti
+# Incomplete Tests
 
--   I nostri test non verificavano il corretto orientamento dell'immagine: erano **incompleti**
+-   Our tests did not verify the correct orientation of the image: they were **incomplete**.
 
--   Questo genere di problemi è comune anche in progetti professionali: c'è una potenziale condizione di errore che i test non coprono, che non viene quindi scoperta durante l'implementazione.
+-   This kind of problem is common even in professional projects: there is a potential error condition that the tests do not cover, which is therefore not discovered during implementation.
 
--   Oggi vediamo qual è il modo giusto di correggere l'errore; nella prossima lezione di teoria discuteremo di “debugging” a un livello più alto.
-
-
-# Correggere un bug
-
-Correzioni in un repository pubblico come GitHub richiedono questi passaggi:
-
-#.   Segnalare il problema su GitHub, aprendo una *issue* (sinonimi: *bug report* o *ticket*). Alla issue sarà assegnato un numero unico, ad es. #156.
-
-#.   Creare una branch nel repository, chiamandola ad esempio `fix156`.
-
-#.   Modificare i test in modo che evidenzino l'errore: una volta implementati, questi nuovi test devono ovviamente fallire.
-
-#.   Solo una volta che i nuovi test sono implementati si può correggere il bug.
-
-#.   Quando i nuovi test passano, aprire una PR legata al branch, e se tutto funziona (inclusi i *CI builds*) aggiornare il `CHANGELOG`, fare il *merge*, e chiudere la *issue*.
+-   Today we will see the right way to correct the error; in the next theory lesson we will discuss "debugging" at a higher level.
 
 
-# Aprire una *issue*
+# Correcting a Bug
+
+Corrections in a public repository like GitHub require these steps:
+
+#.   Report the problem on GitHub by opening an *issue* (synonyms: *bug report* or *ticket*). The issue will be assigned a unique number, e.g. #156.
+
+#.   Create a branch in the repository, calling it for example `fix156`.
+
+#.   Modify the tests so that they highlight the error: once implemented, these new tests must obviously fail.
+
+#.   Only once the new tests are implemented can the bug be fixed.
+
+#.   When the new tests pass, open a PR linked to the branch, and if everything works (including the *CI builds*) update the `CHANGELOG`, merge, and close the *issue*.
+
+
+# Opening an *Issue*
 
 <iframe src="https://player.vimeo.com/video/544935196?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="672" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="How to open a new issue in GitHub"></iframe>
 
-# Creare un nuovo test
+# Creating a New Test
 
--   Il test che avevamo scritto per `ImageTracer` non era esaustivo…
+-   The test we had written for `ImageTracer` was not exhaustive…
 
--   …ma era comunque già abbastanza complesso, perché verificava due cose distinte:
+-   …but it was already quite complex, because it verified two distinct things:
 
-    #.   La correttezza della gestione di `u_pixel` e `v_pixel`
+    #.   The correctness of the handling of `u_pixel` and `v_pixel`
 
-    #.   Il fatto che `ImageTracer.fire_all_rays` fosse in grado di «visitare» tutti i pixel dell'immagine.
+    #.   The fact that `ImageTracer.fire_all_rays` was able to "visit" all the pixels of the image.
 
--   Non conviene che aggiungiamo materiale a questo test, altrimenti in caso in futuro fallisse sarebbe meno immediato capire *dove* si trovi il problema.
+-   It is not advisable to add material to this test, otherwise if it fails in the future it would be less immediate to understand *where* the problem lies.
 
-# Lavoro da fare
+# Work to Do
 
--   Quello che faremo ora è dividere il test in tre sotto-test:
+-   What we will do now is divide the test into three sub-tests:
 
-    #.  Le due verifiche già esistenti, che vanno però divise in due test distinti;
-    #.  Un nuovo test che fallisca a causa del bug che abbiamo evidenziato.
+    #.  The two existing checks, which however must be divided into two distinct tests;
+    #.  A new test that fails due to the bug we highlighted.
 
--   Nell'implementare questo test in Python, ho usato una caratteristica del framework di test (`unittest`) che probabilmente esiste anche nei vostri framework.
+-   In implementing this test in Python, I used a feature of the testing framework (`unittest`) that probably also exists in your frameworks.
 
 
-# Ripetizioni ineleganti
+# Inelegant Repetitions
 
 ```python
 def test_uv_sub_mapping():
@@ -118,11 +118,11 @@ def test_image_coverage():
 
 # *Set-up* e *tear-down*
 
--   L'ineleganza sta nel fatto che dobbiamo creare in ogni test gli oggetti `image`, `camera` e `tracer`.
+-   The inelegance lies in the fact that we must create the `image`, `camera`, and `tracer` objects in every test.
 
--   I framework di test (non tutti 🙁) forniscono di solito la possibilità di invocare procedure di *set-up* per creare gli oggetti su cui si eseguono poi i test.
+-   Test frameworks (not all 🙁) usually provide the ability to invoke *set-up* procedures to create the objects on which the tests are then executed.
 
--   (Analogamente, questi framework implementano anche la possibilità di invocare procedure di *tear-down* alla fine dei test, con lo scopo ad esempio di cancellare file temporanei creati durante i test stessi).
+-   (Similarly, these frameworks also implement the ability to invoke *tear-down* procedures at the end of the tests, for example to delete temporary files created during the tests themselves).
 
 ---
 
@@ -156,78 +156,78 @@ class TestImageTracer(unittest.TestCase):
                 assert self.image.get_pixel(col, row) == Color(1.0, 2.0, 3.0)
 ```
 
-# Creazione di un PR
+# Creating a PR
 
 <center>![](./media/github-fix-issue.png){height=560px}</center>
 
-# Correzione del bug
+# Correcting a bug
 
--   Questa è la correzione per il metodo `ImageTracer.fire_ray`:
+-   These are the correct instructions to use in `ImageTracer.fire_ray`:
 
     ```python
     u = (col + u_pixel) / self.image.width
     v = 1.0 - (row + v_pixel) / self.image.height
     ```
 
--   Facendo il commit, si vede che ora il test passa:
+-   If we commit this, the test will now pass:
 
     <center>![](./media/github-issue-bugfix.png){height=280px}</center>
 
-# Chiusura del bug
+# Bug Closure
 
--   A questo punto il bug è sistemato, e possiamo procedere a chiudere la *issue*
+-   At this point the bug is fixed, and we can proceed to close the *issue*.
 
--   È molto importante però prima dare un'occhiata complessiva alla PR, per verificare che sia chiaramente leggibile. In particolare, selezionate il tab *Files changed* e leggetelo con occhio critico:
+-   It is very important, however, to first take a general look at the PR to verify that it is clearly legible.  In particular, select the *Files changed* tab and read it critically:
 
-    1.  I file che vengono modificati sono quelli che mi aspetto, o è presente qualche altra modifica a cui stavo lavorando quando il bug è stato scoperto? (Vedi [questo esempio](https://github.com/litebird/litebird_sim/pull/232)).
+    1.  Are the files being modified the ones I expect, or are there other changes that I was working on when the bug was discovered? (See [this example](https://github.com/litebird/litebird_sim/pull/232)).
 
-    2.  Chi vedrà queste modifiche, sarà in grado di capirle senza leggere l'intero codice?
+    2.  Will those who see these changes be able to understand them without reading the entire codebase?
 
--   Evitate di includere modifiche «gratuite»…
+-   Avoid including «gratuitous» changes…
 
 ---
 
 <center>![](media/github-pr-last-check-before-merging.png){height=680px}</center>
 
-Esempio preso da un PR di [pytracer](https://github.com/ziotom78/pytracer/pull/10/files)
+Example taken from a PR of [pytracer](https://github.com/ziotom78/pytracer/pull/10/files)
 
-# Chiusura del bug
+# Closing a bug
 
 <iframe src="https://player.vimeo.com/video/544950712?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="672" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="How to close an issue in GitHub"></iframe>
 
-# Traccia dei bug
+# Bug Tracking
 
--   GitHub tiene traccia dei bug di un repository nella pagina dedicata: è possibile consultare quindi quali bug siano aperti e quali siano stati già chiusi.
+-   GitHub tracks a repository's bugs on a dedicated page: you can see which bugs are open and which have been closed.
 
--   Ma, come nel caso dei *commit*, una lista di bug è ben povera, e non racconta una «storia».
+-   But, as with *commits*, a list of bugs is quite poor, and doesn't tell a "story."
 
--   Vediamo ora lo scopo del file CHANGELOG.md, che è una forma di documentazione.
+-   Let's see now the purpose of the CHANGELOG.md file, which is a form of documentation.
+
+# CHANGELOG {#changelog}
+
+-   All public repositories should have a `CHANGELOG`/`NEWS`/`HISTORY`/… file, which lists the bugs fixed and the new features of the code, listed by version number.
+
+-   See for example the [`HISTORY.md`](https://github.com/JuliaLang/julia/blob/master/HISTORY.md) file of the Julia compiler
 
 # CHANGELOG
 
--   Tutti i repository pubblici dovrebbero avere un file `CHANGELOG`/`NEWS`/`HISTORY`/…, che elenca i bug corretti e le nuove caratteristiche del codice elencati in funzione del numero di versione.
+-   In a `CHANGELOG` file you should indicate all the corrections and modifications made to the code.
 
--   Vedete ad esempio il file [`HISTORY.md`](https://github.com/JuliaLang/julia/blob/master/HISTORY.md) del compilatore Julia
+-   No need to be verbose: one or two lines per change are sufficient, if you include the link to the *issue*/*pull request*
 
-# CHANGELOG
+-   It should be written in **reverse chronological order**: the most recent changes are at the top. This makes it easier for the reader to see what's new in the latest version (which is likely the one they want to download).
 
--   In un file `CHANGELOG` occorre indicare tutte le correzioni e modifiche fatte al codice.
-
--   Non serve essere verbosi: basta una o due righe per modifica, se si inserisce il link alla *issue*/*pull request*
-
--   Va scritto in ordine **cronologico inverso**: le modifiche più recenti stanno in cima. In questo modo è più semplice per chi legge vedere quali sono le novità dell'ultima versione (che verosimilmente è quella che si vuole scaricare).
-
--   Di solito si divide in sezioni, una per ogni versione del codice. La prima sezione si chiama di solito `HEAD`, e contiene le correzioni e le modifiche che finiranno nella prossima futura versione del codice.
+-   It is usually divided into sections, one for each version of the code. The first section is usually called `HEAD`, and contains the corrections and modifications that will end up in the next future version of the code.
 
 
-# CHANGELOG di [Healpix.jl](https://github.com/ziotom78/Healpix.jl)
+# CHANGELOG of [Healpix.jl](https://github.com/ziotom78/Healpix.jl)
 
 <center>![](./media/healpixjl-changelog.png)</center>
 
 
-# CHANGELOG di [pytracer](https://github.com/ziotom78/pytracer)
+# CHANGELOG of [pytracer](https://github.com/ziotom78/pytracer)
 
--   Nel repository di [pytracer](https://github.com/ziotom78/pytracer) c'è un file `CHANGELOG.md`, scritto in Markdown, che potete usare come ispirazione. In particolare, il «nostro» bug figura così:
+-   In the [pytracer](https://github.com/ziotom78/pytracer) repository there is a `CHANGELOG.md` file, written in Markdown, which you can use as inspiration. In particular, "our" bug appears like this:
 
     ```markdown
     …
@@ -239,15 +239,14 @@ Esempio preso da un PR di [pytracer](https://github.com/ziotom78/pytracer/pull/1
     -   First release of the code
     ```
 
--   Ricordatevi d'ora in poi che **l'ultimo commit in un PR** dovrà sempre essere l'aggiornamento di `CHANGELOG.md`!
+-   Remember from now on that **the last commit in a PR** should always be the update of `CHANGELOG.md`!
 
-# Cose da fare oggi
 
-# Il nostro “[triangolo nero](https://rampantgames.com/blog/?p=7745)”!
+# Our “[black triangle](https://rampantgames.com/blog/?p=7745)”!
 
 <center>![](./media/pytracer-first-image.png)</center>
 
-# Geometria
+# Geometry
 
 ```{.asy im_fmt="html" im_opt="-f html" im_out="img,stdout,stderr" im_fname="first-image-geometry"}
 size(0,100);
@@ -306,13 +305,13 @@ label("$y$", 1.5Y + 0.2Z);
 label("$z$", 1.5Z + 0.2X);
 ```
 
-# Forme
+# Shapes
 
--   Dobbiamo implementare delle forme nel nostro codice.
+-   We need to implement shapes in our code.
 
--   Per oggi basta implementare un tipo `Sphere`; se volete, aggiungete anche un `Plane` (è molto veloce da aggiungere).
+-   For today, it is sufficient to implement a `Sphere` type; if you want, add also a `Plane` (it's very quick to add).
 
--   Create un tipo astratto `Shape`, che implementi il metodo (astratto) `ray_intersection`. Questo accetta come parametro un parametro `Ray` e restituisce un tipo `HitRecord`. Se il vostro linguaggio lo supporta, potete rendere il tipo di ritorno *nullable* (c'è/non c'è intersezione).
+-   Create an abstract type `Shape`, which implements the (abstract) method `ray_intersection`. This accepts a `Ray` parameter and returns a `HitRecord` type. If your language supports it, you can make the return type *nullable* (intersection exists/doesn't exist).
 
 # `Shape` in Python
 
@@ -329,27 +328,27 @@ class Shape:
 
 # `HitRecord`
 
--   Per restituire le informazioni su una intersezione, è buona norma usare un tipo dedicato: `HitRecord`.
+-   To return information about an intersection, it's good practice to use a dedicated type: `HitRecord`.
 
--   Il tipo deve contenere queste informazioni:
+-   This type should contain the following information:
 
-    #.   `world_point`: punto 3D in cui è avvenuta l'intersezione (`Point`);
-    #.   `normal`: normale della superficie all'intersezione (`Normal`);
-    #.   `surface_point`: coordinate $(u, v)$ dell'intersezione (nuovo tipo `Vec2d`);
-    #.   `t`: parametro del raggio associato all'intersezione;
-    #.   `ray`: raggio di luce che ha causato l'intersezione.
+    1.  `world_point`: 3D point where the intersection occurred (`Point`);
+    2.  `normal`: surface normal at the intersection (`Normal`);
+    3.  `surface_point`: $(u, v)$ coordinates of the intersection (new type `Vec2d`);
+    4.  `t`: ray parameter associated with the intersection;
+    5.  `ray`: the light ray that caused the intersection.
 
--   Per i test è utile che implementi un metodo `is_close`/`are_close`.
+-   For testing, it's helpful if it implements an `is_close`/`are_close` method.
 
 # `Sphere` in Python
 
--   Il numero di intersezioni tra il raggio $O + t \vec d$ e la sfera dipende dal segno di
+-   The number of intersections between the ray $O + t \vec d$ and the sphere depends on the sign of
 
     $$
     \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
     $$
 
--   Nel caso in cui $\Delta > 0$, le due intersezioni sono
+-   If $\Delta > 0$, the two intersections are
 
     $$
     t = \begin{cases}
@@ -360,7 +359,7 @@ class Shape:
 
 # `Sphere` in Python
 
--   Dovete **antitrasformare** il raggio prima di calcolare l'intersezione:
+-   You must **inverse transform** the ray before calculating the intersection:
 
     ```python
     def ray_intersection(self, ray: Ray) -> Optional[HitRecord]:
@@ -368,7 +367,7 @@ class Shape:
         # ...
     ```
 
--   Quando avete calcolato `t1` e `t2`, dovete determinare quale delle due intersezioni è la più vicina all'origine del raggio:
+-   Once you have calculated `t1` and `t2`, you must determine which of the two intersections is closest to the ray origin:
 
     ```python
     if (t1 > inv_ray.tmin) and (t1 < inv_ray.tmax):
@@ -379,9 +378,9 @@ class Shape:
         return None   # The ray missed the sphere
     ```
 
-#   Normali e coordinate UV
+# Normals and UV Coordinates
 
--   Dovete implementare il calcolo della normale al punto di intersezione; nel codice di [pytracer](https://github.com/ziotom78/pytracer/blob/d12284d0c60965e48b004a305d6ba8e28c13f757/shapes.py#L42-L51) ciò è fatto all'interno di `_sphere_normal`:
+-   You must implement the calculation of the normal at the intersection point; in the [pytracer](https://github.com/ziotom78/pytracer/blob/d12284d0c60965e48b004a305d6ba8e28c13f757/shapes.py#L42-L51) code this is done inside `_sphere_normal`:
 
     ```python
     def _sphere_normal(point: Point, ray_dir: Vec) -> Normal:
@@ -389,7 +388,7 @@ class Shape:
         return result if (point.to_vec().dot(ray_dir) < 0.0) else -result
     ```
 
--   Serve anche il codice che calcola il punto di intersezione sulla superficie della sfera, in coordinate $(u, v)$, per cui è utile un nuovo tipo `Vec2d`:
+-   You also need code that calculates the intersection point on the sphere's surface, in $(u, v)$ coordinates, for which a new `Vec2d` type is useful:
 
     ```python
     def _sphere_point_to_uv(point: Point) -> Vec2d:
@@ -397,7 +396,7 @@ class Shape:
         return Vec2d(u=u if u >= 0.0 else u + 1.0, v=acos(point.z) / pi)
     ```
 
-# Creazione di `HitRecord`
+# Creating `HitRecord`
 
 ```python
 hit_point = inv_ray.at(first_hit_t)
@@ -410,30 +409,30 @@ return HitRecord(
 )
 ```
 
-# Test per `Sphere` (1/2)
+# Tests for `Sphere` (1/2)
 
--   Il raggio con $O = (0, 0, 2)$ e $\vec d = -\hat e_z$ deve intersecare la sfera unitaria nel punto $P = (0, 0, 1)$ con normale $\hat n = \hat e_z$.
--   Il raggio con $O = (3, 0, 0)$ e $\vec d = -\hat e_x$ deve intersecare la sfera unitaria nel punto $P = (1, 0, 0)$ con normale $\hat n = \hat e_x$.
--   Il raggio con $O = (0, 0, 0)$ e $\vec d = \hat e_x$ deve intersecare la sfera unitaria in $P = (1, 0, 0)$ con normale $\hat n = -\hat e_x$ (il raggio è *interno* alla sfera).
+-   The ray with $O = (0, 0, 2)$ and $\vec d = -\hat e_z$ must intersect the unit sphere at point $P = (0, 0, 1)$ with normal $\hat n = \hat e_z$.
+-   The ray with $O = (3, 0, 0)$ and $\vec d = -\hat e_x$ must intersect the unit sphere at point $P = (1, 0, 0)$ with normal $\hat n = \hat e_x$.
+-   The ray with $O = (0, 0, 0)$ and $\vec d = \hat e_x$ must intersect the unit sphere at $P = (1, 0, 0)$ with normal $\hat n = -\hat e_x$ (the ray is *inside* the sphere).
 
-In tutti questi casi verificate anche le coordinate $(u, v)$ e il valore di $t$.
+In all these cases, also verify the $(u, v)$ coordinates and the value of $t$.
 
-# Test per `Sphere` (2/2)
+# Tests for `Sphere` (2/2)
 
--   Applicate una traslazione $\vec t = (10, 0, 0)$ alla sfera e intersecatela con il raggio con $O = (10, 0, 2)$ e $\vec d = -\hat e_z$.
--   Intersecate la stessa sfera traslata con il raggio con $O = (13, 0, 0)$ e $\vec d = -\hat e_x$. L'intersezione dovrebbe essere $P = (11, 0, 0)$ con normale $\hat n = \hat e_x$.
--   Verificate che non vi siano potenziali intersezioni con la sfera **non** traslata, usando questi raggi:
-    #.  Raggio con $O = (0, 0, 2)$ e $\vec d = -\hat e_z$;
-    #.  Raggio con $O = (-10, 0, 0)$ e $\vec d = -\hat e_z$;
+-   Apply a translation $\vec t = (10, 0, 0)$ to the sphere and intersect it with the ray with $O = (10, 0, 2)$ and $\vec d = -\hat e_z$.
+-   Intersect the same translated sphere with the ray with $O = (13, 0, 0)$ and $\vec d = -\hat e_x$. The intersection should be $P = (11, 0, 0)$ with normal $\hat n = \hat e_x$.
+-   Verify that there are no potential intersections with the **untranslated** sphere, using these rays:
+    1. Ray with $O = (0, 0, 2)$ and $\vec d = -\hat e_z$;
+    2. Ray with $O = (-10, 0, 0)$ and $\vec d = -\hat e_z$;
 
-In tutti questi casi verificate anche le coordinate $(u, v)$ e il valore di $t$.
+In all these cases, also verify the $(u, v)$ coordinates and the value of $t$.
 
-# Il tipo `World`
+# The `World` Type
 
--   Una scena è composta da tante forme.
--   Ci occorre un tipo che contenga questa lista di forme: il tipo `World`.
--   Esso deve mantenere al suo interno una lista di oggetti `Shape`: abbiate cura a dichiarare correttamente questa lista, perché alcuni linguaggi potrebbero richiedere cautele particolari per liste di oggetti astratti (es., un [vettore di *traits*](https://doc.rust-lang.org/book/ch17-02-trait-objects.html) in Rust).
--   Deve implementare un metodo `ray_intersection` che iteri sulle forme, cerchi le intersezioni, e restituisca quella più vicina all'origine del raggio.
+-   A scene is composed of many shapes.
+-   We need a type to contain this list of shapes: the `World` type.
+-   It must maintain a list of `Shape` objects: take care to declare this list correctly, as some languages may require special care for lists of abstract objects (e.g., a [trait object vector](https://doc.rust-lang.org/book/ch17-02-trait-objects.html) in Rust).
+-   It must implement a `ray_intersection` method that iterates over the shapes, searches for intersections, and returns the one closest to the ray origin.
 
 # `World` in Python
 
@@ -459,31 +458,31 @@ class World:
         return closest
 ```
 
-# Il nostro demo
+# Our demo
 
 <center>![](./media/pytracer-first-image.png)</center>
 
-L'asimmetria nella disposizione delle sfere consente di individuare errori nell'ordinamento delle righe/colonne dell'immagine.
+The asymmetry in the arrangement of the spheres allows for the identification of errors in the ordering of the rows/columns of the image.
 
-# La scena
+# The Scene
 
--   Posizionate le sfere ai vertici del cubo con spigoli $(\pm 0.5, \pm 0.5, \pm 0.5)$.
--   Ciascuna sfera deve avere raggio 1/10.
--   L'osservatore deve essere spostato di $-\hat e_x$, ossia la sua posizione deve essere $(-2, 0, 0)$ e il centro dello schermo $(-1, 0, 0)$.
--   Scegliete voi se usare `OrthogonalCamera` o `PerspectiveCamera`.
+-   Position the spheres at the vertices of the cube with edges $(\pm 0.5, \pm 0.5, \pm 0.5)$.
+-   Each sphere must have a radius of 1/10.
+-   The observer should be moved by $-\hat e_x$, meaning their position should be $(-2, 0, 0)$ and the center of the screen $(-1, 0, 0)$.
+-   Choose whether to use `OrthogonalCamera` or `PerspectiveCamera`.
 
-# Il `main`
+# The `main`
 
--   Il nostro `main` è stato sinora in grado di convertire un'immagine PFM in un altro formato (PNG, JPEG, WebP, etc.)
--   Dobbiamo ora cambiare l'interfaccia del programma in modo che permetta di usare due modalità:
-    #.  Conversione da PFM ad altri formati (la vecchia modalità);
-    #.  Una nuova modalità `demo`, dove genera l'immagine descritta poco fa.
+-   Our `main` has so far been able to convert a PFM image into another format (PNG, JPEG, WebP, etc.)
+-   We must now change the program's interface so that it allows the use of two modes:
+    #.  Conversion from PFM to other formats (the old mode);
+    #.  A new `demo` mode, where it generates the image described above.
 
-# Esempio in Python
+# Example in Python
 
--   In Python ho usato la libreria Click, che permette di costruire interfacce utente da linea di comando che supportano le cosiddette *actions* (altre librerie li chiamano *verbs*).
+-   In Python, I used the Click library, which allows building command-line user interfaces that support so-called *actions* (other libraries call them *verbs*).
 
--   Dopo il nome dell'eseguibile va riportato un comando, seguito opzionalmente da parametri:
+-   After the executable name, a command should be provided, optionally followed by parameters:
 
     ```text
     ./main.py pfm2png input.pfm output.png
@@ -496,13 +495,13 @@ L'asimmetria nella disposizione delle sfere consente di individuare errori nell'
 
 <asciinema-player src="cast/python-click-cli-example-88x27.cast" cols="88" rows="27" font-size="medium"></asciinema-player>
 
-# Possibili interfacce
+# Possible Interfaces
 
--   *Actions* esattamente come Click (se la vostra libreria li supporta);
+-   *Actions* exactly like Click (if your library supports them);
 
--   Due eseguibili separati: `demo` e `pfm2png`
+-   Two separate executables: `demo` and `pfm2png`
 
--   Richiesta di input da terminale (sconsigliato):
+-   Requesting input from the terminal (not recommended):
 
     ```python
     print("What do you want to do? (demo/pfm2png)")
@@ -510,33 +509,33 @@ L'asimmetria nella disposizione delle sfere consente di individuare errori nell'
     if choice == "demo":
         # …
     ```
--   Eccetera…
+-   Et cetera…
 
-# Comando `demo`
+# `demo` Command
 
-#.  Inizializzare un oggetto `World` con le 10 sfere nelle posizioni indicate;
-#.  Creare un oggetto `OrthogonalCamera` o `PerspectiveCamera` ([pytracer](https://github.com/ziotom78/pytracer/blob/d12284d0c60965e48b004a305d6ba8e28c13f757/main.py#L125-L130) consente all'utente di scegliere);
-#.  (Opzionale) Potete provare a ruotare l'osservatore per ottenere angolazioni più interessanti (v. seguito);
-#.  Create un oggetto `ImageTracer`;
-#.  Fare un tracing dell'immagine, usando un criterio «on/off» (v. slide seguente);
-#.  Salvare l'immagine PFM;
-#.  (Opzionale) Convertite immediatamente l'immagine in PNG usando valori di default per il tone-mapping.
+1.  Initialize a `World` object with the 10 spheres in the indicated positions;
+2.  Create an `OrthogonalCamera` or `PerspectiveCamera` object ([pytracer](https://github.com/ziotom78/pytracer/blob/d12284d0c60965e48b004a305d6ba8e28c13f757/main.py#L125-L130) allows the user to choose);
+3.  (Optional) You can try rotating the observer to obtain more interesting angles (see below);
+4.  Create an `ImageTracer` object;
+5.  Perform image tracing, using an "on/off" criterion (see next slide);
+6.  Save the PFM image;
+7.  (Optional) Immediately convert the image to PNG using default values for tone-mapping.
 
-# On-off tracing
+# On-Off Tracing
 
--   Un ray-tracer on/off controlla se il raggio ha colpito una superficie, e in caso positivo colora il pixel con un colore arbitrario (bianco), altrimenti lo colora col colore di sfondo (nero).
+-   An on/off ray-tracer checks if the ray has hit a surface, and if so, colors the pixel with an arbitrary color (white), otherwise it colors it with the background color (black).
 
--   Nel nostro caso è sufficiente invocare `fire_all_rays` passando come argomento una funzione di una riga:
+-   In our case, it is sufficient to invoke `fire_all_rays` by passing a one-line function as an argument:
 
     ```python
     tracer.fire_all_rays(lambda ray: WHITE if world.ray_intersection(ray) else BLACK)
     ```
 
-# Animazioni
+# Animations
 
--   Nella modalità `demo`, il codice Python permette di modificare l'orientazione dell'osservatore rispetto agli assi tramite il flag `--angle-deg`.
+-   In `demo` mode, the Python code allows modifying the orientation of the observer relative to the axes using the `--angle-deg` flag.
 
--   Questo può essere usato per generare delle animazioni tramite semplici script Bash:
+-   This can be used to generate animations through simple Bash scripts:
 
     ```sh
     for angle in $(seq 0 359); do
@@ -551,25 +550,24 @@ L'asimmetria nella disposizione delle sfere consente di individuare errori nell'
         spheres-perspective.mp4
     ```
 
-# Proiezione prospettica
+# Perspective Projection
 
 <video src="./media/spheres-perspective.mp4" width="640px" height="480px" controls loop autoplay/>
 
-# Proiezione ortogonale
+# Orthogonal Projection
 
 <video src="./media/spheres-orthogonal.mp4" width="640px" height="480px" controls loop autoplay/>
 
-# Guida per l'esercitazione
+# What to do today
 
+# What to do today
 
-# Cose da fare
-
-#.  Correggere il bug della scorsa volta aprendo una *issue*;
-#.  Creare un file `CHANGELOG.md`;
-#.  Lavorare su un nuovo branch `demo`;
-#.  Creare i tipi `Shape`, `Sphere`, `World`, `Vec2d`;
-#.  Implementare il comando `demo`, nel modo in cui preferite (potete cercare una libreria per interpretare la linea di comando);
-#.  Aprire una PR e aggiornare il file `CHANGELOG.md`.
+1.  Fix the bug from last time by opening an *issue*;
+2.  Create a `CHANGELOG.md` file;
+3.  Work on a new `demo` branch;
+4.  Create the `Shape`, `Sphere`, `World`, `Vec2d` types;
+5.  Implement the `demo` command, in the way you prefer (you can look for a library to interpret the command line);
+6.  Open a PR and update the `CHANGELOG.md` file.
 
 ---
 title: "Esercitazione 8"

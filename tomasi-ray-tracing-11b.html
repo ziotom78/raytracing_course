@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Esercitazione 11</title>
+  <title>Laboratory 11</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -29,8 +29,9 @@
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -41,7 +42,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -120,67 +121,66 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Esercitazione 11</h1>
-  <p class="subtitle">Path tracing (continua)</p>
+  <h1 class="title">Laboratory 11</h1>
+  <p class="subtitle">Calcolo numerico per la generazione di immagini
+fotorealistiche</p>
   <p class="author">Maurizio Tomasi <a
 href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="implementare-il-path-tracer" class="slide level1">
-<h1>Implementare il path tracer</h1>
+<section id="implementing-the-path-tracer" class="slide level1">
+<h1>Implementing the Path Tracer</h1>
 </section>
-<section id="cosa-abbiamo-imparato" class="slide level1">
-<h1>Cosa abbiamo imparato</h1>
+<section id="what-have-we-learned" class="slide level1">
+<h1>What have we learned</h1>
 <ul>
-<li><p>Oggi finalmente implementeremo il nostro <em>path tracer</em>,
-che conclude la discussione sull’equazione del rendering</p></li>
-<li><p>Anche se mancano ancora due settimane alla fine del corso,
-possiamo già valutare cosa dovremmo aver imparato dal corso</p></li>
-<li><p>Facciamolo con una domanda…</p></li>
+<li><p>Today we will finally implement our <em>path tracer</em>, which
+concludes the discussion on the rendering equation</p></li>
+<li><p>Even though there are still two weeks until the end of the
+course, we can already evaluate what we should have learned from the
+course</p></li>
+<li><p>Let’s do it with a question…</p></li>
 </ul>
 </section>
-<section id="quali-bug-vi-aspettate-oggi" class="slide level1">
-<h1>Quali bug vi aspettate oggi?</h1>
+<section id="what-bugs-do-you-expect-today" class="slide level1">
+<h1>What bugs do you expect today?</h1>
 <aside class="notes">
 <ul>
-<li><p>L’immagine non può uscire upside-down: abbiamo già dei test a
-riguardo</p></li>
-<li><p>L’intersezione raggio-sfera è sicuramente giusta</p></li>
-<li><p>I colori R e B non possono essere invertiti</p></li>
+<li><p>The image cannot be upside-down: we already have tests for
+that</p></li>
+<li><p>The ray-sphere intersection is definitely correct</p></li>
+<li><p>The R and B colors cannot be inverted</p></li>
 <li><p>Etc.</p></li>
 </ul>
 </aside>
 </section>
-<section id="metodo-di-lavoro" class="slide level1">
-<h1>Metodo di lavoro</h1>
+<section id="work-methodology" class="slide level1">
+<h1>Work Methodology</h1>
 <ul>
-<li><p>Abbiamo sempre implementato una funzionalità alla volta
-(salvataggio di immagini, <em>tone mapping</em>, proiezioni…) alla
-volta</p></li>
-<li><p>Per ogni caratteristica abbiamo implementato una serie di
-test</p></li>
-<li><p>È per questo che ogni settimana avevamo la confidenza che quando
-ci appoggiavamo a codice scritto nelle settimane precedenti, esso era
-probabilmente “giusto”</p></li>
-<li><p>È impossibile scrivere un codice così lungo come il vostro senza
-procedere così</p></li>
-<li><p><strong>Questo è l’insegnamento più importante fornito da questo
-corso!</strong></p></li>
+<li><p>We have always implemented one feature at a time (saving images,
+<em>tone mapping</em>, projections…)</p></li>
+<li><p>For each feature, we implemented a series of tests</p></li>
+<li><p>This is why every week we had the confidence that when we relied
+on code written in previous weeks, it was probably “correct”</p></li>
+<li><p>It is impossible to write code as long as yours without
+proceeding this way</p></li>
+<li><p><strong>This is the most important lesson provided by this
+course!</strong></p></li>
 </ul>
 </section>
-<section id="basi-ortonormali-onb" class="slide level1">
-<h1>Basi ortonormali (ONB)</h1>
+<section id="orthonormal-bases-onb" class="slide level1">
+<h1>Orthonormal Bases (ONB)</h1>
 </section>
-<section id="creazioni-di-onb" class="slide level1">
-<h1>Creazioni di ONB</h1>
+<section id="creating-onbs" class="slide level1">
+<h1>Creating ONBs</h1>
 <ul>
-<li><p>È conveniente usare l’algoritmo di <a
+<li><p>It is convenient to use the algorithm from <a
 href="https://graphics.pixar.com/library/OrthonormalB/paper.pdf">Duff et
 al. 2017</a>:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_onb_from_z(normal: Union[Vec, Normal]) <span class="op">-&gt;</span> Tuple[Vec, Vec, Vec]:</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># In Python non c&#39;è la funzione `copysign` 🙁</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># In Python there isn&#39;t a `copysign` function 🙁</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    sign <span class="op">=</span> <span class="fl">1.0</span> <span class="cf">if</span> (normal.z <span class="op">&gt;</span> <span class="fl">0.0</span>) <span class="cf">else</span> <span class="op">-</span><span class="fl">1.0</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span> <span class="op">/</span> (sign <span class="op">+</span> normal.z)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> normal.x <span class="op">*</span> normal.y <span class="op">*</span> a</span>
@@ -189,29 +189,28 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    e2 <span class="op">=</span> Vec(b, sign <span class="op">+</span> normal.y <span class="op">*</span> normal.y <span class="op">*</span> a, <span class="op">-</span>normal.y)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> e1, e2, Vec(normal.x, normal.y, normal.z)</span></code></pre></div></li>
-<li><p>Quando invocate questa funzione, fate molta attenzione al fatto
-che il parametro <code>normal</code> deve essere già
-normalizzato!</p></li>
+<li><p>When calling this function, pay close attention to the fact that
+the <code>normal</code> parameter must already be normalized!</p></li>
 </ul>
 </section>
-<section id="test" class="slide level1">
-<h1>Test</h1>
+<section id="testing" class="slide level1">
+<h1>Testing</h1>
 <ul>
-<li><p>Per verificare il funzionamento di
-<code>create_onb_from_z</code>, possiamo usare il <em>random
-testing</em> (un’idea apparentemente nata nel mondo del linguaggio <a
-href="https://www.haskell.org/">Haskell</a>, vedi <a
+<li><p>To verify the correct operation of
+<code>create_onb_from_z</code>, we can use <em>random testing</em> (an
+idea apparently originating in the world of the <a
+href="https://www.haskell.org/">Haskell</a> language, see <a
 href="https://hackage.haskell.org/package/QuickCheck">quickcheck</a>).</p></li>
-<li><p>L’idea è quella di generare un gran numero di vettori casuali,
-passarli come parametri a <code>create_onb_from_z</code>, e verificare
-che il tipo di ritorno sia effettivamente una ONB. (Pare che Duff et
-al. abbiano scoperto così il bug nell’algoritmo di <a
-href="http://orbit.dtu.dk/files/%20126824972/onb_frisvad_jgt2012_v2.pdf">Frisvad,
-2012</a>).</p></li>
-<li><p>L’approccio generale del <em>random testing</em> è quello di
-generare input casuali, e verificare che gli output soddisfino certe
-proprietà. È conveniente soprattutto per funzioni matematiche, ma non è
-sempre la soluzione migliore.</p></li>
+<li><p>The idea is to generate a large number of random vectors, pass
+them as parameters to <code>create_onb_from_z</code>, and verify that
+the return type is indeed an ONB. (Apparently Duff et al. discovered the
+bug in the algorithm from <a
+href="http://orbit.dtu.dk/files/126824972/onb_frisvad_jgt2012_v2.pdf">Frisvad,
+2012</a> this way).</p></li>
+<li><p>The general approach of <em>random testing</em> is to generate
+random inputs and verify that the outputs satisfy certain properties. It
+is especially convenient for mathematical functions, but it is not
+always the best solution.</p></li>
 </ul>
 </section>
 <section id="random-testing-in-pytracer" class="slide level1">
@@ -246,30 +245,30 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <section id="importance-sampling" class="slide level1">
 <h1><em>Importance sampling</em></h1>
 </section>
-<section id="implementazione" class="slide level1">
-<h1>Implementazione</h1>
+<section id="implementation" class="slide level1">
+<h1>Implementation</h1>
 <ul>
-<li><p>Nella lezione di teoria abbiamo anticipato che il nostro <em>path
-tracer</em> userà il metodo Monte Carlo per stimare l’integrale
-dell’equazione del rendering:</p>
+<li><p>In the theory lesson we anticipated that our <em>path tracer</em>
+will use the Monte Carlo method to estimate the integral of the
+rendering equation:</p>
 <p><span class="math display">
 \int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
 \Psi)\,\cos\theta\,\mathrm{d}\omega_\Psi.
 </span></p></li>
-<li><p>Per migliorare la varianza useremo l’<em>importance
-sampling</em>, impiegando la PDF</p>
+<li><p>To improve variance we will use <em>importance sampling</em>,
+employing the PDF</p>
 <p><span class="math display">
 p(\omega) \propto f_r \cdot \cos\theta.
 </span></p></li>
 </ul>
 </section>
-<section id="il-tipo-brdf" class="slide level1">
-<h1>Il tipo <code>BRDF</code></h1>
+<section id="the-brdf-type" class="slide level1">
+<h1>The <code>BRDF</code> Type</h1>
 <ul>
-<li><p>Dobbiamo quindi aggiungere un metodo che si applichi ai tipi
-derivati da <code>BRDF</code> e che abbia <a
-href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L103">questa
-segnatura</a>:</p>
+<li><p>We therefore need to add a method that applies to the types
+derived from <code>BRDF</code> and that has <a
+href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L103">this
+signature</a>:</p>
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>,</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pcg: PCG,                    <span class="co"># Used to generate random numbers</span></span>
@@ -278,22 +277,22 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    normal: Normal,              <span class="co"># Normal on interaction_point</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    depth: <span class="bu">int</span>,                  <span class="co"># Depth value for the new ray</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> Ray</span></code></pre></div></li>
-<li><p>Ogni tipo derivato da <code>BRDF</code> (es.,
-<code>DiffuseBRDF</code>, <code>SpecularBRDF</code>, etc.) dovrà
-ridefinire <code>scatter_ray</code>.</p></li>
+<li><p>Each type derived from <code>BRDF</code> (e.g.,
+<code>DiffuseBRDF</code>, <code>SpecularBRDF</code>, etc.) will have to
+redefine <code>scatter_ray</code>.</p></li>
 </ul>
 </section>
 <section id="diffusebrdf" class="slide level1">
 <h1><code>DiffuseBRDF</code></h1>
 <ul>
-<li><p>Per la BRDF diffusa, abbiamo dedotto che <span
+<li><p>For the diffuse BRDF, we deduced that <span
 class="math inline">p(\omega) \propto \cos\theta</span>.</p></li>
-<li><p>L’implementazione di <a
+<li><p>The implementation of <a
 href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L117-L130"><code>DiffuseBRDF.scatter_ray</code></a>
-deve quindi usare l’<a
-href="tomasi-ray-tracing-10a.html#risultato-di-phong">algoritmo che
-abbiamo ricavato</a> per la distribuzione di Phong con <span
-class="math inline">n = 1</span>:</p>
+must therefore use the <a
+href="tomasi-ray-tracing-10a.html#risultato-di-phong">algorithm we
+derived</a> for the Phong distribution with <span class="math inline">n
+= 1</span>:</p>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec,</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                interaction_point: Point, normal: Normal, depth: <span class="bu">int</span>) <span class="op">-&gt;</span> Ray:</span>
@@ -312,13 +311,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <section id="specularbrdf" class="slide level1">
 <h1><code>SpecularBRDF</code></h1>
 <ul>
-<li><p>La generazione di raggi per la BRDF speculare è perfettamente
-deterministica, e non c’è un termine <span
-class="math inline">\cos\theta</span> con cui pesare il contributo del
-raggio.</p></li>
-<li><p>L’implementazione di <a
+<li><p>Ray generation for the specular BRDF is perfectly deterministic,
+and there is no <span class="math inline">\cos\theta</span> term to
+weight the ray’s contribution.</p></li>
+<li><p>The implementation of <a
 href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L151-L164"><code>SpecularBRDF.scatter_ray</code></a>
-è quindi particolarmente semplice:</p>
+is therefore particularly simple:</p>
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> scatter_ray(<span class="va">self</span>, pcg: PCG, incoming_dir: Vec,</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                interaction_point: Point, normal: Normal, depth: <span class="bu">int</span>) <span class="op">-&gt;</span> Ray:</span>
@@ -335,29 +333,27 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a hr
 <section id="path-tracing" class="slide level1">
 <h1><em>Path tracing</em></h1>
 </section>
-<section id="il-tipo-pathtracer" class="slide level1">
-<h1>Il tipo <code>PathTracer</code></h1>
+<section id="the-pathtracer-type" class="slide level1">
+<h1>The <code>PathTracer</code> Type</h1>
 <ul>
-<li><p>Abbiamo finora definito due renderer: <code>OnOffRenderer</code>
-e <code>FlatRenderer</code>. Oggi implementiamo
+<li><p>We have defined two renderers so far: <code>OnOffRenderer</code>
+and <code>FlatRenderer</code>. Today we implement
 <code>PathTracer</code>.</p></li>
-<li><p>I parametri del costruttore sono i seguenti:</p>
-<ol>
-<li>L’oggetto <code>World</code> per cui fare il render;</li>
-<li>Il colore di background, usato per quelle direzioni lungo cui non ci
-sono intersezioni;</li>
-<li>Il generatore di numeri casuali da usare (tipo
-<code>PCG</code>);</li>
-<li>Numero di raggi da generare per il calcolo dell’integrale;</li>
-<li>Profondità massima dei raggi;</li>
-<li>Limite per la profondità oltre il quale usare la Roulette
-russa.</li>
+<li><p>The constructor parameters are as follows:</p>
+<ol type="1">
+<li>The <code>World</code> object to render;</li>
+<li>The background color, used for those directions along which there
+are no intersections;</li>
+<li>The random number generator to use (<code>PCG</code> type);</li>
+<li>Number of rays to generate for the integral calculation;</li>
+<li>Maximum ray depth;</li>
+<li>Depth limit beyond which to use Russian Roulette.</li>
 </ol></li>
 </ul>
 </section>
-<section id="implementazione-1" class="slide level1">
+<section id="implementation-1" class="slide level1">
 <h1><a
-href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126">Implementazione</a></h1>
+href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/render.py#L73-L126">Implementation</a></h1>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Color:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Color(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>) <span class="cf">if</span> ray.depth <span class="op">&gt;</span> <span class="va">self</span>.max_depth</span>
@@ -399,18 +395,17 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
 <span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> emitted_radiance <span class="op">+</span> cum_radiance <span class="op">*</span> (<span class="fl">1.0</span> <span class="op">/</span> <span class="va">self</span>.num_of_rays)</span></code></pre></div>
 </section>
-<section id="test-1" class="slide level1">
+<section id="furnace-test" class="slide level1">
 <h1>Test</h1>
 <ul>
-<li><p>Un metodo molto semplice per verificare il funzionamento di un
-<em>path tracer</em> è il cosiddetto <em>test della
-fornace</em>.</p></li>
-<li><p>Si tratta di lanciare un raggio all’interno di un oggetto di
-forma arbitraria e BRDF diffusa con luminosità <span
-class="math inline">L_e</span> e riflettanza <span
-class="math inline">\rho_d</span> costanti.</p></li>
-<li><p>Il generico raggio percorrerà un cammino intrappolato
-nell’oggetto, e la radianza totale sarà uguale a</p>
+<li><p>A very simple method to verify the functioning of a <em>path
+tracer</em> is the so-called <em>furnace test</em>.</p></li>
+<li><p>It consists of casting a ray inside an arbitrarily shaped object
+with diffuse BRDF and constant luminosity <span
+class="math inline">L_e</span> and reflectance <span
+class="math inline">\rho_d</span>.</p></li>
+<li><p>The generic ray will follow a path trapped within the object, and
+the total radiance will be equal to</p>
 <p><span class="math display">
 L = L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e +
 \dots)\bigr)\Bigr).
@@ -436,24 +431,24 @@ L &amp;= L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e +
 \end{aligned}
 </span></p>
 </section>
-<section id="test-in-pytracer" class="slide level1">
-<h1>Test in pytracer</h1>
+<section id="tests-in-pytracer" class="slide level1">
+<h1>Tests in Pytracer</h1>
 <ul>
-<li><p>Il codice di pytracer implementa il test <a
+<li><p>The pytracer code implements the test <a
 href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/test_all.py#L938-L962"><code>testFurnace</code></a>
-che usa queste assunzioni:</p>
-<ol>
-<li>Crea una sfera centrata nell’origine;</li>
-<li>Lancia un raggio che parta dal centro della sfera;</li>
-<li>Invoca <code>PathTracer</code> fissando <code>max_depth=100</code> e
-assicurandosi che <em>non</em> venga usato l’algoritmo della roulette
-russa;</li>
-<li>Verifica che la radianza restituita corrisponda a <span
+which uses these assumptions:</p>
+<ol type="1">
+<li>Creates a sphere centered at the origin;</li>
+<li>Casts a ray starting from the center of the sphere;</li>
+<li>Invokes <code>PathTracer</code> setting <code>max_depth=100</code>
+and ensuring that the Russian roulette algorithm is <em>not</em>
+used;</li>
+<li>Verifies that the returned radiance corresponds to <span
 class="math inline">L_e / (1 - \rho_d)</span>.</li>
 </ol></li>
-<li><p>Il test viene ripetuto un certo numero di volte usando valori
-casuali di <span class="math inline">L_e</span> e di <span
-class="math inline">\rho_d</span> (evitando di scegliere <span
+<li><p>The test is repeated a number of times using random values of
+<span class="math inline">L_e</span> and <span
+class="math inline">\rho_d</span> (avoiding choosing <span
 class="math inline">\rho_d \approx 1</span>!).</p></li>
 </ul>
 </section>
@@ -486,24 +481,24 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a hr
 <span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(expected, <span class="fl">1e-3</span>) <span class="op">==</span> color.g</span>
 <span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(expected, <span class="fl">1e-3</span>) <span class="op">==</span> color.b</span></code></pre></div>
 </section>
-<section id="il-metodo-main" class="slide level1">
-<h1>Il metodo <code>main</code></h1>
+<section id="the-main-method" class="slide level1">
+<h1>The <code>main</code> Method</h1>
 <ul>
-<li><p>Ora che abbiamo un <em>path tracer</em>, è bene modificare il
-nostro comando <code>demo</code> in modo che crei un’immagine che metta
-meglio in luce il funzionamento dell’algoritmo.</p></li>
-<li><p>Potete sbizzarrirvi a definire la scena che preferite, usando le
-forme che avete implementato nel vostro codice (sfere, piani, triangoli,
-CSG, etc.).</p></li>
-<li><p>La cosa importante è che definiate una grande superficie
-diffusiva (un piano o una sfera di raggio grande), che funga da sorgente
-luminosa e che abbia quindi una componente <span
-class="math inline">L_e</span> non trascurabile.</p></li>
+<li><p>Now that we have a <em>path tracer</em>, it’s good to modify our
+<code>demo</code> command so that it creates an image that better
+highlights how the algorithm works.</p></li>
+<li><p>You can define any scene you like, using the shapes you have
+implemented in your code (spheres, planes, triangles, CSG,
+etc.).</p></li>
+<li><p>The important thing is that you define a large diffuse surface (a
+plane or a large radius sphere), which acts as a light source and
+therefore has a non-negligible <span class="math inline">L_e</span>
+component.</p></li>
 <li><p>In <a
 href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/main.py#L116-L150">pytracer</a>
-ho definito un piano per il suolo, una sfera per il cielo, e due sfere
-in primo piano: la prima ha una BRDF diffusiva, la seconda una BRDF
-riflessiva.</p></li>
+I defined a plane for the ground, a sphere for the sky, and two spheres
+in the foreground: the first has a diffuse BRDF, the second a reflective
+BRDF.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -512,116 +507,113 @@ riflessiva.</p></li>
 <img data-src="media/pytracer-demo-pathtracing.webp" />
 </center>
 </section>
-<section id="numeri-casuali" class="slide level1">
-<h1>Numeri casuali</h1>
+<section id="random-numbers" class="slide level1">
+<h1>Random Numbers</h1>
 <ul>
-<li><p>Fate in modo che si possano passare i due numeri che
-inizializzano il generatore <code>PCG</code> da linea di
-comando.</p></li>
-<li><p>Il numero che interessa di più è <code>init_seq</code>, perché
-identifica univocamente la sequenza di numeri generati dal
-<code>PCG</code>, e consente quindi di produrre immagini completamente
-decorrelate (che possono quindi essere mediate tra loro senza produrre
-<em>bias</em>).</p></li>
-<li><p>Mediare immagini diverse (prodotte contemporaneamente mediante <a
-href="https://www.gnu.org/software/parallel/">GNU Parallel</a>) è un
-buon modo per ridurre la varianza senza aumentare il tempo di calcolo
-effettivo (<em>wall-clock time</em>).</p></li>
+<li><p>Make sure that the two numbers that initialize the
+<code>PCG</code> generator can be passed from the command line.</p></li>
+<li><p>The most important number is <code>init_seq</code>, because it
+uniquely identifies the sequence of numbers generated by the
+<code>PCG</code>, and therefore allows the production of completely
+decorrelated images (which can then be averaged together without
+producing <em>bias</em>).</p></li>
+<li><p>Averaging different images (produced concurrently using <a
+href="https://www.gnu.org/software/parallel/">GNU Parallel</a>) is a
+good way to reduce variance without increasing the actual computation
+time (<em>wall-clock time</em>).</p></li>
 </ul>
 </section>
 <section id="profiling" class="slide level1">
-<h1><em>Profiling</em></h1>
+<h1>Profiling</h1>
 </section>
 <section id="profiling-1" class="slide level1">
-<h1><em>Profiling</em></h1>
+<h1>Profiling</h1>
 <ul>
-<li><p>Da oggi, il vostro codice dovrà fare molti calcoli!</p></li>
-<li><p>Confrontate tra diversi gruppi le velocità del codice nel
-generare immagini simili, per capire se ci sono colli di bottiglia: con
-i linguaggi che usate, in teoria non dovrebbero esserci differenze
-significative</p></li>
-<li><p>Se notate differenze, è necessario misurare quale parte del
-codice lo rallenta: è ciò che viene chiamato <em>profiling</em></p></li>
+<li><p>From today, your code will have to do a lot of
+calculations!</p></li>
+<li><p>Compare the code speeds of different groups in generating similar
+images, to understand if there are bottlenecks: with the languages you
+use, in theory there shouldn’t be significant differences.</p></li>
+<li><p>If you notice differences, you need to measure which part of the
+code is slowing it down: this is what is called
+<em>profiling</em>.</p></li>
 </ul>
 </section>
-<section id="misura-delle-prestazioni" class="slide level1">
-<h1>Misura delle prestazioni</h1>
+<section id="performance-measurement" class="slide level1">
+<h1>Performance Measurement</h1>
 <ul>
-<li><p>Non è sufficiente sapere quanto tempo impieghi in tutto il vostro
-codice per produrre un’immagine: occorre sapere quanto spende in
-ciascuna funzione.</p></li>
-<li><p>Ci sono vari modi di misurarlo, e molti strumenti a disposizione:
-è impossibile essere esaustivi!</p></li>
-<li><p>Vi elenco alcune possibilità, e vi offro alcuni suggerimenti e
-trucchi</p></li>
+<li><p>It is not enough to know how long your entire code takes to
+produce an image: you need to know how much time it spends in each
+function.</p></li>
+<li><p>There are various ways to measure it, and many tools available:
+it’s impossible to be exhaustive!</p></li>
+<li><p>I’ll list some possibilities, and offer some tips and
+tricks.</p></li>
 </ul>
 </section>
-<section id="tipi-di-profilers" class="slide level1">
-<h1>Tipi di <em>profilers</em></h1>
+<section id="types-of-profilers" class="slide level1">
+<h1>Types of Profilers</h1>
 <ul>
-<li><p>Il metodo più semplice è quello di circondare le funzioni
-«sospette» di essere colli di bottiglia con misure del tempo:</p>
+<li><p>The simplest method is to surround the functions «suspected» of
+being bottlenecks with time measurements:</p>
 <div class="sourceCode" id="cb8"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> perf_counter_ns   <span class="co"># Or: &quot;monotonic&quot;. DO NOT USE ANYTHING ELSE!!</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> perf_counter_ns()</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>long_function_call(...)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>elapsed_time <span class="op">=</span> perf_counter_ns() <span class="op">-</span> start</span></code></pre></div></li>
-<li><p>Esistono profiler che misurano il tempo cumulativo speso da
-ciascuna linea di codice: attenzione, perché possono rallentare molto il
-codice!</p></li>
-<li><p>Sono anche disponibili profiler statistici, che sono meno
-accurati ma non rallentano significativamente il codice.</p></li>
+<li><p>There are profilers that measure the cumulative time spent by
+each line of code: be careful, because they can slow down the code a
+lot!</p></li>
+<li><p>Statistical profilers are also available, which are less accurate
+but do not significantly slow down the code.</p></li>
 </ul>
 </section>
-<section id="accorgimenti" class="slide level1">
-<h1>Accorgimenti</h1>
+<section id="tips" class="slide level1">
+<h1>Tips</h1>
 <ul>
-<li><p>Non misurate il tempo di <em>ogni</em> funzione, concentratevi
-solo su quelle che potrebbero essere problematiche. (Ad esempio, non
-importa che la funzione che interpreta la linea di comando sia
-veloce!)</p></li>
-<li><p>Spesso gli output dei profiler sono abbastanza illeggibili e
-troppo dettagliati: esistono però strumenti per estrarre grafici
-riassuntivi come i <a
-href="http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html">flamegraph</a>,
-che sono più facili da leggere.</p></li>
-<li><p>Il sito <a href="https://www.speedscope.app/">speedscope</a>
-fornisce un modo per produrre <em>flamegraphs</em> navigabili tramite
-browser, partendo dall’output di svariati profiler, e non richiede
-installazione.</p></li>
+<li><p>Don’t measure the time of <em>every</em> function, just focus on
+the ones that could be problematic. (For example, it doesn’t matter if
+the function that interprets the command line is fast!)</p></li>
+<li><p>Often the output of profilers is quite unreadable and too
+detailed: however, there are tools to extract summary graphs such as <a
+href="http://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html">flamegraphs</a>,
+which are easier to read.</p></li>
+<li><p>The <a href="https://www.speedscope.app/">speedscope</a> site
+provides a way to produce navigable <em>flamegraphs</em> through a
+browser, starting from the output of various profilers, and does not
+require installation.</p></li>
 </ul>
 </section>
-<section id="guida-per-lesercitazione" class="slide level1">
-<h1>Guida per l’esercitazione</h1>
+<section id="guide-for-the-exercise" class="slide level1">
+<h1>Guide for the Exercise</h1>
 </section>
-<section id="cose-da-fare" class="slide level1">
-<h1>Cose da fare</h1>
-<ol>
-<li>Continuate il lavoro nel branch <code>pathtracing</code>;</li>
-<li>Implementate una funzione per creare una base ortonormale partendo
-da un vettore normale (se nel vostro linguaggio non è semplice
-restituire tre valori di ritorno, implementate un nuovo tipo
-<code>ONB</code>);</li>
-<li>Implementate il metodo <code>scatter_ray</code> che funzioni sui
-tipi BRDF, e implementate la BRDF speculare;</li>
-<li>Implementate l’algoritmo di path tracing;</li>
-<li>Modificate il demo in modo che abbia un cielo diffusivo in grado di
-illuminare la scena.</li>
-<li>Fatto il <em>merging</em>, incrementate il numero di versione a
-<code>0.3.0</code> e aggiornate il file <code>CHANGELOG.md</code>.</li>
+<section id="things-to-do" class="slide level1">
+<h1>Things to Do</h1>
+<ol type="1">
+<li>Continue working in the <code>pathtracing</code> branch;</li>
+<li>Implement a function to create an orthonormal basis starting from a
+normal vector (if in your language it is not easy to return three return
+values, implement a new <code>ONB</code> type);</li>
+<li>Implement the <code>scatter_ray</code> method that works on BRDF
+types, and implement the specular BRDF;</li>
+<li>Implement the path tracing algorithm;</li>
+<li>Modify the demo so that it has a diffuse sky capable of illuminating
+the scene.</li>
+<li>After <em>merging</em>, increment the version number to
+<code>0.3.0</code> and update the <code>CHANGELOG.md</code> file.</li>
 </ol>
 </section>
-<section id="aggiunte-opzionali" class="slide level1">
-<h1>Aggiunte opzionali</h1>
+<section id="optional-additions" class="slide level1">
+<h1>Optional Additions</h1>
 <ul>
 <li><a
 href="tomasi-ray-tracing-12a-path-tracing2.html#aliasing">Antialiasing</a>
-(vedi la <a href="https://github.com/ziotom78/pytracer/pull/13">PR#13 di
+(see <a href="https://github.com/ziotom78/pytracer/pull/13">PR#13 of
 pytracer</a>);</li>
 <li><a
 href="tomasi-ray-tracing-12a-path-tracing2.html#point-light-tracing-1">Point-light
-tracing</a> (vedi la <a
-href="https://github.com/ziotom78/pytracer/pull/14">PR#14 di
+tracing</a> (see <a
+href="https://github.com/ziotom78/pytracer/pull/14">PR#14 of
 pytracer</a>).</li>
 </ul>
 </section>

@@ -2,90 +2,90 @@
 
 # *Axis-aligned boxes*
 
--   La forma cubica non è molto interessante di per sè, ma si presta ad alcune ottimizzazioni molto semplici.
+-   The cubic shape is not very interesting in itself, but it lends itself to some very simple optimizations.
 
--   A causa del suo scopo particolare, tratteremo il caso dei cubi usando convenzioni diverse da quelle fatte per le sfere ed i piani:
+-   Due to its particular purpose, we will treat the case of cubes using different conventions than those made for spheres and planes:
 
-    #.   Non ci limiteremo al cubo di lato unitario con vertice nell'origine…
-    #.   …ma assumeremo che le facce siano parallele ai piani coordinati.
+    #.   We will not limit ourselves to the unit cube with a vertex at the origin…
+    #.   …but we will assume that the faces are parallel to the coordinate planes.
 
--   Queste assunzioni sono indicate in letteratura col termine *axis-aligned box* (AAB).
+-   These assumptions are referred to in the literature as *axis-aligned bounding box* (AAB).
 
-# Rappresentazione in memoria
+# In-memory representation
 
--   Un parallelepipedo con gli spigoli allineati lungo gli assi $xyz$ può essere definito dalle seguenti quantità:
+-   A parallelepiped with edges aligned along the $xyz$ axes can be defined by the following quantities:
 
-    #. Il valore minimo e massimo delle $x$;
-    #. Il valore minimo e massimo delle $y$;
-    #. Il valore minimo e massimo delle $z$.
+    #. The minimum and maximum $x$ values;
+    #. The minimum and maximum $y$ values;
+    #. The minimum and maximum $z$ values.
 
--   Equivalentemente, si possono memorizzare due vertici opposti del parallelepipedo, $P_m$ (valori minimi di $x$, $y$ e $z$) e $P_M$ (valori massimi).
+-   Equivalently, you can store two opposite vertices of the parallelepiped, $P_m$ (minimum values of $x$, $y$ and $z$) and $P_M$ (maximum values).
 
-# Intersezione raggio-AAB
+# Ray-AABB intersection
 
--   Scriviamo il raggio come $r: O + t \vec d$.
+-   Let's write the ray as $r: O + t \vec d$.
 
--   Il calcolo è molto simile a quello fatto per il piano, se si considera una dimensione alla volta:
+-   The calculation is very similar to that done for the plane, if one dimension is considered at a time:
 
     <center>![](./media/aab-ray-intersection.svg)</center>
 
-# Intersezione raggio-AAB
+# Ray-AABB intersection
 
--   Scriviamo con $F_i$ il generico punto del piano perpendicolare alla direzione $i$-esima (sei piani in tutto), che avrà coordinate
+-   Let $F_i$ be a generic point on the plane perpendicular to the $i$-th direction (six planes in total), which will have coordinates
 
     $$
     F_0 = (f_0^{\text{min}/\text{max}}, \cdot, \cdot), \quad F_1 = (\cdot, f_1^{\text{min}/\text{max}}, \cdot), \quad F_2 = (\cdot, \cdot, f_2^{\text{min}/\text{max}}).
     $$
 
--   Lungo la coordinata $i$-esima si intersecano *due* piani:
+-   Along the $i$-th coordinate, *two* planes intersect:
 
     $$
     O + t_i \vec d = F^{\text{min}/\text{max}}_i\quad\Rightarrow\quad t_i^{\text{min}/\text{max}} = \frac{f_i^{\text{min}/\text{max}} - O_i}{d_i}.
     $$
 
-# Intersezione raggio-AAB
+# Ray-AABB intersection
 
--   Ogni direzione produce due intersezioni, quindi in totale si hanno sei potenziali intersezioni (una per ogni faccia del cubo).
+-   Each direction produces two intersections, so in total there are six potential intersections (one for each face of the cube).
 
--   Ma non tutte le intersezioni sono corrette: esse sono calcolate per l'intero piano infinito su cui giace la faccia del cubo.
+-   But not all intersections are correct: they are calculated for the entire infinite plane on which the face of the cube lies.
 
--   Occorre quindi verificare per ciascun valore di $t$ se il punto $P$ corrispondente stia effettivamente su una delle facce del cubo.
+-   It is therefore necessary to verify for each value of $t$ if the corresponding point $P$ actually lies on one of the faces of the cube.
 
-# Intersezione raggio-AAB
+# Ray-AABB intersection
 
--   Nel caso dell'immagine precedente, in cui il raggio interseca il parallelepipedo, gli intervalli $[t^{(1)}_i, t^{(2)}_i]$ posseggono un tratto in comune tra loro:
+-   In the case of the previous image, where the ray intersects the parallelepiped, the intervals $[t^{(1)}_i, t^{(2)}_i]$ have a common section:
 
 <center>![](./media/aab-ray-good-intersection.svg)</center>
 
--   L'intersezione tra gli intervalli è un intervallo i cui estremi corrispondono ai punti di intersezione del raggio con l'AAB.
+-   The intersection of the intervals is an interval whose extremes correspond to the intersection points of the ray with the AABB.
 
 
-# Intersezione raggio-AAB
+# Ray-AABB intersection
 
--   Nel caso in cui il raggio manchi il parallelepipedo, gli intervalli $[t^{(1)}_i, t^{(2)}_i]$ sono disgiunti tra loro:
+-   In the case where the ray misses the parallelepiped, the intervals $[t^{(1)}_i, t^{(2)}_i]$ are disjoint:
 
 <center>![](./media/aab-ray-missed-intersection.svg)</center>
 
--   Se quindi l'intersezione degli intervalli per i tre assi dà l'insieme vuoto, il raggio non colpisce l'AAB.
+-   Therefore, if the intersection of the intervals for the three axes gives the empty set, the ray does not hit the AABB.
 
 # Bounding boxes
 
-# Complessità del rendering
+# Rendering complexity
 
--   Settimana scorsa abbiamo implementato il tipo `World`, che contiene una lista di oggetti
+-   Last week we implemented the `World` type, which contains a list of objects
 
--   Quando si calcola una intersezione con un oggetto, `World.ray_intersection` deve iterare su tutte le `Shape` di `World`
+-   When calculating an intersection with an object, `World.ray_intersection` must iterate over all the `Shape`s in `World`
 
--   Se si decuplica il numero di `Shape`, decuplica anche il tempo necessario a produrre un'immagine…
+-   If you increase the number of `Shape`s tenfold, the time required to produce an image also increases tenfold…
 
--   …ma già per risolvere l'equazione del rendering in casi semplici possono volerci anche ore!
+-   …but even solving the rendering equation in simple cases can take hours!
 
 
 ---
 
 <center>![](./media/pathtracer100.webp)</center>
 
-Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è stata calcolata in ~156 secondi.
+This image contains three geometric shapes (two planes and a sphere), and was calculated in ~156 seconds.
 
 ---
 
@@ -98,40 +98,40 @@ Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è st
 </center>
 
 
-# Ottimizzazioni
+# Optimizations
 
--   Con la nostra implementazione di `World`, il tempo necessario per il calcolo di un'immagine è all'incirca proporzionale al numero di intersezioni tra raggi e forme.
+-   With our implementation of `World`, the time required to compute an image is roughly proportional to the number of ray-shape intersections.
 
--   Ma scene realistiche contengono moltissime forme!
+-   But realistic scenes contain many shapes!
 
--   *Moana island scene* è una scena composta da ~15 miliardi di forme base. Il tempo del rendering sarebbe dell'ordine di 25 000 anni!
+-   *Moana island scene* is a scene composed of ~15 billion basic shapes. The rendering time would be on the order of 25,000 years!
 
--   Esistono però tecniche di ottimizzazione che consentono di ridurre molto il numero di intersezioni da calcolare. Una di queste si basa sugli *axis-aligned bounding boxes*
+-   However, there are optimization techniques that allow to greatly reduce the number of intersections to be calculated. One of these is based on *axis-aligned bounding boxes*.
 
 
 # *Axis-aligned bounding box*
 
--   Gli *axis-aligned bounding box* (AABB) sono degli AAB che delimitano il volume occupato da oggetti.
+-   *Axis-aligned bounding boxes* (AABBs) are AABBs that delimit the volume occupied by objects.
 
--   Sono molto usati nella *computer graphics* come meccanismo di ottimizzazione.
+-   They are widely used in *computer graphics* as an optimization mechanism.
 
--   Il principio è il seguente:
+-   The principle is as follows:
 
-    #.  Per ogni forma nello spazio si calcola il suo AABB;
-    #.  Quando si deve determinare l'intersezione tra un raggio e una forma, si verifica prima se il raggio interseca l'AABB;
-    #.  Se non lo interseca, si passa alla forma successiva, altrimenti si procede al calcolo dell'intersezione.
+    #.  For each shape in space, its AABB is calculated;
+    #.  When determining the intersection between a ray and a shape, it is first checked whether the ray intersects the AABB;
+    #.  If it does not intersect, we move on to the next shape, otherwise we proceed with the intersection calculation.
 
 ---
 
 <center>![](./media/bounding-volume.webp){height=540px}</center>
 
-# Utilità degli AABB
+# Usefulness of AABBs
 
--   Gli AABB sono utili solo per scene complesse, formate da molti oggetti non banali. Per scene semplici possono al contrario **rallentare** il rendering.
+-   AABBs are useful only for complex scenes, made up of many non-trivial objects. For simple scenes they can actually **slow down** rendering.
 
--   Sono però molto utili con le *mesh* di triangoli e con oggetti CSG complessi.
+-   They are however very useful with triangle *meshes* and with complex CSG objects.
 
--   Se voleste supportare gli AABB nel vostro ray-tracer, dovreste aggiungere al tipo `Shape` un membro `aabb` da usare all'interno di `Shape.rayIntersection`:
+-   If you want to support AABBs in your ray-tracer, you should add an `aabb` member to the `Shape` type to be used inside `Shape.rayIntersection`:
 
     ```python
     class MyComplexShape:
@@ -145,13 +145,13 @@ Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è st
     ```
 
 
-# Triangoli, quadilateri e *mesh*
+# Triangles, quadrilaterals, and *meshes* {#triangles-and-meshes}
 
-# Modellizzazione 3D
+# 3D Modeling
 
 <center>![](./media/blender-mesh-modeling.webp)</center>
 
-# Scanner 3D
+# 3D Scanners
 
 <center>![](./media/3d-scanners.webp)</center>
 
@@ -159,63 +159,63 @@ Questa immagine contiene tre forme geometriche (due piani e una sfera), ed è st
 
 <center>![](./media/stanford-bunny-triangles.png)</center>
 
-(Modello ottenuto dalla scansione di una statuetta di ceramica)
+(Model obtained from the scan of a ceramic statuette)
 
-# Triangoli
+# Triangles
 
-I triangoli sono una forma geometrica molto usata nei programmi di modellizzazione e rendering 3D, per le molte loro proprietà:
+Triangles are a geometric shape widely used in 3D modeling and rendering programs, due to their many properties:
 
-#. Sono la superficie piana con il minor numero di vertici (→ efficienti da memorizzare).
-#. La loro rappresentazione nello spazio è univoca (per tre punti passa uno e un solo triangolo planare).
-#. La loro superficie è parametrizzabile in coordinate $(u, v)$ in forma molto semplice.
-#. Superfici complesse possono essere rappresentate come unione di più triangoli.
+#. They are the planar surface with the fewest vertices (→ efficient to store).
+#. Their representation in space is unique (one and only one planar triangle passes through three points).
+#. Their surface is parameterizable in $(u, v)$ coordinates in a very simple way.
+#. Complex surfaces can be represented as a union of multiple triangles.
 
 
-# Coordinate baricentriche
+# Barycentric Coordinates
 
--   Le coordinate baricentriche sono state proposte da Möbius nel 1827, ed esprimono i punti di un piano passante per i punti $A, B, C$ mediante l'espressione
+-   Barycentric coordinates were proposed by Möbius in 1827. They express the points of a plane passing through the points $A, B, C$ by means of the expression
 
     $$
     P(\alpha, \beta, \gamma) = \alpha A + \beta B + \gamma C,
     $$
 
-    dove $\alpha, \beta, \gamma \in \mathbb{R}$ sono le *coordinate baricentriche*.
+    where $\alpha, \beta, \gamma \in \mathbb{R}$ are the *barycentric coordinates*.
 
--   Le coordinate baricentriche risultano molto utili per caratterizzare il triangolo di vertici $A, B, C$: il punto $P$ è interno al triangolo se e solo se
+-   Barycentric coordinates are very useful for characterizing the triangle with vertices $A, B, C$: the point $P$ is inside the triangle if and only if
 
     $$
     0 \le \alpha \le 1,\quad 0 \le \beta \le 1,\quad 0 \le \gamma \le 1, \quad \alpha + \beta + \gamma = 1.
     $$
 
-# Coordinate nei triangoli
+# Coordinates in Triangles
 
--   La condizione $\alpha + \beta + \gamma = 1$ fa sì che i punti di un triangolo siano caratterizzati da due gradi di libertà, come dev'essere per una superficie bidimensionale.
+-   The condition $\alpha + \beta + \gamma = 1$ means that the points of a triangle are characterized by two degrees of freedom, as it should be for a two-dimensional surface.
 
--   L'uguaglianza nelle prime tre disequazioni vale per i punti lungo il bordo del triangolo.
+-   Equality in the first three inequalities holds for the points along the edge of the triangle.
 
--   Usando l'ultima uguaglianza, si ottiene una forma più significativa:
+-   Using the last equality, a more meaningful form is obtained:
 
     $$
     P(\beta, \gamma) = A + \beta(B - A) + \gamma(C - A) = A + \beta \vec v_{AB} + \gamma \vec v_{AC},
     $$
 
-    che esprime $P$ come $A$ più uno spostamento verso $B$ e uno verso $C$.
+    which expresses $P$ as $A$ plus a displacement towards $B$ and one towards $C$.
 
 ---
 
 <center>![](./media/triangle-coordinates.svg){height=640px}</center>
 
-# Coordinate nei triangoli
+# Coordinates in Triangles
 
--   Si può dimostrare che le coordinate baricentriche di un punto $P$ sono legate all'area $\sigma$ del triangolo e alle aree dei tre sotto-triangoli aventi come vertice il punto $P$ e due dei vertici:
+-   It can be shown that the barycentric coordinates of a point $P$ are related to the area $\sigma$ of the triangle and to the areas of the three sub-triangles having as vertex the point $P$ and two of the vertices:
 
     $$
     \alpha = \frac{\sigma_1}\sigma = 1 - \frac{\sigma_2 + \sigma_3}\sigma, \quad \beta = \frac{\sigma_2}\sigma, \quad \gamma = \frac{\sigma_3}\sigma.
     $$
 
--   Se si assegna segno negativo alle aree che sono fuori dal triangolo, queste equazioni valgono per qualsiasi punto sul piano in cui giace il triangolo.
+-   If a negative sign is assigned to the areas that are outside the triangle, these equations hold for any point on the plane in which the triangle lies.
 
-# Esempio interattivo { data-state="barycentric-coordinates-demo" }
+# Interactive Example { data-state="barycentric-coordinates-demo" }
 
 <center>
     <canvas
@@ -227,52 +227,52 @@ I triangoli sono una forma geometrica molto usata nei programmi di modellizzazio
 
 <script type="text/javascript" src="./js/barycentric-coordinates.js"></script>
 
-# Quadrilateri
+# Quadrilaterals
 
--   Noi oggi ci concentreremo sui triangoli, ma i programmi di rendering offrono anche la possibilità di definire *quadrilateri*.
+-   We will focus on triangles today, but rendering programs also offer the possibility of defining *quadrilaterals*.
 
--   Se ci si limita ai parallelogrammi, si possono rappresentare come l'unione di un vertice $P$ e due vettori $\vec v$ e $\vec w$; in questo modo, i risultati che mostreremo oggi sono facilmente estendibili anche ad essi:
+-   If we limit ourselves to parallelograms, they can be represented as the union of a vertex $P$ and two vectors $\vec v$ and $\vec w$; in this way, the results that we will show today are easily extendable to them as well:
 
     <center>
     ![](media/parallelogram.svg)
     </center>
 
-# Intersezione con raggi
+# Ray Intersection
 
--   Vediamo ora come usare le coordinate baricentriche per calcolare efficientemente l'intersezione tra un triangolo e un raggio.
+-   Let's now see how to use barycentric coordinates to efficiently calculate the intersection between a triangle and a ray.
 
--   A differenza di quanto fatto con le sfere e i piani, in questo caso non adotteremo un sistema di riferimento semplificato. Il motivo sarà chiaro quando spiegheremo le *mesh* di triangoli.
+-   Unlike what we did with spheres and planes, in this case we will not adopt a simplified reference system. The reason will be clear when we explain triangle *meshes*.
 
--   Identificheremo quindi un triangolo tramite le coordinate dei tre punti $A, B, C$ (nove valori floating-point).
+-   We will therefore identify a triangle by the coordinates of the three points $A, B, C$ (nine floating-point values).
 
-# Il problema analitico
+# The Analytical Problem
 
--   Consideriamo il raggio $r(t): O + t \vec d$ e il punto generico $P(\beta, \gamma)$ del triangolo. L'intersezione è data da
+-   Consider the ray $r(t): O + t \vec d$ and the generic point $P(\beta, \gamma)$ of the triangle. The intersection is given by
 
     $$
     A + \beta (B - A) + \gamma (C - A) = O + t \vec d,
     $$
 
-    con il vincolo $0 \leq (\beta, \gamma) \leq 1$.
+    with the constraint $0 \leq (\beta, \gamma) \leq 1$.
 
--   Riordiniamo l'equazione in modo da spostare le tre incognite $\beta$, $\gamma$ e $t$ sulla sinistra:
+-   Let's rearrange the equation to move the three unknowns $\beta$, $\gamma$ and $t$ to the left:
 
     $$
     \beta (B - A) + \gamma (C - A) - t \vec d = O - A.
     $$
 
 
-# Forma matriciale
+# Matrix Form
 
--   L'equazione che abbiamo ottenuto è
+-   The equation we obtained is
 
     $$
     \beta (B - A) + \gamma (C - A) - t \vec d = O - A,
     $$
 
-    che è un'equazione vettoriale nelle tre componenti $x, y, z$.
+    which is a vector equation in the three components $x, y, z$.
 
--   In forma matriciale, il sistema si riscrive così:
+-   In matrix form, the system can be rewritten as follows:
 
     $$
     \begin{pmatrix}
@@ -289,9 +289,9 @@ I triangoli sono una forma geometrica molto usata nei programmi di modellizzazio
     \end{pmatrix}.
     $$
 
-# Soluzione analitica
+# Analytical Solution
 
--   La soluzione dipende dal determinante della matrice M:
+-   The solution depends on the determinant of the matrix M:
 
     $$
     \det M = \det
@@ -302,27 +302,27 @@ I triangoli sono una forma geometrica molto usata nei programmi di modellizzazio
     \end{pmatrix},
     $$
 
-    che deve essere diverso da zero, altrimenti il raggio è parallelo al piano del triangolo.
+    which must be different from zero, otherwise the ray is parallel to the plane of the triangle.
 
--   La soluzione si ottiene facilmente con la [regola di Cramer](https://en.wikipedia.org/wiki/Cramer%27s_rule), che è inefficiente nel caso generale ma adeguata per matrici 3×3 come è il caso qui.
+-   The solution is easily obtained with [Cramer's rule](https://en.wikipedia.org/wiki/Cramer%27s_rule), which is inefficient in the general case but adequate for 3×3 matrices as is the case here.
 
-# Soluzione analitica
+# Analytical Solution
 
--   Ovviamente, una volta ottenuta la soluzione è necessario verificare che
+-   Obviously, once the solution is obtained it is necessary to verify that
 
     $$
     t_\text{min} < t < t_\text{max}, \quad 0 \leq \beta \leq 1, \quad 0 \leq \gamma \leq 1.
     $$
 
--   La normale del triangolo si può ottenere facilmente dal prodotto vettoriale tra i due vettori allineati con i lati:
+-   The normal of the triangle can be easily obtained from the cross product between the two vectors aligned with the sides:
 
     $$
     \hat n = \pm (B - A) \times (C - A),
     $$
 
-    dove il segno è determinato dalla direzione del raggio.
+    where the sign is determined by the direction of the ray.
 
--   Le coordinate $(u, v)$ possono essere poste uguali a $(\beta, \gamma)$.
+-   The $(u, v)$ coordinates can be set equal to $(\beta, \gamma)$.
 
 
 # *Mesh*
@@ -351,57 +351,57 @@ I triangoli sono una forma geometrica molto usata nei programmi di modellizzazio
 
 # *Mesh*
 
--   Le scene viste nelle slide precedenti sono formate dalla combinazione di molte forme semplici.
+-   The scenes seen in the previous slides are formed by the combination of many simple shapes.
 
--   Mantenere in memoria una lista di forme semplici richiede una serie di accorgimenti non banali.
+-   Keeping a list of simple shapes in memory requires a series of non-trivial measures.
 
--   Oggi discuteremo delle *mesh*, in cui la forma elementare è appunto un triangolo planare. (Identico discorso si può fare per le *mesh* di quadrilateri, ma noi ci concentreremo per semplicità sui triangoli).
+-   Today we will discuss *meshes*, in which the elementary shape is precisely a planar triangle. (The same discussion can be made for quadrilateral *meshes*, but for simplicity we will focus on triangles).
 
-# Memorizzare triangoli
+# Storing Triangles
 
--   Abbiamo visto come implementare il codice per calcolare l'intersezione tra raggio e triangolo nel caso generale in cui il triangolo sia codificato tramite i suoi tre vertici $A$, $B$ e $C$.
+-   We have seen how to implement the code to calculate the intersection between a ray and a triangle in the general case where the triangle is encoded by its three vertices $A$, $B$, and $C$.
 
--   Non abbiamo seguito l'approccio usato per sfere e piani di scegliere una forma «standard» (es., un triangolo sul piano $xy$), perché questo avrebbe richiesto di memorizzare una trasformazione 4×4 e la sua inversa, per un totale di 32 numeri floating-point (128 bytes a precisione singola).
+-   We did not follow the approach used for spheres and planes of choosing a "standard" shape (e.g., a triangle on the $xy$ plane), because this would have required storing a 4×4 transformation and its inverse, for a total of 32 floating-point numbers (128 bytes at single precision).
 
--   Memorizzare le tre coordinate di un triangolo richiede solo 3×3×4 = 36 byte…
+-   Storing the three coordinates of a triangle requires only 3×3×4 = 36 bytes…
 
--   …ma si può fare di meglio!
+-   …but we can do better!
 
 ---
 
 <center>![](./media/stanford-bunny-triangles.png)</center>
 
-# Memorizzazione di *mesh*
+# Mesh Storage
 
--   In una *mesh* di triangoli si memorizzano i vertici in una lista ordinata $P_k$, con $k = 1\ldots N$.
+-   In a triangle *mesh*, the vertices are stored in an ordered list $P_k$, with $k = 1\ldots N$.
 
--   I triangoli sono rappresentati da una terna di indici interi $i_1, i_2, i_3$ che rappresenta la posizione dei vertici $P_{i_1}, P_{i_2}, P_{i_3}$ nella lista ordinata.
+-   Triangles are represented by a triplet of integer indices $i_1, i_2, i_3$ which represents the position of the vertices $P_{i_1}, P_{i_2}, P_{i_3}$ in the ordered list.
 
--   Se si usano numeri interi a 32 bit per memorizzare gli indici, ogni triangolo richiede 3×4 = 12 bytes.
+-   If 32-bit integers are used to store the indices, each triangle requires 3×4 = 12 bytes.
 
--   Questo è vantaggioso se un vertice è condiviso da più triangoli, che è il caso generale.
+-   This is advantageous if a vertex is shared by multiple triangles, which is the general case.
 
 ---
 
 <iframe src="https://player.vimeo.com/video/546494716?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1102" height="620" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Wireframe models in Blender"></iframe>
 
-Modello: 44.000 vertici, 80.000 triangoli.
+Model: 44,000 vertices, 80,000 triangles.
 
-# Normali
-
-<p style="text-align:center">![](media/triangle-normals.png){height=240px}</p>
-
--   Un triangolo è una superficie piana, ed ogni punto della sua superficie possiede quindi la medesima normale $\hat n$.
-
--   Nel caso di *mesh* di triangoli, si possono usare le coordinate baricentriche del triangolo per simulare una superficie liscia: ciò è utile soprattutto quando la *mesh* è ottenuta dalla discretizzazione di una superficie liscia.
-
-# Smooth shading
+# Normals
 
 <p style="text-align:center">![](media/triangle-normals.png){height=240px}</p>
 
--   Nel momento in cui si approssima una superficie liscia occorre calcolare sia i vertici dei triangoli che le normali sui vertici.
+-   A triangle is a planar surface, and therefore every point on its surface has the same normal $\hat n$.
 
--   In corrispondenza del punto $P$ definito da $\alpha, \beta, \gamma$ si assegna la normale
+-   In the case of triangle *meshes*, the barycentric coordinates of the triangle can be used to simulate a smooth surface: this is especially useful when the *mesh* is obtained from the discretization of a smooth surface.
+
+# Smooth Shading
+
+<p style="text-align:center">![](media/triangle-normals.png){height=240px}</p>
+
+-   When approximating a smooth surface, it is necessary to calculate both the vertices of the triangles and the normals at the vertices.
+
+-   At the point $P$ defined by $\alpha, \beta, \gamma$, the normal is assigned as
 
     $$
     \hat n_P = \alpha \hat n_1 + \beta \hat n_2 + \gamma \hat n_3.
@@ -411,13 +411,13 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 <iframe src="https://player.vimeo.com/video/546515481?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1138" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Flat and smooth shading in Blender"></iframe>
 
-# Coordinate $(u, v)$
+# $(u, v)$ Coordinates
 
--   Nel caso di una *mesh* ci sono infiniti modi possibili per creare una mappatura $(u, v)$ sulla superficie.
+-   In the case of a *mesh*, there are infinitely many possible ways to create a $(u, v)$ mapping on the surface.
 
--   Nelle *mesh* si fa in modo che ogni elemento della *mesh* copra una porzione specifica dell'intero spazio $[0, 1] \times [0, 1]$.
+-   In *meshes*, each element of the *mesh* is made to cover a specific portion of the entire space $[0, 1] \times [0, 1]$.
 
--   Programmi di modellizzazione 3D come Blender permettono di modificare la mappatura $(u, v)$ di ogni elemento.
+-   3D modeling programs like Blender allow you to modify the $(u, v)$ mapping of each element.
 
 ---
 
@@ -425,9 +425,9 @@ Modello: 44.000 vertici, 80.000 triangoli.
 
 # [Wavefront OBJ](https://en.wikipedia.org/wiki/Wavefront_.obj_file)
 
--   È un formato molto semplice da caricare e utilizzato per memorizzare mesh (non solo di triangoli).
+-   It's a very simple format to load and used to store meshes (not just triangles).
 
--   Esempio (inizio del modello `minicooper.obj`):
+-   Example (beginning of the `minicooper.obj` model):
 
     ```text
     # Vertexes
@@ -446,82 +446,82 @@ Modello: 44.000 vertici, 80.000 triangoli.
     f 5//5 4//4 1//1
     ```
 
-# File OBJ
+# OBJ Files
 
--   Il modo più comodo di visualizzarli è usare [Blender](https://www.blender.org/), ovviamente! Sotto Linux potete anche impiegare `openctm-tools`, che è più agile (il comando `ctmviewer NOMEFILE` visualizza un file OBJ in una finestra interattiva).
+-   The easiest way to view them is to use [Blender](https://www.blender.org/), of course! Under Linux you can also use `openctm-tools`, which is more lightweight (the command `ctmviewer FILENAME` displays an OBJ file in an interactive window).
 
--   Il sito di [J. Burkardt](https://people.sc.fsu.edu/~jburkardt/data/obj/obj.html) contiene molti file OBJ scaricabili liberamente (ho preso da lì il modello della Mini Cooper).
+-   The website of [J. Burkardt](https://people.sc.fsu.edu/~jburkardt/data/obj/obj.html) contains many freely downloadable OBJ files (I took the Mini Cooper model from there).
 
-# Intersezione con raggi
+# Ray Intersection
 
--   Il calcolo dell'intersezione tra una *mesh* e un raggio non è semplice da implementare.
+-   Calculating the intersection between a *mesh* and a ray is not easy to implement.
 
--   Il problema è che gran parte del tempo richiesto per calcolare la soluzione dell'equazione del rendering viene speso per l'intersezione tra raggi e forme.
+-   The problem is that much of the time required to calculate the solution to the rendering equation is spent on ray-shape intersections.
 
--   All'aumentare delle forme aumenta necessariamente anche il tempo di calcolo.
+-   As the number of shapes increases, the computation time necessarily increases as well.
 
-# AABB e *mesh*
+# AABB and *mesh*
 
--   Gli AABB sono perfetti per essere applicati a *mesh*. (In questo caso non si applicano ovviamente ai **singoli** elementi, ma alla *mesh* nel suo complesso).
+-   AABBs are perfect for applying to *meshes*. (In this case they obviously do not apply to the **individual** elements, but to the *mesh* as a whole).
 
--   Al momento del caricamento di una *mesh*, si può calcolare il suo AABB calcolando il valore minimo e il valore massimo delle coordinate di tutti i vertici.
+-   When loading a *mesh*, its AABB can be calculated by calculating the minimum and maximum values of the coordinates of all vertices.
 
--   Nel caso dell'albero di *Oceania*, l'intersezione tra un raggio e i 18 milioni di elementi avverebbe solo per quei raggi effettivamente orientati verso quell'albero.
+-   In the case of the *Oceania* tree, the intersection between a ray and the 18 million elements would only occur for those rays actually oriented towards that tree.
 
 ---
 
 <center>![](./media/bounding-volume.webp){height=540px}</center>
 
-# Oltre le AABB
+# Beyond AABBs
 
--   Non è però sempre sufficiente usare gli AABB per le *mesh* perché queste siano efficienti.
+-   However, it is not always sufficient to use AABBs for *meshes* to be efficient.
 
--   Sovente le scene sono occupate quasi completamente da un oggetto complesso, e in questo caso gli AABB non portano alcun vantaggio (è il caso dell'immagine precedente).
+-   Scenes are often almost completely occupied by a complex object, and in this case AABBs do not provide any advantage (as in the previous image).
 
--   È però possibile basarsi sull'idea degli AABB per implementare ottimizzazioni più sofisticate: quelle più usate impiegano i [KD-tree](https://en.wikipedia.org/wiki/K-d_tree) e i [BVH](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy). Vedere il [libro di Pharr, Jakob & Humphreys](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration).
+-   However, it is possible to build on the idea of AABBs to implement more sophisticated optimizations: the most used ones employ [KD-trees](https://en.wikipedia.org/wiki/K-d_tree) and [BVHs](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy). See the [book by Pharr, Jakob & Humphreys](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration).
 
 
-# Debugging
+# Debugging {#debugging}
 
 ---
 
 <iframe width="1008" height="566" src="https://www.youtube.com/embed/4gNYTqn3qRc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-# Introduzione al debugging
+# Introduction to Debugging
 
--   Settimana scorsa avete corretto il vostro primo bug, che riguardava l'errato orientamento delle immagini salvate dal vostro codice.
+-   Last week you fixed your first bug, which concerned the incorrect orientation of the images saved by your code.
 
--   In generale un *bug* è un problema nel programma che lo fa funzionare in modo diverso da quello che ci si aspetta.
+-   In general, a *bug* is a problem in the program that makes it work differently than expected.
 
--   È molto importante avere un approccio scientifico alla gestione dei bug! Nelle prossime slide vi darò alcune indicazioni generali.
-
-
-# Difetto, infezione e fallimento
-
--   Il bellissimo libro di Zeller [*Why programs fail: a guide to systematic debugging*](https://www.whyprogramsfail.com/) spiega la scoperta di un *bug* come la combinazione di tre fattori:
-
-    1. **Difetto**: un errore nel modo in cui è scritto il codice;
-    2. **Infezione**: un certo input “attiva” il difetto ed altera il valore di alcune variabili rispetto al caso atteso;
-    3. **Fallimento**: l'esito del programma è sbagliato, o perché i risultati sono errati, o perché il programma va in crash.
-
--   Il *bug* sta nel difetto iniziale, ma se non c'è infezione o non c'è fallimento è difficile accorgersene!
+-   It is very important to have a scientific approach to bug management! In the next slides I will give you some general guidelines.
 
 
-# Un esempio da TNDS
+# Fault, Infection, and Failure
 
--   Nel corso di TNDS si deve implementare un codice che calcoli il valore di
+-   Zeller's excellent book [*Why Programs Fail: A Guide to Systematic Debugging*](https://www.whyprogramsfail.com/) explains the discovery of a *bug* as the combination of three factors:
+
+    1.  **Fault**: an error in the way the code is written;
+    2.  **Infection**: a certain input "activates" the fault and alters the value of some variables compared to the expected case;
+    3.  **Failure**: the outcome of the program is wrong, either because the results are incorrect, or because the program crashes.
+
+-   The *bug* lies in the initial fault, but if there is no infection or no failure, it is difficult to notice it!
+
+
+# An Example from Numerical Analysis
+
+-   In the Numerical Analysis course, you have to implement code that calculates the value of
 
     \[
     \int_0^\pi \sin x\,\mathrm{d}x
     \]
 
-    usando la formula di Simpson:
+    using Simpson's rule:
 
     \[
     \int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[f(a) + 4\sum_{i=1}^{n/2} f\bigl(x_{2i-1}\bigr) + 2\sum_{i=1}^{n/2 - 1} f\bigl(x_{2i}\bigr) + f(b)\right].
     \]
 
--   Spesso l'implementazione è errata nonostante il risultato sia corretto ($\int = 2$)!
+-   Often the implementation is wrong even though the result is correct ($\int = 2$)!
 
 
 ---
@@ -530,13 +530,13 @@ Modello: 44.000 vertici, 80.000 triangoli.
 \int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[f(a)+ {\color{red}{4}}\sum_{i=1}^{n/2} f\bigl(x_{2i-1}\bigr) + {\color{red}{2}}\sum_{i=1}^{n/2 - 1} f\bigl(x_{2i}\bigr) + f(b)\right].
 \]
 
--   Spesso gli studenti scambiano il 4 con il 2.
+-   Often students swap the 4 with the 2.
 
--   Questo porta a una *infezione*: il valore dell'espressione tra parentesi quadre è sbagliato.
+-   This leads to an *infection*: the value of the expression in square brackets is wrong.
 
--   Ciò porta a un *fallimento*: il risultato dell'integrale è sbagliato.
+-   This leads to a *failure*: the result of the integral is wrong.
 
--   Di tutti i casi, questo è il più semplice: è immediato accorgersi del problema!
+-   Of all the cases, this is the simplest: it is immediately obvious what the problem is!
 
 ---
 
@@ -544,9 +544,9 @@ Modello: 44.000 vertici, 80.000 triangoli.
 \int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[f(a)+ 4\sum_{i=1}^{\color{red}{n/2}} f\bigl(x_{2i-1}\bigr) + 2\sum_{i=1}^{\color{red}{n/2 - 1}} f\bigl(x_{2i}\bigr) + f(b)\right].
 \]
 
--   A volte gli studenti terminano una delle due sommatorie troppo presto (dimenticano l'ultimo termine) oppure troppo tardi (aggiungono un termine in più).
+-   Sometimes students terminate one of the two summations too early (they forget the last term) or too late (they add an extra term).
 
--   Nel caso di $\int_0^\pi \sin x\,\mathrm{d}x$, l'ultimo termine della sommatoria è per $x \approx \pi$, quindi è molto piccolo: c'è una *infezione*, ma se si stampano poche cifre significative a video può essere che il risultato sia arrotondato al valore giusto, e non ci sia quindi un *fallimento*.
+-   In the case of $\int_0^\pi \sin x\,\mathrm{d}x$, the last term of the summation is for $x \approx \pi$, so it is very small: there is an *infection*, but if you print only a few significant digits on the screen, the result may be rounded to the correct value, and therefore there is no *failure*.
 
 ---
 
@@ -555,60 +555,56 @@ Modello: 44.000 vertici, 80.000 triangoli.
 \int_a^b f(x)\,\mathrm{d}x \approx \frac{h}3 \left[{\color{red}{f(a)}}+ 4\sum_{i=1}^{n/2} f\bigl(x_{2i-1}\bigr) + 2\sum_{i=1}^{n/2 - 1} f\bigl(x_{2i}\bigr) + {\color{red}{f(b)}}\right].
 \]
 
--   A volte gli studenti dimenticano di sommare $f(a)$ e/o $f(b)$, o li moltiplicano per 2 o per 4.
+-   Sometimes students forget to add $f(a)$ and/or $f(b)$, or they multiply them by 2 or 4.
 
--   Nel caso però di $\int_0^\pi \sin x\,\mathrm{d}x$, il valore dell'espressione tra parentesi quadre è comunque giusto perché $f(0) = f(\pi) = 0$.
+-   However, in the case of $\int_0^\pi \sin x\,\mathrm{d}x$, the value of the expression in square brackets is still correct because $f(0) = f(\pi) = 0$.
 
--   In questo caso c'è un *difetto* ma non c'è una *infezione* né un *fallimento*: è il caso più difficile da individuare!
-
-
-# *Issue* duplicate
-
--   È molto comune che un medesimo *difetto* porti a *fallimenti* diversi: ciò dipende infatti dai dati di input, dal tipo di azione che si esegue col programma, etc.
-
--   È quindi molto comune che gli utenti aprano *issue* diverse che però sono causate dal medesimo *difetto*.
-
--   Esempio: [un crash in Julia](https://github.com/JuliaLang/julia/issues/48332) è causato dalla combinazione di due issue già segnalate in precedenza, che però a prima vista non sembravano correlate.
-
--   GitHub consente di assegnare l'etichetta *Duplicated* alle *issue*: <img style="vertical-align:middle" src="media/github-duplicate.png"/>
+-   In this case there is a *fault* but there is no *infection* nor a *failure*: this is the most difficult case to identify!
 
 
-# Come segnalare *issue*
+# Duplicate *Issues*
 
--   Quando si osserva un *fallimento* e si vuole aprire una *issue*, bisogna indicare:
+-   It is very common for the same *fault* to lead to different *failures*: this depends on the input data, the type of action being performed with the program, etc.
 
-    1.   Lista di azioni che hanno portato al fallimento (inclusi tutti gli input!)
-    2.   Output del programma
-    3.   Descrizione del comportamento atteso e di quello invece osservato
+-   It is therefore very common for users to open different *issues* that are however caused by the same *fault*.
 
-    Questo perché lo sviluppatore deve poter **riprodurre** il *fallimento* per individuare poi il *difetto* che l'ha causato.
+-   Example: [a crash in Julia](https://github.com/JuliaLang/julia/issues/48332) is caused by the combination of two previously reported issues, which at first glance did not seem related.
 
--   Se un utente vi segnala una issue senza che alcune di queste cose siano chiare, non fatevi scrupoli a chiedere maggiori dettagli.
+-   GitHub allows you to assign the *Duplicated* label to *issues*: <img style="vertical-align:middle" src="media/github-duplicate.png"/>
 
--   GitHub consente di configurare un [modello per le *issue*](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository).
 
-# Individuare *difetti* scientificamente (Zeller)
+# How to Report *Issues*
 
-1.   Osservare/riprodurre un *fallimento*
-2.   Formulare un'ipotesi sul *difetto* che ha causato il *fallimento*
-3.   Usare l'ipotesi per fare una predizione
-4.   Verificare l'ipotesi con esperimenti e ulteriori osservazioni:
-     -   Se l'ipotesi è confermata, raffinare la predizione
-     -   Se l'ipotesi è invalidata, cercarne una alternativa
-5.   Ripetere i passi 3 e 4 finché l'ipotesi non può più essere migliorata
+-   When you observe a *failure* and want to open an *issue*, you must indicate:
 
-# Strumenti di debugging
+    1.  List of actions that led to the failure (including all inputs!)
+    2.  Program output
+    3.  Description of the expected behavior and the observed behavior instead
 
-| Tipo               | Esempi                                                                                                 |
-|--------------------|--------------------------------------------------------------------------------------------------------|
-| Debugger simbolico | [GDB](https://sourceware.org/gdb/), [LLDB](https://lldb.llvm.org/)                                     |
-| Memory checkers    | [Memcheck](https://valgrind.org/docs/manual/mc-manual.html)                                            |
-| Analisi dinamica   | [Valgrind](https://valgrind.org/docs/manual/mc-manual.html)                                            |
-| Record-and-replay  | [rr](https://rr-project.org/), [UDB](https://undo.io/products/udb/)                                    |
-| Fuzzying debuggers | [AFL++](https://github.com/AFLplusplus/AFLplusplus), [libFuzzer](https://llvm.org/docs/LibFuzzer.html) |
+    This is because the developer must be able to **reproduce** the *failure* in order to identify the *fault* that caused it.
+
+-   If a user reports an issue to you without some of these things being clear, do not hesitate to ask for more details.
+
+-   GitHub allows you to configure an [issue template](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository).
+
+# Identifying *Faults* Scientifically (Zeller)
+
+1.  Observe/reproduce a *failure*
+2.  Formulate a hypothesis about the *fault* that caused the *failure*
+3.  Use the hypothesis to
+
+# Debugging tools
+
+| Type                            | Examples                                                                                               |
+|---------------------------------|--------------------------------------------------------------------------------------------------------|
+| SYmbolic debugger               | [GDB](https://sourceware.org/gdb/), [LLDB](https://lldb.llvm.org/)                                     |
+| Memory checkers                 | [Memcheck](https://valgrind.org/docs/manual/mc-manual.html)                                            |
+| Dynamic analysis                | [Valgrind](https://valgrind.org/docs/manual/mc-manual.html)                                            |
+| Record-and-replay               | [rr](https://rr-project.org/), [UDB](https://undo.io/products/udb/)                                    |
+| Fuzzying debuggers              | [AFL++](https://github.com/AFLplusplus/AFLplusplus), [libFuzzer](https://llvm.org/docs/LibFuzzer.html) |
 
 ---
-title: "Lezione 9"
-subtitle: "Forme avanzate, debugging"
+title: "Lesson 9"
+subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
