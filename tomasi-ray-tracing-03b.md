@@ -188,7 +188,7 @@ img.set_pixel(2, 1, Color(7.0e2, 8.0e2, 9.0e2))
 buf = BytesIO()
 img.write_pfm(buf, endianness=Endianness.LITTLE_ENDIAN)
 
-with open("reference_le.pfm", "wb") as inpf:
+with open("reference_le.pfm", "rb") as inpf:
     reference_bytes = inpf.readall()
 
 assert buf.getvalue() == reference_bytes
