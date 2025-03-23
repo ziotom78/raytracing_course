@@ -18,17 +18,36 @@
 2.  Normalize the color of each pixel to this average value;
 3.  Apply a correction to the brightest spots.
 
-# Average Value
+# The Weber-Fechner law
+
+-   To establish a plausible “average value” for the radiance coming from a scene, we must rely on **psychophysics**, the branch of psychology that deals with the relationship between a physical stimulus and the correlated psychological event
+
+-   Weber and Fechner established that the eye's response to a stimulus $S$ is logarithmic ([Weber-Fechner law](https://en.wikipedia.org/wiki/Weber%E2%80%93Fechner_law)):
+    $$
+    p = k \log_{10} \frac{S}{S_0}
+    $$
+    where $p$ is the perceived value, and $S$ is the intensity of the stimulus.
+
+# The Logarithmic Average
 
 -   The «neutral» value for radiance is defined by the logarithmic average of the pixel luminosity $l_i$ (with $i = 1\ldots N$):
     $$
     \left<l\right> = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
     $$
-    where $\delta \ll 1$ avoids the singularity of $\log_{10} x$ at $x = 0$.
+-   The purpose of the parameter $\delta \ll 1$ is to avoid the singularity of $\log_{10} x$ at $x = 0$.
 
--   However, each pixel is associated with three scalar values (R, G, B). Which value should be used for the luminosity $l_i$?
+# The Logarithmic Average
+
+-   The logarithmic average is an average of the *exponents*, while the arithmetic average is an average of the values; if the values are $10^2$, $10^4$ and $10^6$, the logarithmic average is
+    $$
+    10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
+    $$
+
+-   As a comparison, the arithmetic average is $(10^2 + 10^4 + 10^6)/3 \approx 10^6/3$.
 
 # Luminosity
+
+We have **three** scalar values (RGB) for each pixel. Which one should we use for $l_i$?
 
 Arithmetic Mean
 : $l_i = \frac{R_i + G_i + B_i}3$;
@@ -42,30 +61,7 @@ Distance from the Origin
 Luminosity Function
 : $l_i = \frac{\max(R_i, G_i, B_i) + \min(R_i, G_i, B_i)}2$
 
-Shirley & Morley use the last definition because they claim that, despite not being physically meaningful, it produces visually better results.
-
-# Why the Logarithmic Average?
-
--   We have not yet justified the formula
-    $$
-    \left<l\right> = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
-    $$
-
--   It is plausible because the eye's response to a stimulus $S$ is logarithmic (*Weber-Fechner law*):
-    $$
-    p = k \log_{10} \frac{S}{S_0}
-    $$
-    where $p$ is the perceived value, and $S$ is the intensity of the stimulus.
-
-# Properties of the Logarithmic Average
-
--   The logarithmic average is an average of the *exponents*, while the arithmetic average is an average of the values;
-
--   If the values are $10^2$, $10^4$ and $10^6$, the logarithmic average is
-    $$
-    10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
-    $$
-    while the arithmetic average is $(10^2 + 10^4 + 10^6)/3 \approx 10^6/3$.
+We will use the last: it isn’t physically meaningful but produces good results.
 
 
 # Normalization
@@ -78,7 +74,7 @@ Shirley & Morley use the last definition because they claim that, despite not be
 
     where $a$ is a user-settable value.
 
--   Curiously, in their book Shirley & Morley suggest $a = 0.18$; in reality there is no «right» value, and $a$ must be chosen depending on the image.
+-   Curiously, in their book Shirley & Morley suggest $a = 0.18$; however, there is no “right” value, as $a$ must be chosen depending on the image.
 
 
 # Bright Spots
@@ -221,8 +217,8 @@ plot [0:10] [] x/(1 + x) lw 4
     > on different kind of containers. However, ordinary arrays don't
     > provide the interface of STL containers (although, they provide
     > the iterator interface of STL containers).
-A whole paragraph, and it still doesn't say what the library does!
-(It's not even mentioned in the next paragraph…)
+
+    A whole paragraph, and it still doesn't say what the library does! (It's not even mentioned in the next paragraph…)
 
 # Example: [emcee](https://emcee.readthedocs.io/en/stable/)
 
@@ -233,12 +229,12 @@ A whole paragraph, and it still doesn't say what the library does!
 # Structure of a README
 
 -   Recommended structure from the [Make a README](https://www.makeareadme.com/) website:
-    1.  Name and description;
-    2.  Installation instructions;
-    3.  Usage examples;
-    4.  How to contribute to the repository;
-    5.  License.
--   The [Awesome README](https://github.com/matiassingers/awesome-readme) website is a goldmine of suggestions and links to real-world project READMEs to imitate (like [joe](https://github.com/karan/joe#readme): beautiful!).
+    #.  Name and description;
+    #.  Usage examples;
+    #.  Installation instructions;
+    #.  How to contribute to the repository;
+    #.  License.
+-   The [Awesome README](https://github.com/matiassingers/awesome-readme) website is a goldmine of suggestions and links to real-world project READMEs to imitate.
 
 # How to write documentation?
 
@@ -246,7 +242,7 @@ A whole paragraph, and it still doesn't say what the library does!
 
 -   In the past, READMEs and user manuals were simple text files.
 -   However, we have seen that READMEs used today include graphics, highlighted code, titles, etc. (The same applies to user manuals!)
--   What do we do, as physicists, do we have to write everything in LaTeX?!?
+-   What do we do? Do we really have to write everything in LaTeX?!?
 
 # Markup languages
 
@@ -255,7 +251,7 @@ A whole paragraph, and it still doesn't say what the library does!
     -   [Markdown](https://en.wikipedia.org/wiki/Markdown) (`.md` extension, e.g., `README.md`);
     -   [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) (`.rst` extension), widely used in the Python world;
     -   [Asciidoc](https://en.wikipedia.org/wiki/AsciiDoc) (`.adoc` or `.txt` extension);
-    -   [Org-mode](https://en.wikipedia.org/wiki/Org-mode) (`.org` extension);
+    -   [Org-mode](https://en.wikipedia.org/wiki/Org-mode) (`.org` extension: my favourite, but it only works with Emacs);
     -   etc.
 -   The most widely used is undoubtedly Markdown.
 
@@ -263,7 +259,7 @@ A whole paragraph, and it still doesn't say what the library does!
 
 -   Usually, the documents accompanying a program are written in Markdown (it's the default choice on GitHub).
 
--   The standard tool to work with Markdown is [pandoc](https://pandoc.org/), which can convert `.md` file into:
+-   The standard tool for Markdown is [pandoc](https://pandoc.org/), which can convert `.md` files into:
 
     -   HTML pages (these slides, made with [Reveal.js](https://revealjs.com/), are an example!);
     -   LaTeX, including Beamer
@@ -360,6 +356,24 @@ A whole paragraph, and it still doesn't say what the library does!
 
 # Software Licenses {#licenses}
 
+# The Case of GitHub
+
+-   When you registered on GitHub, you had to agree to its [*Terms of service*](https://docs.github.com/en/github/site-policy/github-terms-of-service).
+
+-   How many of you have read them? 👀
+
+-   Do you know what the average user could do with the code you published on GitHub for this course?
+
+# *GitHub's terms of service*
+
+-   Even if you have published code on GitHub, you remain the owner of the code.
+
+-   But you obviously give GitHub the right to keep a copy of the code on their server (in legal terms it's called "content," because it also includes other types of files, such as images and Markdown text).
+
+-   You also give GitHub permission to [**display**](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#5-license-grant-to-other-users) your *content*, and to allow users to download it.
+
+-   What you do **not** necessarily guarantee to users is the ability to compile, modify, or run your code, let alone use the results produced by it in a publication!
+
 # Software Licenses
 
 -   A "software license" explains to the users who downloaded a program what they are allowed to do and what they are not.
@@ -395,27 +409,10 @@ A whole paragraph, and it still doesn't say what the library does!
     -   Do I have permission to run it?
     -   Do I have permission to publish the results I obtained with this program?
 
-# The Case of GitHub
-
--   When you registered on GitHub, you had to agree to its [*Terms of service*](https://docs.github.com/en/github/site-policy/github-terms-of-service).
-
--   How many of you have read them? 👀
-
--   Do you know what the average user could do with the code you published on GitHub for this course?
-
-# *GitHub's terms of service*
-
--   Even if you have published code on GitHub, you remain the owner of the code.
-
--   But you obviously give GitHub the right to keep a copy of the code on their server (in legal terms it's called "content," because it also includes other types of files, such as images and Markdown text).
-
--   You also give GitHub permission to [**display**](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#5-license-grant-to-other-users) your *content*, and to allow users to download it.
-
--   What you do **not** necessarily guarantee to users is the ability to compile, modify, or run your code, let alone use the results produced by it in a publication!
 
 # Your repositories
 
--   From the way I asked you to create your repositories, I imagine that none of you have added a `LICENSE` or `LICENSE.md` file.
+-   From the way I asked you to create your repositories, I reckon that none of you have added a `LICENSE` or `LICENSE.md` file.
 
 -   This is a text file that specifies the user's rights: if this file does not exist in the repository, the user is **not** authorized to compile your code, nor to run it, etc. You must give your explicit consent!
 
@@ -436,7 +433,7 @@ Copyleft
 
 # Proprietary licenses
 
--   They include a list of what the user can do; what is not listed is implicitly excluded.
+-   A list of what the user can do; what is not listed is implicitly excluded.
 
 -   They do not always allow the user to obtain a copy of the source code; when this is provided, it is usually only for *reading* and *verification*.
 

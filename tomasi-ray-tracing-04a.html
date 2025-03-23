@@ -161,24 +161,58 @@ pixel of the image;</li>
 <li>Apply a correction to the brightest spots.</li>
 </ol>
 </section>
-<section id="average-value" class="slide level1">
-<h1>Average Value</h1>
+<section id="the-weber-fechner-law" class="slide level1">
+<h1>The Weber-Fechner law</h1>
 <ul>
-<li><p>The «neutral» value for radiance is defined by the logarithmic
+<li><p>To establish a plausible “average value” for the radiance coming
+from a scene, we must rely on <strong>psychophysics</strong>, the branch
+of psychology that deals with the relationship between a physical
+stimulus and the correlated psychological event</p></li>
+<li><p>Weber and Fechner established that the eye’s response to a
+stimulus <span class="math inline">S</span> is logarithmic (<a
+href="https://en.wikipedia.org/wiki/Weber%E2%80%93Fechner_law">Weber-Fechner
+law</a>): <span class="math display">
+p = k \log_{10} \frac{S}{S_0}
+</span> where <span class="math inline">p</span> is the perceived value,
+and <span class="math inline">S</span> is the intensity of the
+stimulus.</p></li>
+</ul>
+</section>
+<section id="the-logarithmic-average" class="slide level1">
+<h1>The Logarithmic Average</h1>
+<ul>
+<li>The «neutral» value for radiance is defined by the logarithmic
 average of the pixel luminosity <span class="math inline">l_i</span>
 (with <span class="math inline">i = 1\ldots N</span>): <span
 class="math display">
 \left&lt;l\right&gt; = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
-</span> where <span class="math inline">\delta \ll 1</span> avoids the
-singularity of <span class="math inline">\log_{10} x</span> at <span
-class="math inline">x = 0</span>.</p></li>
-<li><p>However, each pixel is associated with three scalar values (R, G,
-B). Which value should be used for the luminosity <span
-class="math inline">l_i</span>?</p></li>
+</span></li>
+<li>The purpose of the parameter <span class="math inline">\delta \ll
+1</span> is to avoid the singularity of <span
+class="math inline">\log_{10} x</span> at <span class="math inline">x =
+0</span>.</li>
+</ul>
+</section>
+<section id="the-logarithmic-average-1" class="slide level1">
+<h1>The Logarithmic Average</h1>
+<ul>
+<li><p>The logarithmic average is an average of the <em>exponents</em>,
+while the arithmetic average is an average of the values; if the values
+are <span class="math inline">10^2</span>, <span
+class="math inline">10^4</span> and <span
+class="math inline">10^6</span>, the logarithmic average is <span
+class="math display">
+10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
+</span></p></li>
+<li><p>As a comparison, the arithmetic average is <span
+class="math inline">(10^2 + 10^4 + 10^6)/3 \approx
+10^6/3</span>.</p></li>
 </ul>
 </section>
 <section id="luminosity" class="slide level1">
 <h1>Luminosity</h1>
+<p>We have <strong>three</strong> scalar values (RGB) for each pixel.
+Which one should we use for <span class="math inline">l_i</span>?</p>
 <dl>
 <dt>Arithmetic Mean</dt>
 <dd>
@@ -200,39 +234,8 @@ class="math inline">(w_R, w_G, w_B)</span>;
 G_i, B_i)}2</span>
 </dd>
 </dl>
-<p>Shirley &amp; Morley use the last definition because they claim that,
-despite not being physically meaningful, it produces visually better
-results.</p>
-</section>
-<section id="why-the-logarithmic-average" class="slide level1">
-<h1>Why the Logarithmic Average?</h1>
-<ul>
-<li><p>We have not yet justified the formula <span class="math display">
-\left&lt;l\right&gt; = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
-</span></p></li>
-<li><p>It is plausible because the eye’s response to a stimulus <span
-class="math inline">S</span> is logarithmic (<em>Weber-Fechner
-law</em>): <span class="math display">
-p = k \log_{10} \frac{S}{S_0}
-</span> where <span class="math inline">p</span> is the perceived value,
-and <span class="math inline">S</span> is the intensity of the
-stimulus.</p></li>
-</ul>
-</section>
-<section id="properties-of-the-logarithmic-average"
-class="slide level1">
-<h1>Properties of the Logarithmic Average</h1>
-<ul>
-<li><p>The logarithmic average is an average of the <em>exponents</em>,
-while the arithmetic average is an average of the values;</p></li>
-<li><p>If the values are <span class="math inline">10^2</span>, <span
-class="math inline">10^4</span> and <span
-class="math inline">10^6</span>, the logarithmic average is <span
-class="math display">
-10^{\frac{\log_{10} 10^2 + \log_{10} 10^4 + \log_{10} 10^6}3} = 10^4,
-</span> while the arithmetic average is <span class="math inline">(10^2
-+ 10^4 + 10^6)/3 \approx 10^6/3</span>.</p></li>
-</ul>
+<p>We will use the last: it isn’t physically meaningful but produces
+good results.</p>
 </section>
 <section id="normalization" class="slide level1">
 <h1>Normalization</h1>
@@ -245,9 +248,9 @@ R_i \rightarrow a \times \frac{R_i}{\left&lt;l\right&gt;},
 <p>where <span class="math inline">a</span> is a user-settable
 value.</p></li>
 <li><p>Curiously, in their book Shirley &amp; Morley suggest <span
-class="math inline">a = 0.18</span>; in reality there is no «right»
-value, and <span class="math inline">a</span> must be chosen depending
-on the image.</p></li>
+class="math inline">a = 0.18</span>; however, there is no “right” value,
+as <span class="math inline">a</span> must be chosen depending on the
+image.</p></li>
 </ul>
 </section>
 <section id="bright-spots" class="slide level1">
@@ -412,9 +415,10 @@ The introduction begins like this:</p>
 Library provides a framework for processing algorithms on different kind
 of containers. However, ordinary arrays don’t provide the interface of
 STL containers (although, they provide the iterator interface of STL
-containers). A whole paragraph, and it still doesn’t say what the
-library does! (It’s not even mentioned in the next paragraph…)</p>
-</blockquote></li>
+containers).</p>
+</blockquote>
+<p>A whole paragraph, and it still doesn’t say what the library does!
+(It’s not even mentioned in the next paragraph…)</p></li>
 </ul>
 </section>
 <section id="example-emcee" class="slide level1">
@@ -429,18 +433,17 @@ href="https://emcee.readthedocs.io/en/stable/">emcee</a></h1>
 <ul>
 <li>Recommended structure from the <a
 href="https://www.makeareadme.com/">Make a README</a> website:
-<ol type="1">
+<ol>
 <li>Name and description;</li>
-<li>Installation instructions;</li>
 <li>Usage examples;</li>
+<li>Installation instructions;</li>
 <li>How to contribute to the repository;</li>
 <li>License.</li>
 </ol></li>
 <li>The <a
 href="https://github.com/matiassingers/awesome-readme">Awesome
 README</a> website is a goldmine of suggestions and links to real-world
-project READMEs to imitate (like <a
-href="https://github.com/karan/joe#readme">joe</a>: beautiful!).</li>
+project READMEs to imitate.</li>
 </ul>
 </section>
 <section id="how-to-write-documentation" class="slide level1">
@@ -452,7 +455,7 @@ href="https://github.com/karan/joe#readme">joe</a>: beautiful!).</li>
 <li>In the past, READMEs and user manuals were simple text files.</li>
 <li>However, we have seen that READMEs used today include graphics,
 highlighted code, titles, etc. (The same applies to user manuals!)</li>
-<li>What do we do, as physicists, do we have to write everything in
+<li>What do we do? Do we really have to write everything in
 LaTeX?!?</li>
 </ul>
 </section>
@@ -471,7 +474,8 @@ href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a>
 <li><a href="https://en.wikipedia.org/wiki/AsciiDoc">Asciidoc</a>
 (<code>.adoc</code> or <code>.txt</code> extension);</li>
 <li><a href="https://en.wikipedia.org/wiki/Org-mode">Org-mode</a>
-(<code>.org</code> extension);</li>
+(<code>.org</code> extension: my favourite, but it only works with
+Emacs);</li>
 <li>etc.</li>
 </ul></li>
 <li>The most widely used is undoubtedly Markdown.</li>
@@ -482,9 +486,9 @@ href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a>
 <ul>
 <li><p>Usually, the documents accompanying a program are written in
 Markdown (it’s the default choice on GitHub).</p></li>
-<li><p>The standard tool to work with Markdown is <a
+<li><p>The standard tool for Markdown is <a
 href="https://pandoc.org/">pandoc</a>, which can convert
-<code>.md</code> file into:</p>
+<code>.md</code> files into:</p>
 <ul>
 <li>HTML pages (these slides, made with <a
 href="https://revealjs.com/">Reveal.js</a>, are an example!);</li>
@@ -587,6 +591,34 @@ documents</li>
 <section id="licenses" class="slide level1">
 <h1>Software Licenses</h1>
 </section>
+<section id="the-case-of-github" class="slide level1">
+<h1>The Case of GitHub</h1>
+<ul>
+<li><p>When you registered on GitHub, you had to agree to its <a
+href="https://docs.github.com/en/github/site-policy/github-terms-of-service"><em>Terms
+of service</em></a>.</p></li>
+<li><p>How many of you have read them? 👀</p></li>
+<li><p>Do you know what the average user could do with the code you
+published on GitHub for this course?</p></li>
+</ul>
+</section>
+<section id="githubs-terms-of-service" class="slide level1">
+<h1><em>GitHub’s terms of service</em></h1>
+<ul>
+<li><p>Even if you have published code on GitHub, you remain the owner
+of the code.</p></li>
+<li><p>But you obviously give GitHub the right to keep a copy of the
+code on their server (in legal terms it’s called “content,” because it
+also includes other types of files, such as images and Markdown
+text).</p></li>
+<li><p>You also give GitHub permission to <a
+href="https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#5-license-grant-to-other-users"><strong>display</strong></a>
+your <em>content</em>, and to allow users to download it.</p></li>
+<li><p>What you do <strong>not</strong> necessarily guarantee to users
+is the ability to compile, modify, or run your code, let alone use the
+results produced by it in a publication!</p></li>
+</ul>
+</section>
 <section id="software-licenses" class="slide level1">
 <h1>Software Licenses</h1>
 <ul>
@@ -641,38 +673,10 @@ program?</li>
 </ul></li>
 </ul>
 </section>
-<section id="the-case-of-github" class="slide level1">
-<h1>The Case of GitHub</h1>
-<ul>
-<li><p>When you registered on GitHub, you had to agree to its <a
-href="https://docs.github.com/en/github/site-policy/github-terms-of-service"><em>Terms
-of service</em></a>.</p></li>
-<li><p>How many of you have read them? 👀</p></li>
-<li><p>Do you know what the average user could do with the code you
-published on GitHub for this course?</p></li>
-</ul>
-</section>
-<section id="githubs-terms-of-service" class="slide level1">
-<h1><em>GitHub’s terms of service</em></h1>
-<ul>
-<li><p>Even if you have published code on GitHub, you remain the owner
-of the code.</p></li>
-<li><p>But you obviously give GitHub the right to keep a copy of the
-code on their server (in legal terms it’s called “content,” because it
-also includes other types of files, such as images and Markdown
-text).</p></li>
-<li><p>You also give GitHub permission to <a
-href="https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#5-license-grant-to-other-users"><strong>display</strong></a>
-your <em>content</em>, and to allow users to download it.</p></li>
-<li><p>What you do <strong>not</strong> necessarily guarantee to users
-is the ability to compile, modify, or run your code, let alone use the
-results produced by it in a publication!</p></li>
-</ul>
-</section>
 <section id="your-repositories" class="slide level1">
 <h1>Your repositories</h1>
 <ul>
-<li><p>From the way I asked you to create your repositories, I imagine
+<li><p>From the way I asked you to create your repositories, I reckon
 that none of you have added a <code>LICENSE</code> or
 <code>LICENSE.md</code> file.</p></li>
 <li><p>This is a text file that specifies the user’s rights: if this
@@ -711,8 +715,8 @@ where it is mandatory even in academia.
 <section id="proprietary-licenses" class="slide level1">
 <h1>Proprietary licenses</h1>
 <ul>
-<li><p>They include a list of what the user can do; what is not listed
-is implicitly excluded.</p></li>
+<li><p>A list of what the user can do; what is not listed is implicitly
+excluded.</p></li>
 <li><p>They do not always allow the user to obtain a copy of the source
 code; when this is provided, it is usually only for <em>reading</em> and
 <em>verification</em>.</p></li>
