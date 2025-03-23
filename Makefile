@@ -64,6 +64,7 @@ giudizi-linguaggio.html: giudizi-linguaggio.md
 		-V background-image=./media/background.png \
 		-V width=1440 \
 		-V height=810 \
+		-V "revealjs-url=https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0" \
 		-f markdown+tex_math_single_backslash+subscript+superscript \
 		-t revealjs \
 		-o $@ $<
