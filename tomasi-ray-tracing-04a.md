@@ -513,11 +513,11 @@ Copyleft
 
 # How to "Use" a License?
 
--   The [Open Source Initiative](https://opensource.org/) website provides a template for various licenses, and the EU provides an [interactive](https://joinup.ec.europa.eu/collection/eupl/solution/joinup-licensing-assistant/jla-find-and-compare-software-licenses) one!
+-   The [Open Source Initiative](https://opensource.org/) website provides a template for various licenses, and the EU provides an [interactive](https://joinup.ec.europa.eu/collection/eupl/solution/joinup-licensing-assistant/jla-find-and-compare-software-licenses) way to pick one of them!
 
 -   To apply a license to your code, you must take the following steps:
 
-    1.  Choose the license. We take the EUPL 1.2 as an example, described on the [OSI](https://opensource.org/license/eupl-1-2) website.
+    1.  Choose the license. We take the EUPL 1.2 as an example (see [OSI](https://opensource.org/license/eupl-1-2)).
     2.  The website <https://license.md> provides the text of various open-source licenses in text or Markdown format. From this site, you can download the text of the [EUPL 1.2](https://license.md/licenses/european-union-public-license-1-2/), which we use as an example.
     3.  Save the license text in the file `LICENSE` (if it is in ASCII format) or `LICENSE.md` (if it is in Markdown) inside your repository.
     4.  Most licenses recommend including a short text in a comment at the top of *every* source file in your repository.
