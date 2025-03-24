@@ -236,6 +236,7 @@ plot [0:10] [] x/(1 + x) lw 4
     #.  License.
 -   The [Awesome README](https://github.com/matiassingers/awesome-readme) website is a goldmine of suggestions and links to real-world project READMEs to imitate.
 
+
 # How to write documentation?
 
 # Writing text
@@ -270,19 +271,6 @@ plot [0:10] [] x/(1 + x) lw 4
 
 -   Pandoc implements an extended version of Markdown, and supports equations like $\int x^2\,\mathrm{d}x$ and Unicode characters (UTF-8).
 
-# Installing Pandoc
-
--   Pandoc (on Debian/Ubuntu/Mint systems):
-
-    ```
-    sudo apt install pandoc
-    ```
-
--   TeX/LaTeX (same):
-
-    ```
-    sudo apt install texlive-full
-    ```
 
 # Markdown Example
 
@@ -352,6 +340,84 @@ plot [0:10] [] x/(1 + x) lw 4
 
 -   [Quarto](https://quarto.org/) builds on Pandoc to produce complex documents (papers, books, technical manuals…)
 -   [Typst](https://typst.app/) is mainly an alternative to LaTeX, as it (currently) targets PDF. It is superb to produce scientific documents
+
+
+# Can we use LLMs?
+
+-   Large Language Models (LLMs) are the Big New Thing™!
+-   Neural network trained on massive text datasets to generate text, translate, answer questions…
+-   They only recognize statistical patterns: no true understanding!
+-   Very good for text manipulation and structuring, but remember that they can only provide **structure**, not **content**!
+
+---
+
+![](media/elsevier-llm-generated-article.jpg){height=680px}
+
+# README Creation with LLMs
+
+-   You can use them to produce a nice `README`: you write a messy draft and ask the LLM to improve it
+-   LLMs can:
+    -   Format existing text
+    -   Generate boilerplate sections
+    -   Improve clarity and consistency
+-   **Caution:** Don't rely solely on LLM for technical details
+
+# Pro tip
+
+-   You can provide instructions about how to fix some text:
+
+    ```
+    [Instructions]
+    <Write here how you want the LLM to work on the text>
+
+    [Text]
+    <The actual text>
+    ```
+
+    (Use Shift+Enter to enter a new line in the LLM prompt.)
+
+-   Writing good instructions is called [prompt engineering](https://en.wikipedia.org/wiki/Prompt_engineering), and it is a kind of black art.
+
+
+# Example
+
+```
+[Instructions]
+I am a PhD student and am preparing a presentation to show the results of my work. You are an expert in creating concise conference slides using Markdown. I will provide you with a description of my PhD research, including the problem statement, methodology, results, and conclusions.
+
+Your task is to generate a set of 5-7 slides in Markdown format suitable for a 10-minute conference presentation. Each slide should focus on a key aspect of my research. Please:
+
+-    Use clear and concise bullet points.
+-    Highlight key findings and contributions.
+-    Format code snippets or equations using LaTeX within '′or′$' delimiters where applicable.
+-    Include a 'Summary' or 'Conclusions' slide.
+-    Prioritize visual clarity and readability.
+
+[Text]
+<The description of your own research>
+```
+
+# Using LLMs for READMEs
+
+-   Provide existing project information: usage examples, installation steps…
+-   Ask for specific formatting: Markdown, code block formatting, tables…
+-   Iterative process: review and refine its output, as human expertise is crucial!
+-   LLM as a tool, not a replacement
+
+
+# Additional resources
+
+-   Good LLMs:
+
+    -   [OpenAI ChatGPT](https://chatgpt.com/): the most famous, but not necessarily the best
+    -   [Google Gemini](https://gemini.google.com/app): similar to ChatGPT, but with a more generous free plan
+    -   [DeepSeek](https://chat.deepseek.com/): promising Chinese alternative, more environment-friendly
+
+-   To learn how to use LLMs, look for Grant Sanderson’s videos ([3Blue1Brown](https://www.youtube.com/@3blue1brown)):
+
+    -   [Brief introduction (8 minutes)](https://www.youtube.com/watch?v=LPZh9BOjkQs)
+    -   [Longer talk with more information](https://www.youtube.com/watch?v=KJtZARuO3JY)
+    -   [Full course](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
 
 
 # Software Licenses {#licenses}
@@ -438,6 +504,7 @@ Copyleft
 -   They do not always allow the user to obtain a copy of the source code; when this is provided, it is usually only for *reading* and *verification*.
 
 -   It is a type of license used in academia (e.g., in faculties closely linked to industry, such as engineering), although not very common in physics.
+
 # *Permissive Licenses*
 
 -   This is a family of licenses that provides maximum freedom to the user.
@@ -454,9 +521,9 @@ Copyleft
 
 # Using *Permissive Licenses*
 
--   The user is not prohibited from modifying the code and redistributing it...
+-   The user is not prohibited from modifying the code and redistributing it…
 
--   ...and the user is not prohibited from incorporating the code into *their* program, which is then released under a *proprietary license*.
+-   …and the user is not prohibited from incorporating the code into *their* program, which is then released under a *proprietary license*.
 
 -   The only explicit requirement is that the code attribution be maintained: I cannot take someone else's code and publish it claiming it as my own.
 
@@ -474,7 +541,7 @@ Copyleft
 
 -   Proposed in 2007, it has now reached version 1.2.
 
--   Compatible with GPL, LGPL, and AGPL (as well as others), but it is not viral... and this is a good thing!
+-   Compatible with [GPL](https://en.wikipedia.org/wiki/GNU_General_Public_License), [LGPL](https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License), and [AGPL](https://en.wikipedia.org/wiki/GNU_Affero_General_Public_License) (as well as others), but it is not viral… and this is a good thing!
 
 -   Let's see the differences between EUPL and GPL, which is the most famous *copyleft* license of all.
 
@@ -484,7 +551,7 @@ Copyleft
 
 -   Despite being *copyleft*, it is not viral: you can write a program that interfaces with an EUPL program and choose the license you want because an explicit exception is provided in the text.
 
--   It explicitly covers the case of so-called SaaS ("Software as a Service"), which are programs that are not run on your own computer but work within a browser. (One of the reasons why AGPL was written was precisely to fill this gap in the GPL).
+-   It explicitly covers the case of so-called SaaS ("Software as a Service"), which are programs that are not run on your own computer but work within a browser. (One of the reasons why [AGPL](https://en.wikipedia.org/wiki/GNU_Affero_General_Public_License) was written was to fill this gap in the GPL).
 
 -   It is the "recommended" license in a large number of countries (including [Italy](https://joinup.ec.europa.eu/collection/eupl/news/agid-guidelines)) for software used in public administration (*mandatory* in Spain!).
 
@@ -494,9 +561,9 @@ Copyleft
 
 -   [Discussion on the EUPL](https://discourse.writefreesoftware.org/t/eupl-a-better-choice-for-european-citizens/43/9) on the [writefreesoftware.org](https://discourse.writefreesoftware.org) website.
 
--   Simple explanation of why the virality of the GPL is not compatible with European legislation: [Why viral licensing is a ghost](https://joinup.ec.europa.eu/collection/eupl/news/why-viral-licensing-ghost).
+-   Simple explanation of why the virality of the GPL is not compatible with European legislation: [Why viral licensing is a ghost](https://joinup.ec.europa.eu/collection/eupl/news/why-viral-licensing-ghost). (Spoiler: the problem is how to deal with static/dynamic linking of libraries.)
 
--   Interesting [more general discussion](https://discourse.julialang.org/t/package-licenses-contemplations-and-considerations/117922) on the Julia forum.
+-   Interesting [discussion](https://discourse.julialang.org/t/package-licenses-contemplations-and-considerations/117922) on the Julia forum.
 
 # Which License to Use?
 
@@ -523,7 +590,7 @@ Copyleft
 
 -   It is common practice to also include a copy of the license in a comment at the beginning of each source file: this way, anyone who copies a file from a repository into their own code "brings" the license with them.
 
--   However, it is not necessary (I never do it...); alternatively, you can insert a short message: *This file is released under a ... license. See LICENSE.md*.
+-   However, it is not necessary (I never do it…); alternatively, you can insert a short message: *This file is released under a … license. See LICENSE.md*.
 
 -   There are more structured methods for reporting the license type in the code. One example is [SPDX](https://spdx.dev/), a standard also followed by the [Linux kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2c1212de6), which allows license information to be processed automatically (e.g., by a script).
 
