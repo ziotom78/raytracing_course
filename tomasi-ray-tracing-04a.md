@@ -351,7 +351,9 @@ plot [0:10] [] x/(1 + x) lw 4
 
 ---
 
-![](media/elsevier-llm-generated-article.jpg){height=680px}
+![](media/elsevier-llm-generated-article.jpg){height=600px}
+
+See also [Papers and peer reviews with evidence of ChatGPT writing](https://retractionwatch.com/papers-and-peer-reviews-with-evidence-of-chatgpt-writing/).
 
 # README Creation with LLMs
 
