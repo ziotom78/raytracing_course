@@ -27,7 +27,7 @@ The tasks to be performed on the code are the following:
 
 # Luminosity (1/2)
 
--   Let's add a simple `luminosity` method to the `Color` class, which returns the luminosity value suggested by Shirley & Morley:
+-   Let's add simple `luminosity` method to the `Color` class that uses Shirley & Morley’s formula (you can implement [others](tomasi-ray-tracing-04a.html#/average-luminosities), if you want):
 
     ```python
     class Color:
@@ -52,6 +52,7 @@ The tasks to be performed on the code are the following:
         col1 = Color(1.0, 2.0, 3.0)
         col2 = Color(9.0, 5.0, 7.0)
 
+        # This works for Shirley & Morley’s formula; update the numbers, if needed
         assert pytest.approx(2.0) == col1.luminosity()
         assert pytest.approx(7.0) == col2.luminosity()
     ```
@@ -59,6 +60,8 @@ The tasks to be performed on the code are the following:
 -   The `pytest.approx()` method is part of the `pytest` library and corresponds to the `is_close` function you implemented some time ago.
 
 # Average Luminosity (1/2)
+
+This is a trivial implementation of the [equation](tomasi-ray-tracing-04a.html#/logarithmic-average) we discussed during the last class:
 
 ```python
 class HdrImage:
@@ -81,13 +84,17 @@ def test_average_luminosity():
     img.set_pixel(0, 0, Color(  5.0,   10.0,   15.0))  # Luminosity: 10.0
     img.set_pixel(1, 0, Color(500.0, 1000.0, 1500.0))  # Luminosity: 1000.0
 
+    # We pass delta=0.0 to avoid roundings
     print(img.average_luminosity(delta=0.0))
     assert pytest.approx(100.0) == img.average_luminosity(delta=0.0)
+
+    # The test above does not verify that delta prevents crashes when
+    # there are black pixels! Fix this by adding a new test
 ```
 
 # Normalization (1/3) {#normalization}
 
--   The `normalize_image` function calculates the average brightness of an image according to the [corresponding equation](tomasi-ray-tracing-05b.html#/normalization).
+-   The `normalize_image` function calculates the average brightness of an image according to the [corresponding equation](tomasi-ray-tracing-04a.html#/normalization).
 
 -   The function should accept the value of $a$ as an input parameter (in `factor`):
 
@@ -134,6 +141,8 @@ def test_normalize_image():
 ```
 
 # Bright Spots (1/2) {#bright-spots}
+
+We must implement the function that clips too large values for R, G, B, according to the [equation](tomasi-ray-tracing-04a.html#/bright-spot-transformation) shown during the last class.
 
 ```python
 def _clamp(x: float) -> float:
@@ -211,7 +220,7 @@ Local libraries solve these problems because they are not installed system-wide,
 
 -   These features are usually implemented in the programs you have used so far to create projects (`nimble`, `gradle`, `dotnet`, `dub`, `cargo`...).
 
--   So choose a library that supports *writing* LDR images and import it into your project as a **local** dependency (no `sudo`!).
+-   Your task for today is to choose a library that supports *writing* LDR images and to import it into your project as a **local** dependency (no `sudo`!).
 
 -   The use of local libraries will help us a lot when we deal with *continuous integration*.
 
@@ -220,7 +229,7 @@ Local libraries solve these problems because they are not installed system-wide,
 # HDR→LDR Conversion (1/3)
 
 -   Once `normalize_image` and `clamp_image` have been applied, all RGB components of the colors in the matrix will be in the range [0, 1].
--   At this point, the conversion to the sRGB space takes place via the [usual formula with γ](tomasi-ray-tracing-02a.html#/from-rgb-to-srgb).
+-   At this point, the conversion to the sRGB space takes place via the [usual formula with γ](tomasi-ray-tracing-04a.html#/gamma-correction).
 -   The result of the conversion is a matrix that must be saved in an LDR graphic format: PNG, JPEG, WebP...
 -   For saving, you need to choose an appropriate library.
 
@@ -340,7 +349,7 @@ def main(argv):
 3. Define a function that applies the correction for light sources and add tests;
 4. Implement the `main` function in the application code, so that it accepts 4 arguments: the PFM file to read, the value of $a$, the value of γ, and the name of the PNG/JPEG/etc. file to create.
 5. Add *docstrings* to those classes, methods, functions, types, etc. that you feel need them, but make sure that each comment **is not pedantic**.
-6. Choose together a [usage license](./tomasi-ray-tracing-04a.html#/licenses).
+6. Choose a [usage license](./tomasi-ray-tracing-04a.html#/licenses).
 
 # Reference Images
 
@@ -352,11 +361,66 @@ def main(argv):
 
 # Hints for C++
 
--   Many code examples shown today were in C++, so you can start from them.
-
 -   [Awesome C++](https://github.com/fffaraz/awesome-cpp) is a treasure trove of C++ libraries. Have a look at the section [Image processing](https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#image-processing) to find a viable image processing library to use in your project.
 
 -   To document code, the most used tool is [Doxygen](https://github.com/doxygen/doxygen), but there are other choices available (See again the [section “Documentation” in the Awesome C++ website](https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#documentation).)
+
+
+# Hints for Julia
+
+# The [Images.jl](https://github.com/JuliaImages/Images.jl) package
+
+-   The Julia community has developed a complete solution for image management.
+-   The main package is Images.jl, which defines the `Image` type.
+-   Many other specialized sub-packages refer to Images.jl. We are interested in installing [ImageIO.jl](https://github.com/JuliaIO/ImageIO.jl), which allows reading/writing graphic formats.
+
+# Saving PNG files
+
+-   Using `Pkg.add`, install both `Images` and `ImageIO` in your package.
+
+-   Just create matrices of `RGB` values and save them with the `save` command; the file extension determines its format:
+
+    ```julia
+    using Images
+
+    # Values must be expressed in the range [0, 1]
+    image = [RGB(0.0, 0.0, 1.0) RGB(1.0, 0.0, 0.0);
+             RGB(0.0, 1.0, 0.0) RGB(1.0, 1.0, 1.0)]
+
+    # It's all too easy!
+    save("test.png", image)
+    ```
+
+
+# Hints for C\#
+
+# Importing Libraries
+
+-   The ImageSharp library supports many formats: JPEG, PNG, BMP, GIF, and TGA (avoid the latter if you can, as it is very old and provides no compression).
+
+-   In C\#, you can automatically download and install libraries and specify that they should be used in your projects without the need to modify Makefiles or use `root-config`, `pkg-config`, or similar tools.
+
+-   Add the [SixLabors.ImageSharp](https://docs.sixlabors.com/index.html) package to the class library (which you may have named `Tracer`):
+
+    ```text
+    $ dotnet add package SixLabors.ImageSharp
+    ```
+
+# Saving PNG Files
+
+```csharp
+// Create a sRGB bitmap
+var bitmap = new Image<Rgb24>(Configuration.Default, width, height);
+
+// The bitmap can be used as a matrix. To draw the pixels in the bitmap
+// just use the syntax "bitmap[x, y]" like the following:
+bitmap[SOMEX, SOMEY] = new Rgb24(255, 255, 128); // Three "Byte" values!
+
+// Save the bitmap as a PNG file
+using (Stream fileStream = File.OpenWrite("output.png")) {
+    bitmap.Save(fileStream, new PngEncoder());
+}
+```
 
 
 # Hints for D/Nim/Rust
@@ -432,35 +496,6 @@ fun main(args: Array<String>) {
     ./gradlew run --args="input_file.pfm 0.3 1.0 output_file.png"
     ```
 
-# Guidelines for C#
-
-# Importing Libraries
-
--   The ImageSharp library supports many formats: JPEG, PNG, BMP, GIF, and TGA (an older format that we didn't cover in the theory lesson).
-
--   In C#, you can automatically download and install libraries and specify that they should be used in your projects without the need to modify Makefiles or use `root-config`, `pkg-config`, or similar tools.
-
--   Add the [SixLabors.ImageSharp](https://docs.sixlabors.com/index.html) package to the class library (which you may have named `Tracer`):
-
-    ```text
-    $ dotnet add package SixLabors.ImageSharp
-    ```
-
-# Saving PNG Files
-
-```csharp
-// Create a sRGB bitmap
-var bitmap = new Image<Rgb24>(Configuration.Default, width, height);
-
-// The bitmap can be used as a matrix. To draw the pixels in the bitmap
-// just use the syntax "bitmap[x, y]" like the following:
-bitmap[SOMEX, SOMEY] = new Rgb24(255, 255, 128); // Three "Byte" values!
-
-// Save the bitmap as a PNG file
-using (Stream fileStream = File.OpenWrite("output.png")) {
-    bitmap.Save(fileStream, new PngEncoder());
-}
-```
 
 ---
 title: "Laboratory 4"

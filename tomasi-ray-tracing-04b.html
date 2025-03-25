@@ -169,9 +169,11 @@ code.</li>
 <section id="luminosity-12" class="slide level1">
 <h1>Luminosity (1/2)</h1>
 <ul>
-<li><p>Let’s add a simple <code>luminosity</code> method to the
-<code>Color</code> class, which returns the luminosity value suggested
-by Shirley &amp; Morley:</p>
+<li><p>Let’s add simple <code>luminosity</code> method to the
+<code>Color</code> class that uses Shirley &amp; Morley’s formula (you
+can implement <a
+href="tomasi-ray-tracing-04a.html#/average-luminosities">others</a>, if
+you want):</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Color:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
@@ -196,8 +198,9 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    col1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    col2 <span class="op">=</span> Color(<span class="fl">9.0</span>, <span class="fl">5.0</span>, <span class="fl">7.0</span>)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">2.0</span>) <span class="op">==</span> col1.luminosity()</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">7.0</span>) <span class="op">==</span> col2.luminosity()</span></code></pre></div></li>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This works for Shirley &amp; Morley’s formula; update the numbers, if needed</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">2.0</span>) <span class="op">==</span> col1.luminosity()</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">7.0</span>) <span class="op">==</span> col2.luminosity()</span></code></pre></div></li>
 <li><p>The <code>pytest.approx()</code> method is part of the
 <code>pytest</code> library and corresponds to the <code>is_close</code>
 function you implemented some time ago.</p></li>
@@ -205,6 +208,9 @@ function you implemented some time ago.</p></li>
 </section>
 <section id="average-luminosity-12" class="slide level1">
 <h1>Average Luminosity (1/2)</h1>
+<p>This is a trivial implementation of the <a
+href="tomasi-ray-tracing-04a.html#/logarithmic-average">equation</a> we
+discussed during the last class:</p>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
@@ -225,15 +231,19 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a hr
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">0</span>, <span class="dv">0</span>, Color(  <span class="fl">5.0</span>,   <span class="fl">10.0</span>,   <span class="fl">15.0</span>))  <span class="co"># Luminosity: 10.0</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">1</span>, <span class="dv">0</span>, Color(<span class="fl">500.0</span>, <span class="fl">1000.0</span>, <span class="fl">1500.0</span>))  <span class="co"># Luminosity: 1000.0</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(img.average_luminosity(delta<span class="op">=</span><span class="fl">0.0</span>))</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">100.0</span>) <span class="op">==</span> img.average_luminosity(delta<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We pass delta=0.0 to avoid roundings</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(img.average_luminosity(delta<span class="op">=</span><span class="fl">0.0</span>))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(<span class="fl">100.0</span>) <span class="op">==</span> img.average_luminosity(delta<span class="op">=</span><span class="fl">0.0</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The test above does not verify that delta prevents crashes when</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># there are black pixels! Fix this by adding a new test</span></span></code></pre></div>
 </section>
 <section id="normalization" class="slide level1">
 <h1>Normalization (1/3)</h1>
 <ul>
 <li><p>The <code>normalize_image</code> function calculates the average
 brightness of an image according to the <a
-href="tomasi-ray-tracing-05b.html#/normalization">corresponding
+href="tomasi-ray-tracing-04a.html#/normalization">corresponding
 equation</a>.</p></li>
 <li><p>The function should accept the value of <span
 class="math inline">a</span> as an input parameter (in
@@ -285,6 +295,10 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a hr
 </section>
 <section id="bright-spots" class="slide level1">
 <h1>Bright Spots (1/2)</h1>
+<p>We must implement the function that clips too large values for R, G,
+B, according to the <a
+href="tomasi-ray-tracing-04a.html#/bright-spot-transformation">equation</a>
+shown during the last class.</p>
 <div class="sourceCode" id="cb9"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _clamp(x: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> x)</span>
@@ -383,9 +397,9 @@ environment</em></a> in Python.</p></li>
 used so far to create projects (<code>nimble</code>,
 <code>gradle</code>, <code>dotnet</code>, <code>dub</code>,
 <code>cargo</code>…).</p></li>
-<li><p>So choose a library that supports <em>writing</em> LDR images and
-import it into your project as a <strong>local</strong> dependency (no
-<code>sudo</code>!).</p></li>
+<li><p>Your task for today is to choose a library that supports
+<em>writing</em> LDR images and to import it into your project as a
+<strong>local</strong> dependency (no <code>sudo</code>!).</p></li>
 <li><p>The use of local libraries will help us a lot when we deal with
 <em>continuous integration</em>.</p></li>
 </ul>
@@ -400,7 +414,7 @@ import it into your project as a <strong>local</strong> dependency (no
 been applied, all RGB components of the colors in the matrix will be in
 the range [0, 1].</li>
 <li>At this point, the conversion to the sRGB space takes place via the
-<a href="tomasi-ray-tracing-02a.html#/from-rgb-to-srgb">usual formula
+<a href="tomasi-ray-tracing-04a.html#/gamma-correction">usual formula
 with γ</a>.</li>
 <li>The result of the conversion is a matrix that must be saved in an
 LDR graphic format: PNG, JPEG, WebP…</li>
@@ -571,8 +585,8 @@ PNG/JPEG/etc. file to create.</li>
 <li>Add <em>docstrings</em> to those classes, methods, functions, types,
 etc. that you feel need them, but make sure that each comment <strong>is
 not pedantic</strong>.</li>
-<li>Choose together a <a
-href="./tomasi-ray-tracing-04a.html#/licenses">usage license</a>.</li>
+<li>Choose a <a href="./tomasi-ray-tracing-04a.html#/licenses">usage
+license</a>.</li>
 </ol>
 </section>
 <section id="reference-images" class="slide level1">
@@ -591,8 +605,6 @@ pbrt-v3</a>.</p></li>
 <section id="hints-for-c-1" class="slide level1">
 <h1>Hints for C++</h1>
 <ul>
-<li><p>Many code examples shown today were in C++, so you can start from
-them.</p></li>
 <li><p><a href="https://github.com/fffaraz/awesome-cpp">Awesome C++</a>
 is a treasure trove of C++ libraries. Have a look at the section <a
 href="https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#image-processing">Image
@@ -604,6 +616,77 @@ other choices available (See again the <a
 href="https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#documentation">section
 “Documentation” in the Awesome C++ website</a>.)</p></li>
 </ul>
+</section>
+<section id="hints-for-julia" class="slide level1">
+<h1>Hints for Julia</h1>
+</section>
+<section id="the-images.jl-package" class="slide level1">
+<h1>The <a href="https://github.com/JuliaImages/Images.jl">Images.jl</a>
+package</h1>
+<ul>
+<li>The Julia community has developed a complete solution for image
+management.</li>
+<li>The main package is Images.jl, which defines the <code>Image</code>
+type.</li>
+<li>Many other specialized sub-packages refer to Images.jl. We are
+interested in installing <a
+href="https://github.com/JuliaIO/ImageIO.jl">ImageIO.jl</a>, which
+allows reading/writing graphic formats.</li>
+</ul>
+</section>
+<section id="saving-png-files" class="slide level1">
+<h1>Saving PNG files</h1>
+<ul>
+<li><p>Using <code>Pkg.add</code>, install both <code>Images</code> and
+<code>ImageIO</code> in your package.</p></li>
+<li><p>Just create matrices of <code>RGB</code> values and save them
+with the <code>save</code> command; the file extension determines its
+format:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Images</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Values must be expressed in the range [0, 1]</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> [<span class="fu">RGB</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>) <span class="fu">RGB</span>(<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>);</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>         <span class="fu">RGB</span>(<span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>) <span class="fu">RGB</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>)]</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># It&#39;s all too easy!</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(<span class="st">&quot;test.png&quot;</span>, image)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="hints-for-c-2" class="slide level1">
+<h1>Hints for C#</h1>
+</section>
+<section id="importing-libraries" class="slide level1">
+<h1>Importing Libraries</h1>
+<ul>
+<li><p>The ImageSharp library supports many formats: JPEG, PNG, BMP,
+GIF, and TGA (avoid the latter if you can, as it is very old and
+provides no compression).</p></li>
+<li><p>In C#, you can automatically download and install libraries and
+specify that they should be used in your projects without the need to
+modify Makefiles or use <code>root-config</code>,
+<code>pkg-config</code>, or similar tools.</p></li>
+<li><p>Add the <a
+href="https://docs.sixlabors.com/index.html">SixLabors.ImageSharp</a>
+package to the class library (which you may have named
+<code>Tracer</code>):</p>
+<pre class="text"><code>$ dotnet add package SixLabors.ImageSharp</code></pre></li>
+</ul>
+</section>
+<section id="saving-png-files-1" class="slide level1">
+<h1>Saving PNG Files</h1>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Create a sRGB bitmap</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> bitmap <span class="op">=</span> <span class="kw">new</span> Image<span class="op">&lt;</span>Rgb24<span class="op">&gt;(</span>Configuration<span class="op">.</span><span class="fu">Default</span><span class="op">,</span> width<span class="op">,</span> height<span class="op">);</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">// The bitmap can be used as a matrix. To draw the pixels in the bitmap</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">// just use the syntax &quot;bitmap[x, y]&quot; like the following:</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>bitmap<span class="op">[</span>SOMEX<span class="op">,</span> SOMEY<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">Rgb24</span><span class="op">(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">128</span><span class="op">);</span> <span class="co">// Three &quot;Byte&quot; values!</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Save the bitmap as a PNG file</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="op">(</span>Stream fileStream <span class="op">=</span> File<span class="op">.</span><span class="fu">OpenWrite</span><span class="op">(</span><span class="st">&quot;output.png&quot;</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    bitmap<span class="op">.</span><span class="fu">Save</span><span class="op">(</span>fileStream<span class="op">,</span> <span class="kw">new</span> <span class="fu">PngEncoder</span><span class="op">());</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="hints-for-dnimrust" class="slide level1">
 <h1>Hints for D/Nim/Rust</h1>
@@ -657,21 +740,21 @@ the range [0, 255], you can use one of these two formulas:</p>
 </section>
 <section id="kotlin-code-example" class="slide level1">
 <h1>Kotlin Code Example</h1>
-<div class="sourceCode" id="cb16"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span> <span class="op">=</span> <span class="dv">800</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span> <span class="op">=</span> <span class="dv">600</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">ldrImage</span> <span class="op">=</span> BufferedImage<span class="op">(</span>width<span class="op">,</span> height<span class="op">,</span> BufferedImage<span class="op">.</span>TYPE_INT_RGB<span class="op">)</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>y <span class="kw">in</span> <span class="dv">0</span> until height<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>x <span class="kw">in</span> <span class="dv">0</span> until width<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 0xFF0000 corresponds to sRGB(255, 0, 0): the image will be</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>            <span class="co">// painted uniformly with a bright red shade</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>            ldrImage<span class="op">.</span>setRGB<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> <span class="bn">0xFF0000</span><span class="op">)</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Save the image to the file specified on the command line</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    ImageIO<span class="op">.</span>write<span class="op">(</span>args<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="st">&quot;PNG&quot;</span><span class="op">,</span> stream<span class="op">)</span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span> <span class="op">=</span> <span class="dv">800</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span> <span class="op">=</span> <span class="dv">600</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">ldrImage</span> <span class="op">=</span> BufferedImage<span class="op">(</span>width<span class="op">,</span> height<span class="op">,</span> BufferedImage<span class="op">.</span>TYPE_INT_RGB<span class="op">)</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>y <span class="kw">in</span> <span class="dv">0</span> until height<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>x <span class="kw">in</span> <span class="dv">0</span> until width<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>            <span class="co">// 0xFF0000 corresponds to sRGB(255, 0, 0): the image will be</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>            <span class="co">// painted uniformly with a bright red shade</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>            ldrImage<span class="op">.</span>setRGB<span class="op">(</span>x<span class="op">,</span> y<span class="op">,</span> <span class="bn">0xFF0000</span><span class="op">)</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Save the image to the file specified on the command line</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    ImageIO<span class="op">.</span>write<span class="op">(</span>args<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="st">&quot;PNG&quot;</span><span class="op">,</span> stream<span class="op">)</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="command-line" class="slide level1">
 <h1>Command Line</h1>
@@ -687,41 +770,6 @@ Python/C++/C# executable:</p>
 <code>--args</code>:</p>
 <pre class="text"><code>./gradlew run --args=&quot;input_file.pfm 0.3 1.0 output_file.png&quot;</code></pre></li>
 </ul>
-</section>
-<section id="guidelines-for-c" class="slide level1">
-<h1>Guidelines for C</h1>
-</section>
-<section id="importing-libraries" class="slide level1">
-<h1>Importing Libraries</h1>
-<ul>
-<li><p>The ImageSharp library supports many formats: JPEG, PNG, BMP,
-GIF, and TGA (an older format that we didn’t cover in the theory
-lesson).</p></li>
-<li><p>In C#, you can automatically download and install libraries and
-specify that they should be used in your projects without the need to
-modify Makefiles or use <code>root-config</code>,
-<code>pkg-config</code>, or similar tools.</p></li>
-<li><p>Add the <a
-href="https://docs.sixlabors.com/index.html">SixLabors.ImageSharp</a>
-package to the class library (which you may have named
-<code>Tracer</code>):</p>
-<pre class="text"><code>$ dotnet add package SixLabors.ImageSharp</code></pre></li>
-</ul>
-</section>
-<section id="saving-png-files" class="slide level1">
-<h1>Saving PNG Files</h1>
-<div class="sourceCode" id="cb20"><pre
-class="sourceCode csharp"><code class="sourceCode cs"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Create a sRGB bitmap</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="dt">var</span> bitmap <span class="op">=</span> <span class="kw">new</span> Image<span class="op">&lt;</span>Rgb24<span class="op">&gt;(</span>Configuration<span class="op">.</span><span class="fu">Default</span><span class="op">,</span> width<span class="op">,</span> height<span class="op">);</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">// The bitmap can be used as a matrix. To draw the pixels in the bitmap</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">// just use the syntax &quot;bitmap[x, y]&quot; like the following:</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>bitmap<span class="op">[</span>SOMEX<span class="op">,</span> SOMEY<span class="op">]</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">Rgb24</span><span class="op">(</span><span class="dv">255</span><span class="op">,</span> <span class="dv">255</span><span class="op">,</span> <span class="dv">128</span><span class="op">);</span> <span class="co">// Three &quot;Byte&quot; values!</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Save the bitmap as a PNG file</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="op">(</span>Stream fileStream <span class="op">=</span> File<span class="op">.</span><span class="fu">OpenWrite</span><span class="op">(</span><span class="st">&quot;output.png&quot;</span><span class="op">))</span> <span class="op">{</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    bitmap<span class="op">.</span><span class="fu">Save</span><span class="op">(</span>fileStream<span class="op">,</span> <span class="kw">new</span> <span class="fu">PngEncoder</span><span class="op">());</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
     </div>
   </div>

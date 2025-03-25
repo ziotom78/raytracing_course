@@ -28,7 +28,7 @@
     $$
     where $p$ is the perceived value, and $S$ is the intensity of the stimulus.
 
-# The Logarithmic Average
+# The Logarithmic Average {#logarithmic-average}
 
 -   The «neutral» value for radiance is defined by the logarithmic average of the pixel luminosity $l_i$ (with $i = 1\ldots N$):
     $$
@@ -45,7 +45,7 @@
 
 -   As a comparison, the arithmetic average is $(10^2 + 10^4 + 10^6)/3 \approx 10^6/3$.
 
-# Luminosity
+# Luminosity {#average-luminosities}
 
 We have **three** scalar values (RGB) for each pixel. Which one should we use for $l_i$?
 
@@ -64,7 +64,7 @@ Luminosity Function
 We will use the last: it isn’t physically meaningful but produces good results.
 
 
-# Normalization
+# Normalization {#normalization}
 
 -   Once the average value is estimated, the R, G, B values of the image are updated through the transformation
 
@@ -83,7 +83,7 @@ We will use the last: it isn’t physically meaningful but produces good results
 
 These are notoriously difficult to handle!
 
-# Bright Spots
+# Bright Spots {#bright-spot-transformation}
 
 Shirley & Morley suggest to apply the following transformation to the R, G, B components of each pixel:
 $$
@@ -108,7 +108,7 @@ plot [0:10] [] x/(1 + x) lw 4
 ```
 </center>
 
-# γ correction
+# γ correction {#gamma-correction}
 
 -   We might want to apply a gamma correction to the image values.
 
