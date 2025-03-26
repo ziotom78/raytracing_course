@@ -131,9 +131,9 @@
 
 -   **In job interviews, they often ask to see some of your PRs!**
 
-# Exercise Guide
+# What to do today
 
-# Exercise Guide
+# What to do today
 
 -   Start by "releasing" the 0.1.0 *release* of what you have written so far, and send the link of the GitHub repository to [maurizio.tomasi@unimi.it](mailto:maurizio.tomasi@unimi.it)
 
@@ -486,7 +486,7 @@ else:
 
 -   Implement the same tests present in that file.
 
-# Group Work
+# Teamwork
 
 #. One of you creates the 0.1.0 *release*;
 #. One of you creates a `geometry` branch and makes a *pull request*, which the others download;
@@ -521,16 +521,17 @@ public:
 };
 ```
 
+
 # Recommended solution
 
 ```c++
 struct Vec {  // With "struct", everything is "public" by default
-    float x, y, z;
-
-    Vec(float _x = 0, float _y = 0, float _z = 0) : x{_x}, y{_y}, z{_z} {}
-    // No need to define "getx", "setx", etc.
+    // Defaults can be provided inline!
+    float x{0.0}, y{0.0}, z{0.0};
 };
 ```
+
+I suggested this approach when you implemented `Color`, but it is even more important to follow the advice today, as the number of classes to implement is growing quickly!
 
 # Avoiding repetitions
 
@@ -554,6 +555,22 @@ struct Vec {  // With "struct", everything is "public" by default
     }
     ```
 
+# Hints for C\#
+
+# Type Definition
+
+-   Since `Vec`, `Point`, `Normal` and `Transformation` will be heavily used in calculations, it is important that they be extremely efficient classes.
+-   This is therefore a case where it is better to define the types as *value types* using `struct` instead of `class`.
+-   Unfortunately, C\# does not support metaprogramming, so you will have to define common operations like additions multiple times
+
+# Hints for Julia
+
+# Type definitions
+
+-   To define the `Vec` and `Point` types you could use the [StaticArrays.jl](https://github.com/JuliaArrays/StaticArrays.jl) library, which implements highly efficient fixed-size arrays. It's a very efficient library, but **I don't recommend using it in this case**.
+-   The problem with StaticArrays.jl is that it doesn't allow you to exploit multiple dispatch: `Vec` and `Point` would be seen by Julia as the same type `SVector{3, Float32}`.
+-   It's better to define two new types with `struct`
+-   I recommend omitting `mutable`: you will encourage Julia to use them as *value types* instead of *reference types*.
 
 
 # Guidelines for D/Nim/Rust
@@ -566,9 +583,9 @@ struct Vec {  // With "struct", everything is "public" by default
 
 -   Be careful to define `HomMatrix` in a way that avoids memory allocation on the *heap*, because it needs to be fast to allocate:
 
-    -   Avoid using constructs like `vector<vector<float>>` (C++) or `seq[seq[float]]` (Nim), because the data would not be contiguous in memory.
+    -   Avoid using constructs like `vector<vector<float>>` (C++), as data would not be contiguous in memory.
 
-    -   In fact, avoid `vector` (C++), `seq[]` (Nim) and similar constructs altogether, as they internally use the heap, and define a simple array of 16 elements.
+    -   In fact, avoid `vector` (C++) and similar constructs altogether, as they internally use the heap, and define a simple array of 16 elements.
 
 # Type Definitions
 
@@ -582,7 +599,7 @@ struct Vec {  // With "struct", everything is "public" by default
 
 # Defining Types with Nim
 
--   We want to implement a series of operations on the `Vec`, `Point`, `Normal` types.
+-   We want to implement a series of operations on `Vec`, `Point`, `Normal`.
 
 -   Nim supports operator overloading, so we could write:
 
@@ -621,14 +638,14 @@ struct Vec {  // With "struct", everything is "public" by default
 
     ```nim
     proc mysum[T](a: T, b: T): T =
-      result = a + a + b
+      result = a + a + b   # A really weird type of “sum”: result = 2a + b
 
     echo mysum(1, 2)       # Works on integers…
     echo mysum(0x1, 0x2)   # …and on unsigned integers…
     echo mysum(1.0, 2.0)   # …and on floats!
     ```
 
--   It is not suitable in our case, because we want to specify *constraints* (for example, you cannot add a vector to a normal!).
+-   It is not suitable in our case, because we want to specify *constraints* on `T` (for example, you cannot add two points together!).
 
 # Templates
 
@@ -745,52 +762,6 @@ struct Point {
     ```
 
 
-# Hints for Java/Kotlin
-
-# Hints for Java/Kotlin
--   No special instructions for `Point`, `Vec`, `Normal`: the implementation should be fairly simple.
--   Neither Java nor Kotlin support metaprogramming, so you will have to duplicate some functions, such as those that calculate `Point + Vec` and `Vec + Vec`.
-
-# Transformations
-
-To simplify `Transformation`, I suggest defining a type `HomMatrix` that implements a 4×4 homogeneous matrix; internally use a 16-element array as you did with `HdrImage`:
-
-```kotlin
-// Kotlin
-class HomMatrix(var elements: FloatArray) {
-    init {
-        require(elements.size == 16) { "A homogeneous matrix must be 4×4" }
-    }
-
-    constructor() : this(
-        floatArrayOf(
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-        )
-    )
-
-    // Etc.
-}
-```
-
-
-# Hints for C\#
-
-# Type Definition
-
--   Since `Vec`, `Point`, `Normal` and `Transformation` will be heavily used in calculations, it is important that they be extremely efficient classes.
--   This is therefore a case where it is better to define the types as *value types* using `struct` instead of `class`.
--   Unfortunately, C\# does not implement metaprogramming functionality, so you will have to define common operations between `Point` and `Vec`, such as addition, twice.
-
-# Hints for Julia
-# Type definitions
-
--   To define the `Vec` and `Point` types you could use the [StaticArrays.jl](https://github.com/JuliaArrays/StaticArrays.jl) library, which implements highly efficient fixed-size arrays. It's a very efficient library, but **I don't recommend using it in this case**.
--   The problem with StaticArrays.jl is that it doesn't allow you to exploit multiple dispatch: `Vec` and `Point` would be seen by Julia as the same type `SVector{3, Float32}`.
--   It's better to define two new types with `struct`
--   I recommend omitting `mutable`: you will encourage Julia to use them as *value types* instead of *reference types*.
 
 ---
 title: "Laboratory 5"

@@ -734,6 +734,7 @@ In our code, we will implement only **invertible** transformations:
     > It took us more than 3 years to get to 1.0. But a couple of months to get to 2.0? Why?
     >
     > We follow [Semver](https://semver.org/) which says that after 1.0, all breaking changes bump the major version number. We have some breaking changes here, which will be trivial to fix -- if they effect you at all. But a breaking change is a breaking change!
+
 # Disadvantages of semantic versioning
 
 -   Sometimes it is difficult to establish whether a change is "breaking" or not (see for example the article [Semantic Versioning Will Not Save You](https://hynek.me/articles/semver-will-not-save-you/)).

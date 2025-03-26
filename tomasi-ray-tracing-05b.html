@@ -288,11 +288,11 @@ code.</p></li>
 PRs!</strong></p></li>
 </ul>
 </section>
-<section id="exercise-guide" class="slide level1">
-<h1>Exercise Guide</h1>
+<section id="what-to-do-today" class="slide level1">
+<h1>What to do today</h1>
 </section>
-<section id="exercise-guide-1" class="slide level1">
-<h1>Exercise Guide</h1>
+<section id="what-to-do-today-1" class="slide level1">
+<h1>What to do today</h1>
 <ul>
 <li><p>Start by “releasing” the 0.1.0 <em>release</em> of what you have
 written so far, and send the link of the GitHub repository to <a
@@ -736,8 +736,8 @@ href="https://github.com/ziotom78/pytracer/blob/41878248890338e62aa38c928c175614
 <li><p>Implement the same tests present in that file.</p></li>
 </ul>
 </section>
-<section id="group-work" class="slide level1">
-<h1>Group Work</h1>
+<section id="teamwork" class="slide level1">
+<h1>Teamwork</h1>
 <ol>
 <li>One of you creates the 0.1.0 <em>release</em>;</li>
 <li>One of you creates a <code>geometry</code> branch and makes a
@@ -788,11 +788,12 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb13-1"><a href="#
 <h1>Recommended solution</h1>
 <div class="sourceCode" id="cb14"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Vec <span class="op">{</span>  <span class="co">// With &quot;struct&quot;, everything is &quot;public&quot; by default</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    Vec<span class="op">(</span><span class="dt">float</span> _x <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">float</span> _y <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">float</span> _z <span class="op">=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">:</span> x<span class="op">{</span>_x<span class="op">},</span> y<span class="op">{</span>_y<span class="op">},</span> z<span class="op">{</span>_z<span class="op">}</span> <span class="op">{}</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// No need to define &quot;getx&quot;, &quot;setx&quot;, etc.</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Defaults can be provided inline!</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> x<span class="op">{</span><span class="fl">0.0</span><span class="op">},</span> y<span class="op">{</span><span class="fl">0.0</span><span class="op">},</span> z<span class="op">{</span><span class="fl">0.0</span><span class="op">};</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>I suggested this approach when you implemented <code>Color</code>,
+but it is even more important to follow the advice today, as the number
+of classes to implement is growing quickly!</p>
 </section>
 <section id="avoiding-repetitions" class="slide level1">
 <h1>Avoiding repetitions</h1>
@@ -818,6 +819,43 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
+<section id="hints-for-c-1" class="slide level1">
+<h1>Hints for C#</h1>
+</section>
+<section id="type-definition" class="slide level1">
+<h1>Type Definition</h1>
+<ul>
+<li>Since <code>Vec</code>, <code>Point</code>, <code>Normal</code> and
+<code>Transformation</code> will be heavily used in calculations, it is
+important that they be extremely efficient classes.</li>
+<li>This is therefore a case where it is better to define the types as
+<em>value types</em> using <code>struct</code> instead of
+<code>class</code>.</li>
+<li>Unfortunately, C# does not support metaprogramming, so you will have
+to define common operations like additions multiple times</li>
+</ul>
+</section>
+<section id="hints-for-julia" class="slide level1">
+<h1>Hints for Julia</h1>
+</section>
+<section id="type-definitions-1" class="slide level1">
+<h1>Type definitions</h1>
+<ul>
+<li>To define the <code>Vec</code> and <code>Point</code> types you
+could use the <a
+href="https://github.com/JuliaArrays/StaticArrays.jl">StaticArrays.jl</a>
+library, which implements highly efficient fixed-size arrays. It’s a
+very efficient library, but <strong>I don’t recommend using it in this
+case</strong>.</li>
+<li>The problem with StaticArrays.jl is that it doesn’t allow you to
+exploit multiple dispatch: <code>Vec</code> and <code>Point</code> would
+be seen by Julia as the same type <code>SVector{3, Float32}</code>.</li>
+<li>It’s better to define two new types with <code>struct</code></li>
+<li>I recommend omitting <code>mutable</code>: you will encourage Julia
+to use them as <em>value types</em> instead of <em>reference
+types</em>.</li>
+</ul>
+</section>
 <section id="guidelines-for-dnimrust" class="slide level1">
 <h1>Guidelines for D/Nim/Rust</h1>
 </section>
@@ -835,16 +873,15 @@ memory allocation on the <em>heap</em>, because it needs to be fast to
 allocate:</p>
 <ul>
 <li><p>Avoid using constructs like
-<code>vector&lt;vector&lt;float&gt;&gt;</code> (C++) or
-<code>seq[seq[float]]</code> (Nim), because the data would not be
-contiguous in memory.</p></li>
-<li><p>In fact, avoid <code>vector</code> (C++), <code>seq[]</code>
-(Nim) and similar constructs altogether, as they internally use the
-heap, and define a simple array of 16 elements.</p></li>
+<code>vector&lt;vector&lt;float&gt;&gt;</code> (C++), as data would not
+be contiguous in memory.</p></li>
+<li><p>In fact, avoid <code>vector</code> (C++) and similar constructs
+altogether, as they internally use the heap, and define a simple array
+of 16 elements.</p></li>
 </ul></li>
 </ul>
 </section>
-<section id="type-definitions-1" class="slide level1">
+<section id="type-definitions-2" class="slide level1">
 <h1>Type Definitions</h1>
 <ul>
 <li><p>You can draw inspiration from the implementations in the document
@@ -863,9 +900,8 @@ with Rust and D.</p></li>
 <section id="defining-types-with-nim" class="slide level1">
 <h1>Defining Types with Nim</h1>
 <ul>
-<li><p>We want to implement a series of operations on the
-<code>Vec</code>, <code>Point</code>, <code>Normal</code>
-types.</p></li>
+<li><p>We want to implement a series of operations on <code>Vec</code>,
+<code>Point</code>, <code>Normal</code>.</p></li>
 <li><p>Nim supports operator overloading, so we could write:</p>
 <div class="sourceCode" id="cb16"><pre
 class="sourceCode nim"><code class="sourceCode nim"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> <span class="st">`+`</span><span class="kw">(</span>a<span class="kw">:</span> <span class="at">Point</span><span class="kw">,</span> b<span class="kw">:</span> <span class="at">Vec</span><span class="kw">):</span> <span class="at">Point</span> <span class="co">=</span>   <span class="co"># Point + Vec → Point</span></span>
@@ -911,14 +947,14 @@ data.</p></li>
 adaptable to any type (like <em>template functions</em> in C++):</p>
 <div class="sourceCode" id="cb17"><pre
 class="sourceCode nim"><code class="sourceCode nim"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> <span class="st">mysum</span><span class="kw">[</span><span class="at">T</span><span class="kw">](</span>a<span class="kw">:</span> <span class="at">T</span><span class="kw">,</span> b<span class="kw">:</span> <span class="at">T</span><span class="kw">):</span> <span class="at">T</span> <span class="co">=</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">result</span> <span class="co">=</span> a <span class="co">+</span> a <span class="co">+</span> b</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">result</span> <span class="co">=</span> a <span class="co">+</span> a <span class="co">+</span> <span class="fu">b  </span> <span class="co"># A really weird type of “sum”: result = 2a + b</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="cf">echo</span> <span class="fu">mysum</span><span class="kw">(</span><span class="dv">1</span><span class="kw">,</span> <span class="dv">2</span><span class="kw">)</span>       <span class="co"># Works on integers…</span></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="cf">echo</span> <span class="fu">mysum</span><span class="kw">(</span><span class="bn">0x1</span><span class="kw">,</span> <span class="bn">0x2</span><span class="kw">)</span>   <span class="co"># …and on unsigned integers…</span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="cf">echo</span> <span class="fu">mysum</span><span class="kw">(</span><span class="fl">1.0</span><span class="kw">,</span> <span class="fl">2.0</span><span class="kw">)</span>   <span class="co"># …and on floats!</span></span></code></pre></div></li>
 <li><p>It is not suitable in our case, because we want to specify
-<em>constraints</em> (for example, you cannot add a vector to a
-normal!).</p></li>
+<em>constraints</em> on <code>T</code> (for example, you cannot add two
+points together!).</p></li>
 </ul>
 </section>
 <section id="templates" class="slide level1">
@@ -1039,82 +1075,6 @@ class="sourceCode rust"><code class="sourceCode rust"><span id="cb22-1"><a href=
 <span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="pp">implement_sum!</span>(<span class="dt">Vec</span><span class="op">,</span> <span class="dt">Vec</span><span class="op">,</span> <span class="dt">Vec</span>)<span class="op">;</span></span>
 <span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="pp">implement_sum!</span>(Point<span class="op">,</span> <span class="dt">Vec</span><span class="op">,</span> Point)<span class="op">;</span></span></code></pre></div></li>
-</ul>
-</section>
-<section id="hints-for-javakotlin" class="slide level1">
-<h1>Hints for Java/Kotlin</h1>
-</section>
-<section id="hints-for-javakotlin-1" class="slide level1">
-<h1>Hints for Java/Kotlin</h1>
-<ul>
-<li>No special instructions for <code>Point</code>, <code>Vec</code>,
-<code>Normal</code>: the implementation should be fairly simple.</li>
-<li>Neither Java nor Kotlin support metaprogramming, so you will have to
-duplicate some functions, such as those that calculate
-<code>Point + Vec</code> and <code>Vec + Vec</code>.</li>
-</ul>
-</section>
-<section id="transformations-1" class="slide level1">
-<h1>Transformations</h1>
-<p>To simplify <code>Transformation</code>, I suggest defining a type
-<code>HomMatrix</code> that implements a 4×4 homogeneous matrix;
-internally use a 16-element array as you did with
-<code>HdrImage</code>:</p>
-<div class="sourceCode" id="cb23"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Kotlin</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HomMatrix<span class="op">(</span><span class="kw">var</span> <span class="va">elements</span><span class="op">:</span> <span class="dt">FloatArray</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    init <span class="op">{</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        require<span class="op">(</span>elements<span class="op">.</span>size <span class="op">==</span> <span class="dv">16</span><span class="op">)</span> <span class="op">{</span> <span class="st">&quot;A homogeneous matrix must be 4×4&quot;</span> <span class="op">}</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">constructor</span><span class="op">()</span> <span class="op">:</span> <span class="kw">this</span><span class="op">(</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        floatArrayOf<span class="op">(</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>            <span class="fl">1.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>            <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">1.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>            <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">1.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>            <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">0.0f</span><span class="op">,</span> <span class="fl">1.0f</span></span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">)</span></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Etc.</span></span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-</section>
-<section id="hints-for-c-1" class="slide level1">
-<h1>Hints for C#</h1>
-</section>
-<section id="type-definition" class="slide level1">
-<h1>Type Definition</h1>
-<ul>
-<li>Since <code>Vec</code>, <code>Point</code>, <code>Normal</code> and
-<code>Transformation</code> will be heavily used in calculations, it is
-important that they be extremely efficient classes.</li>
-<li>This is therefore a case where it is better to define the types as
-<em>value types</em> using <code>struct</code> instead of
-<code>class</code>.</li>
-<li>Unfortunately, C# does not implement metaprogramming functionality,
-so you will have to define common operations between <code>Point</code>
-and <code>Vec</code>, such as addition, twice.</li>
-</ul>
-</section>
-<section id="hints-for-julia" class="slide level1">
-<h1>Hints for Julia</h1>
-</section>
-<section id="type-definitions-2" class="slide level1">
-<h1>Type definitions</h1>
-<ul>
-<li>To define the <code>Vec</code> and <code>Point</code> types you
-could use the <a
-href="https://github.com/JuliaArrays/StaticArrays.jl">StaticArrays.jl</a>
-library, which implements highly efficient fixed-size arrays. It’s a
-very efficient library, but <strong>I don’t recommend using it in this
-case</strong>.</li>
-<li>The problem with StaticArrays.jl is that it doesn’t allow you to
-exploit multiple dispatch: <code>Vec</code> and <code>Point</code> would
-be seen by Julia as the same type <code>SVector{3, Float32}</code>.</li>
-<li>It’s better to define two new types with <code>struct</code></li>
-<li>I recommend omitting <code>mutable</code>: you will encourage Julia
-to use them as <em>value types</em> instead of <em>reference
-types</em>.</li>
 </ul>
 </section>
     </div>
