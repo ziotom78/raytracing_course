@@ -21,7 +21,48 @@
     \begin{pmatrix}
     1&0&0&k_{0x} + (k_{1x} - k_{0x})t\\
     0&1&0&k_{0y} + (k_{1y} - k_{0y})t\\
-    0&0&1&k_{0
+    0&0&1&k_{0z} + (k_{1z} - k_{0z})t\\
+    0&0&0&1
+    \end{pmatrix}.
+    $$
+
+
+# Transformations over time (2/2)
+
+-   Scaling transformation are equally trivial to animate: to scale from $s_0$ to $s_1$, I can define $\xi(t) = s_0 + (s_1 - s_0) t$ so that the transformation is
+
+    $$
+    A(t) = M_{s_0 + (s_1 - s_0) t} = M_{\xi(t)} =
+    \begin{pmatrix}
+    \xi(t)&0&0&0\\
+    0&\xi(t)&0&0\\
+    0&0&\xi(t)&0\\
+    0&0&0&1
+    \end{pmatrix}.
+    $$
+
+-   Unfortunately, there is no such simple formula for rotations!
+
+# Animating rotations
+
+-   Rotations are represented through orthogonal matrices ($R(t) R(t)^t = I$).
+
+-   We cannot interpolate the coefficients of two rotation matrices
+    $$
+    R(0) = \begin{pmatrix}
+    m_{11}&m_{12}&m_{13}\\
+    m_{21}&m_{22}&m_{23}\\
+    m_{31}&m_{32}&m_{33}
+    \end{pmatrix},\ %
+    R(1) = \begin{pmatrix}
+    m'_{11}&m'_{12}&m'_{13}\\
+    m'_{21}&m'_{22}&m'_{23}\\
+    m'_{31}&m'_{32}&m'_{33}
+    \end{pmatrix},\quad
+    $$
+    with the usual formula $m_{ij} + \bigl(m'_{ij} - m_{ij}\bigr) t$: the resulting $R(t)$ is not orthogonal!
+
+# Example
 
 <iframe src="https://player.vimeo.com/video/538566733?title=0&amp;byline=0&amp;portrait=0&amp;speed=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="896" height="504" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Scanning strategy of a CMB spacecraft (LiteBIRD-like)"></iframe>
 
@@ -58,7 +99,7 @@
 
 -   It is also possible to express rotations using complex numbers (in 2D) or quaternions (in 3D).
 
--   Quaternions have many advantages over 3D rotation matrices and are used in many fields. (Even Maxwell's equations were initially expressed with quaternions).
+-   Quaternions have many advantages over 3D rotation matrices and are used in many fields.
 
 -   We **will not** use quaternions in our code, so this topic will not be required for the exam. If you want to learn more, two excellent texts are [*Visualizing quaternions*](https://www.amazon.com/Visualizing-Quaternions-Kaufmann-Interactive-Technology/dp/0120884003) (A. J. Hanson) and [*Quaternions for computer graphics*](https://link.springer.com/book/10.1007/978-0-85729-760-0) (J. A. Vince).
 
@@ -145,7 +186,47 @@
 -   It is possible to define an inner product between quaternions:
 
     $$
-    p \cdot q = p_0 q_0 + p_1 q_
+    p \cdot q = p_0 q_0 + p_1 q_1 + p_2 q_2 + p_3 q_3 = p_0 q_0 + \vec{p} \cdot \vec{q};
+    $$
+
+    from this, we can define a norm:
+
+    $$
+    \left\|q\right\| = \sqrt{q \cdot q} = \sqrt{q_0^2 + q_1^2 + q_2^2 + q_3^2} = \sqrt{q_0^2 + \left\|\vec{q}\right\|}.
+    $$
+
+-   There is also the *conjugate*
+
+    $$
+    q^* = (q_0, -q_1, -q_2, -q_3) = (q_0, -\vec{q}).
+    $$
+
+# 3D Rotations with Quaternions
+
+-   Given a normalized vector $\hat n$ and an angle $\theta$, we associate with it the quaternion
+
+    $$
+    r(\theta, \hat n) = \left(\cos\frac\theta2, \sin\frac\theta2\,\hat n\right),
+    $$
+
+    which represents the rotation by an angle $\theta$ around $\hat n$.
+
+-   If $\left\|\hat n\right\| = 1$, it obviously holds that $\left\|r(\theta, \hat n)\right\| = 1$.
+
+-   Let's see how to represent a 3D rotation using $r(\theta, \hat n)$.
+
+# Applying the Rotation
+
+-   A generic vector $\vec v$ is rotated into $\vec v'$ through this product of three quaternions:
+
+    $$
+    \vec v' = r(\theta, \hat n) \cdot (0, \vec v) \cdot r^{-1}(\theta, \hat n),
+    $$
+    where $(0, \vec v)$ represents the quaternion associated with $\vec v$.
+
+-   Intuitively, $r(\theta, \hat n)$ appears **twice** in the formula because it depends on the angle $\theta/2$, and not simply on the angle $\theta$.
+
+-   From the formula, it is evident that $r(\theta, \hat n)$ and $-r(\theta, \hat n)$ represent the same rotation.
 
 # Are Quaternions Efficient?
 
@@ -168,7 +249,7 @@
     r(t) = \frac{\sin(1 - t)\theta}{\sin\theta}r_1 + \frac{\sin t\theta}{\sin\theta}r_2,
     $$
 
-    where $\theta$ is the angle between the two quaternions $r_1$ and $r_2$ (with $\left\|r_1\right\| = \left\|r_2\right\| = 1$):
+    where $\theta$ is the “angle” between $r_1$ and $r_2$ (with $\left\|r_1\right\| = \left\|r_2\right\| = 1$):
 
     $$
     \theta = r_1 \cdot r_2.
@@ -199,7 +280,7 @@
 
 # Limits of Classical Geometry
 
--   There exist vectors and pseudovectors, which follow different transformation rules.
+-   Vectors and pseudovectors follow different transformation rules.
 
 -   To describe rotations on a 2D plane, it is necessary to use 3D (pseudo)vectors, like *angular momentum* $\vec{L} = \vec{r} \times \vec{p}$ or *torque* $\vec{\tau} = \vec r \times \vec F$.
 
@@ -469,9 +550,7 @@ label("$\hat e_1 \wedge \hat e_3$", (0.5, 0.05, 0.5));
 
 -   What does it mean to add a scalar like $\vec v \cdot \vec w$ and a bivector like $\vec v \wedge \vec w$?
 
--   The «sum» must be understood in a non-literal sense, just like the sum of the real and imaginary parts of a number ($z = x + iy$).
-
--   Actually, $z \in \mathbb{C}$ represents a pair $(x, y)$, which is written as $x + iy$ because this is a mnemonic aid when calculating sums and products of complex numbers.
+-   The «sum» must be understood in a non-literal sense, just like the sum of the real/imaginary parts ($z = x + iy$) or of orthogonal vectors ($\vec v = 3\hat ı + 4\hat ȷ$).
 
 -   Similarly, the notation $\vec v \cdot \vec w + \vec v \wedge \vec w$ is a mnemonic aid to remember how geometric products are added and multiplied.
 
@@ -490,6 +569,7 @@ label("$\hat e_1 \wedge \hat e_3$", (0.5, 0.05, 0.5));
     $$
 
     and therefore $\vec v^{-1} = \vec v / \left\|\vec v\right\|^2$: like any respectable algebra, **the inverse exists**!
+
 # Other Examples
 
 -   Suppose that $\vec v \perp \vec w$. Then
@@ -624,7 +704,7 @@ label("$\hat e_1 \wedge \hat e_3$", (0.5, 0.05, 0.5));
 
 -   However, in the formula $\vec v' = e^{i\theta} \vec v$ the *vector* $\vec v$ appears, which is not part of the subalgebra: in this case the product does not commute!
 
--   It can be shown that in 2D, $z \vec v = \vec v z^*$ holds, where $z^*$ is the complex conjugate.
+-   In 2D, $z \vec v = \vec v z^*$ holds, where $z^*$ is the complex conjugate.
 
 -   If we reduce to a relationship similar to the one [seen for quaternions](tomasi-ray-tracing-06a.html#/slerp-and-rotations), namely
 
@@ -653,7 +733,7 @@ label("$\hat e_1 \wedge \hat e_3$", (0.5, 0.05, 0.5));
 
 -   We have **eight** degrees of freedom: 1 for scalars, 3 for vectors, 3 for bivectors, and 1 for trivectors (pseudoscalars). It still holds that $(\hat e_1 \hat e_2 \hat e_3)^2 = -1 \equiv i^2$.
 
-# Multivectors and Rotations in 3D
+# Rotations in 3D
 
 -   To specify a rotation in 3D, you need the angle and the axis of rotation.
 
@@ -733,7 +813,7 @@ label("$\hat e_1 \wedge \hat e_3$", (0.5, 0.05, 0.5));
 
 -   The exterior product has a number of advantages over the vector product:
 
-    1.  It is defined on $\mathbb{R}^n$ for any $n$, while the vector product is only defined for $n = 3$.
+    1.  It is defined on $\mathbb{R}^n$ for any $n$, while $\times$ is only defined for $n = 3$.
     2.  The exterior product is associative, while the vector product is not: $u \times (v \times w) \not= (u \times v) \times w$. Calculations are therefore simpler.
 
 # Laws of Physics and ∧

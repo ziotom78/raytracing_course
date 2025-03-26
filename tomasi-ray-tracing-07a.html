@@ -89,14 +89,66 @@ class="math inline">\vec k_1</span>.</p></li>
 <li><p>If I want to generate the frame of the object at a generic time
 <span class="math inline">0 \leq t \leq 1</span>, the transformation
 <span class="math inline">A</span> is trivially</p>
-<p>$$ A(t) = T_{k_0 + (k_1 - k_0) t} = \begin{pmatrix}
-1&amp;0&amp;0&amp;k_{0x} + (k_{1x} - k_{0x})t\ 0&amp;1&amp;0&amp;k_{0y}
-+ (k_{1y} - k_{0y})t\ 0&amp;0&amp;1&amp;k_{0</p></li>
+<p><span class="math display">
+A(t) = T_{\vec k_0 + (\vec k_1 - \vec k_0) t} =
+\begin{pmatrix}
+1&amp;0&amp;0&amp;k_{0x} + (k_{1x} - k_{0x})t\\
+0&amp;1&amp;0&amp;k_{0y} + (k_{1y} - k_{0y})t\\
+0&amp;0&amp;1&amp;k_{0z} + (k_{1z} - k_{0z})t\\
+0&amp;0&amp;0&amp;1
+\end{pmatrix}.
+</span></p></li>
 </ul>
+</section>
+<section id="transformations-over-time-22" class="slide level1">
+<h1>Transformations over time (2/2)</h1>
+<ul>
+<li><p>Scaling transformation are equally trivial to animate: to scale
+from <span class="math inline">s_0</span> to <span
+class="math inline">s_1</span>, I can define <span
+class="math inline">\xi(t) = s_0 + (s_1 - s_0) t</span> so that the
+transformation is</p>
+<p><span class="math display">
+A(t) = M_{s_0 + (s_1 - s_0) t} = M_{\xi(t)} =
+\begin{pmatrix}
+\xi(t)&amp;0&amp;0&amp;0\\
+0&amp;\xi(t)&amp;0&amp;0\\
+0&amp;0&amp;\xi(t)&amp;0\\
+0&amp;0&amp;0&amp;1
+\end{pmatrix}.
+</span></p></li>
+<li><p>Unfortunately, there is no such simple formula for
+rotations!</p></li>
+</ul>
+</section>
+<section id="animating-rotations" class="slide level1">
+<h1>Animating rotations</h1>
+<ul>
+<li><p>Rotations are represented through orthogonal matrices (<span
+class="math inline">R(t) R(t)^t = I</span>).</p></li>
+<li><p>We cannot interpolate the coefficients of two rotation matrices
+<span class="math display">
+R(0) = \begin{pmatrix}
+m_{11}&amp;m_{12}&amp;m_{13}\\
+m_{21}&amp;m_{22}&amp;m_{23}\\
+m_{31}&amp;m_{32}&amp;m_{33}
+\end{pmatrix},\ %
+R(1) = \begin{pmatrix}
+m&#39;_{11}&amp;m&#39;_{12}&amp;m&#39;_{13}\\
+m&#39;_{21}&amp;m&#39;_{22}&amp;m&#39;_{23}\\
+m&#39;_{31}&amp;m&#39;_{32}&amp;m&#39;_{33}
+\end{pmatrix},\quad
+</span> with the usual formula <span class="math inline">m_{ij} +
+\bigl(m&#39;_{ij} - m_{ij}\bigr) t</span>: the resulting <span
+class="math inline">R(t)</span> is not orthogonal!</p></li>
+</ul>
+</section>
+<section id="example" class="slide level1">
+<h1>Example</h1>
 <iframe src="https://player.vimeo.com/video/538566733?title=0&amp;byline=0&amp;portrait=0&amp;speed=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="896" height="504" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Scanning strategy of a CMB spacecraft (LiteBIRD-like)">
 </iframe>
 </section>
-<section id="example" class="slide level1">
+<section id="example-1" class="slide level1">
 <h1>Example</h1>
 <ul>
 <li><p>The <em>Planck</em> satellite had a <em>star tracker</em> on
@@ -155,8 +207,7 @@ form.</p></li>
 <li><p>It is also possible to express rotations using complex numbers
 (in 2D) or quaternions (in 3D).</p></li>
 <li><p>Quaternions have many advantages over 3D rotation matrices and
-are used in many fields. (Even Maxwell’s equations were initially
-expressed with quaternions).</p></li>
+are used in many fields.</p></li>
 <li><p>We <strong>will not</strong> use quaternions in our code, so this
 topic will not be required for the exam. If you want to learn more, two
 excellent texts are <a
@@ -276,7 +327,61 @@ quaternions from the previous slide follows consequently:</p>
 <ul>
 <li><p>It is possible to define an inner product between
 quaternions:</p>
-<p>$$ p q = p_0 q_0 + p_1 q_</p></li>
+<p><span class="math display">
+p \cdot q = p_0 q_0 + p_1 q_1 + p_2 q_2 + p_3 q_3 = p_0 q_0 + \vec{p}
+\cdot \vec{q};
+</span></p>
+<p>from this, we can define a norm:</p>
+<p><span class="math display">
+\left\|q\right\| = \sqrt{q \cdot q} = \sqrt{q_0^2 + q_1^2 + q_2^2 +
+q_3^2} = \sqrt{q_0^2 + \left\|\vec{q}\right\|}.
+</span></p></li>
+<li><p>There is also the <em>conjugate</em></p>
+<p><span class="math display">
+q^* = (q_0, -q_1, -q_2, -q_3) = (q_0, -\vec{q}).
+</span></p></li>
+</ul>
+</section>
+<section id="d-rotations-with-quaternions" class="slide level1">
+<h1>3D Rotations with Quaternions</h1>
+<ul>
+<li><p>Given a normalized vector <span class="math inline">\hat n</span>
+and an angle <span class="math inline">\theta</span>, we associate with
+it the quaternion</p>
+<p><span class="math display">
+r(\theta, \hat n) = \left(\cos\frac\theta2, \sin\frac\theta2\,\hat
+n\right),
+</span></p>
+<p>which represents the rotation by an angle <span
+class="math inline">\theta</span> around <span class="math inline">\hat
+n</span>.</p></li>
+<li><p>If <span class="math inline">\left\|\hat n\right\| = 1</span>, it
+obviously holds that <span class="math inline">\left\|r(\theta, \hat
+n)\right\| = 1</span>.</p></li>
+<li><p>Let’s see how to represent a 3D rotation using <span
+class="math inline">r(\theta, \hat n)</span>.</p></li>
+</ul>
+</section>
+<section id="applying-the-rotation" class="slide level1">
+<h1>Applying the Rotation</h1>
+<ul>
+<li><p>A generic vector <span class="math inline">\vec v</span> is
+rotated into <span class="math inline">\vec v&#39;</span> through this
+product of three quaternions:</p>
+<p><span class="math display">
+\vec v&#39; = r(\theta, \hat n) \cdot (0, \vec v) \cdot r^{-1}(\theta,
+\hat n),
+</span> where <span class="math inline">(0, \vec v)</span> represents
+the quaternion associated with <span class="math inline">\vec
+v</span>.</p></li>
+<li><p>Intuitively, <span class="math inline">r(\theta, \hat n)</span>
+appears <strong>twice</strong> in the formula because it depends on the
+angle <span class="math inline">\theta/2</span>, and not simply on the
+angle <span class="math inline">\theta</span>.</p></li>
+<li><p>From the formula, it is evident that <span
+class="math inline">r(\theta, \hat n)</span> and <span
+class="math inline">-r(\theta, \hat n)</span> represent the same
+rotation.</p></li>
 </ul>
 </section>
 <section id="are-quaternions-efficient" class="slide level1">
@@ -306,8 +411,8 @@ simply</p>
 r(t) = \frac{\sin(1 - t)\theta}{\sin\theta}r_1 + \frac{\sin
 t\theta}{\sin\theta}r_2,
 </span></p>
-<p>where <span class="math inline">\theta</span> is the angle between
-the two quaternions <span class="math inline">r_1</span> and <span
+<p>where <span class="math inline">\theta</span> is the “angle” between
+<span class="math inline">r_1</span> and <span
 class="math inline">r_2</span> (with <span
 class="math inline">\left\|r_1\right\| = \left\|r_2\right\| =
 1</span>):</p>
@@ -352,8 +457,8 @@ are.</p></li>
 <section id="limits-of-classical-geometry" class="slide level1">
 <h1>Limits of Classical Geometry</h1>
 <ul>
-<li><p>There exist vectors and pseudovectors, which follow different
-transformation rules.</p></li>
+<li><p>Vectors and pseudovectors follow different transformation
+rules.</p></li>
 <li><p>To describe rotations on a 2D plane, it is necessary to use 3D
 (pseudo)vectors, like <em>angular momentum</em> <span
 class="math inline">\vec{L} = \vec{r} \times \vec{p}</span> or
@@ -692,13 +797,9 @@ vector space.</p></li>
 class="math inline">\vec v \cdot \vec w</span> and a bivector like <span
 class="math inline">\vec v \wedge \vec w</span>?</p></li>
 <li><p>The «sum» must be understood in a non-literal sense, just like
-the sum of the real and imaginary parts of a number (<span
-class="math inline">z = x + iy</span>).</p></li>
-<li><p>Actually, <span class="math inline">z \in \mathbb{C}</span>
-represents a pair <span class="math inline">(x, y)</span>, which is
-written as <span class="math inline">x + iy</span> because this is a
-mnemonic aid when calculating sums and products of complex
-numbers.</p></li>
+the sum of the real/imaginary parts (<span class="math inline">z = x +
+iy</span>) or of orthogonal vectors (<span class="math inline">\vec v =
+3\hat ı + 4\hat ȷ</span>).</p></li>
 <li><p>Similarly, the notation <span class="math inline">\vec v \cdot
 \vec w + \vec v \wedge \vec w</span> is a mnemonic aid to remember how
 geometric products are added and multiplied.</p></li>
@@ -722,7 +823,12 @@ v}{\left\|\vec v\right\|^2} = 1,
 </span></p>
 <p>and therefore <span class="math inline">\vec v^{-1} = \vec v /
 \left\|\vec v\right\|^2</span>: like any respectable algebra,
-<strong>the inverse exists</strong>! # Other Examples</p></li>
+<strong>the inverse exists</strong>!</p></li>
+</ul>
+</section>
+<section id="other-examples" class="slide level1">
+<h1>Other Examples</h1>
+<ul>
 <li><p>Suppose that <span class="math inline">\vec v \perp \vec
 w</span>. Then</p>
 <p><span class="math display">
@@ -908,9 +1014,9 @@ also in the Clifford subalgebra that contains multivectors in the form
 e^{i\theta} \vec v</span> the <em>vector</em> <span
 class="math inline">\vec v</span> appears, which is not part of the
 subalgebra: in this case the product does not commute!</p></li>
-<li><p>It can be shown that in 2D, <span class="math inline">z \vec v =
-\vec v z^*</span> holds, where <span class="math inline">z^*</span> is
-the complex conjugate.</p></li>
+<li><p>In 2D, <span class="math inline">z \vec v = \vec v z^*</span>
+holds, where <span class="math inline">z^*</span> is the complex
+conjugate.</p></li>
 <li><p>If we reduce to a relationship similar to the one <a
 href="tomasi-ray-tracing-06a.html#/slerp-and-rotations">seen for
 quaternions</a>, namely</p>
@@ -947,8 +1053,8 @@ still holds that <span class="math inline">(\hat e_1 \hat e_2 \hat
 e_3)^2 = -1 \equiv i^2</span>.</p></li>
 </ul>
 </section>
-<section id="multivectors-and-rotations-in-3d" class="slide level1">
-<h1>Multivectors and Rotations in 3D</h1>
+<section id="rotations-in-3d" class="slide level1">
+<h1>Rotations in 3D</h1>
 <ul>
 <li><p>To specify a rotation in 3D, you need the angle and the axis of
 rotation.</p></li>
@@ -1059,8 +1165,9 @@ formalism of geometric algebra.</p></li>
 product:</p>
 <ol type="1">
 <li>It is defined on <span class="math inline">\mathbb{R}^n</span> for
-any <span class="math inline">n</span>, while the vector product is only
-defined for <span class="math inline">n = 3</span>.</li>
+any <span class="math inline">n</span>, while <span
+class="math inline">\times</span> is only defined for <span
+class="math inline">n = 3</span>.</li>
 <li>The exterior product is associative, while the vector product is
 not: <span class="math inline">u \times (v \times w) \not= (u \times v)
 \times w</span>. Calculations are therefore simpler.</li>
