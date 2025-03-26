@@ -1,7 +1,5 @@
 PANDOC = /usr/bin/pandoc
 SED = /bin/sed
-JS_FILES = \
-	./js/quantization.js
 
 .phony: all http
 
@@ -44,9 +42,6 @@ language-comparison.html: language-comparison.md
 giudizi-linguaggio.html: giudizi-linguaggio.md
 	$(PANDOC) --toc --standalone -o $@ $<
 
-%.js: %.nim
-	nim js -o:$@ $<
-
 %.html: %.md
 	$(PANDOC) \
 	    	--standalone \
@@ -54,7 +49,6 @@ giudizi-linguaggio.html: giudizi-linguaggio.md
 		--css ./css/custom.css \
 		--css ./css/asciinema-player.css \
 		-A asciinema-include.html \
-		-A nim-include.html \
 		--katex \
 		--template template-revealjs.html \
 		-V theme=white \
