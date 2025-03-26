@@ -15,7 +15,6 @@ all: \
 	tomasi-ray-tracing-09a.html \
 	tomasi-ray-tracing-08b.html \
 	tomasi-ray-tracing-08a.html \
-	tomasi-ray-tracing-07b.html \
 	tomasi-ray-tracing-07a.html \
 	tomasi-ray-tracing-06b.html \
 	tomasi-ray-tracing-06a.html \
