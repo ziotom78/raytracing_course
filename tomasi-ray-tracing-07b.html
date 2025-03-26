@@ -667,6 +667,121 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a h
 <span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(image.width):</span>
 <span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> image.get_pixel(col, row) <span class="op">==</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span></code></pre></div>
 </section>
+<section id="ci-builds" class="slide level1">
+<h1>CI builds</h1>
+</section>
+<section id="ci-builds-1" class="slide level1">
+<h1>CI builds</h1>
+<ul>
+<li><p>When managing <em>pull requests</em>, it is necessary to be sure
+that the change does not worsen the code.</p></li>
+<li><p>A basic requirement is that all tests continue to pass once the
+<em>pull request</em> is merged.</p></li>
+<li><p>GitHub allows you to automatically verify this requirement, using
+<em>Continuous Integration builds</em> (which GitHub calls <em>GitHub
+actions</em>).</p></li>
+</ul>
+</section>
+<section id="continuous-integration-ci" class="slide level1">
+<h1>Continuous Integration (CI)</h1>
+<ul>
+<li><p>It is a term that indicates a working method in which
+improvements and code changes are incorporated as soon as possible into
+the <code>master</code> branch.</p></li>
+<li><p>Before they can be incorporated, it is necessary to be certain of
+their quality!</p></li>
+<li><p>A CI build consists of creating a virtual machine on which a
+«clean» operating system is installed and on which the code is
+installed, compiled, and the tests are run.</p></li>
+<li><p>At the end of the test execution, the virtual machine is deleted;
+if the CI build is run again, it starts over.</p></li>
+</ul>
+</section>
+<section id="advantages-of-ci-builds" class="slide level1">
+<h1>Advantages of CI builds</h1>
+<ul>
+<li><p>They install the code on a virtual machine: it’s harder to mess
+things up.</p></li>
+<li><p>The virtual machine is always created from scratch: it’s easier
+to discover the code’s dependencies. (Example: which version of the C++
+compiler was installed? Was the <code>libgd</code> library
+installed?)</p></li>
+<li><p>You can create multiple virtual machines with different operating
+systems (Linux, Windows, Mac OS X…): the code is verified on each of
+them.</p></li>
+<li><p>CI builds can be run automatically by GitHub every time a pull
+request is opened, every time a commit is made, etc.</p></li>
+</ul>
+</section>
+<section id="ci-builds-in-github" class="slide level1">
+<h1>CI builds in GitHub</h1>
+<ul>
+<li><p>A CI build can be created and executed in GitHub using <a
+href="https://docs.github.com/en/actions">GitHub Actions</a>, a service
+that includes several possibilities that go beyond simple CI
+builds.</p></li>
+<li><p>To activate a CI build, it is sufficient to create a hidden
+directory <code>.github/workflows</code> in your repository, containing
+a text file in <a href="https://en.wikipedia.org/wiki/YAML">YAML</a>
+format, which contains this information:</p>
+<ol>
+<li>When to execute the action (on every pull request? on every
+commit?)</li>
+<li>Which operating system to use (Linux? Windows? which version?)</li>
+<li>Which additional packages to install (C++ compiler? Python?)</li>
+<li>How to compile the code and run the tests?</li>
+</ol></li>
+</ul>
+</section>
+<section id="the-marketplace" class="slide level1">
+<h1>The «Marketplace»</h1>
+<ul>
+<li><p>GitHub Actions has a «marketplace» that allows you to
+automatically configure a CI build with a few mouse clicks, depending on
+the language you use.</p></li>
+<li><p>Pre-configured actions are available for many languages and
+development environments.</p></li>
+<li><p>It’s not a problem if you don’t find an action that suits your
+needs: it’s quite simple to create new custom actions, once you
+understand how to describe them.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/github-action-run-tests.png" height="720" />
+</center>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/github-action-run-tests-detail.png"
+height="720" />
+</center>
+</section>
+<section id="what-can-be-done-in-a-ci-build" class="slide level1">
+<h1>What can be done in a CI build?</h1>
+<ul>
+<li><p>You can run <em>linters</em> like <a
+href="https://pypi.org/project/pyflakes/">PyFlakes</a> for Python or <a
+href="https://clang-analyzer.llvm.org/">CSA</a> for C++.</p></li>
+<li><p>If you use an automatic formatting tool (like <a
+href="https://github.com/psf/black">black</a> for Python or <a
+href="https://clang.llvm.org/docs/ClangFormat.html">clang-format</a> for
+C++), you can verify that the code is formatted correctly.</p></li>
+<li><p>You can use sites like <a
+href="https://about.readthedocs.com/?ref=readthedocs.org">ReadTheDocs</a>
+to publish the user manual with <a
+href="https://www.sphinx-doc.org/">Sphinx</a>, <a
+href="https://www.mkdocs.org/">MkDocs</a> or <a
+href="https://jupyterbook.org/en/stable/intro.html">Jupyter Book</a>,
+ensuring that updated <em>docstrings</em> are included.</p></li>
+<li><p>You can generate ready-to-download executables: this way the user
+is not obliged to install a C++/Nim/Rust/… compiler.</p></li>
+<li><p><strong>The only requirement for this course is that you run the
+tests!</strong></p></li>
+</ul>
+</section>
 <section id="what-to-do-today" class="slide level1">
 <h1>What to do today</h1>
 </section>
@@ -684,6 +799,105 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a h
 </ol></li>
 <li><p>Implement all the tests. When you have finished the
 implementation and the tests pass successfully, close the PR.</p></li>
+<li><p>Add a <em>workflow</em> to your GitHub repository that (1)
+downloads the code, (2) compiles it, and (3) runs the tests.</p></li>
+</ul>
+</section>
+<section id="hints-for-c" class="slide level1">
+<h1>Hints for C++</h1>
+</section>
+<section id="github-actions" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li><p>Once you have saved the code in a GitHub repository, set up a new
+“Action” (see the following video).</p></li>
+<li><p>The template is “CMake based projects” (ignore the fact that it
+seems to only support the C language):</p>
+<center>
+<p><img data-src="./media/cmake-github-action.png" /></p>
+</center></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<iframe src="https://player.vimeo.com/video/520878087?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Setting up GitHub Actions for CMake-based projects">
+</iframe>
+</section>
+<section id="hints-for-c-1" class="slide level1">
+<h1>Hints for C#</h1>
+</section>
+<section id="github-actions-1" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li><p>Add an Action to the GitHub repository, once you have committed
+and executed <code>git push</code>.</p></li>
+<li><p>The template is «.NET» (avoid the «.NET desktop» template, we
+need the one for programs that work from the command line):</p>
+<center>
+<p><img data-src="./media/dotnet-github-action.png" /></p>
+</center></li>
+</ul>
+</section>
+<section id="hints-for-javakotlin" class="slide level1">
+<h1>Hints for Java/Kotlin</h1>
+</section>
+<section id="github-actions-2" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li><p>Whether you use Java or Kotlin, select «Java with Gradle»:</p>
+<center>
+<p><img data-src="./media/gradle-github-action.png" /></p>
+</center>
+<p>If you use Kotlin, Gradle will automatically download what is needed
+to support it.</p></li>
+<li><p>The process will try to compile the code and run <em>all</em> the
+tests in the repository</p></li>
+</ul>
+</section>
+<section id="troubleshooting" class="slide level1">
+<h1>Troubleshooting</h1>
+<ul>
+<li><p>Remember to add the files in <code>gradle/wrapper/</code> to the
+commit</p></li>
+<li><p>If you have problems in Kotlin due to the Gradle version,
+regenerate <code>gradlew</code> from the command line like this:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> wrapper <span class="at">--gradle-version</span> 8.4</span></code></pre></div>
+<p>(Keep in mind that Gradle supports Kotlin only starting from version
+5.3).</p></li>
+</ul>
+</section>
+<section id="hints-for-julia" class="slide level1">
+<h1>Hints for Julia</h1>
+</section>
+<section id="github-actions-3" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li>The repository for standard Julia Actions is <a
+href="https://github.com/julia-actions">Julia Actions</a>.</li>
+<li>The most useful actions are:
+<ol>
+<li><code>julia-actions/setup-julia@v2</code> to set up the Julia
+compiler;</li>
+<li><code>julia-actions/julia-buildpkg@v1</code> to build the
+package;</li>
+<li><code>julia-actions/julia-runtest@v1</code> to run the tests.</li>
+</ol></li>
+</ul>
+</section>
+<section id="hints-for-dnimrust" class="slide level1">
+<h1>Hints for D/Nim/Rust</h1>
+</section>
+<section id="github-actions-4" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li><p>For D, you can use <a
+href="https://github.com/dlang-community/setup-dlang">setup-dlang</a></p></li>
+<li><p>For Nim, there is <a
+href="https://github.com/marketplace/actions/setup-nim-environment">Setup
+Nim Environment</a></p></li>
+<li><p>Those using Rust have already configured an action, so everything
+is ok!</p></li>
 </ul>
 </section>
     </div>
