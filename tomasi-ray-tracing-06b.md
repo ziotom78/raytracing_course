@@ -648,7 +648,7 @@ def test_image_tracer(self):
 
 
 ---
-title: "Laboratory 7"
+title: "Laboratory 6"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

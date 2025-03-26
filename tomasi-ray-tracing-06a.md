@@ -508,7 +508,7 @@ label("$\vec u$", (1.0, 0, 0.7));
     where $R_\text{display} = N_\text{columns} / N_\text{rows}$ is the *aspect ratio* of the screen.
 
 ---
-title: "Lezione 7"
+title: "Lesson 6"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

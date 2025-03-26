@@ -808,7 +808,7 @@ label("$\hat e_1 \wedge \hat e_3$", (0.5, 0.05, 0.5));
 -   [*A history of vector analysis*](https://en.wikipedia.org/wiki/A_History_of_Vector_Analysis) (M. J. Crowe): describes the history of vector analysis, comparing the algebras of Hamilton, Grassmann/Clifford, and the vector system of Gibbs/Heavyside (which is the «classical» one, but was born last).
 
 ---
-title: "Lesson 6"
+title: "Lesson 7"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...
