@@ -128,7 +128,7 @@ A vector space $V$ over a field $F$ is a non-empty set $V$ of elements, called *
 
 -   A vector $u$ such that $\left\|u\right\| = 1$ is called *normalized*.
 
-# Spanning Sets
+# Linear spans
 
 -   The span of a set of vectors $\{v_i\}_{i=1}^N$ is the set
 
@@ -177,6 +177,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
     $$
 
 # Basis (2/2)
+
 -   If $V$ admits two bases $\left\{e_i\right\}_{i=1}^N$ and $\left\{f_i\right\}_{i=1}^M$, the number of elements in both is identical ($N = M$) and is called the *dimension* of $V$. (We ignore infinite-dimensional spaces in this course.)
 
 -   An *orthonormal basis* of a vector space $V$ equipped with an inner product is defined as the set of vectors $\left\{e_i\right\}_{i=1}^N$ such that
@@ -294,7 +295,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 
 -   Now consider a car moving away from us, and its mirrored copy.
 
--   The angular momentum of the wheels $\vec\omega$ does **not** transform like a normal vector under reflection: it is a *pseudovector*.
+-   The angular momentum of the wheels $\vec L$ does **not** transform like a normal vector under reflection: it is a *pseudovector*.
 
     <center>
     ![](./media/auto-angular-momentum.svg){height=380px}
@@ -427,9 +428,7 @@ In our code, we will implement only **invertible** transformations:
 
 # Handling Normals
 
--   We have seen that normals behave differently from vectors in the specific case of scaling transformations.
-
--   However, the result we obtained is *general*: it is not only valid for scaling transformations, but for any invertible transformation $N$.
+-   Note that the result we obtained is *general*: it is not only valid for scaling transformations, but for **any** invertible transformation $N$.
 
 -   In numerical code, it is convenient to store both the matrix $N$ corresponding to a transformation and the transpose of its inverse $\left(N^{-1}\right)^t$ in a type (`struct`, `class`, `record`, etc.) that represents an invertible transformation: it uses more memory, but the calculations are faster.
 
@@ -687,14 +686,14 @@ In our code, we will implement only **invertible** transformations:
 
 # Example (2/3)
 
--   We add a new feature: if a name like `Donald` is passed from the command line, the program prints `Hello, Donald!`. Without arguments, the program still writes `Hello, world!`:
+-   We add a new feature: if a name like `Maurizio` is passed from the command line, the program prints `Hello, Maurizio!`. Without arguments, the program still writes `Hello, world!`:
 
     ```
     $ ./hello
     Hello, world!
 
-    $ ./hello Donald
-    Hello, Donald!
+    $ ./hello Maurizio
+    Hello, Maurizio!
     ```
 
 -   We have added a feature but preserved compatibility (without arguments, the program still works the same as version `1.0.1`), so the new version will be `1.1.0`.
@@ -707,10 +706,10 @@ In our code, we will implement only **invertible** transformations:
 -   The code checks the value of the `$LANG` environment variable (used on Unix systems) and decides which language to print the message in:
 
     ```
-    $ ./hello Donald     # …when I run it on a english-talking machine
-    Hello, Donald!
-    $ LANG=it_IT.UTF-8 ./hello Goofy
-    Salve, Goofy!
+    $ ./hello Maurizio     # …when I run it on a english-talking machine
+    Hello, Maurizio!
+    $ LANG=it_IT.UTF-8 ./hello Maurizio
+    Salve, Maurizio!
     ```
 
 -   The program is **not compatible** with version `1.1.0` because on an Italian machine it now prints `Salve, mondo!` instead of `Hello, world!`.
@@ -737,7 +736,7 @@ In our code, we will implement only **invertible** transformations:
 
 # Disadvantages of semantic versioning
 
--   Sometimes it is difficult to establish whether a change is "breaking" or not (see for example the article [Semantic Versioning Will Not Save You](https://hynek.me/articles/semver-will-not-save-you/)).
+-   Sometimes it is difficult to establish whether a change is "breaking" or not (see for example the article [Semantic Versioning Will Not Save You](https://hynek.me/articles/semver-will-not-save-you/)) or this [XKCD comic](https://xkcd.com/1172/).
 
 -   For projects with a large critical mass, it may make more sense to use the release date, as is the case with C++.  Python is also moving in this direction with [PEP 2026](https://peps.python.org/pep-2026/).
 

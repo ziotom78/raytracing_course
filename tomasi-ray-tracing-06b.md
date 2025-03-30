@@ -644,8 +644,6 @@ def test_image_tracer(self):
 
 -   For Nim, there is [Setup Nim Environment](https://github.com/marketplace/actions/setup-nim-environment)
 
--   Those using Rust have already configured an action, so everything is ok!
-
 
 ---
 title: "Laboratory 6"

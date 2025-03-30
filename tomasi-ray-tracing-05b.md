@@ -72,21 +72,21 @@
 
 # Branch Commands
 
--   `git branch` lists the branches (by default, at the beginning there is only `master`).
+-   `git branch` lists the available branches.
+
+-   `git branch -d NAME` deletes a branch (ok if you already merged it).
 
 -   `git checkout -b NAME` creates a new branch and makes it active.
 
 -   `git checkout NAME` activates the already existing branch `NAME`.
 
--   `git merge NAME1 NAME2` incorporates the changes from branch `NAME1` into branch `NAME2`; usually `NAME2` is `master`.
+-   `git merge NAME1 NAME2` incorporates the changes from branch `NAME1` into branch `NAME2` (`NAME1` → `NAME2`); usually `NAME2` is `master` or `main`.
 
--   `git branch -d NAME` deletes a branch.
-
--   When you run `git fetch` or `git pull` to download new commits from GitHub, all branches are imported.
+-   `git fetch` and `git pull` import **all** branches.
 
 # Branches in GitHub
 
--   GitHub allows you to navigate within the branches through a dedicated button:
+-   GitHub allows you to activate any branch in the browser through a dedicated button:
 
     <center>
     ![](./media/github-branches-list.png){height=440px}
@@ -108,7 +108,20 @@
 
 <iframe src="https://player.vimeo.com/video/535144283?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1440" height="622" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="How to create pull requests in GitHub"></iframe>
 
-# Another Example
+# Checklists
+
+-   In complex pull requests, you might plan to implement several different features with separate commits (**highly** recommended!)
+-   The GitHub interface lets you to include checklists with this syntax:
+
+    ```
+    -   [X] Add the feature
+    -   [ ] Implement tests
+    -   [ ] Update the documentation
+    ```
+
+-   To activate/deactivate items, just click on them; there is no need to modify the Markdown.
+
+# Checklists
 
 <center>
 ![](./media/github-pull-request-healpix.png)
@@ -419,6 +432,7 @@ else:
     $$
 
 -   (None of the transformations we implement lead to $\lambda \not= 1$, but more general transformations can: implementing this normalization in our code makes it *future-proof*).
+
 # Normals
 
 -   We said that we also need to implement `Normal`, which has the same structure as `Vec` but will require fewer operations:
@@ -480,6 +494,19 @@ else:
                   z=n.x * row0[2] + n.y * row1[2] + n.z * row2[2])
     ```
 
+# Matrices and Transformations
+
+-   It may be useful to define a `HomMatrix` type that implements a 4×4 homogeneous matrix along with basic operations on it.
+
+-   The `Transformation` type will then contain two `HomMatrix` fields, containing the transformation matrix and its inverse, respectively.
+
+-   Be careful to define `HomMatrix` in a way that avoids memory allocation on the *heap*, because it needs to be fast to allocate:
+
+    1.  Avoid using constructs like `vector<vector<float>>` (C++), as data would be in the heap and not contiguous in memory.
+
+    2.  In fact, avoid `vector` (C++) and similar constructs altogether and define a simple array of 16 elements.
+
+
 # Tests
 
 -   The complete set of tests is in the [pytracer](https://github.com/ziotom78/pytracer) repository, in the file [test_all.py](https://github.com/ziotom78/pytracer/blob/41878248890338e62aa38c928c17561490c901b6/test_all.py#L202-L232).
@@ -490,9 +517,9 @@ else:
 
 #. One of you creates the 0.1.0 *release*;
 #. One of you creates a `geometry` branch and makes a *pull request*, which the others download;
-#. One of you implements the `Vec` type (without methods or operators!), one `Point`, one `Normal` and one `Transformation`;
+#. Split the work among your co-workers. You need to implement the types `Vec` (without methods or operators!), `Point`, `Normal`, `HomMatrix`.
 #. Synchronize with each other by doing a *merge*;
-#. Divide the implementation of the various methods and operators among yourselves.
+#. Divide the implementation of the various methods and operators among yourselves, and then implement `Transformation`.
 
 
 # Hints for C++
@@ -540,7 +567,7 @@ I suggested this approach when you implemented `Color`, but it is even more impo
 -   This example shows how to apply the technique to the sum of two elements:
 
     ```c++
-    // This template…
+    // Generic operation `In1 + In2 → Out`. This template…
     template <typename In1, typename In2, typename Out>
     Out _sum(const In1 &a, const In2 &b) {
       return Out{a.x + b.x, a.y + b.y, a.z + b.z};
@@ -567,25 +594,13 @@ I suggested this approach when you implemented `Color`, but it is even more impo
 
 # Type definitions
 
--   To define the `Vec` and `Point` types you could use the [StaticArrays.jl](https://github.com/JuliaArrays/StaticArrays.jl) library, which implements highly efficient fixed-size arrays. It's a very efficient library, but **I don't recommend using it in this case**.
+-   To define the `Vec` and `Point` types you might think that [StaticArrays.jl](https://github.com/JuliaArrays/StaticArrays.jl) is perfect. It's a very efficient library, but **I don't recommend using it in this case**.
 -   The problem with StaticArrays.jl is that it doesn't allow you to exploit multiple dispatch: `Vec` and `Point` would be seen by Julia as the same type `SVector{3, Float32}`.
 -   It's better to define two new types with `struct`
 -   I recommend omitting `mutable`: you will encourage Julia to use them as *value types* instead of *reference types*.
 
 
 # Guidelines for D/Nim/Rust
-
-# Matrices and Transformations
-
--   It may be useful to define a `HomMatrix` type that implements a 4×4 homogeneous matrix along with basic operations on it.
-
--   The `Transformation` type will then contain two `HomMatrix` fields, containing the transformation matrix and its inverse, respectively.
-
--   Be careful to define `HomMatrix` in a way that avoids memory allocation on the *heap*, because it needs to be fast to allocate:
-
-    -   Avoid using constructs like `vector<vector<float>>` (C++), as data would not be contiguous in memory.
-
-    -   In fact, avoid `vector` (C++) and similar constructs altogether, as they internally use the heap, and define a simple array of 16 elements.
 
 # Type Definitions
 

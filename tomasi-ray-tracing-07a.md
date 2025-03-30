@@ -226,7 +226,7 @@
 
 -   Intuitively, $r(\theta, \hat n)$ appears **twice** in the formula because it depends on the angle $\theta/2$, and not simply on the angle $\theta$.
 
--   From the formula, it is evident that $r(\theta, \hat n)$ and $-r(\theta, \hat n)$ represent the same rotation.
+-   From the formula, it is evident that $r(\theta, \hat n)$ and $-r(\theta, \hat n)$ represent the “same” rotation (90 clockwise vs. 270° counterclockwise).
 
 # Are Quaternions Efficient?
 

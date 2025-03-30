@@ -11,10 +11,9 @@
 |         2 |  [10 Marzo 2025](tomasi-ray-tracing-02a.html)   |  [12 Marzo 2025](tomasi-ray-tracing-02b.html)   |
 |         3 |  [17 Marzo 2025](tomasi-ray-tracing-03a.html)   |  [19 Marzo 2025](tomasi-ray-tracing-03b.html)   |
 |         4 |  [24 Marzo 2025](tomasi-ray-tracing-04a.html)   |  [26 Marzo 2025](tomasi-ray-tracing-04b.html)   |
-
+|         5 | [31 Marzo 2025](tomasi-ray-tracing-05a.html) | [2 Aprile 2025](tomasi-ray-tracing-05b.html) |
 <!--
-|         5 | [25 Marzo 2025](tomasi-ray-tracing-05a.html) | [27 Marzo 2025](tomasi-ray-tracing-05b.html) |
-|         6 | [3 Aprile 2025](tomasi-ray-tracing-06a.html) | [10 Aprile 2025](tomasi-ray-tracing-06b.html) |
+|         6 | [7 Aprile 2025](tomasi-ray-tracing-06a.html) | [9 Aprile 2025](tomasi-ray-tracing-06b.html) |
 |         7 | [15 Aprile 2025](tomasi-ray-tracing-07a.html) | [17 Aprile 2025](tomasi-ray-tracing-07b.html) |
 |         8 | [22 Aprile 2025](tomasi-ray-tracing-08a.html) | [24 Aprile 2025](tomasi-ray-tracing-08b.html) |
 |         9 | [6 Maggio 2025](tomasi-ray-tracing-09a.html) | — |
@@ -47,11 +46,11 @@
 - [Eccezioni](tomasi-ray-tracing-03a.html#/exceptions)
 - [Tone mapping](tomasi-ray-tracing-04a.html#/tone-mapping)
 - [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenses)
-
-<!--
 -   [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modeling-objects)
 -   [Trasformazioni](tomasi-ray-tracing-05a.html#/transformations): [di scala](tomasi-ray-tracing-05a.html#/scaling-transformations), [applicate a normali](tomasi-ray-tracing-05a.html#/transformations-and-normals), [rotazioni](tomasi-ray-tracing-05a.html#/rotations), [traslazioni](tomasi-ray-tracing-05a.html#/translations)
 -   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/version-numbers)
+
+<!--
 -   [*Branch* e *pull requests*](tomasi-ray-tracing-05b.html#/pull-requests)
 -   [*CI builds*](tomasi-ray-tracing-06b.html#/ci-builds)
 -   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-07a.html#/solution-of-the-rendering-equation)
