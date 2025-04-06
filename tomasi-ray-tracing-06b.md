@@ -163,7 +163,7 @@ int main() {
 
     2.  Dynamic polymorphism: this is the case of class hierarchies.
 
--   We will need dynamic polymorphism, which you can implement either using OOP constructs (suitable for languages like Java and Kotlin) or using procedural programming.
+-   Today we will need dynamic polymorphism for cameras. You can implement either using OOP constructs (suitable for languages like Java and Kotlin) or using procedural programming.
 
 
 # Interfaces and *traits*
@@ -545,13 +545,13 @@ def test_image_tracer(self):
 
 # What can be done in a CI build?
 
--   You can run *linters* like [PyFlakes](https://pypi.org/project/pyflakes/) for Python or [CSA](https://clang-analyzer.llvm.org/) for C++.
+-   You can run *linters* like [ruff check](https://github.com/astral-sh/ruff) for Python or [CSA](https://clang-analyzer.llvm.org/) for C++.
 
--   If you use an automatic formatting tool (like [black](https://github.com/psf/black) for Python or [clang-format](https://clang.llvm.org/docs/ClangFormat.html) for C++), you can verify that the code is formatted correctly.
+-   If you use an automatic formatting tool ([ruff format](https://github.com/astral-sh/ruff) for Python or [clang-format](https://clang.llvm.org/docs/ClangFormat.html) for C++), you can verify that the code is formatted correctly.
 
 -   You can use sites like [ReadTheDocs](https://about.readthedocs.com/?ref=readthedocs.org) to publish the user manual with [Sphinx](https://www.sphinx-doc.org/), [MkDocs](https://www.mkdocs.org/) or [Jupyter Book](https://jupyterbook.org/en/stable/intro.html), ensuring that updated *docstrings* are included.
 
--   You can generate ready-to-download executables: this way the user is not obliged to install a C++/Nim/Rust/… compiler.
+-   You can generate ready-to-download executables: this way the user is not forced to install a C++/Nim/Rust/… compiler.
 
 -   **The only requirement for this course is that you run the tests!**
 
@@ -574,6 +574,14 @@ def test_image_tracer(self):
 
 # Hints for C++
 
+# Dynamic polymorphism
+
+-   C++ supports both virtual functions (OOP polymorphism) or functional polymorphism
+
+-   Given that it’s likely you already learned how to use `virtual` methods in C++, I suggest you try procedural polymorphism today
+
+-   But if you feel it’s better to use OOP, go on! The two approaches boil down to the same machine code, so it’s just a matter of aesthetics.
+
 # GitHub Actions
 
 - Once you have saved the code in a GitHub repository, set up a new "Action" (see the following video).
@@ -589,6 +597,14 @@ def test_image_tracer(self):
 <iframe src="https://player.vimeo.com/video/520878087?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1280" height="720" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Setting up GitHub Actions for CMake-based projects"></iframe>
 
 # Hints for C\#
+
+# Dynamic polymorphism
+
+-   C\# is a OOP language, so it’s better to stick with virtual methods
+
+-   However, C\# supports [interfaces](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/interfaces), so you should definitely try them!
+
+-   Remember that in C\# there is the convention that interfaces begin with a capital `I`. So, instead of using the name `Camera`, use `ICamera`.
 
 # GitHub Actions
 
@@ -627,6 +643,21 @@ def test_image_tracer(self):
     (Keep in mind that Gradle supports Kotlin only starting from version 5.3).
 
 # Hints for Julia
+
+# Dynamic polymorphism
+
+-   Julia makes heavy use of multiple dispatch, so use it!
+
+-   You should define an [abstract type](https://docs.julialang.org/en/v1/manual/types/#man-abstract-types) `Camera` and then implement the two types `OrthogonalCamera` and `PerspectiveCamera` as a hierarchy
+
+-   Implement the function `fire_ray` twice:
+
+    ```julia
+    function fire_ray(cam::OrthogonalCamera, …) … end
+    function fire_ray(cam::PerspectiveCamera, …) … end
+    ```
+
+    When using multiple dispatch, you *must* define the type of the `cam` parameter, so that Julia can distinguish between the two implementation.
 
 # GitHub Actions
 

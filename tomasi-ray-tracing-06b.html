@@ -320,9 +320,9 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#c
 <li><p>Dynamic polymorphism: this is the case of class
 hierarchies.</p></li>
 </ol></li>
-<li><p>We will need dynamic polymorphism, which you can implement either
-using OOP constructs (suitable for languages like Java and Kotlin) or
-using procedural programming.</p></li>
+<li><p>Today we will need dynamic polymorphism for cameras. You can
+implement either using OOP constructs (suitable for languages like Java
+and Kotlin) or using procedural programming.</p></li>
 </ul>
 </section>
 <section id="interfaces-and-traits" class="slide level1">
@@ -763,12 +763,12 @@ height="720" />
 <h1>What can be done in a CI build?</h1>
 <ul>
 <li><p>You can run <em>linters</em> like <a
-href="https://pypi.org/project/pyflakes/">PyFlakes</a> for Python or <a
+href="https://github.com/astral-sh/ruff">ruff check</a> for Python or <a
 href="https://clang-analyzer.llvm.org/">CSA</a> for C++.</p></li>
-<li><p>If you use an automatic formatting tool (like <a
-href="https://github.com/psf/black">black</a> for Python or <a
-href="https://clang.llvm.org/docs/ClangFormat.html">clang-format</a> for
-C++), you can verify that the code is formatted correctly.</p></li>
+<li><p>If you use an automatic formatting tool (<a
+href="https://github.com/astral-sh/ruff">ruff format</a> for Python or
+<a href="https://clang.llvm.org/docs/ClangFormat.html">clang-format</a>
+for C++), you can verify that the code is formatted correctly.</p></li>
 <li><p>You can use sites like <a
 href="https://about.readthedocs.com/?ref=readthedocs.org">ReadTheDocs</a>
 to publish the user manual with <a
@@ -777,7 +777,7 @@ href="https://www.mkdocs.org/">MkDocs</a> or <a
 href="https://jupyterbook.org/en/stable/intro.html">Jupyter Book</a>,
 ensuring that updated <em>docstrings</em> are included.</p></li>
 <li><p>You can generate ready-to-download executables: this way the user
-is not obliged to install a C++/Nim/Rust/… compiler.</p></li>
+is not forced to install a C++/Nim/Rust/… compiler.</p></li>
 <li><p><strong>The only requirement for this course is that you run the
 tests!</strong></p></li>
 </ul>
@@ -806,6 +806,19 @@ downloads the code, (2) compiles it, and (3) runs the tests.</p></li>
 <section id="hints-for-c" class="slide level1">
 <h1>Hints for C++</h1>
 </section>
+<section id="dynamic-polymorphism" class="slide level1">
+<h1>Dynamic polymorphism</h1>
+<ul>
+<li><p>C++ supports both virtual functions (OOP polymorphism) or
+functional polymorphism</p></li>
+<li><p>Given that it’s likely you already learned how to use
+<code>virtual</code> methods in C++, I suggest you try procedural
+polymorphism today</p></li>
+<li><p>But if you feel it’s better to use OOP, go on! The two approaches
+boil down to the same machine code, so it’s just a matter of
+aesthetics.</p></li>
+</ul>
+</section>
 <section id="github-actions" class="slide level1">
 <h1>GitHub Actions</h1>
 <ul>
@@ -825,6 +838,19 @@ seems to only support the C language):</p>
 </section>
 <section id="hints-for-c-1" class="slide level1">
 <h1>Hints for C#</h1>
+</section>
+<section id="dynamic-polymorphism-1" class="slide level1">
+<h1>Dynamic polymorphism</h1>
+<ul>
+<li><p>C# is a OOP language, so it’s better to stick with virtual
+methods</p></li>
+<li><p>However, C# supports <a
+href="https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/interfaces">interfaces</a>,
+so you should definitely try them!</p></li>
+<li><p>Remember that in C# there is the convention that interfaces begin
+with a capital <code>I</code>. So, instead of using the name
+<code>Camera</code>, use <code>ICamera</code>.</p></li>
+</ul>
 </section>
 <section id="github-actions-1" class="slide level1">
 <h1>GitHub Actions</h1>
@@ -869,6 +895,24 @@ class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#
 </section>
 <section id="hints-for-julia" class="slide level1">
 <h1>Hints for Julia</h1>
+</section>
+<section id="dynamic-polymorphism-2" class="slide level1">
+<h1>Dynamic polymorphism</h1>
+<ul>
+<li><p>Julia makes heavy use of multiple dispatch, so use it!</p></li>
+<li><p>You should define an <a
+href="https://docs.julialang.org/en/v1/manual/types/#man-abstract-types">abstract
+type</a> <code>Camera</code> and then implement the two types
+<code>OrthogonalCamera</code> and <code>PerspectiveCamera</code> as a
+hierarchy</p></li>
+<li><p>Implement the function <code>fire_ray</code> twice:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">fire_ray</span>(cam<span class="op">::</span><span class="dt">OrthogonalCamera</span>, <span class="op">…</span>) <span class="op">…</span> <span class="kw">end</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">fire_ray</span>(cam<span class="op">::</span><span class="dt">PerspectiveCamera</span>, <span class="op">…</span>) <span class="op">…</span> <span class="kw">end</span></span></code></pre></div>
+<p>When using multiple dispatch, you <em>must</em> define the type of
+the <code>cam</code> parameter, so that Julia can distinguish between
+the two implementation.</p></li>
+</ul>
 </section>
 <section id="github-actions-3" class="slide level1">
 <h1>GitHub Actions</h1>

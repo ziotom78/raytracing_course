@@ -61,7 +61,7 @@
 
 # Luminous Point and Plane
 
-An infinite ideal diffuse and non-emitting plane ($L_e = 0$) and a small sphere of radius $r$ at a distance $d \gg r$ from the plane, emitting isotropically with radiance $L_d$.
+Consider an infinite, non-emitting ($L_e = 0$), diffuse plane and a sphere of radius $r$ at a distance $d \gg r$ from the plane, emitting isotropically with radiance $L_d$.
 
 ![](./media/plane.png){height=360}
 
@@ -127,8 +127,11 @@ where $\theta$ is the angle between the normal and the direction of the small sp
 
 # Properties of the Solution
 
--   $L(x \rightarrow \Theta) \approx \rho_d\,L_d\,\cos\theta\,\left(\frac{r}d\right)^2.$
--   Even though the point emits isotropically and the surface is ideally diffuse, there is still a dependence on the cosine of $\theta$.
+\[
+L(x \rightarrow \Theta) \approx \rho_d\,L_d\,\cos\theta\,\left(\frac{r}d\right)^2.
+\]
+
+-   Even though the point emits isotropically and the surface is ideally diffuse, there is still a dependence on $\cos\theta$.
 -   The reflected radiance is proportional to the surface area of the sphere ($\propto r^2$).
 -   As $d$ increases, the radiance reflected from the plane decreases as $d^{-2}$ (conservation of energy).
 
@@ -205,9 +208,9 @@ How do we handle this case?
 
 # General Description
 
--   In an *image order* algorithm, we define the position of an observer of the scene (the gentleman with the stick in Alberti's drawing) and the direction in which they observe.
+-   In an *image order* algorithm, we define the position of an observer of the scene (the man with the stick in Alberti's drawing) and the direction in which they observe.
 
--   A two-dimensional surface representing the screen is defined.
+-   The screen is represented by a two-dimensional rectangular surface $S$.
 
 -   The rendering solution is calculated only for the points $\vec x$ on the surfaces $S$ of the scene that are visible to the observer through the screen.
 
@@ -262,7 +265,7 @@ How do we handle this case?
 
 # Screen and Observer {#screen-and-observer}
 
-## Screen Discretization
+# Screen Discretization
 
 -   Alberti conceived of a screen as a drawable surface; the same idea is found in [some Dürer prints](https://www.metmuseum.org/art/collection/search/366555) (16th century).
 
@@ -274,7 +277,7 @@ How do we handle this case?
 
 ---
 
-## Screen Discretization
+# Screen Discretization
 
 -   Alberti's observer would see this:
 
@@ -284,7 +287,7 @@ How do we handle this case?
 
 -   The squares represent the pixels the screen is divided into. (Very large! The standard resolution of a recent monitor is at least 1920×1080).
 
-## Projecting Light Rays
+# Projecting Light Rays
 
 -   Following the *backward* ray-tracing approach, we project rays through the screen pixels. The algorithm is as follows:
 
@@ -295,7 +298,7 @@ How do we handle this case?
 
 -   This is a *general* approach: we haven't yet explained how to solve the rendering equation!
 
-## Ray throug a Pixel {#ray-through-a-pixel}
+# Ray throug a Pixel {#ray-through-a-pixel}
 
 -   We assume that each ray passes through the center of a pixel:
 
@@ -305,7 +308,7 @@ How do we handle this case?
 
 -   For a 1920×1080 resolution image, we need to create about 2×10⁶ light rays and solve the rendering equation as many times.
 
-## Light Rays
+# Light Rays
 
 -   How should a light ray be represented in computer memory?
 
@@ -317,7 +320,7 @@ How do we handle this case?
 
 -   Let's examine each of these properties in detail.
 
-## Origin and Direction
+# Origin and Direction
 
 -   You are probably familiar with the canonical equation of a line used in analytic geometry ($ax + by + c = 0$, or $y = mx + q$), but these formulas are valid only in 2D and are not oriented.
 
@@ -333,7 +336,7 @@ How do we handle this case?
     ![](./media/ray-origin-dir.svg){height=120px}
     </center>
 
-## Ray Intersection
+# Ray Intersection
 
 -   The parameter $t$ must obviously satisfy $t \geq 0$.
 
@@ -349,7 +352,7 @@ How do we handle this case?
     ![](./media/ray-origin-dir-point.svg){height=180px}
     </center>
 
-## Distance
+# Distance
 
 -   The value of $t_P$ is conceptually similar to time, but it's a dimensionless quantity.
 
@@ -359,17 +362,17 @@ How do we handle this case?
     ![](./media/ray-origin-dir-point.svg){height=180px}
     </center>
 
-## Minimum Distance
+# Minimum Distance
 
 -   From a programming perspective, it's useful to set limits on the distance $t$: for example, we are obviously only interested in intersections with $t > 0$.
 
--   In some cases, it also makes sense to impose $t > t_\text{pixel}$, meaning that the ray has at least passed through the screen.
+-   In some cases, it also makes sense to impose $t > t_\text{pixel}$, meaning that the ray has at least passed through the screen (we won’t do this).
 
     <center>
     ![](./media/leon-battista-alberti-piramide-visuale.webp){height=320px}
     </center>
 
-## Maximum Distance
+# Maximum Distance
 
 -   Similarly, it makes sense to set a maximum distance $t_\text{max}$.
 
@@ -379,7 +382,7 @@ How do we handle this case?
 
     (The IEEE standard for representing floating-point numbers defines the values `+Inf`, `-Inf`, and `Inf`, which are very useful for this purpose).
 
-## Depth
+# Depth
 
 -   The last parameter associated with a ray is the *depth* $n$, an integer incremented each time a ray is created from a reflection:
 
@@ -391,7 +394,7 @@ How do we handle this case?
 
 # Projections {#projections}
 
-## Ray Generation
+# Ray Generation
 
 -   Having defined the screen and how to represent a light ray, the problem remains of *how* to generate the rays that pass through the screen.
 
@@ -415,7 +418,7 @@ How do we handle this case?
 <center>
 ![](./media/populous2.png){height=600px}
 </center>
-[*Populous 2* (orthogonal projection)]{style="float:right"}
+[[*Populous 2*](https://en.wikipedia.org/wiki/Populous_II:_Trials_of_the_Olympian_Gods) (orthogonal projection)]{style="float:right"}
 
 ---
 
@@ -424,7 +427,7 @@ How do we handle this case?
 </center>
 [*La città nuova*, [Antonio Sant'Elia](https://it.wikipedia.org/wiki/Antonio_Sant%27Elia) (1914, perspective projection)]{style="float:right"}
 
-# Differen
+# Differences
 
 <center>
 ![](./media/orthogonal-perspective-cube.svg)

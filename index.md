@@ -12,8 +12,8 @@
 |         3 |  [17 Marzo 2025](tomasi-ray-tracing-03a.html)   |  [19 Marzo 2025](tomasi-ray-tracing-03b.html)   |
 |         4 |  [24 Marzo 2025](tomasi-ray-tracing-04a.html)   |  [26 Marzo 2025](tomasi-ray-tracing-04b.html)   |
 |         5 | [31 Marzo 2025](tomasi-ray-tracing-05a.html) | [2 Aprile 2025](tomasi-ray-tracing-05b.html) |
-<!--
 |         6 | [7 Aprile 2025](tomasi-ray-tracing-06a.html) | [9 Aprile 2025](tomasi-ray-tracing-06b.html) |
+<!--
 |         7 | [15 Aprile 2025](tomasi-ray-tracing-07a.html) | [17 Aprile 2025](tomasi-ray-tracing-07b.html) |
 |         8 | [22 Aprile 2025](tomasi-ray-tracing-08a.html) | [24 Aprile 2025](tomasi-ray-tracing-08b.html) |
 |         9 | [6 Maggio 2025](tomasi-ray-tracing-09a.html) | — |
@@ -49,15 +49,14 @@
 -   [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modeling-objects)
 -   [Trasformazioni](tomasi-ray-tracing-05a.html#/transformations): [di scala](tomasi-ray-tracing-05a.html#/scaling-transformations), [applicate a normali](tomasi-ray-tracing-05a.html#/transformations-and-normals), [rotazioni](tomasi-ray-tracing-05a.html#/rotations), [traslazioni](tomasi-ray-tracing-05a.html#/translations)
 -   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/version-numbers)
-
-<!--
 -   [*Branch* e *pull requests*](tomasi-ray-tracing-05b.html#/pull-requests)
+-   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-06a.html#/solution-of-the-rendering-equation)
+-   [Algoritmi *image order*](tomasi-ray-tracing-06a.html#/image-order-algorithms)
+-   [Schermi virtuali e osservatori](tomasi-ray-tracing-06a.html#/screen-and-observer)
+-   [Proiezioni prospettiche ed ortogonali](tomasi-ray-tracing-06a.html#/projections)
+-   [*Aspect ratio*](tomasi-ray-tracing-06a.html#/aspect-ratio)
 -   [*CI builds*](tomasi-ray-tracing-06b.html#/ci-builds)
--   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-07a.html#/solution-of-the-rendering-equation)
--   [Algoritmi *image order*](tomasi-ray-tracing-07a.html#/image-order-algorithms)
--   [Schermi virtuali e osservatori](tomasi-ray-tracing-07a.html#/screen-and-observer)
--   [Proiezioni prospettiche ed ortogonali](tomasi-ray-tracing-07a.html#/projections)
--   [*Aspect ratio*](tomasi-ray-tracing-07a.html#/aspect-ratio)
+<!--
 -   [Forma alternativa dell'equazione del rendering e funzione di visibilità](tomasi-ray-tracing-08a.html#/rendering-equation)
 -   [Intersezioni tra raggi e forme geometriche](tomasi-ray-tracing-08a.html#/intersections-btw-rays-and-shapes): [sfere](tomasi-ray-tracing-08a.html#/spheres), [piani](tomasi-ray-tracing-08a.html#/planes)
 -   [Constructive Solid Geometry](tomasi-ray-tracing-08a.html#/constructive-solid-geometry)
@@ -81,10 +80,9 @@
 - [Lo standard Unicode](tomasi-ray-tracing-03a.html#/unicode)
 - [File e stream](tomasi-ray-tracing-03b.html#/file-e-stream)
 - [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
-
 <!--
--   [Numeri complessi e quaternioni](tomasi-ray-tracing-06a.html#/complex-numbers-and-quaternions)
--   [Algebre di Clifford](tomasi-ray-tracing-06a.html#/clifford-algebras)
+-   [Numeri complessi e quaternioni](tomasi-ray-tracing-07a.html#/complex-numbers-and-quaternions)
+-   [Algebre di Clifford](tomasi-ray-tracing-07a.html#/clifford-algebras)
 -   [*Issues*](tomasi-ray-tracing-08b.html#/issues)
 -   [*Change log*](tomasi-ray-tracing-08b.html#/changelog)
 -   [*Axis-aligned boxes*](tomasi-ray-tracing-09a.html#/axis-aligned-boxes)
