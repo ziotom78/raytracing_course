@@ -479,7 +479,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a h
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.aspect_ratio <span class="op">=</span> aspect_ratio</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, u: <span class="bu">float</span>, v: <span class="bu">float</span>):</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, u: <span class="bu">float</span>, v: <span class="bu">float</span>) <span class="op">-&gt;</span> Ray:</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        origin <span class="op">=</span> Point(<span class="op">-</span><span class="fl">1.0</span>, (<span class="fl">1.0</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> u) <span class="op">*</span> <span class="va">self</span>.aspect_ratio, <span class="dv">2</span> <span class="op">*</span> v <span class="op">-</span> <span class="dv">1</span>)</span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        direction <span class="op">=</span> VEC_X</span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Ray(origin<span class="op">=</span>origin, <span class="bu">dir</span><span class="op">=</span>direction, tmin<span class="op">=</span><span class="fl">1.0e-5</span>).transform(<span class="va">self</span>.transformation)</span></code></pre></div></li>
@@ -549,7 +549,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a h
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.aspect_ratio <span class="op">=</span> aspect_ratio</span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, u: <span class="bu">float</span>, v: <span class="bu">float</span>):</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, u: <span class="bu">float</span>, v: <span class="bu">float</span>) <span class="op">-&gt;</span> Ray:</span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        origin <span class="op">=</span> Point(<span class="op">-</span><span class="va">self</span>.distance, <span class="fl">0.0</span>, <span class="fl">0.0</span>)</span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        direction <span class="op">=</span> Vec(<span class="va">self</span>.distance, (<span class="fl">1.0</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> u) <span class="op">*</span> <span class="va">self</span>.aspect_ratio, <span class="dv">2</span> <span class="op">*</span> v <span class="op">-</span> <span class="dv">1</span>)</span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Ray(origin<span class="op">=</span>origin, <span class="bu">dir</span><span class="op">=</span>direction, tmin<span class="op">=</span><span class="fl">1.0e-5</span>).transform(<span class="va">self</span>.transformation)</span></code></pre></div></li>
@@ -637,13 +637,13 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a h
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.image <span class="op">=</span> image</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.camera <span class="op">=</span> camera</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, col: <span class="bu">int</span>, row: <span class="bu">int</span>, u_pixel<span class="op">=</span><span class="fl">0.5</span>, v_pixel<span class="op">=</span><span class="fl">0.5</span>):</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_ray(<span class="va">self</span>, col: <span class="bu">int</span>, row: <span class="bu">int</span>, u_pixel<span class="op">=</span><span class="fl">0.5</span>, v_pixel<span class="op">=</span><span class="fl">0.5</span>) <span class="op">-&gt;</span> Ray:</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># There is an error in this formula, but implement it as is anyway!</span></span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> (<span class="va">self</span>.image.width <span class="op">-</span> <span class="dv">1</span>)</span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        v <span class="op">=</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> (<span class="va">self</span>.image.height <span class="op">-</span> <span class="dv">1</span>)</span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.camera.fire_ray(u, v)</span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_all_rays(<span class="va">self</span>, func):</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fire_all_rays(<span class="va">self</span>, func) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.height):</span>
 <span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.image.width):</span>
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                ray <span class="op">=</span> <span class="va">self</span>.fire_ray(col, row)</span>
@@ -688,13 +688,13 @@ actions</em>).</p></li>
 <li><p>It is a term that indicates a working method in which
 improvements and code changes are incorporated as soon as possible into
 the <code>master</code> branch.</p></li>
-<li><p>Before they can be incorporated, it is necessary to be certain of
-their quality!</p></li>
+<li><p>Before they can be incorporated, it is necessary to be 100% sure
+of their quality!</p></li>
 <li><p>A CI build consists of creating a virtual machine on which a
 «clean» operating system is installed and on which the code is
 installed, compiled, and the tests are run.</p></li>
 <li><p>At the end of the test execution, the virtual machine is deleted;
-if the CI build is run again, it starts over.</p></li>
+if the CI build is run again, everything starts over.</p></li>
 </ul>
 </section>
 <section id="advantages-of-ci-builds" class="slide level1">

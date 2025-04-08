@@ -315,7 +315,7 @@ def test_transform():
             self.aspect_ratio = aspect_ratio
             self.transformation = transformation
 
-        def fire_ray(self, u: float, v: float):
+        def fire_ray(self, u: float, v: float) -> Ray:
             origin = Point(-1.0, (1.0 - 2 * u) * self.aspect_ratio, 2 * v - 1)
             direction = VEC_X
             return Ray(origin=origin, dir=direction, tmin=1.0e-5).transform(self.transformation)
@@ -380,7 +380,7 @@ def test_orthogonal_camera(self):
             self.aspect_ratio = aspect_ratio
             self.transformation = transformation
 
-        def fire_ray(self, u: float, v: float):
+        def fire_ray(self, u: float, v: float) -> Ray:
             origin = Point(-self.distance, 0.0, 0.0)
             direction = Vec(self.distance, (1.0 - 2 * u) * self.aspect_ratio, 2 * v - 1)
             return Ray(origin=origin, dir=direction, tmin=1.0e-5).transform(self.transformation)
@@ -449,13 +449,13 @@ class ImageTracer:
         self.image = image
         self.camera = camera
 
-    def fire_ray(self, col: int, row: int, u_pixel=0.5, v_pixel=0.5):
+    def fire_ray(self, col: int, row: int, u_pixel=0.5, v_pixel=0.5) -> Ray:
         # There is an error in this formula, but implement it as is anyway!
         u = (col + u_pixel) / (self.image.width - 1)
         v = (row + v_pixel) / (self.image.height - 1)
         return self.camera.fire_ray(u, v)
 
-    def fire_all_rays(self, func):
+    def fire_all_rays(self, func) -> None:
         for row in range(self.image.height):
             for col in range(self.image.width):
                 ray = self.fire_ray(col, row)
@@ -495,11 +495,11 @@ def test_image_tracer(self):
 
 -   It is a term that indicates a working method in which improvements and code changes are incorporated as soon as possible into the `master` branch.
 
--   Before they can be incorporated, it is necessary to be certain of their quality!
+-   Before they can be incorporated, it is necessary to be 100% sure of their quality!
 
 -   A CI build consists of creating a virtual machine on which a «clean» operating system is installed and on which the code is installed, compiled, and the tests are run.
 
--   At the end of the test execution, the virtual machine is deleted; if the CI build is run again, it starts over.
+-   At the end of the test execution, the virtual machine is deleted; if the CI build is run again, everything starts over.
 
 # Advantages of CI builds
 
