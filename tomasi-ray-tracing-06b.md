@@ -545,13 +545,15 @@ def test_image_tracer(self):
 
 # What can be done in a CI build?
 
--   You can run *linters* like [ruff check](https://github.com/astral-sh/ruff) for Python or [CSA](https://clang-analyzer.llvm.org/) for C++.
+-   Run *linters* like [ruff check](https://github.com/astral-sh/ruff) for Python or [CSA](https://clang-analyzer.llvm.org/) for C++.
 
--   If you use an automatic formatting tool ([ruff format](https://github.com/astral-sh/ruff) for Python or [clang-format](https://clang.llvm.org/docs/ClangFormat.html) for C++), you can verify that the code is formatted correctly.
+-   Make the job fail if the code is not formatted properly, if you use an tools like [ruff format](https://github.com/astral-sh/ruff) (Python), [clang-format](https://clang.llvm.org/docs/ClangFormat.html) (C++), etc.
 
--   You can use sites like [ReadTheDocs](https://about.readthedocs.com/?ref=readthedocs.org) to publish the user manual with [Sphinx](https://www.sphinx-doc.org/), [MkDocs](https://www.mkdocs.org/) or [Jupyter Book](https://jupyterbook.org/en/stable/intro.html), ensuring that updated *docstrings* are included.
+-   Publish your User’s manual (including docstrings!) using sites like [ReadTheDocs](https://about.readthedocs.com/?ref=readthedocs.org), [Sphinx](https://www.sphinx-doc.org/), [MkDocs](https://www.mkdocs.org/), [Jupyter Book](https://jupyterbook.org/en/stable/intro.html), etc.
 
--   You can generate ready-to-download executables: this way the user is not forced to install a C++/Nim/Rust/… compiler.
+-   Generate ready-to-download executables (so the user is not forced to install a C++/Nim/Rust/… compiler)
+
+-   Do not add too many tasks: free CI build time is limited!
 
 -   **The only requirement for this course is that you run the tests!**
 
@@ -616,6 +618,33 @@ def test_image_tracer(self):
     ![](./media/dotnet-github-action.png)
     </center>
 
+
+# Hints for Julia
+
+# Dynamic polymorphism
+
+-   Julia makes heavy use of multiple dispatch, so use it!
+
+-   You should define an [abstract type](https://docs.julialang.org/en/v1/manual/types/#man-abstract-types) `Camera` and then implement the two types `OrthogonalCamera` and `PerspectiveCamera` as a hierarchy
+
+-   Implement the function `fire_ray` twice:
+
+    ```julia
+    function fire_ray(cam::OrthogonalCamera, …) … end
+    function fire_ray(cam::PerspectiveCamera, …) … end
+    ```
+
+    When using multiple dispatch, you *must* define the type of the `cam` parameter, so that Julia can distinguish between the two implementation.
+
+# GitHub Actions
+
+-   The repository for standard Julia Actions is [Julia Actions](https://github.com/julia-actions).
+-   The most useful actions are:
+    #.   `julia-actions/setup-julia@v2` to set up the Julia compiler;
+    #.   `julia-actions/julia-buildpkg@v1` to build the package;
+    #.   `julia-actions/julia-runtest@v1` to run the tests.
+
+
 # Hints for Java/Kotlin
 
 # GitHub Actions
@@ -642,30 +671,6 @@ def test_image_tracer(self):
 
     (Keep in mind that Gradle supports Kotlin only starting from version 5.3).
 
-# Hints for Julia
-
-# Dynamic polymorphism
-
--   Julia makes heavy use of multiple dispatch, so use it!
-
--   You should define an [abstract type](https://docs.julialang.org/en/v1/manual/types/#man-abstract-types) `Camera` and then implement the two types `OrthogonalCamera` and `PerspectiveCamera` as a hierarchy
-
--   Implement the function `fire_ray` twice:
-
-    ```julia
-    function fire_ray(cam::OrthogonalCamera, …) … end
-    function fire_ray(cam::PerspectiveCamera, …) … end
-    ```
-
-    When using multiple dispatch, you *must* define the type of the `cam` parameter, so that Julia can distinguish between the two implementation.
-
-# GitHub Actions
-
--   The repository for standard Julia Actions is [Julia Actions](https://github.com/julia-actions).
--   The most useful actions are:
-    #.   `julia-actions/setup-julia@v2` to set up the Julia compiler;
-    #.   `julia-actions/julia-buildpkg@v1` to build the package;
-    #.   `julia-actions/julia-runtest@v1` to run the tests.
 
 # Hints for D/Nim/Rust
 
