@@ -544,7 +544,7 @@ In our code, we will implement only **invertible** transformations:
     T_{\vec{k}}(0) = 0\quad\forall\ \vec{k}.
     $$
 
-# Homogeneous Coordinates
+# Homogeneous Coordinates {#homogeneous-coordinates}
 
 -   Fortunately, there is a trick, widely used in *computer graphics*, which consists of using **homogeneous coordinates**.
 
