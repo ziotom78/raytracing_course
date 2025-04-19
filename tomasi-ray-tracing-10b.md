@@ -236,6 +236,7 @@ To generate a long sequence of $N$ random numbers by distributing it over $k$ co
 
 -   In Python, we cannot specify the bits we need, but in your implementations, you will have to declare `state` and `inc` as 64-bit `unsigned` integers.
 
+
 # The `PCG.random` Method
 
 ```python
