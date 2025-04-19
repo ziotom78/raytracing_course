@@ -496,7 +496,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 # Examples
 
--   Consider for example multivectors in ℝ³ using the canonical basis $\left\{\hat e_i\right\}$, and the shortcut $\hat e_{ij\ldots} = \hat e_i \wedge \hat e_j \wedge \ldots$:
+-   Consider for example multivectors in ℝ³ using the canonical basis $\left\{\hat e_i\right\}$, and the usual shortcut $\hat e_{ij\ldots} = \hat e_i \wedge \hat e_j \wedge \ldots$:
 
     $$
     \begin{aligned}
@@ -534,11 +534,11 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
     \vec{v} \cdot \vec{w} \propto \cos\theta, \quad \vec{v} \wedge \vec{w} \propto \sin\theta,
     $$
 
-    and obviously $\sin^2\theta + \cos^2\theta = 1$.
+    and obviously $\sin^2\theta + \cos^2\theta = 1$, so it makes sense to combine them together.
 
 # Multiplication Tables
 
--   The relationship can also be seen by comparing how the elements of the canonical basis of ℝ³ combine:
+-   The fact that they complement each other can also be seen by comparing how the elements of the canonical basis of ℝ³ combine:
 
     $$
     \begin{matrix}
@@ -575,7 +575,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 -   The «sum» must be understood in a non-literal sense, just like the sum of the real/imaginary parts ($z = x + iy$) or of orthogonal vectors ($\vec v = 3\hat ı + 4\hat ȷ$).
 
--   Similarly, the notation $\vec v \cdot \vec w + \vec v \wedge \vec w$ is a mnemonic aid to remember how geometric products are added and multiplied.
+-   You can see the notation $\vec v \cdot \vec w + \vec v \wedge \vec w$ as a mnemonic aid to remember how geometric products are added and multiplied.
 
 -   Since $\vec v \cdot \vec w \propto \cos\theta$ and $\left\|\vec v \wedge \vec w\right\| \propto \sin\theta$, it is reminiscent of
 
@@ -607,13 +607,15 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
     \vec v \vec w = \vec v \cdot \vec w + \vec v \wedge \vec w = \vec v \wedge \vec w.
     $$
 
-    For perpendicular vectors, the geometric product coincides with the outer product.
+    For ⟂ vectors, the geometric product coincides with the outer product.
 
 -   The canonical basis $\left\{\hat e_i\right\}$ therefore has the following properties:
 
     $$
     \hat e_i \hat e_i = \left\|\hat e_i\right\|^2 = 1, \quad \hat e_i \hat e_j = \hat e_i \wedge \hat e_j = -\hat e_j \wedge \hat e_i = - \hat e_j \hat e_i\ \text{if $i \not= j$}.
     $$
+
+    It’s customary to write $\hat e_i \hat e_j$ using the shorthand $\hat e_{ij}$.
 
 # Products of Multivectors
 
@@ -624,8 +626,8 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
     $$
     \begin{aligned}
     \hat e_{1233} &= \hat e_1 \hat e_2 \hat e_3 \hat e_3 = \hat e_1 \hat e_2 (\hat e_3 \hat e_3) = \hat e_{12}\\
-    \hat e_{1232} &= \hat e_1 \hat e_2 \hat e_3 \hat e_2 = -\hat e_1 \hat e_2 \hat e_2 \hat e_3 = -\hat e_1 (\hat e_2 \hat e_2) \hat e_3 = -\hat e_{13},\\
-    \hat e_{1231} &= \hat e_1 \hat e_2 \hat e_3 \hat e_1 = -\hat e_1 \hat e_2 \hat e_1 \hat e_3= \hat e_1 \hat e_1 \hat e_2 \hat e_3 = \hat e_{23}.
+    \hat e_{1232} &= \hat e_1 \hat e_2 (\hat e_3 \hat e_2) = -\hat e_1 \hat e_2 \hat e_2 \hat e_3 = -\hat e_1 (\hat e_2 \hat e_2) \hat e_3 = -\hat e_{13},\\
+    \hat e_{1231} &= \hat e_1 \hat e_2 (\hat e_3 \hat e_1) = -\hat e_1 \hat (e_2 \hat e_1) \hat e_3= (\hat e_1 \hat e_1) \hat e_2 \hat e_3 = \hat e_{23}.
     \end{aligned}
     $$
 
@@ -668,14 +670,14 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 -   First, we note that from the expression
 
     $$
-    q = \textcolor{#682673}{\alpha} + \textcolor{#267342}{\beta_1} \hat e_1 + \textcolor{#267342}{\beta_2} \hat e_2 + \textcolor{#734226}{\gamma} \hat e_{12}
+    q = \textcolor{#2826a3}{\alpha} + \textcolor{#26a342}{\beta_1} \hat e_1 + \textcolor{#26a342}{\beta_2} \hat e_2 + \textcolor{#a34226}{\gamma} \hat e_{12}
     $$
 
     it is possible to identify four subspaces (subalgebras):
 
-    1.  If only $\textcolor{#682673}{\alpha}$ is nonzero, the subspace is isomorphic to $\mathbb{R}$.
-    2.  If only $\textcolor{#267342}{\beta_1}$ and $\textcolor{#267342}{\beta_2}$ are nonzero, it's is isomorphic to the vector space $\mathbb{R}^2$.
-    3.  If only $\textcolor{#734226}{\gamma}$ is nonzero, it “looks isomorphic” to $\mathbb{R}$; these multivectors are called *pseudoscalars*.
+    1.  If only $\textcolor{#2826a3}{\alpha}$ is nonzero, the subspace is isomorphic to $\mathbb{R}$.
+    2.  If only $\textcolor{#26a342}{\beta_1}$ and $\textcolor{#26a342}{\beta_2}$ are nonzero, it's is isomorphic to the vector space $\mathbb{R}^2$.
+    3.  If only $\textcolor{#a34226}{\gamma}$ is nonzero, it “looks isomorphic” to $\mathbb{R}$; these multivectors are called *pseudoscalars*.
 
 -   Apart from these trivial cases, are there other interesting subalgebras?
 
@@ -750,14 +752,14 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
     $$
     \begin{aligned}
-    &\textcolor{#682673}{\alpha} +\\
-    &\textcolor{#732631}{\beta_1} \hat e_1 + \textcolor{#732631}{\beta_2} \hat e_2 + \textcolor{#732631}{\beta_3} \hat e_3 +\\
-    &\textcolor{#317326}{\gamma_1} \hat e_{12} + \textcolor{#317326}{\gamma_2} \hat e_{23} + \textcolor{#317326}{\gamma_3} \hat e_{31} +\\
-    &\textcolor{#267368}{\delta} \hat e_{123}.
+    &\textcolor{#2826a3}{\alpha} +\\
+    &\textcolor{#a32631}{\beta_1} \hat e_1 + \textcolor{#a32631}{\beta_2} \hat e_2 + \textcolor{#a32631}{\beta_3} \hat e_3 +\\
+    &\textcolor{#31a326}{\gamma_1} \hat e_{12} + \textcolor{#31a326}{\gamma_2} \hat e_{23} + \textcolor{#31a326}{\gamma_3} \hat e_{31} +\\
+    &\textcolor{#000000}{\delta} \hat e_{123}.
     \end{aligned}
     $$
 
--   We have **eight** degrees of freedom: 1 for <font color="#682673">scalars</font>, 3 for <font color="#732631">vectors</font>, 3 for <font color="#317326">bivectors</font>, and 1 for <font color="#267368">trivectors</font> (pseudoscalars). It still holds that $(\hat e_{123})^2 = -1 \equiv I^2$.
+-   We have **eight** degrees of freedom: 1 for <font color="#2826a3">scalars</font>, 3 for <font color="#a32631">vectors</font>, 3 for <font color="#31a326">bivectors</font>, and 1 for <font color="#000000">trivectors</font> (pseudoscalars). It still holds that $(\hat e_{123})^2 = -1 \equiv I^2$.
 
 # Rotations in 3D
 
@@ -785,7 +787,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 # Multivectors and Quaternions
 
--   It is easy to show that
+-   It is easy to show that in 3D the following equalities hold:
 
     $$
     (\hat e_{12})^2 = -1,\quad (\hat e_{23})^2 = -1,\quad (\hat e_{31})^2 = -1,
@@ -811,11 +813,38 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 -   From the perspective of geometric algebra, the gap between classical physics and quantum mechanics is reduced, because the latter is based on bivectors on the **real** field ℝ as in the case of classical mechanics (where, however, bivectors are much less pervasive).
 
+# GA calculations
+
+-   Whenever you can implement a physical equation using the geometric product, you can use **algebra** on it.
+
+-   This simplifies the calculations enormously, as you do no longer need to decompose vectors in their components $x, y, z$ and solve for each component separately, like it is usually done in classical textbooks.
+
+-   An example of the complexity of the standard approach is shown in the next slides, taken from the book by R. Paknys “Applied frequency-domain electromagnetics”.
+
+# GA calculations
+
+![](media/paknys-1.png)
+
+# GA calculations
+
+![](media/paknys-2.png){height=640px}
+
+# GA calculations
+
+-   If you are curious, have a look at the paper [The Earth is not flat](https://vanderbei.princeton.edu/tex/sunset/sunset.pdf) (Vanderbei, 2008), which implements a model using classical geometry to estimate the radius of the Earth.
+
+-   After having read and understood the paper, have a look at the same calculations done using GA: [Sunset geometry](https://www.shapeoperator.com/2016/12/12/sunset-geometry/) (Merrill, 2016).
+
+-   Merrill’s approach requires to be proficient with GA calculation techniques, but it has two distinct advantages:
+
+    1.  No need to perform computations using sines and cosines;
+    2.  The relationships between angles come out naturally from the vectors, while in Vanderbei’s paper they need to be derived by hand.
+
 # Beyond GA
 
 Two interesting sub-branches of Geometric Algebras are:
 
-1.  **Projective geometric algebras**: Generalizing the implicit equation for 3D planes $ax + by + cz + d = 0$, you can derive the concept of *point* and *direction* using a 4D space. [Homogeneous coordinates](tomasi-ray-tracing-05a#homogeneous-coordinates) are born out of this. See the YouTube Video [A Swift Introduction to Projective Geometric Algebra](https://www.youtube.com/watch?v=0i3ocLhbxJ4);
+1.  **Projective geometric algebras**: Generalizing the implicit equation for 3D planes $ax + by + cz + d = 0$, you can derive the concept of *point* and *direction* using a 4D space. ([Homogeneous coordinates](tomasi-ray-tracing-05a#homogeneous-coordinates) are born out of this.) See the YouTube Video [A Swift Introduction to Projective Geometric Algebra](https://www.youtube.com/watch?v=0i3ocLhbxJ4);
 
 2.  **Conformal geometric algebras**: These are a further generalization of projective geometric algebras that can represent any *conformal transformation* (i.e., a transformation that preserves relative angles) in 3D space using a 5D (!) versor $t$, so that any of these transformations is just $v' = t v t^{-1}$.
 
@@ -829,9 +858,9 @@ Two interesting sub-branches of Geometric Algebras are:
 
 # Further Reading (1/2)
 
--   [A swift introduction to geometric algebra](https://www.youtube.com/watch?v=60z_hpEAtD8): some ideas and diagrams in these slides were taken from here (YouTube video, about 40 minutes).
+-   [A swift introduction to geometric algebra](https://www.youtube.com/watch?v=60z_hpEAtD8): I took a few ideas and diagrams from here (YouTube video, about 40 minutes).
 
--   [*Geometric Multiplication of Vectors*](https://www.springer.com/gp/book/9783030017552) (M. Josipović): very clear, aims to provide an intuitive idea of how geometric algebra works.
+-   [*Geometric Multiplication of Vectors*](https://www.springer.com/gp/book/9783030017552) (M. Josipović): it provides an intuitive idea of how geometric algebra works.
 
 -   [*Geometric Algebra for Physicists*](https://www.cambridge.org/core/books/geometric-algebra-for-physicists/FB8D3ACB76AB3AB10BA7F27505925091) (C. Doran, A. Lasenby): comprehensive introduction to GA and its applications to physics: classical mechanics, special relativity, electromagnetism, quantum mechanics, Lagrangian formalism, gravitation, etc.
 
