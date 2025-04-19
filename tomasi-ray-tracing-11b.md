@@ -32,7 +32,7 @@
 
 -   This is why every week we had the confidence that when we relied on code written in previous weeks, it was probably "correct"
 
--   It is impossible to write code as long as yours without proceeding this way
+-   It is impossible to write code as long as the one you produced so far without proceeding this way
 
 -   **This is the most important lesson provided by this course!**
 
@@ -358,7 +358,61 @@ for i in range(5):
 
 -   Statistical profilers are also available, which are less accurate but do not significantly slow down the code.
 
-# Tips
+# Outsmarting the compiler
+
+-   Modern compilers are so smart that they can make benchmark results worthless.
+
+-   For instance, the following code will likely report that the cross product of two vectors takes **no time** to run:
+
+    ```c++
+    Vec a{1.0, 2.0, 3.0}, b{5.0, 4.0, 2.0}, c;
+    auto time0{perf_conter()};
+    const int N{10'000'000};
+    for(int i{}; i < N; ++i) {
+        c = cross(a, b);
+    }
+    auto time1{perf_counter()};
+    println("Time: {}" (time1 - time0) / N);  // This is likely zero!
+    ```
+
+# Tips (1/4)
+
+-   **Never** test mathematical functions on variables set to zero, as compilers usually optimize these calls out
+
+-   If you initialize your variables to random numbers, be sure not to include random number generator in the profiling! Good practice: initialize a vector of random numbers **before** the test:
+
+    ```c++
+    vector inputs{100'000};
+    for(int i{}; i < ssize(inputs); ++i) {
+        inputs[i] = gen_random();
+    }
+
+    // Now run the benchmark
+    ```
+
+# Tips (2/4)
+
+-   Other stuff might happen while your benchmark code is running:
+
+    #.  If you are using a Just-in-time (JIT) compiler (Julia, C\#, Java, etc.), the first time you call a function it needs to be compiled/optimized
+    #.  Your language might perform garbage collection (C\#, Julia, Go, D, etc.);
+    #.  Your system might dynamically adjust CPU frequency to optimize power drain;
+    #.  Other processes (OS updater, email client) might run in the background;
+    #.  Etc.
+
+-   It might be that you are measuring the time spent to run your program **and** to do something else.
+
+# Tips (3/4)
+
+-   It’s a good idea to run a benchmark a few times (3? 5?) and then consider the **minimum** time alongside other statistical parameters (average, median, etc.).
+
+    <center>
+    ![](media/benchmark-minimum-time.svg)
+    </center>
+
+-   Many benchmark libraries provide detailed statistics and consider JIT warm-up times and other nuisances: [Google Benchmark](https://github.com/google/benchmark) (C++), [BenchmarkTools.jl](https://juliapackages.com/p/benchmarktools) (Julia), [BenchmarkDotNet](https://benchmarkdotnet.org/) (C\#, F\#), etc.
+
+# Tips (4/4)
 
 -   Don't measure the time of *every* function, just focus on the ones that could be problematic. (For example, it doesn't matter if the function that interprets the command line is fast!)
 
@@ -366,10 +420,10 @@ for i in range(5):
 
 -   The [speedscope](https://www.speedscope.app/) site provides a way to produce navigable *flamegraphs* through a browser, starting from the output of various profilers, and does not require installation.
 
-# Guide for the Exercise
 
+# What to do today
 
-# Things to Do
+# What to do today
 
 1.  Continue working in the `pathtracing` branch;
 2.  Implement a function to create an orthonormal basis starting from a normal vector (if in your language it is not easy to return three return values, implement a new `ONB` type);

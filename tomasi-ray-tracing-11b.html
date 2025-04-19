@@ -163,8 +163,8 @@ that</p></li>
 <li><p>For each feature, we implemented a series of tests</p></li>
 <li><p>This is why every week we had the confidence that when we relied
 on code written in previous weeks, it was probably “correct”</p></li>
-<li><p>It is impossible to write code as long as yours without
-proceeding this way</p></li>
+<li><p>It is impossible to write code as long as the one you produced so
+far without proceeding this way</p></li>
 <li><p><strong>This is the most important lesson provided by this
 course!</strong></p></li>
 </ul>
@@ -568,8 +568,83 @@ lot!</p></li>
 but do not significantly slow down the code.</p></li>
 </ul>
 </section>
-<section id="tips" class="slide level1">
-<h1>Tips</h1>
+<section id="outsmarting-the-compiler" class="slide level1">
+<h1>Outsmarting the compiler</h1>
+<ul>
+<li><p>Modern compilers are so smart that they can make benchmark
+results worthless.</p></li>
+<li><p>For instance, the following code will likely report that the
+cross product of two vectors takes <strong>no time</strong> to run:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Vec a<span class="op">{</span><span class="fl">1.0</span><span class="op">,</span> <span class="fl">2.0</span><span class="op">,</span> <span class="fl">3.0</span><span class="op">},</span> b<span class="op">{</span><span class="fl">5.0</span><span class="op">,</span> <span class="fl">4.0</span><span class="op">,</span> <span class="fl">2.0</span><span class="op">},</span> c<span class="op">;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">auto</span> time0<span class="op">{</span>perf_conter<span class="op">()};</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">const</span> <span class="dt">int</span> N<span class="op">{</span><span class="dv">10&#39;000&#39;000</span><span class="op">};</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span><span class="op">(</span><span class="dt">int</span> i<span class="op">{};</span> i <span class="op">&lt;</span> N<span class="op">;</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> cross<span class="op">(</span>a<span class="op">,</span> b<span class="op">);</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="kw">auto</span> time1<span class="op">{</span>perf_counter<span class="op">()};</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>println<span class="op">(</span><span class="st">&quot;Time: </span><span class="sc">{}</span><span class="st">&quot;</span> <span class="op">(</span>time1 <span class="op">-</span> time0<span class="op">)</span> <span class="op">/</span> N<span class="op">);</span>  <span class="co">// This is likely zero!</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="tips-14" class="slide level1">
+<h1>Tips (1/4)</h1>
+<ul>
+<li><p><strong>Never</strong> test mathematical functions on variables
+set to zero, as compilers usually optimize these calls out</p></li>
+<li><p>If you initialize your variables to random numbers, be sure not
+to include random number generator in the profiling! Good practice:
+initialize a vector of random numbers <strong>before</strong> the
+test:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>vector inputs<span class="op">{</span><span class="dv">100&#39;000</span><span class="op">};</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span><span class="op">(</span><span class="dt">int</span> i<span class="op">{};</span> i <span class="op">&lt;</span> ssize<span class="op">(</span>inputs<span class="op">);</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> gen_random<span class="op">();</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Now run the benchmark</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="tips-24" class="slide level1">
+<h1>Tips (2/4)</h1>
+<ul>
+<li><p>Other stuff might happen while your benchmark code is
+running:</p>
+<ol>
+<li>If you are using a Just-in-time (JIT) compiler (Julia, C#, Java,
+etc.), the first time you call a function it needs to be
+compiled/optimized</li>
+<li>Your language might perform garbage collection (C#, Julia, Go, D,
+etc.);</li>
+<li>Your system might dynamically adjust CPU frequency to optimize power
+drain;</li>
+<li>Other processes (OS updater, email client) might run in the
+background;</li>
+<li>Etc.</li>
+</ol></li>
+<li><p>It might be that you are measuring the time spent to run your
+program <strong>and</strong> to do something else.</p></li>
+</ul>
+</section>
+<section id="tips-34" class="slide level1">
+<h1>Tips (3/4)</h1>
+<ul>
+<li><p>It’s a good idea to run a benchmark a few times (3? 5?) and then
+consider the <strong>minimum</strong> time alongside other statistical
+parameters (average, median, etc.).</p>
+<center>
+<p><img data-src="media/benchmark-minimum-time.svg" /></p>
+</center></li>
+<li><p>Many benchmark libraries provide detailed statistics and consider
+JIT warm-up times and other nuisances: <a
+href="https://github.com/google/benchmark">Google Benchmark</a> (C++),
+<a
+href="https://juliapackages.com/p/benchmarktools">BenchmarkTools.jl</a>
+(Julia), <a href="https://benchmarkdotnet.org/">BenchmarkDotNet</a> (C#,
+F#), etc.</p></li>
+</ul>
+</section>
+<section id="tips-44" class="slide level1">
+<h1>Tips (4/4)</h1>
 <ul>
 <li><p>Don’t measure the time of <em>every</em> function, just focus on
 the ones that could be problematic. (For example, it doesn’t matter if
@@ -584,11 +659,11 @@ browser, starting from the output of various profilers, and does not
 require installation.</p></li>
 </ul>
 </section>
-<section id="guide-for-the-exercise" class="slide level1">
-<h1>Guide for the Exercise</h1>
+<section id="what-to-do-today" class="slide level1">
+<h1>What to do today</h1>
 </section>
-<section id="things-to-do" class="slide level1">
-<h1>Things to Do</h1>
+<section id="what-to-do-today-1" class="slide level1">
+<h1>What to do today</h1>
 <ol type="1">
 <li>Continue working in the <code>pathtracing</code> branch;</li>
 <li>Implement a function to create an orthonormal basis starting from a
