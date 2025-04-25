@@ -715,7 +715,7 @@ Defining `Ray` and `Sphere` is equally simple:
 ```ruby
 struct Ray
   property m_o, m_d, m_tmin, m_tmax
-  
+
   def initialize(@m_o : Vec, @m_d : Vec, @m_tmin = 1e-10, @m_tmax = 1e+10)
   end
 end
@@ -739,7 +739,7 @@ class Sphere
     return true if (ray.m_tmin < tmin) && (tmin < ray.m_tmax)
 
     tmax = dop + sqrtd
-    
+
     ((ray.m_tmin < tmax) && (tmax < ray.m_tmax))
   end
 end
@@ -785,18 +785,18 @@ Here are a few highlights from the language:
     ```
     $ ruby test.rb
     The sum of the first 100000000 numbers is 5.00000005e+15
-    
+
     $ crystal run test.rb
     The sum of the first 100000000 numbers is 5.00000005e+15
     ```
-    
+
     However, the big difference between the two ways of running the
     code is that the former is *interpreted* by Ruby, while the second
     is *compiled* to optimized machine code. In fact, if we compile
     the program using `crystal build --release` and time the
     execution, we can see the huge difference in the time required to
     produce the output:
-    
+
     ```
     $ time ruby test.rb
     The sum of the first 100000000 numbers is 5.00000005e+15
@@ -806,51 +806,51 @@ Here are a few highlights from the language:
     sys     0m0,034s
 
     $ crystal build --release -o ./test test.rb
-    
+
     $ time ./test
     The sum of the first 100000000 numbers is 5.00000005e+15
-    
+
     real    0m0,105s
     user    0m0,103s
     sys     0m0,000s
     ```
-    
+
     The program compiled by Crystal took just 0.1 s, while the one
     interpreted by Ruby was 75 times slower!
-    
+
 -   Crystal is an OOP language, much more object-oriented than C++. In
     C++, you can call class methods using the dot `.`:
-    
+
     ```c++
     int main() {
       std::string s = "Hello";
-      
+
       // Call the method "size" of the object "s"
       std::cout << s.size() << "\n";  // This prints "5"
     }
     ```
-    
+
     In Crystal, a syntax like `s.size()` is extended to *any* value,
     including literals (and you can avoid empty parenthesis):
-    
+
     ```ruby
     # Since "Hello" is an object, you can call the method "size"
     # directly on it
     puts "Hello".size    # This prints "5"
     ```
-    
+
     This characteristic has been mutuated by Ruby, whose design strive
     to achieve the maximum elegance. In fact, instead of having `for`
     loops, Crystal (and Ruby) define the method `each` on container
     objects, i.e., variables that contain collections of objects:
-    
+
     ```ruby
     # The method "each" is called on the list of strings
     ["Strong force", "Weak force"].each do |value|
       puts value
     end
     ```
-    
+
     This way of writing code is used pervasively in Ruby and Crystal,
     and it lets to produce very compact and elegant programs.
 
@@ -860,7 +860,7 @@ Here are a few highlights from the language:
     Programming*](https://www.packtpub.com/product/crystal-programming/9781801818674),
     by G. Dietrich and G. Bernal (Packt) is a more in-depth
     explanation of the way Crystal works.
-    
+
 -   If you pick Crystal consider that it is a young and not widespread
     language; this implies that editor support is not as good as for
     other mainstream languages (C++, C\#, Java, Kotlin…) and that
@@ -868,28 +868,28 @@ Here are a few highlights from the language:
     [StackOverflow](https://stackoverflow.com/). But you can rely on
     the [Crystal forum](https://forum.crystal-lang.org/) if you need
     help!
-    
+
 -   The Crystal compiler comes with
     [Shards](https://crystal-lang.org/reference/1.5/man/shards/index.html),
     a tool that lets to compile programs and download and install
     libraries automatically. There is no need to use makefiles if you
     use Crystal!
-    
+
     For instance, to create a new application you write
-    
+
     ```sh
     $ crystal init app myapp
     ```
-    
+
     and a new folder `myapp` is populated with a number of files. To
     compile all the files in the `myapp` folder and run the
     executable, you just write
-    
+
     ```sh
     $ cd myapp
     $ shards run
     ```
-    
+
     and all the source files will be compiled to build an executable,
     which is then automatically run without the need to write a
     `Makefile`.
@@ -1092,12 +1092,7 @@ Here are a few advantages of C\# over C++:
     ([code.visualstudio.com](https://code.visualstudio.com/)) is a
     good second choice, although not as powerful.
 
--   The C\# language is widely used, and there are several online
-    resources. The [Reference
-    Documentation](https://docs.microsoft.com/en-us/dotnet/csharp/)
-    published by Microsoft is particularly good. A short and clear
-    textbook is *C\# in a nutshell*, by Joseph and Ben Albahari
-    (O'Reilly).
+-   The C\# language is widely used, and there are several online resources. First, have a look at the article [Why C\#?](https://newsletter.techworld-with-milan.com/p/why-csharp) by Milan Milanović: it’s a good introduction that shows some of the advanced features that C\# has acquired in recent years. For a more systematic presentation, the [reference Documentation](https://docs.microsoft.com/en-us/dotnet/csharp/) published by Microsoft is particularly good. A short and clear textbook is *C\# in a nutshell*, by Joseph and Ben Albahari (O'Reilly).
 
 -   Microsoft has recently released the [.NET8
     platform](https://dotnet.microsoft.com/), which is easy to install
@@ -1395,10 +1390,10 @@ There are a few disadvantages too:
     community itself is often not sure about what language features
     are the best ones to use depending on the problem. This has been a
     cause of confusion for students!)
-    
+
 -   Last year, my own students have stumbled upon bugs in the D compiler
     itself, which refused to compile perfectly valid code.
-    
+
 -   A quite important library needed for the course, `std.stream`,
     [has been
     deprecated](https://forum.dlang.org/thread/qpilvmprtyqxmyladkdq@forum.dlang.org),
@@ -1608,7 +1603,7 @@ There are a few disadvantages as well:
 
 -   The quality of the documentation available on the FreePascal site
     is not fantastic.
-    
+
 -   Although much faster than interpreted languages like Python and
     Ruby, FreePascal produces executables that are $\sim 10\,\%$
     slower than those produced by other compilers.
@@ -1903,7 +1898,7 @@ function intersect(s::Sphere, ray::Ray)
     sqrtD = √d
 
     tmin = dop - sqrtD
-    
+
     # The «Julia way» to write "if … then return true"
     (ray.tmin < tmin < ray.tmax) && return true
 
@@ -1980,7 +1975,7 @@ Erik Engheim, which is another great introduction to the language;
 although it is not completed yet, you can already buy a draft copy for
 a discounted price and receive the full copy once it will be finished.
 (Disclaimer: I'm the technical reviewer of this book.)
-    
+
 There is also some good material on YouTube: [A Gentle Introduction to
 Julia](https://www.youtube.com/watch?v=4igzy3bGVkQ) (syntax) and
 [Getting Started with Julia (for Experienced
@@ -2322,7 +2317,7 @@ A few disadvantages of Rust are the following:
     algorithms required in the course will require more pain than for
     other languages, but the resulting code will not necessarily be
     more robust.
-    
+
 -   Handling errors (an important topic in this course) is really
     hard!
 
