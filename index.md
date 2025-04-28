@@ -56,10 +56,10 @@
 -   [Proiezioni prospettiche ed ortogonali](tomasi-ray-tracing-06a.html#/projections)
 -   [*Aspect ratio*](tomasi-ray-tracing-06a.html#/aspect-ratio)
 -   [*CI builds*](tomasi-ray-tracing-06b.html#/ci-builds)
-<!--
 -   [Forma alternativa dell'equazione del rendering e funzione di visibilità](tomasi-ray-tracing-08a.html#/rendering-equation)
--   [Intersezioni tra raggi e forme geometriche](tomasi-ray-tracing-08a.html#/intersections-btw-rays-and-shapes): [sfere](tomasi-ray-tracing-08a.html#/spheres), [piani](tomasi-ray-tracing-08a.html#/planes)
+-   [Intersezioni tra raggi e forme geometriche](tomasi-ray-tracing-08a.html#/intersections-btw-rays-and-shapes): [sfere](tomasi-ray-tracing-08a.html#/spheres), [piani](tomasi-ray-tracing-08a.html#/planes), [triangoli](tomasi-ray-tracing-08a.html#/triangles)
 -   [Constructive Solid Geometry](tomasi-ray-tracing-08a.html#/constructive-solid-geometry)
+<!--
 -   [Debugging: difetto, infezione, fallimento](tomasi-ray-tracing-09a.html#/debugging)
 -   [Algoritmo di path tracing](tomasi-ray-tracing-10a.html#/path-tracing)
 -   [Probabilità e Monte Carlo](tomasi-ray-tracing-10a.html#/probability-and-mc): CDF, PDF, valore di aspettazione, varianza, deviazione standard, metodo della media, *importance sampling*, densità marginale e condizionale
@@ -80,13 +80,13 @@
 - [Lo standard Unicode](tomasi-ray-tracing-03a.html#/unicode)
 - [File e stream](tomasi-ray-tracing-03b.html#/file-e-stream)
 - [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
-<!--
 -   [Numeri complessi e quaternioni](tomasi-ray-tracing-07a.html#/complex-numbers-and-quaternions)
 -   [Algebre di Clifford](tomasi-ray-tracing-07a.html#/clifford-algebras)
 -   [*Issues*](tomasi-ray-tracing-08b.html#/issues)
 -   [*Change log*](tomasi-ray-tracing-08b.html#/changelog)
+<!--
+-   [Mesh](tomasi-ray-tracing-09a.html#/polygonal-meshes)
 -   [*Axis-aligned boxes*](tomasi-ray-tracing-09a.html#/axis-aligned-boxes)
--   [Triangoli, quadilateri e *mesh*](tomasi-ray-tracing-09a.html#/triangles-and-meshes)
 -   [Generatore PCG](tomasi-ray-tracing-10b.html#/pcg-algorithm)
 -   [Basi ortonormali arbitrarie](tomasi-ray-tracing-11a.html#/orthonormal-basis)
 -   [Algoritmi di illuminazione diretta](tomasi-ray-tracing-11a.html#/direct-illumination)
