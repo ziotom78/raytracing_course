@@ -108,7 +108,7 @@
 
 -   However, we know how to apply a transformation $T$ only to points, vectors, and normals, not to implicit equations.
 
--   It is more convenient to apply the **inverse** transformation to the light rays: if $T$ transforms the "privileged" reference system of a shape into the real world system, $T^{-1}$ can transform a ray $O + t \vec d$ in the real world system into the privileged one of the shape.
+-   It is more convenient to apply the **inverse** transformation to the light rays: if $T$ transforms the "privileged" reference frame of a shape into the real world system, $T^{-1}$ can transform a ray $O + t \vec d$ in the real world system into the privileged one of the shape.
 
 # Transforming Rays
 
@@ -124,7 +124,7 @@
     O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde t\,T^{-1} \vec d = \tilde x,
     $$
 
-    which is equivalent to formulating the intersection problem in the reference system of $S$. Note that $\tilde t$ **does not change** between the two formulations!
+    which is equivalent to formulating the intersection problem in the reference frame of $S$. Note that $\tilde t$ **does not change** between the two formulations!
 
 # Types of Shapes
 
@@ -136,7 +136,7 @@
     #.   Cubes;
     #.   Triangles.
 
--   We will deal with cubes and triangles later, since they are usually associated with more advanced topics (*bounding boxes* and *triangle meshes*).
+-   We will deal with cubes and triangles next week, since they are usually associated with more advanced topics (*bounding boxes* and *triangle meshes*).
 
 
 # Spheres {#spheres}
@@ -151,7 +151,7 @@
 
     and it derives from the geometric definition of a sphere.
 
--   However, we will limit ourselves to considering only the unit sphere centered at the origin:
+-   But we will just consider the unit sphere centered at the origin:
 
     $$
     x^2 + y^2 + z^2 = 1\ \rightarrow\ \left\|P - 0\right\|^2 = (P - 0) \cdot (P - 0) = 1,
@@ -170,7 +170,7 @@
     \end{cases}
     $$
 
--   The unknowns are $P$ and $t$; the latter indicates the distance from the origin of the ray at which the intersection with the sphere occurs.
+-   The unknowns are $P$ and $t$; the latter is the distance from the origin of the ray at which the intersection with the sphere occurs.
 
 # Solving the Equation
 
@@ -234,7 +234,7 @@
 
 -   The criterion for deciding whether an intersection is valid also depends on the values $t_\text{min}$ and $t_\text{max}$ of the ray $O + t \vec d$.
 
--   Putting together everything we have said so far, an intersection for $t = \tilde t$ is valid only if
+-   Putting together everything we have said so far, an intersection for $t = \tilde t$ is valid if and only if
 
     $$
     t_\text{min} \leq \tilde t \leq t_\text{max}
@@ -304,7 +304,9 @@
 
 -   Rather than the point $P$, it is necessary to know the position in two-dimensional coordinates on the surface of the sphere.
 
--   In the specific case of the sphere, the latitude-longitude pair can be used; in the general case of a surface $S$, a two-dimensional parameterization $(u, v)$ is sought.
+-   In the specific case of the sphere, we can use the latitude-longitude pair
+
+-   In the general case of a surface $S$, we will always seek for two-dimensional parameterizations $(u, v)$.
 
 ---
 
@@ -317,12 +319,12 @@
     \theta = \arccos p_z, \quad \phi = \arctan \frac{p_y}{p_x}.
     $$
 
--   The range of values $\theta \in [0, \pi], \phi \in [0, 2\pi]$ is too specific for the sphere, so the parameterization
+-   The range of values $\theta \in [0, \pi], \phi \in [0, 2\pi]$ is too specific for the sphere, so we can use this parameterization:
 
     $$
     u = \frac\phi{2\pi} = \frac{\arctan p_y / p_x}{2\pi}, \quad v = \frac\theta\pi = \frac{\arccos p_z}\pi.
     $$
- is usually used.
+
 
 # Planes {#planes}
 
@@ -336,7 +338,7 @@
 
     where $P$ is a generic point on the plane.
 
--   (As you can guess, in algebraic geometry, planes are represented by bivectors, and their equation is identical to that of a line: a marvel if you do calculations by hand!)
+-   (As you can guess, in algebraic geometry, planes are represented by bivectors: calculations are much simpler, especially if you employ projective geometric algebra!)
 
 # Standard Plane
 
@@ -356,7 +358,7 @@
 
 # Ray-Plane Intersection
 
--   The intersection between the plane and the ray $O + t \vec d$ is therefore very simple: just require that the $z$ component of the point along the ray vanishes for some value of $t$.
+-   The intersection between the plane and the ray $O + t \vec d$ is therefore trivially simple: just require that the $z$ component of the point along the ray vanishes for some value of $t$.
 
 -   The analytical solution is
 
@@ -391,7 +393,7 @@
 
 -   The entire surface of the plane is therefore the periodic repetition of the region $[0, 1] \times [0, 1]$ (*tile pattern*).
 
-# Parameterization of the Plane
+# Parameterization of the plane
 
 <center>![](./media/textured-plane.png)</center>
 
@@ -401,14 +403,14 @@
 
 # *Constructive Solid Geometry*
 
--The shapes seen so far are very simple: spheres and planes.
+-   The shapes seen so far are very simple: spheres and planes.
 
--   We will see in the future that arbitrarily complex shapes can be approximated with sets of triangles.
+-   We will see in the future that arbitrarily complex shapes can be approximated with sets of triangles, but handling this kind of shape efficiently is complex!
 
--   Today we present a technique to construct complex geometric shapes starting from simple shapes: *Constructive Solid Geometry* (CSG).
+-   Today we present a simple technique to construct complex geometric shapes starting from simple shapes: *Constructive Solid Geometry* (CSG).
 
 
-# Boolean Operations
+# Set Operations
 
 <center>![](./media/boolean-operations.png)</center>
 

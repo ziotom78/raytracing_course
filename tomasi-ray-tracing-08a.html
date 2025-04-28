@@ -217,7 +217,7 @@ class="math inline">T</span> only to points, vectors, and normals, not
 to implicit equations.</p></li>
 <li><p>It is more convenient to apply the <strong>inverse</strong>
 transformation to the light rays: if <span class="math inline">T</span>
-transforms the “privileged” reference system of a shape into the real
+transforms the “privileged” reference frame of a shape into the real
 world system, <span class="math inline">T^{-1}</span> can transform a
 ray <span class="math inline">O + t \vec d</span> in the real world
 system into the privileged one of the shape.</p></li>
@@ -241,7 +241,7 @@ O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde
 t\,T^{-1} \vec d = \tilde x,
 </span></p>
 <p>which is equivalent to formulating the intersection problem in the
-reference system of <span class="math inline">S</span>. Note that <span
+reference frame of <span class="math inline">S</span>. Note that <span
 class="math inline">\tilde t</span> <strong>does not change</strong>
 between the two formulations!</p></li>
 </ul>
@@ -258,7 +258,7 @@ shapes:</p>
 <li>Cubes;</li>
 <li>Triangles.</li>
 </ol></li>
-<li><p>We will deal with cubes and triangles later, since they are
+<li><p>We will deal with cubes and triangles next week, since they are
 usually associated with more advanced topics (<em>bounding boxes</em>
 and <em>triangle meshes</em>).</p></li>
 </ul>
@@ -276,8 +276,8 @@ class="math inline">R</span> is</p>
 (x - c_x)^2 + (y - c_y)^2 + (z - c_z)^2 = R^2,
 </span></p>
 <p>and it derives from the geometric definition of a sphere.</p></li>
-<li><p>However, we will limit ourselves to considering only the unit
-sphere centered at the origin:</p>
+<li><p>But we will just consider the unit sphere centered at the
+origin:</p>
 <p><span class="math display">
 x^2 + y^2 + z^2 = 1\ \rightarrow\ \left\|P - 0\right\|^2 = (P - 0) \cdot
 (P - 0) = 1,
@@ -300,9 +300,8 @@ P = O + t \vec d,
 \end{cases}
 </span></p></li>
 <li><p>The unknowns are <span class="math inline">P</span> and <span
-class="math inline">t</span>; the latter indicates the distance from the
-origin of the ray at which the intersection with the sphere
-occurs.</p></li>
+class="math inline">t</span>; the latter is the distance from the origin
+of the ray at which the intersection with the sphere occurs.</p></li>
 </ul>
 </section>
 <section id="solving-the-equation" class="slide level1">
@@ -383,7 +382,8 @@ depends on the values <span class="math inline">t_\text{min}</span> and
 <span class="math inline">t_\text{max}</span> of the ray <span
 class="math inline">O + t \vec d</span>.</p></li>
 <li><p>Putting together everything we have said so far, an intersection
-for <span class="math inline">t = \tilde t</span> is valid only if</p>
+for <span class="math inline">t = \tilde t</span> is valid if and only
+if</p>
 <p><span class="math display">
 t_\text{min} \leq \tilde t \leq t_\text{max}
 </span></p>
@@ -470,10 +470,11 @@ class="math inline">P</span> is expressed in 3D coordinates!</p></li>
 <li><p>Rather than the point <span class="math inline">P</span>, it is
 necessary to know the position in two-dimensional coordinates on the
 surface of the sphere.</p></li>
-<li><p>In the specific case of the sphere, the latitude-longitude pair
-can be used; in the general case of a surface <span
-class="math inline">S</span>, a two-dimensional parameterization <span
-class="math inline">(u, v)</span> is sought.</p></li>
+<li><p>In the specific case of the sphere, we can use the
+latitude-longitude pair</p></li>
+<li><p>In the general case of a surface <span
+class="math inline">S</span>, we will always seek for two-dimensional
+parameterizations <span class="math inline">(u, v)</span>.</p></li>
 </ul>
 </section>
 <section id="surface-of-the-sphere" class="slide level1">
@@ -487,12 +488,12 @@ class="math inline">\phi</span> using trigonometry:</p>
 \theta = \arccos p_z, \quad \phi = \arctan \frac{p_y}{p_x}.
 </span></p></li>
 <li><p>The range of values <span class="math inline">\theta \in [0,
-\pi], \phi \in [0, 2\pi]</span> is too specific for the sphere, so the
-parameterization</p>
+\pi], \phi \in [0, 2\pi]</span> is too specific for the sphere, so we
+can use this parameterization:</p>
 <p><span class="math display">
 u = \frac\phi{2\pi} = \frac{\arctan p_y / p_x}{2\pi}, \quad v =
 \frac\theta\pi = \frac{\arccos p_z}\pi.
-</span> is usually used.</p></li>
+</span></p></li>
 </ul>
 </section>
 <section id="planes" class="slide level1">
@@ -510,8 +511,8 @@ class="math inline">O</span> through which the plane passes:</p>
 <p>where <span class="math inline">P</span> is a generic point on the
 plane.</p></li>
 <li><p>(As you can guess, in algebraic geometry, planes are represented
-by bivectors, and their equation is identical to that of a line: a
-marvel if you do calculations by hand!)</p></li>
+by bivectors: calculations are much simpler, especially if you employ
+projective geometric algebra!)</p></li>
 </ul>
 </section>
 <section id="standard-plane" class="slide level1">
@@ -536,9 +537,9 @@ P_z = 0.
 <h1>Ray-Plane Intersection</h1>
 <ul>
 <li><p>The intersection between the plane and the ray <span
-class="math inline">O + t \vec d</span> is therefore very simple: just
-require that the <span class="math inline">z</span> component of the
-point along the ray vanishes for some value of <span
+class="math inline">O + t \vec d</span> is therefore trivially simple:
+just require that the <span class="math inline">z</span> component of
+the point along the ray vanishes for some value of <span
 class="math inline">t</span>.</p></li>
 <li><p>The analytical solution is</p>
 <p><span class="math display">
@@ -582,7 +583,7 @@ repetition of the region <span class="math inline">[0, 1] \times [0,
 </ul>
 </section>
 <section id="parameterization-of-the-plane-1" class="slide level1">
-<h1>Parameterization of the Plane</h1>
+<h1>Parameterization of the plane</h1>
 <center>
 <img data-src="./media/textured-plane.png" />
 </center>
@@ -592,17 +593,19 @@ repetition of the region <span class="math inline">[0, 1] \times [0,
 </section>
 <section id="constructive-solid-geometry-1" class="slide level1">
 <h1><em>Constructive Solid Geometry</em></h1>
-<p>-The shapes seen so far are very simple: spheres and planes.</p>
 <ul>
+<li><p>The shapes seen so far are very simple: spheres and
+planes.</p></li>
 <li><p>We will see in the future that arbitrarily complex shapes can be
-approximated with sets of triangles.</p></li>
-<li><p>Today we present a technique to construct complex geometric
-shapes starting from simple shapes: <em>Constructive Solid Geometry</em>
-(CSG).</p></li>
+approximated with sets of triangles, but handling this kind of shape
+efficiently is complex!</p></li>
+<li><p>Today we present a simple technique to construct complex
+geometric shapes starting from simple shapes: <em>Constructive Solid
+Geometry</em> (CSG).</p></li>
 </ul>
 </section>
-<section id="boolean-operations" class="slide level1">
-<h1>Boolean Operations</h1>
+<section id="set-operations" class="slide level1">
+<h1>Set Operations</h1>
 <center>
 <img data-src="./media/boolean-operations.png" />
 </center>

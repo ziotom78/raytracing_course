@@ -173,7 +173,7 @@ class TestImageTracer(unittest.TestCase):
 
     <center>![](./media/github-issue-bugfix.png){height=280px}</center>
 
-# Bug Closure
+# Closing the issue
 
 -   At this point the bug is fixed, and we can proceed to close the *issue*.
 
@@ -189,7 +189,7 @@ class TestImageTracer(unittest.TestCase):
 
 <center>![](media/github-pr-last-check-before-merging.png){height=680px}</center>
 
-Example taken from a PR of [pytracer](https://github.com/ziotom78/pytracer/pull/10/files)
+Example taken from a PR for [pytracer](https://github.com/ziotom78/pytracer/pull/10/files)
 
 # Closing a bug
 
@@ -201,7 +201,7 @@ Example taken from a PR of [pytracer](https://github.com/ziotom78/pytracer/pull/
 
 -   But, as with *commits*, a list of bugs is quite poor, and doesn't tell a "story."
 
--   Let's see now the purpose of the CHANGELOG.md file, which is a form of documentation.
+-   Let's see now the purpose of the CHANGELOG.md file, which is a type of documentation.
 
 # CHANGELOG {#changelog}
 

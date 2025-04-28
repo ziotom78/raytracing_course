@@ -129,220 +129,6 @@ href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
-<section id="axis-aligned-boxes" class="slide level1">
-<h1><em>Axis-aligned boxes</em></h1>
-</section>
-<section id="axis-aligned-boxes-1" class="slide level1">
-<h1><em>Axis-aligned boxes</em></h1>
-<ul>
-<li><p>The cubic shape is not very interesting in itself, but it lends
-itself to some very simple optimizations.</p></li>
-<li><p>Due to its particular purpose, we will treat the case of cubes
-using different conventions than those made for spheres and planes:</p>
-<ol>
-<li>We will not limit ourselves to the unit cube with a vertex at the
-origin…</li>
-<li>…but we will assume that the faces are parallel to the coordinate
-planes.</li>
-</ol></li>
-<li><p>These assumptions are referred to in the literature as
-<em>axis-aligned bounding box</em> (AAB).</p></li>
-</ul>
-</section>
-<section id="in-memory-representation" class="slide level1">
-<h1>In-memory representation</h1>
-<ul>
-<li><p>A parallelepiped with edges aligned along the <span
-class="math inline">xyz</span> axes can be defined by the following
-quantities:</p>
-<ol>
-<li>The minimum and maximum <span class="math inline">x</span>
-values;</li>
-<li>The minimum and maximum <span class="math inline">y</span>
-values;</li>
-<li>The minimum and maximum <span class="math inline">z</span>
-values.</li>
-</ol></li>
-<li><p>Equivalently, you can store two opposite vertices of the
-parallelepiped, <span class="math inline">P_m</span> (minimum values of
-<span class="math inline">x</span>, <span class="math inline">y</span>
-and <span class="math inline">z</span>) and <span
-class="math inline">P_M</span> (maximum values).</p></li>
-</ul>
-</section>
-<section id="ray-aabb-intersection" class="slide level1">
-<h1>Ray-AABB intersection</h1>
-<ul>
-<li><p>Let’s write the ray as <span class="math inline">r: O + t \vec
-d</span>.</p></li>
-<li><p>The calculation is very similar to that done for the plane, if
-one dimension is considered at a time:</p>
-<center>
-<p><img data-src="./media/aab-ray-intersection.svg" /></p>
-</center></li>
-</ul>
-</section>
-<section id="ray-aabb-intersection-1" class="slide level1">
-<h1>Ray-AABB intersection</h1>
-<ul>
-<li><p>Let <span class="math inline">F_i</span> be a generic point on
-the plane perpendicular to the <span class="math inline">i</span>-th
-direction (six planes in total), which will have coordinates</p>
-<p><span class="math display">
-F_0 = (f_0^{\text{min}/\text{max}}, \cdot, \cdot), \quad F_1 = (\cdot,
-f_1^{\text{min}/\text{max}}, \cdot), \quad F_2 = (\cdot, \cdot,
-f_2^{\text{min}/\text{max}}).
-</span></p></li>
-<li><p>Along the <span class="math inline">i</span>-th coordinate,
-<em>two</em> planes intersect:</p>
-<p><span class="math display">
-O + t_i \vec d = F^{\text{min}/\text{max}}_i\quad\Rightarrow\quad
-t_i^{\text{min}/\text{max}} = \frac{f_i^{\text{min}/\text{max}} -
-O_i}{d_i}.
-</span></p></li>
-</ul>
-</section>
-<section id="ray-aabb-intersection-2" class="slide level1">
-<h1>Ray-AABB intersection</h1>
-<ul>
-<li><p>Each direction produces two intersections, so in total there are
-six potential intersections (one for each face of the cube).</p></li>
-<li><p>But not all intersections are correct: they are calculated for
-the entire infinite plane on which the face of the cube lies.</p></li>
-<li><p>It is therefore necessary to verify for each value of <span
-class="math inline">t</span> if the corresponding point <span
-class="math inline">P</span> actually lies on one of the faces of the
-cube.</p></li>
-</ul>
-</section>
-<section id="ray-aabb-intersection-3" class="slide level1">
-<h1>Ray-AABB intersection</h1>
-<ul>
-<li>In the case of the previous image, where the ray intersects the
-parallelepiped, the intervals <span class="math inline">[t^{(1)}_i,
-t^{(2)}_i]</span> have a common section:</li>
-</ul>
-<center>
-<img data-src="./media/aab-ray-good-intersection.svg" />
-</center>
-<ul>
-<li>The intersection of the intervals is an interval whose extremes
-correspond to the intersection points of the ray with the AABB.</li>
-</ul>
-</section>
-<section id="ray-aabb-intersection-4" class="slide level1">
-<h1>Ray-AABB intersection</h1>
-<ul>
-<li>In the case where the ray misses the parallelepiped, the intervals
-<span class="math inline">[t^{(1)}_i, t^{(2)}_i]</span> are
-disjoint:</li>
-</ul>
-<center>
-<img data-src="./media/aab-ray-missed-intersection.svg" />
-</center>
-<ul>
-<li>Therefore, if the intersection of the intervals for the three axes
-gives the empty set, the ray does not hit the AABB.</li>
-</ul>
-</section>
-<section id="bounding-boxes" class="slide level1">
-<h1>Bounding boxes</h1>
-</section>
-<section id="rendering-complexity" class="slide level1">
-<h1>Rendering complexity</h1>
-<ul>
-<li><p>Last week we implemented the <code>World</code> type, which
-contains a list of objects</p></li>
-<li><p>When calculating an intersection with an object,
-<code>World.ray_intersection</code> must iterate over all the
-<code>Shape</code>s in <code>World</code></p></li>
-<li><p>If you increase the number of <code>Shape</code>s tenfold, the
-time required to produce an image also increases tenfold…</p></li>
-<li><p>…but even solving the rendering equation in simple cases can take
-hours!</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/pathtracer100.webp" />
-</center>
-<p>This image contains three geometric shapes (two planes and a sphere),
-and was calculated in ~156 seconds.</p>
-</section>
-<section class="slide level1">
-
-<iframe src="https://player.vimeo.com/video/517979969?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1934" height="810" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Moana (Clements, Musker, Hall, Williams) Beach scene (no sound)">
-</iframe>
-</section>
-<section id="moana-island-scene" class="slide level1">
-<h1><a
-href="https://www.disneyanimation.com/resources/moana-island-scene/"><em>Moana
-island scene</em></a></h1>
-<center>
-<img data-src="./media/moana-island-scene.webp" />
-</center>
-</section>
-<section id="optimizations" class="slide level1">
-<h1>Optimizations</h1>
-<ul>
-<li><p>With our implementation of <code>World</code>, the time required
-to compute an image is roughly proportional to the number of ray-shape
-intersections.</p></li>
-<li><p>But realistic scenes contain many shapes!</p></li>
-<li><p><em>Moana island scene</em> is a scene composed of ~15 billion
-basic shapes. The rendering time would be on the order of 25,000
-years!</p></li>
-<li><p>However, there are optimization techniques that allow to greatly
-reduce the number of intersections to be calculated. One of these is
-based on <em>axis-aligned bounding boxes</em>.</p></li>
-</ul>
-</section>
-<section id="axis-aligned-bounding-box" class="slide level1">
-<h1><em>Axis-aligned bounding box</em></h1>
-<ul>
-<li><p><em>Axis-aligned bounding boxes</em> (AABBs) are AABBs that
-delimit the volume occupied by objects.</p></li>
-<li><p>They are widely used in <em>computer graphics</em> as an
-optimization mechanism.</p></li>
-<li><p>The principle is as follows:</p>
-<ol>
-<li>For each shape in space, its AABB is calculated;</li>
-<li>When determining the intersection between a ray and a shape, it is
-first checked whether the ray intersects the AABB;</li>
-<li>If it does not intersect, we move on to the next shape, otherwise we
-proceed with the intersection calculation.</li>
-</ol></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="./media/bounding-volume.webp" height="540" />
-</center>
-</section>
-<section id="usefulness-of-aabbs" class="slide level1">
-<h1>Usefulness of AABBs</h1>
-<ul>
-<li><p>AABBs are useful only for complex scenes, made up of many
-non-trivial objects. For simple scenes they can actually <strong>slow
-down</strong> rendering.</p></li>
-<li><p>They are however very useful with triangle <em>meshes</em> and
-with complex CSG objects.</p></li>
-<li><p>If you want to support AABBs in your ray-tracer, you should add
-an <code>aabb</code> member to the <code>Shape</code> type to be used
-inside <code>Shape.rayIntersection</code>:</p>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyComplexShape:</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> rayIntersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Union[HitRecord, <span class="va">None</span>]:</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        inv_ray <span class="op">=</span> ray.transform(<span class="va">self</span>.transformation.inverse())</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.aabb.quickRayIntersection(inv_ray):</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># etc.</span></span></code></pre></div></li>
-</ul>
-</section>
 <section id="triangles-and-meshes" class="slide level1">
 <h1>Triangles, quadrilaterals, and <em>meshes</em></h1>
 </section>
@@ -548,7 +334,7 @@ the plane of the triangle.</p></li>
 <li><p>The solution is easily obtained with <a
 href="https://en.wikipedia.org/wiki/Cramer%27s_rule">Cramer’s rule</a>,
 which is inefficient in the general case but adequate for 3×3 matrices
-as is the case here.</p></li>
+as the one above.</p></li>
 </ul>
 </section>
 <section id="analytical-solution-1" class="slide level1">
@@ -570,10 +356,10 @@ product between the two vectors aligned with the sides:</p>
 set equal to <span class="math inline">(\beta, \gamma)</span>.</p></li>
 </ul>
 </section>
-<section id="mesh" class="slide level1">
-<h1><em>Mesh</em></h1>
+<section id="triangle-meshes" class="slide level1">
+<h1>Triangle meshes</h1>
 </section>
-<section id="moana-island-scene-1" class="slide level1">
+<section id="moana-island-scene" class="slide level1">
 <h1><a
 href="https://www.disneyanimation.com/resources/moana-island-scene/"><em>Moana
 island scene</em></a></h1>
@@ -581,7 +367,7 @@ island scene</em></a></h1>
 <img data-src="./media/moana-island-scene.webp" />
 </center>
 </section>
-<section id="moana-island-scene-2" class="slide level1">
+<section id="moana-island-scene-1" class="slide level1">
 <h1><a
 href="https://www.disneyanimation.com/resources/moana-island-scene/"><em>Moana
 island scene</em></a></h1>
@@ -599,21 +385,21 @@ href="https://disneyanimation.com/publications/the-challenges-of-releasing-the-m
 challenges of Releasing the <em>Moana</em> Island Scene (Tamstorf &amp;
 Pritchett, EGSR 2019)</a> </small></p>
 </section>
-<section id="mesh-1" class="slide level1">
-<h1><em>Mesh</em></h1>
+<section id="polygonal-meshes" class="slide level1">
+<h1>Polygonal meshes</h1>
 <ul>
 <li><p>The scenes seen in the previous slides are formed by the
 combination of many simple shapes.</p></li>
 <li><p>Keeping a list of simple shapes in memory requires a series of
 non-trivial measures.</p></li>
-<li><p>Today we will discuss <em>meshes</em>, in which the elementary
-shape is precisely a planar triangle. (The same discussion can be made
-for quadrilateral <em>meshes</em>, but for simplicity we will focus on
-triangles).</p></li>
+<li><p>Today we will discuss <em>triangular meshes</em>, in which the
+elementary shape is precisely a planar triangle. (The same discussion
+can be made for quadrilateral <em>meshes</em>, but for simplicity we
+will focus on triangles).</p></li>
 </ul>
 </section>
 <section id="storing-triangles" class="slide level1">
-<h1>Storing Triangles</h1>
+<h1>Storing triangles</h1>
 <ul>
 <li><p>We have seen how to implement the code to calculate the
 intersection between a ray and a triangle in the general case where the
@@ -637,11 +423,11 @@ floating-point numbers (128 bytes at single precision).</p></li>
 </center>
 </section>
 <section id="mesh-storage" class="slide level1">
-<h1>Mesh Storage</h1>
+<h1>Mesh storage</h1>
 <ul>
-<li><p>In a triangle <em>mesh</em>, the vertices are stored in an
-ordered list <span class="math inline">P_k</span>, with <span
-class="math inline">k = 1\ldots N</span>.</p></li>
+<li><p>In a triangle mesh, the vertices are stored in an ordered list
+<span class="math inline">P_k</span>, with <span class="math inline">k =
+1\ldots N</span>.</p></li>
 <li><p>Triangles are represented by a triplet of integer indices <span
 class="math inline">i_1, i_2, i_3</span> which represents the position
 of the vertices <span class="math inline">P_{i_1}, P_{i_2},
@@ -649,7 +435,7 @@ P_{i_3}</span> in the ordered list.</p></li>
 <li><p>If 32-bit integers are used to store the indices, each triangle
 requires 3×4 = 12 bytes.</p></li>
 <li><p>This is advantageous if a vertex is shared by multiple triangles,
-which is the general case.</p></li>
+which is generally true.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -669,7 +455,7 @@ surface has the same normal <span class="math inline">\hat
 n</span>.</p></li>
 <li><p>In the case of triangle <em>meshes</em>, the barycentric
 coordinates of the triangle can be used to simulate a smooth surface:
-this is especially useful when the <em>mesh</em> is obtained from the
+this is especially useful when the mesh is obtained from the
 discretization of a smooth surface.</p></li>
 </ul>
 </section>
@@ -698,12 +484,12 @@ as</p>
 <section id="u-v-coordinates" class="slide level1">
 <h1><span class="math inline">(u, v)</span> Coordinates</h1>
 <ul>
-<li><p>In the case of a <em>mesh</em>, there are infinitely many
-possible ways to create a <span class="math inline">(u, v)</span>
-mapping on the surface.</p></li>
-<li><p>In <em>meshes</em>, each element of the <em>mesh</em> is made to
-cover a specific portion of the entire space <span
-class="math inline">[0, 1] \times [0, 1]</span>.</p></li>
+<li><p>In the case of a mesh, there are infinitely many possible ways to
+create a <span class="math inline">(u, v)</span> mapping on the
+surface.</p></li>
+<li><p>In <em>meshes</em>, each element of the mesh is made to cover a
+specific portion of the entire space <span class="math inline">[0, 1]
+\times [0, 1]</span>.</p></li>
 <li><p>3D modeling programs like Blender allow you to modify the <span
 class="math inline">(u, v)</span> mapping of each element.</p></li>
 </ul>
@@ -755,27 +541,187 @@ model from there).</p></li>
 <section id="ray-intersection-1" class="slide level1">
 <h1>Ray Intersection</h1>
 <ul>
-<li><p>Calculating the intersection between a <em>mesh</em> and a ray is
-not easy to implement.</p></li>
+<li><p>Calculating the intersection between a mesh and a ray is not easy
+to implement.</p></li>
 <li><p>The problem is that much of the time required to calculate the
 solution to the rendering equation is spent on ray-shape
 intersections.</p></li>
 <li><p>As the number of shapes increases, the computation time
 necessarily increases as well.</p></li>
+<li><p>An effective optimization is the use of boundary boxes, which
+rely on the concept of “axis-aligned box”. Let’s start from the
+latter.</p></li>
 </ul>
 </section>
-<section id="aabb-and-mesh" class="slide level1">
-<h1>AABB and <em>mesh</em></h1>
+<section id="axis-aligned-boxes" class="slide level1">
+<h1><em>Axis-aligned boxes</em></h1>
+</section>
+<section id="axis-aligned-boxes-1" class="slide level1">
+<h1><em>Axis-aligned boxes</em></h1>
 <ul>
-<li><p>AABBs are perfect for applying to <em>meshes</em>. (In this case
-they obviously do not apply to the <strong>individual</strong> elements,
-but to the <em>mesh</em> as a whole).</p></li>
-<li><p>When loading a <em>mesh</em>, its AABB can be calculated by
-calculating the minimum and maximum values of the coordinates of all
-vertices.</p></li>
-<li><p>In the case of the <em>Oceania</em> tree, the intersection
-between a ray and the 18 million elements would only occur for those
-rays actually oriented towards that tree.</p></li>
+<li><p>The cubic shape is not very interesting in itself, but it lends
+itself to some optimizations relevant for polygonal meshes.</p></li>
+<li><p>Due to its particular purpose, we will treat the case of cubes
+using different conventions than those made for spheres and planes:</p>
+<ol>
+<li>We will not limit ourselves to the unit cube with a vertex at the
+origin…</li>
+<li>…but we will assume that the faces are parallel to the coordinate
+planes.</li>
+</ol></li>
+<li><p>These assumptions are referred to in the literature as
+<em>axis-aligned bounding box</em> (AAB).</p></li>
+</ul>
+</section>
+<section id="in-memory-representation" class="slide level1">
+<h1>In-memory representation</h1>
+<ul>
+<li><p>A parallelepiped with edges aligned along the <span
+class="math inline">xyz</span> axes can be defined by the following
+quantities:</p>
+<ol>
+<li>The minimum and maximum <span class="math inline">x</span>
+values;</li>
+<li>The minimum and maximum <span class="math inline">y</span>
+values;</li>
+<li>The minimum and maximum <span class="math inline">z</span>
+values.</li>
+</ol></li>
+<li><p>Equivalently, you can store two opposite vertices of the
+parallelepiped, <span class="math inline">P_m</span> (minimum values of
+<span class="math inline">x</span>, <span class="math inline">y</span>
+and <span class="math inline">z</span>) and <span
+class="math inline">P_M</span> (maximum values).</p></li>
+</ul>
+</section>
+<section id="ray-aabb-intersection" class="slide level1">
+<h1>Ray-AABB intersection</h1>
+<ul>
+<li><p>Let’s write the ray as <span class="math inline">r: O + t \vec
+d</span>.</p></li>
+<li><p>The calculation for the 3D case is very similar to the 2D case,
+so let’s consider the latter:</p>
+<center>
+<p><img data-src="./media/aab-ray-intersection.svg" /></p>
+</center></li>
+</ul>
+</section>
+<section id="ray-aabb-intersection-1" class="slide level1">
+<h1>Ray-AABB intersection</h1>
+<ul>
+<li><p>Let <span class="math inline">F_i</span> be a generic point on a
+face of the box perpendicular to the <span
+class="math inline">i</span>-th direction (six planes in total), which
+will have coordinates</p>
+<p><span class="math display">
+F_0 = (f_0^{\text{min}/\text{max}}, \cdot, \cdot), \quad F_1 = (\cdot,
+f_1^{\text{min}/\text{max}}, \cdot), \quad F_2 = (\cdot, \cdot,
+f_2^{\text{min}/\text{max}}).
+</span></p></li>
+<li><p>In general, there are <em>two</em> ray-face intersection along
+the <span class="math inline">i</span>-th coordinate, if we consider
+whole planes instead of the actual faces:</p>
+<p><span class="math display">
+O + t_i \vec d = F^{\text{min}/\text{max}}_i\quad\Rightarrow\quad
+t_i^{\text{min}/\text{max}} = \frac{f_i^{\text{min}/\text{max}} -
+O_i}{d_i}.
+</span></p></li>
+</ul>
+</section>
+<section id="ray-aabb-intersection-2" class="slide level1">
+<h1>Ray-AABB intersection</h1>
+<ul>
+<li><p>Each direction produces two intersections, so in total there are
+six potential intersections (one for each face of the cube).</p></li>
+<li><p>But not all intersections are correct: they are calculated for
+the entire infinite plane on which the face of the cube lies.</p></li>
+<li><p>It is therefore necessary to verify for each value of <span
+class="math inline">t</span> if the corresponding point <span
+class="math inline">P</span> actually lies on one of the faces of the
+cube.</p></li>
+</ul>
+</section>
+<section id="ray-aabb-intersection-3" class="slide level1">
+<h1>Ray-AABB intersection</h1>
+<ul>
+<li>In the case of the previous image, where the ray intersects the
+parallelepiped, the intervals <span class="math inline">[t^{(1)}_i,
+t^{(2)}_i]</span> have a common section:</li>
+</ul>
+<center>
+<img data-src="./media/aab-ray-good-intersection.svg" />
+</center>
+<ul>
+<li>The intersection of the intervals is an interval whose extremes
+correspond to the intersection points of the ray with the AABB.</li>
+</ul>
+</section>
+<section id="ray-aabb-intersection-4" class="slide level1">
+<h1>Ray-AABB intersection</h1>
+<ul>
+<li>In the case where the ray misses the parallelepiped, the intervals
+<span class="math inline">[t^{(1)}_i, t^{(2)}_i]</span> are
+disjoint:</li>
+</ul>
+<center>
+<img data-src="./media/aab-ray-missed-intersection.svg" />
+</center>
+<ul>
+<li>Therefore, if the intersection of the intervals for the three axes
+gives the empty set, the ray does not hit the AABB.</li>
+</ul>
+</section>
+<section id="bounding-boxes" class="slide level1">
+<h1>Bounding boxes</h1>
+</section>
+<section id="rendering-complexity" class="slide level1">
+<h1>Rendering complexity</h1>
+<ul>
+<li><p>Last week we implemented the <code>World</code> type, which
+contains a list of objects</p></li>
+<li><p>When calculating an intersection with an object,
+<code>World.ray_intersection</code> must iterate over all the
+<code>Shape</code>s in <code>World</code></p></li>
+<li><p>If you increase the number of <code>Shape</code>s tenfold, the
+time required to produce an image also increases tenfold…</p></li>
+<li><p>…but even solving the rendering equation in simple cases can take
+hours!</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/pathtracer100.webp" />
+</center>
+<p>This image contains three geometric shapes (two planes and a sphere),
+and was calculated in ~156 seconds.</p>
+</section>
+<section class="slide level1">
+
+<iframe src="https://player.vimeo.com/video/517979969?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1934" height="810" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Moana (Clements, Musker, Hall, Williams) Beach scene (no sound)">
+</iframe>
+</section>
+<section id="moana-island-scene-2" class="slide level1">
+<h1><a
+href="https://www.disneyanimation.com/resources/moana-island-scene/"><em>Moana
+island scene</em></a></h1>
+<center>
+<img data-src="./media/moana-island-scene.webp" />
+</center>
+</section>
+<section id="optimizations" class="slide level1">
+<h1>Optimizations</h1>
+<ul>
+<li><p>With our implementation of <code>World</code>, the time required
+to compute an image is roughly proportional to the number of ray-shape
+intersections.</p></li>
+<li><p>But realistic scenes contain many shapes!</p></li>
+<li><p><em>Moana island scene</em> is a scene composed of ~15 billion
+basic shapes. The rendering time would be on the order of 25,000
+years!</p></li>
+<li><p>Now that we have described axis-aligned boxes, let’s move to the
+concept of axis-aligned <em>bounding</em> boxes, which provides a simple
+but effective optimization.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -783,6 +729,65 @@ rays actually oriented towards that tree.</p></li>
 <center>
 <img data-src="./media/bounding-volume.webp" height="540" />
 </center>
+</section>
+<section id="axis-aligned-bounding-box" class="slide level1">
+<h1><em>Axis-aligned bounding box</em></h1>
+<ul>
+<li><p><em>Axis-aligned bounding boxes</em> (AABBs) are AABBs that
+delimit the volume occupied by objects.</p></li>
+<li><p>They are widely used in <em>computer graphics</em> as an
+optimization mechanism.</p></li>
+<li><p>The principle is as follows:</p>
+<ol>
+<li>For each shape in space, its AABB is calculated;</li>
+<li>When determining the intersection between a ray and a shape, it is
+first checked whether the ray intersects the AABB;</li>
+<li>If it does not intersect, we move on to the next shape, otherwise we
+proceed with the intersection calculation.</li>
+</ol></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<center>
+<img data-src="./media/bounding-volume.webp" height="540" />
+</center>
+</section>
+<section id="usefulness-of-aabbs" class="slide level1">
+<h1>Usefulness of AABBs</h1>
+<ul>
+<li><p>AABBs are useful only for scenes made up of many objects. For
+simple scenes, they can <strong>slow down</strong> the
+rendering.</p></li>
+<li><p>They are however very useful with triangle <em>meshes</em> and
+complex CSG objects.</p></li>
+<li><p>If you want to support AABBs in your ray-tracer, you should add
+an <code>aabb</code> member to the <code>Shape</code> type to be used
+inside <code>Shape.rayIntersection</code>:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyComplexShape:</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> rayIntersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Union[HitRecord, <span class="va">None</span>]:</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        inv_ray <span class="op">=</span> ray.transform(<span class="va">self</span>.transformation.inverse())</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.aabb.quickRayIntersection(inv_ray):</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># etc.</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="aabb-and-meshes" class="slide level1">
+<h1>AABB and meshes</h1>
+<ul>
+<li><p>AABBs are perfect for applying to <em>meshes</em>. (In this case
+they obviously do not apply to the <strong>individual</strong> elements,
+but to the mesh as a whole).</p></li>
+<li><p>When loading a mesh, its AABB can be calculated by calculating
+the minimum and maximum values of the coordinates of all
+vertices.</p></li>
+<li><p>In the case of the <em>Oceania</em> tree, the intersection
+between a ray and the 18 million elements would only occur for those
+rays actually oriented towards that tree.</p></li>
+</ul>
 </section>
 <section id="beyond-aabbs" class="slide level1">
 <h1>Beyond AABBs</h1>
@@ -792,11 +797,13 @@ rays actually oriented towards that tree.</p></li>
 <li><p>Scenes are often almost completely occupied by a complex object,
 and in this case AABBs do not provide any advantage (as in the previous
 image).</p></li>
-<li><p>However, it is possible to build on the idea of AABBs to
-implement more sophisticated optimizations: the most used ones employ <a
+<li><p>However, there are several sophisticated optimizations that
+transform the problem of looking for ray-triangle hits from <span
+class="math inline">O(N)</span> to <span class="math inline">O(\log_2
+N)</span>. The most used ones employ <a
 href="https://en.wikipedia.org/wiki/K-d_tree">KD-trees</a> and <a
-href="https://en.wikipedia.org/wiki/Bounding_volume_hierarchy">BVHs</a>.
-See the <a
+href="https://en.wikipedia.org/wiki/Bounding_volume_hierarchy">Bounding
+Volume Hierarchies</a>. See the <a
 href="https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration">book
 by Pharr, Jakob &amp; Humphreys</a>.</p></li>
 </ul>
@@ -842,11 +849,11 @@ crashes.</li>
 infection or no failure, it is difficult to notice it!</p></li>
 </ul>
 </section>
-<section id="an-example-from-numerical-analysis" class="slide level1">
-<h1>An Example from Numerical Analysis</h1>
+<section id="example" class="slide level1">
+<h1>Example</h1>
 <ul>
-<li><p>In the Numerical Analysis course, you have to implement code that
-calculates the value of</p>
+<li><p>In your second-year, you implemented code that calculates the
+value of</p>
 <p><span class="math display">
 \int_0^\pi \sin x\,\mathrm{d}x
 </span></p>
@@ -970,8 +977,8 @@ class="slide level1">
 <h1>Debugging tools</h1>
 <table>
 <colgroup>
-<col style="width: 24%" />
-<col style="width: 75%" />
+<col style="width: 30%" />
+<col style="width: 69%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -981,7 +988,7 @@ class="slide level1">
 </thead>
 <tbody>
 <tr class="odd">
-<td>SYmbolic debugger</td>
+<td>Symbolic debuggers</td>
 <td><a href="https://sourceware.org/gdb/">GDB</a>, <a
 href="https://lldb.llvm.org/">LLDB</a></td>
 </tr>

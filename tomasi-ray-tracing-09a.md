@@ -1,150 +1,3 @@
-# *Axis-aligned boxes*
-
-# *Axis-aligned boxes*
-
--   The cubic shape is not very interesting in itself, but it lends itself to some very simple optimizations.
-
--   Due to its particular purpose, we will treat the case of cubes using different conventions than those made for spheres and planes:
-
-    #.   We will not limit ourselves to the unit cube with a vertex at the origin…
-    #.   …but we will assume that the faces are parallel to the coordinate planes.
-
--   These assumptions are referred to in the literature as *axis-aligned bounding box* (AAB).
-
-# In-memory representation
-
--   A parallelepiped with edges aligned along the $xyz$ axes can be defined by the following quantities:
-
-    #. The minimum and maximum $x$ values;
-    #. The minimum and maximum $y$ values;
-    #. The minimum and maximum $z$ values.
-
--   Equivalently, you can store two opposite vertices of the parallelepiped, $P_m$ (minimum values of $x$, $y$ and $z$) and $P_M$ (maximum values).
-
-# Ray-AABB intersection
-
--   Let's write the ray as $r: O + t \vec d$.
-
--   The calculation is very similar to that done for the plane, if one dimension is considered at a time:
-
-    <center>![](./media/aab-ray-intersection.svg)</center>
-
-# Ray-AABB intersection
-
--   Let $F_i$ be a generic point on the plane perpendicular to the $i$-th direction (six planes in total), which will have coordinates
-
-    $$
-    F_0 = (f_0^{\text{min}/\text{max}}, \cdot, \cdot), \quad F_1 = (\cdot, f_1^{\text{min}/\text{max}}, \cdot), \quad F_2 = (\cdot, \cdot, f_2^{\text{min}/\text{max}}).
-    $$
-
--   Along the $i$-th coordinate, *two* planes intersect:
-
-    $$
-    O + t_i \vec d = F^{\text{min}/\text{max}}_i\quad\Rightarrow\quad t_i^{\text{min}/\text{max}} = \frac{f_i^{\text{min}/\text{max}} - O_i}{d_i}.
-    $$
-
-# Ray-AABB intersection
-
--   Each direction produces two intersections, so in total there are six potential intersections (one for each face of the cube).
-
--   But not all intersections are correct: they are calculated for the entire infinite plane on which the face of the cube lies.
-
--   It is therefore necessary to verify for each value of $t$ if the corresponding point $P$ actually lies on one of the faces of the cube.
-
-# Ray-AABB intersection
-
--   In the case of the previous image, where the ray intersects the parallelepiped, the intervals $[t^{(1)}_i, t^{(2)}_i]$ have a common section:
-
-<center>![](./media/aab-ray-good-intersection.svg)</center>
-
--   The intersection of the intervals is an interval whose extremes correspond to the intersection points of the ray with the AABB.
-
-
-# Ray-AABB intersection
-
--   In the case where the ray misses the parallelepiped, the intervals $[t^{(1)}_i, t^{(2)}_i]$ are disjoint:
-
-<center>![](./media/aab-ray-missed-intersection.svg)</center>
-
--   Therefore, if the intersection of the intervals for the three axes gives the empty set, the ray does not hit the AABB.
-
-# Bounding boxes
-
-# Rendering complexity
-
--   Last week we implemented the `World` type, which contains a list of objects
-
--   When calculating an intersection with an object, `World.ray_intersection` must iterate over all the `Shape`s in `World`
-
--   If you increase the number of `Shape`s tenfold, the time required to produce an image also increases tenfold…
-
--   …but even solving the rendering equation in simple cases can take hours!
-
-
----
-
-<center>![](./media/pathtracer100.webp)</center>
-
-This image contains three geometric shapes (two planes and a sphere), and was calculated in ~156 seconds.
-
----
-
-<iframe src="https://player.vimeo.com/video/517979969?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1934" height="810" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Moana (Clements, Musker, Hall, Williams) Beach scene (no sound)"></iframe>
-
-# [*Moana island scene*](https://www.disneyanimation.com/resources/moana-island-scene/)
-
-<center>
-![](./media/moana-island-scene.webp)
-</center>
-
-
-# Optimizations
-
--   With our implementation of `World`, the time required to compute an image is roughly proportional to the number of ray-shape intersections.
-
--   But realistic scenes contain many shapes!
-
--   *Moana island scene* is a scene composed of ~15 billion basic shapes. The rendering time would be on the order of 25,000 years!
-
--   However, there are optimization techniques that allow to greatly reduce the number of intersections to be calculated. One of these is based on *axis-aligned bounding boxes*.
-
-
-# *Axis-aligned bounding box*
-
--   *Axis-aligned bounding boxes* (AABBs) are AABBs that delimit the volume occupied by objects.
-
--   They are widely used in *computer graphics* as an optimization mechanism.
-
--   The principle is as follows:
-
-    #.  For each shape in space, its AABB is calculated;
-    #.  When determining the intersection between a ray and a shape, it is first checked whether the ray intersects the AABB;
-    #.  If it does not intersect, we move on to the next shape, otherwise we proceed with the intersection calculation.
-
----
-
-<center>![](./media/bounding-volume.webp){height=540px}</center>
-
-# Usefulness of AABBs
-
--   AABBs are useful only for complex scenes, made up of many non-trivial objects. For simple scenes they can actually **slow down** rendering.
-
--   They are however very useful with triangle *meshes* and with complex CSG objects.
-
--   If you want to support AABBs in your ray-tracer, you should add an `aabb` member to the `Shape` type to be used inside `Shape.rayIntersection`:
-
-    ```python
-    class MyComplexShape:
-        # ...
-        def rayIntersection(self, ray: Ray) -> Union[HitRecord, None]:
-            inv_ray = ray.transform(self.transformation.inverse())
-            if not self.aabb.quickRayIntersection(inv_ray):
-                return None
-
-            # etc.
-    ```
-
-
 # Triangles, quadrilaterals, and *meshes* {#triangles-and-meshes}
 
 # 3D Modeling
@@ -304,7 +157,7 @@ Triangles are a geometric shape widely used in 3D modeling and rendering program
 
     which must be different from zero, otherwise the ray is parallel to the plane of the triangle.
 
--   The solution is easily obtained with [Cramer's rule](https://en.wikipedia.org/wiki/Cramer%27s_rule), which is inefficient in the general case but adequate for 3×3 matrices as is the case here.
+-   The solution is easily obtained with [Cramer's rule](https://en.wikipedia.org/wiki/Cramer%27s_rule), which is inefficient in the general case but adequate for 3×3 matrices as the one above.
 
 # Analytical Solution
 
@@ -325,7 +178,7 @@ Triangles are a geometric shape widely used in 3D modeling and rendering program
 -   The $(u, v)$ coordinates can be set equal to $(\beta, \gamma)$.
 
 
-# *Mesh*
+# Triangle meshes
 
 # [*Moana island scene*](https://www.disneyanimation.com/resources/moana-island-scene/)
 
@@ -349,15 +202,15 @@ Triangles are a geometric shape widely used in 3D modeling and rendering program
 [The challenges of Releasing the *Moana* Island Scene (Tamstorf & Pritchett, EGSR 2019)](https://disneyanimation.com/publications/the-challenges-of-releasing-the-moana-island-scene/)
 </small>
 
-# *Mesh*
+# Polygonal meshes
 
 -   The scenes seen in the previous slides are formed by the combination of many simple shapes.
 
 -   Keeping a list of simple shapes in memory requires a series of non-trivial measures.
 
--   Today we will discuss *meshes*, in which the elementary shape is precisely a planar triangle. (The same discussion can be made for quadrilateral *meshes*, but for simplicity we will focus on triangles).
+-   Today we will discuss *triangular meshes*, in which the elementary shape is precisely a planar triangle. (The same discussion can be made for quadrilateral *meshes*, but for simplicity we will focus on triangles).
 
-# Storing Triangles
+# Storing triangles
 
 -   We have seen how to implement the code to calculate the intersection between a ray and a triangle in the general case where the triangle is encoded by its three vertices $A$, $B$, and $C$.
 
@@ -371,15 +224,15 @@ Triangles are a geometric shape widely used in 3D modeling and rendering program
 
 <center>![](./media/stanford-bunny-triangles.png)</center>
 
-# Mesh Storage
+# Mesh storage
 
--   In a triangle *mesh*, the vertices are stored in an ordered list $P_k$, with $k = 1\ldots N$.
+-   In a triangle mesh, the vertices are stored in an ordered list $P_k$, with $k = 1\ldots N$.
 
 -   Triangles are represented by a triplet of integer indices $i_1, i_2, i_3$ which represents the position of the vertices $P_{i_1}, P_{i_2}, P_{i_3}$ in the ordered list.
 
 -   If 32-bit integers are used to store the indices, each triangle requires 3×4 = 12 bytes.
 
--   This is advantageous if a vertex is shared by multiple triangles, which is the general case.
+-   This is advantageous if a vertex is shared by multiple triangles, which is generally true.
 
 ---
 
@@ -393,7 +246,7 @@ Model: 44,000 vertices, 80,000 triangles.
 
 -   A triangle is a planar surface, and therefore every point on its surface has the same normal $\hat n$.
 
--   In the case of triangle *meshes*, the barycentric coordinates of the triangle can be used to simulate a smooth surface: this is especially useful when the *mesh* is obtained from the discretization of a smooth surface.
+-   In the case of triangle *meshes*, the barycentric coordinates of the triangle can be used to simulate a smooth surface: this is especially useful when the mesh is obtained from the discretization of a smooth surface.
 
 # Smooth Shading
 
@@ -413,9 +266,9 @@ Model: 44,000 vertices, 80,000 triangles.
 
 # $(u, v)$ Coordinates
 
--   In the case of a *mesh*, there are infinitely many possible ways to create a $(u, v)$ mapping on the surface.
+-   In the case of a mesh, there are infinitely many possible ways to create a $(u, v)$ mapping on the surface.
 
--   In *meshes*, each element of the *mesh* is made to cover a specific portion of the entire space $[0, 1] \times [0, 1]$.
+-   In *meshes*, each element of the mesh is made to cover a specific portion of the entire space $[0, 1] \times [0, 1]$.
 
 -   3D modeling programs like Blender allow you to modify the $(u, v)$ mapping of each element.
 
@@ -454,23 +307,172 @@ Model: 44,000 vertices, 80,000 triangles.
 
 # Ray Intersection
 
--   Calculating the intersection between a *mesh* and a ray is not easy to implement.
+-   Calculating the intersection between a mesh and a ray is not easy to implement.
 
 -   The problem is that much of the time required to calculate the solution to the rendering equation is spent on ray-shape intersections.
 
 -   As the number of shapes increases, the computation time necessarily increases as well.
 
-# AABB and *mesh*
+-   An effective optimization is the use of boundary boxes, which rely on the concept of “axis-aligned box”. Let’s start from the latter.
 
--   AABBs are perfect for applying to *meshes*. (In this case they obviously do not apply to the **individual** elements, but to the *mesh* as a whole).
 
--   When loading a *mesh*, its AABB can be calculated by calculating the minimum and maximum values of the coordinates of all vertices.
+# *Axis-aligned boxes*
 
--   In the case of the *Oceania* tree, the intersection between a ray and the 18 million elements would only occur for those rays actually oriented towards that tree.
+# *Axis-aligned boxes*
+
+-   The cubic shape is not very interesting in itself, but it lends itself to some optimizations relevant for polygonal meshes.
+
+-   Due to its particular purpose, we will treat the case of cubes using different conventions than those made for spheres and planes:
+
+    #.   We will not limit ourselves to the unit cube with a vertex at the origin…
+    #.   …but we will assume that the faces are parallel to the coordinate planes.
+
+-   These assumptions are referred to in the literature as *axis-aligned bounding box* (AAB).
+
+# In-memory representation
+
+-   A parallelepiped with edges aligned along the $xyz$ axes can be defined by the following quantities:
+
+    #. The minimum and maximum $x$ values;
+    #. The minimum and maximum $y$ values;
+    #. The minimum and maximum $z$ values.
+
+-   Equivalently, you can store two opposite vertices of the parallelepiped, $P_m$ (minimum values of $x$, $y$ and $z$) and $P_M$ (maximum values).
+
+# Ray-AABB intersection
+
+-   Let's write the ray as $r: O + t \vec d$.
+
+-   The calculation for the 3D case is very similar to the 2D case, so let’s consider the latter:
+
+    <center>![](./media/aab-ray-intersection.svg)</center>
+
+# Ray-AABB intersection
+
+-   Let $F_i$ be a generic point on a face of the box perpendicular to the $i$-th direction (six planes in total), which will have coordinates
+
+    $$
+    F_0 = (f_0^{\text{min}/\text{max}}, \cdot, \cdot), \quad F_1 = (\cdot, f_1^{\text{min}/\text{max}}, \cdot), \quad F_2 = (\cdot, \cdot, f_2^{\text{min}/\text{max}}).
+    $$
+
+-   In general, there are *two* ray-face intersection along the $i$-th coordinate, if we consider whole planes instead of the actual faces:
+
+    $$
+    O + t_i \vec d = F^{\text{min}/\text{max}}_i\quad\Rightarrow\quad t_i^{\text{min}/\text{max}} = \frac{f_i^{\text{min}/\text{max}} - O_i}{d_i}.
+    $$
+
+# Ray-AABB intersection
+
+-   Each direction produces two intersections, so in total there are six potential intersections (one for each face of the cube).
+
+-   But not all intersections are correct: they are calculated for the entire infinite plane on which the face of the cube lies.
+
+-   It is therefore necessary to verify for each value of $t$ if the corresponding point $P$ actually lies on one of the faces of the cube.
+
+# Ray-AABB intersection
+
+-   In the case of the previous image, where the ray intersects the parallelepiped, the intervals $[t^{(1)}_i, t^{(2)}_i]$ have a common section:
+
+<center>![](./media/aab-ray-good-intersection.svg)</center>
+
+-   The intersection of the intervals is an interval whose extremes correspond to the intersection points of the ray with the AABB.
+
+
+# Ray-AABB intersection
+
+-   In the case where the ray misses the parallelepiped, the intervals $[t^{(1)}_i, t^{(2)}_i]$ are disjoint:
+
+<center>![](./media/aab-ray-missed-intersection.svg)</center>
+
+-   Therefore, if the intersection of the intervals for the three axes gives the empty set, the ray does not hit the AABB.
+
+# Bounding boxes
+
+# Rendering complexity
+
+-   Last week we implemented the `World` type, which contains a list of objects
+
+-   When calculating an intersection with an object, `World.ray_intersection` must iterate over all the `Shape`s in `World`
+
+-   If you increase the number of `Shape`s tenfold, the time required to produce an image also increases tenfold…
+
+-   …but even solving the rendering equation in simple cases can take hours!
+
+
+---
+
+<center>![](./media/pathtracer100.webp)</center>
+
+This image contains three geometric shapes (two planes and a sphere), and was calculated in ~156 seconds.
+
+---
+
+<iframe src="https://player.vimeo.com/video/517979969?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1934" height="810" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Moana (Clements, Musker, Hall, Williams) Beach scene (no sound)"></iframe>
+
+# [*Moana island scene*](https://www.disneyanimation.com/resources/moana-island-scene/)
+
+<center>
+![](./media/moana-island-scene.webp)
+</center>
+
+
+# Optimizations
+
+-   With our implementation of `World`, the time required to compute an image is roughly proportional to the number of ray-shape intersections.
+
+-   But realistic scenes contain many shapes!
+
+-   *Moana island scene* is a scene composed of ~15 billion basic shapes. The rendering time would be on the order of 25,000 years!
+
+-   Now that we have described axis-aligned boxes, let’s move to the concept of axis-aligned *bounding* boxes, which provides a simple but effective optimization.
 
 ---
 
 <center>![](./media/bounding-volume.webp){height=540px}</center>
+
+# *Axis-aligned bounding box*
+
+-   *Axis-aligned bounding boxes* (AABBs) are AABBs that delimit the volume occupied by objects.
+
+-   They are widely used in *computer graphics* as an optimization mechanism.
+
+-   The principle is as follows:
+
+    #.  For each shape in space, its AABB is calculated;
+    #.  When determining the intersection between a ray and a shape, it is first checked whether the ray intersects the AABB;
+    #.  If it does not intersect, we move on to the next shape, otherwise we proceed with the intersection calculation.
+
+---
+
+<center>![](./media/bounding-volume.webp){height=540px}</center>
+
+# Usefulness of AABBs
+
+-   AABBs are useful only for scenes made up of many objects. For simple scenes, they can **slow down** the rendering.
+
+-   They are however very useful with triangle *meshes* and complex CSG objects.
+
+-   If you want to support AABBs in your ray-tracer, you should add an `aabb` member to the `Shape` type to be used inside `Shape.rayIntersection`:
+
+    ```python
+    class MyComplexShape:
+        # ...
+        def rayIntersection(self, ray: Ray) -> Union[HitRecord, None]:
+            inv_ray = ray.transform(self.transformation.inverse())
+            if not self.aabb.quickRayIntersection(inv_ray):
+                return None
+
+            # etc.
+    ```
+
+
+# AABB and meshes
+
+-   AABBs are perfect for applying to *meshes*. (In this case they obviously do not apply to the **individual** elements, but to the mesh as a whole).
+
+-   When loading a mesh, its AABB can be calculated by calculating the minimum and maximum values of the coordinates of all vertices.
+
+-   In the case of the *Oceania* tree, the intersection between a ray and the 18 million elements would only occur for those rays actually oriented towards that tree.
 
 # Beyond AABBs
 
@@ -478,7 +480,7 @@ Model: 44,000 vertices, 80,000 triangles.
 
 -   Scenes are often almost completely occupied by a complex object, and in this case AABBs do not provide any advantage (as in the previous image).
 
--   However, it is possible to build on the idea of AABBs to implement more sophisticated optimizations: the most used ones employ [KD-trees](https://en.wikipedia.org/wiki/K-d_tree) and [BVHs](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy). See the [book by Pharr, Jakob & Humphreys](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration).
+-   However, there are several sophisticated optimizations that transform the problem of looking for ray-triangle hits from $O(N)$ to $O(\log_2 N)$. The most used ones employ [KD-trees](https://en.wikipedia.org/wiki/K-d_tree) and [Bounding Volume Hierarchies](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy). See the [book by Pharr, Jakob & Humphreys](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration).
 
 
 # Debugging {#debugging}
@@ -507,9 +509,9 @@ Model: 44,000 vertices, 80,000 triangles.
 -   The *bug* lies in the initial fault, but if there is no infection or no failure, it is difficult to notice it!
 
 
-# An Example from Numerical Analysis
+# Example
 
--   In the Numerical Analysis course, you have to implement code that calculates the value of
+-   In your second-year, you implemented code that calculates the value of
 
     \[
     \int_0^\pi \sin x\,\mathrm{d}x
@@ -595,13 +597,13 @@ Model: 44,000 vertices, 80,000 triangles.
 
 # Debugging tools
 
-| Type                            | Examples                                                                                               |
-|---------------------------------|--------------------------------------------------------------------------------------------------------|
-| SYmbolic debugger               | [GDB](https://sourceware.org/gdb/), [LLDB](https://lldb.llvm.org/)                                     |
-| Memory checkers                 | [Memcheck](https://valgrind.org/docs/manual/mc-manual.html)                                            |
-| Dynamic analysis                | [Valgrind](https://valgrind.org/docs/manual/mc-manual.html)                                            |
-| Record-and-replay               | [rr](https://rr-project.org/), [UDB](https://undo.io/products/udb/)                                    |
-| Fuzzying debuggers              | [AFL++](https://github.com/AFLplusplus/AFLplusplus), [libFuzzer](https://llvm.org/docs/LibFuzzer.html) |
+| Type                                        | Examples                                                                                               |
+|---------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| Symbolic debuggers                          | [GDB](https://sourceware.org/gdb/), [LLDB](https://lldb.llvm.org/)                                     |
+| Memory checkers                             | [Memcheck](https://valgrind.org/docs/manual/mc-manual.html)                                            |
+| Dynamic analysis                            | [Valgrind](https://valgrind.org/docs/manual/mc-manual.html)                                            |
+| Record-and-replay                           | [rr](https://rr-project.org/), [UDB](https://undo.io/products/udb/)                                    |
+| Fuzzying debuggers                          | [AFL++](https://github.com/AFLplusplus/AFLplusplus), [libFuzzer](https://llvm.org/docs/LibFuzzer.html) |
 
 ---
 title: "Lesson 9"
