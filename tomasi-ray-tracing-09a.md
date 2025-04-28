@@ -1,184 +1,4 @@
-# Triangles, quadrilaterals, and *meshes* {#triangles-and-meshes}
-
-# 3D Modeling
-
-<center>![](./media/blender-mesh-modeling.webp)</center>
-
-# 3D Scanners
-
-<center>![](./media/3d-scanners.webp)</center>
-
-# Stanford bunny (1994)
-
-<center>![](./media/stanford-bunny-triangles.png)</center>
-
-(Model obtained from the scan of a ceramic statuette)
-
-# Triangles
-
-Triangles are a geometric shape widely used in 3D modeling and rendering programs, due to their many properties:
-
-#. They are the planar surface with the fewest vertices (→ efficient to store).
-#. Their representation in space is unique (one and only one planar triangle passes through three points).
-#. Their surface is parameterizable in $(u, v)$ coordinates in a very simple way.
-#. Complex surfaces can be represented as a union of multiple triangles.
-
-
-# Barycentric Coordinates
-
--   Barycentric coordinates were proposed by Möbius in 1827. They express the points of a plane passing through the points $A, B, C$ by means of the expression
-
-    $$
-    P(\alpha, \beta, \gamma) = \alpha A + \beta B + \gamma C,
-    $$
-
-    where $\alpha, \beta, \gamma \in \mathbb{R}$ are the *barycentric coordinates*.
-
--   Barycentric coordinates are very useful for characterizing the triangle with vertices $A, B, C$: the point $P$ is inside the triangle if and only if
-
-    $$
-    0 \le \alpha \le 1,\quad 0 \le \beta \le 1,\quad 0 \le \gamma \le 1, \quad \alpha + \beta + \gamma = 1.
-    $$
-
-# Coordinates in Triangles
-
--   The condition $\alpha + \beta + \gamma = 1$ means that the points of a triangle are characterized by two degrees of freedom, as it should be for a two-dimensional surface.
-
--   Equality in the first three inequalities holds for the points along the edge of the triangle.
-
--   Using the last equality, a more meaningful form is obtained:
-
-    $$
-    P(\beta, \gamma) = A + \beta(B - A) + \gamma(C - A) = A + \beta \vec v_{AB} + \gamma \vec v_{AC},
-    $$
-
-    which expresses $P$ as $A$ plus a displacement towards $B$ and one towards $C$.
-
----
-
-<center>![](./media/triangle-coordinates.svg){height=640px}</center>
-
-# Coordinates in Triangles
-
--   It can be shown that the barycentric coordinates of a point $P$ are related to the area $\sigma$ of the triangle and to the areas of the three sub-triangles having as vertex the point $P$ and two of the vertices:
-
-    $$
-    \alpha = \frac{\sigma_1}\sigma = 1 - \frac{\sigma_2 + \sigma_3}\sigma, \quad \beta = \frac{\sigma_2}\sigma, \quad \gamma = \frac{\sigma_3}\sigma.
-    $$
-
--   If a negative sign is assigned to the areas that are outside the triangle, these equations hold for any point on the plane in which the triangle lies.
-
-# Interactive Example { data-state="barycentric-coordinates-demo" }
-
-<center>
-    <canvas
-        id="barycentric-coordinates-canvas"
-        width="620px"
-        height="480px"
-        style="left:0px;top:0px;cursor:crosshair;border:1px solid black;"/>
-</center>
-
-<script type="text/javascript" src="./js/barycentric-coordinates.js"></script>
-
-# Quadrilaterals
-
--   We will focus on triangles today, but rendering programs also offer the possibility of defining *quadrilaterals*.
-
--   If we limit ourselves to parallelograms, they can be represented as the union of a vertex $P$ and two vectors $\vec v$ and $\vec w$; in this way, the results that we will show today are easily extendable to them as well:
-
-    <center>
-    ![](media/parallelogram.svg)
-    </center>
-
-# Ray Intersection
-
--   Let's now see how to use barycentric coordinates to efficiently calculate the intersection between a triangle and a ray.
-
--   Unlike what we did with spheres and planes, in this case we will not adopt a simplified reference system. The reason will be clear when we explain triangle *meshes*.
-
--   We will therefore identify a triangle by the coordinates of the three points $A, B, C$ (nine floating-point values).
-
-# The Analytical Problem
-
--   Consider the ray $r(t): O + t \vec d$ and the generic point $P(\beta, \gamma)$ of the triangle. The intersection is given by
-
-    $$
-    A + \beta (B - A) + \gamma (C - A) = O + t \vec d,
-    $$
-
-    with the constraint $0 \leq (\beta, \gamma) \leq 1$.
-
--   Let's rearrange the equation to move the three unknowns $\beta$, $\gamma$ and $t$ to the left:
-
-    $$
-    \beta (B - A) + \gamma (C - A) - t \vec d = O - A.
-    $$
-
-
-# Matrix Form
-
--   The equation we obtained is
-
-    $$
-    \beta (B - A) + \gamma (C - A) - t \vec d = O - A,
-    $$
-
-    which is a vector equation in the three components $x, y, z$.
-
--   In matrix form, the system can be rewritten as follows:
-
-    $$
-    \begin{pmatrix}
-    b_x - a_x& c_x - a_x& d_x\\
-    b_y - a_y& c_y - a_y& d_y\\
-    b_z - a_z& c_z - a_z& d_z\\
-    \end{pmatrix}
-    \begin{pmatrix}
-    \beta\\\gamma\\t
-    \end{pmatrix}
-    =
-    \begin{pmatrix}
-    o_x - a_x\\o_y - a_y\\o_z - a_z
-    \end{pmatrix}.
-    $$
-
-# Analytical Solution
-
--   The solution depends on the determinant of the matrix M:
-
-    $$
-    \det M = \det
-    \begin{pmatrix}
-    b_x - a_x& c_x - a_x& d_x\\
-    b_y - a_y& c_y - a_y& d_y\\
-    b_z - a_z& c_z - a_z& d_z\\
-    \end{pmatrix},
-    $$
-
-    which must be different from zero, otherwise the ray is parallel to the plane of the triangle.
-
--   The solution is easily obtained with [Cramer's rule](https://en.wikipedia.org/wiki/Cramer%27s_rule), which is inefficient in the general case but adequate for 3×3 matrices as the one above.
-
-# Analytical Solution
-
--   Obviously, once the solution is obtained it is necessary to verify that
-
-    $$
-    t_\text{min} < t < t_\text{max}, \quad 0 \leq \beta \leq 1, \quad 0 \leq \gamma \leq 1.
-    $$
-
--   The normal of the triangle can be easily obtained from the cross product between the two vectors aligned with the sides:
-
-    $$
-    \hat n = \pm (B - A) \times (C - A),
-    $$
-
-    where the sign is determined by the direction of the ray.
-
--   The $(u, v)$ coordinates can be set equal to $(\beta, \gamma)$.
-
-
-# Triangle meshes
+# Polygonal meshes {#polygonal-meshes}
 
 # [*Moana island scene*](https://www.disneyanimation.com/resources/moana-island-scene/)
 
@@ -478,9 +298,143 @@ This image contains three geometric shapes (two planes and a sphere), and was ca
 
 -   However, it is not always sufficient to use AABBs for *meshes* to be efficient.
 
--   Scenes are often almost completely occupied by a complex object, and in this case AABBs do not provide any advantage (as in the previous image).
+-   Scenes are often almost completely occupied by a few complex objects, and in this case AABBs do not provide any advantage (as in the previous image).
 
--   However, there are several sophisticated optimizations that transform the problem of looking for ray-triangle hits from $O(N)$ to $O(\log_2 N)$. The most used ones employ [KD-trees](https://en.wikipedia.org/wiki/K-d_tree) and [Bounding Volume Hierarchies](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy). See the [book by Pharr, Jakob & Humphreys](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration).
+-   However, there are several sophisticated optimizations that transform the problem of looking for ray-triangle hits from $O(N)$ to $O(\log_2 N)$. The most used ones employ [KD-trees](https://en.wikipedia.org/wiki/K-d_tree) and [Bounding Volume Hierarchies](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy). They are both explained in the [book by Pharr, Jakob & Humphreys](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration); we will quickly explain the former.
+
+# KD-trees
+
+# KD-trees
+
+- KD-trees are a specific application of a broader family of algorithms called *Binary Space Partitions* (BSP).
+
+- BSP algorithms are used for searching in spatio-temporal domains; in our case, the problem is to find the potential triangle in the *mesh* that intersects a given ray.
+
+- BSP methods are iterative, and at each iteration, they halve the volume of the space to be searched.
+
+# Bisection Method
+
+- Let's recall the bisection method used to find the zeros of a function, which is explained in the TNDS course (II year of the Bachelor's degree).
+
+- Given a continuous function $f: [a, b] \rightarrow \mathbb{R}$ such that $f(a) \cdot f(b) \leq 0$, the intermediate value theorem guarantees that $\exists x \in [a, b]: f(x) = 0$.
+
+- The bisection method consists of dividing the interval $[a, b]$ into two parts $[a, c]$ and $[c, b]$, with $c = (a + b)/2$, and applying the method to the sub-interval where the intermediate value theorem still holds.
+
+- It can be shown that to achieve a precision $\epsilon$ in estimating the zero, $N = \log_2 ((b - a)/\epsilon)$ steps are needed, i.e., $O(\log N)$: it's very efficient\!
+
+-----
+
+<p style="text-align:center">![](media/bisection-method.svg){height=520px}</p>
+
+If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient to reach a precision of $\pm 2^{-20} = \pm 10^{-6}$.
+
+# BSP Methods
+
+- BSP methods enclose all the shapes of a world within a bounding box, then divide it into two regions, partitioning the shapes into one half or the other (or both, if they lie along the division).
+
+- This subdivision is repeated recursively up to a certain depth: ideally, until the bounding boxes contain a certain (small) number of objects.
+
+- KD-trees are a type of BSP where the bounding boxes are the well-known AABBs.
+
+- KD-trees are explained and implemented in [section 4.4 of *Physically Based Rendering*](https://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Kd-Tree_Accelerator) (Pharr, Jakob, Humphreys, 3rd ed.)
+
+-----
+
+<center>![](./media/kd-tree.svg){height=640px}</center>
+[Figure 4.14 from *Physically Based Rendering* (Pharr, Jakob, Humphreys, 3rd ed.)]{style="float:right"}
+
+# KD-trees and *Meshes*
+
+- This is the procedure to build a KD-tree in memory:
+
+  1.  Calculate the AABB of the *mesh*;
+  2.  Decide along which direction (x/y/z) to perform the split;
+  3.  Partition the triangles between the two halves of the AABB; triangles that fall along the splitting line are included in **both** halves;
+  4.  Repeat the procedure for each of the two halves until the number of triangles in each compartment is below a certain threshold (e.g., between 1 and 10).
+
+- This procedure needs to be done **only once**, before solving the rendering equation.
+
+# KD-tree in Memory
+
+- A KD-tree can be stored in a tree structure built when loading the mesh.
+
+- To represent the splits, a `KdTreeSplit` type can be defined:
+
+    ```python
+    class KdTreeSplit:
+        axis: int     # Index of the axis; 0: x, 1: y, 2: z
+        split: float  # Location of the split along the axis
+    ```
+
+- The generic node of the tree is represented like this:
+
+    ```python
+    class KdTreeNode:
+        entry: Union[KdTreeSplit, List[int]]  # List[int]: List of indexes to ◺
+        left: Union[KdTreeNode, None]
+        right: Union[KdTreeNode, None]
+    ```
+
+-----
+
+<center>![](./media/kd-tree-structure.svg){height=640px}</center>
+
+# Ray Intersection
+
+- To determine if a ray intersects a *mesh* optimized with a KD-tree, follow this procedure:
+
+  1.  Check if the ray intersects the AABB; if not, the process stops.
+  2.  Determine which of the two halves is crossed first by the ray:
+      * If only one half is crossed, analyze only that one;
+      * If both are crossed, first analyze the one intersected for smaller values of $t$.
+  3.  The process continues until a terminal node is reached: at that point, analyze all triangles in the node using the linear algorithm.
+
+- For the Oceania tree, in the case of a perfectly balanced KD-tree (50%–50%), fewer than 25 comparisons are needed to determine the intersection with a ray.
+
+-----
+
+<center>![](./media/kd-tree-traversal.svg){height=640px}</center>
+[Figure 4.17 from *Physically Based Rendering* (Pharr, Jakob, Humphreys, 3rd ed.)]{style="float:right"}
+
+# Details
+
+- To build a KD-tree, some questions need to be answered:
+
+  1.  At each split, along which axis is it best to perform the subdivision? (The axis along which the AABB is longest?)
+  2.  At which point on the axis should the split occur? (The midpoint?)
+  3.  When is it best to stop? (When a node contains fewer than *N* shapes?)
+
+- Answering these questions is not trivial, but finding an *efficient* solution is important\!
+
+# Irregularity of *Meshes*
+
+<center>![](./media/toy-story-woody-mesh.webp)</center>
+
+# "Cost" of a KD-tree
+
+-   To build an efficient KD-tree, the *computational cost* of the tree needs to be evaluated, which is given by
+
+
+    $$
+    C(t) = C_\text{trav} + P_L \cdot C(L) + P_R \cdot C(R),
+    $$
+
+    where
+
+    1.  $C_\text{trav}$ is the *traversal cost*: the time required to descend one level in the tree (constant);
+    2.  $P_L, P_R$ are the probabilities that the ray hits a triangle within the branch;
+    3.  $C(L), C(R)$ is the cost of the subnode, i.e., the time required to analyze the left/right side.
+
+# Optimized Construction
+
+- These assumptions can be made:
+
+    - $P_L$ and $P_R$ (probability that the ray hits a shape) are proportional to the total surface area of the triangles in the subcell;
+    - Calculate $C(L)$ and $C(R)$ recursively, assuming that for terminal nodes, it is proportional to the number of triangles.
+
+- A robust algorithm tries various tree splits, calculating the cost of each, and chooses the split that leads to the lowest cost.
+
+- The speed benefits can range from a factor of 10 to a factor of 100 compared to a KD-tree built with simple assumptions.
 
 
 # Debugging {#debugging}

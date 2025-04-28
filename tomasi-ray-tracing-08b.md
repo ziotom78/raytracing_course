@@ -569,8 +569,60 @@ The asymmetry in the arrangement of the spheres allows for the identification of
 5.  Implement the `demo` command, in the way you prefer (you can look for a library to interpret the command line);
 6.  Open a PR and update the `CHANGELOG.md` file.
 
+# Hints for C++
+
+# Hints for C++
+
+-   If you like the command-line interface provided by Pytracer, have a look at the list of libraries available in the repository [Awesome C++ [CLI]](https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#cli).
+
+-   To implement the `World` type, use [`make_shared`](https://www.cplusplus.com/reference/memory/make_shared/) and [`shared_ptr`](https://www.cplusplus.com/reference/memory/shared_ptr/): in this way, you avoid calling `new` and `delete` to create/destroy objects derived from `Shape`. (Both `new` and `delete` should be avoided whenever possible: they are rarely needed in real-world code!)
+
+# Example with `shared_ptr`
+
+```c++
+#include <iostream>
+#include <memory>
+#include <vector>
+
+using namespace std;
+
+struct Shape {};
+struct Sphere : public Shape {};
+struct Plane : public Shape {};
+
+int main() {
+  // This would work even if "Shape" were an abstract type
+  std::vector<std::shared_ptr<Shape>> list_of_shapes;
+
+  // This calls "new" automatically, and it will call "delete" at the end
+  list_of_shapes.push_back(make_shared<Sphere>());
+  list_of_shapes.push_back(make_shared<Sphere>());
+  list_of_shapes.push_back(make_shared<Plane>());
+}
+```
+
+# Hints for Julia
+
+# Hints for Julia
+
+-   Don’t worry too much for the command-line interface: Julia programs are not meant to be executed from the command line. You could just provide a script named `demo.jl` alongside another script called `pfm2png.jl`.
+
+-   Define an `abstract struct` for `Shape` and then derive `Sphere`, `Plane`, etc..
+
+-   In this lesson, you will likely see how elegant can be mathematical code in Julia!
+
+
+# Hints for C\#
+
+# Hints for C\#
+
+-   Today there should not be significant issues.
+
+-   If you want to implement a good command-line interface, have a look at the repository [Awesome .NET [CLI]](https://github.com/quozd/awesome-dotnet?tab=readme-ov-file#cli).
+
+
 ---
-title: "Esercitazione 8"
+title: "Laboratory 8"
 subtitle: "Calcolo numerico per la generazione di immagini fotorealistiche"
 author: "Maurizio Tomasi <maurizio.tomasi@unimi.it>"
 ...

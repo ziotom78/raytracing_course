@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Maurizio Tomasi maurizio.tomasi@unimi.it">
-  <title>Esercitazione 8</title>
+  <title>Laboratory 8</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -121,7 +121,7 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Esercitazione 8</h1>
+  <h1 class="title">Laboratory 8</h1>
   <p class="subtitle">Calcolo numerico per la generazione di immagini
 fotorealistiche</p>
   <p class="author">Maurizio Tomasi <a
@@ -800,6 +800,78 @@ class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#
 can look for a library to interpret the command line);</li>
 <li>Open a PR and update the <code>CHANGELOG.md</code> file.</li>
 </ol>
+</section>
+<section id="hints-for-c" class="slide level1">
+<h1>Hints for C++</h1>
+</section>
+<section id="hints-for-c-1" class="slide level1">
+<h1>Hints for C++</h1>
+<ul>
+<li><p>If you like the command-line interface provided by Pytracer, have
+a look at the list of libraries available in the repository <a
+href="https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#cli">Awesome
+C++ [CLI]</a>.</p></li>
+<li><p>To implement the <code>World</code> type, use <a
+href="https://www.cplusplus.com/reference/memory/make_shared/"><code>make_shared</code></a>
+and <a
+href="https://www.cplusplus.com/reference/memory/shared_ptr/"><code>shared_ptr</code></a>:
+in this way, you avoid calling <code>new</code> and <code>delete</code>
+to create/destroy objects derived from <code>Shape</code>. (Both
+<code>new</code> and <code>delete</code> should be avoided whenever
+possible: they are rarely needed in real-world code!)</p></li>
+</ul>
+</section>
+<section id="example-with-shared_ptr" class="slide level1">
+<h1>Example with <code>shared_ptr</code></h1>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;memory&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> std<span class="op">;</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Shape <span class="op">{};</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Sphere <span class="op">:</span> <span class="kw">public</span> Shape <span class="op">{};</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Plane <span class="op">:</span> <span class="kw">public</span> Shape <span class="op">{};</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// This would work even if &quot;Shape&quot; were an abstract type</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>shared_ptr<span class="op">&lt;</span>Shape<span class="op">&gt;&gt;</span> list_of_shapes<span class="op">;</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">// This calls &quot;new&quot; automatically, and it will call &quot;delete&quot; at the end</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  list_of_shapes<span class="op">.</span>push_back<span class="op">(</span>make_shared<span class="op">&lt;</span>Sphere<span class="op">&gt;());</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  list_of_shapes<span class="op">.</span>push_back<span class="op">(</span>make_shared<span class="op">&lt;</span>Sphere<span class="op">&gt;());</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  list_of_shapes<span class="op">.</span>push_back<span class="op">(</span>make_shared<span class="op">&lt;</span>Plane<span class="op">&gt;());</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="hints-for-julia" class="slide level1">
+<h1>Hints for Julia</h1>
+</section>
+<section id="hints-for-julia-1" class="slide level1">
+<h1>Hints for Julia</h1>
+<ul>
+<li><p>Don’t worry too much for the command-line interface: Julia
+programs are not meant to be executed from the command line. You could
+just provide a script named <code>demo.jl</code> alongside another
+script called <code>pfm2png.jl</code>.</p></li>
+<li><p>Define an <code>abstract struct</code> for <code>Shape</code> and
+then derive <code>Sphere</code>, <code>Plane</code>, etc..</p></li>
+<li><p>In this lesson, you will likely see how elegant can be
+mathematical code in Julia!</p></li>
+</ul>
+</section>
+<section id="hints-for-c-2" class="slide level1">
+<h1>Hints for C#</h1>
+</section>
+<section id="hints-for-c-3" class="slide level1">
+<h1>Hints for C#</h1>
+<ul>
+<li><p>Today there should not be significant issues.</p></li>
+<li><p>If you want to implement a good command-line interface, have a
+look at the repository <a
+href="https://github.com/quozd/awesome-dotnet?tab=readme-ov-file#cli">Awesome
+.NET [CLI]</a>.</p></li>
+</ul>
 </section>
     </div>
   </div>

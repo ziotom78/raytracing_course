@@ -133,10 +133,10 @@
     #.   Spheres;
     #.   Planes;
     #.   *Constructive Solid Geometry* (CSG);
-    #.   Cubes;
-    #.   Triangles.
+    #.   Triangles;
+    #.   Meshes.
 
--   We will deal with cubes and triangles next week, since they are usually associated with more advanced topics (*bounding boxes* and *triangle meshes*).
+-   We will deal with triangle meshes and cubes next week, since they are usually associated with more advanced topics (*bounding boxes* and *triangle meshes*).
 
 
 # Spheres {#spheres}
@@ -461,6 +461,187 @@
 <center>![](./media/villarceau-circles.webp)</center>
 
 [[*Villarceau Circles*](http://hof.povray.org/Villarceau_Circles-CSG.html), by Tor Olav Kristensen (2004)]{style="float:right"}
+
+
+# Triangles and quadrilaterals {#triangles-and-meshes}
+
+# 3D Modeling
+
+<center>![](./media/blender-mesh-modeling.webp)</center>
+
+# 3D Scanners
+
+<center>![](./media/3d-scanners.webp)</center>
+
+# Stanford bunny (1994)
+
+<center>![](./media/stanford-bunny-triangles.png)</center>
+
+(Model obtained from the scan of a ceramic statuette)
+
+# Triangles
+
+Triangles are a geometric shape widely used in 3D modeling and rendering programs, due to their many properties:
+
+#. They are the planar surface with the fewest vertices (→ efficient to store).
+#. Their representation in space is unique (one and only one planar triangle passes through three points).
+#. Their surface is parameterizable in $(u, v)$ coordinates in a very simple way.
+#. Complex surfaces can be represented as a union of multiple triangles.
+
+
+# Barycentric Coordinates
+
+-   Barycentric coordinates were proposed by Möbius in 1827. They express the points of a plane passing through the points $A, B, C$ by means of the expression
+
+    $$
+    P(\alpha, \beta, \gamma) = \alpha A + \beta B + \gamma C,
+    $$
+
+    where $\alpha, \beta, \gamma \in \mathbb{R}$ are the *barycentric coordinates*.
+
+-   Barycentric coordinates are very useful for characterizing the triangle with vertices $A, B, C$: the point $P$ is inside the triangle if and only if
+
+    $$
+    0 \le \alpha \le 1,\quad 0 \le \beta \le 1,\quad 0 \le \gamma \le 1, \quad \alpha + \beta + \gamma = 1.
+    $$
+
+# Coordinates in Triangles
+
+-   The condition $\alpha + \beta + \gamma = 1$ means that the points of a triangle are characterized by two degrees of freedom, as it should be for a two-dimensional surface.
+
+-   Equality in the first three inequalities holds for the points along the edge of the triangle.
+
+-   Using the last equality, a more meaningful form is obtained:
+
+    $$
+    P(\beta, \gamma) = A + \beta(B - A) + \gamma(C - A) = A + \beta \vec v_{AB} + \gamma \vec v_{AC},
+    $$
+
+    which expresses $P$ as $A$ plus a displacement towards $B$ and one towards $C$.
+
+---
+
+<center>![](./media/triangle-coordinates.svg){height=640px}</center>
+
+# Coordinates in Triangles
+
+-   It can be shown that the barycentric coordinates of a point $P$ are related to the area $\sigma$ of the triangle and to the areas of the three sub-triangles having as vertex the point $P$ and two of the vertices:
+
+    $$
+    \alpha = \frac{\sigma_1}\sigma = 1 - \frac{\sigma_2 + \sigma_3}\sigma, \quad \beta = \frac{\sigma_2}\sigma, \quad \gamma = \frac{\sigma_3}\sigma.
+    $$
+
+-   If a negative sign is assigned to the areas that are outside the triangle, these equations hold for any point on the plane in which the triangle lies.
+
+# Interactive Example { data-state="barycentric-coordinates-demo" }
+
+<center>
+    <canvas
+        id="barycentric-coordinates-canvas"
+        width="620px"
+        height="480px"
+        style="left:0px;top:0px;cursor:crosshair;border:1px solid black;"/>
+</center>
+
+<script type="text/javascript" src="./js/barycentric-coordinates.js"></script>
+
+# Quadrilaterals
+
+-   We will focus on triangles today, but rendering programs also offer the possibility of defining *quadrilaterals*.
+
+-   If we limit ourselves to parallelograms, they can be represented as the union of a vertex $P$ and two vectors $\vec v$ and $\vec w$; in this way, the results that we will show today are easily extendable to them as well:
+
+    <center>
+    ![](media/parallelogram.svg)
+    </center>
+
+# Ray Intersection
+
+-   Let's now see how to use barycentric coordinates to efficiently calculate the intersection between a triangle and a ray.
+
+-   Unlike what we did with spheres and planes, in this case we will not adopt a simplified reference system. The reason will be clear when we explain triangle *meshes*.
+
+-   We will therefore identify a triangle by the coordinates of the three points $A, B, C$ (nine floating-point values).
+
+# The Analytical Problem
+
+-   Consider the ray $r(t): O + t \vec d$ and the generic point $P(\beta, \gamma)$ of the triangle. The intersection is given by
+
+    $$
+    A + \beta (B - A) + \gamma (C - A) = O + t \vec d,
+    $$
+
+    with the constraint $0 \leq (\beta, \gamma) \leq 1$.
+
+-   Let's rearrange the equation to move the three unknowns $\beta$, $\gamma$ and $t$ to the left:
+
+    $$
+    \beta (B - A) + \gamma (C - A) - t \vec d = O - A.
+    $$
+
+
+# Matrix Form
+
+-   The equation we obtained is
+
+    $$
+    \beta (B - A) + \gamma (C - A) - t \vec d = O - A,
+    $$
+
+    which is a vector equation in the three components $x, y, z$.
+
+-   In matrix form, the system can be rewritten as follows:
+
+    $$
+    \begin{pmatrix}
+    b_x - a_x& c_x - a_x& d_x\\
+    b_y - a_y& c_y - a_y& d_y\\
+    b_z - a_z& c_z - a_z& d_z\\
+    \end{pmatrix}
+    \begin{pmatrix}
+    \beta\\\gamma\\t
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+    o_x - a_x\\o_y - a_y\\o_z - a_z
+    \end{pmatrix}.
+    $$
+
+# Analytical Solution
+
+-   The solution depends on the determinant of the matrix M:
+
+    $$
+    \det M = \det
+    \begin{pmatrix}
+    b_x - a_x& c_x - a_x& d_x\\
+    b_y - a_y& c_y - a_y& d_y\\
+    b_z - a_z& c_z - a_z& d_z\\
+    \end{pmatrix},
+    $$
+
+    which must be different from zero, otherwise the ray is parallel to the plane of the triangle.
+
+-   The solution is easily obtained with [Cramer's rule](https://en.wikipedia.org/wiki/Cramer%27s_rule), which is inefficient in the general case but adequate for 3×3 matrices as the one above.
+
+# Analytical Solution
+
+-   Obviously, once the solution is obtained it is necessary to verify that
+
+    $$
+    t_\text{min} < t < t_\text{max}, \quad 0 \leq \beta \leq 1, \quad 0 \leq \gamma \leq 1.
+    $$
+
+-   The normal of the triangle can be easily obtained from the cross product between the two vectors aligned with the sides:
+
+    $$
+    \hat n = \pm (B - A) \times (C - A),
+    $$
+
+    where the sign is determined by the direction of the ray.
+
+-   The $(u, v)$ coordinates can be set equal to $(\beta, \gamma)$.
+
 
 ---
 title: "Lesson 8"
