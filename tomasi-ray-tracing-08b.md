@@ -565,7 +565,7 @@ The asymmetry in the arrangement of the spheres allows for the identification of
 1.  Fix the bug from last time by opening an *issue*;
 2.  Create a `CHANGELOG.md` file;
 3.  Work on a new `demo` branch;
-4.  Create the `Shape`, `Sphere`, `World`, `Vec2d` types;
+4.  Create the `Shape`, `Sphere`, `World`, `Vec2d`, `HitRecord` types;
 5.  Implement the `demo` command, in the way you prefer (you can look for a library to interpret the command line);
 6.  Open a PR and update the `CHANGELOG.md` file.
 
