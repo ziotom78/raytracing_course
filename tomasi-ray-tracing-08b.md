@@ -47,7 +47,7 @@ for row in range(image.height):
 
 -   This kind of problem is common even in professional projects: there is a potential error condition that the tests do not cover, which is therefore not discovered during implementation.
 
--   Today we will see the right way to correct the error; in the next theory lesson we will discuss "debugging" at a higher level.
+-   Today we will see the right way to correct the error; next week we will discuss "debugging" at a higher level.
 
 
 # Correcting a Bug
@@ -466,7 +466,7 @@ The asymmetry in the arrangement of the spheres allows for the identification of
 
 # The Scene
 
--   Position the spheres at the vertices of the cube with edges $(\pm 0.5, \pm 0.5, \pm 0.5)$.
+-   Position the spheres at the vertices of the cube with edges $(\pm 0.5, \pm 0.5, \pm 0.5)$, plus two spheres at $(0, 0, -0.5)$ and $(0, 0.5, 0)$.
 -   Each sphere must have a radius of 1/10.
 -   The observer should be moved by $-\hat e_x$, meaning their position should be $(-2, 0, 0)$ and the center of the screen $(-1, 0, 0)$.
 -   Choose whether to use `OrthogonalCamera` or `PerspectiveCamera`.
