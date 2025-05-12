@@ -565,10 +565,10 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
 
     which is the probability of obtaining $x$ independently of the value of $y$.
 
--   The *conditional probability density function* $p(y | x)$ is the probability of obtaining $y$ given that a specific value $x$ has been obtained:
+-   The *conditional probability density function* $p(y \mid x)$ is the probability of obtaining $y$ given that a specific value $x$ has been obtained:
 
     $$
-    p(y | x) = \frac{p(x, y)}{p(x)}\quad\Longleftrightarrow\quad p(x, y) = p(x) p(y | x).
+    p(y \mid x) = \frac{p(x, y)}{p(x)}\quad\Longleftrightarrow\quad p(x, y) = p(x) p(y \mid x).
     $$
 
 # Example: «Cornell Box»
@@ -594,9 +594,9 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
 
 -   The marginal density $p(x) = \int p(x, y)\,\mathrm{d}y$ in our example is interpreted as follows: $p(T)$ is the probability that a ray started from the lamp on the ceiling, regardless of where it is directed.
 
--   The conditional density $p(y | x)$ is such that $p(y = T | x = T)$ tells us the probability that a ray starting from the lamp ($x = T$) hits the cube ($y = T$).
+-   The conditional density $p(y \mid x)$ is such that $p(y = T \mid x = T)$ tells us the probability that a ray starting from the lamp ($x = T$) hits the cube ($y = T$).
 
--   The conditional density $p(x | y)$ (with $x$ and $y$ swapped) is such that $p(x = T | y = T)$ tells us the probability that a ray that hit the cube ($y = T$) started from the lamp ($x = T$).
+-   The conditional density $p(x \mid y)$ (with $x$ and $y$ swapped) is such that $p(x = T \mid y = T)$ tells us the probability that a ray that hit the cube ($y = T$) started from the lamp ($x = T$).
 
 # Application to Directions
 
@@ -631,31 +631,54 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
     p(\theta) = \int_0^{2\pi} p(\theta, \varphi)\,\mathrm{d}\varphi = \int_0^{2\pi} \frac{\sin\theta}{2\pi}\,\mathrm{d}\varphi = \sin\theta.
     $$
 
--   The conditional density $p(\varphi | \theta)$ is
+-   The conditional density $p(\varphi \mid \theta)$ is
 
     $$
-    p(\varphi | \theta) = \frac{p(\theta, \varphi)}{p(\theta)} = \frac1{2\pi}.
+    p(\varphi \mid \theta) =
+    \frac{p(\theta, \varphi)}{p(\theta)} =
+    \frac{\sin\theta / 2\pi}{\sin\theta} =
+    \frac1{2\pi}.
     $$
 
-    Thus, the PDF for $\varphi$ is constant, which makes sense given the symmetry of the variable.
+    Thus, the conditional density function for $\varphi$ is constant, which makes sense given the symmetry of the variable.
 
 # Sampling θ and φ
 
--   To sample $\theta$ and $\varphi$ we need their CDF, which is
+-   To sample $\theta$ and $\varphi$ we need their CDF. For $\theta$, it is
 
     $$
-    \begin{aligned}
-    P_\theta(\theta) &= \int_0^\theta \sin\theta'\,\mathrm{d}\theta' = 1 - \cos\theta,\\
-    P_\varphi(\varphi | \theta) &= \int_0^\varphi \frac1{2\pi}\,\mathrm{d}\varphi' = \frac{\varphi}{2\pi}.
-    \end{aligned}
+    P_\theta(\theta) =
+    \int_0^\theta p(\theta')\,\mathrm{d}\theta' =
+    \int_0^\theta \sin\theta'\,\mathrm{d}\theta' =
+    1 - \cos\theta,
     $$
 
--   Given two variables $X_1, X_2$ distributed on $[0, 1]$, the variables $\theta$ and $\varphi$ corresponding to the CDFs just calculated are
+-   Its inverse provides the formula to sample $\theta$:
 
     $$
-    \theta = P_\theta^{-1}(X_1) = \arccos (1 - X_1) = \arccos X'_1,\quad
-    \varphi = P_\varphi^{-1}(X_2) = 2\pi X_2.
+    \theta = P_\theta^{-1}(X_1) = \arccos (1 - X_1) = \arccos X'_1,
     $$
+
+    where we employ the fact that both $X_1$ and $1 - X_1$ are random numbers uniformly distributed over $[0, 1]$: this saves a subtraction.
+
+# Sampling θ and φ
+
+-   For $\varphi$, we need the conditional cumulative probability $P_\varphi(\varphi \mid \theta)$:
+
+    $$
+    P_\varphi(\varphi \mid \theta) =
+    \int_0^\varphi p(\varphi' \mid \theta)\,\mathrm{d}\varphi' =
+    \int_0^\varphi \frac1{2\pi}\,\mathrm{d}\varphi' =
+    \frac{\varphi}{2\pi}.
+    $$
+
+-   Thus, our sample for $\varphi$ is just
+
+    $$
+    \varphi = P_\varphi^{-1}(X_2) = 2\pi X_2
+    $$
+
+    (a plain rescaling).
 
 # Random Directions
 
@@ -716,7 +739,7 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
 -   The conditional density of $\varphi$ is again a constant, as is evident from the symmetry of $p(\omega)$:
 
     $$
-    p(\varphi | \theta) = \frac1{2\pi}.
+    p(\varphi \mid \theta) = \frac1{2\pi}.
     $$
 
 

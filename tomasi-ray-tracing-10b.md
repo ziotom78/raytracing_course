@@ -72,7 +72,7 @@
 
 <center>![](./media/2d-randomness.png)</center>
 
-A *randogramma* (see O'Neill, 2014).
+A *randogram* (see O'Neill, 2014).
 
 # 4. Performance
 

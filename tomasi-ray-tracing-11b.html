@@ -217,7 +217,7 @@ always the best solution.</p></li>
 <h1><em>Random testing</em> in <a
 href="https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/test_all.py#L914-L934">pytracer</a></h1>
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pcg <span class="op">=</span> PCG()</span>
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pcg <span class="op">=</span> PCG()  <span class="co"># Use the default seed, so if the test fails you can debug it</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>expected_zero, expected_one <span class="op">=</span> pytest.approx(<span class="fl">0.0</span>), pytest.approx(<span class="fl">1.0</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># As Python is slow, we just test 100 times the function. You can use</span></span>
@@ -248,9 +248,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <section id="implementation" class="slide level1">
 <h1>Implementation</h1>
 <ul>
-<li><p>In the theory lesson we anticipated that our <em>path tracer</em>
-will use the Monte Carlo method to estimate the integral of the
-rendering equation:</p>
+<li><p>We anticipated that our <em>path tracer</em> will use the Monte
+Carlo method to estimate the integral of the rendering equation:</p>
 <p><span class="math display">
 \int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
 \Psi)\,\cos\theta\,\mathrm{d}\omega_\Psi.
@@ -398,7 +397,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
 <section id="furnace-test" class="slide level1">
 <h1>Test</h1>
 <ul>
-<li><p>A very simple method to verify the functioning of a <em>path
+<li><p>A simple method to verify the functioning of a <em>path
 tracer</em> is the so-called <em>furnace test</em>.</p></li>
 <li><p>It consists of casting a ray inside an arbitrarily shaped object
 with diffuse BRDF and constant luminosity <span

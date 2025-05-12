@@ -233,8 +233,8 @@ physically correct!</p></li>
 <li><p>Since <span class="math inline">L(x \leftarrow \Psi) \geq
 0</span>, “truncating” the contribution of the integral after a certain
 number of iterations means <strong>underestimating</strong> the value of
-the integral: if the radiance is underestimated, a <em>bias</em> is
-introduced into the solution.</p></li>
+the integral: if the radiance is underestimated, a bias is introduced
+into the solution.</p></li>
 <li><p>In our case, truncating the recursion will always produce a
 <strong>darker</strong> image.</p></li>
 </ul>
@@ -268,9 +268,8 @@ Transport</em></a>, Veach &amp; Guibas (1997)</span></p>
 <h1>Russian Roulette</h1>
 <ul>
 <li><p>A widely used algorithm in path tracing is <em>Russian
-roulette</em>, which removes the <em>bias</em>, i.e., the
-underestimation of radiance, at the cost of increasing uncorrelated
-(white) noise.</p></li>
+roulette</em>, which removes the bias, i.e., the underestimation of
+radiance, at the cost of increasing uncorrelated (white) noise.</p></li>
 <li><p>The procedure requires setting a probability <span
 class="math inline">0 \leq q \leq 1</span> (in real Russian roulette,
 <span class="math inline">q = 1/6</span>). This is the algorithm:</p>
@@ -304,8 +303,8 @@ E[L&#39;] = E\left[(1 - q) \frac{L}{1 - q} + 0\cdot q\right] = E[L].
 <li><p>There is a probability <span class="math inline">q</span> of
 returning zero (underestimation), but if <span class="math inline">x
 &gt; q</span> (with probability <span class="math inline">1 - q</span>)
-an overestimation of <span class="math inline">L</span> is returned,
-because <span class="math inline">1 / (1 - q) &gt; 1</span>.</p></li>
+<span class="math inline">L</span> is overestimated, as <span
+class="math inline">1 / (1 - q) &gt; 1</span>.</p></li>
 </ul>
 </section>
 <section id="disadvantages" class="slide level1">
@@ -322,7 +321,7 @@ class="math inline">L</span> multiplied by one hundred will be returned,
 i.e., <span class="math inline">1 / (1 - 0.99)</span>.</p></li>
 <li><p>Obviously, this implies a significant increase in the variance of
 the estimate, which means that the image will be dominated by so-called
-<em>fireflies</em>, although clearly <em>unbiased</em>.</p></li>
+<em>fireflies</em>, although clearly unbiased.</p></li>
 </ul>
 </section>
 <section id="details" class="slide level1">
@@ -331,7 +330,7 @@ the estimate, which means that the image will be dominated by so-called
 <li><p>To implement Russian roulette, a minimum threshold is usually set
 for the value of <code>depth</code>:</p>
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ray.depth <span class="op">&gt;</span> <span class="dv">2</span>:</span>
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ray.depth <span class="op">&gt;</span> <span class="dv">2</span>:  <span class="co"># …or &gt; 1 if there are no specular surfaces</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    threshold <span class="op">=</span> compute_threshold(...)  <span class="co"># Estimate a reasonable value for &quot;q&quot;</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pcg.random_float() <span class="op">&gt;</span> threshold:</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> radiance <span class="op">/</span> (<span class="dv">1</span> <span class="op">-</span> threshold)</span>

@@ -78,7 +78,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 -   Even though it is a widely used method, assigning a null value to radiance when `ray.depth` exceeds a threshold is *not* physically correct!
 
--   Since $L(x \leftarrow \Psi) \geq 0$, "truncating" the contribution of the integral after a certain number of iterations means **underestimating** the value of the integral: if the radiance is underestimated, a *bias* is introduced into the solution.
+-   Since $L(x \leftarrow \Psi) \geq 0$, "truncating" the contribution of the integral after a certain number of iterations means **underestimating** the value of the integral: if the radiance is underestimated, a bias is introduced into the solution.
 
 -   In our case, truncating the recursion will always produce a **darker** image.
 
@@ -102,7 +102,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 # Russian Roulette {#russian-roulette}
 
--   A widely used algorithm in path tracing is *Russian roulette*, which removes the *bias*, i.e., the underestimation of radiance, at the cost of increasing uncorrelated (white) noise.
+-   A widely used algorithm in path tracing is *Russian roulette*, which removes the bias, i.e., the underestimation of radiance, at the cost of increasing uncorrelated (white) noise.
 
 -   The procedure requires setting a probability $0 \leq q \leq 1$ (in real Russian roulette, $q = 1/6$). This is the algorithm:
 
@@ -127,7 +127,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
     E[L'] = E\left[(1 - q) \frac{L}{1 - q} + 0\cdot q\right] = E[L].
     $$
 
--   There is a probability $q$ of returning zero (underestimation), but if $x > q$ (with probability $1 - q$) an overestimation of $L$ is returned, because $1 / (1 - q) > 1$.
+-   There is a probability $q$ of returning zero (underestimation), but if $x > q$ (with probability $1 - q$) $L$ is overestimated, as $1 / (1 - q) > 1$.
 
 # Disadvantages
 
@@ -137,14 +137,14 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
 -   On the other hand, the few times that $L / (1 - q)$ is returned, the value $L$ multiplied by one hundred will be returned, i.e., $1 / (1 - 0.99)$.
 
--   Obviously, this implies a significant increase in the variance of the estimate, which means that the image will be dominated by so-called *fireflies*, although clearly *unbiased*.
+-   Obviously, this implies a significant increase in the variance of the estimate, which means that the image will be dominated by so-called *fireflies*, although clearly unbiased.
 
 # Details
 
 -   To implement Russian roulette, a minimum threshold is usually set for the value of `depth`:
 
     ```python
-    if ray.depth > 2:
+    if ray.depth > 2:  # …or > 1 if there are no specular surfaces
         threshold = compute_threshold(...)  # Estimate a reasonable value for "q"
         if pcg.random_float() > threshold:
             return radiance / (1 - threshold)

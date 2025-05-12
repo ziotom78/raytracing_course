@@ -72,7 +72,7 @@
 # *Random testing* in [pytracer](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/test_all.py#L914-L934)
 
 ```python
-pcg = PCG()
+pcg = PCG()  # Use the default seed, so if the test fails you can debug it
 expected_zero, expected_one = pytest.approx(0.0), pytest.approx(1.0)
 
 # As Python is slow, we just test 100 times the function. You can use
@@ -101,7 +101,7 @@ for i in range(100):
 # *Importance sampling*
 
 # Implementation
--   In the theory lesson we anticipated that our *path tracer* will use the Monte Carlo method to estimate the integral of the rendering equation:
+-   We anticipated that our *path tracer* will use the Monte Carlo method to estimate the integral of the rendering equation:
 
     $$
     \int_{2\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos\theta\,\mathrm{d}\omega_\Psi.
@@ -230,7 +230,7 @@ def __call__(self, ray: Ray) -> Color:
 
 # Test {#furnace-test}
 
--   A very simple method to verify the functioning of a *path tracer* is the so-called *furnace test*.
+-   A simple method to verify the functioning of a *path tracer* is the so-called *furnace test*.
 
 -   It consists of casting a ray inside an arbitrarily shaped object with diffuse BRDF and constant luminosity $L_e$ and reflectance $\rho_d$.
 
