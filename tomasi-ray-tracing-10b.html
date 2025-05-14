@@ -168,29 +168,31 @@ the state of a generator, you can predict what the next number will be
 <section id="quality-of-a-generator" class="slide level1">
 <h1>Quality of a generator</h1>
 <ol>
-<li><p>The numbers it produces should be “random”…</p></li>
+<li><p>The numbers it produces should be “random” (see the Wikipedia
+entry <a href="https://en.wikipedia.org/wiki/Randomness_test">Randomness
+test</a>)…</p></li>
 <li><p>…but also predictable!</p></li>
 <li><p>Numbers taken in pairs/triples/quadruples/etc. should continue to
 be “random”.</p></li>
 <li><p>It should be fast to execute.</p></li>
 <li><p>It should be possible to quickly advance its internal state: this
-property is called “seekability”.</p></li>
+property is called <em>seekability</em>.</p></li>
 </ol>
 </section>
 <section id="randomness" class="slide level1">
 <h1>1. “Randomness”</h1>
 <ul>
-<li>A deterministic <em>pseudo</em>-random number generator must have a
-certain period <span class="math inline">N</span>: once <span
+<li><p>A deterministic <em>pseudo</em>-random number generator must have
+a certain period <span class="math inline">N</span>: once <span
 class="math inline">N</span> values have been extracted, it is doomed to
-repeat the sequence again (or, in rare cases, to stop).</li>
-<li>It is important that the first <span class="math inline">N</span>
-values are distributed as uniformly as possible.</li>
-<li>It is also important that the period is sufficiently long! In the
-study of the PICO satellite we had encountered strange results, due to
-the fact that the period of the generator was “only” <span
-class="math inline">2^{32}</span> and therefore after a certain time the
-code reviewed the same numbers from the beginning.</li>
+repeat the sequence again (or, in rare cases, to stop).</p></li>
+<li><p>It is important that the first <span class="math inline">N</span>
+values are distributed as uniformly as possible.</p></li>
+<li><p>It is also important that the period is sufficiently long!</p>
+<p>(In the study of the PICO satellite we had encountered strange
+results, due to the fact that the period of the generator was “only”
+<span class="math inline">2^{32}</span> and therefore after a certain
+time the code reviewed the same numbers from the beginning.)</p></li>
 </ul>
 </section>
 <section id="predictability" class="slide level1">
@@ -202,8 +204,9 @@ is important to be able to debug the code.</p></li>
 encountered a problem that only emerges from time to time, debugging
 would be very difficult!</p></li>
 <li><p>Usually generators require to be initialized with a “seed”: if
-you provide the same seed twice, the sequence of numbers is the same.
-This is <em>extremely</em> useful!</p></li>
+you provide the same seed twice, the sequence of numbers is the
+same.</p>
+<p>This can be <em>extremely</em> useful!</p></li>
 </ul>
 </section>
 <section id="dimensionality" class="slide level1">
@@ -373,11 +376,12 @@ be easier to do cross-group debugging!</p></li>
 </ul>
 </section>
 <section id="unsigned-numbers" class="slide level1">
-<h1><em>Unsigned</em> Numbers</h1>
+<h1>Unsigned Numbers</h1>
 <ul>
 <li><p>PCG, like many similar algorithms, requires calculations with bit
 masks.</p></li>
-<li><p>Bit masks are usually encoded with unsigned integers.</p>
+<li><p>Bit masks are usually encoded with <strong>unsigned</strong>
+integers.</p>
 <center>
 <p><img data-src="media/julia-signed-unsigned-int.png"
 width="480" /></p>
@@ -447,11 +451,11 @@ always zero, and this is the one to use in PCG.</p></li>
 <section id="implementation-in-python" class="slide level1">
 <h1>Implementation in Python</h1>
 <ul>
-<li><p>The implementation of the PCG algorithm requires wrapping when
-integers overflow.</p></li>
-<li><p>Unlike the languages you use, in Python there is only one
-<code>int</code> type, whose size adapts depending on the number to be
-stored.</p></li>
+<li><p>The PCG algorithm requires wrapping when integers overflow. Many
+languages (C++, C#, Julia…) satisfy this requirement for
+<strong>unsigned types</strong>.</p></li>
+<li><p>However, in Python there is only one <code>int</code> type, whose
+size adapts depending on the number to be stored.</p></li>
 <li><p>Overflows are not possible in Python because the Python
 interpreter always allocates more space to avoid losing digits.</p></li>
 <li><p>The languages you use, on the other hand, optimize for

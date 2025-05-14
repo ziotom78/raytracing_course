@@ -22,7 +22,7 @@
 
 # Quality of a generator
 
-#.  The numbers it produces should be "random"…
+#.  The numbers it produces should be "random" (see the Wikipedia entry [Randomness test](https://en.wikipedia.org/wiki/Randomness_test))…
 
 #.  …but also predictable!
 
@@ -30,13 +30,15 @@
 
 #.  It should be fast to execute.
 
-#.  It should be possible to quickly advance its internal state: this property is called "seekability".
+#.  It should be possible to quickly advance its internal state: this property is called *seekability*.
 
 # 1. "Randomness"
 
 -   A deterministic *pseudo*-random number generator must have a certain period $N$: once $N$ values have been extracted, it is doomed to repeat the sequence again (or, in rare cases, to stop).
 -   It is important that the first $N$ values are distributed as uniformly as possible.
--   It is also important that the period is sufficiently long! In the study of the PICO satellite we had encountered strange results, due to the fact that the period of the generator was "only" $2^{32}$ and therefore after a certain time the code reviewed the same numbers from the beginning.
+-   It is also important that the period is sufficiently long!
+
+    (In the study of the PICO satellite we had encountered strange results, due to the fact that the period of the generator was "only" $2^{32}$ and therefore after a certain time the code reviewed the same numbers from the beginning.)
 
 # 2. Predictability
 
@@ -44,7 +46,9 @@
 
 -   If the generator's numbers were *truly* random and we encountered a problem that only emerges from time to time, debugging would be very difficult!
 
--   Usually generators require to be initialized with a "seed": if you provide the same seed twice, the sequence of numbers is the same. This is *extremely* useful!
+-   Usually generators require to be initialized with a "seed": if you provide the same seed twice, the sequence of numbers is the same.
+
+    This can be *extremely* useful!
 
 # 3. Dimensionality
 
@@ -148,11 +152,11 @@ To generate a long sequence of $N$ random numbers by distributing it over $k$ co
 -   If everyone uses the same generator with the same seed, it will be easier to do cross-group debugging!
 
 
-# *Unsigned* Numbers
+# Unsigned Numbers
 
 -   PCG, like many similar algorithms, requires calculations with bit masks.
 
--   Bit masks are usually encoded with unsigned integers.
+-   Bit masks are usually encoded with **unsigned** integers.
 
     <center>
     ![](media/julia-signed-unsigned-int.png){width=480px}
@@ -183,9 +187,9 @@ To generate a long sequence of $N$ random numbers by distributing it over $k$ co
 
 # Implementation in Python
 
--   The implementation of the PCG algorithm requires wrapping when integers overflow.
+-   The PCG algorithm requires wrapping when integers overflow. Many languages (C++, C\#, Julia…) satisfy this requirement for **unsigned types**.
 
--   Unlike the languages you use, in Python there is only one `int` type, whose size adapts depending on the number to be stored.
+-   However, in Python there is only one `int` type, whose size adapts depending on the number to be stored.
 
 -   Overflows are not possible in Python because the Python interpreter always allocates more space to avoid losing digits.
 
