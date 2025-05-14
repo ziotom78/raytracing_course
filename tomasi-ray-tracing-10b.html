@@ -142,7 +142,7 @@ generation in detail, but we will use a series of results without
 proving them.</p></li>
 <li><p>The context of photorealistic images is interesting to verify the
 operation of a random number generator: if the quality of the generator
-is not excellent, you can see it immediately!</p></li>
+is not excellent, you spot it immediately!</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -315,8 +315,8 @@ are used, the generated sequences are uncorrelated.</p></li>
 generator by <span class="math inline">k</span> steps quickly,
 <em>without</em> actually generating <span class="math inline">k -
 1</span> random numbers and requiring a number of operations much less
-than <span class="math inline">\propto k</span> (typically <span
-class="math inline">\propto \log k</span>).</p></li>
+than <span class="math inline">\sim k</span> (typically <span
+class="math inline">\sim \log k</span>).</p></li>
 </ul>
 </section>
 <section id="parallel-generation" class="slide level1">
@@ -326,18 +326,18 @@ random numbers by distributing it over <span
 class="math inline">k</span> computers, the following procedure can be
 used:</p>
 <ol type="1">
-<li>Start with a fixed <em>seed</em>, or a random one (obtained from the
-date and time the program was executed), and create the initial state of
-the generator;</li>
-<li>Assign to each of the <span class="math inline">k</span> computers
-the task of generating only <span class="math inline">N/k</span>
-samples, and copy the <em>same</em> initial state of the generator to
-each of them;</li>
-<li>On the <span class="math inline">i</span>-th computer, advance the
-generator state by <span class="math inline">i \times N / k</span>,
-using the “fast” algorithm;</li>
-<li>Each generator proceeds to generate the <span
-class="math inline">N/k</span> samples.</li>
+<li><p>Start with a fixed <em>seed</em>, or a random one (obtained from
+the date and time the program was executed), and create the initial
+state of the generator;</p></li>
+<li><p>Assign to each of the <span class="math inline">k</span>
+computers the task of generating only <span
+class="math inline">N/k</span> samples, and copy the <em>same</em>
+initial state of the generator to each of them;</p></li>
+<li><p>On the <span class="math inline">i</span>-th computer, advance
+the generator state by <span class="math inline">i \times N / k</span>,
+using the “fast” algorithm;</p></li>
+<li><p>Each generator proceeds to generate the <span
+class="math inline">N/k</span> samples.</p></li>
 </ol>
 </section>
 <section id="algorithms" class="slide level1">
@@ -347,8 +347,8 @@ class="math inline">N/k</span> samples.</li>
 generating random numbers, but the quality of these generators is very
 uneven!</p></li>
 <li><p>In 2014, Melissa O’Neill published <a
-href="https://www.pcg-random.org/paper.html">a splendid article</a> on a
-new family of random number generators that satisfies <em>all</em> the
+href="https://www.pcg-random.org/paper.html">a fantastic article</a> on
+a new family of random number generators that satisfies <em>all</em> the
 characteristics listed above, and it is released as an open-source
 library on the website <a
 href="https://www.pcg-random.org/">www.pcg-random.org</a>.</p></li>
@@ -368,8 +368,8 @@ are required to implement it yourself.</p></li>
 <li><p>There are in fact numerous variants of the algorithm, which are
 distinguished by the bit size of the quantities used during
 generation.</p></li>
-<li><p>It will make the work of the various groups easier if everyone
-uses the same generator with the same seed.</p></li>
+<li><p>If everyone uses the same generator with the same seed, it will
+be easier to do cross-group debugging!</p></li>
 </ul>
 </section>
 <section id="unsigned-numbers" class="slide level1">
@@ -377,15 +377,14 @@ uses the same generator with the same seed.</p></li>
 <ul>
 <li><p>PCG, like many similar algorithms, requires calculations with bit
 masks.</p></li>
-<li><p>Bit masks are usually encoded with unsigned integers.</p></li>
-</ul>
+<li><p>Bit masks are usually encoded with unsigned integers.</p>
 <center>
-<img data-src="media/julia-signed-unsigned-int.png" width="480" />
-</center>
-<ul>
-<li>A negative number like <code>-12</code> (<code>0b1100</code>) is
+<p><img data-src="media/julia-signed-unsigned-int.png"
+width="480" /></p>
+</center></li>
+<li><p>A negative number like <code>-12</code> (<code>0b1100</code>) is
 encoded with two’s complement: all bits of <code>12</code> are inverted
-and 1 is added, resulting in <code>0b11110100</code> (8 bits).</li>
+and 1 is added, resulting in <code>0b11110100</code> (8 bits).</p></li>
 </ul>
 </section>
 <section id="bitwise-operations" class="slide level1">
@@ -448,9 +447,8 @@ always zero, and this is the one to use in PCG.</p></li>
 <section id="implementation-in-python" class="slide level1">
 <h1>Implementation in Python</h1>
 <ul>
-<li><p>The Python implementation of the algorithm requires operations
-that allow control over how Python performs operations on
-integers.</p></li>
+<li><p>The implementation of the PCG algorithm requires wrapping when
+integers overflow.</p></li>
 <li><p>Unlike the languages you use, in Python there is only one
 <code>int</code> type, whose size adapts depending on the number to be
 stored.</p></li>
@@ -494,6 +492,11 @@ by your language. (Languages like Java don’t have unsigned integers, so
 you have to make do with signed ones 🙁; however, Kotlin <a
 href="https://kotlinlang.org/docs/unsigned-integer-types.html">implements
 them</a> 🥳)</p></li>
+<li><p>I wrote a blog post about the caveats when working with unsigned
+types: <a
+href="https://ziotom78.github.io/c++/2025/02/02/unsigned-and-c++.html">Use
+of <code>unsigned int</code> in C++</a>. Even if you do not use C++, it
+might be worth reading it.</p></li>
 </ul>
 </section>
 <section id="pcg-in-python" class="slide level1">
@@ -558,7 +561,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a hr
 <ul>
 <li><p>Obviously, the <code>PCG.random</code> method returns an
 <em>integer</em>.</p></li>
-<li><p>In the theory lesson, however, we always used pseudo-random
+<li><p>In path tracing, however, we will always need pseudo-random
 numbers <span class="math inline">X_i</span> uniformly distributed on
 <span class="math inline">[0, 1]</span>.</p></li>
 <li><p>Since the PCG implementation we are using is 32-bit and has a

@@ -6,7 +6,7 @@
 
 -   In this course we will not address the problem of random number generation in detail, but we will use a series of results without proving them.
 
--   The context of photorealistic images is interesting to verify the operation of a random number generator: if the quality of the generator is not excellent, you can see it immediately!
+-   The context of photorealistic images is interesting to verify the operation of a random number generator: if the quality of the generator is not excellent, you spot it immediately!
 
 ---
 
@@ -113,15 +113,18 @@ A *randogram* (see O'Neill, 2014).
 
 -   One possible solution is to have a criterion whereby two states of the generator are *orthogonal*: that is, they cannot generate the same sequence of samples, not even shifted. These generators typically require initialization with *two* initial numbers: a sequence identifier and the *seed*. If two different identifiers are used, the generated sequences are uncorrelated.
 
--   Another solution is to be able to advance the state of the generator by $k$ steps quickly, *without* actually generating $k - 1$ random numbers and requiring a number of operations much less than $\propto k$ (typically $\propto \log k$).
+-   Another solution is to be able to advance the state of the generator by $k$ steps quickly, *without* actually generating $k - 1$ random numbers and requiring a number of operations much less than $\sim k$ (typically $\sim \log k$).
 
 # Parallel Generation
 
 To generate a long sequence of $N$ random numbers by distributing it over $k$ computers, the following procedure can be used:
 
 1. Start with a fixed *seed*, or a random one (obtained from the date and time the program was executed), and create the initial state of the generator;
+
 2. Assign to each of the $k$ computers the task of generating only $N/k$ samples, and copy the *same* initial state of the generator to each of them;
+
 3. On the $i$-th computer, advance the generator state by $i \times N / k$, using the "fast" algorithm;
+
 4. Each generator proceeds to generate the $N/k$ samples.
 
 
@@ -129,7 +132,7 @@ To generate a long sequence of $N$ random numbers by distributing it over $k$ co
 
 -   The standard libraries of compilers offer functionality for generating random numbers, but the quality of these generators is very uneven!
 
--   In 2014, Melissa O'Neill published [a splendid article](https://www.pcg-random.org/paper.html) on a new family of random number generators that satisfies *all* the characteristics listed above, and it is released as an open-source library on the website [www.pcg-random.org](https://www.pcg-random.org/).
+-   In 2014, Melissa O'Neill published [a fantastic article](https://www.pcg-random.org/paper.html) on a new family of random number generators that satisfies *all* the characteristics listed above, and it is released as an open-source library on the website [www.pcg-random.org](https://www.pcg-random.org/).
 
 -   In this course, we will therefore use the PCG algorithm, which has all the nice properties listed above.
 
@@ -142,7 +145,7 @@ To generate a long sequence of $N$ random numbers by distributing it over $k$ co
 
 -   There are in fact numerous variants of the algorithm, which are distinguished by the bit size of the quantities used during generation.
 
--   It will make the work of the various groups easier if everyone uses the same generator with the same seed.
+-   If everyone uses the same generator with the same seed, it will be easier to do cross-group debugging!
 
 
 # *Unsigned* Numbers
@@ -151,9 +154,9 @@ To generate a long sequence of $N$ random numbers by distributing it over $k$ co
 
 -   Bit masks are usually encoded with unsigned integers.
 
-<center>
-![](media/julia-signed-unsigned-int.png){width=480px}
-</center>
+    <center>
+    ![](media/julia-signed-unsigned-int.png){width=480px}
+    </center>
 
 -   A negative number like `-12` (`0b1100`) is encoded with two's complement: all bits of `12` are inverted and 1 is added, resulting in `0b11110100` (8 bits).
 
@@ -180,7 +183,7 @@ To generate a long sequence of $N$ random numbers by distributing it over $k$ co
 
 # Implementation in Python
 
--   The Python implementation of the algorithm requires operations that allow control over how Python performs operations on integers.
+-   The implementation of the PCG algorithm requires wrapping when integers overflow.
 
 -   Unlike the languages you use, in Python there is only one `int` type, whose size adapts depending on the number to be stored.
 
@@ -214,6 +217,8 @@ To generate a long sequence of $N$ random numbers by distributing it over $k$ co
 -   The data structure used by the PCG algorithm needs to store two 64-bit `unsigned` integers internally.
 
 -   Familiarize yourselves with the unsigned integer types provided by your language. (Languages like Java don't have unsigned integers, so you have to make do with signed ones 🙁; however, Kotlin [implements them](https://kotlinlang.org/docs/unsigned-integer-types.html) 🥳)
+
+-   I wrote a blog post about the caveats when working with unsigned types: [Use of `unsigned int` in C++](https://ziotom78.github.io/c++/2025/02/02/unsigned-and-c++.html). Even if you do not use C++, it might be worth reading it.
 
 
 # PCG in Python
@@ -278,7 +283,7 @@ def test_random():
 
 -   Obviously, the `PCG.random` method returns an *integer*.
 
--   In the theory lesson, however, we always used pseudo-random numbers $X_i$ uniformly distributed on $[0, 1]$.
+-   In path tracing, however, we will always need pseudo-random numbers $X_i$ uniformly distributed on $[0, 1]$.
 
 -   Since the PCG implementation we are using is 32-bit and has a period of $2^{32} - 1$, it is sufficient to normalize the integers returned by the algorithm to obtain the uniform distribution:
 
