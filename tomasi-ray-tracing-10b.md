@@ -201,9 +201,9 @@ To generate a long sequence of $N$ random numbers by distributing it over $k$ co
 
 # Integer Management
 
--   To make Python behave more like Julia, you can implement a function that masks the least significant bits, simulating 64-bit and 32-bit numbers.
+-   To make Python behave more like Julia, I had to implement a function that masks the least significant bits, simulating 64-bit and 32-bit numbers.
 
--   An example implementation is as follows:
+-   Here is an example
 
     ```python
     def to_uint64(x: int) -> int:
@@ -211,7 +211,7 @@ To generate a long sequence of $N$ random numbers by distributing it over $k$ co
         return x & 0xffffffffffffffff
     ```
 
--   Obviously, this is not necessary if you are using a language that implements fixed-size integer types. This is the case with all the languages you are using 😀.
+-   Obviously, this is not necessary when using languages that implement fixed-size integer types. This is the case with all the languages you are using 😀.
 
 
 # Integers Used by PCG
