@@ -425,12 +425,12 @@ for i in range(5):
 
 # What to do today
 
-1.  Continue working in the `pathtracing` branch;
-2.  Implement a function to create an orthonormal basis starting from a normal vector (if in your language it is not easy to return three return values, implement a new `ONB` type);
-3.  Implement the `scatter_ray` method that works on BRDF types, and implement the specular BRDF;
-4.  Implement the path tracing algorithm;
-5.  Modify the demo so that it has a diffuse sky capable of illuminating the scene.
-6.  After *merging*, increment the version number to `0.3.0` and update the `CHANGELOG.md` file.
+#.  Continue working in the `pathtracing` branch;
+#.  Implement a function to create an orthonormal basis starting from a normal vector (if in your language it is not easy to return three return values, implement a new `ONB` type);
+#.  Implement the `scatter_ray` method that works on BRDF types, and implement the specular BRDF;
+#.  Implement the path tracing algorithm;
+#.  Modify the demo so that it has a diffuse sky capable of illuminating the scene.
+#.  After *merging*, release version `0.3.0` and update the `CHANGELOG.md` file.
 
 # Optional Additions
 

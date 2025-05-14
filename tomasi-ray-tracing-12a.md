@@ -4,13 +4,13 @@
 
 -   So far, we have created photorealistic images by modifying the `demo` command of our ray tracer.
 
--   You should all have encountered a certain cumbersome procedure by now! Every time we wanted to modify the image, we had to perform these actions:
+-   You should all have realized that this is quite cumbersome! Every time we wanted to modify the image, we had to perform these actions:
 
     #.  Modify the code in `main`;
     #.  Recompile;
     #.  Run the code and check the result.
 
--   This approach may not be sustainable: in fact, we force users to write code in the programming language we used!
+-   This approach is not sustainable: in fact, we force users to learn how to write code in the programming language we used!
 
 # Objective
 
@@ -24,7 +24,7 @@
 
     and the `Shape` and `Material` objects will be created in memory based on what is specified in `scene.txt`. Unlike the `demo` command, however, it is easy to modify `scene.txt`.
 
--   What awaits us is in fact the implementation of a *compiler*!
+-   What we need is to implement a *compiler*!
 
 # User Categories
 
@@ -32,7 +32,9 @@
 
 -   But in the case of programs written in C#, Nim or Rust, such a solution is obviously not feasible.
 
--   (This is even more true for those of you who provide binaries with each new *release* of the code: in that case, your users may not even have compilers installed!)
+-   (This is even truer for those of you who provide binaries with each new *release* of the code: in that case, your users may not even have compilers installed!)
+
+-   I ask *all of you* (including Julia users!) to implement a compiler: this is of great pedagogical value.
 
 # Pedagogical Value
 
@@ -483,7 +485,7 @@ graph "" {
         std::cout << "The number is even\n";
     ```
 
--   This code above is perfectly understandable by a human being, but C++ forbids it! (The equivalent in Scheme would be ok).
+-   This code above is perfectly understandable by a human being, but C++ forbids it!
 
 -   The error is caused by the fact that C++ syntax requires that the variable type (`int`) be followed by an *identifier*, and not by a *keyword* (`if`).
 
@@ -752,7 +754,7 @@ int main() {
 
 -   All this is necessary in those languages that do not support *tagged unions* (see [this post](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/sum-types) for an overview of the languages that have this shortcoming).
 
--   Nim natively supports tags: see the [*Object variants*](https://nim-lang.org/docs/manual.html#types-object-variants) section of the manual
+-   Nim supports tags, see chapter [*Object variants*](https://nim-lang.org/docs/manual.html#types-object-variants) in the manual.
 
 
 # Exhaustiveness of checks

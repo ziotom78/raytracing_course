@@ -328,12 +328,13 @@ def read_token(self) -> Token:
 
 # What to do today
 
-1. Create a new *branch* called `scenefiles`;
-2. Implement `SourceLocation`;
-3. Implement `GrammarError`;
-4. Implement `InputStream` and the associated functions/methods (especially `unread_char`!);
-5. Implement the `Token` type, making sure that all *token* types present in pytracer are included (there are six in total);
-6. Implement the function/method `read_token`.
+#.  Release version `0.3.0` if you did not already do it last week;
+#.  Create a new *branch* called `scenefiles`;
+#.  Implement `SourceLocation`;
+#.  Implement `GrammarError`;
+#.  Implement `InputStream` and the associated functions/methods (especially `unread_char`!);
+#.  Implement the `Token` type, making sure that all *token* types present in pytracer are included (there are six in total);
+#.  Implement the function/method `read_token`.
 
 ---
 title: "Laboratory 12"
