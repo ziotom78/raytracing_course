@@ -464,15 +464,14 @@ time ./main.py demo --algorithm flat --angle-deg $angle \
 
 # What to do today
 
-1. Implement the PCG generator.
-2. Create a new branch named `pathtracing`;
-3. Create the types `Pigment`, `UniformPigment`, `CheckeredPigment` (if you like, also implement `ImagePigment`);
-4. Create the types `BRDF` and `DiffuseBRDF`;
-5. Create the type `Material`;
-6. Modify `Shape` to contain an instance of `Material`;
-7. Modify `HitRecord` to contain a pointer to the `Shape` hit by a ray;
-8. If you like, implement a flat-renderer (in this case, update the demo).
-9. Implement the same tests as [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/test_all.py#L729-L841).
+#. Now that you have a `demo`, tag a new release (`0.2.0`).
+#. Implement the PCG generator.
+#. Create a new branch named `pathtracing` and create the types `Pigment`, `UniformPigment`, `CheckeredPigment` (if you like, also implement `ImagePigment`), `BRDF`, and `DiffuseBRDF`;
+#. Create the type `Material`;
+#. Modify `Shape` to contain an instance of `Material`;
+#. Modify `HitRecord` to contain a pointer to the `Shape` hit by a ray;
+#. If you like, implement a flat-renderer (in this case, update the demo).
+#. Implement the same tests as [pytracer](https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/test_all.py#L729-L841).
 
 ---
 title: "Laboratory 10"
