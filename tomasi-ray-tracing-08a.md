@@ -594,9 +594,9 @@ Triangles are a geometric shape widely used in 3D modeling and rendering program
 
     $$
     \begin{pmatrix}
-    b_x - a_x& c_x - a_x& d_x\\
-    b_y - a_y& c_y - a_y& d_y\\
-    b_z - a_z& c_z - a_z& d_z\\
+    b_x - a_x& c_x - a_x& -d_x\\
+    b_y - a_y& c_y - a_y& -d_y\\
+    b_z - a_z& c_z - a_z& -d_z\\
     \end{pmatrix}
     \begin{pmatrix}
     \beta\\\gamma\\t
