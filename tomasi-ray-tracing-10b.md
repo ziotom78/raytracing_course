@@ -179,7 +179,7 @@ To generate a long sequence of $N$ random numbers by distributing it over $k$ co
 | Logical shift    | `0b1001 >>> 1 == 0b100`     |
 |                  | `Int8(-12) >>> 1 == 122`    |
 |                  | `Int16(-12) >>> 1 == 32762` |
-- In a right *arithmetic shift*, the new most significant bit is a copy of the old one, so as to preserve the sign.
+- In a right *arithmetic shift*, the new most significant bit is a copy of the old one, so as to preserve the sign. (See [this article](https://open4tech.com/logical-vs-arithmetic-shift/).)
 
 - In a *logical shift*, the new most significant bit is always zero, and this is the one to use in PCG.
 

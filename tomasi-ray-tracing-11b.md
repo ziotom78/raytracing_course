@@ -234,12 +234,7 @@ def __call__(self, ray: Ray) -> Color:
 
 -   It consists of casting a ray inside an arbitrarily shaped object with diffuse BRDF and constant luminosity $L_e$ and reflectance $\rho_d$.
 
--   The generic ray will follow a path trapped within the object, and the total radiance will be equal to
-
-
-    $$
-    L = L_e + \rho_d \Bigl(L_e + \rho_d \bigl(L_e + \rho_d(L_e + \dots)\bigr)\Bigr).
-    $$
+-   The generic ray will follow a path trapped within the object, and thus each ray will keep hitting the same sphere over and over again. This is a situation where the rendering equation can be solved analytically.
 
 ---
 
@@ -388,6 +383,8 @@ for i in range(5):
     }
 
     // Now run the benchmark
+    auto time0{perf_conter()};
+    // etc.
     ```
 
 # Tips (2/4)
@@ -434,8 +431,8 @@ for i in range(5):
 
 # Optional Additions
 
--   [Antialiasing](tomasi-ray-tracing-12a-path-tracing2.html#aliasing) (see [PR#13 of pytracer](https://github.com/ziotom78/pytracer/pull/13));
--   [Point-light tracing](tomasi-ray-tracing-12a-path-tracing2.html#point-light-tracing-1) (see [PR#14 of pytracer](https://github.com/ziotom78/pytracer/pull/14)).
+-   [Antialiasing](tomasi-ray-tracing-11a.html#aliasing) (see [PR#13 of pytracer](https://github.com/ziotom78/pytracer/pull/13));
+-   [Point-light tracing](tomasi-ray-tracing-11a.html#point-light-tracing-1) (see [PR#14 of pytracer](https://github.com/ziotom78/pytracer/pull/14)).
 
 ---
 title: "Laboratory 11"
