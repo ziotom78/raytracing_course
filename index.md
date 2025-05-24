@@ -18,8 +18,8 @@
 |         9 | [6 Maggio 2025](tomasi-ray-tracing-09a.html) | — |
 |        10 | [12 Maggio 2025](tomasi-ray-tracing-10a.html) | [14 Maggio 2025](tomasi-ray-tracing-10b.html) |
 |        11 | [19 Maggio 2025](tomasi-ray-tracing-11a.html) | [21 Maggio 2025](tomasi-ray-tracing-11b.html) |
-<!--
 |        12 | [26 Maggio 2025](tomasi-ray-tracing-12a.html) | [28 Maggio 2025](tomasi-ray-tracing-12b.html) |
+<!--
 |        13 | [9 Giugno 2025](tomasi-ray-tracing-13a.html) | [11 Giugno 2025](tomasi-ray-tracing-13b.html) |
 -->
 
@@ -46,8 +46,8 @@
 - [Eccezioni](tomasi-ray-tracing-03a.html#/exceptions)
 - [Tone mapping](tomasi-ray-tracing-04a.html#/tone-mapping)
 - [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenses)
--   [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modeling-objects)
--   [Trasformazioni](tomasi-ray-tracing-05a.html#/transformations): [di scala](tomasi-ray-tracing-05a.html#/scaling-transformations), [applicate a normali](tomasi-ray-tracing-05a.html#/transformations-and-normals), [rotazioni](tomasi-ray-tracing-05a.html#/rotations), [traslazioni](tomasi-ray-tracing-05a.html#/translations)
+- [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modeling-objects)
+- [Trasformazioni](tomasi-ray-tracing-05a.html#/transformations): [di scala](tomasi-ray-tracing-05a.html#/scaling-transformations), [applicate a normali](tomasi-ray-tracing-05a.html#/transformations-and-normals), [rotazioni](tomasi-ray-tracing-05a.html#/rotations), [traslazioni](tomasi-ray-tracing-05a.html#/translations)
 -   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/version-numbers)
 -   [*Branch* e *pull requests*](tomasi-ray-tracing-05b.html#/pull-requests)
 -   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-06a.html#/solution-of-the-rendering-equation)
@@ -69,9 +69,7 @@
 -   [Roulette russa](tomasi-ray-tracing-11a.html#/russian-roulette)
 -   [*Antialiasing*](tomasi-ray-tracing-11a.html#/antialiasing)
 -   [Test della fornace](tomasi-ray-tracing-11b.html#/furnace-test)
-<!--
 -   [Terminologia nella teoria dei compilatori](tomasi-ray-tracing-12a.html#/terminology): lessico, sintassi, semantica, *token*, *look-ahead*
--->
 
 ## Parti non richieste per l'esame
 
@@ -92,9 +90,9 @@
 -   [*Photon mapping*](tomasi-ray-tracing-11a.html#/photon-mapping)
 -   [*Stratified sampling*](tomasi-ray-tracing-11a.html#/stratified-sampling)
 -   [*Point-light tracing*](tomasi-ray-tracing-11a.html#/point-light-tracing)
-<!--
 -   [Panoramica sulla definizione di scene](tomasi-ray-tracing-12a.html#/scene-definition-languages): DKBTrace, POV-Ray, YafaRay
 -   [Gerarchie di classi e *sum types*](tomasi-ray-tracing-12a.html#/tokens-and-class-hierarchies)
+<!--
 -   [Gestione degli errori di un compilatore](tomasi-ray-tracing-13a.html#/compiler-errors)
 -   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/comparison-of-languages)
 -   [Testing di compilatori](tomasi-ray-tracing-13a.html#/compiler-testing)

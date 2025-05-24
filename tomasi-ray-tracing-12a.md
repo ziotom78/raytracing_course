@@ -22,7 +22,9 @@
     ./myprogram render scene.txt
     ```
 
-    and the `Shape` and `Material` objects will be created in memory based on what is specified in `scene.txt`. Unlike the `demo` command, however, it is easy to modify `scene.txt`.
+    and the `Shape` and `Material` objects will be created in memory based on what is specified in `scene.txt`.
+
+-   Unlike the `demo` command, it will be easy for the user to modify `scene.txt`.
 
 -   What we need is to implement a *compiler*!
 
@@ -73,7 +75,7 @@ In our case, we will have to define a DSL and implement a compiler for it. Our a
 
 # Overview
 
--   We are not interested in databases, electrical circuits, or HTML pages: we are interested in defining 3D scenes.
+-   We are interested in defining 3D scenes.
 
 -   To define our language, we should first get an idea of what the "competition" does.
 
@@ -248,7 +250,7 @@ light_source { <2, 4, -3> color White }
 
 # Defining the Format
 
--   We now have a very exciting task: defining our format!
+-   Our new exciting task is to define our own format!
 
 -   We could draw inspiration from very simple formats, such as the Wavefront OBJ that we described [earlier](./tomasi-ray-tracing-10a-other-shapes.html#wavefront-obj): each line contains a letter (`v`, `f`, `n`, etc.) followed by a sequence of numbers.
 
@@ -295,9 +297,9 @@ light_source { <2, 4, -3> color White }
     create sphere with center [1, 3, 6] and radius 2
     ```
 
--   The choice of one syntax or another is, in principle, entirely up to us!
+-   The choice of one syntax or another is up to us!
 
--   For Pytracer I chose the syntax that I will now illustrate.
+-   For Pytracer I chose the syntax shown in the next slide.
 
 
 # Example
@@ -356,10 +358,10 @@ camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 - The work ahead is similar to writing a real compiler. For example, the `g++` command reads text files like the following:
 
     ```c++
-    #include <iostream>
+    #include <print>
 
-    int main(int argc, const char *argv[]) {
-      std::cout << "The name of the program is " << argv[0] << "\n";
+    int main(int argc, char *argv[]) {
+      std::println("The name of the program is {}", argv[0]);
     }
     ```
 
@@ -369,15 +371,15 @@ camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 
 # Terminology {#terminology}
 
-For those who work with interpreters/compilers, it is common practice to use some linguistic terms:
+In compiler theory, the following terms are fundamental:
 
-- **Lexical** analysis studies the typology of individual words and establishes, for example, that the word "invece" (Italian for "instead") is correct, while "invecie" is incorrect.  This is analogous to spelling and vocabulary in natural languages.
-- **Syntactic** analysis studies the relationships between the elements of an expression and establishes, for example, that a verb can never follow an article ("un mangeremmo" - a nonsensical Italian phrase). This is analogous to grammar in natural languages.
-- **Semantic** analysis studies the relationship between an expression like "the house at the end of the road" and the extra-linguistic object to which it refers (precisely, that particular house at the end of the road). This relates to the meaning conveyed by the expression.
+- **Lexical** analysis studies the typology of individual words and establishes, for example, that the word "apple" is correct, while "aple" is incorrect.
+- **Syntactic** analysis studies the relationships between the elements of an expression and establishes, for example, that a verb can never follow an article ("the compile").
+- **Semantic** analysis studies the relationship between an expression like "the house at the end of the road" and the extra-linguistic object to which it refers (precisely, that particular house at the end of the road).
 
 # Computer Languages
 
-In the case of a computer "language" like ours, its analysis is usually done in the same order as the previous slide:
+In the case of a computer "language" like ours, the concepts translate quite closely:
 
 1.  A **lexical** analysis, which verifies that the individual "words" are written correctly;
 2.  A **syntactic** analysis, which considers how the individual "words" are concatenated;
@@ -404,7 +406,7 @@ graph "" {
 ```
 
 -   The *lexer* breaks down the source code into simple elements, called *tokens*, and reports lexical errors;
--   The *parser* analyzes the sequence of *tokens* to link them together and understand their syntax and semantics;
+-   The *parser* analyzes the sequence of tokens to link them together and understand their syntax and semantics;
 -   The *AST builder* creates the so-called *Abstract Syntax Tree* (not used in our case);
 -   The *optimizer* applies optimizations to the AST (not used in our case);
 -   The executable is generated from the optimized AST (not used in our case).
@@ -417,7 +419,7 @@ graph "" {
     The child eats the apple
     ```
 
--   What a *lexer* for the English language would do is produce this list:
+-   What a lexer for the English language would do is produce this list:
 
     1.  `The`: definite article
     2.  `child`: common noun, singular
@@ -427,12 +429,12 @@ graph "" {
 
 -   Let's consider the first lines of the example shown earlier:
 
-    ```text
+    ```python
     # Declare a variable named "clock"
     float clock(150)
     ```
 
--   The result of the lexical analysis of the lines above is the production of the following token list (from which whitespace and comments have already been removed):
+-   The result of the lexical analysis of the lines above is the production of the following token list (whitespace/comments have already been removed):
 
     ```python
     [
@@ -469,7 +471,7 @@ graph "" {
     ]
     ```
 
--   The syntactic analysis must verify that the token sequence is correct: if the first token is the keyword `float`, then it means that we are defining a floating-point variable. It is therefore necessary that the next token contains the name of the variable (it must be an *identifier*), followed by the numerical value enclosed in parentheses.
+-   The syntactic analysis must verify that the token sequence is correct: if the first token is the keyword `float`, then we are defining a floating-point variable. Therefore, the next token must contain the name of the variable (it must be an *identifier*), followed by the numerical value enclosed in parentheses.
 
 
 # Syntax Errors
@@ -478,42 +480,36 @@ graph "" {
 
     ```c++
     int if;
-    std::cout << "Enter a number: ";
-    std::cin >> if;
 
+    if = read_number_from_file();
     if (if % 2 == 0)
-        std::cout << "The number is even\n";
+        std::println("The number {} is even",  if);
     ```
 
--   This code above is perfectly understandable by a human being, but C++ forbids it!
+-   This code above is unambiguous for a human being, but C++ forbids it: its syntax requires that the variable type (`int`) be followed by an *identifier*, and not by a *keyword* (`if`).
 
--   The error is caused by the fact that C++ syntax requires that the variable type (`int`) be followed by an *identifier*, and not by a *keyword* (`if`).
-
+-   The ambiguity only disappears when lexing and parsing are done at the same time, but C++ does not work in this way! (Well, actually…)
 
 # Example: Semantic Analysis
 
-```text
+```python
 # Declare a variable named "clock"
 float clock(150)
 ```
 
--   The result of the syntactic analysis says that the instruction requires creating a variable `clock` and assigning it the value `150.0`.
+-   Syntactic analysis reveals that we are creating a variable `clock` with a value of `150.0`.
 
--   The semantic analysis must verify that the definition of this variable does not create inconsistencies. For example, it could check that `clock` has not already been defined previously, and in that case choose one of these possibilities:
-
-    1.  Produce an error (this is the case in C++);
-    2.  Update the value of the variable `clock` instead of defining a new one with the same name (this is the case in Python and Scheme).
-
+-   The semantic analysis must verify that the definition of this variable does not create inconsistencies. For example, has `clock` already been defined?
 
 # Implementation
 
-# How the *lexer* works
+# How the lexer works
 
--   The *lexer* is the part of the code that handles lexical analysis.
+-   The lexer is the part of the code that handles lexical analysis.
 
--   Its task is to read from a *stream* (typically a file) and produce a list of *tokens* as output, classified according to their type.
+-   Its task is to read from a *stream* (typically a file) and produce a list of tokens as output, classified according to their type.
 
--   For efficiency reasons, lexers *do not* return a list of tokens, but read the *tokens* one at a time, returning them as they interpret them, and are therefore used like this:
+-   For efficiency reasons, lexers *do not* return a list of tokens, but read the tokens one at a time, returning them as they interpret them, and are therefore used like this:
 
     ```python
     while True:
@@ -524,11 +520,11 @@ float clock(150)
         …
     ```
 
-# Output of a *lexer*
+# Output of a lexer
 
--   A *lexer* must be able to classify *tokens* according to their type.
+-   A lexer must be able to classify tokens according to their type.
 
--   Depending on the language, there are various types of tokens; in our case we have:
+-   In our language, we have the following tokens:
 
     #.  *Keyword*: a keyword of the language, such as `sphere` and `diffuse`;
     #.  *Identifier*: the name of a variable/type/function such as `clock`;
@@ -536,11 +532,11 @@ float clock(150)
     #.  *String literal*: a string of characters, usually enclosed in `"` (double quotes) or `'` (single quotes);
     #.  *Symbol*: a non-alphanumeric character, such as `(`, `+`, `,`, etc.) We will not consider symbols composed of multiple characters (e.g., `>=` in C++).
 
-# Types of *tokens*
+# Types of tokens
 
 -   The implementation of the `Token` type allows us to delve into the type system of the languages we have used in the course.
 
--   Following an OOP approach, the different types of *tokens* could be classes derived from a base type, `Token` precisely: a class hierarchy is thus built.
+-   Following an OOP approach, the different types of tokens could be classes derived from a base type, `Token` precisely: a class hierarchy is thus built.
 
 -   This solution works, and it is what I used in pytracer. However, it is not the most convenient solution!
 
@@ -577,19 +573,19 @@ class SymbolToken(Token):
 ```
 
 
-# *Tokens* and Class Hierarchies {#tokens-and-class-hierarchies}
+# Tokens and Class Hierarchies {#tokens-and-class-hierarchies}
 
 -   There are some disadvantages to using a class hierarchy:
 
-    #.  The code becomes very verbose: you have to implement many classes, all very similar to each other.
-    #.  Class hierarchies are designed to be *extensible*: you can always define a new class derived from `Token`. But in the case of a language, the list of token types is fixed and very unlikely to change.
+    #.  The code becomes verbose: you have to implement many classes, all very similar to each other.
+    #.  Class hierarchies are designed to be *extensible*: you can always define a new class derived from `Token`. But in the case of a language, the list of token types is fixed and unlikely to grow.
 
--   The most suitable type for a *token* is a *sum type*, also called a *tagged union* or *object variant*, which contrasts with the *product types* that you all know (probably without knowing it). Let's see what they consist of.
+-   The most suitable type for a token is a *sum type*, also called a *tagged union* or *object variant*, which contrasts with the *product types* that you all know (probably without knowing it). Let's see what they consist of.
 
 
 # *Product Types*
 
--   The `struct`/`class` of languages like C++, Python, and Julia are *product types* because, from a formal point of view, they are a **Cartesian product** between sets.
+-   The classic `struct`/`class` used by C++/C\#/… defines a *product type* because, from a mathematical point of view, it is a **Cartesian product** between sets.
 
 -   Consider this definition in C++:
 
@@ -600,7 +596,7 @@ class SymbolToken(Token):
     };
     ```
 
-    If the set of all possible values of an `int32_t` and a `uint8_t` is denoted by $I$ and $B$ respectively, then a variable `MyStruct var` is such that $\mathtt{var} \in I \times B$.
+    If the set of all possible values of an `int32_t` is $I$ and of an `uint8_t` is $B$, then `MyStruct var` can hold values in $I \times B$.
 
 
 # *Sum Types*
@@ -646,16 +642,16 @@ int main() {
 }
 ```
 
-# *Sum Types* and *Tokens*
+# Sum Types and Tokens
 
--   A *token* is ideally represented by a *sum type*. Suppose we have, for simplicity, only two types of tokens, defined in C++ code:
+-   A token is best represented using a sum type. Suppose we have, for simplicity, only two types of tokens:
 
     1.  *Literal number* (e.g., `150`), represented in memory as a `float`;
     2.  *Literal string* (e.g., `"filename.pfm"`), represented by `std::string`;
 
--   Now consider a function `read_token(stream)` that returns the next token read from `stream`: it can return a *literal number* or a *literal string*.
+-   A function `read_token(stream)` getting the next token read from `stream` can either return a *literal number* or a *literal string*.
 
--   If numbers belong to the set $N$ and strings to $S$, then it is clear that the token `t` is such that $\mathtt{t} \in N \cup S$: it can be one of the two types, but not more than one type at the same time. It is therefore logically a *sum type*!
+-   If numbers belong to the set $N$ and strings to $S$, then clearly the token `t` is such that $\mathtt{t} \in N \cup S$: it can be one of the two types, but not more than one type at the same time. It is therefore a *sum type*!
 
 # *Sum Types* vs Hierarchies
 
@@ -820,11 +816,11 @@ void print_token(const Token & t) {
 -   A class hierarchy is useful in the opposite case: the number of types can grow potentially indefinitely, but the number of methods is in principle limited. A good example is `Shape`: you can define infinite shapes (`Sphere`, `Plane`, `Cone`, `Cylinder`, `Parabola`, etc.), but the number of operations to perform is limited (`ray_intersection`, `is_point_inside`, etc.).
 
 
-# How a *Lexer* Works
+# How a Lexer Works
 
-# How a *Lexer* Works
+# How a Lexer Works
 
--   The *lexer* reads characters from a stream, one at a time, and decides which *tokens* to create based on the characters it encounters.
+-   The lexer reads characters from a stream, one at a time, and decides which tokens to create based on the characters it encounters.
 
 -   For example, reading the `"` character (double quote) in C++ code indicates that a character string is being defined:
 
@@ -834,14 +830,39 @@ void print_token(const Token & t) {
 
     When lexers used in C++ compilers encounter a `"` character, they continue reading characters until the next `"`, which signals the end of the string, and return a *string literal* token.
 
-# Ambiguities in *Lexers*
+# Ambiguities in lexers
 
--   The case of a *string literal* is simple to handle: every time a `"` character is encountered, we are dealing with this type of *token*.
+-   The case of a string literal is simple to handle: every time a `"` character is encountered, we are dealing with this type of token.
 
--   But in most cases a *lexer* must deal with ambiguities. For example, does an `a`...`z` character indicate that a *keyword* like `int` is starting, or an *identifier* like `iterations_per_minute`?
+-   But in most cases a lexer must deal with ambiguities. For example, does a `i` indicate that a *keyword* like `int` is starting, or an *identifier* like `iterations_per_minute`?
 
-    In this case, characters are read as long as they belong to the list of valid characters in an identifier (
+    In this case, characters are read as long as they belong to the list of valid characters in an identifier (usually lowercase/uppercase letters, digits, `_`), then the string is compared against the list of possible keywords.
 
+# Unreading stuff
+
+-   In a lexer (but the same applies to parsers), it is handy to make a character go back into the stream, i.e., to “unread” that character:
+
+    ```python
+    c = read_char(file)   # Suppose that this returns the character "X"
+    unread_char(file, c)  # Puts the "X" back into the file
+    c = read_char(file)   # Read the "X" again
+    ```
+
+    This is equivalent to reading a character in advance (*look ahead* operation), and allows writing the lexer in a more elegant way.
+
+-   The `unread_char` operation does not alter the file: it only stores the character `X` in a variable, and returns it on the next call to `read_char`.
+
+# Use of `unread_char`
+
+-   Why is `unread_char` useful in a lexer? Let's consider the expression `15+4`, which is composed of `15` (*numeric literal*), `+` (*symbol*), `4` (*numeric literal*).
+
+-   The lexer identifies the character `1` and understands that it must create a *numeric literal* token…
+
+-   Then, it must read characters until it finds the first non-digit, which is `+`.
+
+-   Reading `+` signals that the integer is complete and a *literal number token* must be emitted.
+
+-   But `+` must be **put back**, because it will be part of the next token.
 
 # Reading a *numeric literal*
 

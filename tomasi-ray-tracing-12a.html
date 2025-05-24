@@ -158,9 +158,10 @@ Visual Studio Code to create a file, called e.g. <code>scene.txt</code>,
 and will run the program like this:</p>
 <pre><code>./myprogram render scene.txt</code></pre>
 <p>and the <code>Shape</code> and <code>Material</code> objects will be
-created in memory based on what is specified in <code>scene.txt</code>.
-Unlike the <code>demo</code> command, however, it is easy to modify
+created in memory based on what is specified in
 <code>scene.txt</code>.</p></li>
+<li><p>Unlike the <code>demo</code> command, it will be easy for the
+user to modify <code>scene.txt</code>.</p></li>
 <li><p>What we need is to implement a <em>compiler</em>!</p></li>
 </ul>
 </section>
@@ -239,8 +240,7 @@ href="https://www.raywenderlich.com/2780058-domain-specific-languages-in-kotlin-
 <section id="overview" class="slide level1">
 <h1>Overview</h1>
 <ul>
-<li><p>We are not interested in databases, electrical circuits, or HTML
-pages: we are interested in defining 3D scenes.</p></li>
+<li><p>We are interested in defining 3D scenes.</p></li>
 <li><p>To define our language, we should first get an idea of what the
 “competition” does.</p></li>
 <li><p>So let’s see how three <em>renderers</em> allow you to specify
@@ -432,7 +432,7 @@ class="sourceCode xml"><code class="sourceCode xml"><span id="cb5-1"><a href="#c
 <section id="defining-the-format" class="slide level1">
 <h1>Defining the Format</h1>
 <ul>
-<li><p>We now have a very exciting task: defining our format!</p></li>
+<li><p>Our new exciting task is to define our own format!</p></li>
 <li><p>We could draw inspiration from very simple formats, such as the
 Wavefront OBJ that we described <a
 href="./tomasi-ray-tracing-10a-other-shapes.html#wavefront-obj">earlier</a>:
@@ -493,10 +493,8 @@ could use any of these four syntaxes:</p>
 <pre class="text"><code>sphere [1 3 6] 2
 sphere([1, 3, 6], 2)
 create sphere with center [1, 3, 6] and radius 2</code></pre></li>
-<li><p>The choice of one syntax or another is, in principle, entirely up
-to us!</p></li>
-<li><p>For Pytracer I chose the syntax that I will now
-illustrate.</p></li>
+<li><p>The choice of one syntax or another is up to us!</p></li>
+<li><p>For Pytracer I chose the syntax shown in the next slide.</p></li>
 </ul>
 </section>
 <section id="example" class="slide level1">
@@ -563,10 +561,10 @@ stages.</p></li>
 example, the <code>g++</code> command reads text files like the
 following:</p>
 <div class="sourceCode" id="cb9"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;print&gt;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="at">const</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;The name of the program is &quot;</span> <span class="op">&lt;&lt;</span> argv<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span> <span class="op">{</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;The name of the program is </span><span class="sc">{}</span><span class="st">&quot;</span><span class="op">,</span> argv<span class="op">[</span><span class="dv">0</span><span class="op">]);</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>and produces an executable file containing the sequence of machine
 instructions corresponding to this C++ code.</p></li>
@@ -577,28 +575,24 @@ and the <code>Material</code>s that make up the scene.</p></li>
 </section>
 <section id="terminology" class="slide level1">
 <h1>Terminology</h1>
-<p>For those who work with interpreters/compilers, it is common practice
-to use some linguistic terms:</p>
+<p>In compiler theory, the following terms are fundamental:</p>
 <ul>
 <li><strong>Lexical</strong> analysis studies the typology of individual
-words and establishes, for example, that the word “invece” (Italian for
-“instead”) is correct, while “invecie” is incorrect. This is analogous
-to spelling and vocabulary in natural languages.</li>
+words and establishes, for example, that the word “apple” is correct,
+while “aple” is incorrect.</li>
 <li><strong>Syntactic</strong> analysis studies the relationships
 between the elements of an expression and establishes, for example, that
-a verb can never follow an article (“un mangeremmo” - a nonsensical
-Italian phrase). This is analogous to grammar in natural languages.</li>
+a verb can never follow an article (“the compile”).</li>
 <li><strong>Semantic</strong> analysis studies the relationship between
 an expression like “the house at the end of the road” and the
 extra-linguistic object to which it refers (precisely, that particular
-house at the end of the road). This relates to the meaning conveyed by
-the expression.</li>
+house at the end of the road).</li>
 </ul>
 </section>
 <section id="computer-languages" class="slide level1">
 <h1>Computer Languages</h1>
-<p>In the case of a computer “language” like ours, its analysis is
-usually done in the same order as the previous slide:</p>
+<p>In the case of a computer “language” like ours, the concepts
+translate quite closely:</p>
 <ol type="1">
 <li>A <strong>lexical</strong> analysis, which verifies that the
 individual “words” are written correctly;</li>
@@ -619,8 +613,8 @@ data-im_fname="compiler-architecture" /></p>
 <ul>
 <li>The <em>lexer</em> breaks down the source code into simple elements,
 called <em>tokens</em>, and reports lexical errors;</li>
-<li>The <em>parser</em> analyzes the sequence of <em>tokens</em> to link
-them together and understand their syntax and semantics;</li>
+<li>The <em>parser</em> analyzes the sequence of tokens to link them
+together and understand their syntax and semantics;</li>
 <li>The <em>AST builder</em> creates the so-called <em>Abstract Syntax
 Tree</em> (not used in our case);</li>
 <li>The <em>optimizer</em> applies optimizations to the AST (not used in
@@ -634,8 +628,8 @@ case).</li>
 <ul>
 <li><p>Consider the sentence</p>
 <pre><code>The child eats the apple</code></pre></li>
-<li><p>What a <em>lexer</em> for the English language would do is
-produce this list:</p>
+<li><p>What a lexer for the English language would do is produce this
+list:</p>
 <ol type="1">
 <li><code>The</code>: definite article</li>
 <li><code>child</code>: common noun, singular</li>
@@ -648,11 +642,12 @@ third person singular…</li>
 <h1>Example: Lexical Analysis</h1>
 <ul>
 <li><p>Let’s consider the first lines of the example shown earlier:</p>
-<pre class="text"><code># Declare a variable named &quot;clock&quot;
-float clock(150)</code></pre></li>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Declare a variable named &quot;clock&quot;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span> clock(<span class="dv">150</span>)</span></code></pre></div></li>
 <li><p>The result of the lexical analysis of the lines above is the
-production of the following token list (from which whitespace and
-comments have already been removed):</p>
+production of the following token list (whitespace/comments have already
+been removed):</p>
 <div class="sourceCode" id="cb12"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>[</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    KeywordToken(TOKEN_FLOAT), <span class="co"># A &quot;keyword&quot;, because &quot;float&quot; is a reserved word</span></span>
@@ -686,11 +681,10 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a h
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    LiteralNumberToken(<span class="fl">150.0</span>), SymbolToken(<span class="st">&quot;)&quot;</span>),</span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div></li>
 <li><p>The syntactic analysis must verify that the token sequence is
-correct: if the first token is the keyword <code>float</code>, then it
-means that we are defining a floating-point variable. It is therefore
-necessary that the next token contains the name of the variable (it must
-be an <em>identifier</em>), followed by the numerical value enclosed in
-parentheses.</p></li>
+correct: if the first token is the keyword <code>float</code>, then we
+are defining a floating-point variable. Therefore, the next token must
+contain the name of the variable (it must be an <em>identifier</em>),
+followed by the numerical value enclosed in parentheses.</p></li>
 </ul>
 </section>
 <section id="syntax-errors" class="slide level1">
@@ -700,52 +694,46 @@ parentheses.</p></li>
 code:</p>
 <div class="sourceCode" id="cb15"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="cf">if</span><span class="op">;</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;Enter a number: &quot;</span><span class="op">;</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cin <span class="op">&gt;&gt;</span> <span class="cf">if</span><span class="op">;</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="cf">if</span> <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">&quot;The number is even</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span></code></pre></div></li>
-<li><p>This code above is perfectly understandable by a human being, but
-C++ forbids it!</p></li>
-<li><p>The error is caused by the fact that C++ syntax requires that the
-variable type (<code>int</code>) be followed by an <em>identifier</em>,
-and not by a <em>keyword</em> (<code>if</code>).</p></li>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">=</span> read_number_from_file<span class="op">();</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="cf">if</span> <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>println<span class="op">(</span><span class="st">&quot;The number </span><span class="sc">{}</span><span class="st"> is even&quot;</span><span class="op">,</span>  <span class="cf">if</span><span class="op">);</span></span></code></pre></div></li>
+<li><p>This code above is unambiguous for a human being, but C++ forbids
+it: its syntax requires that the variable type (<code>int</code>) be
+followed by an <em>identifier</em>, and not by a <em>keyword</em>
+(<code>if</code>).</p></li>
+<li><p>The ambiguity only disappears when lexing and parsing are done at
+the same time, but C++ does not work in this way! (Well,
+actually…)</p></li>
 </ul>
 </section>
 <section id="example-semantic-analysis" class="slide level1">
 <h1>Example: Semantic Analysis</h1>
-<pre class="text"><code># Declare a variable named &quot;clock&quot;
-float clock(150)</code></pre>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Declare a variable named &quot;clock&quot;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span> clock(<span class="dv">150</span>)</span></code></pre></div>
 <ul>
-<li><p>The result of the syntactic analysis says that the instruction
-requires creating a variable <code>clock</code> and assigning it the
-value <code>150.0</code>.</p></li>
+<li><p>Syntactic analysis reveals that we are creating a variable
+<code>clock</code> with a value of <code>150.0</code>.</p></li>
 <li><p>The semantic analysis must verify that the definition of this
-variable does not create inconsistencies. For example, it could check
-that <code>clock</code> has not already been defined previously, and in
-that case choose one of these possibilities:</p>
-<ol type="1">
-<li>Produce an error (this is the case in C++);</li>
-<li>Update the value of the variable <code>clock</code> instead of
-defining a new one with the same name (this is the case in Python and
-Scheme).</li>
-</ol></li>
+variable does not create inconsistencies. For example, has
+<code>clock</code> already been defined?</p></li>
 </ul>
 </section>
 <section id="implementation" class="slide level1">
 <h1>Implementation</h1>
 </section>
 <section id="how-the-lexer-works" class="slide level1">
-<h1>How the <em>lexer</em> works</h1>
+<h1>How the lexer works</h1>
 <ul>
-<li><p>The <em>lexer</em> is the part of the code that handles lexical
+<li><p>The lexer is the part of the code that handles lexical
 analysis.</p></li>
 <li><p>Its task is to read from a <em>stream</em> (typically a file) and
-produce a list of <em>tokens</em> as output, classified according to
-their type.</p></li>
+produce a list of tokens as output, classified according to their
+type.</p></li>
 <li><p>For efficiency reasons, lexers <em>do not</em> return a list of
-tokens, but read the <em>tokens</em> one at a time, returning them as
-they interpret them, and are therefore used like this:</p>
+tokens, but read the tokens one at a time, returning them as they
+interpret them, and are therefore used like this:</p>
 <div class="sourceCode" id="cb17"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    token <span class="op">=</span> read_token()</span>
@@ -756,12 +744,11 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a h
 </ul>
 </section>
 <section id="output-of-a-lexer" class="slide level1">
-<h1>Output of a <em>lexer</em></h1>
+<h1>Output of a lexer</h1>
 <ul>
-<li><p>A <em>lexer</em> must be able to classify <em>tokens</em>
-according to their type.</p></li>
-<li><p>Depending on the language, there are various types of tokens; in
-our case we have:</p>
+<li><p>A lexer must be able to classify tokens according to their
+type.</p></li>
+<li><p>In our language, we have the following tokens:</p>
 <ol>
 <li><em>Keyword</em>: a keyword of the language, such as
 <code>sphere</code> and <code>diffuse</code>;</li>
@@ -780,14 +767,14 @@ consider symbols composed of multiple characters (e.g.,
 </ul>
 </section>
 <section id="types-of-tokens" class="slide level1">
-<h1>Types of <em>tokens</em></h1>
+<h1>Types of tokens</h1>
 <ul>
 <li><p>The implementation of the <code>Token</code> type allows us to
 delve into the type system of the languages we have used in the
 course.</p></li>
-<li><p>Following an OOP approach, the different types of <em>tokens</em>
-could be classes derived from a base type, <code>Token</code> precisely:
-a class hierarchy is thus built.</p></li>
+<li><p>Following an OOP approach, the different types of tokens could be
+classes derived from a base type, <code>Token</code> precisely: a class
+hierarchy is thus built.</p></li>
 <li><p>This solution works, and it is what I used in pytracer. However,
 it is not the most convenient solution!</p></li>
 </ul>
@@ -824,30 +811,29 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a h
 <span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Etc.</span></span></code></pre></div>
 </section>
 <section id="tokens-and-class-hierarchies" class="slide level1">
-<h1><em>Tokens</em> and Class Hierarchies</h1>
+<h1>Tokens and Class Hierarchies</h1>
 <ul>
 <li><p>There are some disadvantages to using a class hierarchy:</p>
 <ol>
-<li>The code becomes very verbose: you have to implement many classes,
-all very similar to each other.</li>
+<li>The code becomes verbose: you have to implement many classes, all
+very similar to each other.</li>
 <li>Class hierarchies are designed to be <em>extensible</em>: you can
 always define a new class derived from <code>Token</code>. But in the
-case of a language, the list of token types is fixed and very unlikely
-to change.</li>
+case of a language, the list of token types is fixed and unlikely to
+grow.</li>
 </ol></li>
-<li><p>The most suitable type for a <em>token</em> is a <em>sum
-type</em>, also called a <em>tagged union</em> or <em>object
-variant</em>, which contrasts with the <em>product types</em> that you
-all know (probably without knowing it). Let’s see what they consist
-of.</p></li>
+<li><p>The most suitable type for a token is a <em>sum type</em>, also
+called a <em>tagged union</em> or <em>object variant</em>, which
+contrasts with the <em>product types</em> that you all know (probably
+without knowing it). Let’s see what they consist of.</p></li>
 </ul>
 </section>
 <section id="product-types" class="slide level1">
 <h1><em>Product Types</em></h1>
 <ul>
-<li><p>The <code>struct</code>/<code>class</code> of languages like C++,
-Python, and Julia are <em>product types</em> because, from a formal
-point of view, they are a <strong>Cartesian product</strong> between
+<li><p>The classic <code>struct</code>/<code>class</code> used by
+C++/C#/… defines a <em>product type</em> because, from a mathematical
+point of view, it is a <strong>Cartesian product</strong> between
 sets.</p></li>
 <li><p>Consider this definition in C++:</p>
 <div class="sourceCode" id="cb19"><pre
@@ -855,11 +841,10 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span> <span class="co">// Can be any value in the set I of all 32-bit signed integers</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span> <span class="co">// Can be any value in the set B of all 8-bit unsigned bytes</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
-<p>If the set of all possible values of an <code>int32_t</code> and a
-<code>uint8_t</code> is denoted by <span class="math inline">I</span>
-and <span class="math inline">B</span> respectively, then a variable
-<code>MyStruct var</code> is such that <span
-class="math inline">\mathtt{var} \in I \times B</span>.</p></li>
+<p>If the set of all possible values of an <code>int32_t</code> is <span
+class="math inline">I</span> and of an <code>uint8_t</code> is <span
+class="math inline">B</span>, then <code>MyStruct var</code> can hold
+values in <span class="math inline">I \times B</span>.</p></li>
 </ul>
 </section>
 <section id="sum-types" class="slide level1">
@@ -909,26 +894,24 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb21-1"><a href="#
 <span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="sum-types-and-tokens" class="slide level1">
-<h1><em>Sum Types</em> and <em>Tokens</em></h1>
+<h1>Sum Types and Tokens</h1>
 <ul>
-<li><p>A <em>token</em> is ideally represented by a <em>sum type</em>.
-Suppose we have, for simplicity, only two types of tokens, defined in
-C++ code:</p>
+<li><p>A token is best represented using a sum type. Suppose we have,
+for simplicity, only two types of tokens:</p>
 <ol type="1">
 <li><em>Literal number</em> (e.g., <code>150</code>), represented in
 memory as a <code>float</code>;</li>
 <li><em>Literal string</em> (e.g., <code>"filename.pfm"</code>),
 represented by <code>std::string</code>;</li>
 </ol></li>
-<li><p>Now consider a function <code>read_token(stream)</code> that
-returns the next token read from <code>stream</code>: it can return a
-<em>literal number</em> or a <em>literal string</em>.</p></li>
+<li><p>A function <code>read_token(stream)</code> getting the next token
+read from <code>stream</code> can either return a <em>literal
+number</em> or a <em>literal string</em>.</p></li>
 <li><p>If numbers belong to the set <span class="math inline">N</span>
-and strings to <span class="math inline">S</span>, then it is clear that
-the token <code>t</code> is such that <span
-class="math inline">\mathtt{t} \in N \cup S</span>: it can be one of the
-two types, but not more than one type at the same time. It is therefore
-logically a <em>sum type</em>!</p></li>
+and strings to <span class="math inline">S</span>, then clearly the
+token <code>t</code> is such that <span class="math inline">\mathtt{t}
+\in N \cup S</span>: it can be one of the two types, but not more than
+one type at the same time. It is therefore a <em>sum type</em>!</p></li>
 </ul>
 </section>
 <section id="sum-types-vs-hierarchies" class="slide level1">
@@ -1127,13 +1110,13 @@ etc.).</p></li>
 </ul>
 </section>
 <section id="how-a-lexer-works" class="slide level1">
-<h1>How a <em>Lexer</em> Works</h1>
+<h1>How a Lexer Works</h1>
 </section>
 <section id="how-a-lexer-works-1" class="slide level1">
-<h1>How a <em>Lexer</em> Works</h1>
+<h1>How a Lexer Works</h1>
 <ul>
-<li><p>The <em>lexer</em> reads characters from a stream, one at a time,
-and decides which <em>tokens</em> to create based on the characters it
+<li><p>The lexer reads characters from a stream, one at a time, and
+decides which tokens to create based on the characters it
 encounters.</p></li>
 <li><p>For example, reading the <code>"</code> character (double quote)
 in C++ code indicates that a character string is being defined:</p>
@@ -1146,44 +1129,81 @@ character, they continue reading characters until the next
 </ul>
 </section>
 <section id="ambiguities-in-lexers" class="slide level1">
-<h1>Ambiguities in <em>Lexers</em></h1>
+<h1>Ambiguities in lexers</h1>
 <ul>
-<li><p>The case of a <em>string literal</em> is simple to handle: every
-time a <code>"</code> character is encountered, we are dealing with this
-type of <em>token</em>.</p></li>
-<li><p>But in most cases a <em>lexer</em> must deal with ambiguities.
-For example, does an <code>a</code>…<code>z</code> character indicate
-that a <em>keyword</em> like <code>int</code> is starting, or an
-<em>identifier</em> like <code>iterations_per_minute</code>?</p>
+<li><p>The case of a string literal is simple to handle: every time a
+<code>"</code> character is encountered, we are dealing with this type
+of token.</p></li>
+<li><p>But in most cases a lexer must deal with ambiguities. For
+example, does a <code>i</code> indicate that a <em>keyword</em> like
+<code>int</code> is starting, or an <em>identifier</em> like
+<code>iterations_per_minute</code>?</p>
 <p>In this case, characters are read as long as they belong to the list
-of valid characters in an identifier (</p></li>
+of valid characters in an identifier (usually lowercase/uppercase
+letters, digits, <code>_</code>), then the string is compared against
+the list of possible keywords.</p></li>
+</ul>
+</section>
+<section id="unreading-stuff" class="slide level1">
+<h1>Unreading stuff</h1>
+<ul>
+<li><p>In a lexer (but the same applies to parsers), it is handy to make
+a character go back into the stream, i.e., to “unread” that
+character:</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> read_char(<span class="bu">file</span>)   <span class="co"># Suppose that this returns the character &quot;X&quot;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>unread_char(<span class="bu">file</span>, c)  <span class="co"># Puts the &quot;X&quot; back into the file</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> read_char(<span class="bu">file</span>)   <span class="co"># Read the &quot;X&quot; again</span></span></code></pre></div>
+<p>This is equivalent to reading a character in advance (<em>look
+ahead</em> operation), and allows writing the lexer in a more elegant
+way.</p></li>
+<li><p>The <code>unread_char</code> operation does not alter the file:
+it only stores the character <code>X</code> in a variable, and returns
+it on the next call to <code>read_char</code>.</p></li>
+</ul>
+</section>
+<section id="use-of-unread_char" class="slide level1">
+<h1>Use of <code>unread_char</code></h1>
+<ul>
+<li><p>Why is <code>unread_char</code> useful in a lexer? Let’s consider
+the expression <code>15+4</code>, which is composed of <code>15</code>
+(<em>numeric literal</em>), <code>+</code> (<em>symbol</em>),
+<code>4</code> (<em>numeric literal</em>).</p></li>
+<li><p>The lexer identifies the character <code>1</code> and understands
+that it must create a <em>numeric literal</em> token…</p></li>
+<li><p>Then, it must read characters until it finds the first non-digit,
+which is <code>+</code>.</p></li>
+<li><p>Reading <code>+</code> signals that the integer is complete and a
+<em>literal number token</em> must be emitted.</p></li>
+<li><p>But <code>+</code> must be <strong>put back</strong>, because it
+will be part of the next token.</p></li>
 </ul>
 </section>
 <section id="reading-a-numeric-literal" class="slide level1">
 <h1>Reading a <em>numeric literal</em></h1>
-<div class="sourceCode" id="cb31"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ch <span class="op">=</span> read_char()</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Very basic and ugly code! It does not interpret negative numbers!</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ch.isdigit():</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We have a numeric literal here!</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    literal <span class="op">=</span> ch</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">=</span> read_char()  <span class="co"># Read the next character</span></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch.isdigit():</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>            <span class="co"># We have got the next digit for the current numeric literal</span></span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>            literal <span class="op">+=</span> ch</span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>            <span class="co"># The number has ended, so put the last character back in place</span></span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.unread_char(ch)</span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> <span class="bu">int</span>(literal)</span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;invalid numeric literal </span><span class="sc">{</span>literal<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>ch <span class="op">=</span> read_char()</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Very basic and ugly code! It does not interpret negative numbers!</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ch.isdigit():</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We have a numeric literal here!</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    literal <span class="op">=</span> ch</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">=</span> read_char()  <span class="co"># Read the next character</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch.isdigit():</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>            <span class="co"># We have got the next digit for the current numeric literal</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>            literal <span class="op">+=</span> ch</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>            <span class="co"># The number has ended, so put the last character back in place</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.unread_char(ch)</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> <span class="bu">int</span>(literal)</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;invalid numeric literal </span><span class="sc">{</span>literal<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
 </section>
     </div>
   </div>

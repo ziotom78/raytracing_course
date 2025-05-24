@@ -137,11 +137,11 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 <ul>
 <li><p>In the last lesson, we saw how to implement a lexical analysis of
 a source file that defines a 3D scene.</p></li>
-<li><p>The <em>lexer</em> we implemented reads a sequence of characters
-from a <em>stream</em> (a file) and produces a sequence of
-<em>tokens</em> as output.</p></li>
-<li><p>Today’s task is to interpret the sequence of <em>tokens</em>
-(syntactic analysis) and from this build a series of objects of type
+<li><p>The lexer we implemented reads a sequence of characters from a
+<em>stream</em> (a file) and produces a sequence of tokens as
+output.</p></li>
+<li><p>Today’s task is to interpret the sequence of tokens (syntactic
+analysis) and from this build a series of objects of type
 <code>Shape</code>, <code>Material</code>, etc. in memory (semantic
 analysis).</p></li>
 </ul>
@@ -175,7 +175,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    uniform(<span class="op">&lt;</span><span class="fl">0.7</span>, <span class="fl">0.5</span>, <span class="dv">1</span><span class="op">&gt;</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div></li>
 <li><p>It is a definition that includes elements more complex than a
-<em>token</em>:</p>
+token:</p>
 <ol type="1">
 <li>A material;</li>
 <li>A BRDF (<code>diffuse</code>);</li>
@@ -191,10 +191,9 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 definition of <code>sky_material</code> if it can rely on other
 functions, each of which analyzes <em>only one element</em>.</p></li>
 <li><p>Therefore, we define a function <code>parse_color</code> that
-interprets a sequence of <em>tokens</em> as a color and returns the
-corresponding <code>Color</code> object, a function
-<code>parse_pigment</code>, a function <code>parse_brdf</code>,
-etc.</p></li>
+interprets a sequence of tokens as a color and returns the corresponding
+<code>Color</code> object, a function <code>parse_pigment</code>, a
+function <code>parse_brdf</code>, etc.</p></li>
 <li><p>These functions will have the task of calling each other, one
 inside the other, so that higher-level functions like
 <code>parse_material</code> can rely on progressively simpler ones like
@@ -305,14 +304,13 @@ file.</p></li>
 <h1>LL(n) Grammars</h1>
 <ul>
 <li><p>In an LL(n) grammar, tokens are analyzed “from left to right,”
-that is, in the order in which they are produced by the
-<em>lexer</em>.</p></li>
+that is, in the order in which they are produced by the lexer.</p></li>
 <li><p>The number <span class="math inline">n</span> in the notation
 LL(n) indicates that <span class="math inline">n</span>
 <em>look-ahead</em> tokens are needed to correctly interpret the syntax:
 that is, the <span class="math inline">n</span> subsequent tokens are
 examined to interpret the current token (similar to how
-<code>unread_char</code> works in our <em>lexer</em>).</p></li>
+<code>unread_char</code> works in our lexer).</p></li>
 <li><p>Consequently, our format for describing scenes is of type LL(1)
 because:</p>
 <ol type="1">
@@ -424,11 +422,11 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a hr
 rules of a language.</p></li>
 <li><p>From the point of view of syntactic analysis, it should be
 evident that a parser needs to know at every moment what is the list of
-<em>tokens</em> admissible at the point where it has arrived in
-interpreting the source code.</p></li>
+tokens admissible at the point where it has arrived in interpreting the
+source code.</p></li>
 <li><p>In compiler theory, some notations have been invented to describe
 the grammar of languages, which are very useful when implementing a
-<em>lexer</em> or a <em>parser</em>.</p></li>
+lexer or a parser.</p></li>
 </ul>
 </section>
 <section id="ebnf-grammar" class="slide level1">
@@ -513,7 +511,7 @@ example:</p>
 <li><p>The symbol <code>*</code> denotes zero or more repetitions
 (<code>+</code> indicates one or more):</p>
 <pre><code>scene ::= declaration*</code></pre></li>
-<li><p><code>UPPERCASE</code> identifiers identify <em>tokens</em>,
+<li><p><code>UPPERCASE</code> identifiers identify tokens,
 <code>lowercase</code> ones identify other elements defined in the EBNF
 grammar.</p></li>
 <li><p>Recursive definitions are possible:</p>
@@ -528,16 +526,15 @@ grammar.</p></li>
 <ul>
 <li><p>Our code raises an exception whenever an error is detected in the
 source code.</p></li>
-<li><p>It is able to report the row and column of the <em>token</em>
-where the error was found, which is very useful!</p></li>
+<li><p>It is able to report the row and column of the token where the
+error was found, which is very useful!</p></li>
 <li><p>But this execution model requires that compilation terminates at
 the first error! Modern compilers like <code>g++</code> and
 <code>clang++</code> instead continue compilation, looking for
 subsequent errors.</p></li>
 <li><p>To avoid stopping at the first error, we need to look for a
-<em>termination token</em>, i.e., a <em>token</em> that is used to
-terminate a command: once found, we continue from the next
-<em>token</em>.</p></li>
+<em>termination token</em>, i.e., a token that is used to terminate a
+command: once found, we continue from the next token.</p></li>
 </ul>
 </section>
 <section id="termination-tokens" class="slide level1">
@@ -711,8 +708,8 @@ strongly inspired by C, simplifies declarations by using a different
 notation, more similar to Pascal:</p>
 <div class="sourceCode" id="cb20"><pre
 class="sourceCode go"><code class="sourceCode go"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> myvar <span class="op">[</span><span class="dv">100</span><span class="op">]</span><span class="dt">int</span></span></code></pre></div></li>
-<li><p>The <code>var</code> keyword signals to the <em>parser</em> that
-a variable is being declared.</p></li>
+<li><p>The <code>var</code> keyword signals to the parser that a
+variable is being declared.</p></li>
 <li><p>The tokens that define the type are reported all together,
 <em>after</em> the identifier representing the variable name.</p></li>
 <li><p>The notation <code>[100]int</code> follows the natural order of
@@ -736,7 +733,7 @@ minimum, you are encouraged to write more tests!)</p></li>
 <li><p>If you are curious, in the <a
 href="https://github.com/llvm/llvm-project/tree/main/clang/test/Lexer"><code>clang/test/Lexer</code></a>
 directory there are the source files used for the tests of only the
-Clang <em>lexer</em>!</p></li>
+Clang lexer!</p></li>
 </ul>
 </section>
 <section id="automatic-generation-of-compilers" class="slide level1">
@@ -794,10 +791,9 @@ what your IDEs do!</p></li>
 <h1>Course Conclusions</h1>
 <ul>
 <li><p>We’ve reached the end of the course!</p></li>
-<li><p>Once you’ve implemented the <em>parser</em>, you can release
-version <code>1.0</code> of your program, sell it to Disney Studios,
-make a ton of money, and live like royalty for the rest of your
-life!</p></li>
+<li><p>Once you’ve implemented the parser, you can release version
+<code>1.0</code> of your program, sell it to Disney Studios, make a ton
+of money, and live like royalty for the rest of your life!</p></li>
 <li><p>If, however, you intend to continue working as a «physicist»,
 before concluding, it’s good to review what we’ve learned in this course
 and how it can be useful to you in the future, even if it doesn’t
@@ -977,8 +973,8 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb23-1"><a href=
 <span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
 <span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="er">…</span></span>
 <span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></li>
-<li><p>No need for a <em>lexer</em> or <em>parser</em>, but the content
-must still be validated (e.g., <code>camera</code> must contain
+<li><p>No need for a lexer or parser, but the content must still be
+validated (e.g., <code>camera</code> must contain
 <code>projection</code>).</p></li>
 </ul>
 </section>

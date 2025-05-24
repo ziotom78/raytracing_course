@@ -4,9 +4,9 @@
 
 -   In the last lesson, we saw how to implement a lexical analysis of a source file that defines a 3D scene.
 
--   The *lexer* we implemented reads a sequence of characters from a *stream* (a file) and produces a sequence of *tokens* as output.
+-   The lexer we implemented reads a sequence of characters from a *stream* (a file) and produces a sequence of tokens as output.
 
--   Today's task is to interpret the sequence of *tokens* (syntactic analysis) and from this build a series of objects of type `Shape`, `Material`, etc. in memory (semantic analysis).
+-   Today's task is to interpret the sequence of tokens (syntactic analysis) and from this build a series of objects of type `Shape`, `Material`, etc. in memory (semantic analysis).
 
 # Syntactic Analysis
 
@@ -27,7 +27,7 @@
     )
     ```
 
--   It is a definition that includes elements more complex than a *token*:
+-   It is a definition that includes elements more complex than a token:
 
     1.  A material;
     2.  A BRDF (`diffuse`);
@@ -38,7 +38,7 @@
 
 -   However, it is simple to write a function that analyzes the definition of `sky_material` if it can rely on other functions, each of which analyzes *only one element*.
 
--   Therefore, we define a function `parse_color` that interprets a sequence of *tokens* as a color and returns the corresponding `Color` object, a function `parse_pigment`, a function `parse_brdf`, etc.
+-   Therefore, we define a function `parse_color` that interprets a sequence of tokens as a color and returns the corresponding `Color` object, a function `parse_pigment`, a function `parse_brdf`, etc.
 
 -   These functions will have the task of calling each other, one inside the other, so that higher-level functions like `parse_material` can rely on progressively simpler ones like `parse_color`.
 
@@ -136,9 +136,9 @@ def parse_pigment(stream: InputStream) -> Pigment:
 
 # LL(n) Grammars
 
--   In an LL(n) grammar, tokens are analyzed "from left to right," that is, in the order in which they are produced by the *lexer*.
+-   In an LL(n) grammar, tokens are analyzed "from left to right," that is, in the order in which they are produced by the lexer.
 
--   The number $n$ in the notation LL(n) indicates that $n$ *look-ahead* tokens are needed to correctly interpret the syntax: that is, the $n$ subsequent tokens are examined to interpret the current token (similar to how `unread_char` works in our *lexer*).
+-   The number $n$ in the notation LL(n) indicates that $n$ *look-ahead* tokens are needed to correctly interpret the syntax: that is, the $n$ subsequent tokens are examined to interpret the current token (similar to how `unread_char` works in our lexer).
 
 -   Consequently, our format for describing scenes is of type LL(1) because:
 
@@ -239,9 +239,9 @@ while True:
 
 -   By "grammar" we mean the set of lexical, syntactic, and semantic rules of a language.
 
--   From the point of view of syntactic analysis, it should be evident that a parser needs to know at every moment what is the list of *tokens* admissible at the point where it has arrived in interpreting the source code.
+-   From the point of view of syntactic analysis, it should be evident that a parser needs to know at every moment what is the list of tokens admissible at the point where it has arrived in interpreting the source code.
 
--   In compiler theory, some notations have been invented to describe the grammar of languages, which are very useful when implementing a *lexer* or a *parser*.
+-   In compiler theory, some notations have been invented to describe the grammar of languages, which are very useful when implementing a lexer or a parser.
 
 # EBNF Grammar
 
@@ -316,7 +316,7 @@ vector ::= "[" number "," number "," number "]"
     scene ::= declaration*
     ```
 
--   `UPPERCASE` identifiers identify *tokens*, `lowercase` ones identify other elements defined in the EBNF grammar.
+-   `UPPERCASE` identifiers identify tokens, `lowercase` ones identify other elements defined in the EBNF grammar.
 
 -   Recursive definitions are possible:
 
@@ -330,11 +330,11 @@ vector ::= "[" number "," number "," number "]"
 
 -   Our code raises an exception whenever an error is detected in the source code.
 
--   It is able to report the row and column of the *token* where the error was found, which is very useful!
+-   It is able to report the row and column of the token where the error was found, which is very useful!
 
 -   But this execution model requires that compilation terminates at the first error! Modern compilers like `g++` and `clang++` instead continue compilation, looking for subsequent errors.
 
--   To avoid stopping at the first error, we need to look for a *termination token*, i.e., a *token* that is used to terminate a command: once found, we continue from the next *token*.
+-   To avoid stopping at the first error, we need to look for a *termination token*, i.e., a token that is used to terminate a command: once found, we continue from the next token.
 
 # *Termination Tokens*
 
@@ -462,7 +462,7 @@ vector ::= "[" number "," number "," number "]"
     var myvar [100]int
     ```
 
--   The `var` keyword signals to the *parser* that a variable is being declared.
+-   The `var` keyword signals to the parser that a variable is being declared.
 
 -   The tokens that define the type are reported all together, *after* the identifier representing the variable name.
 
@@ -476,7 +476,7 @@ vector ::= "[" number "," number "," number "]"
 
 -   It is not possible to have completely exhaustive tests; you need to be creative and be prepared to add many new tests once users start using your program. (In pytracer I have implemented just the bare minimum, you are encouraged to write more tests!)
 
--   If you are curious, in the [`clang/test/Lexer`](https://github.com/llvm/llvm-project/tree/main/clang/test/Lexer) directory there are the source files used for the tests of only the Clang *lexer*!
+-   If you are curious, in the [`clang/test/Lexer`](https://github.com/llvm/llvm-project/tree/main/clang/test/Lexer) directory there are the source files used for the tests of only the Clang lexer!
 
 
 # Automatic Compiler Generation {#automatic-generation-of-compilers}
@@ -509,7 +509,7 @@ vector ::= "[" number "," number "," number "]"
 
 -   We've reached the end of the course!
 
--   Once you've implemented the *parser*, you can release version `1.0` of your program, sell it to Disney Studios, make a ton of money, and live like royalty for the rest of your life!
+-   Once you've implemented the parser, you can release version `1.0` of your program, sell it to Disney Studios, make a ton of money, and live like royalty for the rest of your life!
 
 -   If, however, you intend to continue working as a «physicist», before concluding, it's good to review what we've learned in this course and how it can be useful to you in the future, even if it doesn't involve *rendering* 3D scenes…
 
@@ -645,7 +645,7 @@ The advantage of using a common format like JSON is that many tools are availabl
     }
     ```
 
--   No need for a *lexer* or *parser*, but the content must still be validated (e.g., `camera` must contain `projection`).
+-   No need for a lexer or parser, but the content must still be validated (e.g., `camera` must contain `projection`).
 
 # 2. Inventing a Format
 
