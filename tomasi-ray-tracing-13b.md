@@ -40,7 +40,7 @@ plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))
 camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 ```
 
-This is the file type for which we will implement a *parser*, with the task to perform a semantic and syntactic analysis.
+This is an example of the grammar that we want to parse.
 
 # Structure of the *Parser*
 
@@ -125,9 +125,7 @@ This is the file type for which we will implement a *parser*, with the task to p
 
 # The `parse_*` functions
 
--   The functions [`parse_*`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L399-L616) interpret *lists* of tokens, and they are built upon the `expect_*` functions.
-
--   For instance, Pytracer implements [`parse_color`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L411-L420) in this way:
+-   The functions [`parse_*`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L399-L616) are built upon the `expect_*` functions and interpret *lists* of tokens. For instance, Pytracer implements [`parse_color`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L411-L420) in this way:
 
     ```python
     def parse_color(s: InputStream, scene: Scene) -> Color:
@@ -141,7 +139,7 @@ This is the file type for which we will implement a *parser*, with the task to p
         return Color(red, green, blue)
     ```
 
--   Using [`expect_number`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L361-L374) enables the possibility to use `float` variables for the RGB components.
+-   [`expect_number`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L361-L374) lets to use `float` variables for the RGB components.
 
 # List of functions `parse_*`
 

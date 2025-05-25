@@ -14,7 +14,7 @@
 
 -   Each of these families requires specific algorithms for parsing, and unfortunately, algorithms that work well for one family do not necessarily work well for others!
 
--   Our language is of type LL(1), like the [Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)) language, and the corresponding algorithm for analyzing the grammar is among the simplest.
+-   Our language is of type LL(1), like [Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)) and [Rust](https://en.wikipedia.org/wiki/Rust_(programming_language)) but unlike C++, and the algorithm for analyzing LL grammars is among the simplest.
 
 # How to Approach the Problem
 
@@ -27,7 +27,7 @@
     )
     ```
 
--   It is a definition that includes elements more complex than a token:
+-   The definition includes these elements:
 
     1.  A material;
     2.  A BRDF (`diffuse`);
@@ -126,11 +126,23 @@ def parse_pigment(stream: InputStream) -> Pigment:
 
 # Semantic Analysis and Beyond
 
--   Our "compiler" is very simple, and as soon as the syntactic analysis understands that a variable/material/shape/observer is being defined, it immediately creates a corresponding object in memory (e.g., `Color`).
+-   A full-blown compiler like GCC would use the result of semantic analysis to build an Abstract Syntax Tree (AST).
+-   The AST would be passed to the optimizer and then to the code generator, whose purpose is to output machine code.
+-   Question: if you declare a variable like
 
--   More complex compilers create an AST (Abstract Syntax Tree) in memory, which is a representation of the source file content that is very convenient for performing *semantic* analysis. (In our case, syntactic and semantic analysis are merged together).
+    ```c++
+    uint8_t buffer[1024 * 1024 * 1024]; // 1 GB!
+    ```
 
--   The AST is then passed as input to the subsequent phases of the compiler (optimizer, code generator, etc.); they are responsible for creating objects in memory or saving machine language instructions to a file.
+    do you think GCC needs to allocate this memory during the compilation? If so, at which stage? (Lexing, parsing, AST optimization, machine code emission, …)
+
+# Semantic Analysis and Beyond
+
+-   Our "compiler" is very simple, and as soon as the syntactic analysis understands that a variable/material/shape/observer is being defined, it **immediately** creates a corresponding object in memory (e.g., `Color`).
+
+-   In some sense, our compiler is an **interpreter**, because it “executes” the code as soon as it is processed by the parser.
+
+-   This is a huge simplification for us! Even traditional “interpreters” like Python and Julia have a compilation stage which precedes the execution stage.
 
 # Types of Grammars
 
@@ -142,8 +154,8 @@ def parse_pigment(stream: InputStream) -> Pigment:
 
 -   Consequently, our format for describing scenes is of type LL(1) because:
 
-    1. The syntax is analyzed by reading one token at a time and proceeding in order;
-    2. It may be necessary to check the type of the token following the current one, but no more than that.
+    1. The syntax is analyzed by reading one token after another, in order;
+    2. It may be necessary to check the type of the **one** token following the current one, but no more than that.
 
 # Why LL(1)?
 
@@ -158,7 +170,7 @@ def parse_pigment(stream: InputStream) -> Pigment:
     In this case, *look-ahead* is **not** necessary:
 
     1. The first token is the keyword `float`, which indicates that a variable is being defined;
-    2. Therefore, I know that the subsequent tokens will necessarily be the *identifier*, the symbol `(`, a *numeric literal*, and the symbol `)`.
+    2. Therefore, our compiler knows that the next tokens will necessarily be the *identifier*, the symbol `(`, a *numeric literal*, and the symbol `)`.
 
 # Declaring a `float`
 
@@ -247,7 +259,7 @@ while True:
 
 -   The notation we will see is called *Extended Backus-Naur Form* (EBNF), and is the result of the work of many people, including [Niklaus Wirth](https://en.wikipedia.org/wiki/Niklaus_Wirth) (the creator of the Pascal language).
 
--   We will not describe EBNF completely, but we will present it only insofar as it serves our purposes. It is useful to understand it because often the documentation of programming languages contains their grammar (for example [Nim](https://nim-lang.org/docs/manual.html#syntax-grammar), [C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/lexical-structure) and [Kotlin](https://kotlinlang.org/docs/reference/grammar.html); for Rust [they are working on it](https://github.com/rust-lang/wg-grammar), while [the D manual](https://dlang.org/spec/grammar.html) uses a different syntax).
+-   We will not provide a full description of EBNF and will just present it in simple terms. It is useful to understand it because often the documentation of programming languages contains their grammar (for example [Nim](https://nim-lang.org/docs/manual.html#syntax-grammar), [C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/lexical-structure) and [Kotlin](https://kotlinlang.org/docs/reference/grammar.html); for Rust [they are working on it](https://github.com/rust-lang/wg-grammar), while [the D manual](https://dlang.org/spec/grammar.html) uses a different syntax).
 
 -   The next slide shows the entire syntactic structure of our grammar in EBNF format.
 
@@ -316,7 +328,7 @@ vector ::= "[" number "," number "," number "]"
     scene ::= declaration*
     ```
 
--   `UPPERCASE` identifiers identify tokens, `lowercase` ones identify other elements defined in the EBNF grammar.
+-   `UPPERCASE` indicates tokens produced by the lexer, `lowercase`  identifies other elements in the EBNF grammar.
 
 -   Recursive definitions are possible:
 
@@ -428,7 +440,33 @@ vector ::= "[" number "," number "," number "]"
 
 # Example: variables
 
--   In the Pascal language, variables are listed within a `var` clause. The variable name comes first and is clearly separated from the type:
+-   In C/C++, variable declarations are complicated because the identifier containing the variable name is placed in the middle of the type:
+
+    ```c
+    int myvar[100];  /* More complicated: static const int * myvar[100] */
+    ```
+
+    which declares an array of 100 variables of type `int`.
+
+-   The tokens that define the type are `int`, `[`, `100`, and `]`, and are located both to the *left* and *right* of the variable name: this is complicated for the programmer! (Try to interpret the *more complicated* case yourself!)
+
+# Example: variables
+
+-   The [Go](https://golang.org/) language uses a simpler notation:
+
+    ```go
+    var myvar [100]int
+    ```
+
+-   The `var` keyword signals to the parser that a variable is being declared.
+
+-   The tokens that define the type are reported all together, *after* the identifier representing the variable name.
+
+-   The notation `[100]int` follows the natural order of words: "an array of 100 `int` values", and is easier for the programmer to read (in C you have to read backwards, from right to left).
+
+# Example: variables
+
+-   Go was inspired by Pascal, where variables are listed within a `var` clause. The variable name comes first and is clearly separated from the type:
 
     ```pascal
     var
@@ -441,32 +479,6 @@ vector ::= "[" number "," number "," number "]"
 
 -   Similar ideas are used in the Modula, Oberon, Ada, Nim, and Kotlin languages.
 
-
-# Declarations in C++
-
--   In C/C++, variable declarations are complicated because the identifier containing the variable name is placed in the middle of the type:
-
-    ```c
-    int myvar[100];  /* More complicated: static const int * myvar[100] */
-    ```
-
-    which declares an array of 100 variables of type `int`.
-
--   The tokens that define the type are `int`, `[`, `100`, and `]`, and are located both to the *left* and *right* of the variable name: this is complicated for the programmer! (Try to interpret the *more complicated* case yourself!)
-
-# The case of Go
-
--   The [Go](https://golang.org/) language, which is strongly inspired by C, simplifies declarations by using a different notation, more similar to Pascal:
-
-    ```go
-    var myvar [100]int
-    ```
-
--   The `var` keyword signals to the parser that a variable is being declared.
-
--   The tokens that define the type are reported all together, *after* the identifier representing the variable name.
-
--   The notation `[100]int` follows the natural order of words: "an array of 100 `int` values", and is easier for the programmer to read (in C you have to read backwards, from right to left).
 
 # Testing compilers {#compiler-testing}
 
@@ -494,7 +506,7 @@ vector ::= "[" number "," number "," number "]"
 -   Keep in mind, however, that most people prefer to write *lexers* and *parsers* by hand…
 
 
-# Further Study
+# Further resources
 
 -   Wirth's book [*Compiler Construction*](https://people.inf.ethz.ch/wirth/CompilerConstruction/) (Addison-Wesley, 1996) is remarkably clear: in a few pages it shows how to implement a compiler for the [Oberon](https://en.wikipedia.org/wiki/Oberon_(programming_language)) language (a language created by Wirth as a successor to Pascal).
 
@@ -503,13 +515,13 @@ vector ::= "[" number "," number "," number "]"
 -   Today, compilers are considerably more complex due to the necessary integration with development environments (PyCharm, CLion, IntelliJ IDEA, etc.). Watch the video [*Anders Hejlsberg on Modern Compiler Construction*](https://www.youtube.com/watch?v=wSdV1M7n4gQ): you will appreciate much more what your IDEs do!
 
 
-# Course Conclusions
+# Conclusions
 
-# Course Conclusions
+# Conclusions
 
 -   We've reached the end of the course!
 
--   Once you've implemented the parser, you can release version `1.0` of your program, sell it to Disney Studios, make a ton of money, and live like royalty for the rest of your life!
+-   Once you've implemented the parser, you can release version `1.0` of your program, sell it to Disney Studios, make a ton of money, and live in luxury for the rest of your life!
 
 -   If, however, you intend to continue working as a «physicist», before concluding, it's good to review what we've learned in this course and how it can be useful to you in the future, even if it doesn't involve *rendering* 3D scenes…
 
@@ -558,7 +570,7 @@ vector ::= "[" number "," number "," number "]"
 
 ---
 
-![](media/thats_all_folks.png)
+![](media/thats_all_folks.png){height=650px}
 
 # Deep Dive into Input and Output
 
@@ -588,7 +600,7 @@ vector ::= "[" number "," number "," number "]"
     $
     ```
 
--   The program's output is not easily usable: numbers are difficult to extract from the text. A better output would be:
+-   The program's output is not easily usable: numbers are difficult to extract from the text. A better choice would be to use the [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) format, which can be imported in spreadsheets like Excel or [Sc-im](https://github.com/andmarti1424/sc-im):
 
     ```
     $ ./myprogram
@@ -604,7 +616,7 @@ vector ::= "[" number "," number "," number "]"
 
 # Using an Existing Format
 
--   The advantage of existing formats is that they can be read by programs other than your own: for example, a CSV file can be read by Microsoft Excel, LibreOffice, Gnumeric, etc. This is especially convenient when you need to share data with others.
+-   The advantage of existing formats is that they can be read by programs other than your own. This is especially convenient when you need to share data with others.
 
 -   If you only need to store numerical tables, the best solutions are probably CSV files (text-based) or Excel files (binary). The Python library [Pandas](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html) supports both.
 
@@ -617,15 +629,17 @@ vector ::= "[" number "," number "," number "]"
 
 -   A great format for this purpose is [sqlite3](https://www.sqlite.org/index.html): unlike CSV and Excel, it offers excellent functions for searching and computing data and is optimized for large data volumes (up to terabytes).
 
--   If a tabular format is insufficient, you can use [JSON](https://en.wikipedia.org/wiki/JSON), [YAML](https://en.wikipedia.org/wiki/YAML) (which you have already used for GitHub Actions), or [XML](https://en.wikipedia.org/wiki/XML): these can store very different data types (even lists and dictionaries!).
+-   When your data are more structured than plain tables, consider [JSON](https://en.wikipedia.org/wiki/JSON), [YAML](https://en.wikipedia.org/wiki/YAML) (which you have already used for GitHub Actions), or [XML](https://en.wikipedia.org/wiki/XML): these can store complex data types as lists and dictionaries.
 
--   XML is the most complex but implements a system for controlling the "syntax" of the file (called [XML schema](https://en.wikipedia.org/wiki/XML_schema)), making it much more robust (although harder to write).
+-   XML is the most complex, but it implements a validation system (called [XML schema](https://en.wikipedia.org/wiki/XML_schema)) which makes it much more robust than JSON or YAML.
 
 ---
 
+In this example, a Python program saves the value of a complex variable in a JSON file, which is then read back by a Julia program:
+
 <asciinema-player src="cast/json-example-python-julia-78x20.cast" cols="78" rows="20" font-size="medium"></asciinema-player>
 
-The advantage of using a common format like JSON is that many tools are available for viewing and editing it: see, for example, [jq](https://stedolan.github.io/jq/).
+Many tools are available for JSON; see, for example, [jq](https://stedolan.github.io/jq/).
 
 # The Case of Our Ray Tracer
 
@@ -645,7 +659,7 @@ The advantage of using a common format like JSON is that many tools are availabl
     }
     ```
 
--   No need for a lexer or parser, but the content must still be validated (e.g., `camera` must contain `projection`).
+-   No need to write a compiler, but our program must still validate the content (e.g., checking that `camera` contains a `projection` is still our duty!).
 
 # 2. Inventing a Format
 
@@ -659,7 +673,7 @@ The advantage of using a common format like JSON is that many tools are availabl
 
     -   …and requires users to learn the syntax and semantics of your language.
 
--   We adopted this approach in class for its educational value (understanding compilers, error handling, etc.) and because using a generic format like JSON in this specific context is not necessarily easier.
+-   We adopted this approach in class for its educational value (understanding compilers, error handling, etc.) and because using a generic format like JSON in this specific context would have been not necessarily easier.
 
 
 # 3. Embedding a Language
@@ -694,13 +708,13 @@ In Blender, you can open a Python terminal to run commands for creating and modi
     End Sub
     ```
 
--   Useful for automating repetitive tasks (e.g., creating repeated objects in graphics programs like Blender).
+-   Useful for automating repetitive tasks (e.g., animating an object in Blender following an accurate physical model).
 
 -   Some languages ([GNU Guile](https://www.gnu.org/software/guile/), [Lua](https://www.lua.org/)…) are primarily designed for *embedded* use.
 
 # Python Example
 
-This C program initializes the Python interpreter and executes a simple script. In reality, this script could have been typed by the user in a program dialog window:
+This C program initializes the Python interpreter and executes a simple script. In reality, this script could have been provided by the user in the GUI of the program:
 
 ```c
 #define PY_SSIZE_T_CLEAN

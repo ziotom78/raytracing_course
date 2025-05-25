@@ -317,6 +317,7 @@ def read_token(self) -> Token:
         # We got some weird character, like '@` or `&`
         raise GrammarError(self.location, f"Invalid character {ch}")
 ```
+
 # Test
 
 - Implement two families of tests:
