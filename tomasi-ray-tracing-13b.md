@@ -42,9 +42,9 @@ camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 
 This is an example of the grammar that we want to parse.
 
-# Structure of the *Parser*
+# Structure of the parser
 
--   Our *parser* must read the description of a scene using an `InputStream` and allocate memory for several objects:
+-   Our parser must read the description of a scene using an `InputStream` and allocate memory for several objects:
 
     -   An instance of the type `World`;
     -   The definition of the observer;
@@ -139,7 +139,7 @@ This is an example of the grammar that we want to parse.
         return Color(red, green, blue)
     ```
 
--   [`expect_number`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L361-L374) lets to use `float` variables for the RGB components.
+-   [`expect_number`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L361-L374) accepts literals and `float` variables.
 
 # List of functions `parse_*`
 
@@ -155,7 +155,7 @@ This is an example of the grammar that we want to parse.
 
 # The function `parse_scene`
 
--   The function [`parse_scene`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L571-L616) is at the highest level: it must interpret the scene and create an instance of `Scene`.
+-   The function [`parse_scene`](https://github.com/ziotom78/pytracer/blob/03225baa510d97c004f8165609e590b4f5849de2/scene_file.py#L571-L616) must interpret the scene and create a `Scene`:
 
     ```python
     parse_scene(s: InputStream) -> Scene
@@ -163,10 +163,10 @@ This is an example of the grammar that we want to parse.
 
 -   In the EBNF grammar we saw last time, a scene is a list of zero or more definitions of `float`/materials/spheres/planes/observers (`scene ::= declaration*`). The best option is to implement a `while` loop.
 
--   The same applies to recursive EBNF functions like `transformation`. The latter must use *look-ahead*.
+-   The same applies to recursive EBNF functions like `transformation`. The latter must use look-ahead.
 
 
-# *Look-ahead* of tokens
+# Look-ahead of tokens
 
 # LL(1) grammars
 
@@ -255,8 +255,8 @@ class InputStream:
 
 # What to do today
 
-#.  Keep working in the `scenefiles` *branch*;
-#.  Modify `InputStream` to support *look-ahead* of tokens;
+#.  Keep working in the `scenefiles` branch;
+#.  Modify `InputStream` to support look-ahead of tokens;
 #.  Create the functions `expect_*` and `parse_*`;
 #.  Change the verb `demo` with `render` and make it read the scene from a file;
 #.  Create a folder `examples` and fill it with one or more scenes;

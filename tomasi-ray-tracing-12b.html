@@ -112,7 +112,7 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
 <section id="implementing-a-lexer" class="slide level1">
-<h1>Implementing a <em>lexer</em></h1>
+<h1>Implementing a lexer</h1>
 </section>
 <section id="example" class="slide level1">
 <h1>Example</h1>
@@ -152,8 +152,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a camera</span></span>
 <span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>camera(perspective, rotation_z(<span class="dv">30</span>) <span class="op">*</span> translation([<span class="op">-</span><span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">1</span>]), <span class="fl">1.0</span>, <span class="fl">1.0</span>)</span></code></pre></div>
-<p>This is the kind of file for which our <em>lexer</em> will have to
-produce a list of <em>tokens</em>.</p>
+<p>This is the kind of file for which our lexer will have to produce a
+list of <em>tokens</em>.</p>
 </section>
 <section id="error-handling" class="slide level1">
 <h1>Error Handling</h1>
@@ -161,12 +161,12 @@ produce a list of <em>tokens</em>.</p>
 <section id="error-conditions" class="slide level1">
 <h1>Error Conditions</h1>
 <ul>
-<li><p>Even while writing the <em>lexer</em>, before dealing with the
-syntactic and semantic aspects, it is possible to encounter errors in
-the code.</p></li>
+<li><p>Even while writing the lexer, before dealing with the syntactic
+and semantic aspects, it is possible to encounter errors in the
+code.</p></li>
 <li><p>For example, the presence of a character like <code>@</code> is
-not allowed in our language, and the <em>lexer</em> can already detect
-this type of error.</p></li>
+not allowed in our language, and the lexer can already detect this type
+of error.</p></li>
 <li><p>Another example is forgetting to close a double quote
 <code>"</code> at the end of a string.</p></li>
 </ul>
@@ -180,9 +180,8 @@ example the <a
 href="https://github.com/llvm/llvm-project/blob/llvmorg-10.0.0/clang/include/clang/Lex/Token.h"><code>Token</code></a>
 type in version 10.0.0 of the Clang compiler: it’s not a very elegant
 implementation, but it is optimized for efficiency!).</p></li>
-<li><p>This information is used by the <em>lexer</em> and the
-<em>parser</em> to print error messages like the following (produced by
-Clang 10):</p>
+<li><p>This information is used by the lexer and the parser to print
+error messages like the following (produced by Clang 10):</p>
 <pre class="text"><code>test.cpp:31:15: error: no viable conversion from &#39;int&#39; to &#39;std::string&#39;
       (aka &#39;basic_string&lt;char&gt;&#39;)
   std::string message = 127;
@@ -225,9 +224,9 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Token:</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A lexical token, used when parsing a scene file&quot;&quot;&quot;</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    location: SourceLocation</span></code></pre></div></li>
-<li><p>If you use <em>sum types</em>, remember to use <em>tags</em> if
-your language requires it (e.g., <a
-href="https://nim-lang.org/docs/manual.html#types-object-variants">Nim</a>).</p></li>
+<li><p>If you use <em>sum types</em>, remember to properly use
+<em>tags</em>. (In C++, implement them using an <code>enum class</code>,
+since this language does not support tags natively.)</p></li>
 </ul>
 </section>
 <section id="reporting-errors" class="slide level1">
@@ -256,16 +255,16 @@ the way parsing is performed (see the next lesson).</p></li>
 <ul>
 <li><p>We saw in the theory lesson that it is necessary to read one
 character at a time from the source file.</p></li>
-<li><p>It is therefore ideal to use a <em>stream</em> to read from a
-file, taking care to open the file in text mode (it is not a binary file
-like the PFM format!):</p>
+<li><p>It is therefore ideal to use a stream to read from a file, taking
+care to open the file in text mode (it is not a binary file like the PFM
+format!):</p>
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(file_name, <span class="st">&quot;rt&quot;</span>) <span class="im">as</span> f:  <span class="co"># &quot;rt&quot; stands for &quot;*R*ead *T*ext&quot;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    …</span></code></pre></div></li>
-<li><p>We also need the possibility of <em>look ahead</em>, that is, to
+<li><p>We also need the possibility of <em>look-ahead</em>, that is, to
 read a character and put it back, as well as the ability to keep track
-of the position in the <em>stream</em> where we have arrived (to produce
-error messages).</p></li>
+of the position in the stream where we have arrived (to produce error
+messages).</p></li>
 </ul>
 </section>
 <section id="definition-of-inputstream-1" class="slide level1">
@@ -283,7 +282,7 @@ use: for example <code>std::istream</code> in C++;</li>
 </ul>
 </section>
 <section id="character-look-ahead" class="slide level1">
-<h1>Character <em>look ahead</em></h1>
+<h1>Character look-ahead</h1>
 <ul>
 <li><p>Recall that <code>InputStream</code> must offer the possibility
 of «putting back» a character through the <code>unread_char</code>
@@ -314,6 +313,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a hr
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.saved_char <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.saved_location <span class="op">=</span> <span class="va">self</span>.location</span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.tabulations <span class="op">=</span> tabulations</span></code></pre></div>
+<ul>
+<li>If your language supports nullable types (C#, Kotlin), use them to
+define <code>saved_char</code>.</li>
+<li>In C++, Rust, or Nim, use optional types (e.g.,
+<code>std::optional</code> in C++).</li>
+</ul>
 </section>
 <section id="position-tracking" class="slide level1">
 <h1>Position Tracking</h1>
@@ -398,7 +403,7 @@ href="https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html">Rust</a>,
 <a href="https://www.w3schools.com/java/java_enums.asp">Java</a>,
 <code>enum class</code> in <a
 href="https://kotlinlang.org/docs/enum-classes.html">Kotlin</a>),
-because it will make the <em>parser</em> more efficient;</li>
+because it will make the parser more efficient;</li>
 <li><em>Identifier</em>: it’s a string;</li>
 <li><em>Literal string</em>: it’s again a string;</li>
 <li><em>Literal number</em>: a floating-point value;</li>
@@ -410,7 +415,7 @@ because it will make the <em>parser</em> more efficient;</li>
 <section id="end-of-file" class="slide level1">
 <h1>End of File</h1>
 <ul>
-<li><p>The <em>lexer</em> needs to be able to signal when a file has
+<li><p>The lexer needs to be able to signal when a file has
 ended.</p></li>
 <li><p>In the pytracer code I implemented a new «special»
 <em>token</em>: <a
@@ -422,7 +427,7 @@ simply check when the stream has reached the end…</p></li>
 Tricks like this are very common in compilers (see for example how
 Python handles indentation changes <a
 href="https://riptutorial.com/python/example/8674/how-indentation-is-parsed">at
-the <em>lexer</em> level</a>).</p></li>
+the lexer level</a>).</p></li>
 </ul>
 </section>
 <section id="whitespace-and-newlines" class="slide level1">
@@ -430,13 +435,13 @@ the <em>lexer</em> level</a>).</p></li>
 <ul>
 <li><p>Our format ignores spaces, newlines between <em>tokens</em> and
 comments.</p></li>
-<li><p>To implement the <code>read_token</code> function we need a
-function that skips these characters:</p>
+<li><p>To implement <code>read_token</code>, we need a function that
+skips these characters:</p>
 <div class="sourceCode" id="cb8"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>WHITESPACE <span class="op">=</span> <span class="st">&quot; </span><span class="ch">\t\n\r</span><span class="st">&quot;</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> skip_whitespaces_and_comments(<span class="va">self</span>):</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Keep reading characters until a non-whitespace/non-comment character is found&quot;&quot;&quot;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;Keep reading characters until a non-whitespace/non-comment character is found&quot;</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    ch <span class="op">=</span> <span class="va">self</span>.read_char()</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> ch <span class="kw">in</span> WHITESPACE <span class="kw">or</span> ch <span class="op">==</span> <span class="st">&quot;#&quot;</span>:</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> ch <span class="op">==</span> <span class="st">&quot;#&quot;</span>:</span>
@@ -490,30 +495,29 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a hr
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># No more characters in the file, so return a StopToken</span></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> StopToken(location<span class="op">=</span><span class="va">self</span>.location)</span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># At this point we must check what kind of token begins with the &quot;ch&quot; character</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (which has been put back in the stream with self.unread_char). First,</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we save the position in the stream</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    token_location <span class="op">=</span> copy(<span class="va">self</span>.location)</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ch <span class="kw">in</span> SYMBOLS:</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># One-character symbol, like &#39;(&#39; or &#39;,&#39;</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> SymbolToken(token_location, ch)</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch <span class="op">==</span> <span class="st">&#39;&quot;&#39;</span>:</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A literal string (used for file names)</span></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_string_token(token_location<span class="op">=</span>token_location)</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch.isdecimal() <span class="kw">or</span> ch <span class="kw">in</span> [<span class="st">&quot;+&quot;</span>, <span class="st">&quot;-&quot;</span>, <span class="st">&quot;.&quot;</span>]:</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A floating-point number</span></span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_float_token(first_char<span class="op">=</span>ch, token_location<span class="op">=</span>token_location)</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch.isalpha() <span class="kw">or</span> ch <span class="op">==</span> <span class="st">&quot;_&quot;</span>:</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Since it begins with an alphabetic character, it must either be a keyword</span></span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># or a identifier</span></span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_keyword_or_identifier_token(</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>            first_char<span class="op">=</span>ch,</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>            token_location<span class="op">=</span>token_location,</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># We got some weird character, like &#39;@` or `&amp;`</span></span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> GrammarError(<span class="va">self</span>.location, <span class="ss">f&quot;Invalid character </span><span class="sc">{</span>ch<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># At this point we must check whick kind of token begins with `ch`</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># First, we save the position in the stream</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    token_location <span class="op">=</span> copy(<span class="va">self</span>.location)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ch <span class="kw">in</span> SYMBOLS:</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># One-character symbol, like &#39;(&#39; or &#39;,&#39;</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> SymbolToken(token_location, ch)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch <span class="op">==</span> <span class="st">&#39;&quot;&#39;</span>:</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A literal string (used for file names)</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_string_token(token_location<span class="op">=</span>token_location)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch.isdecimal() <span class="kw">or</span> ch <span class="kw">in</span> [<span class="st">&quot;+&quot;</span>, <span class="st">&quot;-&quot;</span>, <span class="st">&quot;.&quot;</span>]:</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># A floating-point number</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_float_token(first_char<span class="op">=</span>ch, token_location<span class="op">=</span>token_location)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> ch.isalpha() <span class="kw">or</span> ch <span class="op">==</span> <span class="st">&quot;_&quot;</span>:</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Since it begins with an alphabetic character, it must either be a keyword</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># or a identifier</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._parse_keyword_or_identifier_token(</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>            first_char<span class="op">=</span>ch,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>            token_location<span class="op">=</span>token_location,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># We got some weird character, like &#39;@` or `&amp;`</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> GrammarError(<span class="va">self</span>.location, <span class="ss">f&quot;Invalid character </span><span class="sc">{</span>ch<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
 </section>
 <section id="test" class="slide level1">
 <h1>Test</h1>
@@ -521,14 +525,15 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a hr
 <li>Implement two families of tests:
 <ol type="1">
 <li>A <a
-href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1037-L1081">test
-for <code>InputStream</code></a>, which verifies that the position in a
-file is tracked correctly even if there are newlines or
+href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1037-L1081">set
+of tests for <code>InputStream</code></a>, which verifies that the
+position in a file is tracked correctly even if there are newlines or
 <code>unread_char</code> is called;</li>
 <li>A <a
-href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1083-L1104">test
-for <code>read_token</code></a>, which verifies that spaces and comments
-are skipped and that the token sequence is produced correctly.</li>
+href="https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1083-L1104">set
+of tests for <code>read_token</code></a>, which verifies that spaces and
+comments are skipped and that the token sequence is produced
+correctly.</li>
 </ol></li>
 <li>Writing these tests will allow you to familiarize yourself with the
 types you have defined (especially if you use <em>sum types</em>!), in

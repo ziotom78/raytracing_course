@@ -1,4 +1,4 @@
-# Implementing a *lexer*
+# Implementing a lexer
 
 # Example
 
@@ -40,16 +40,16 @@ plane(sky_material, translation([0, 0, 100]) * rotation_y(clock))
 camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 ```
 
-This is the kind of file for which our *lexer* will have to produce a list of *tokens*.
+This is the kind of file for which our lexer will have to produce a list of *tokens*.
 
 
 # Error Handling
 
 # Error Conditions
 
--   Even while writing the *lexer*, before dealing with the syntactic and semantic aspects, it is possible to encounter errors in the code.
+-   Even while writing the lexer, before dealing with the syntactic and semantic aspects, it is possible to encounter errors in the code.
 
--   For example, the presence of a character like `@` is not allowed in our language, and the *lexer* can already detect this type of error.
+-   For example, the presence of a character like `@` is not allowed in our language, and the lexer can already detect this type of error.
 
 -   Another example is forgetting to close a double quote `"` at the end of a string.
 
@@ -58,7 +58,7 @@ This is the kind of file for which our *lexer* will have to produce a list of *t
 
 -   In modern compilers, the `Token` type contains information about the position of the token in the source file (see for example the [`Token`](https://github.com/llvm/llvm-project/blob/llvmorg-10.0.0/clang/include/clang/Lex/Token.h) type in version 10.0.0 of the Clang compiler: it's not a very elegant implementation, but it is optimized for efficiency!).
 
--   This information is used by the *lexer* and the *parser* to print error messages like the following (produced by Clang 10):
+-   This information is used by the lexer and the parser to print error messages like the following (produced by Clang 10):
 
     ```text
     test.cpp:31:15: error: no viable conversion from 'int' to 'std::string'
@@ -98,7 +98,7 @@ This is the kind of file for which our *lexer* will have to produce a list of *t
         location: SourceLocation
     ```
 
--   If you use *sum types*, remember to use *tags* if your language requires it (e.g., [Nim](https://nim-lang.org/docs/manual.html#types-object-variants)).
+-   If you use *sum types*, remember to properly use *tags*. (In C++, implement them using an `enum class`, since this language does not support tags natively.)
 
 # Reporting Errors
 
@@ -117,14 +117,14 @@ This is the kind of file for which our *lexer* will have to produce a list of *t
 
 -   We saw in the theory lesson that it is necessary to read one character at a time from the source file.
 
--   It is therefore ideal to use a *stream* to read from a file, taking care to open the file in text mode (it is not a binary file like the PFM format!):
+-   It is therefore ideal to use a stream to read from a file, taking care to open the file in text mode (it is not a binary file like the PFM format!):
 
     ```python
     with open(file_name, "rt") as f:  # "rt" stands for "*R*ead *T*ext"
         …
     ```
 
--   We also need the possibility of *look ahead*, that is, to read a character and put it back, as well as the ability to keep track of the position in the *stream* where we have arrived (to produce error messages).
+-   We also need the possibility of *look-ahead*, that is, to read a character and put it back, as well as the ability to keep track of the position in the stream where we have arrived (to produce error messages).
 
 # Definition of `InputStream`
 
@@ -136,7 +136,7 @@ This is the kind of file for which our *lexer* will have to produce a list of *t
 -   In addition to these fields, others are needed to implement *look-ahead*.
 
 
-# Character *look ahead*
+# Character look-ahead
 
 -   Recall that `InputStream` must offer the possibility of «putting back» a character through the `unread_char` function.
 
@@ -161,6 +161,9 @@ class InputStream:
         self.saved_location = self.location
         self.tabulations = tabulations
 ```
+
+- If your language supports nullable types (C\#, Kotlin), use them to define `saved_char`.
+- In C++, Rust, or Nim, use optional types (e.g., `std::optional` in C++).
 
 # Position Tracking
 
@@ -222,7 +225,7 @@ class InputStream:
 
 -   The token types to define are the following:
 
-    #.  *Keyword*: use an enumerated type (`enum` in [Nim](https://nim-lang.org/docs/manual.html#types-enumeration-types), [D](https://dlang.org/spec/enum.html), [C\#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum), [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), [Java](https://www.w3schools.com/java/java_enums.asp), `enum class` in [Kotlin](https://kotlinlang.org/docs/enum-classes.html)), because it will make the *parser* more efficient;
+    #.  *Keyword*: use an enumerated type (`enum` in [Nim](https://nim-lang.org/docs/manual.html#types-enumeration-types), [D](https://dlang.org/spec/enum.html), [C\#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum), [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), [Java](https://www.w3schools.com/java/java_enums.asp), `enum class` in [Kotlin](https://kotlinlang.org/docs/enum-classes.html)), because it will make the parser more efficient;
     #.  *Identifier*: it's a string;
     #.  *Literal string*: it's again a string;
     #.  *Literal number*: a floating-point value;
@@ -231,25 +234,25 @@ class InputStream:
 
 # End of File
 
--   The *lexer* needs to be able to signal when a file has ended.
+-   The lexer needs to be able to signal when a file has ended.
 
 -   In the pytracer code I implemented a new «special» *token*: [`StopToken`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/scene_file.py#L41-L45). It is emitted when the end of the file is reached.
 
 -   The `StopToken` trick is not essential: you could simply check when the stream has reached the end…
 
--   …but it shows how flexible the concept of *token* can be. Tricks like this are very common in compilers (see for example how Python handles indentation changes [at the *lexer* level](https://riptutorial.com/python/example/8674/how-indentation-is-parsed)).
+-   …but it shows how flexible the concept of *token* can be. Tricks like this are very common in compilers (see for example how Python handles indentation changes [at the lexer level](https://riptutorial.com/python/example/8674/how-indentation-is-parsed)).
 
 # Whitespace and Newlines
 
 -   Our format ignores spaces, newlines between *tokens* and comments.
 
--   To implement the `read_token` function we need a function that skips these characters:
+-   To implement `read_token`, we need a function that skips these characters:
 
     ```python
     WHITESPACE = " \t\n\r"
 
     def skip_whitespaces_and_comments(self):
-        """Keep reading characters until a non-whitespace/non-comment character is found"""
+        "Keep reading characters until a non-whitespace/non-comment character is found"
         ch = self.read_char()
         while ch in WHITESPACE or ch == "#":
             if ch == "#":
@@ -292,9 +295,8 @@ def read_token(self) -> Token:
         # No more characters in the file, so return a StopToken
         return StopToken(location=self.location)
 
-    # At this point we must check what kind of token begins with the "ch" character
-    # (which has been put back in the stream with self.unread_char). First,
-    # we save the position in the stream
+    # At this point we must check whick kind of token begins with `ch`
+    # First, we save the position in the stream
     token_location = copy(self.location)
 
     if ch in SYMBOLS:
@@ -321,8 +323,8 @@ def read_token(self) -> Token:
 # Test
 
 - Implement two families of tests:
-    1. A [test for `InputStream`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1037-L1081), which verifies that the position in a file is tracked correctly even if there are newlines or `unread_char` is called;
-    2. A [test for `read_token`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1083-L1104), which verifies that spaces and comments are skipped and that the token sequence is produced correctly.
+    1. A [set of tests for `InputStream`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1037-L1081), which verifies that the position in a file is tracked correctly even if there are newlines or `unread_char` is called;
+    2. A [set of tests for `read_token`](https://github.com/ziotom78/pytracer/blob/c1f0ed490f322bb9db9db185127aac69ac790fba/test_all.py#L1083-L1104), which verifies that spaces and comments are skipped and that the token sequence is produced correctly.
 
 - Writing these tests will allow you to familiarize yourself with the types you have defined (especially if you use *sum types*!), in preparation for the next lesson.
 
