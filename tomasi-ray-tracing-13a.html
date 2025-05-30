@@ -590,34 +590,135 @@ be large differences in the compilation speed of languages!</p></li>
 <h1>C++ Complexity</h1>
 <ul>
 <li><p>The great complexity of C++ is mainly related to
-<code>template</code>s and the use of <em>header files</em>; let’s
-understand this difficulty by looking at some simple examples.</p></li>
-<li><p>Consider this definition, which shows the difficulty of
-interpreting <code>&gt;&gt;</code>:</p>
-<div class="sourceCode" id="cb14"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;&gt;</span> matrix <span class="op">=</span> identity<span class="op">(</span><span class="dv">3</span><span class="op">);</span> <span class="co">// &gt;&gt; are *two* tokens</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cin <span class="op">&gt;&gt;</span> matrix<span class="op">[</span><span class="dv">0</span><span class="op">][</span><span class="dv">0</span><span class="op">];</span> <span class="co">// Here &gt;&gt; is *one* token</span></span></code></pre></div></li>
-<li><p>It is impossible to create the correct token sequence with the
-approach we have followed, which rigidly separates <em>lexing</em> from
-<em>parsing</em> (and in fact the first line was not allowed by the C++
-standard until a few years ago).</p></li>
+<code>template</code>s and the use of <em>header files</em>.</p></li>
+<li><p>Let’s have a look at some of the problems with the C++ grammar by
+considering a couple of real-world examples.</p></li>
 </ul>
 </section>
-<section id="other-template-difficulties" class="slide level1">
-<h1>Other <code>template</code> Difficulties</h1>
+<section id="first-example" class="slide level1">
+<h1>First example</h1>
 <ul>
-<li><p>C++ templates also make syntactic analysis complex:</p>
+<li><p>Imagine that you have N particle detectors. You want to collect
+the energy of each event measured by each detector.</p></li>
+<li><p>The domain is 2D (detectors × events), but it cannot be stored in
+a matrix: if there is one row per detector, the number of columns will
+depend on the number of events recorded by each detector.</p></li>
+<li><p>Thus, we must define a structure that can hold lists of
+lists:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> [</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">10.5</span>, <span class="fl">3.7</span>, <span class="fl">4.6</span>, <span class="fl">13.4</span>],  <span class="co"># Events caught by det#1</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    [],                      <span class="co"># No events for det#2</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">8.5</span>, <span class="fl">3.3</span>],              <span class="co"># Events caught by det#3</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div></li>
+</ul>
+</section>
+<section id="first-example-1" class="slide level1">
+<h1>First example</h1>
+<ul>
+<li><p>Using a typed language like C++, we might define
+<code>data</code> in this way:</p>
 <div class="sourceCode" id="cb15"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="dt">bool</span> x86_64<span class="op">&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">;</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">&lt;</span><span class="kw">false</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">/* Fields valid on 32-bit machines */</span> <span class="op">};</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;&gt;</span> <span class="kw">struct</span> MyStruct<span class="op">&lt;</span><span class="kw">true</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">/* Fields valid on 64-bit machines */</span> <span class="op">};</span></span></code></pre></div></li>
-<li><p>These are practically <em>two</em> structures with the same name
-(<code>MyStruct</code>). This can be used for example in the following
-code:</p>
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;&gt;</span> data<span class="op">;</span></span></code></pre></div></li>
+<li><p>However, this definition was not correct: pre-C++11 compilers
+would refuse to compile this code. Can you guess why?</p></li>
+</ul>
+</section>
+<section id="first-example-2" class="slide level1">
+<h1>First example</h1>
+<ul>
+<li><p>The problem is that <code>&gt;&gt;</code> can either be
+interpreted by the lexer as two tokens (<code>&gt;</code> and
+<code>&gt;</code>) or one (<code>&gt;&gt;</code>). The following example
+shows the problem:</p>
 <div class="sourceCode" id="cb16"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>MyStruct<span class="op">&lt;</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">&gt;</span> A<span class="op">;</span>  <span class="co">// On 64-bit machines use the extended definition</span></span></code></pre></div>
-<p>But at the syntax level, the <code>&gt;</code> term makes everything
-complicated!</p></li>
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;&gt;</span> matrix <span class="op">=</span> identity<span class="op">(</span><span class="dv">3</span><span class="op">);</span> <span class="co">// Here &gt;&gt; are *two* tokens</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>cin <span class="op">&gt;&gt;</span> matrix<span class="op">[</span><span class="dv">0</span><span class="op">][</span><span class="dv">0</span><span class="op">];</span> <span class="co">// Here &gt;&gt; is *one* token</span></span></code></pre></div></li>
+<li><p>It is impossible to create the correct token sequence with the
+approach we have followed, which rigidly separates <em>lexing</em> from
+<em>parsing</em>.</p></li>
+<li><p>Only C++11 mandated compilers to accept this syntax: see document
+<a
+href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1757.html">N1757</a>,
+published in 2005. (The C++ language was invented in the
+1980s!)</p></li>
+</ul>
+</section>
+<section id="second-example" class="slide level1">
+<h1>Second example</h1>
+<ul>
+<li><p>Let’s move to another example to show an additional difficulty
+with templates.</p></li>
+<li><p>Nowadays, the most common CPU architectures are 32-bit and
+64-bit, depending on the size of their CPU registers. (This affects how
+much data the CPU can handle in one pass and how much memory can
+address.)</p></li>
+<li><p>Operating Systems and systems libraries like <a
+href="https://www.gnu.org/software/libc/">glibc</a> and <a
+href="https://musl.libc.org/">musl</a> need to define the fields in
+structures using the most appropriate types for their field.</p></li>
+<li><p>If we are using C++, we might use templates to define these
+structures in a smart way.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<ul>
+<li><p>You are probably familiar with C++ templates using <em>types</em>
+as parameters:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="kw">typename</span> T<span class="op">&gt;</span> <span class="kw">class</span> vector <span class="op">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...   Use parameter `T` whenever you refer to the type of one element</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<li><p>This means that when you write</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> my_vec<span class="op">;</span>   <span class="co">// The template parameter here is &quot;double&quot;</span></span></code></pre></div>
+<p>the template gets instantiated by substituting <code>double</code> to
+each occurrence of <code>T</code> in the definition of the
+<code>vector</code> class.</p></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<ul>
+<li><p>But you are not limited to <em>types</em>: C++ lets you to use
+<em>values</em> as template parameters.</p></li>
+<li><p>This is handy in our case. We can define a structure that mimicks
+the POSIX <a
+href="https://www.man7.org/linux/man-pages/man3/stat.3type.html"><code>stat</code></a>
+datatype:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;</span><span class="dt">bool</span><span class="op">&gt;</span> <span class="kw">struct</span> my_stat<span class="op">;</span>  <span class="co">// No `typename T` here, just `bool`</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">// 64-bit case: the value of `bool` is `true`</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;&gt;</span> <span class="kw">struct</span> my_stat<span class="op">&lt;</span><span class="kw">true</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int64_t</span> st_dev<span class="op">;</span>  <span class="co">// Device number</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int64_t</span> st_ino<span class="op">;</span>  <span class="co">// Inode number</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">// 32-bit case: the value of `bool` is `true`</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="kw">template</span><span class="op">&lt;&gt;</span> <span class="kw">struct</span> my_stat<span class="op">&lt;</span><span class="kw">true</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> st_dev<span class="op">;</span>  <span class="co">// Device number</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> st_ino<span class="op">;</span>  <span class="co">// Inode number</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<ul>
+<li><p>Using the previous definition, we can employ the fact that
+<code>size_t</code> is an integer type that is 8-byte wide on 64-bit
+architectures but just 4-byte wide on 32-bit:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>my_stat<span class="op">&lt;</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">&gt;</span> stat<span class="op">;</span>  <span class="co">// Use the most appropriate definition</span></span></code></pre></div></li>
+<li><p>In this way, we do not need to use <code>#ifdef</code>s and macro
+madness in defining some code that will do the right thing when compiled
+on 32-bit or 64-bit machines.</p></li>
+<li><p>However, at the syntax level, the <code>&gt;</code> term in this
+example makes everything complicated for the parser!</p></li>
 </ul>
 </section>
 <section id="an-important-quote" class="slide level1">
@@ -671,14 +772,14 @@ for these operators.</p></li>
 <li><p>The D language instead uses a <a
 href="https://dlang.org/spec/template.html">different syntax</a> for
 <em>templates</em>, and in the previous example would write</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>MyStruct<span class="op">!(</span>sizeof<span class="op">(</span><span class="bu">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">)</span> A<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>MyStruct<span class="op">!(</span>sizeof<span class="op">(</span><span class="bu">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">)</span> A<span class="op">;</span></span></code></pre></div>
 <p>This syntax is much easier to parse!</p></li>
 <li><p>Rust uses <code>&lt;&gt;</code> like C++, but to remove the
 ambiguity it requires writing <code>::&lt;</code> in expressions:</p>
-<div class="sourceCode" id="cb18"><pre
-class="sourceCode rust"><code class="sourceCode rust"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">//      Here you can use &lt;      Here you must use ::&lt;</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">//        ~~~~~~~~~~~~~           ~~~~~~~~~~~~~~~~~</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> x<span class="op">:</span>    <span class="pp">foo::</span>Foo<span class="op">&lt;</span>Bar<span class="op">&gt;</span>     <span class="op">=</span>     <span class="pp">foo::Foo::</span><span class="op">&lt;</span>Bar<span class="op">&gt;</span>()<span class="op">;</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">//      Here you can use &lt;      Here you must use ::&lt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">//        ~~~~~~~~~~~~~           ~~~~~~~~~~~~~~~~~</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> x<span class="op">:</span>    <span class="pp">foo::</span>Foo<span class="op">&lt;</span>Bar<span class="op">&gt;</span>     <span class="op">=</span>     <span class="pp">foo::Foo::</span><span class="op">&lt;</span>Bar<span class="op">&gt;</span>()<span class="op">;</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="example-variables" class="slide level1">
@@ -687,7 +788,7 @@ class="sourceCode rust"><code class="sourceCode rust"><span id="cb18-1"><a href=
 <li><p>In C/C++, variable declarations are complicated because the
 identifier containing the variable name is placed in the middle of the
 type:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> myvar<span class="op">[</span><span class="dv">100</span><span class="op">];</span>  <span class="co">/* More complicated: static const int * myvar[100] */</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> myvar<span class="op">[</span><span class="dv">100</span><span class="op">];</span>  <span class="co">/* More complicated: static const int * myvar[100] */</span></span></code></pre></div>
 <p>which declares an array of 100 variables of type
 <code>int</code>.</p></li>
 <li><p>The tokens that define the type are <code>int</code>,
@@ -702,8 +803,8 @@ complicated</em> case yourself!)</p></li>
 <ul>
 <li><p>The <a href="https://golang.org/">Go</a> language uses a simpler
 notation:</p>
-<div class="sourceCode" id="cb20"><pre
-class="sourceCode go"><code class="sourceCode go"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> myvar <span class="op">[</span><span class="dv">100</span><span class="op">]</span><span class="dt">int</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> myvar <span class="op">[</span><span class="dv">100</span><span class="op">]</span><span class="dt">int</span></span></code></pre></div></li>
 <li><p>The <code>var</code> keyword signals to the parser that a
 variable is being declared.</p></li>
 <li><p>The tokens that define the type are reported all together,
@@ -720,11 +821,11 @@ left).</p></li>
 <li><p>Go was inspired by Pascal, where variables are listed within a
 <code>var</code> clause. The variable name comes first and is clearly
 separated from the type:</p>
-<div class="sourceCode" id="cb21"><pre
-class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    myvar : <span class="kw">Array</span> [<span class="dv">1</span>..<span class="dv">100</span>] <span class="kw">of</span> <span class="dt">Integer</span>;</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    other : <span class="dt">String</span>;</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    x     : <span class="dt">Real</span>;</span></code></pre></div></li>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode pascal"><code class="sourceCode pascal"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    myvar : <span class="kw">Array</span> [<span class="dv">1</span>..<span class="dv">100</span>] <span class="kw">of</span> <span class="dt">Integer</span>;</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    other : <span class="dt">String</span>;</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    x     : <span class="dt">Real</span>;</span></code></pre></div></li>
 <li><p>This syntax is very easy to interpret: Pascal is in fact designed
 to be simple and at the same time fast to compile.</p></li>
 <li><p>Similar ideas are used in the Modula, Oberon, Ada, Nim, and
@@ -838,7 +939,9 @@ carefully!</p></li>
 <li><p>It’s important that the user of your code can specify the
 <em>seed</em> and, if the generator allows it, the sequence identifier:
 this allows for the repeatability of simulations, which helps a lot
-during <em>debugging</em>.</p></li>
+during <em>debugging</em>. (As a testament to this, have a look at this
+<a
+href="https://github.com/litebird/litebird_sim/pull/414">PR</a>…)</p></li>
 <li><p>If you have to run many simulations, use the ability of modern
 computers to perform calculations in parallel. In the simplest cases,
 it’s enough to use <a
@@ -976,18 +1079,18 @@ href="https://stedolan.github.io/jq/">jq</a>.</p>
 <h1>The Case of Our Ray Tracer</h1>
 <ul>
 <li><p>In our program, we could have used the JSON format:</p>
-<div class="sourceCode" id="cb24"><pre
-class="sourceCode json"><code class="sourceCode json"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;camera&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;projection&quot;</span><span class="fu">:</span> <span class="st">&quot;perspective&quot;</span><span class="fu">,</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;transformations&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">{</span> <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;rotation_z&quot;</span><span class="fu">,</span> <span class="dt">&quot;angle_deg&quot;</span><span class="fu">:</span> <span class="fl">30.0</span> <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">{</span> <span class="dt">&quot;type:&quot;</span> <span class="dt">&quot;translation&quot;</span><span class="fu">,</span> <span class="dt">&quot;vector&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">-4</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">]</span> <span class="fu">}</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>        <span class="ot">]</span><span class="fu">,</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;distance&quot;</span><span class="fu">:</span> <span class="fl">1.0</span><span class="fu">,</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;aspect_ratio&quot;</span><span class="fu">:</span> <span class="fl">1.0</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="er">…</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;camera&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;projection&quot;</span><span class="fu">:</span> <span class="st">&quot;perspective&quot;</span><span class="fu">,</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;transformations&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">{</span> <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;rotation_z&quot;</span><span class="fu">,</span> <span class="dt">&quot;angle_deg&quot;</span><span class="fu">:</span> <span class="fl">30.0</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">{</span> <span class="dt">&quot;type:&quot;</span> <span class="dt">&quot;translation&quot;</span><span class="fu">,</span> <span class="dt">&quot;vector&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">-4</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">]</span> <span class="fu">}</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>        <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;distance&quot;</span><span class="fu">:</span> <span class="fl">1.0</span><span class="fu">,</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;aspect_ratio&quot;</span><span class="fu">:</span> <span class="fl">1.0</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    <span class="er">…</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></li>
 <li><p>No need to write a compiler, but our program must still validate
 the content (e.g., checking that <code>camera</code> contains a
 <code>projection</code> is still our duty!).</p></li>
@@ -1065,11 +1168,11 @@ creating and modifying objects.</p>
 functions specific to manipulating the objects managed by the
 application. For example, this VBA code modifies cell <code>A1</code> in
 an Excel sheet:</p>
-<div class="sourceCode" id="cb25"><pre
-class="sourceCode monobasic"><code class="sourceCode monobasic"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">Sub </span>Macro1()</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Value = <span class="st">&quot;Wow!&quot;</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Borders.LineStyle = xlDouble</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="kw">End Sub</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode monobasic"><code class="sourceCode monobasic"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">Sub </span>Macro1()</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Value = <span class="st">&quot;Wow!&quot;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Borders.LineStyle = xlDouble</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="kw">End Sub</span></span></code></pre></div></li>
 <li><p>Useful for automating repetitive tasks (e.g., animating an object
 in Blender following an accurate physical model).</p></li>
 <li><p>Some languages (<a href="https://www.gnu.org/software/guile/">GNU
@@ -1082,28 +1185,28 @@ designed for <em>embedded</em> use.</p></li>
 <p>This C program initializes the Python interpreter and executes a
 simple script. In reality, this script could have been provided by the
 user in the GUI of the program:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PY_SSIZE_T_CLEAN</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Python.h&gt;</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">wchar_t</span> <span class="op">*</span>program <span class="op">=</span> Py_DecodeLocale<span class="op">(</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> NULL<span class="op">);</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>program <span class="op">==</span> NULL<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Fatal error: cannot decode argv[0]</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    Py_SetProgramName<span class="op">(</span>program<span class="op">);</span>  <span class="co">/* optional but recommended */</span></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    Py_Initialize<span class="op">();</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* Run a simple Python program that prints the current date */</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    PyRun_SimpleString<span class="op">(</span><span class="st">&quot;from time import time,ctime</span><span class="sc">\n</span><span class="st">&quot;</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;print(&#39;Today is&#39;, ctime(time()))</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>Py_FinalizeEx<span class="op">()</span> <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">120</span><span class="op">);</span></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    PyMem_RawFree<span class="op">(</span>program<span class="op">);</span></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PY_SSIZE_T_CLEAN</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Python.h&gt;</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">wchar_t</span> <span class="op">*</span>program <span class="op">=</span> Py_DecodeLocale<span class="op">(</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> NULL<span class="op">);</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>program <span class="op">==</span> NULL<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Fatal error: cannot decode argv[0]</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    Py_SetProgramName<span class="op">(</span>program<span class="op">);</span>  <span class="co">/* optional but recommended */</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    Py_Initialize<span class="op">();</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* Run a simple Python program that prints the current date */</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    PyRun_SimpleString<span class="op">(</span><span class="st">&quot;from time import time,ctime</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;print(&#39;Today is&#39;, ctime(time()))</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>Py_FinalizeEx<span class="op">()</span> <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">120</span><span class="op">);</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>    PyMem_RawFree<span class="op">(</span>program<span class="op">);</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="creating-bindings" class="slide level1">
 <h1>4. Creating <em>Bindings</em></h1>

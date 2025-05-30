@@ -373,34 +373,113 @@ vector ::= "[" number "," number "," number "]"
 
 # C++ Complexity
 
--   The great complexity of C++ is mainly related to `template`s and the use of *header files*; let's understand this difficulty by looking at some simple examples.
+-   The great complexity of C++ is mainly related to `template`s and the use of *header files*.
 
--   Consider this definition, which shows the difficulty of interpreting `>>`:
+-   Let’s have a look at some of the problems with the C++ grammar by considering a couple of real-world examples.
+
+# First example
+
+-   Imagine that you have N particle detectors. You want to collect the energy of each event measured by each detector.
+
+-   The domain is 2D (detectors × events), but it cannot be stored in a matrix: if there is one row per detector, the number of columns will depend on the number of events recorded by each detector.
+
+-   Thus, we must define a structure that can hold lists of lists:
+
+    ```python
+    data = [
+        [10.5, 3.7, 4.6, 13.4],  # Events caught by det#1
+        [],                      # No events for det#2
+        [8.5, 3.3],              # Events caught by det#3
+        ...
+    ]
+    ```
+
+# First example
+
+-   Using a typed language like C++, we might define `data` in this way:
 
     ```c++
-    std::vector<std::vector<double>> matrix = identity(3); // >> are *two* tokens
+    std::vector<std::vector<double>> data;
+    ```
+
+-   However, this definition was not correct: pre-C++11 compilers would refuse to compile this code. Can you guess why?
+
+# First example
+
+-   The problem is that `>>` can either be interpreted by the lexer as two tokens (`>` and `>`) or one (`>>`). The following example shows the problem:
+
+    ```c++
+    std::vector<std::vector<double>> matrix = identity(3); // Here >> are *two* tokens
     std::cin >> matrix[0][0]; // Here >> is *one* token
     ```
 
--   It is impossible to create the correct token sequence with the approach we have followed, which rigidly separates *lexing* from *parsing* (and in fact the first line was not allowed by the C++ standard until a few years ago).
+-   It is impossible to create the correct token sequence with the approach we have followed, which rigidly separates *lexing* from *parsing*.
 
-# Other `template` Difficulties
+-   Only C++11 mandated compilers to accept this syntax: see document [N1757](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1757.html), published in 2005. (The C++ language was invented in the 1980s!)
 
--   C++ templates also make syntactic analysis complex:
+# Second example
+
+-   Let’s move to another example to show an additional difficulty with templates.
+
+-   Nowadays, the most common CPU architectures are 32-bit and 64-bit, depending on the size of their CPU registers. (This affects how much data the CPU can handle in one pass and how much memory can address.)
+
+-   Operating Systems and systems libraries like [glibc](https://www.gnu.org/software/libc/) and [musl](https://musl.libc.org/) need to define the fields in structures using the most appropriate types for their field.
+
+-   If we are using C++, we might use templates to define these structures in a smart way.
+
+---
+
+-   You are probably familiar with C++ templates using *types* as parameters:
 
     ```c++
-    template<bool x86_64> struct MyStruct;
-    template<> struct MyStruct<false> { /* Fields valid on 32-bit machines */ };
-    template<> struct MyStruct<true> { /* Fields valid on 64-bit machines */ };
+    template<typename T> class vector {
+        // ...   Use parameter `T` whenever you refer to the type of one element
+    }
     ```
 
--   These are practically *two* structures with the same name (`MyStruct`). This can be used for example in the following code:
+-   This means that when you write
 
     ```c++
-    MyStruct<sizeof(size_t) > 4> A;  // On 64-bit machines use the extended definition
+    std::vector<double> my_vec;   // The template parameter here is "double"
     ```
 
-    But at the syntax level, the `>` term makes everything complicated!
+    the template gets instantiated by substituting `double` to each occurrence of `T` in the definition of the `vector` class.
+
+---
+
+-   But you are not limited to *types*: C++ lets you to use *values* as template parameters.
+
+-   This is handy in our case. We can define a structure that mimicks the POSIX [`stat`](https://www.man7.org/linux/man-pages/man3/stat.3type.html) datatype:
+
+    ```c++
+    template<bool> struct my_stat;  // No `typename T` here, just `bool`
+
+    // 64-bit case: the value of `bool` is `true`
+    template<> struct my_stat<true> {
+        int64_t st_dev;  // Device number
+        int64_t st_ino;  // Inode number
+        // ...
+    }
+
+    // 32-bit case: the value of `bool` is `true`
+    template<> struct my_stat<true> {
+        int32_t st_dev;  // Device number
+        int32_t st_ino;  // Inode number
+        // ...
+    }
+    ```
+
+---
+
+-   Using the previous definition, we can employ the fact that `size_t` is an integer type that is 8-byte wide on 64-bit architectures but just 4-byte wide on 32-bit:
+
+    ```c++
+    my_stat<sizeof(size_t) > 4> stat;  // Use the most appropriate definition
+    ```
+
+-   In this way, we do not need to use `#ifdef`s and macro madness in defining some code that will do the right thing when compiled on 32-bit or 64-bit machines.
+
+-   However, at the syntax level, the `>` term in this example makes everything complicated for the parser!
 
 # An important quote
 
@@ -547,7 +626,7 @@ vector ::= "[" number "," number "," number "]"
 
 -   In the specific case of simulation codes, choose your [random number generator](tomasi-ray-tracing-11b.html#algoritmi) carefully!
 
--   It's important that the user of your code can specify the *seed* and, if the generator allows it, the sequence identifier: this allows for the repeatability of simulations, which helps a lot during *debugging*.
+-   It's important that the user of your code can specify the *seed* and, if the generator allows it, the sequence identifier: this allows for the repeatability of simulations, which helps a lot during *debugging*. (As a testament to this, have a look at this [PR](https://github.com/litebird/litebird_sim/pull/414)…)
 
 -   If you have to run many simulations, use the ability of modern computers to perform calculations in parallel. In the simplest cases, it's enough to use [GNU Parallel](tomasi-ray-tracing-11b.html#generare-animazioni).
 
