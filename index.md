@@ -19,9 +19,8 @@
 |        10 | [12 Maggio 2025](tomasi-ray-tracing-10a.html) | [14 Maggio 2025](tomasi-ray-tracing-10b.html) |
 |        11 | [19 Maggio 2025](tomasi-ray-tracing-11a.html) | [21 Maggio 2025](tomasi-ray-tracing-11b.html) |
 |        12 | [26 Maggio 2025](tomasi-ray-tracing-12a.html) | [28 Maggio 2025](tomasi-ray-tracing-12b.html) |
-<!--
 |        13 | [9 Giugno 2025](tomasi-ray-tracing-13a.html) | [11 Giugno 2025](tomasi-ray-tracing-13b.html) |
--->
+
 
 # Argomenti per l'esame (A.A. 2024/2025)
 
@@ -92,12 +91,10 @@
 -   [*Point-light tracing*](tomasi-ray-tracing-11a.html#/point-light-tracing)
 -   [Panoramica sulla definizione di scene](tomasi-ray-tracing-12a.html#/scene-definition-languages): DKBTrace, POV-Ray, YafaRay
 -   [Gerarchie di classi e *sum types*](tomasi-ray-tracing-12a.html#/tokens-and-class-hierarchies)
-<!--
 -   [Gestione degli errori di un compilatore](tomasi-ray-tracing-13a.html#/compiler-errors)
 -   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/comparison-of-languages)
 -   [Testing di compilatori](tomasi-ray-tracing-13a.html#/compiler-testing)
 -   [Generazione automatica di compilatori](tomasi-ray-tracing-13a.html#/automatic-generation-of-compilers)
--->
 
 ---
 title: "Tecniche numeriche per la generazione di immagini fotorealistiche"
