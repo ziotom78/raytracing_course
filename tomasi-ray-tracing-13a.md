@@ -461,8 +461,8 @@ vector ::= "[" number "," number "," number "]"
         // ...
     }
 
-    // 32-bit case: the value of `bool` is `true`
-    template<> struct my_stat<true> {
+    // 32-bit case: the value of `bool` is `false`
+    template<> struct my_stat<false> {
         int32_t st_dev;  // Device number
         int32_t st_ino;  // Inode number
         // ...
