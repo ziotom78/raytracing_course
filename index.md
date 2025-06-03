@@ -19,7 +19,7 @@
 |        10 | [12 Maggio 2025](tomasi-ray-tracing-10a.html) | [14 Maggio 2025](tomasi-ray-tracing-10b.html) |
 |        11 | [19 Maggio 2025](tomasi-ray-tracing-11a.html) | [21 Maggio 2025](tomasi-ray-tracing-11b.html) |
 |        12 | [26 Maggio 2025](tomasi-ray-tracing-12a.html) | [28 Maggio 2025](tomasi-ray-tracing-12b.html) |
-|        13 | [9 Giugno 2025](tomasi-ray-tracing-13a.html) | [11 Giugno 2025](tomasi-ray-tracing-13b.html) |
+|        13 | [3 Giugno 2025](tomasi-ray-tracing-13a.html) | [4 Giugno 2025](tomasi-ray-tracing-13b.html) |
 
 
 # Argomenti per l'esame (A.A. 2024/2025)
