@@ -277,7 +277,7 @@ This image contains three geometric shapes (two planes and a sphere), and was ca
     ```python
     class MyComplexShape:
         # ...
-        def rayIntersection(self, ray: Ray) -> Union[HitRecord, None]:
+        def rayIntersection(self, ray: Ray) -> Optional[HitRecord]:
             inv_ray = ray.transform(self.transformation.inverse())
             if not self.aabb.quickRayIntersection(inv_ray):
                 return None
@@ -371,8 +371,8 @@ If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient 
     ```python
     class KdTreeNode:
         entry: Union[KdTreeSplit, List[int]]  # List[int]: List of indexes to ◺
-        left: Union[KdTreeNode, None]
-        right: Union[KdTreeNode, None]
+        left: Optional[KdTreeNode]
+        right: Optional[KdTreeNode]
     ```
 
 -----

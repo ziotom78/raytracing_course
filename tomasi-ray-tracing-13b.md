@@ -64,7 +64,7 @@ This is an example of the grammar that we want to parse.
         """A scene read from a scene file"""
         materials: Dict[str, Material] = field(default_factory=dict)
         world: World = World()
-        camera: Union[Camera, None] = None
+        camera: Optional[Camera] = None
         float_variables: Dict[str, float] = field(default_factory=dict)
         overridden_variables: Set[str] = field(default_factory=set)
     ```
@@ -181,7 +181,7 @@ class InputStream:
     def __init__(self, stream, file_name="", tabulations=8):
         # …
 
-        self.saved_token: Union[Token, None] = None
+        self.saved_token: Optional[Token] = None
 
     def read_token(self) -> Token:
         if self.saved_token:

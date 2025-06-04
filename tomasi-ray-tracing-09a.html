@@ -540,7 +540,7 @@ inside <code>Shape.rayIntersection</code>:</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyComplexShape:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ...</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> rayIntersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Union[HitRecord, <span class="va">None</span>]:</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> rayIntersection(<span class="va">self</span>, ray: Ray) <span class="op">-&gt;</span> Optional[HitRecord]:</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        inv_ray <span class="op">=</span> ray.transform(<span class="va">self</span>.transformation.inverse())</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.aabb.quickRayIntersection(inv_ray):</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">None</span></span>
@@ -689,8 +689,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> KdTreeNode:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    entry: Union[KdTreeSplit, List[<span class="bu">int</span>]]  <span class="co"># List[int]: List of indexes to ◺</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    left: Union[KdTreeNode, <span class="va">None</span>]</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    right: Union[KdTreeNode, <span class="va">None</span>]</span></code></pre></div></li>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    left: Optional[KdTreeNode]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    right: Optional[KdTreeNode]</span></code></pre></div></li>
 </ul>
 </section>
 <section class="slide level1">

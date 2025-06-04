@@ -54,7 +54,7 @@ def expect_symbol(stream: InputStream, symbol: str) -> None:
     # Don't bother returning the character: we were already expecting it
 
 
-def expect_number(stream: InputStream) -> float:
+def expect_number(stream: InputStream, scene: Scene) -> float:
     """Read a token from `stream` and check that it is either a literal number or a variable.
 
     Return the number as a ``float``."""
