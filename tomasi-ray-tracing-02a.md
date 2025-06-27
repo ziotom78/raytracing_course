@@ -494,9 +494,9 @@ document.addEventListener('monitor-calibration-state', function() {
 -   A simple approximation for the conversion from RGB, $(R, G, B)$, to sRGB, $(r, g, b)$, is the following:
     $$
     \begin{aligned}
-    r &= \left[k\,R^\gamma\right],\\
-    g &= \left[k\,G^\gamma\right],\\
-    b &= \left[k\,B^\gamma\right],\\
+    r &= \left[k\,R^{1/\gamma}\right],\\
+    g &= \left[k\,G^{1/\gamma}\right],\\
+    b &= \left[k\,B^{1/\gamma}\right],\\
     \end{aligned}
     $$
     where $[\cdot]$ indicates rounding to integer, and $k$ is a normalization constant.
