@@ -154,7 +154,7 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
     This does *not* introduce a bias, but allows to reduce noise in the image.
 
--   For $q$, I suggest using the maximum value among the R, G, B components of the BRDF at the intersection point.
+-   For $q$, I suggest using 1 minus the maximum value among the R, G, B components of the BRDF at the intersection point.
 
 # Path Tracing in Action
 
