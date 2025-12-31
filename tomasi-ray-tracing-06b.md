@@ -203,6 +203,12 @@ int main() {
 
 ---
 
+![](media/coordinate-system-chart.jpg)
+
+[Tweet by Freya Holmér](https://x.com/FreyaHolmer/status/1325556229410861056), cited in [Translating a Fortran F-16 Simulator to Unity3D](https://vazgriz.com/762/f-16-flight-sim-in-unity-3d/) (vazgriz)
+
+---
+
 ```{.asy im_fmt="html" im_opt="-f html" im_out="img,stdout,stderr" im_fname="camera-reference-frame"}
 size(0,100);
 import three;
