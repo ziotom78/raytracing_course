@@ -98,7 +98,7 @@
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -114,7 +114,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -322,7 +322,7 @@ other as <em>big endian</em> (<code>1.0</code>);</p></li>
 <li><p>Color matrix (RGB) of size 3×2 pixels:</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th></th>
 <th>#1</th>
 <th>#2</th>
@@ -330,13 +330,13 @@ other as <em>big endian</em> (<code>1.0</code>);</p></li>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>#A</td>
 <td>(10, 20, 30)</td>
 <td>(40, 50, 60)</td>
 <td>(70, 80, 90)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>#B</td>
 <td>(100, 200, 300)</td>
 <td>(400, 500, 600)</td>
@@ -528,21 +528,20 @@ function/method and call it in both constructors.</p></li>
 <section id="the-solution-of-the-riddle" class="slide level1">
 <h1>The Solution of the Riddle</h1>
 <div class="sourceCode" id="cb17"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> HdrImage <span class="op">{</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span><span class="op">:</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Put the code that reads the PFM file in a separate method</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> read_pfm_file<span class="op">(</span><span class="bu">std::</span>istream <span class="op">&amp;</span> stream<span class="op">);</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// First constructor: invoke `read_pfm_file`</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    HdrImage<span class="op">(</span><span class="bu">std::</span>istream <span class="op">&amp;</span> stream<span class="op">)</span> <span class="op">{</span> read_pfm_file<span class="op">(</span>stream<span class="op">);</span> <span class="op">}</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Second constructor: again, invoke `read_pfm_file`</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    HdrImage<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string <span class="op">&amp;</span> file_name<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">std::</span>ifstream stream<span class="op">{</span>file_name<span class="op">};</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        read_pfm_file<span class="op">(</span>stream<span class="op">);</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage <span class="op">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Put the code that reads the PFM file in a separate method</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> read_pfm_file<span class="op">(</span><span class="bu">std::</span>istream <span class="op">&amp;</span> stream<span class="op">);</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// First constructor: invoke `read_pfm_file`</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    HdrImage<span class="op">(</span><span class="bu">std::</span>istream <span class="op">&amp;</span> stream<span class="op">)</span> <span class="op">{</span> read_pfm_file<span class="op">(</span>stream<span class="op">);</span> <span class="op">}</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Second constructor: again, invoke `read_pfm_file`</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    HdrImage<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string <span class="op">&amp;</span> file_name<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">std::</span>ifstream stream<span class="op">{</span>file_name<span class="op">};</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        read_pfm_file<span class="op">(</span>stream<span class="op">);</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
 </section>
 <section id="the-pfm-file-format" class="slide level1">
 <h1>The PFM File Format</h1>
@@ -894,6 +893,23 @@ that your methods correctly handle errors.</p></li>
 </section>
 <section id="hints-for-c" class="slide level1">
 <h1>Hints for C++</h1>
+</section>
+<section id="determining-the-endianness" class="slide level1">
+<h1>Determining the endianness</h1>
+<ul>
+<li><p>If you want, you can check the endianness of the system used to
+compile your program with the <a
+href="https://en.cppreference.com/w/cpp/types/endian.html"><code>std::endian</code></a>
+enum class (in <code>&lt;bit&gt;</code>, available since C++20)</p></li>
+<li><p>However, <code>std::endian</code> does not perform any
+conversion: it simply <em>reports</em> what is the endianness</p></li>
+<li><p>To actually perform the conversion, you can use <a
+href="https://en.cppreference.com/w/cpp/numeric/byteswap.html"><code>std::byteswap</code></a>
+(still in <code>&lt;bit&gt;</code>)</p></li>
+<li><p>Prefer <code>std::byte</code> (in <code>&lt;stddef&gt;</code>)
+over <code>char</code>, so you clearly signal that you are actually
+referring to a “byte” instead of a “character”.</p></li>
+</ul>
 </section>
 <section id="files-and-streams-1" class="slide level1">
 <h1>Files and Streams</h1>

@@ -341,8 +341,7 @@ assert buf.getvalue() == reference_bytes
 # The Solution of the Riddle
 
 ```c++
-struct HdrImage {
-private:
+class HdrImage {
     // Put the code that reads the PFM file in a separate method
     void read_pfm_file(std::istream & stream);
 
@@ -673,6 +672,16 @@ def test_pfm_read_wrong(self):
 3.  Implement the same tests as in the Python example. Also, verify that your methods correctly handle errors.
 
 # Hints for C++
+
+# Determining the endianness
+
+-   If you want, you can check the endianness of the system used to compile your program with the [`std::endian`](https://en.cppreference.com/w/cpp/types/endian.html) enum class (in `<bit>`, available since C++20)
+
+-   However, `std::endian` does not perform any conversion: it simply *reports* what is the endianness
+
+-   To actually perform the conversion, you can use [`std::byteswap`](https://en.cppreference.com/w/cpp/numeric/byteswap.html) (still in `<bit>`)
+
+-   Prefer `std::byte` (in `<stddef>`) over `char`, so you clearly signal that you are actually referring to a “byte” instead of a “character”.
 
 # Files and Streams
 
