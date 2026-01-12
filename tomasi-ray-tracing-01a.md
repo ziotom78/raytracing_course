@@ -112,14 +112,6 @@ Vivian Maier (1926–2009), Self-portrait
 
 [*Oceania* (R. Clements, J. Musker, D. Hall, C. Williams, 2016)]{style="float:right"}
 
-# «Cornell box»
-
-![](./media/cornell_box_physical_model_image11.jpg){height=560}
-
-# «Cornell box»
-
-![](./media/cornell-box-schema.svg){height=560}
-
 # Bibliography
 
 -   [*Physically Based Rendering: from Theory to Implementation*](http://www.pbr-book.org/) (M. Pharr, W. Jakob, G. Humphreys, 4th ed.): quite complex but complete, it’s the gold standard for this topic. It’s available online.
@@ -260,26 +252,6 @@ Vivian Maier (1926–2009), Self-portrait
     implies that the perceived color of an object at distance $d$
     does not change as $d$ varies (if there is no attenuation).
 
-# Importance of $L$
-
-$L$ is what is measured by any light-sensitive sensor (camera, human eye).
-
-![](./media/moana-frame-value.jpg)
-
-# Importance of $L_\lambda$
-
-The behavior of $L_\lambda$ as $\lambda$ varies allows us to estimate color (*hue*):
-
-![](./media/moana-frame-hue.jpg)
-
-(There is also a third parameter, *saturation*, which we will discuss shortly.)
-
-# Image Creation
-
-Estimating $L$ and $L_\lambda$ together allows us to produce a color image:
-
-![](./media/moana-frame.jpg)
-
 # Example
 
 Consider a *diffuse emitter*, an object that emits light uniformly in all directions:
@@ -305,10 +277,13 @@ $$
 
 # Light/Surface Interaction
 
-# "Cornell box"
+# «Cornell box»
+
+![](./media/cornell_box_physical_model_image11.jpg){height=560}
+
+# «Cornell box»
 
 ![](./media/cornell-box-schema.svg){height=560}
-
 
 # The BRDF {#brdf}
 
@@ -328,7 +303,7 @@ where $\cos(N_x, \Psi)$ is the angle between the normal to $\mathrm{d}A$ and the
 
 ![](./media/brdf.svg){height=400}
 
-The BRDF is not defined as the ratio between two radiances, because $f_r$ will be used to calculate the total outgoing radiance $L_\text{tot} \sim \int_{2\pi} L\,f\,\mathrm{d}\omega$. If $f$ were a pure number or if $A$ were "corrected" for the angle $\theta$, the integral would become more complicated.
+The BRDF is not the ratio between two \(L\)-s, because $f_r$ will be used to calculate the total outgoing radiance $L_\text{tot} \sim \int_{2\pi} L\,f\,\mathrm{d}\omega$. If $f$ were a pure number or if $A$ were "corrected" for the angle $\theta$, the integral would become more complicated.
 
 # Meaning of the BRDF
 
@@ -361,10 +336,6 @@ L_\text{tot}(x \rightarrow \Theta) &= \int_{\Omega_x} f_r(x, \Psi \rightarrow \T
 \end{aligned}
 $$
 
-# Utility of the BRDF
-
-![](./media/moana-frame.jpg)
-
 # Ideal Diffusive Surface {#ideal-diffusive-surface}
 
 All incident radiation is distributed over the $2\pi$ hemisphere, so the BRDF is constant:
@@ -381,7 +352,7 @@ where $0 \leq \rho_d \leq 1$ is the fraction of incident energy that is reflecte
     $$
     where $N$ is the normal (tangent) vector to the surface.
 
--   Online libraries of BRDFs exist, usually obtained from laboratory measurements, almost all of which are paid.
+-   Online libraries of BRDFs exist, usually obtained from laboratory measurements, almost all of which require a paid fee.
 
 # The Rendering Equation {#rendering-equation}
 
@@ -395,6 +366,73 @@ L(x \rightarrow \Theta) = &L_e(x \rightarrow \Theta) +\\
 \end{aligned}
 $$
 where $L_e$ is the radiance emitted by the surface at point $x$ along the direction $\Theta$.
+
+# A note about LLMs
+
+# Using LLMs in this course
+
+-   Do not use them for the first ~6 or 7 weeks. If you are not yet familiar with the language, they will mislead you
+
+-   For now, rely on traditional media: manuals, official documentation, and high-quality YouTube videos
+
+-   I am not asking you to avoid LLMs forever. They are powerful! I want you to build a foundation first so you can use them effectively later.
+
+# A good advice
+
+> Whatever you believe about what the Right Thing should be, you can't control it by refusing what is happening right now. Skipping AI is not going to help you or your career.
+
+From the blog post, [Don't fall into the anti-AI hype](https://antirez.com/news/158) by [Salvatore Sanfilippo](https://en.wikipedia.org/wiki/Salvatore_Sanfilippo).
+
+
+# Why avoid LLMs on “day one”?
+
+-   **The value of friction:** Real learning happens when you struggle with a problem. AI removes the “productive struggle.”
+
+-   **The productivity trap:** AI decouples output from understanding. You may produce working code without actually learning the underlying logic.
+
+-   **The “bull❄❄❄t” factor** As a novice, you won’t have the “crap detector” needed to spot these errors until it’s too late.
+
+See [this post](https://news.ycombinator.com/item?id=43953913) on Hacker News by the director of [Ithron Research](https://www.ithron.com/).
+
+# A few examples
+
+-   Using a POSIX-first library in a multiplatform C++ code (LLMs suggested a solution that looked correct but would not compile on Windows, yet the README had the solution!)
+
+-   Implementing mathematical operators on vectors, points, and normals in Julia (LLMs suggested to implement them using a set of `if`, which is discouraged in the Julia User’s Manual because it prevents many optimizations)
+
+-   C++ template methods that are virtual (unsupported in C++!)
+
+-   Brainstorming how to implement some rotation operators in Clifford algebras (see next slide)
+
+---
+
+![](media/gemini slip.webp)
+
+---
+
+![](media/Stein-Erik Soelberg case 1.webp){height=540px}
+
+[Murder/suicide of Stein-Erik Soelberg (2025-08-03)](https://cdn.arstechnica.net/wp-content/uploads/2025/12/First-County-Bank-v-OpenAI-Complaint-12-11-25.pdf)
+
+---
+
+![](media/Stein-Erik Soelberg case 2.webp){height=640px}
+
+# Conclusions
+
+-   Use primary sources until you are confident with the syntax and the right “way of doing”
+
+-   **Use AI as a tutor, not a creator:** Use LLMs to help you understand *existing* code:
+
+    #.  Pick a reputable open-source project written in the language you are learning
+
+    #.  Attempt to make sense of the code yourself first
+
+    #.  Whenever you get stuck, ask an LLM to explain that specific section.
+
+    #.  Cross-reference the AI’s explanation with the official documentation
+
+-   This constitutes a “safe use” of LLM
 
 ---
 title: "Lesson 1: the rendering equation"
