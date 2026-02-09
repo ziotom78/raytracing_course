@@ -58,7 +58,7 @@ The purpose of this document is to provide students with a general idea of some 
 
 # How to learn a new programming language
 
-My main advice is, **avoid using ChatGPT or any other LLM** until you fully understand their limitations! While I use LLMs regularly for research and teaching, their answers always demand validation. Students who relied on LLMs in the past two years often have got stuck, failing to recognize flawed advice as such. LLMs make confident assumptions without asking clarifying questions, and their assured tone can mislead, leading to fruitless attempts at incorrect solutions and endless loops. For this course, use LLMs only near the end of the semester, once you are fully confident in your understanding of the language and tools you have used so far.
+My main advice is, **avoid using ChatGPT, Gemini, Copilot, Claude, or any other LLM** until you fully understand their limitations! While I use LLMs regularly for research and teaching, their answers always demand validation. Students who relied on LLMs in the past two years often have got stuck, failing to recognize flawed advice as such. LLMs make confident assumptions without asking clarifying questions, and their assured tone can mislead, leading to fruitless attempts at incorrect solutions and endless loops. For this course, use LLMs only when the teacher prompts you to do so, and only to ask about stuff you have already understood.
 
 The opinion of the teacher is that a student willing to learn a new language should follow these steps:
 
