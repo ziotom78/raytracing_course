@@ -7,6 +7,7 @@
 
 | Settimana |                  Slides teoria                  |              Slides esercitazioni               |
 | --------: | :---------------------------------------------: | :---------------------------------------------: |
+<!--
 |         1 | [24 Febbraio 2025](tomasi-ray-tracing-01a.html) | [26 Febbraio 2025](tomasi-ray-tracing-01b.html) |
 |         2 |  [10 Marzo 2025](tomasi-ray-tracing-02a.html)   |  [12 Marzo 2025](tomasi-ray-tracing-02b.html)   |
 |         3 |  [17 Marzo 2025](tomasi-ray-tracing-03a.html)   |  [19 Marzo 2025](tomasi-ray-tracing-03b.html)   |
@@ -20,33 +21,34 @@
 |        11 | [19 Maggio 2025](tomasi-ray-tracing-11a.html) | [21 Maggio 2025](tomasi-ray-tracing-11b.html) |
 |        12 | [26 Maggio 2025](tomasi-ray-tracing-12a.html) | [28 Maggio 2025](tomasi-ray-tracing-12b.html) |
 |        13 | [3 Giugno 2025](tomasi-ray-tracing-13a.html) | [4 Giugno 2025](tomasi-ray-tracing-13b.html) |
+-->
 
-
-# Argomenti per l'esame (A.A. 2024/2025)
+# Argomenti per l'esame (A.A. 2025–2026)
 
 ## Parti richieste per l'esame
 
-- [Elementi di radiometria](tomasi-ray-tracing-01a.html#/radiometry)
-- [Radianza e sue proprietà](tomasi-ray-tracing-01a.html#/radiance)
-- [Emettitori diffusi ideali](tomasi-ray-tracing-01a.html#/ideal-diffusive-surface)
-- [BRDF](tomasi-ray-tracing-01a.html#/brdf)
-- [Equazione del rendering](tomasi-ray-tracing-01a.html#/rendering-equation)
-- [Sistemi di controllo delle versioni](tomasi-ray-tracing-01b.html#/vcs)
-- [Git](tomasi-ray-tracing-01b.html#git)
-- [GitHub](tomasi-ray-tracing-01b.html#github)
-- [Codifica del colore](tomasi-ray-tracing-02a.html#/color-encoding)
-- [Relazione tra radianza spettrale e colori RGB](tomasi-ray-tracing-02a.html#/relationship-between-radiance-and-rgb)
-- [Visualizzazione su dispositivi](tomasi-ray-tracing-02a.html#/display-devices)
-- [Comportamento dei monitor](tomasi-ray-tracing-02a.html#/monitor-behavior)
-- [Gestione dei colori](tomasi-ray-tracing-02b.html#/handling-colors)
-- [Test automatici](tomasi-ray-tracing-02b.html#/testing-principles)
-- [Conflitti e _merging_](tomasi-ray-tracing-02b.html#/team-work-in-git)
-- [Gestione degli errori](tomasi-ray-tracing-03a.html#/error-handling)
-- [Eccezioni](tomasi-ray-tracing-03a.html#/exceptions)
-- [Tone mapping](tomasi-ray-tracing-04a.html#/tone-mapping)
-- [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenses)
-- [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modeling-objects)
-- [Trasformazioni](tomasi-ray-tracing-05a.html#/transformations): [di scala](tomasi-ray-tracing-05a.html#/scaling-transformations), [applicate a normali](tomasi-ray-tracing-05a.html#/transformations-and-normals), [rotazioni](tomasi-ray-tracing-05a.html#/rotations), [traslazioni](tomasi-ray-tracing-05a.html#/translations)
+<!--
+-   [Elementi di radiometria](tomasi-ray-tracing-01a.html#/radiometry)
+-   [Radianza e sue proprietà](tomasi-ray-tracing-01a.html#/radiance)
+-   [Emettitori diffusi ideali](tomasi-ray-tracing-01a.html#/ideal-diffusive-surface)
+-   [BRDF](tomasi-ray-tracing-01a.html#/brdf)
+-   [Equazione del rendering](tomasi-ray-tracing-01a.html#/rendering-equation)
+-   [Sistemi di controllo delle versioni](tomasi-ray-tracing-01b.html#/vcs)
+-   [Git](tomasi-ray-tracing-01b.html#git)
+-   [GitHub](tomasi-ray-tracing-01b.html#github)
+-   [Codifica del colore](tomasi-ray-tracing-02a.html#/color-encoding)
+-   [Relazione tra radianza spettrale e colori RGB](tomasi-ray-tracing-02a.html#/relationship-between-radiance-and-rgb)
+-   [Visualizzazione su dispositivi](tomasi-ray-tracing-02a.html#/display-devices)
+-   [Comportamento dei monitor](tomasi-ray-tracing-02a.html#/monitor-behavior)
+-   [Gestione dei colori](tomasi-ray-tracing-02b.html#/handling-colors)
+-   [Test automatici](tomasi-ray-tracing-02b.html#/testing-principles)
+-   [Conflitti e _merging_](tomasi-ray-tracing-02b.html#/team-work-in-git)
+-   [Gestione degli errori](tomasi-ray-tracing-03a.html#/error-handling)
+-   [Eccezioni](tomasi-ray-tracing-03a.html#/exceptions)
+-   [Tone mapping](tomasi-ray-tracing-04a.html#/tone-mapping)
+-   [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenses)
+-   [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modeling-objects)
+-   [Trasformazioni](tomasi-ray-tracing-05a.html#/transformations): [di scala](tomasi-ray-tracing-05a.html#/scaling-transformations), [applicate a normali](tomasi-ray-tracing-05a.html#/transformations-and-normals), [rotazioni](tomasi-ray-tracing-05a.html#/rotations), [traslazioni](tomasi-ray-tracing-05a.html#/translations)
 -   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/version-numbers)
 -   [*Branch* e *pull requests*](tomasi-ray-tracing-05b.html#/pull-requests)
 -   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-06a.html#/solution-of-the-rendering-equation)
@@ -69,14 +71,16 @@
 -   [*Antialiasing*](tomasi-ray-tracing-11a.html#/antialiasing)
 -   [Test della fornace](tomasi-ray-tracing-11b.html#/furnace-test)
 -   [Terminologia nella teoria dei compilatori](tomasi-ray-tracing-12a.html#/terminology): lessico, sintassi, semantica, *token*, *look-ahead*
+-->
 
 ## Parti non richieste per l'esame
 
-- [Il formato PFM](tomasi-ray-tracing-02a.html#/pfm-file-format)
-- [File di testo e file binari](tomasi-ray-tracing-03a.html#/binary-and-text-files)
-- [Lo standard Unicode](tomasi-ray-tracing-03a.html#/unicode)
-- [File e stream](tomasi-ray-tracing-03b.html#/file-e-stream)
-- [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
+<!--
+-   [Il formato PFM](tomasi-ray-tracing-02a.html#/pfm-file-format)
+-   [File di testo e file binari](tomasi-ray-tracing-03a.html#/binary-and-text-files)
+-   [Lo standard Unicode](tomasi-ray-tracing-03a.html#/unicode)
+-   [File e stream](tomasi-ray-tracing-03b.html#/file-e-stream)
+-   [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
 -   [Numeri complessi e quaternioni](tomasi-ray-tracing-07a.html#/complex-numbers-and-quaternions)
 -   [Algebre di Clifford](tomasi-ray-tracing-07a.html#/clifford-algebras)
 -   [*Issues*](tomasi-ray-tracing-08b.html#/issues)
@@ -95,6 +99,7 @@
 -   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/comparison-of-languages)
 -   [Testing di compilatori](tomasi-ray-tracing-13a.html#/compiler-testing)
 -   [Generazione automatica di compilatori](tomasi-ray-tracing-13a.html#/automatic-generation-of-compilers)
+-->
 
 ---
 title: "Tecniche numeriche per la generazione di immagini fotorealistiche"
