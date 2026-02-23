@@ -22,11 +22,12 @@ They are available at [ziotom78.github.io/raytracing_course/](https://ziotom78.g
 
 # Schedule
 
--   Next week (March 3): no lessons as I will be at a conference
--   Week of April 14: no lessons due to midterm exams
--   Week after Easter: “special” lesson on April 23
--   Week of June 2: no lessons
--   Week of June 9: end of the course
+-   Every Monday: theory (recorded)
+-   Every Wednesday: programming (participation is mandatory)
+-   Week of March 16: we might have to skip this
+-   Week after Easter: “special” lesson on April 8
+-   Week of April 27: we might have to skip this
+-   Week of June 8: end of the course (at most)
 
 # Course Objectives
 
@@ -263,7 +264,7 @@ $$
 L(\mathbf{x} \rightarrow \Theta) = L_e\qquad\text{(constant)}.
 $$
 
-# Flux Calculation
+# Flux [W] Calculation
 
 $$
 \begin{aligned}
@@ -285,6 +286,31 @@ $$
 
 ![](./media/cornell-box-schema.svg){height=560}
 
+# Estimating the radiance
+
+![](./media/brdf-introduction.svg){height=400}
+
+- We will need to estimate the radiance entering our eye from a given direction.
+
+- Many light sources: $L(\mathbf{x} \rightarrow \Theta) = \sum_i L_i (\Psi_i \rightarrow \mathbf{x} \rightarrow \Theta)$.
+
+# From sums to integrals
+
+-   But we do not have discrete sources in general, so the discrete sum should become an integral over the solid angle:
+
+    \[
+    L(\mathbf{x} \rightarrow \Theta) = \int_{4\pi} L (\Psi \rightarrow \mathbf{x} \rightarrow \Theta)\,\mathrm{d}\omega
+    \]
+
+-   But the formula still does not work:
+
+    #.   The right-hand side is no longer normalized on the solid angle as the left side
+    #.   Part of the energy might be absorbed by $\mathbf{x}$
+    #.   If the light source is inclined, less energy can be reflected
+
+-   To account for these effect, we introduce the BRDF.
+
+
 # The BRDF {#brdf}
 
 The Bidirectional Reflectance Distribution Function (BRDF) is the ratio $f_r(x, \Psi \rightarrow \Theta)$ between the *radiance* leaving a surface along $\Theta$ and the *irradiance* (flux normalized over $A$, $\mathrm{W}/\mathrm{m}^2$) received from a direction $\Psi$:
@@ -303,7 +329,9 @@ where $\cos(N_x, \Psi)$ is the angle between the normal to $\mathrm{d}A$ and the
 
 ![](./media/brdf.svg){height=400}
 
-The BRDF is not the ratio between two \(L\)-s, because $f_r$ will be used to calculate the total outgoing radiance $L_\text{tot} \sim \int_{2\pi} L\,f\,\mathrm{d}\omega$. If $f$ were a pure number or if $A$ were "corrected" for the angle $\theta$, the integral would become more complicated.
+\[
+L_\text{tot}(x \rightarrow \Theta) = \int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta) L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
+\]
 
 # Meaning of the BRDF
 
@@ -323,18 +351,6 @@ The BRDF is not the ratio between two \(L\)-s, because $f_r$ will be used to cal
     that is, the BRDF does not change if the incoming direction is exchanged with the outgoing one.
 
 -   This property can be demonstrated using Maxwell's equations, but the demonstration is long and not particularly interesting for our purposes.
-
-# Multiple Incidence Angles
-
-Thanks to the superposition principle of e.m. fields, if there are multiple light sources $i=1\ldots N$ that insist on a surface, it is sufficient to sum the components:
-
-$$
-\begin{aligned}
-\mathrm{d}L_i(x \rightarrow \Theta) &= f_r(x, \Psi_i \rightarrow \Theta) \mathrm{d}E(x \leftarrow \Psi_i) =\\
-&= f_r(x, \Psi_i \rightarrow \Theta) L(x \leftarrow \Psi_i)\,\cos(N_x, \Psi_i)\,\mathrm{d}\omega_{\Psi_i},\\
-L_\text{tot}(x \rightarrow \Theta) &= \int_{\Omega_x} f_r(x, \Psi \rightarrow \Theta) L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
-\end{aligned}
-$$
 
 # Ideal Diffusive Surface {#ideal-diffusive-surface}
 
@@ -371,11 +387,11 @@ where $L_e$ is the radiance emitted by the surface at point $x$ along the direct
 
 # Using LLMs in this course
 
--   Do not use them for the first ~6 or 7 weeks. If you are not yet familiar with the language, they will mislead you
+-   Try not to use them for the first month or so. If you are not yet familiar with the language, LLMs will mislead you
 
 -   For now, rely on traditional media: manuals, official documentation, and high-quality YouTube videos
 
--   I am not asking you to avoid LLMs forever. They are powerful! I want you to build a foundation first so you can use them effectively later.
+-   **I am not asking you to avoid LLMs forever**. They are powerful! I want you to build a foundation first so you can use them effectively later.
 
 # A good advice
 
@@ -396,6 +412,8 @@ See [this post](https://news.ycombinator.com/item?id=43953913) on Hacker News by
 
 # A few examples
 
+-   LLMs do not ask questions! See [this blog post](https://kix.dev/two-things-llm-coding-agents-are-still-bad-at/) and [arxiv.org:2503.22674](https://arxiv.org/abs/2503.22674)
+
 -   Using a POSIX-first library in a multiplatform C++ code (LLMs suggested a solution that looked correct but would not compile on Windows, yet the README had the solution!)
 
 -   Implementing mathematical operators on vectors, points, and normals in Julia (LLMs suggested to implement them using a set of `if`, which is discouraged in the Julia User’s Manual because it prevents many optimizations)
@@ -407,6 +425,12 @@ See [this post](https://news.ycombinator.com/item?id=43953913) on Hacker News by
 ---
 
 ![](media/gemini slip.webp)
+
+---
+
+![](media/car-wash.png){height=600px}
+
+[I want to wash my car. The car wash is 50 meters away. Should I walk or drive?](https://mastodon.world/@knowmadd/116072773118828295)
 
 ---
 

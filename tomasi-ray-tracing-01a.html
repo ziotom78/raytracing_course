@@ -94,11 +94,12 @@ href="mailto:maurizio.tomasi@unimi.it">maurizio.tomasi@unimi.it</a>)</p></li>
 <section id="schedule" class="slide level1">
 <h1>Schedule</h1>
 <ul>
-<li>Next week (March 3): no lessons as I will be at a conference</li>
-<li>Week of April 14: no lessons due to midterm exams</li>
-<li>Week after Easter: “special” lesson on April 23</li>
-<li>Week of June 2: no lessons</li>
-<li>Week of June 9: end of the course</li>
+<li>Every Monday: theory (recorded)</li>
+<li>Every Wednesday: programming (participation is mandatory)</li>
+<li>Week of March 16: we might have to skip this</li>
+<li>Week after Easter: “special” lesson on April 8</li>
+<li>Week of April 27: we might have to skip this</li>
+<li>Week of June 8: end of the course (at most)</li>
 </ul>
 </section>
 <section id="course-objectives" class="slide level1">
@@ -411,8 +412,8 @@ uniformly in all directions:</p>
 L(\mathbf{x} \rightarrow \Theta) = L_e\qquad\text{(constant)}.
 </span></p>
 </section>
-<section id="flux-calculation" class="slide level1">
-<h1>Flux Calculation</h1>
+<section id="flux-w-calculation" class="slide level1">
+<h1>Flux [W] Calculation</h1>
 <p><span class="math display">
 \begin{aligned}
 \Phi &amp;= \iint_{A, \Omega} L(\mathbf{x} \rightarrow
@@ -439,6 +440,37 @@ height="560" /></p>
 <h1>«Cornell box»</h1>
 <p><img data-src="./media/cornell-box-schema.svg" height="560" /></p>
 </section>
+<section id="estimating-the-radiance" class="slide level1">
+<h1>Estimating the radiance</h1>
+<p><img data-src="./media/brdf-introduction.svg" height="400" /></p>
+<ul>
+<li><p>We will need to estimate the radiance entering our eye from a
+given direction.</p></li>
+<li><p>Many light sources: <span class="math inline">L(\mathbf{x}
+\rightarrow \Theta) = \sum_i L_i (\Psi_i \rightarrow \mathbf{x}
+\rightarrow \Theta)</span>.</p></li>
+</ul>
+</section>
+<section id="from-sums-to-integrals" class="slide level1">
+<h1>From sums to integrals</h1>
+<ul>
+<li><p>But we do not have discrete sources in general, so the discrete
+sum should become an integral over the solid angle:</p>
+<p><span class="math display">
+L(\mathbf{x} \rightarrow \Theta) = \int_{4\pi} L (\Psi \rightarrow
+\mathbf{x} \rightarrow \Theta)\,\mathrm{d}\omega
+</span></p></li>
+<li><p>But the formula still does not work:</p>
+<ol>
+<li>The right-hand side is no longer normalized on the solid angle as
+the left side</li>
+<li>Part of the energy might be absorbed by <span
+class="math inline">\mathbf{x}</span></li>
+<li>If the light source is inclined, less energy can be reflected</li>
+</ol></li>
+<li><p>To account for these effect, we introduce the BRDF.</p></li>
+</ul>
+</section>
 <section id="brdf" class="slide level1">
 <h1>The BRDF</h1>
 <p>The Bidirectional Reflectance Distribution Function (BRDF) is the
@@ -463,15 +495,11 @@ and the incident direction <span class="math inline">\Psi</span>.</p>
 <section id="the-brdf" class="slide level1">
 <h1>The BRDF</h1>
 <p><img data-src="./media/brdf.svg" height="400" /></p>
-<p>The BRDF is not the ratio between two <span
-class="math inline">L</span>-s, because <span
-class="math inline">f_r</span> will be used to calculate the total
-outgoing radiance <span class="math inline">L_\text{tot} \sim
-\int_{2\pi} L\,f\,\mathrm{d}\omega</span>. If <span
-class="math inline">f</span> were a pure number or if <span
-class="math inline">A</span> were “corrected” for the angle <span
-class="math inline">\theta</span>, the integral would become more
-complicated.</p>
+<p><span class="math display">
+L_\text{tot}(x \rightarrow \Theta) = \int_{\Omega_x} f_r(x, \Psi
+\rightarrow \Theta) L(x \leftarrow \Psi)\,\cos(N_x,
+\Psi)\,\mathrm{d}\omega_\Psi.
+</span></p>
 </section>
 <section id="meaning-of-the-brdf" class="slide level1">
 <h1>Meaning of the BRDF</h1>
@@ -509,23 +537,6 @@ exchanged with the outgoing one.</p></li>
 the demonstration is long and not particularly interesting for our
 purposes.</p></li>
 </ul>
-</section>
-<section id="multiple-incidence-angles" class="slide level1">
-<h1>Multiple Incidence Angles</h1>
-<p>Thanks to the superposition principle of e.m. fields, if there are
-multiple light sources <span class="math inline">i=1\ldots N</span> that
-insist on a surface, it is sufficient to sum the components:</p>
-<p><span class="math display">
-\begin{aligned}
-\mathrm{d}L_i(x \rightarrow \Theta) &amp;= f_r(x, \Psi_i \rightarrow
-\Theta) \mathrm{d}E(x \leftarrow \Psi_i) =\\
-&amp;= f_r(x, \Psi_i \rightarrow \Theta) L(x \leftarrow
-\Psi_i)\,\cos(N_x, \Psi_i)\,\mathrm{d}\omega_{\Psi_i},\\
-L_\text{tot}(x \rightarrow \Theta) &amp;= \int_{\Omega_x} f_r(x, \Psi
-\rightarrow \Theta) L(x \leftarrow \Psi)\,\cos(N_x,
-\Psi)\,\mathrm{d}\omega_\Psi.
-\end{aligned}
-</span></p>
 </section>
 <section id="ideal-diffusive-surface" class="slide level1">
 <h1>Ideal Diffusive Surface</h1>
@@ -572,13 +583,13 @@ the direction <span class="math inline">\Theta</span>.</p>
 <section id="using-llms-in-this-course" class="slide level1">
 <h1>Using LLMs in this course</h1>
 <ul>
-<li><p>Do not use them for the first ~6 or 7 weeks. If you are not yet
-familiar with the language, they will mislead you</p></li>
+<li><p>Try not to use them for the first month or so. If you are not yet
+familiar with the language, LLMs will mislead you</p></li>
 <li><p>For now, rely on traditional media: manuals, official
 documentation, and high-quality YouTube videos</p></li>
-<li><p>I am not asking you to avoid LLMs forever. They are powerful! I
-want you to build a foundation first so you can use them effectively
-later.</p></li>
+<li><p><strong>I am not asking you to avoid LLMs forever</strong>. They
+are powerful! I want you to build a foundation first so you can use them
+effectively later.</p></li>
 </ul>
 </section>
 <section id="a-good-advice" class="slide level1">
@@ -613,6 +624,10 @@ href="https://www.ithron.com/">Ithron Research</a>.</p>
 <section id="a-few-examples" class="slide level1">
 <h1>A few examples</h1>
 <ul>
+<li><p>LLMs do not ask questions! See <a
+href="https://kix.dev/two-things-llm-coding-agents-are-still-bad-at/">this
+blog post</a> and <a
+href="https://arxiv.org/abs/2503.22674">arxiv.org:2503.22674</a></p></li>
 <li><p>Using a POSIX-first library in a multiplatform C++ code (LLMs
 suggested a solution that looked correct but would not compile on
 Windows, yet the README had the solution!)</p></li>
@@ -629,6 +644,13 @@ Clifford algebras (see next slide)</p></li>
 <section class="slide level1">
 
 <p><img data-src="media/gemini%20slip.webp" /></p>
+</section>
+<section class="slide level1">
+
+<p><img data-src="media/car-wash.png" height="600" /></p>
+<p><a href="https://mastodon.world/@knowmadd/116072773118828295">I want
+to wash my car. The car wash is 50 meters away. Should I walk or
+drive?</a></p>
 </section>
 <section class="slide level1">
 
