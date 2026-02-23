@@ -7,20 +7,20 @@
 
 | Settimana |                  Slides teoria                  |              Slides esercitazioni               |
 | --------: | :---------------------------------------------: | :---------------------------------------------: |
+|         1 | [23 Febbraio 2026](tomasi-ray-tracing-01a.html) | [25 Febbraio 2026](tomasi-ray-tracing-01b.html) |
 <!--
-|         1 | [24 Febbraio 2025](tomasi-ray-tracing-01a.html) | [26 Febbraio 2025](tomasi-ray-tracing-01b.html) |
-|         2 |  [10 Marzo 2025](tomasi-ray-tracing-02a.html)   |  [12 Marzo 2025](tomasi-ray-tracing-02b.html)   |
-|         3 |  [17 Marzo 2025](tomasi-ray-tracing-03a.html)   |  [19 Marzo 2025](tomasi-ray-tracing-03b.html)   |
-|         4 |  [24 Marzo 2025](tomasi-ray-tracing-04a.html)   |  [26 Marzo 2025](tomasi-ray-tracing-04b.html)   |
-|         5 | [31 Marzo 2025](tomasi-ray-tracing-05a.html) | [2 Aprile 2025](tomasi-ray-tracing-05b.html) |
-|         6 | [7 Aprile 2025](tomasi-ray-tracing-06a.html) | [9 Aprile 2025](tomasi-ray-tracing-06b.html) |
-|         7 | [23 Aprile 2025](tomasi-ray-tracing-07a.html) |  |
-|         8 | [28 Aprile 2025](tomasi-ray-tracing-08a.html) | [30 Aprile 2025](tomasi-ray-tracing-08b.html) |
-|         9 | [6 Maggio 2025](tomasi-ray-tracing-09a.html) | — |
-|        10 | [12 Maggio 2025](tomasi-ray-tracing-10a.html) | [14 Maggio 2025](tomasi-ray-tracing-10b.html) |
-|        11 | [19 Maggio 2025](tomasi-ray-tracing-11a.html) | [21 Maggio 2025](tomasi-ray-tracing-11b.html) |
-|        12 | [26 Maggio 2025](tomasi-ray-tracing-12a.html) | [28 Maggio 2025](tomasi-ray-tracing-12b.html) |
-|        13 | [3 Giugno 2025](tomasi-ray-tracing-13a.html) | [4 Giugno 2025](tomasi-ray-tracing-13b.html) |
+|         2 |  [10 Marzo 2026](tomasi-ray-tracing-02a.html)   |  [12 Marzo 2026](tomasi-ray-tracing-02b.html)   |
+|         3 |  [17 Marzo 2026](tomasi-ray-tracing-03a.html)   |  [19 Marzo 2026](tomasi-ray-tracing-03b.html)   |
+|         4 |  [24 Marzo 2026](tomasi-ray-tracing-04a.html)   |  [26 Marzo 2026](tomasi-ray-tracing-04b.html)   |
+|         5 | [31 Marzo 2026](tomasi-ray-tracing-05a.html) | [2 Aprile 2026](tomasi-ray-tracing-05b.html) |
+|         6 | [7 Aprile 2026](tomasi-ray-tracing-06a.html) | [9 Aprile 2026](tomasi-ray-tracing-06b.html) |
+|         7 | [23 Aprile 2026](tomasi-ray-tracing-07a.html) |  |
+|         8 | [28 Aprile 2026](tomasi-ray-tracing-08a.html) | [30 Aprile 2026](tomasi-ray-tracing-08b.html) |
+|         9 | [6 Maggio 2026](tomasi-ray-tracing-09a.html) | — |
+|        10 | [12 Maggio 2026](tomasi-ray-tracing-10a.html) | [14 Maggio 2026](tomasi-ray-tracing-10b.html) |
+|        11 | [19 Maggio 2026](tomasi-ray-tracing-11a.html) | [21 Maggio 2026](tomasi-ray-tracing-11b.html) |
+|        12 | [26 Maggio 2026](tomasi-ray-tracing-12a.html) | [28 Maggio 2026](tomasi-ray-tracing-12b.html) |
+|        13 | [3 Giugno 2026](tomasi-ray-tracing-13a.html) | [4 Giugno 2026](tomasi-ray-tracing-13b.html) |
 -->
 
 # Argomenti per l'esame (A.A. 2025–2026)
