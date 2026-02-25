@@ -1,6 +1,6 @@
 # Miscellanea
 
--   Communicate to the teacher by the next exercise the composition of your group and the chosen language
+-   Communicate to the teacher by next week the composition of your group and the chosen language
 
 -   The exercises end at 12:30, but if you complete the work early you can leave earlier
 
@@ -85,11 +85,11 @@ At the end of the example, the VCS database contains two snapshots:
 
 # A simple VCS (1/3)
 
--   We can create a simple VCS in Linux/Mac OS X using the Bash/Zsh shell and two command-line programs: `date` (prints date and time) and `whoami` (prints the user's name).
+-   We can create a simple VCS in UNIX using the Bash shell and two command-line programs: `date` (prints date and time) and `whoami` (prints the user's name).
 
     ```sh
     $ date +%Y-%m-%d  # Date in YEAR-MONTH-DAY format
-    2025-02-26
+    2026-02-25
     $ whoami
     tomasi
     ```
@@ -98,7 +98,7 @@ At the end of the example, the VCS database contains two snapshots:
 
     ```sh
     $ echo "Hello, I am $(whoami) and today is $(date +%Y-%m-%d)"
-    Hello, I am tomasi and today is 2025-02-26
+    Hello, I am tomasi and today is 2026-02-25
     ```
 
 # A simple VCS (2/3)
@@ -161,7 +161,7 @@ echo "File \"$filename\" created successfully"
 
 -   Usually, modifications affect one or just a few files at a time.
 
--   However, our implementation with `tar` saves **all files** every time: this risks occupying a lot of space, and it is not necessary!
+-   But our implementation saves **all files** every time: what a waste!
 
 -   There is also another issue: if the database contained the files
 
@@ -193,7 +193,7 @@ echo "File \"$filename\" created successfully"
 
 # Problems with our VCS (4/4)
 
--   Our system does not provide any control when multiple people work on the project.
+-   We do not provide any control for multiple people working at the same time.
 
 -   Consider this situation:
 
@@ -385,6 +385,7 @@ Since Git is a distributed system, when you connect to a remote server you need 
 # Git-based hosting software
 
 -   [GitHub](https://github.com) (Microsoft): the most widespread
+-   [CodeForge](https://codeberg.org/) (Non-profit, EU-based)
 -   [GitLab](https://about.gitlab.com/) (GitLab Inc.)
 -   [BitBucket](https://bitbucket.org/product) (Atlassian)
 -   [SourceForge](https://sourceforge.net/) (Slashdot Media): the first to have widespread use, now little used
@@ -442,7 +443,18 @@ It is interesting to note that GitHub could provide all these features based on 
 
 # Hints for C++
 
-# Instructions
+# Picking a build system
+
+-   You are advised **not** to use Make to build your program! Make is a very old program (it dates back to the ’70s) and is not supported by modern C++
+
+-   The most widespread solution to build C++ programs is CMake. Other options are:
+
+    -   Meson <https://mesonbuild.com/>
+    -   Xmake <https://xmake.io/>
+
+-   My favourite is Xmake, but you are free to pick whatever you want! Only be sure that your development environment support it
+
+# Instructions with CMake
 
 -   Install CMake; on Linux Debian/Ubuntu/Mint just run
 
@@ -469,7 +481,7 @@ project(hello_world
     LANGUAGES CXX
 )
 
-set(CMAKE_CXX_STANDARD 20)   # Pick the standard you like
+set(CMAKE_CXX_STANDARD 23)   # Pick the standard you like
 
 # Our "project" will be able to build an executable out of a C++ source file
 add_executable(hello_world src/main.cpp)
@@ -479,7 +491,7 @@ add_executable(hello_world src/main.cpp)
 
 <asciinema-player src="cast/cmake-example.cast" rows="20" cols="94" font-size="medium"></asciinema-player>
 
-(In your case, CMake might output `build.ninja` instead of `Makefile`: in this case, run `ninja` instead of `make`.)
+(Depending on your system, you might need to run `ninja` instead of `make`.)
 
 # Bibliography for CMake
 
@@ -487,11 +499,61 @@ add_executable(hello_world src/main.cpp)
 - [*Professional CMake*](https://crascit.com/professional-cmake/) (C. Scott)
 - [*An Introduction to Modern CMake*](https://cliutils.gitlab.io/modern-cmake/)
 
+# Xmake
+
+-   A nice alternative to CMake, although not as widespread, is [Xmake](https://xmake.io/), which is much easier to use.
+
+-   Once you install Xmake (`sudo apt install xmake`), you can create a new project typing
+
+    ```sh
+    xmake create PROJECTNAME
+    ```
+
+    This will create a folder `PROJECTNAME` and will add three files: a `.cpp` file, a `xmake.lua` file, and a `.gitignore` file.
+
+# Xmake and C++ modules
+
+-   Xmake offers a very good support for [C++ modules](https://en.cppreference.com/w/cpp/language/modules.html). The following code in `xmake.lua` will enable C++23 features:
+
+    ```lua
+    set_languages("c++23")
+
+    add_rules("mode.debug", "mode.release")
+
+    target("xmake_test")
+        set_kind("binary")
+        add_files("src/*.cpp", "src/*.cppm")
+        set_policy("build.c++.modules", true)
+    ```
+
+-   Support for modules is still experimental in C++ compilers, although the situation is getting better and better. Be sure to use a recent compiler!
+
+# Xmake and C++ modules
+
+-   Here is a short example of C++ modules. File `hello_module.cppm`:
+
+    ```c++
+    module;
+    export module Hello;
+
+    import std;
+
+    export void hello_world() { std::println("Hello, world!"); }
+    ```
+
+-   And here is the file `main.cpp` (note: [no `return`](https://en.cppreference.com/w/cpp/language/main_function.html)!):
+
+    ```c++
+    import Hello;
+
+    int main() { hello_world(); }
+    ```
+
 # Formatting
 
 -   If you use [CLion](https://www.jetbrains.com/clion/) (highly recommended!), you can format the code using the *Code*/*Reformat code* command (Shift+Alt+L)
 
--   Otherwise, there is the command-line program `clang-format`; install it with `sudo apt install clang-format`. If you write this:
+-   Otherwise, you can use `clang-format`; install it with `sudo apt install clang-format`. If you write this:
 
     ```c++
     int sum  ( int a,int b    )    {    return a+ b;}
@@ -518,7 +580,7 @@ add_executable(hello_world src/main.cpp)
 
 # Hints
 
--   Create an empty application and the `.gitignore` file; if you use `dotnet` from the command line, run
+-   Create an application and `.gitignore` using `dotnet`:
 
     ```sh
     $ dotnet new console
@@ -527,7 +589,7 @@ add_executable(hello_world src/main.cpp)
 
     If you use Rider, make sure to enable Git when you create the project.
 
--   The application already prints `Hello World!`: change the message to `Hello, wold!` (otherwise today's exercise makes no sense!)
+-   Change the message to `Hello, wold!`
 
 -   Compile and run; from the command line, run
 
@@ -695,7 +757,7 @@ add_executable(hello_world src/main.cpp)
     $ nimble run      # Or: dub run, or: cargo run
     ```
 
--   For both [D](https://intellij-dlanguage.github.io/) and [Nim](https://plugins.jetbrains.com/plugin/15128-nim) there are plugins for IntelliJ IDEA, JetBrains' Java IDE. For Rust, you can use CLion with the [Rust](https://plugins.jetbrains.com/plugin/8182-rust/docs) plugin.
+-   For both [D](https://intellij-dlanguage.github.io/) and [Nim](https://plugins.jetbrains.com/plugin/15128-nim) there are plugins for IntelliJ IDEA, JetBrains' Java IDE. For Rust, you can use [RustRover](https://www.jetbrains.com/rust/).
 
 ---
 title: "Laboratory 1: Git and GitHub"
