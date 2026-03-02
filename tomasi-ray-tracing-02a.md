@@ -83,7 +83,7 @@
 
 # Types of Cones
 
--   There are three types of cones:
+-   There are three types of cones ([probably](https://en.wikipedia.org/wiki/Tetrachromacy)):
 
     1.  Type S (*short*): sensitive to blue
     2.  Type M (*medium*): sensitive to green
