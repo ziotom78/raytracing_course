@@ -1,3 +1,25 @@
+# Suggested calendar
+
+<small>
+
+| Week        | Topic                                  |
+|-------------|----------------------------------------|
+| March, 2nd  | Colors                                 |
+| March, 9th  | HDR files                              |
+| March, 16th | **No classes!**                        |
+| March, 23rd | Tone mapping                           |
+| March, 30th | Linear algebra                         |
+| April, 8th  | Clifford algebras (only on Wednesday!) |
+| April, 13th | 3D projections                         |
+| April, 20th | Geometrical shapes #1                  |
+| April, 27th | Geometrical shapes #2                  |
+| May, 4th    | Path tracing #1                        |
+| May, 11th   | Path tracing #2                        |
+| May, 18th   | Compilers #1                           |
+| May, 25th   | Compilers #2                           |
+
+</small>
+
 # Previous Lesson
 
 -   **Radiance** (flux $\Phi$ in Watts normalized on the projected surface per unit solid angle):
@@ -17,11 +39,11 @@
 
 # Color Encoding {#color-encoding}
 
--   The quantities $\Phi$, $L$, etc. are all dependent on the wavelength $\lambda$ (radiance → *spectral radiance*)
+-   The quantities $\Phi$, $L$, etc. are all wavelength-dependent $\lambda$ (radiance → *spectral radiance*)
 
 -   In numerical codes that simulate light propagation, we have to solve two problems:
 
-    1.  A function $f(\lambda)$ dependent on the wavelength has an infinite number of degrees of freedom: how to represent it numerically?
+    1.  A function $f(\lambda)$ dependent on the wavelength has an infinite number of degrees of freedom: how can we represent it numerically?
 
     2.  In our case, radiance is perceived as a color: but how do you specify a color when controlling a monitor or a printer?
 
@@ -31,7 +53,7 @@
 
 # Realistic Emissions
 
--   **One** number is not enough to encode a color: this is only true for an ideal black body (where temperature `T` is sufficient)!
+-   **One** number is not enough to encode a color: this is only true for an ideal black body (where the temperature $T$ is a sufficient descriptor)!
 
 -   Emission spectra of real-world objects can be very complex (see previous lesson):
 
@@ -57,7 +79,7 @@
 
 -   Rods are not sensitive to SPD, and are used mainly in low light conditions.
 
--   Obviously, as today we are discussing colors, we are interested in cones!
+-   Since our focus today is on color, we will concentrate on cones.
 
 # Types of Cones
 
@@ -95,11 +117,14 @@
 
 -   The phenomenon is called *metamerism*, and the two colors associated with the radiation hitting the eye are said to be *metameric*
 
+-   Metamerism suggests that our vision applies a "lossy compression" of the input signal, converting it into a simpler representation. This is why ray-tracing is computationally feasible!
+
+
 # RGB Encoding
 
 -   There are various color encodings, based on triplets of scalar quantities: XYZ, HSV, HSL, RGB…
 
--   Widely used encodings are RGB (monitors) and CYMK (printers)
+-   Widely used encodings are RGB (monitors) and CMYK (printers)
 
 -   In this course we will only deal with RGB encoding
 
@@ -107,9 +132,9 @@
 
 -   RGB encoding uses three scalar quantities to identify a color: red, green, blue (**R**ed, **G**reen, **B**lue).
 
--   Based on the *additive* synthesis of colors, which is perfect for monitors (printers use *subtractive* synthesis, and use CYMK encoding).
+-   Based on the *additive* synthesis of colors, which is perfect for monitors (printers use *subtractive* synthesis, and use CMYK encoding).
 
--   Linked to the operation of old cathode ray tube televisions and replicated on modern LED and LCD screens
+-   Inherited from the operation of cathode ray tube (CRT) televisions and replicated on modern LED and LCD screens
 
 ![](./media/lcd-pixels-closeup.png){height=200px}
 
@@ -196,11 +221,11 @@ document.addEventListener('rgb-colors-1.0', function() {
     \end{aligned}
     $$
 
--   We want to convert the equation in $L_\lambda$ into three equations that provide $R$, $G$, $B$.
+-   We want to convert the equation in $L_\lambda$ into three equations that provide the three components $R$, $G$, $B$ that “drive” each pixel on the monitor.
 
 ---
 
-If $f_{r,\lambda} = f_{r, X}$ is constant in the band $X(\lambda)$, then
+If $f_{r,\lambda} = f_{r, X}$ is constant in the band $X(\lambda)$ (**big approximation!**), then
 
 $$
 \begin{aligned}
@@ -236,7 +261,7 @@ $$
 
 -   Each point is controlled by an RGB triplet of values
 
--   The possible values range in a limited interval
+-   The possible values are constrained within a finite rangeinterval
 
 -   Realism in the emission of $L$ by a monitor is therefore generally impossible
 
@@ -248,7 +273,7 @@ $$
 
 # RGB Color Encoding
 
--   Today all monitors and graphics cards support the so-called "16 million color encoding"
+-   Today all monitors and graphics cards support the so-called "24-bit color depth" (16 millions of colors!)
 
 -   An RGB triplet is encoded by a computer using three 8-bit integer values; for example, in C++ one could use a type like the following:
 
@@ -335,7 +360,7 @@ document.addEventListener('rgb-colors', function() {
 
 -   In modern monitors, of course $I_\text{max} = 255$, and $I$ is an *integer* number.
 
-# Trend of $\gamma$
+# Gamma response curves
 
 ```{.gnuplot im_fmt="svg" im_out="img" im_fname="gamma-curve"}
 set terminal svg font 'Helvetica,24'
@@ -368,7 +393,7 @@ $$
                 id="monitor-calibration-canvas"
                 width="300px"
                 height="300px"
-                style="image-rendering: pixelated; image-rendering: crisp-edges;">
+                style="image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges; image-rendering: -webkit-optimize-contrast; transform: translateZ(0);">
             </canvas>
         </td>
         <td>
@@ -447,14 +472,27 @@ document.addEventListener('monitor-calibration-state', function() {
   var canvas = document.getElementById("monitor-calibration-canvas");
   checker_canvas_ctx = canvas.getContext("2d");
 
+  // Scale factor of the display
+  const dpr = window.devicePixelRatio || 1;
+
+  const logicalWidth = 300;
+  const logicalHeight = 300;
+
+  canvas.width = Math.round(widthCSS * dpr);
+  canvas.height = Math.round(heightCSS * dpr);
+
+  // Force the visualized size through CSS
+  canvas.style.width = logicalWidth + "px";
+  canvas.style.height = logicalHeight + "px";
+
+  checker_canvas_width = canvas.width;
+  checker_canvas_height = canvas.height;
+
   // Disable antialiasing
   checker_canvas_ctx.imageSmoothingEnabled = false;
   checker_canvas_ctx.webkitImageSmoothingEnabled = false;
   checker_canvas_ctx.mozImageSmoothingEnabled = false;
   checker_canvas_ctx.msImageSmoothingEnabled = false;
-
-  checker_canvas_width = canvas.width;
-  checker_canvas_height = canvas.height;
 
   canvas = document.getElementById("gamma-plot");
   gamma_canvas_ctx = canvas.getContext("2d");
@@ -462,22 +500,22 @@ document.addEventListener('monitor-calibration-state', function() {
   gamma_canvas_height = canvas.height;
 
   // Create checkered pattern pixel data
-  const size = checker_canvas_width - 100;
+  const size = checker_canvas_width - Math.floor(100 * dpr);
   black_white_checkers = checker_canvas_ctx.createImageData(size, size);
   const data = black_white_checkers.data;
 
   for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
           const index = (y * size + x) * 4;
-          const color = (x % 2) ^ (y % 2) ? 255 : 0; // Alternating pattern
+          // Alternating pattern
+          const color = (x % 2) ^ (y % 2) ? 255 : 0;
 
-          data[index] = color;      // Red
-          data[index + 1] = color;  // Green
-          data[index + 2] = color;  // Blue
-          data[index + 3] = 255;    // Alpha (fully opaque)
+          data[index] = color;
+          data[index + 1] = color;
+          data[index + 2] = color;
+          data[index + 3] = 255;
       }
   }
-
   refresh_gamma_text(0.5);
 });
 </script>
@@ -485,13 +523,20 @@ document.addEventListener('monitor-calibration-state', function() {
 # Monitor Response
 
 -   Therefore, when we have a color expressed as an RGB triplet of real numbers, to display the color on a monitor it is necessary to perform the conversion using the $\gamma$ factor
+-   (Real monitors use a slightly more complex formula that assumes linear behaviour for small intensities, but we will neglect it.)
 -   The RGB color converted with $\gamma$ is an "[sRGB triplet](https://en.wikipedia.org/wiki/SRGB)".
 -   The conversion is **not linear**, as is evident from its analytical expression
 -   What we have seen for the conversion $L_\lambda \rightarrow (R, G, B)$ does not apply to sRGB: we cannot write the rendering equation directly in the sRGB space!
 
+# What our software should do
+
+-   The monitor applies a *gamma expansion*, which makes mid-tones appear darker
+-   Therefore, our software must apply *gamma encoding* to ensure mid-tones are displayed with the correct intensity.
+-   This requires implementing the inverse of the monitor’s expansion: we must apply a power-law transformation with exponent $1/\gamma$ to the linear radiance values computed by our code before outputting them to the display.
+
 # Conversion from RGB to sRGB {#from-rgb-to-srgb}
 
--   A simple approximation for the conversion from RGB, $(R, G, B)$, to sRGB, $(r, g, b)$, is the following:
+-   A simple approximation for the conversion from RGB, $(R, G, B)$, to sRGB, $(r, g, b)$ (*power-law gamma approximation*), is the following:
     $$
     \begin{aligned}
     r &= \left[k\,R^{1/\gamma}\right],\\
@@ -500,7 +545,7 @@ document.addEventListener('monitor-calibration-state', function() {
     \end{aligned}
     $$
     where $[\cdot]$ indicates rounding to integer, and $k$ is a normalization constant.
--   Determining a "good" value for $k$ is critical!
+-   Determining an optimal value for $k$ is crucial!
 
 # Determination of $k$
 
@@ -515,7 +560,7 @@ document.addEventListener('monitor-calibration-state', function() {
 
 # From RGB to sRGB
 
--   The most commonly used files for images (PNG, Jpeg, TIFF…) all use sRGB encoding
+-   Standard image file formats (PNG, JPEG, TIFF…) all use sRGB encoding
 
 -   If we want our program to produce easy-to-use images, we must therefore convert the result of the rendering equation from RGB to sRGB.
 
@@ -526,10 +571,10 @@ document.addEventListener('monitor-calibration-state', function() {
 There are two categories of images that are relevant for this course:
 
 LDR (Low-Dynamic Range) Images
-: They encode colors using the sRGB system: the three components R, G, B are therefore integers, usually in the range 0–255. All the most common graphic formats (JPEG, PNG, GIF, etc.) belong to this type.
+: These store color components as integers using the sRGB system. The usual range is 0–255 (8 bit per component). All the most common graphic formats (JPEG, PNG, GIF, etc.) belong to this type.
 
 HDR (High-Dynamic Range) Images
-: They encode colors using the RGB or sRGB system, but the three components R, G, B are floating-point numbers and therefore cover a large dynamic range; to display them, it is therefore necessary to apply *tone mapping*. Examples of this format are OpenEXR and PFM.
+: These store components as floating-point numbers using the (linear) RGB system to represent the intensity of the scene without clipping. To display them, they must undergo *tone mapping* and gamma encoding. Examples of this format are OpenEXR and PFM.
 
 # How your code will work
 
@@ -567,7 +612,7 @@ digraph "" {
 
 -   LDR format, very common on Unix systems.
 
--   You can read and write it using [NetPBM](http://netpbm.sourceforge.net/) or [ImageMagick](https://imagemagick.org/index.php). The second is the most common, and can be installed under Ubuntu with
+-   You can read and write it using [NetPBM](http://netpbm.sourceforge.net/) or [ImageMagick](https://imagemagick.org/index.php). The latter is the most common; it can be installed under Ubuntu with
 
     ```text
     $ sudo apt install imagemagick
@@ -617,7 +662,7 @@ P3
 
 -   **Very** important for this course!
 
--   It is not so well supported: under Ubuntu there is only `pftools`, which is installed with
+-   It has limited native support in standard image viewers: under Ubuntu there is only `pftools`, which is installed with
 
     ```text
     $ sudo apt install pftools

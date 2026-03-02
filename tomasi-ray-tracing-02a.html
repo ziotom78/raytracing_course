@@ -98,7 +98,7 @@
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -114,7 +114,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -129,6 +129,73 @@ href="mailto:maurizio.tomasi@unimi.it"
 class="email">maurizio.tomasi@unimi.it</a></p>
 </section>
 
+<section id="suggested-calendar" class="slide level1">
+<h1>Suggested calendar</h1>
+<p><small></p>
+<table>
+<thead>
+<tr>
+<th>Week</th>
+<th>Topic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>March, 2nd</td>
+<td>Colors</td>
+</tr>
+<tr>
+<td>March, 9th</td>
+<td>HDR files</td>
+</tr>
+<tr>
+<td>March, 16th</td>
+<td><strong>No classes!</strong></td>
+</tr>
+<tr>
+<td>March, 23rd</td>
+<td>Tone mapping</td>
+</tr>
+<tr>
+<td>March, 30th</td>
+<td>Linear algebra</td>
+</tr>
+<tr>
+<td>April, 8th</td>
+<td>Clifford algebras (only on Wednesday!)</td>
+</tr>
+<tr>
+<td>April, 13th</td>
+<td>3D projections</td>
+</tr>
+<tr>
+<td>April, 20th</td>
+<td>Geometrical shapes #1</td>
+</tr>
+<tr>
+<td>April, 27th</td>
+<td>Geometrical shapes #2</td>
+</tr>
+<tr>
+<td>May, 4th</td>
+<td>Path tracing #1</td>
+</tr>
+<tr>
+<td>May, 11th</td>
+<td>Path tracing #2</td>
+</tr>
+<tr>
+<td>May, 18th</td>
+<td>Compilers #1</td>
+</tr>
+<tr>
+<td>May, 25th</td>
+<td>Compilers #2</td>
+</tr>
+</tbody>
+</table>
+<p></small></p>
+</section>
 <section id="previous-lesson" class="slide level1">
 <h1>Previous Lesson</h1>
 <ul>
@@ -152,15 +219,15 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 <h1>Color Encoding</h1>
 <ul>
 <li><p>The quantities <span class="math inline">\Phi</span>, <span
-class="math inline">L</span>, etc. are all dependent on the wavelength
-<span class="math inline">\lambda</span> (radiance → <em>spectral
+class="math inline">L</span>, etc. are all wavelength-dependent <span
+class="math inline">\lambda</span> (radiance → <em>spectral
 radiance</em>)</p></li>
 <li><p>In numerical codes that simulate light propagation, we have to
 solve two problems:</p>
 <ol type="1">
 <li><p>A function <span class="math inline">f(\lambda)</span> dependent
-on the wavelength has an infinite number of degrees of freedom: how to
-represent it numerically?</p></li>
+on the wavelength has an infinite number of degrees of freedom: how can
+we represent it numerically?</p></li>
 <li><p>In our case, radiance is perceived as a color: but how do you
 specify a color when controlling a monitor or a printer?</p></li>
 </ol></li>
@@ -174,8 +241,8 @@ specify a color when controlling a monitor or a printer?</p></li>
 <h1>Realistic Emissions</h1>
 <ul>
 <li><p><strong>One</strong> number is not enough to encode a color: this
-is only true for an ideal black body (where temperature <code>T</code>
-is sufficient)!</p></li>
+is only true for an ideal black body (where the temperature <span
+class="math inline">T</span> is a sufficient descriptor)!</p></li>
 <li><p>Emission spectra of real-world objects can be very complex (see
 previous lesson):</p>
 <center>
@@ -208,8 +275,8 @@ color of light (~5 million per eye)</p></li>
 </ol></li>
 <li><p>Rods are not sensitive to SPD, and are used mainly in low light
 conditions.</p></li>
-<li><p>Obviously, as today we are discussing colors, we are interested
-in cones!</p></li>
+<li><p>Since our focus today is on color, we will concentrate on
+cones.</p></li>
 </ul>
 </section>
 <section id="types-of-cones" class="slide level1">
@@ -261,6 +328,9 @@ indistinguishable to the human eye</p></li>
 <li><p>The phenomenon is called <em>metamerism</em>, and the two colors
 associated with the radiation hitting the eye are said to be
 <em>metameric</em></p></li>
+<li><p>Metamerism suggests that our vision applies a “lossy compression”
+of the input signal, converting it into a simpler representation. This
+is why ray-tracing is computationally feasible!</p></li>
 </ul>
 </section>
 <section id="rgb-encoding" class="slide level1">
@@ -268,7 +338,7 @@ associated with the radiation hitting the eye are said to be
 <ul>
 <li><p>There are various color encodings, based on triplets of scalar
 quantities: XYZ, HSV, HSL, RGB…</p></li>
-<li><p>Widely used encodings are RGB (monitors) and CYMK
+<li><p>Widely used encodings are RGB (monitors) and CMYK
 (printers)</p></li>
 <li><p>In this course we will only deal with RGB encoding</p></li>
 </ul>
@@ -281,9 +351,9 @@ red, green, blue (<strong>R</strong>ed, <strong>G</strong>reen,
 <strong>B</strong>lue).</p></li>
 <li><p>Based on the <em>additive</em> synthesis of colors, which is
 perfect for monitors (printers use <em>subtractive</em> synthesis, and
-use CYMK encoding).</p></li>
-<li><p>Linked to the operation of old cathode ray tube televisions and
-replicated on modern LED and LCD screens</p></li>
+use CMYK encoding).</p></li>
+<li><p>Inherited from the operation of cathode ray tube (CRT)
+televisions and replicated on modern LED and LCD screens</p></li>
 </ul>
 <p><img data-src="./media/lcd-pixels-closeup.png" height="200" /></p>
 </section>
@@ -388,15 +458,16 @@ L_\lambda(x \rightarrow \Theta) = &amp;L_{e,\lambda}(x \rightarrow
 </span></p></li>
 <li><p>We want to convert the equation in <span
 class="math inline">L_\lambda</span> into three equations that provide
-<span class="math inline">R</span>, <span class="math inline">G</span>,
-<span class="math inline">B</span>.</p></li>
+the three components <span class="math inline">R</span>, <span
+class="math inline">G</span>, <span class="math inline">B</span> that
+“drive” each pixel on the monitor.</p></li>
 </ul>
 </section>
 <section class="slide level1">
 
 <p>If <span class="math inline">f_{r,\lambda} = f_{r, X}</span> is
-constant in the band <span class="math inline">X(\lambda)</span>,
-then</p>
+constant in the band <span class="math inline">X(\lambda)</span>
+(<strong>big approximation!</strong>), then</p>
 <p><span class="math display">
 \begin{aligned}
 L_\lambda(x \rightarrow \Theta) = &amp;L_{e,\lambda}(x \rightarrow
@@ -448,7 +519,8 @@ w</span>.</p></li>
 <li><p>A monitor can be considered a matrix of emitting points
 (<em>pixels</em>: <em>picture element</em>)</p></li>
 <li><p>Each point is controlled by an RGB triplet of values</p></li>
-<li><p>The possible values range in a limited interval</p></li>
+<li><p>The possible values are constrained within a finite
+rangeinterval</p></li>
 <li><p>Realism in the emission of <span class="math inline">L</span> by
 a monitor is therefore generally impossible</p></li>
 </ul>
@@ -462,8 +534,8 @@ a monitor is therefore generally impossible</p></li>
 <section id="rgb-color-encoding" class="slide level1">
 <h1>RGB Color Encoding</h1>
 <ul>
-<li><p>Today all monitors and graphics cards support the so-called “16
-million color encoding”</p></li>
+<li><p>Today all monitors and graphics cards support the so-called
+“24-bit color depth” (16 millions of colors!)</p></li>
 <li><p>An RGB triplet is encoded by a computer using three 8-bit integer
 values; for example, in C++ one could use a type like the following:</p>
 <div class="sourceCode" id="cb1"><pre
@@ -571,8 +643,8 @@ class="math inline">I_\text{max} = 255</span>, and <span
 class="math inline">I</span> is an <em>integer</em> number.</p></li>
 </ul>
 </section>
-<section id="trend-of-gamma" class="slide level1">
-<h1>Trend of <span class="math inline">\gamma</span></h1>
+<section id="gamma-response-curves" class="slide level1">
+<h1>Gamma response curves</h1>
 <p><img
 data-src="pd-images/60e312ab1ab2799c680c8bfa9ba1211cb7b85136.svg"
 data-im_fname="gamma-curve" /></p>
@@ -594,7 +666,7 @@ data-state="monitor-calibration-state">
 <table>
 <tr>
 <td>
-<canvas id="monitor-calibration-canvas" width="300px" height="300px" style="image-rendering: pixelated; image-rendering: crisp-edges;">
+<canvas id="monitor-calibration-canvas" width="300px" height="300px" style="image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges; image-rendering: -webkit-optimize-contrast; transform: translateZ(0);">
 </canvas>
 </td>
 <td>
@@ -669,14 +741,27 @@ document.addEventListener('monitor-calibration-state', function() {
   var canvas = document.getElementById("monitor-calibration-canvas");
   checker_canvas_ctx = canvas.getContext("2d");
 
+  // Scale factor of the display
+  const dpr = window.devicePixelRatio || 1;
+
+  const logicalWidth = 300;
+  const logicalHeight = 300;
+
+  canvas.width = Math.round(widthCSS * dpr);
+  canvas.height = Math.round(heightCSS * dpr);
+
+  // Force the visualized size through CSS
+  canvas.style.width = logicalWidth + "px";
+  canvas.style.height = logicalHeight + "px";
+
+  checker_canvas_width = canvas.width;
+  checker_canvas_height = canvas.height;
+
   // Disable antialiasing
   checker_canvas_ctx.imageSmoothingEnabled = false;
   checker_canvas_ctx.webkitImageSmoothingEnabled = false;
   checker_canvas_ctx.mozImageSmoothingEnabled = false;
   checker_canvas_ctx.msImageSmoothingEnabled = false;
-
-  checker_canvas_width = canvas.width;
-  checker_canvas_height = canvas.height;
 
   canvas = document.getElementById("gamma-plot");
   gamma_canvas_ctx = canvas.getContext("2d");
@@ -684,22 +769,22 @@ document.addEventListener('monitor-calibration-state', function() {
   gamma_canvas_height = canvas.height;
 
   // Create checkered pattern pixel data
-  const size = checker_canvas_width - 100;
+  const size = checker_canvas_width - Math.floor(100 * dpr);
   black_white_checkers = checker_canvas_ctx.createImageData(size, size);
   const data = black_white_checkers.data;
 
   for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
           const index = (y * size + x) * 4;
-          const color = (x % 2) ^ (y % 2) ? 255 : 0; // Alternating pattern
+          // Alternating pattern
+          const color = (x % 2) ^ (y % 2) ? 255 : 0;
 
-          data[index] = color;      // Red
-          data[index + 1] = color;  // Green
-          data[index + 2] = color;  // Blue
-          data[index + 3] = 255;    // Alpha (fully opaque)
+          data[index] = color;
+          data[index + 1] = color;
+          data[index + 2] = color;
+          data[index + 3] = 255;
       }
   }
-
   refresh_gamma_text(0.5);
 });
 </script>
@@ -711,6 +796,8 @@ document.addEventListener('monitor-calibration-state', function() {
 numbers, to display the color on a monitor it is necessary to perform
 the conversion using the <span class="math inline">\gamma</span>
 factor</li>
+<li>(Real monitors use a slightly more complex formula that assumes
+linear behaviour for small intensities, but we will neglect it.)</li>
 <li>The RGB color converted with <span class="math inline">\gamma</span>
 is an “<a href="https://en.wikipedia.org/wiki/SRGB">sRGB
 triplet</a>”.</li>
@@ -722,13 +809,26 @@ apply to sRGB: we cannot write the rendering equation directly in the
 sRGB space!</li>
 </ul>
 </section>
+<section id="what-our-software-should-do" class="slide level1">
+<h1>What our software should do</h1>
+<ul>
+<li>The monitor applies a <em>gamma expansion</em>, which makes
+mid-tones appear darker</li>
+<li>Therefore, our software must apply <em>gamma encoding</em> to ensure
+mid-tones are displayed with the correct intensity.</li>
+<li>This requires implementing the inverse of the monitor’s expansion:
+we must apply a power-law transformation with exponent <span
+class="math inline">1/\gamma</span> to the linear radiance values
+computed by our code before outputting them to the display.</li>
+</ul>
+</section>
 <section id="from-rgb-to-srgb" class="slide level1">
 <h1>Conversion from RGB to sRGB</h1>
 <ul>
 <li>A simple approximation for the conversion from RGB, <span
 class="math inline">(R, G, B)</span>, to sRGB, <span
-class="math inline">(r, g, b)</span>, is the following: <span
-class="math display">
+class="math inline">(r, g, b)</span> (<em>power-law gamma
+approximation</em>), is the following: <span class="math display">
 \begin{aligned}
 r &amp;= \left[k\,R^{1/\gamma}\right],\\
 g &amp;= \left[k\,G^{1/\gamma}\right],\\
@@ -737,8 +837,8 @@ b &amp;= \left[k\,B^{1/\gamma}\right],\\
 </span> where <span class="math inline">[\cdot]</span> indicates
 rounding to integer, and <span class="math inline">k</span> is a
 normalization constant.</li>
-<li>Determining a “good” value for <span class="math inline">k</span> is
-critical!</li>
+<li>Determining an optimal value for <span class="math inline">k</span>
+is crucial!</li>
 </ul>
 </section>
 <section id="determination-of-k" class="slide level1">
@@ -765,8 +865,8 @@ reference normalization (standard color, black body temperature…)</li>
 <section id="from-rgb-to-srgb-1" class="slide level1">
 <h1>From RGB to sRGB</h1>
 <ul>
-<li><p>The most commonly used files for images (PNG, Jpeg, TIFF…) all
-use sRGB encoding</p></li>
+<li><p>Standard image file formats (PNG, JPEG, TIFF…) all use sRGB
+encoding</p></li>
 <li><p>If we want our program to produce easy-to-use images, we must
 therefore convert the result of the rendering equation from RGB to
 sRGB.</p></li>
@@ -782,16 +882,16 @@ course:</p>
 <dl>
 <dt>LDR (Low-Dynamic Range) Images</dt>
 <dd>
-They encode colors using the sRGB system: the three components R, G, B
-are therefore integers, usually in the range 0–255. All the most common
-graphic formats (JPEG, PNG, GIF, etc.) belong to this type.
+These store color components as integers using the sRGB system. The
+usual range is 0–255 (8 bit per component). All the most common graphic
+formats (JPEG, PNG, GIF, etc.) belong to this type.
 </dd>
 <dt>HDR (High-Dynamic Range) Images</dt>
 <dd>
-They encode colors using the RGB or sRGB system, but the three
-components R, G, B are floating-point numbers and therefore cover a
-large dynamic range; to display them, it is therefore necessary to apply
-<em>tone mapping</em>. Examples of this format are OpenEXR and PFM.
+These store components as floating-point numbers using the (linear) RGB
+system to represent the intensity of the scene without clipping. To
+display them, they must undergo <em>tone mapping</em> and gamma
+encoding. Examples of this format are OpenEXR and PFM.
 </dd>
 </dl>
 </section>
@@ -835,8 +935,8 @@ R, G, B components are saved (RGB/BGR) varies depending on the format.
 <li><p>LDR format, very common on Unix systems.</p></li>
 <li><p>You can read and write it using <a
 href="http://netpbm.sourceforge.net/">NetPBM</a> or <a
-href="https://imagemagick.org/index.php">ImageMagick</a>. The second is
-the most common, and can be installed under Ubuntu with</p>
+href="https://imagemagick.org/index.php">ImageMagick</a>. The latter is
+the most common; it can be installed under Ubuntu with</p>
 <pre class="text"><code>$ sudo apt install imagemagick</code></pre>
 <p>You can convert images with the command</p>
 <pre class="text"><code>$ convert input.png output_p6.ppm                # P6 Format
@@ -881,8 +981,8 @@ right, proceeding row by row.</p></li>
 <li><p>It is a type of file that is inspired by PPM, but it is an HDR
 format</p></li>
 <li><p><strong>Very</strong> important for this course!</p></li>
-<li><p>It is not so well supported: under Ubuntu there is only
-<code>pftools</code>, which is installed with</p>
+<li><p>It has limited native support in standard image viewers: under
+Ubuntu there is only <code>pftools</code>, which is installed with</p>
 <pre class="text"><code>$ sudo apt install pftools</code></pre></li>
 <li><p>We will write our own tools that will allow us to convert PFM
 files to PPM, so <code>pftools</code> will not be necessary</p></li>
