@@ -472,27 +472,14 @@ document.addEventListener('monitor-calibration-state', function() {
   var canvas = document.getElementById("monitor-calibration-canvas");
   checker_canvas_ctx = canvas.getContext("2d");
 
-  // Scale factor of the display
-  const dpr = window.devicePixelRatio || 1;
-
-  const logicalWidth = 300;
-  const logicalHeight = 300;
-
-  canvas.width = Math.round(widthCSS * dpr);
-  canvas.height = Math.round(heightCSS * dpr);
-
-  // Force the visualized size through CSS
-  canvas.style.width = logicalWidth + "px";
-  canvas.style.height = logicalHeight + "px";
-
-  checker_canvas_width = canvas.width;
-  checker_canvas_height = canvas.height;
-
   // Disable antialiasing
   checker_canvas_ctx.imageSmoothingEnabled = false;
   checker_canvas_ctx.webkitImageSmoothingEnabled = false;
   checker_canvas_ctx.mozImageSmoothingEnabled = false;
   checker_canvas_ctx.msImageSmoothingEnabled = false;
+
+  checker_canvas_width = canvas.width;
+  checker_canvas_height = canvas.height;
 
   canvas = document.getElementById("gamma-plot");
   gamma_canvas_ctx = canvas.getContext("2d");
@@ -500,7 +487,7 @@ document.addEventListener('monitor-calibration-state', function() {
   gamma_canvas_height = canvas.height;
 
   // Create checkered pattern pixel data
-  const size = checker_canvas_width - Math.floor(100 * dpr);
+  const size = checker_canvas_width - 100;
   black_white_checkers = checker_canvas_ctx.createImageData(size, size);
   const data = black_white_checkers.data;
 
