@@ -198,13 +198,9 @@ Can we avoid those repetitions?
   color2 = Color(5.0, 6.0, 7.0)  # in your tests!
   print(color1 + color2)
   print(color1 * 2)
-  ```
-
-  This produces the output
-
-  ```text
-  Color(r=6.0, g=8.0, b=10.0)
-  Color(r=2.0, g=4.0, b=6.0)
+  # Output:
+  #     Color(r=6.0, g=8.0, b=10.0)
+  #     Color(r=2.0, g=4.0, b=6.0)
   ```
 
 - Can we do better?
@@ -652,9 +648,13 @@ def test_get_set_pixel():
 
 -   It’s ok to use `int` for the counter used in `for` loops (`for(int i{}; i < …; i++)`), if you expect its maximum not to be too large, as the size of `int` is usually chosen to be the fastest integer type supported on the machine.
 
-# Using CMake
+# Running tests
 
-- [CMake](https://cmake.org/) provides the ability to automatically run tests.
+-   With Xmake, it is trivial to run tests, as it implements the command `xmake test`. See [the manual](https://xmake.io/guide/basic-commands/run-tests.html)
+
+-   If you use [CMake](https://cmake.org/), things are more complicated. You must rely on CTest, which is a companion program developed by KitWare.
+
+# Using CMake/CTest
 
 - Create this directory tree:
 
@@ -826,126 +826,9 @@ add_test(NAME colorTest
   - Change the `.yml` file to use `Debug` instead of `Release`;
   - Use `#undef NDEBUG` before `#include <cassert>` (better!);
   - Define your own `my_assert` function (even better!);
-  - Use a C++ testing library, such as [Catch2](https://github.com/catchorg/Catch2/tree/v2.x) (excellent!).
+  - Use a C++ testing library. There are many good options: [doctest](https://github.com/doctest/doctest),  [Catch2](https://github.com/catchorg/Catch2/tree/v2.x), [ut](https://github.com/qlibs/ut)…
 - Lesson: **always** try to make one or more tests fail!
 
-
-# Hints for Julia
-
-# Package Structure
-
-- Julia natively implements the required structure type (library, executable, executable with tests):
-
-  - Each package can be used as a library;
-  - Packages can include a set of tests if they have a directory called `test` inside;
-  - The script that implements `main` [seen in the previous exercise](./tomasi-ray-tracing-01b.html#/julia-main) can be used as an executable.
-
-- Creating a new package therefore configures everything already in the required way, except for the executable.
-
-# Creating the Package
-
-- Create a new package with the commands seen last time:
-
-  ```julia
-  using Pkg
-  Pkg.generate("Raytracer") # Upper case is customary in Julia
-  Pkg.activate("Raytracer")
-  ```
-
-- Julia supports color management through [ColorTypes](https://github.com/JuliaGraphics/ColorTypes.jl) and [Colors](https://juliagraphics.github.io/Colors.jl/stable/):
-
-  ```julia
-  Pkg.add("ColorTypes")
-  Pkg.add("Colors")
-  ```
-
-  This will modify `Project.toml` and add `Manifest.toml`, which should be saved in Git (look at what they contain!).
-
-# Color Operations
-
-- For today, there is no need to understand the difference between _value_ and _reference types_, because you will be using Colors and ColorTypes.
-
-- The Colors library implements a series of template types:
-
-  ```julia
-  using Colors
-
-  a = RGB(0.1, 0.3, 0.7)
-  b = XYZ(0.8, 0.4, 0.2)
-  println(convert(XYZ, a)) # Convert a from RGB to XYZ space
-  ```
-
-- However, the library does not implement the color operations that interest us (sum, difference, product, comparison). Implement them yourself in the `src/Raytracer.jl` file (the file name depends on your project name).
-
-# Complications
-
-- The types in ColorTypes are [_parametric_](https://docs.julialang.org/en/v1/manual/types/#Parametric-Types) (like templates in C++): the `RGB` type is actually `RGB{T}`, with `T` as a parameter.
-
-- You need to redefine the fundamental operations `+`, `-`, `*` and `≈` (`\approx`), which in Julia are present in the `Base` package.
-
-  You will need to write something like this in `src/Raytracer.jl`:
-
-  ```julia
-  import ColorTypes
-  import Base.:+, Base.:*, Base.:≈
-
-  # To make this work, first define the product "scalar * color"
-  Base.:*(c::ColorTypes.RGB{T}, scalar) where {T} = scalar * c
-  ```
-
-# Creating Tests
-
-- To implement the tests, create a `test/runtests.jl` file, so that the directory structure is as follows:
-
-  ```sh
-  $ tree Raytracer
-  Raytracer
-  ├── Manifest.toml
-  ├── Project.toml
-  ├── src
-  │   └── Raytracer.jl
-  └── test
-      └── runtests.jl
-  ```
-
-- To write tests, you need to add the [Test]() library:
-
-  ```julia
-  Pkg.add("Test")
-  ```
-
-# How to Write Tests
-
-- In the `runtests.jl` file, you need to write the test procedures. The Test library implements the `@testset` (groups tests) and `@test` macros:
-
-  ```julia
-  using Raytracer # Put the name you chose
-  using Test
-
-  @testset "Colors" begin
-      # Put here the tests required for color sum and product
-      @test 1 + 1 == 2
-  end
-  ```
-
-- To run them from the REPL, write
-
-  ```julia
-  Pkg.test()
-  ```
-
-# Running Tests
-
-<asciinema-player src="cast/julia-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player>
-
-# The `Manifest.toml` File
-
-- Julia uses the `Project.toml` file to indicate general information about the package, and it can be edited.
-- The `Manifest.toml` file is generated automatically, and it pins the version numbers of the dependencies used by your package.
-- It is essential to add the `Project.toml` file to Git.
-- For `Manifest.toml` there are two possibilities:
-  1. If you believe it is **essential** that every user uses exactly your versions of the dependencies, add it;
-  2. If you want to guarantee more versatility, exclude it from Git (thus adding a line to `.gitignore`).
 
 # Hints for C\#
 
@@ -979,8 +862,6 @@ graph "" {
 - To add new projects to a solution, use `dotnet sln add`
 
 # Our “solution”
-
-Here are the commands to run to create the solution we want:
 
 ```sh
 # Create a new solution that will include:
@@ -1061,36 +942,6 @@ namespace Trace.Tests
 ```
 
 You can run tests with `dotnet test`, but you can also use Rider (this is **so handy**! Refer to the slides for Kotlin.)
-
-# Hints for D
-
-# Definition of the types
-
-- Define `Color` as a `struct` and `HdrImage` as a `class`; for `Color`, include defaults:
-
-  ```d
-  struct Color {
-    float r = 0, g = 0, b = 0;
-  };
-  ```
-
-- Define `pixels` in `HdrImage` as a [dynamic array](https://dlang.org/spec/arrays.html#dynamic-arrays)
-
-- Define a constructor for `HdrImage` that requires `width` ed `height` and initializes `pixels` [allocating the correct length](https://dlang.org/spec/arrays.html#length-initialization). Then set the color of every pixel to black.
-
-# Tests in D
-
-- D offers excellent support for tests via the keyword `unittest` (it’s awesome!)
-
-- It’s not needed to define tests in separate files, as it is the case for C++ and C\#.
-
-- To run the tests, execute the command
-
-  ```
-  $ dub test
-  ```
-
-- See the documentation for more information: [Unit tests](https://dlang.org/spec/unittest.html)
 
 # Hints for Java/Kotlin
 
@@ -1267,6 +1118,154 @@ In this screenshot, JUnit’s version is 4.
       assert Color(1.0, 2.0, 3.0) + Color(3.0, 4.0, 5.0) == Color(4.0, 6.0, 8.0)
       # …
   ```
+
+
+# Hints for Julia
+
+# Package Structure
+
+- Julia natively implements the required structure type (library, executable, executable with tests):
+
+  - Each package can be used as a library;
+  - Packages can include a set of tests if they have a directory called `test` inside;
+  - The script that implements `main` [seen in the previous exercise](./tomasi-ray-tracing-01b.html#/julia-main) can be used as an executable.
+
+- Creating a new package therefore configures everything already in the required way, except for the executable.
+
+# Creating the Package
+
+- Create a new package with the commands seen last time:
+
+  ```julia
+  using Pkg
+  Pkg.generate("Raytracer") # Upper case is customary in Julia
+  Pkg.activate("Raytracer")
+  ```
+
+- Julia supports color management through [ColorTypes](https://github.com/JuliaGraphics/ColorTypes.jl) and [Colors](https://juliagraphics.github.io/Colors.jl/stable/):
+
+  ```julia
+  Pkg.add("ColorTypes")
+  Pkg.add("Colors")
+  ```
+
+  This will modify `Project.toml` and add `Manifest.toml`, which should be saved in Git (look at what they contain!).
+
+# Color Operations
+
+- For today, there is no need to understand the difference between _value_ and _reference types_, because you will be using Colors and ColorTypes.
+
+- The Colors library implements a series of template types:
+
+  ```julia
+  using Colors
+
+  a = RGB(0.1, 0.3, 0.7)
+  b = XYZ(0.8, 0.4, 0.2)
+  println(convert(XYZ, a)) # Convert a from RGB to XYZ space
+  ```
+
+- However, the library does not implement the color operations that interest us (sum, difference, product, comparison). Implement them yourself in the `src/Raytracer.jl` file (the file name depends on your project name).
+
+# Complications
+
+- The types in ColorTypes are [_parametric_](https://docs.julialang.org/en/v1/manual/types/#Parametric-Types) (like templates in C++): the `RGB` type is actually `RGB{T}`, with `T` as a parameter.
+
+- You need to redefine the fundamental operations `+`, `-`, `*` and `≈` (`\approx`), which in Julia are present in the `Base` package.
+
+  You will need to write something like this in `src/Raytracer.jl`:
+
+  ```julia
+  import ColorTypes
+  import Base.:+, Base.:*, Base.:≈
+
+  # To make this work, first define the product "scalar * color"
+  Base.:*(c::ColorTypes.RGB{T}, scalar) where {T} = scalar * c
+  ```
+
+# Creating Tests
+
+- To implement the tests, create a `test/runtests.jl` file, so that the directory structure is as follows:
+
+  ```sh
+  $ tree Raytracer
+  Raytracer
+  ├── Manifest.toml
+  ├── Project.toml
+  ├── src
+  │   └── Raytracer.jl
+  └── test
+      └── runtests.jl
+  ```
+
+- To write tests, you need to add the [Test]() library:
+
+  ```julia
+  Pkg.add("Test")
+  ```
+
+# How to Write Tests
+
+- In the `runtests.jl` file, you need to write the test procedures. The Test library implements the `@testset` (groups tests) and `@test` macros:
+
+  ```julia
+  using Raytracer # Put the name you chose
+  using Test
+
+  @testset "Colors" begin
+      # Put here the tests required for color sum and product
+      @test 1 + 1 == 2
+  end
+  ```
+
+- To run them from the REPL, write
+
+  ```julia
+  Pkg.test()
+  ```
+
+# Running Tests
+
+<asciinema-player src="cast/julia-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player>
+
+# The `Manifest.toml` File
+
+- Julia uses the `Project.toml` file to indicate general information about the package, and it can be edited.
+- The `Manifest.toml` file is generated automatically, and it pins the version numbers of the dependencies used by your package.
+- It is essential to add the `Project.toml` file to Git.
+- For `Manifest.toml` there are two possibilities:
+  1. If you believe it is **essential** that every user uses exactly your versions of the dependencies, add it;
+  2. If you want to guarantee more versatility, exclude it from Git (thus adding a line to `.gitignore`).
+
+# Hints for D
+
+# Definition of the types
+
+- Define `Color` as a `struct` and `HdrImage` as a `class`; for `Color`, include defaults:
+
+  ```d
+  struct Color {
+    float r = 0, g = 0, b = 0;
+  };
+  ```
+
+- Define `pixels` in `HdrImage` as a [dynamic array](https://dlang.org/spec/arrays.html#dynamic-arrays)
+
+- Define a constructor for `HdrImage` that requires `width` ed `height` and initializes `pixels` [allocating the correct length](https://dlang.org/spec/arrays.html#length-initialization). Then set the color of every pixel to black.
+
+# Tests in D
+
+- D offers excellent support for tests via the keyword `unittest` (it’s awesome!)
+
+- It’s not needed to define tests in separate files, as it is the case for C++ and C\#.
+
+- To run the tests, execute the command
+
+  ```
+  $ dub test
+  ```
+
+- See the documentation for more information: [Unit tests](https://dlang.org/spec/unittest.html)
 
 ---
 title: "Laboratory 2"

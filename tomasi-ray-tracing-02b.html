@@ -98,7 +98,7 @@
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -114,7 +114,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -335,10 +335,10 @@ ok:</p>
 class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)  <span class="co"># Avoid trivial cases like Color(3.0, 3.0, 3.0)</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)  <span class="co"># in your tests!</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">+</span> color2)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">*</span> <span class="dv">2</span>)</span></code></pre></div>
-<p>This produces the output</p>
-<pre class="text"><code>Color(r=6.0, g=8.0, b=10.0)
-Color(r=2.0, g=4.0, b=6.0)</code></pre></li>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">*</span> <span class="dv">2</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Output:</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     Color(r=6.0, g=8.0, b=10.0)</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#     Color(r=2.0, g=4.0, b=6.0)</span></span></code></pre></div></li>
 <li><p>Can we do better?</p></li>
 </ul>
 </section>
@@ -356,18 +356,18 @@ libraries that fill this gap.)</p></li>
 <section id="automatic-tests-1" class="slide level1">
 <h1>Automatic tests</h1>
 <p>Our starting point is this Python code:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">+</span> color2)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">*</span> <span class="dv">2</span>)</span></code></pre></div>
+<p>We can improve it using <code>assert</code>:</p>
 <div class="sourceCode" id="cb10"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">+</span> color2)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(color1 <span class="op">*</span> <span class="dv">2</span>)</span></code></pre></div>
-<p>We can improve it using <code>assert</code>:</p>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (color1 <span class="op">+</span> color2) <span class="op">==</span> Color(<span class="fl">6.0</span>, <span class="fl">8.0</span>, <span class="fl">10.0</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (<span class="dv">2</span> <span class="op">*</span> color1) <span class="op">==</span> Color(<span class="fl">2.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># If everything is ok, no output is expected</span></span></code></pre></div>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (color1 <span class="op">+</span> color2) <span class="op">==</span> Color(<span class="fl">6.0</span>, <span class="fl">8.0</span>, <span class="fl">10.0</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (<span class="dv">2</span> <span class="op">*</span> color1) <span class="op">==</span> Color(<span class="fl">2.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># If everything is ok, no output is expected</span></span></code></pre></div>
 </section>
 <section id="are-we-sure-of-our-tests" class="slide level1">
 <h1>Are we sure of our tests?</h1>
@@ -378,11 +378,11 @@ if we get no output, are we <em>really</em> sure that the tests were
 executed as expected?</p></li>
 <li><p>A common trick is to implement <em>wrong</em> tests and make them
 fail:</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (color1 <span class="op">+</span> color2) <span class="op">==</span> Color(<span class="fl">6.0</span>, <span class="fl">8.0</span>, <span class="fl">11.0</span>) <span class="co"># 11.0 instead of 10.0: wrong!</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (<span class="dv">2</span> <span class="op">*</span> color1) <span class="op">==</span> Color(<span class="fl">3.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>)       <span class="co"># 3.0 instead of 2.0: wrong!</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>color1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>color2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">6.0</span>, <span class="fl">7.0</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (color1 <span class="op">+</span> color2) <span class="op">==</span> Color(<span class="fl">6.0</span>, <span class="fl">8.0</span>, <span class="fl">11.0</span>) <span class="co"># 11.0 instead of 10.0: wrong!</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (<span class="dv">2</span> <span class="op">*</span> color1) <span class="op">==</span> Color(<span class="fl">3.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>)       <span class="co"># 3.0 instead of 2.0: wrong!</span></span></code></pre></div>
 <p>Once we see that the tests failed, we can fix them and make them
 pass.</p></li>
 </ul>
@@ -413,13 +413,13 @@ rounding, so prefer them in tests, if possible (we did so for
 <li><p>As it’s not always possible to use integer numbers, implement a
 function <code>are_close</code> (if your language doesn’t provide one
 already):</p>
-<div class="sourceCode" id="cb13"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> are_close(x, y, epsilon <span class="op">=</span> <span class="fl">1e-5</span>):</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">abs</span>(x <span class="op">-</span> y) <span class="op">&lt;</span> epsilon</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">sum</span>([<span class="fl">0.1</span>] <span class="op">*</span> <span class="dv">10</span>)       <span class="co"># Sum of the values in [0.1, 0.1, ..., 0.1]</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x)                  <span class="co"># Output: 0.9999999999999999</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> are_close(<span class="fl">1.0</span>, x)  <span class="co"># This test passes successfully</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> are_close(x, y, epsilon <span class="op">=</span> <span class="fl">1e-5</span>):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">abs</span>(x <span class="op">-</span> y) <span class="op">&lt;</span> epsilon</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">sum</span>([<span class="fl">0.1</span>] <span class="op">*</span> <span class="dv">10</span>)       <span class="co"># Sum of the values in [0.1, 0.1, ..., 0.1]</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x)                  <span class="co"># Output: 0.9999999999999999</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> are_close(<span class="fl">1.0</span>, x)  <span class="co"># This test passes successfully</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="code-granularity-and-tests" class="slide level1">
@@ -429,16 +429,16 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a h
 functions.</p></li>
 <li><p>Implementing <code>get_pixel</code> and <code>set_pixel</code>
 leads to repetitions:</p>
-<div class="sourceCode" id="cb14"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> Color:</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x]</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> set_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>, new_color: Color):</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x] <span class="op">=</span> new_color</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> Color:</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x]</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> set_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>, new_color: Color):</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pixels[y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x] <span class="op">=</span> new_color</span></code></pre></div>
 <p>We must verify the correctness of coordinates twice 🙁</p></li>
 </ul>
 </section>
@@ -447,58 +447,58 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a h
 <ul>
 <li><p>We must verify that wrong coordinates are rejected both by
 <code>set_pixel</code> and <code>get_pixel</code>:</p>
-<div class="sourceCode" id="cb15"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Test that wrong positions be signaled</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pytest.raises(<span class="pp">AssertionError</span>):</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    img.get_pixel(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># We must redo the same for &quot;set_pixel&quot;</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pytest.raises(<span class="pp">AssertionError</span>):</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, Color())</span></code></pre></div></li>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Test that wrong positions be signaled</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pytest.raises(<span class="pp">AssertionError</span>):</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    img.get_pixel(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># We must redo the same for &quot;set_pixel&quot;</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pytest.raises(<span class="pp">AssertionError</span>):</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, Color())</span></code></pre></div></li>
 <li><p>We can improve our code and tests by <em>modularizing</em> our
 implementation, i.e., we decompose it in simpler parts.</p></li>
 </ul>
 </section>
 <section id="new-implementation" class="slide level1">
 <h1>New implementation</h1>
-<div class="sourceCode" id="cb16"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> valid_coordinates(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ((x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width) <span class="kw">and</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>            (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height))</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pixel_offset(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> Color:</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="va">self</span>.valid_coordinates(x, y)</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pixels[<span class="va">self</span>.pixel_offset(x, y)]</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> set_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>, new_color: Color):</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="va">self</span>.valid_coordinates(x, y)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pixels[<span class="va">self</span>.pixel_offset(x, y)] <span class="op">=</span> new_color</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> valid_coordinates(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ((x <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (x <span class="op">&lt;</span> <span class="va">self</span>.width) <span class="kw">and</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>            (y <span class="op">&gt;=</span> <span class="dv">0</span>) <span class="kw">and</span> (y <span class="op">&lt;</span> <span class="va">self</span>.height))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pixel_offset(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y <span class="op">*</span> <span class="va">self</span>.width <span class="op">+</span> x</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>) <span class="op">-&gt;</span> Color:</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="va">self</span>.valid_coordinates(x, y)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pixels[<span class="va">self</span>.pixel_offset(x, y)]</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> set_pixel(<span class="va">self</span>, x: <span class="bu">int</span>, y: <span class="bu">int</span>, new_color: Color):</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="va">self</span>.valid_coordinates(x, y)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pixels[<span class="va">self</span>.pixel_offset(x, y)] <span class="op">=</span> new_color</span></code></pre></div>
 </section>
 <section id="tests" class="slide level1">
 <h1>Tests</h1>
 <ul>
 <li><p>Here are the tests for the new implementation:</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that valid/invalid coordinates are properly flagged</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.valid_coordinates(<span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.valid_coordinates(<span class="dv">6</span>, <span class="dv">3</span>)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">7</span>, <span class="dv">0</span>)</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">0</span>, <span class="dv">4</span>)</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that indices in the array are calculated correctly:</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co"># this kind of test would have been harder to write</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># in the old implementation</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.pixel_offset(<span class="dv">3</span>, <span class="dv">2</span>) <span class="op">==</span> <span class="dv">17</span>    <span class="co"># See the plot a few slides before</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.pixel_offset(<span class="dv">6</span>, <span class="dv">3</span>) <span class="op">==</span> <span class="dv">7</span> <span class="op">*</span> <span class="dv">4</span> <span class="op">-</span> <span class="dv">1</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that valid/invalid coordinates are properly flagged</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.valid_coordinates(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.valid_coordinates(<span class="dv">6</span>, <span class="dv">3</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">7</span>, <span class="dv">0</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">0</span>, <span class="dv">4</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that indices in the array are calculated correctly:</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># this kind of test would have been harder to write</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co"># in the old implementation</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.pixel_offset(<span class="dv">3</span>, <span class="dv">2</span>) <span class="op">==</span> <span class="dv">17</span>    <span class="co"># See the plot a few slides before</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> img.pixel_offset(<span class="dv">6</span>, <span class="dv">3</span>) <span class="op">==</span> <span class="dv">7</span> <span class="op">*</span> <span class="dv">4</span> <span class="op">-</span> <span class="dv">1</span></span></code></pre></div></li>
 <li><p>This kind of test is called <em>unit test</em></p></li>
 </ul>
 </section>
@@ -525,19 +525,19 @@ consider names like <code>_valid_coordinates</code> and
 we used <code>==</code>, which works because we specified integer
 numbers:</li>
 </ul>
-<div class="sourceCode" id="cb18"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ot">assert</span> <span class="op">(</span>color1 <span class="op">+</span> color2<span class="op">)</span> <span class="op">==</span> Color<span class="op">(</span><span class="fl">6.0</span><span class="op">,</span> <span class="fl">8.0</span><span class="op">,</span> <span class="fl">10.0</span><span class="op">)</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ot">assert</span> <span class="op">(</span><span class="dv">2</span> <span class="op">*</span> color1<span class="op">)</span> <span class="op">==</span> Color<span class="op">(</span><span class="fl">2.0</span><span class="op">,</span> <span class="fl">4.0</span><span class="op">,</span> <span class="fl">6.0</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ot">assert</span> <span class="op">(</span>color1 <span class="op">+</span> color2<span class="op">)</span> <span class="op">==</span> Color<span class="op">(</span><span class="fl">6.0</span><span class="op">,</span> <span class="fl">8.0</span><span class="op">,</span> <span class="fl">10.0</span><span class="op">)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ot">assert</span> <span class="op">(</span><span class="dv">2</span> <span class="op">*</span> color1<span class="op">)</span> <span class="op">==</span> Color<span class="op">(</span><span class="fl">2.0</span><span class="op">,</span> <span class="fl">4.0</span><span class="op">,</span> <span class="fl">6.0</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>We will soon need to use <span class="math inline">\pi</span> in our
 calculations with colors, so define a function that compares the
 “closeness” of two <code>Color</code> instances:</li>
 </ul>
-<div class="sourceCode" id="cb19"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> are_colors_close(a, b):</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> are_close(a.r, b.r) <span class="kw">and</span> are_close(a.g, b.g) <span class="kw">and</span> are_close(a.b, b.b)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> are_colors_close(color1, color2)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> are_colors_close(a, b):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> are_close(a.r, b.r) <span class="kw">and</span> are_close(a.g, b.g) <span class="kw">and</span> are_close(a.b, b.b)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> are_colors_close(color1, color2)</span></code></pre></div>
 </section>
 <section id="importance-of-tests" class="slide level1">
 <h1>Importance of Tests</h1>
@@ -722,23 +722,23 @@ deems it beneficial).</p></li>
 </section>
 <section id="an-example-using-c" class="slide level1">
 <h1>An example using C++</h1>
-<div class="sourceCode" id="cb20"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> a<span class="op">{};</span>                     <span class="co">// Allocated on the stack</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span> b<span class="op">{</span><span class="kw">new</span> <span class="dt">int</span><span class="op">};</span>            <span class="co">// Allocated in the heap</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> c<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">};</span>         <span class="co">// Allocated on the stack</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> v<span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">};</span> <span class="co">// &quot;v&quot; on the stack, but the three numbers in the heap</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="dv">15</span><span class="op">;</span>   <span class="co">// This is fast</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>b <span class="op">=</span> <span class="dv">16</span><span class="op">;</span>  <span class="co">// This is slower</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> a <span class="op">&lt;&lt;</span> <span class="st">&quot;, &quot;</span> <span class="op">&lt;&lt;</span> <span class="op">*</span>b <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Output:</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 15, 16</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> a<span class="op">{};</span>                     <span class="co">// Allocated on the stack</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span> b<span class="op">{</span><span class="kw">new</span> <span class="dt">int</span><span class="op">};</span>            <span class="co">// Allocated in the heap</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> c<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">};</span>         <span class="co">// Allocated on the stack</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span> v<span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">};</span> <span class="co">// &quot;v&quot; on the stack, but the three numbers in the heap</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="dv">15</span><span class="op">;</span>   <span class="co">// This is fast</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>b <span class="op">=</span> <span class="dv">16</span><span class="op">;</span>  <span class="co">// This is slower</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> a <span class="op">&lt;&lt;</span> <span class="st">&quot;, &quot;</span> <span class="op">&lt;&lt;</span> <span class="op">*</span>b <span class="op">&lt;&lt;</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Output:</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 15, 16</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>In Python, any variable (even integer variables like
 <code>x = 1</code>) is allocated on the heap (one of the reasons why it
 is much slower than C++)</p>
@@ -790,65 +790,65 @@ package can be used.</li>
 <ul>
 <li><p>Creating <code>Color</code> objects and using the
 <code>is_close</code> function:</p>
-<div class="sourceCode" id="cb22"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> color.is_close(Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span></code></pre></div></li>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> color.is_close(Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>))</span></code></pre></div></li>
 <li><p>It is important to test that <code>is_close</code> returns
 <code>False</code> when necessary (note that this is a
 <strong>negative</strong> test):</p>
-<div class="sourceCode" id="cb23"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> color.is_close(Color(<span class="fl">3.0</span>, <span class="fl">4.0</span>, <span class="fl">5.0</span>))  <span class="co"># First method</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> color.is_close(Color(<span class="fl">3.0</span>, <span class="fl">4.0</span>, <span class="fl">5.0</span>))  <span class="co"># First method</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="test-2" class="slide level1">
 <h1>Test (2)</h1>
 <ul>
 <li><p>Sum/product between colors:</p>
-<div class="sourceCode" id="cb24"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>col1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)  <span class="co"># Do not use the previous definition,</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>col2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">7.0</span>, <span class="fl">9.0</span>)  <span class="co"># it&#39;s better to define it again here</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (col1 <span class="op">+</span> col2).is_close(Color(<span class="fl">6.0</span>, <span class="fl">9.0</span>, <span class="fl">12.0</span>))</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (col1 <span class="op">*</span> col2).is_close(Color(<span class="fl">5.0</span>, <span class="fl">14.0</span>, <span class="fl">27.0</span>))</span></code></pre></div></li>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>col1 <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)  <span class="co"># Do not use the previous definition,</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>col2 <span class="op">=</span> Color(<span class="fl">5.0</span>, <span class="fl">7.0</span>, <span class="fl">9.0</span>)  <span class="co"># it&#39;s better to define it again here</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (col1 <span class="op">+</span> col2).is_close(Color(<span class="fl">6.0</span>, <span class="fl">9.0</span>, <span class="fl">12.0</span>))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> (col1 <span class="op">*</span> col2).is_close(Color(<span class="fl">5.0</span>, <span class="fl">14.0</span>, <span class="fl">27.0</span>))</span></code></pre></div></li>
 <li><p>Color-scalar product (you can implement scalar-color too, if you
 want):</p>
-<div class="sourceCode" id="cb25"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>prod_col <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>) <span class="op">*</span> <span class="fl">2.0</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> prod_col.is_close(Color(<span class="fl">2.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>))</span></code></pre></div></li>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>prod_col <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>) <span class="op">*</span> <span class="fl">2.0</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> prod_col.is_close(Color(<span class="fl">2.0</span>, <span class="fl">4.0</span>, <span class="fl">6.0</span>))</span></code></pre></div></li>
 </ul>
 </section>
 <section id="test-3" class="slide level1">
 <h1>Test (3)</h1>
-<div class="sourceCode" id="cb26"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_image_creation():</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.width <span class="op">==</span> <span class="dv">7</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.height <span class="op">==</span> <span class="dv">4</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_coordinates():</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.valid_coordinates(<span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.valid_coordinates(<span class="dv">6</span>, <span class="dv">3</span>)</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">7</span>, <span class="dv">0</span>)</span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">0</span>, <span class="dv">4</span>)</span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_pixel_offset():</span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.pixel_offset(<span class="dv">0</span>, <span class="dv">0</span>) <span class="op">==</span> <span class="dv">0</span></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.pixel_offset(<span class="dv">3</span>, <span class="dv">2</span>) <span class="op">==</span> <span class="dv">17</span></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.pixel_offset(<span class="dv">6</span>, <span class="dv">3</span>) <span class="op">==</span> <span class="dv">7</span> <span class="op">*</span> <span class="dv">4</span> <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_get_set_pixel():</span>
-<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
-<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>    reference_color <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
-<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">3</span>, <span class="dv">2</span>, reference_color)</span>
-<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> are_colors_close(reference_color, img.get_pixel(<span class="dv">3</span>, <span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_image_creation():</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.width <span class="op">==</span> <span class="dv">7</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.height <span class="op">==</span> <span class="dv">4</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_coordinates():</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.valid_coordinates(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.valid_coordinates(<span class="dv">6</span>, <span class="dv">3</span>)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">7</span>, <span class="dv">0</span>)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="kw">not</span> img.valid_coordinates(<span class="dv">0</span>, <span class="dv">4</span>)</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_pixel_offset():</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.pixel_offset(<span class="dv">0</span>, <span class="dv">0</span>) <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.pixel_offset(<span class="dv">3</span>, <span class="dv">2</span>) <span class="op">==</span> <span class="dv">17</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> img.pixel_offset(<span class="dv">6</span>, <span class="dv">3</span>) <span class="op">==</span> <span class="dv">7</span> <span class="op">*</span> <span class="dv">4</span> <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_get_set_pixel():</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> HdrImage(<span class="dv">7</span>, <span class="dv">4</span>)</span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    reference_color <span class="op">=</span> Color(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>    img.set_pixel(<span class="dv">3</span>, <span class="dv">2</span>, reference_color)</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> are_colors_close(reference_color, img.get_pixel(<span class="dv">3</span>, <span class="dv">2</span>))</span></code></pre></div>
 </section>
 <section id="hints-for-c" class="slide level1">
 <h1>Hints for C++</h1>
@@ -874,11 +874,21 @@ you expect its maximum not to be too large, as the size of
 supported on the machine.</p></li>
 </ul>
 </section>
-<section id="using-cmake" class="slide level1">
-<h1>Using CMake</h1>
+<section id="running-tests" class="slide level1">
+<h1>Running tests</h1>
 <ul>
-<li><p><a href="https://cmake.org/">CMake</a> provides the ability to
-automatically run tests.</p></li>
+<li><p>With Xmake, it is trivial to run tests, as it implements the
+command <code>xmake test</code>. See <a
+href="https://xmake.io/guide/basic-commands/run-tests.html">the
+manual</a></p></li>
+<li><p>If you use <a href="https://cmake.org/">CMake</a>, things are
+more complicated. You must rely on CTest, which is a companion program
+developed by KitWare.</p></li>
+</ul>
+</section>
+<section id="using-cmakectest" class="slide level1">
+<h1>Using CMake/CTest</h1>
+<ul>
 <li><p>Create this directory tree:</p>
 <pre class="text"><code>$ tree raytracer
 raytracer
@@ -920,30 +930,30 @@ programs are specified with <code>target_link_libraries</code>.</p></li>
 <ul>
 <li><p>The sequence of libraries and executables to produce is specified
 as follows:</p>
-<div class="sourceCode" id="cb28"><pre
-class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">add_library</span>(<span class="bn">trace</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  src/colors.cpp</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This is needed if we keep .h files in the &quot;include&quot; directory</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="kw">target_include_directories</span>(<span class="bn">trace</span> <span class="ot">PUBLIC</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">$&lt;</span><span class="kw">BUILD_INTERFACE</span><span class="ot">:</span><span class="dv">${CMAKE_CURRENT_SOURCE_DIR}</span><span class="ot">/include&gt;</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">$&lt;</span><span class="kw">INSTALL_INTERFACE</span><span class="ot">:include&gt;</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(<span class="bn">raytracer</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  src/raytracer.cpp</span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(<span class="bn">raytracer</span> <span class="ot">PUBLIC</span> trace)</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(<span class="bn">colorTest</span></span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  test/colors.cpp</span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(<span class="bn">colorTest</span> <span class="ot">PUBLIC</span> trace)</span></code></pre></div></li>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">add_library</span>(<span class="bn">trace</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  src/colors.cpp</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This is needed if we keep .h files in the &quot;include&quot; directory</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="kw">target_include_directories</span>(<span class="bn">trace</span> <span class="ot">PUBLIC</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">$&lt;</span><span class="kw">BUILD_INTERFACE</span><span class="ot">:</span><span class="dv">${CMAKE_CURRENT_SOURCE_DIR}</span><span class="ot">/include&gt;</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">$&lt;</span><span class="kw">INSTALL_INTERFACE</span><span class="ot">:include&gt;</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(<span class="bn">raytracer</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  src/raytracer.cpp</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(<span class="bn">raytracer</span> <span class="ot">PUBLIC</span> trace)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(<span class="bn">colorTest</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  test/colors.cpp</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(<span class="bn">colorTest</span> <span class="ot">PUBLIC</span> trace)</span></code></pre></div></li>
 <li><p><code>target_include_directories</code> specifies where to look
 for <code>colors.h</code>.</p></li>
 </ul>
 </section>
-<section id="running-tests" class="slide level1">
+<section id="running-tests-1" class="slide level1">
 <h1>Running Tests</h1>
 <ul>
 <li><p>To run automatic tests, you need to invoke two commands in
@@ -964,55 +974,55 @@ invoke <code>ctest</code>.</p></li>
 <section id="cmakelists.txt-1" class="slide level1">
 <h1><code>CMakeLists.txt</code></h1>
 <p>This is the complete content of <code>CMakeLists.txt</code>:</p>
-<div class="sourceCode" id="cb29"><pre
-class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">cmake_minimum_required</span>(<span class="ot">VERSION</span> <span class="dt">3.12</span>)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a &quot;project&quot;, providing a description and a programming language</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="kw">project</span>(raytracer</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">VERSION</span> <span class="dt">1.0</span></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">DESCRIPTION</span> <span class="st">&quot;Hello world in C++&quot;</span></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">LANGUAGES</span> <span class="ot">CXX</span></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Force the compiler to use the C++23 standard (or whatever you want)</span></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span>(<span class="dv">CMAKE_CXX_STANDARD</span> 23)</span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="co"># If the compiler does not support the standard, stop!</span></span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span>(<span class="dv">CMAKE_CXX_STANDARD_REQUIRED</span> <span class="ot">ON</span>)</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Turn on the support for automatic tests</span></span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="kw">enable_testing</span>()</span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the library. Pick the name you like the most; we use &quot;trace&quot;</span></span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a><span class="kw">add_library</span>(<span class="bn">trace</span></span>
-<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>  src/colors.cpp</span>
-<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Help the compiler when you write &quot;#include &lt;colors.h&gt;&quot;</span></span>
-<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a><span class="co"># See &quot;cmake-generator-expressions(7)&quot; in the CMake manual</span></span>
-<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a><span class="kw">target_include_directories</span>(<span class="bn">trace</span> <span class="ot">PUBLIC</span></span>
-<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>  <span class="ot">$&lt;</span><span class="kw">BUILD_INTERFACE</span><span class="ot">:</span><span class="dv">${CMAKE_CURRENT_SOURCE_DIR}</span><span class="ot">/include&gt;</span></span>
-<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>  <span class="ot">$&lt;</span><span class="kw">INSTALL_INTERFACE</span><span class="ot">:include&gt;</span></span>
-<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the program that we will run from the command line</span></span>
-<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(<span class="bn">raytracer</span></span>
-<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a>  src/raytracer.cpp</span>
-<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a><span class="co"># The command-line program needs to be linked to the &quot;trace&quot; library</span></span>
-<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(<span class="bn">raytracer</span> <span class="ot">PUBLIC</span> trace)</span>
-<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a><span class="co"># This program runs the automatic tests on the &quot;Color&quot; class</span></span>
-<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(<span class="bn">colorTest</span></span>
-<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a>  test/colors.cpp</span>
-<span id="cb29-40"><a href="#cb29-40" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb29-41"><a href="#cb29-41" aria-hidden="true" tabindex="-1"></a><span class="co"># The test program too needs to be linked to &quot;trace&quot;</span></span>
-<span id="cb29-42"><a href="#cb29-42" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(<span class="bn">colorTest</span> <span class="ot">PUBLIC</span> trace)</span>
-<span id="cb29-43"><a href="#cb29-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-44"><a href="#cb29-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we specify that &quot;colorTest&quot; is a special executable, because</span></span>
-<span id="cb29-45"><a href="#cb29-45" aria-hidden="true" tabindex="-1"></a><span class="co"># it is meant to be run automatically whenever we want to check our code</span></span>
-<span id="cb29-46"><a href="#cb29-46" aria-hidden="true" tabindex="-1"></a><span class="kw">add_test</span>(<span class="ot">NAME</span> colorTest</span>
-<span id="cb29-47"><a href="#cb29-47" aria-hidden="true" tabindex="-1"></a>  <span class="ot">COMMAND</span> colorTest</span>
-<span id="cb29-48"><a href="#cb29-48" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">cmake_minimum_required</span>(<span class="ot">VERSION</span> <span class="dt">3.12</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a &quot;project&quot;, providing a description and a programming language</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="kw">project</span>(raytracer</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">VERSION</span> <span class="dt">1.0</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">DESCRIPTION</span> <span class="st">&quot;Hello world in C++&quot;</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">LANGUAGES</span> <span class="ot">CXX</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Force the compiler to use the C++23 standard (or whatever you want)</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span>(<span class="dv">CMAKE_CXX_STANDARD</span> 23)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"># If the compiler does not support the standard, stop!</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span>(<span class="dv">CMAKE_CXX_STANDARD_REQUIRED</span> <span class="ot">ON</span>)</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Turn on the support for automatic tests</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="kw">enable_testing</span>()</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the library. Pick the name you like the most; we use &quot;trace&quot;</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a><span class="kw">add_library</span>(<span class="bn">trace</span></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>  src/colors.cpp</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Help the compiler when you write &quot;#include &lt;colors.h&gt;&quot;</span></span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="co"># See &quot;cmake-generator-expressions(7)&quot; in the CMake manual</span></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a><span class="kw">target_include_directories</span>(<span class="bn">trace</span> <span class="ot">PUBLIC</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  <span class="ot">$&lt;</span><span class="kw">BUILD_INTERFACE</span><span class="ot">:</span><span class="dv">${CMAKE_CURRENT_SOURCE_DIR}</span><span class="ot">/include&gt;</span></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>  <span class="ot">$&lt;</span><span class="kw">INSTALL_INTERFACE</span><span class="ot">:include&gt;</span></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the program that we will run from the command line</span></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(<span class="bn">raytracer</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>  src/raytracer.cpp</span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a><span class="co"># The command-line program needs to be linked to the &quot;trace&quot; library</span></span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(<span class="bn">raytracer</span> <span class="ot">PUBLIC</span> trace)</span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a><span class="co"># This program runs the automatic tests on the &quot;Color&quot; class</span></span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a><span class="kw">add_executable</span>(<span class="bn">colorTest</span></span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>  test/colors.cpp</span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a><span class="co"># The test program too needs to be linked to &quot;trace&quot;</span></span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(<span class="bn">colorTest</span> <span class="ot">PUBLIC</span> trace)</span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Here we specify that &quot;colorTest&quot; is a special executable, because</span></span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a><span class="co"># it is meant to be run automatically whenever we want to check our code</span></span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a><span class="kw">add_test</span>(<span class="ot">NAME</span> colorTest</span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>  <span class="ot">COMMAND</span> colorTest</span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 </section>
 <section class="slide level1">
 
@@ -1025,17 +1035,17 @@ class="sourceCode cmake"><code class="sourceCode cmake"><span id="cb29-1"><a hre
 system.</p></li>
 <li><p>The most elementary possibility is to use an appropriate
 <code>return</code> in <code>main</code>:</p>
-<div class="sourceCode" id="cb30"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;colors.h&quot;</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    Color c1<span class="op">{</span><span class="fl">1.0</span><span class="op">,</span> <span class="fl">2.0</span><span class="op">,</span> <span class="fl">3.0</span><span class="op">};</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    Color c2<span class="op">{</span><span class="fl">5.0</span><span class="op">,</span> <span class="fl">7.0</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">};</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> are_colors_close<span class="op">(</span>Color<span class="op">{</span><span class="fl">6.0</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">,</span> <span class="fl">11.0</span><span class="op">},</span> c1 <span class="op">+</span> c2<span class="op">)</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> EXIT_SUCCESS <span class="op">:</span> EXIT_FAILURE<span class="op">;</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;colors.h&quot;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cstdlib&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    Color c1<span class="op">{</span><span class="fl">1.0</span><span class="op">,</span> <span class="fl">2.0</span><span class="op">,</span> <span class="fl">3.0</span><span class="op">};</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    Color c2<span class="op">{</span><span class="fl">5.0</span><span class="op">,</span> <span class="fl">7.0</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">};</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> are_colors_close<span class="op">(</span>Color<span class="op">{</span><span class="fl">6.0</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">,</span> <span class="fl">11.0</span><span class="op">},</span> c1 <span class="op">+</span> c2<span class="op">)</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> EXIT_SUCCESS <span class="op">:</span> EXIT_FAILURE<span class="op">;</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>You can use <a
 href="https://www.cplusplus.com/reference/cstdlib/abort/?kw=abort"><code>abort</code></a>
 (in case of failure) or <a
@@ -1043,7 +1053,7 @@ href="https://www.cplusplus.com/reference/cassert/assert/?kw=assert"><code>asser
 (watch out for <code>NDEBUG</code>!).</p></li>
 </ul>
 </section>
-<section id="running-tests-1" class="slide level1">
+<section id="running-tests-2" class="slide level1">
 <h1>Running Tests</h1>
 <ul>
 <li><p>Try modifying one of the tests on the <code>Color</code> type so
@@ -1072,154 +1082,13 @@ of <code>Release</code>;</li>
 <li>Use <code>#undef NDEBUG</code> before
 <code>#include &lt;cassert&gt;</code> (better!);</li>
 <li>Define your own <code>my_assert</code> function (even better!);</li>
-<li>Use a C++ testing library, such as <a
-href="https://github.com/catchorg/Catch2/tree/v2.x">Catch2</a>
-(excellent!).</li>
+<li>Use a C++ testing library. There are many good options: <a
+href="https://github.com/doctest/doctest">doctest</a>, <a
+href="https://github.com/catchorg/Catch2/tree/v2.x">Catch2</a>, <a
+href="https://github.com/qlibs/ut">ut</a>…</li>
 </ul></li>
 <li>Lesson: <strong>always</strong> try to make one or more tests
 fail!</li>
-</ul>
-</section>
-<section id="hints-for-julia" class="slide level1">
-<h1>Hints for Julia</h1>
-</section>
-<section id="package-structure" class="slide level1">
-<h1>Package Structure</h1>
-<ul>
-<li><p>Julia natively implements the required structure type (library,
-executable, executable with tests):</p>
-<ul>
-<li>Each package can be used as a library;</li>
-<li>Packages can include a set of tests if they have a directory called
-<code>test</code> inside;</li>
-<li>The script that implements <code>main</code> <a
-href="./tomasi-ray-tracing-01b.html#/julia-main">seen in the previous
-exercise</a> can be used as an executable.</li>
-</ul></li>
-<li><p>Creating a new package therefore configures everything already in
-the required way, except for the executable.</p></li>
-</ul>
-</section>
-<section id="creating-the-package" class="slide level1">
-<h1>Creating the Package</h1>
-<ul>
-<li><p>Create a new package with the commands seen last time:</p>
-<div class="sourceCode" id="cb31"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Pkg</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">generate</span>(<span class="st">&quot;Raytracer&quot;</span>) <span class="co"># Upper case is customary in Julia</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">activate</span>(<span class="st">&quot;Raytracer&quot;</span>)</span></code></pre></div></li>
-<li><p>Julia supports color management through <a
-href="https://github.com/JuliaGraphics/ColorTypes.jl">ColorTypes</a> and
-<a
-href="https://juliagraphics.github.io/Colors.jl/stable/">Colors</a>:</p>
-<div class="sourceCode" id="cb32"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">&quot;ColorTypes&quot;</span>)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">&quot;Colors&quot;</span>)</span></code></pre></div>
-<p>This will modify <code>Project.toml</code> and add
-<code>Manifest.toml</code>, which should be saved in Git (look at what
-they contain!).</p></li>
-</ul>
-</section>
-<section id="color-operations" class="slide level1">
-<h1>Color Operations</h1>
-<ul>
-<li><p>For today, there is no need to understand the difference between
-<em>value</em> and <em>reference types</em>, because you will be using
-Colors and ColorTypes.</p></li>
-<li><p>The Colors library implements a series of template types:</p>
-<div class="sourceCode" id="cb33"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Colors</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fu">RGB</span>(<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.7</span>)</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="fu">XYZ</span>(<span class="fl">0.8</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>)</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="fu">convert</span>(XYZ, a)) <span class="co"># Convert a from RGB to XYZ space</span></span></code></pre></div></li>
-<li><p>However, the library does not implement the color operations that
-interest us (sum, difference, product, comparison). Implement them
-yourself in the <code>src/Raytracer.jl</code> file (the file name
-depends on your project name).</p></li>
-</ul>
-</section>
-<section id="complications" class="slide level1">
-<h1>Complications</h1>
-<ul>
-<li><p>The types in ColorTypes are <a
-href="https://docs.julialang.org/en/v1/manual/types/#Parametric-Types"><em>parametric</em></a>
-(like templates in C++): the <code>RGB</code> type is actually
-<code>RGB{T}</code>, with <code>T</code> as a parameter.</p></li>
-<li><p>You need to redefine the fundamental operations <code>+</code>,
-<code>-</code>, <code>*</code> and <code>≈</code>
-(<code>\approx</code>), which in Julia are present in the
-<code>Base</code> package.</p>
-<p>You will need to write something like this in
-<code>src/Raytracer.jl</code>:</p>
-<div class="sourceCode" id="cb34"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">ColorTypes</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">Base.</span>:+, Base.<span class="op">:*</span>, <span class="bu">Base</span>.<span class="op">:≈</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># To make this work, first define the product &quot;scalar * color&quot;</span></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="bu">Base</span>.<span class="op">:</span><span class="fu">*</span>(c<span class="op">::</span><span class="dt">ColorTypes.RGB{T}</span>, scalar) <span class="kw">where</span> {T} <span class="op">=</span> scalar <span class="op">*</span> c</span></code></pre></div></li>
-</ul>
-</section>
-<section id="creating-tests" class="slide level1">
-<h1>Creating Tests</h1>
-<ul>
-<li><p>To implement the tests, create a <code>test/runtests.jl</code>
-file, so that the directory structure is as follows:</p>
-<div class="sourceCode" id="cb35"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> tree Raytracer</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Raytracer</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> Manifest.toml</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> Project.toml</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> src</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   └── Raytracer.jl</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> test</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> runtests.jl</span></code></pre></div></li>
-<li><p>To write tests, you need to add the <a href="">Test</a>
-library:</p>
-<div class="sourceCode" id="cb36"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">&quot;Test&quot;</span>)</span></code></pre></div></li>
-</ul>
-</section>
-<section id="how-to-write-tests" class="slide level1">
-<h1>How to Write Tests</h1>
-<ul>
-<li><p>In the <code>runtests.jl</code> file, you need to write the test
-procedures. The Test library implements the <code>@testset</code>
-(groups tests) and <code>@test</code> macros:</p>
-<div class="sourceCode" id="cb37"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Raytracer</span> <span class="co"># Put the name you chose</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Test</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="pp">@testset</span> <span class="st">&quot;Colors&quot;</span> <span class="cf">begin</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Put here the tests required for color sum and product</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@test</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">==</span> <span class="fl">2</span></span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div></li>
-<li><p>To run them from the REPL, write</p>
-<div class="sourceCode" id="cb38"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">test</span>()</span></code></pre></div></li>
-</ul>
-</section>
-<section id="running-tests-2" class="slide level1">
-<h1>Running Tests</h1>
-<p><asciinema-player src="cast/julia-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player></p>
-</section>
-<section id="the-manifest.toml-file" class="slide level1">
-<h1>The <code>Manifest.toml</code> File</h1>
-<ul>
-<li>Julia uses the <code>Project.toml</code> file to indicate general
-information about the package, and it can be edited.</li>
-<li>The <code>Manifest.toml</code> file is generated automatically, and
-it pins the version numbers of the dependencies used by your
-package.</li>
-<li>It is essential to add the <code>Project.toml</code> file to
-Git.</li>
-<li>For <code>Manifest.toml</code> there are two possibilities:
-<ol type="1">
-<li>If you believe it is <strong>essential</strong> that every user uses
-exactly your versions of the dependencies, add it;</li>
-<li>If you want to guarantee more versatility, exclude it from Git (thus
-adding a line to <code>.gitignore</code>).</li>
-</ol></li>
 </ul>
 </section>
 <section id="hints-for-c-1" class="slide level1">
@@ -1258,34 +1127,33 @@ write <code>dotnet add A reference B</code></p></li>
 </section>
 <section id="our-solution" class="slide level1">
 <h1>Our “solution”</h1>
-<p>Here are the commands to run to create the solution we want:</p>
-<div class="sourceCode" id="cb39"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new solution that will include:</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. The library</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. The executable (currently printing «Hello, world!»)</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. The tests</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new sln <span class="at">-o</span> <span class="st">&quot;Myraytracer&quot;</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Myraytracer</span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create the library, named &quot;Trace&quot;, and add it to the solution</span></span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new classlib <span class="at">-o</span> <span class="st">&quot;Trace&quot;</span></span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace/Trace.csproj</span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create the executable, named &quot;Myraytracer&quot;, and add it to the solution</span></span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new console <span class="at">-o</span> <span class="st">&quot;Myraytracer&quot;</span></span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Myraytracer/Myraytracer.csproj</span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Create the tests, named &quot;Trace.Tests&quot;, and add them to the solution</span></span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new xunit <span class="at">-o</span> <span class="st">&quot;Trace.Tests&quot;</span></span>
-<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace.Tests/Trace.Tests.csproj</span>
-<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Both the executable and the tests depend on the «Trace» library</span></span>
-<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> add Myraytracer/Myraytracer.csproj reference Trace/Trace.csproj</span>
-<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> add Trace.Tests/Trace.Tests.csproj reference Trace/Trace.csproj</span>
-<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a .gitignore file</span></span>
-<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new gitignore</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new solution that will include:</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. The library</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. The executable (currently printing «Hello, world!»)</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. The tests</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new sln <span class="at">-o</span> <span class="st">&quot;Myraytracer&quot;</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Myraytracer</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Create the library, named &quot;Trace&quot;, and add it to the solution</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new classlib <span class="at">-o</span> <span class="st">&quot;Trace&quot;</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace/Trace.csproj</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create the executable, named &quot;Myraytracer&quot;, and add it to the solution</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new console <span class="at">-o</span> <span class="st">&quot;Myraytracer&quot;</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Myraytracer/Myraytracer.csproj</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Create the tests, named &quot;Trace.Tests&quot;, and add them to the solution</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new xunit <span class="at">-o</span> <span class="st">&quot;Trace.Tests&quot;</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> sln add Trace.Tests/Trace.Tests.csproj</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Both the executable and the tests depend on the «Trace» library</span></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> add Myraytracer/Myraytracer.csproj reference Trace/Trace.csproj</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> add Trace.Tests/Trace.Tests.csproj reference Trace/Trace.csproj</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a .gitignore file</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a><span class="ex">dotnet</span> new gitignore</span></code></pre></div>
 <p>Do everything from the command line and then open the project in
 Rider: it’s more instructive!</p>
 </section>
@@ -1312,67 +1180,30 @@ change them into something easier to recognize.</p></li>
 </section>
 <section id="writing-tests" class="slide level1">
 <h1>Writing tests</h1>
-<div class="sourceCode" id="cb41"><pre
-class="sourceCode csharp"><code class="sourceCode cs"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This should be put in Trace.Tests/ColorTests.cs</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> System<span class="op">;</span></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Xunit<span class="op">;</span></span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Trace<span class="op">;</span></span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="kw">namespace</span> Trace<span class="op">.</span><span class="fu">Tests</span></span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">class</span> ColorTests</span>
-<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
-<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">[</span>Fact<span class="op">]</span></span>
-<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">TestAdd</span><span class="op">()</span></span>
-<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
-<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>            Color a <span class="op">=</span> <span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">1.0f</span><span class="op">,</span> <span class="fl">2.0f</span><span class="op">,</span> <span class="fl">3.0f</span><span class="op">);</span></span>
-<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>            Color b <span class="op">=</span> <span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">5.0f</span><span class="op">,</span> <span class="fl">6.0f</span><span class="op">,</span> <span class="fl">7.0f</span><span class="op">);</span></span>
-<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>            <span class="co">// C# convention: *first* the expected value, *then* the test value</span></span>
-<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>            Assert<span class="op">.</span><span class="fu">True</span><span class="op">(</span>Color<span class="op">.</span><span class="fu">are_close</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">6.0f</span><span class="op">,</span> <span class="fl">8.0f</span><span class="op">,</span> <span class="fl">10.0f</span><span class="op">),</span> a <span class="op">+</span> b<span class="op">));</span></span>
-<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>            <span class="co">// ...</span></span>
-<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This should be put in Trace.Tests/ColorTests.cs</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> System<span class="op">;</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Xunit<span class="op">;</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> Trace<span class="op">;</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="kw">namespace</span> Trace<span class="op">.</span><span class="fu">Tests</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">class</span> ColorTests</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">[</span>Fact<span class="op">]</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">TestAdd</span><span class="op">()</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>            Color a <span class="op">=</span> <span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">1.0f</span><span class="op">,</span> <span class="fl">2.0f</span><span class="op">,</span> <span class="fl">3.0f</span><span class="op">);</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>            Color b <span class="op">=</span> <span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">5.0f</span><span class="op">,</span> <span class="fl">6.0f</span><span class="op">,</span> <span class="fl">7.0f</span><span class="op">);</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>            <span class="co">// C# convention: *first* the expected value, *then* the test value</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>            Assert<span class="op">.</span><span class="fu">True</span><span class="op">(</span>Color<span class="op">.</span><span class="fu">are_close</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Color</span><span class="op">(</span><span class="fl">6.0f</span><span class="op">,</span> <span class="fl">8.0f</span><span class="op">,</span> <span class="fl">10.0f</span><span class="op">),</span> a <span class="op">+</span> b<span class="op">));</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>            <span class="co">// ...</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>You can run tests with <code>dotnet test</code>, but you can also use
 Rider (this is <strong>so handy</strong>! Refer to the slides for
 Kotlin.)</p>
-</section>
-<section id="hints-for-d" class="slide level1">
-<h1>Hints for D</h1>
-</section>
-<section id="definition-of-the-types" class="slide level1">
-<h1>Definition of the types</h1>
-<ul>
-<li><p>Define <code>Color</code> as a <code>struct</code> and
-<code>HdrImage</code> as a <code>class</code>; for <code>Color</code>,
-include defaults:</p>
-<div class="sourceCode" id="cb42"><pre
-class="sourceCode d"><code class="sourceCode d"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="wa">struct</span> Color <span class="op">{</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> r <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> g <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> b <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
-<li><p>Define <code>pixels</code> in <code>HdrImage</code> as a <a
-href="https://dlang.org/spec/arrays.html#dynamic-arrays">dynamic
-array</a></p></li>
-<li><p>Define a constructor for <code>HdrImage</code> that requires
-<code>width</code> ed <code>height</code> and initializes
-<code>pixels</code> <a
-href="https://dlang.org/spec/arrays.html#length-initialization">allocating
-the correct length</a>. Then set the color of every pixel to
-black.</p></li>
-</ul>
-</section>
-<section id="tests-in-d" class="slide level1">
-<h1>Tests in D</h1>
-<ul>
-<li><p>D offers excellent support for tests via the keyword
-<code>unittest</code> (it’s awesome!)</p></li>
-<li><p>It’s not needed to define tests in separate files, as it is the
-case for C++ and C#.</p></li>
-<li><p>To run the tests, execute the command</p>
-<pre><code>$ dub test</code></pre></li>
-<li><p>See the documentation for more information: <a
-href="https://dlang.org/spec/unittest.html">Unit tests</a></p></li>
-</ul>
 </section>
 <section id="hints-for-javakotlin" class="slide level1">
 <h1>Hints for Java/Kotlin</h1>
@@ -1403,16 +1234,16 @@ week.</p></li>
 <ul>
 <li><p>In Kotlin, use <em>data classes</em> to define
 <code>Color</code>: they are so easy to use!</p>
-<div class="sourceCode" id="cb44"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">/** A RGB color</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param r The level of red</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param g The level of green</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param b The level of blue</span></span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">data</span> <span class="kw">class</span> Color<span class="op">(</span><span class="kw">val</span> <span class="va">r</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">g</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">/** A RGB color</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"> *</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param r The level of red</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param g The level of green</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"> * @param b The level of blue</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">data</span> <span class="kw">class</span> Color<span class="op">(</span><span class="kw">val</span> <span class="va">r</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">g</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Define <code>is_close</code> and operators <code>plus</code> (sum
 of two colors) and <code>times</code> (product between a color and a
 number).</p></li>
@@ -1423,14 +1254,14 @@ number).</p></li>
 <ul>
 <li><p>Kotlin lets you to define classes in a compact form (a dream for
 whoever has used Java!). Here is an example:</p>
-<div class="sourceCode" id="cb45"><pre
-class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage<span class="op">(</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span>  <span class="co">// Using &#39;val&#39; ensures that we cannot change the width</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> <span class="co">// or the height of the image once it&#39;s been created</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">pixels</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">Color</span>&gt; <span class="op">=</span> Array<span class="op">(</span>width * height<span class="op">)</span> <span class="op">{</span> Color<span class="op">(</span><span class="fl">0.0F</span>, <span class="fl">0.0F</span>, <span class="fl">0.0F</span><span class="op">)</span> <span class="op">}</span></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Here are the methods for the class…</span></span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> HdrImage<span class="op">(</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">width</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span>  <span class="co">// Using &#39;val&#39; ensures that we cannot change the width</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> <span class="co">// or the height of the image once it&#39;s been created</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">pixels</span><span class="op">:</span> <span class="dt">Array</span>&lt;<span class="va">Color</span>&gt; <span class="op">=</span> Array<span class="op">(</span>width * height<span class="op">)</span> <span class="op">{</span> Color<span class="op">(</span><span class="fl">0.0F</span>, <span class="fl">0.0F</span>, <span class="fl">0.0F</span><span class="op">)</span> <span class="op">}</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Here are the methods for the class…</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Be sure to understand the difference between <code>val</code> and
 <code>var</code>!</p></li>
 </ul>
@@ -1500,13 +1331,13 @@ command.</p></li>
 <li><p>For <code>Color</code>, derive the <code>Copy</code>,
 <code>Clone</code> and <code>Debug</code> traits to simplify your
 life:</p>
-<div class="sourceCode" id="cb46"><pre
-class="sourceCode rust"><code class="sourceCode rust"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Copy</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Debug</span><span class="at">)]</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> Color <span class="op">{</span></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> r<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> g<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> b<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Copy</span><span class="op">,</span> <span class="bu">Clone</span><span class="op">,</span> <span class="bu">Debug</span><span class="at">)]</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> Color <span class="op">{</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> r<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> g<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> b<span class="op">:</span> <span class="dt">f32</span><span class="op">,</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>For <code>HdrImage</code>, define the <code>pixels</code> member
 of type <code>Vec&lt;Color&gt;</code>.</p></li>
 <li><p>Also define a function
@@ -1542,14 +1373,14 @@ types should be elementary.</p></li>
 indifferent.</p></li>
 <li><p>Remember that in Nim you need to export both the types and their
 members, using <code>*</code>:</p>
-<div class="sourceCode" id="cb48"><pre
-class="sourceCode nim"><code class="sourceCode nim"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">Color</span><span class="co">*</span> <span class="co">=</span> <span class="kw">object</span></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>        r<span class="co">*</span><span class="kw">,</span> g<span class="co">*</span><span class="kw">,</span> b<span class="co">*</span><span class="kw">:</span> <span class="at">float32</span></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">HdrImage</span><span class="co">*</span> <span class="co">=</span> <span class="kw">object</span></span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>        width<span class="co">*</span><span class="kw">,</span> height<span class="co">*</span><span class="kw">:</span> <span class="at">int</span></span>
-<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>        pixels<span class="co">*</span><span class="kw">:</span> <span class="at">Seq</span><span class="kw">[</span><span class="at">Color</span><span class="kw">]</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode nim"><code class="sourceCode nim"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">Color</span><span class="co">*</span> <span class="co">=</span> <span class="kw">object</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>        r<span class="co">*</span><span class="kw">,</span> g<span class="co">*</span><span class="kw">,</span> b<span class="co">*</span><span class="kw">:</span> <span class="at">float32</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">HdrImage</span><span class="co">*</span> <span class="co">=</span> <span class="kw">object</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>        width<span class="co">*</span><span class="kw">,</span> height<span class="co">*</span><span class="kw">:</span> <span class="at">int</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>        pixels<span class="co">*</span><span class="kw">:</span> <span class="at">Seq</span><span class="kw">[</span><span class="at">Color</span><span class="kw">]</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="creating-hdrimage" class="slide level1">
@@ -1579,12 +1410,191 @@ executed</a> by the command</p>
 <li><p>To write tests for the <code>Color</code> and
 <code>HdrImage</code> types, create a
 <code>tests/test_basictypes.nim</code> file like this:</p>
-<div class="sourceCode" id="cb50"><pre
-class="sourceCode nim"><code class="sourceCode nim"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">..</span><span class="co">/</span>src<span class="co">/</span>basictypes</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="cf">when</span> isMainModule<span class="kw">:</span></span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">1.0</span><span class="kw">,</span> <span class="fl">2.0</span><span class="kw">,</span> <span class="fl">3.0</span><span class="kw">)</span> <span class="co">+</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">3.0</span><span class="kw">,</span> <span class="fl">4.0</span><span class="kw">,</span> <span class="fl">5.0</span><span class="kw">)</span> <span class="co">==</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">4.0</span><span class="kw">,</span> <span class="fl">6.0</span><span class="kw">,</span> <span class="fl">8.0</span><span class="kw">)</span></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># …</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode nim"><code class="sourceCode nim"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">..</span><span class="co">/</span>src<span class="co">/</span>basictypes</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="cf">when</span> isMainModule<span class="kw">:</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">1.0</span><span class="kw">,</span> <span class="fl">2.0</span><span class="kw">,</span> <span class="fl">3.0</span><span class="kw">)</span> <span class="co">+</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">3.0</span><span class="kw">,</span> <span class="fl">4.0</span><span class="kw">,</span> <span class="fl">5.0</span><span class="kw">)</span> <span class="co">==</span> <span class="at">Color</span><span class="kw">(</span><span class="fl">4.0</span><span class="kw">,</span> <span class="fl">6.0</span><span class="kw">,</span> <span class="fl">8.0</span><span class="kw">)</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># …</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="hints-for-julia" class="slide level1">
+<h1>Hints for Julia</h1>
+</section>
+<section id="package-structure" class="slide level1">
+<h1>Package Structure</h1>
+<ul>
+<li><p>Julia natively implements the required structure type (library,
+executable, executable with tests):</p>
+<ul>
+<li>Each package can be used as a library;</li>
+<li>Packages can include a set of tests if they have a directory called
+<code>test</code> inside;</li>
+<li>The script that implements <code>main</code> <a
+href="./tomasi-ray-tracing-01b.html#/julia-main">seen in the previous
+exercise</a> can be used as an executable.</li>
+</ul></li>
+<li><p>Creating a new package therefore configures everything already in
+the required way, except for the executable.</p></li>
+</ul>
+</section>
+<section id="creating-the-package" class="slide level1">
+<h1>Creating the Package</h1>
+<ul>
+<li><p>Create a new package with the commands seen last time:</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Pkg</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">generate</span>(<span class="st">&quot;Raytracer&quot;</span>) <span class="co"># Upper case is customary in Julia</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">activate</span>(<span class="st">&quot;Raytracer&quot;</span>)</span></code></pre></div></li>
+<li><p>Julia supports color management through <a
+href="https://github.com/JuliaGraphics/ColorTypes.jl">ColorTypes</a> and
+<a
+href="https://juliagraphics.github.io/Colors.jl/stable/">Colors</a>:</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">&quot;ColorTypes&quot;</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">&quot;Colors&quot;</span>)</span></code></pre></div>
+<p>This will modify <code>Project.toml</code> and add
+<code>Manifest.toml</code>, which should be saved in Git (look at what
+they contain!).</p></li>
+</ul>
+</section>
+<section id="color-operations" class="slide level1">
+<h1>Color Operations</h1>
+<ul>
+<li><p>For today, there is no need to understand the difference between
+<em>value</em> and <em>reference types</em>, because you will be using
+Colors and ColorTypes.</p></li>
+<li><p>The Colors library implements a series of template types:</p>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Colors</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="fu">RGB</span>(<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.7</span>)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="fu">XYZ</span>(<span class="fl">0.8</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="fu">println</span>(<span class="fu">convert</span>(XYZ, a)) <span class="co"># Convert a from RGB to XYZ space</span></span></code></pre></div></li>
+<li><p>However, the library does not implement the color operations that
+interest us (sum, difference, product, comparison). Implement them
+yourself in the <code>src/Raytracer.jl</code> file (the file name
+depends on your project name).</p></li>
+</ul>
+</section>
+<section id="complications" class="slide level1">
+<h1>Complications</h1>
+<ul>
+<li><p>The types in ColorTypes are <a
+href="https://docs.julialang.org/en/v1/manual/types/#Parametric-Types"><em>parametric</em></a>
+(like templates in C++): the <code>RGB</code> type is actually
+<code>RGB{T}</code>, with <code>T</code> as a parameter.</p></li>
+<li><p>You need to redefine the fundamental operations <code>+</code>,
+<code>-</code>, <code>*</code> and <code>≈</code>
+(<code>\approx</code>), which in Julia are present in the
+<code>Base</code> package.</p>
+<p>You will need to write something like this in
+<code>src/Raytracer.jl</code>:</p>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">ColorTypes</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">Base.</span>:+, Base.<span class="op">:*</span>, <span class="bu">Base</span>.<span class="op">:≈</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># To make this work, first define the product &quot;scalar * color&quot;</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="bu">Base</span>.<span class="op">:</span><span class="fu">*</span>(c<span class="op">::</span><span class="dt">ColorTypes.RGB{T}</span>, scalar) <span class="kw">where</span> {T} <span class="op">=</span> scalar <span class="op">*</span> c</span></code></pre></div></li>
+</ul>
+</section>
+<section id="creating-tests" class="slide level1">
+<h1>Creating Tests</h1>
+<ul>
+<li><p>To implement the tests, create a <code>test/runtests.jl</code>
+file, so that the directory structure is as follows:</p>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> tree Raytracer</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Raytracer</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> Manifest.toml</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> Project.toml</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> src</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   └── Raytracer.jl</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> test</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> runtests.jl</span></code></pre></div></li>
+<li><p>To write tests, you need to add the <a href="">Test</a>
+library:</p>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">&quot;Test&quot;</span>)</span></code></pre></div></li>
+</ul>
+</section>
+<section id="how-to-write-tests" class="slide level1">
+<h1>How to Write Tests</h1>
+<ul>
+<li><p>In the <code>runtests.jl</code> file, you need to write the test
+procedures. The Test library implements the <code>@testset</code>
+(groups tests) and <code>@test</code> macros:</p>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Raytracer</span> <span class="co"># Put the name you chose</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Test</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="pp">@testset</span> <span class="st">&quot;Colors&quot;</span> <span class="cf">begin</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Put here the tests required for color sum and product</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@test</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">==</span> <span class="fl">2</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div></li>
+<li><p>To run them from the REPL, write</p>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">test</span>()</span></code></pre></div></li>
+</ul>
+</section>
+<section id="running-tests-4" class="slide level1">
+<h1>Running Tests</h1>
+<p><asciinema-player src="cast/julia-tests.cast" cols="72" rows="22" font-size="medium"></asciinema-player></p>
+</section>
+<section id="the-manifest.toml-file" class="slide level1">
+<h1>The <code>Manifest.toml</code> File</h1>
+<ul>
+<li>Julia uses the <code>Project.toml</code> file to indicate general
+information about the package, and it can be edited.</li>
+<li>The <code>Manifest.toml</code> file is generated automatically, and
+it pins the version numbers of the dependencies used by your
+package.</li>
+<li>It is essential to add the <code>Project.toml</code> file to
+Git.</li>
+<li>For <code>Manifest.toml</code> there are two possibilities:
+<ol type="1">
+<li>If you believe it is <strong>essential</strong> that every user uses
+exactly your versions of the dependencies, add it;</li>
+<li>If you want to guarantee more versatility, exclude it from Git (thus
+adding a line to <code>.gitignore</code>).</li>
+</ol></li>
+</ul>
+</section>
+<section id="hints-for-d" class="slide level1">
+<h1>Hints for D</h1>
+</section>
+<section id="definition-of-the-types" class="slide level1">
+<h1>Definition of the types</h1>
+<ul>
+<li><p>Define <code>Color</code> as a <code>struct</code> and
+<code>HdrImage</code> as a <code>class</code>; for <code>Color</code>,
+include defaults:</p>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode d"><code class="sourceCode d"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="wa">struct</span> Color <span class="op">{</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> r <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> g <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> b <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
+<li><p>Define <code>pixels</code> in <code>HdrImage</code> as a <a
+href="https://dlang.org/spec/arrays.html#dynamic-arrays">dynamic
+array</a></p></li>
+<li><p>Define a constructor for <code>HdrImage</code> that requires
+<code>width</code> ed <code>height</code> and initializes
+<code>pixels</code> <a
+href="https://dlang.org/spec/arrays.html#length-initialization">allocating
+the correct length</a>. Then set the color of every pixel to
+black.</p></li>
+</ul>
+</section>
+<section id="tests-in-d" class="slide level1">
+<h1>Tests in D</h1>
+<ul>
+<li><p>D offers excellent support for tests via the keyword
+<code>unittest</code> (it’s awesome!)</p></li>
+<li><p>It’s not needed to define tests in separate files, as it is the
+case for C++ and C#.</p></li>
+<li><p>To run the tests, execute the command</p>
+<pre><code>$ dub test</code></pre></li>
+<li><p>See the documentation for more information: <a
+href="https://dlang.org/spec/unittest.html">Unit tests</a></p></li>
 </ul>
 </section>
     </div>
