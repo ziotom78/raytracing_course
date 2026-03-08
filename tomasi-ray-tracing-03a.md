@@ -5,7 +5,7 @@
 -   In the last exercise we implemented the `HdrImage` type.
 -   This week we will implement the functions to read and write PFM files.
 -   Reading and writing files is an activity that is easily prone to errors:
-    -   The directory in which to save the file does not exist, or it is write-protected
+    -   The target directory for saving the file does not exist, or it is write-protected
     -   The file specified by the user does not exist
     -   The file is corrupted
     -   The file is in a valid format but our code is not able to load it (e.g., a file is encoded with XYZ colors, but our code only supports RGB)
@@ -16,7 +16,7 @@
 -   Errors can be divided into two classes:
 
     #.  Programmer errors
-    #.  User’s errors
+    #.  User errors
 
 -   An error should be handled according to its type (first or second).
 
@@ -25,7 +25,7 @@
 
 -   This is a logical error in the program.
 -   A "perfect" program should never have logical errors.
--   If there is evidence that a logical error has occurred, it would be better to report it **as loudly as possible**.
+-   If there is evidence that a logical error has occurred, it should be reported **as loudly as possible**.
 
 
 # Example
@@ -86,18 +86,39 @@ assert len(my_list) == len(sorted_list)
 
 # Example
 
-<asciinema-player src="./cast/user-error-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
+```python
+x = float(input("Insert a number: "))
+y = float(input("Insert another number: "))
+print(f"The ratio {x} / {y} is {x / y}")
+```
 
+# Example
+
+```
+$ python3 calc.py
+Insert a number: 4
+Insert another number: 3
+The ratio 4.0 / 3.0 is 1.3333333333333333
+
+$ python3 calc.py
+Insert a number: 3
+Insert another number: 0
+Traceback (most recent call last):
+  File "calc.py", line 3, in <module>
+    print(f"The ratio {x} / {y} is {x / y}")
+ZeroDivisionError: float division by zero
+$
+```
+
+(Note: Python raises an exception if you divide a number by zero. Most of the languages return a `NaN` instead.)
 
 # Handling User’s Errors
 
--   User’s errors are **inevitable**.
+-   User errors are **inevitable**.
 -   If there is evidence that the user has made a mistake, there are several ways to react:
     1.  Print an error message, as clear as possible;
     2.  Ask the user to enter the incorrect data again;
-    3.  In certain contexts, the code can decide independently how to correct the error.
-
-        For example, if a numerical value is requested within a certain range $[a, b]$ and the value provided is $x > b$, we can set $x = b$ and continue.
+    3.  In specific contexts, the code can decide autonomously how to correct the error, e.g., clamping a value $x > b$ to the range $[a, b]$.
 
 
 # Error Correction (1/2)
@@ -130,14 +151,24 @@ print(f"The ratio {x} / {y} is {x / y}")
 
 # Corrected Program
 
-<asciinema-player src="./cast/user-error-corrected-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player>
+```
+$ python calc.py
+Insert a number: 3
+Insert another number: 0
+Error, the second number cannot be zero!
+Insert another number: 2
+The ratio 3.0 / 2.0 is 1.5
+$
+```
 
 (There is still room for improvement: the program would crash if the user enters `pippo` as input…)
 
 # User’s Errors in Functions
 
 -   It is usually very simple to decide how to handle user’s errors in the `main` function of a program.
--   It is less clear, however, how to handle errors in the input passed to a function or method: who provided the wrong input, the calling program or the user?
+-   It is less clear, however, how to handle errors in the input passed to a function or method. Who is responsible for the invalid input?
+    -   The calling program?
+    -   The user?
 
 
 # Example: root finding
@@ -207,8 +238,9 @@ int main() {
 
 # General Rule
 
--   No function or method should do anything catastrophic (crash the program) or **visible** (print an error message to the screen); only the `main` function should.
--   The **golden rule** is that a function should return a value that signals an error or raise an exception.
+-   As a general principle, no function or method should do anything catastrophic (crash the program) or **visible** (print an error message to the screen).
+-   The responsibility for the User Interface usually belongs to the `main` function.
+-   The **golden rule**: a function should either return an error signal (error code/optional type) or raise an exception, letting the caller decide how to handle it.
 
 
 # Exceptions {#exceptions}
@@ -231,11 +263,29 @@ int main() {
 <asciinema-player src="./cast/exceptions-100x23.cast" cols="100" rows="23" font-size="18"></asciinema-player>
 
 
-# Types for Exceptions
+# Exceptions are typed
 
--   An exception is a type of *crash* that is **typed** (e.g., `ValueError`)
+An exception is a type of *crash* that is **typed**: `ValueError`, `ZeroDivisionError`, etc.
 
--   These types can contain additional information:
+```python
+def f(x, y):
+    return x / y
+
+try:
+    x = float(input("Enter the first number:"))
+    y = float(input("Enter the second number:"))
+    print(f"The result of {x} / {y} is {x / y}")
+except ZeroDivisionError:
+    print("Error! The value for y must be different than zero")
+except ValueError:
+    print("Error! You must provide two floating-point numbers")
+```
+
+# Raising exceptions
+
+-   Exception types can contain additional information
+
+-   This is extremely useful when you want to know *why* an exception occurred:
 
     ```python
     class WrongNumber(Exception):
@@ -328,14 +378,14 @@ int main() {
     }
     ```
 
-- Alternatively, there may be a type defined in the standard library that implements this functionality ([`std::optional`](https://en.cppreference.com/w/cpp/utility/optional) in C++17, [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected) in C++23, [Option](https://nim-lang.org/docs/options.html) in Nim…)
+- Check if the standard library of your language implements this functionality ([`std::optional`](https://en.cppreference.com/w/cpp/utility/optional) in C++17, [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected) in C++23, [Option](https://nim-lang.org/docs/options.html) in Nim…)
 
 
 # Result Types
 
 - In Rust there is the `Result` type, which is a more versatile version of *nullable* (like C++23’s [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected)).
 
-- The `Result` type is a *sum type* (we will see them better when we will discuss compiler theory), and allows you to associate a type `A` in case of success, and a type `B` in case of failure:
+- The `Result` type is a *sum type* (we will see them better later) that acts as type `A` in case of success and type `B` in case of failure:
 
     ```rust
     pub struct OutputData {
@@ -355,7 +405,7 @@ int main() {
 
 # Binary Files
 
--   Binary files are the simplest type: they consist of a sequence of bytes (i.e., 8 bits written in sequence).
+-   Binary files are the simplest type: they consist of a sequence of bytes (where each byte consists of 8 bits).
 
 -   Each byte can contain an integer value in the range 0–255
 
@@ -377,7 +427,7 @@ int main() {
 
 # From Binary to Decimal
 
--   To reason about the values of bytes, binary numbering is used, which obviously uses the number 2 as its base:
+-   To interpret the values of bytes, binary numbering is used, which obviously uses the number 2 as its base:
 
     ```
     0  → 0
@@ -399,7 +449,7 @@ int main() {
 
 # Hexadecimal Notation
 
--   Binary notation, however, is cumbersome because numbers quickly require many digits (131 in binary requires 8 digits!).
+-   Binary notation, however, is cumbersome because numbers quickly require many digits (131 requires 8 bits in binary!).
 
 -   As an alternative to binary notation, hexadecimal (base 16) notation is widely used, which uses the digits
 
@@ -433,9 +483,9 @@ int main() {
     1.  *Big-endian* encoding starts from the *highest* power ("big");
     2.  *Little-endian* encoding starts from the *lowest* power ("little").
 
--   Intel and AMD CPUs used in personal computers today all use *little-endian* encoding. *Big-endian* encoding is instead the standard for network transmissions (and is still used today in some ARM CPUs).
+-   Fortunately, *bit endianness* will not be something we have to worry about in our code, because the hardware abstracts it.
 
--   Fortunately, *bit endianness* will not be something we have to worry about in our code, but we will have to deal with *byte endianness*!
+-   However, we will have to deal with *byte endianness*!
 
 
 # Using More Than 8 Bits
@@ -457,7 +507,7 @@ int main() {
 
 -   For example, the 16-bit hexadecimal number 1F3D (2 bytes) is encoded with the byte pair `1F 3D` (*big-endian*) or `3D 1F` (*little-endian*)?
 
--   In this case too, we speak of *big-endian* or *little-endian* byte encoding.
+-   In this case too, we speak of *big-endian* or *little-endian* byte encoding. Intel and AMD CPUs used in personal computers today all use *little-endian* encoding. *Big-endian* encoding is instead the standard for network transmissions (and is still used today in some ARM CPUs).
 
 -   Unlike *bit endianness*, we will have to worry about *byte endianness* when handling PFM files 🙁
 
@@ -476,7 +526,7 @@ int main() {
     }
     ```
 
-    The value `138` has been saved in *textual form*! (If you use the `uint8_t` type instead, C++ will use the usual *binary form*)
+    The value `138` has been saved in *textual form*! (To write it in binary form, you must use `outf.write()`.)
 
 -   Let's now see the secrets of text encoding.
 
@@ -491,7 +541,7 @@ int main() {
 
 -   Some of you may also have had error messages from Git regarding strange `CRLF` character conversions
 
--   Let's now see in detail the text encoding of files, it will be very useful especially in these two areas:
+-   Let's now see in detail the text encoding of files. This is useful for us because of two contexts:
 
     1.  Comments in the code;
     2.  Writing messages to the user.
@@ -558,7 +608,7 @@ int main() {
     (Emily Dickinson, 1863)
     ```
 
--   How is the end of a line encoded in each verse of the poem?
+-   How is the end of a line encoded in each line of the poem?
 
 -   Is it possible to encode *all* characters using 128 values?
 
@@ -600,7 +650,7 @@ See this [link](https://www.howtogeek.com/727213/what-are-teletypes-and-why-were
 
 # Beyond 127 Characters
 
--   Even though ASCII was born for computers with 7 bits per byte, computer manufacturers soon standardized on using 8 bits in each byte (more convenient because it is a power of 2)
+-   Even though ASCII was born for computers with 7 bits per byte, computer manufacturers soon standardized the use of 8-bit bytes (more convenient because it is a power of 2)
 
 -   Since $2^8 = 256$, this means that the numbers 128–255 are unused in ASCII: a waste!
 
@@ -703,7 +753,7 @@ Code page 866 (cyrillic)
 -   Uppercase letter E with grave accent: `É` (201);
 -   Ellipsis: `…` (8230);
 -   Flat symbol: `♭` (9837);
--   Grinning face: `😀` (128,512).
+-   Grinning face emoji: `😀` (128,512).
 
 
 # Unicode Encoding
@@ -790,7 +840,7 @@ Code page 866 (cyrillic)
 
 -   There is a problem of *endianness* here: is the value `0x2A6C` written as the byte pair `0x2A 0x6C` (*big endian*) or `0x6C 0x2A` (*little endian*)?
 
--   In text files encoded with UTF-16, the so-called BOM (*byte-order marker*) is inserted at the beginning of the file, which corresponds to the *code point* `0xFEFF`. If the first two bytes of a file are `0xFE 0xFF`, then the file uses *big endian*; if they are `0xFF 0xFE`, it uses *little endian*. (UTF-8 also has a BOM: `0xEF 0xBB 0xBF`).
+-   In text files encoded with UTF-16, the so-called BOM (*byte-order marker*) is inserted at the beginning of the file, which corresponds to the *code point* `0xFEFF`. If the first two bytes of a file are `0xFE 0xFF`, then the file uses *big endian*; if they are `0xFF 0xFE`, it uses *little endian*. (UTF-8 also has a BOM: `0xEF 0xBB 0xBF`, but it’s discouraged).
 
 -   UTF-16 is used by Windows and in Java-based languages (Kotlin, Scala, etc.).
 

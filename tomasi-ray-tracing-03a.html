@@ -98,7 +98,7 @@
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -114,7 +114,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -142,7 +142,7 @@ files.</li>
 <li>Reading and writing files is an activity that is easily prone to
 errors:
 <ul>
-<li>The directory in which to save the file does not exist, or it is
+<li>The target directory for saving the file does not exist, or it is
 write-protected</li>
 <li>The file specified by the user does not exist</li>
 <li>The file is corrupted</li>
@@ -158,7 +158,7 @@ RGB)</li>
 <li><p>Errors can be divided into two classes:</p>
 <ol>
 <li>Programmer errors</li>
-<li>User’s errors</li>
+<li>User errors</li>
 </ol></li>
 <li><p>An error should be handled according to its type (first or
 second).</p></li>
@@ -169,8 +169,8 @@ second).</p></li>
 <ul>
 <li>This is a logical error in the program.</li>
 <li>A “perfect” program should never have logical errors.</li>
-<li>If there is evidence that a logical error has occurred, it would be
-better to report it <strong>as loudly as possible</strong>.</li>
+<li>If there is evidence that a logical error has occurred, it should be
+reported <strong>as loudly as possible</strong>.</li>
 </ul>
 </section>
 <section id="example" class="slide level1">
@@ -244,53 +244,77 @@ don’t want the program to crash in these cases!</li>
 </section>
 <section id="example-1" class="slide level1">
 <h1>Example</h1>
-<p><asciinema-player src="./cast/user-error-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert another number: &quot;</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;The ratio </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+</section>
+<section id="example-2" class="slide level1">
+<h1>Example</h1>
+<pre><code>$ python3 calc.py
+Insert a number: 4
+Insert another number: 3
+The ratio 4.0 / 3.0 is 1.3333333333333333
+
+$ python3 calc.py
+Insert a number: 3
+Insert another number: 0
+Traceback (most recent call last):
+  File &quot;calc.py&quot;, line 3, in &lt;module&gt;
+    print(f&quot;The ratio {x} / {y} is {x / y}&quot;)
+ZeroDivisionError: float division by zero
+$</code></pre>
+<p>(Note: Python raises an exception if you divide a number by zero.
+Most of the languages return a <code>NaN</code> instead.)</p>
 </section>
 <section id="handling-users-errors" class="slide level1">
 <h1>Handling User’s Errors</h1>
 <ul>
-<li>User’s errors are <strong>inevitable</strong>.</li>
+<li>User errors are <strong>inevitable</strong>.</li>
 <li>If there is evidence that the user has made a mistake, there are
 several ways to react:
 <ol type="1">
-<li><p>Print an error message, as clear as possible;</p></li>
-<li><p>Ask the user to enter the incorrect data again;</p></li>
-<li><p>In certain contexts, the code can decide independently how to
-correct the error.</p>
-<p>For example, if a numerical value is requested within a certain range
-<span class="math inline">[a, b]</span> and the value provided is <span
-class="math inline">x &gt; b</span>, we can set <span
-class="math inline">x = b</span> and continue.</p></li>
+<li>Print an error message, as clear as possible;</li>
+<li>Ask the user to enter the incorrect data again;</li>
+<li>In specific contexts, the code can decide autonomously how to
+correct the error, e.g., clamping a value <span class="math inline">x
+&gt; b</span> to the range <span class="math inline">[a, b]</span>.</li>
 </ol></li>
 </ul>
 </section>
 <section id="error-correction-12" class="slide level1">
 <h1>Error Correction (1/2)</h1>
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert another number: &quot;</span>))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> y <span class="op">!=</span> <span class="fl">0.0</span>:</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;The ratio </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Error, the second number cannot be zero!&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert another number: &quot;</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> y <span class="op">!=</span> <span class="fl">0.0</span>:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;The ratio </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Error, the second number cannot be zero!&quot;</span>)</span></code></pre></div>
 </section>
 <section id="error-correction-22" class="slide level1">
 <h1>Error Correction (2/2)</h1>
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert another number: &quot;</span>))</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> y <span class="op">==</span> <span class="fl">0.0</span>:</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error, the second number cannot be zero!&quot;</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;The ratio </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert a number: &quot;</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Insert another number: &quot;</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> y <span class="op">==</span> <span class="fl">0.0</span>:</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error, the second number cannot be zero!&quot;</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;The ratio </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
 </section>
 <section id="corrected-program" class="slide level1">
 <h1>Corrected Program</h1>
-<p><asciinema-player src="./cast/user-error-corrected-74x25.cast" cols="74" rows="25" font-size="medium"></asciinema-player></p>
+<pre><code>$ python calc.py
+Insert a number: 3
+Insert another number: 0
+Error, the second number cannot be zero!
+Insert another number: 2
+The ratio 3.0 / 2.0 is 1.5
+$</code></pre>
 <p>(There is still room for improvement: the program would crash if the
 user enters <code>pippo</code> as input…)</p>
 </section>
@@ -300,8 +324,11 @@ user enters <code>pippo</code> as input…)</p>
 <li>It is usually very simple to decide how to handle user’s errors in
 the <code>main</code> function of a program.</li>
 <li>It is less clear, however, how to handle errors in the input passed
-to a function or method: who provided the wrong input, the calling
-program or the user?</li>
+to a function or method. Who is responsible for the invalid input?
+<ul>
+<li>The calling program?</li>
+<li>The user?</li>
+</ul></li>
 </ul>
 </section>
 <section id="example-root-finding" class="slide level1">
@@ -309,15 +336,15 @@ program or the user?</li>
 <p>The method <code>Bisection::FindRoot()</code> searches for the root
 of a function within an interval <code>[a, b]</code>, provided that
 Weierstrass’ theorem holds.</p>
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> Bisection<span class="op">::</span>FindRoot<span class="op">(</span><span class="dt">double</span> a<span class="op">,</span> <span class="dt">double</span> b<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>f<span class="op">-&gt;</span>Eval<span class="op">(</span>a<span class="op">)</span> <span class="op">*</span> f<span class="op">-&gt;</span>Eval<span class="op">(</span>b<span class="op">)</span> <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Weierstrass’ theorem holds. Hurrah!</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// The hypotheses of Weierstrass’ theorem do not hold here.</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// What should I do now?</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> Bisection<span class="op">::</span>FindRoot<span class="op">(</span><span class="dt">double</span> a<span class="op">,</span> <span class="dt">double</span> b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(</span>f<span class="op">-&gt;</span>Eval<span class="op">(</span>a<span class="op">)</span> <span class="op">*</span> f<span class="op">-&gt;</span>Eval<span class="op">(</span>b<span class="op">)</span> <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Weierstrass’ theorem holds. Hurrah!</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// The hypotheses of Weierstrass’ theorem do not hold here.</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// What should I do now?</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
 <section id="example-root-finding-1" class="slide level1">
 <h1>Example: root finding</h1>
@@ -335,34 +362,34 @@ Second case
 <tbody>
 <tr>
 <td>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// …</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> a<span class="op">,</span> b<span class="op">;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// The program calculates its own</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// values for a and b: if they are</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// wrong, blame the programmer!</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  a <span class="op">=</span> sin<span class="op">(</span><span class="dv">3</span> <span class="op">*</span> nu <span class="op">/</span> <span class="dv">4</span> <span class="op">*</span> k<span class="op">);</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  b <span class="op">=</span> cos<span class="op">(</span><span class="dv">3</span> <span class="op">*</span> nu <span class="op">+</span> psi<span class="op">);</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  bis<span class="op">.</span>FindRoot<span class="op">(</span>a<span class="op">,</span> b<span class="op">);</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// …</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> a<span class="op">,</span> b<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// The program calculates its own</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// values for a and b: if they are</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// wrong, blame the programmer!</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  a <span class="op">=</span> sin<span class="op">(</span><span class="dv">3</span> <span class="op">*</span> nu <span class="op">/</span> <span class="dv">4</span> <span class="op">*</span> k<span class="op">);</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  b <span class="op">=</span> cos<span class="op">(</span><span class="dv">3</span> <span class="op">*</span> nu <span class="op">+</span> psi<span class="op">);</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  bis<span class="op">.</span>FindRoot<span class="op">(</span>a<span class="op">,</span> b<span class="op">);</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </td>
 <td>
-<div class="sourceCode" id="cb7"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// …</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> a<span class="op">,</span> b<span class="op">;</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// The program asks the user for the</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// values for a and b: if they are</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// wrong, blame the user!</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  cout <span class="op">&lt;&lt;</span> <span class="st">&quot;Enter a: &quot;</span><span class="op">;</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  cin <span class="op">&lt;&lt;</span> a<span class="op">;</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  cout <span class="op">&lt;&lt;</span> <span class="st">&quot;Enter b: &quot;</span><span class="op">;</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  cin <span class="op">&lt;&lt;</span> b<span class="op">;</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  bis<span class="op">.</span>FindRoot<span class="op">(</span>a<span class="op">,</span> b<span class="op">);</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// …</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> a<span class="op">,</span> b<span class="op">;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// The program asks the user for the</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// values for a and b: if they are</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// wrong, blame the user!</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  cout <span class="op">&lt;&lt;</span> <span class="st">&quot;Enter a: &quot;</span><span class="op">;</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  cin <span class="op">&lt;&lt;</span> a<span class="op">;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  cout <span class="op">&lt;&lt;</span> <span class="st">&quot;Enter b: &quot;</span><span class="op">;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  cin <span class="op">&lt;&lt;</span> b<span class="op">;</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  bis<span class="op">.</span>FindRoot<span class="op">(</span>a<span class="op">,</span> b<span class="op">);</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </td>
 </tr>
 </tbody>
@@ -371,11 +398,14 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#c
 <section id="general-rule" class="slide level1">
 <h1>General Rule</h1>
 <ul>
-<li>No function or method should do anything catastrophic (crash the
-program) or <strong>visible</strong> (print an error message to the
-screen); only the <code>main</code> function should.</li>
-<li>The <strong>golden rule</strong> is that a function should return a
-value that signals an error or raise an exception.</li>
+<li>As a general principle, no function or method should do anything
+catastrophic (crash the program) or <strong>visible</strong> (print an
+error message to the screen).</li>
+<li>The responsibility for the User Interface usually belongs to the
+<code>main</code> function.</li>
+<li>The <strong>golden rule</strong>: a function should either return an
+error signal (error code/optional type) or raise an exception, letting
+the caller decide how to handle it.</li>
 </ul>
 </section>
 <section id="exceptions" class="slide level1">
@@ -386,10 +416,10 @@ value that signals an error or raise an exception.</li>
 <ul>
 <li><p>An exception is used to «crash» a program in a controlled
 way:</p>
-<div class="sourceCode" id="cb8"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> my_function(...):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> something_wrong:</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">&quot;Error!&quot;</span>)</span></code></pre></div></li>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> my_function(...):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> something_wrong:</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">&quot;Error!&quot;</span>)</span></code></pre></div></li>
 <li><p>Unlike functions like <code>abort</code>, the crash can be
 suspended or interrupted (in jargon, «caught»), and the exception can
 signal the type of error that caused its creation.</p></li>
@@ -399,26 +429,44 @@ signal the type of error that caused its creation.</p></li>
 
 <p><asciinema-player src="./cast/exceptions-100x23.cast" cols="100" rows="23" font-size="18"></asciinema-player></p>
 </section>
-<section id="types-for-exceptions" class="slide level1">
-<h1>Types for Exceptions</h1>
+<section id="exceptions-are-typed" class="slide level1">
+<h1>Exceptions are typed</h1>
+<p>An exception is a type of <em>crash</em> that is
+<strong>typed</strong>: <code>ValueError</code>,
+<code>ZeroDivisionError</code>, etc.</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x, y):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">/</span> y</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Enter the first number:&quot;</span>))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Enter the second number:&quot;</span>))</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;The result of </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>x <span class="op">/</span> y<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ZeroDivisionError</span>:</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Error! The value for y must be different than zero&quot;</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Error! You must provide two floating-point numbers&quot;</span>)</span></code></pre></div>
+</section>
+<section id="raising-exceptions" class="slide level1">
+<h1>Raising exceptions</h1>
 <ul>
-<li><p>An exception is a type of <em>crash</em> that is
-<strong>typed</strong> (e.g., <code>ValueError</code>)</p></li>
-<li><p>These types can contain additional information:</p>
-<div class="sourceCode" id="cb9"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> WrongNumber(<span class="pp">Exception</span>):</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num):</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num <span class="op">=</span> num</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Enter some number: &quot;</span>))</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">&gt;</span> <span class="dv">3</span>:</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> WrongNumber(num<span class="op">=</span>x)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> WrongNumber <span class="im">as</span> e:</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;You entered a number that is too large: &quot;</span>, e.num)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Enter some number: 5</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># You entered a number that is too large: 5</span></span></code></pre></div></li>
+<li><p>Exception types can contain additional information</p></li>
+<li><p>This is extremely useful when you want to know <em>why</em> an
+exception occurred:</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> WrongNumber(<span class="pp">Exception</span>):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num):</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num <span class="op">=</span> num</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Enter some number: &quot;</span>))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">&gt;</span> <span class="dv">3</span>:</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> WrongNumber(num<span class="op">=</span>x)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> WrongNumber <span class="im">as</span> e:</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;You entered a number that is too large: &quot;</span>, e.num)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Enter some number: 5</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># You entered a number that is too large: 5</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="propagating-exceptions" class="slide level1">
@@ -427,18 +475,18 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a hr
 <li><p>An exception that is not caught propagates along the entire chain
 of callers.</p></li>
 <li><p>It can be caught at any level:</p>
-<div class="sourceCode" id="cb10"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f():</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">&quot;Error!&quot;</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> g():</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    f()</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> h():</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:      <span class="co"># You can capture exceptions within functions, of course</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        g()   <span class="co"># g doesn&#39;t raise exceptions, but f() does</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span>:</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Got an exception!&quot;</span>)</span></code></pre></div></li>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f():</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">&quot;Error!&quot;</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> g():</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    f()</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> h():</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:      <span class="co"># You can capture exceptions within functions, of course</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        g()   <span class="co"># g doesn&#39;t raise exceptions, but f() does</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span>:</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Got an exception!&quot;</span>)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="performance" class="slide level1">
@@ -473,18 +521,18 @@ part;</li>
 <h1>Error Parameters</h1>
 <ul>
 <li><p>An additional parameter can be accepted to signal the error:</p>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> Bisezione<span class="op">::</span>CercaZeri<span class="op">(</span><span class="dt">double</span> a<span class="op">,</span> <span class="dt">double</span> b<span class="op">,</span> <span class="dt">bool</span> <span class="op">&amp;</span> error<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    error <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="va">m_f</span><span class="op">-&gt;</span>Eval<span class="op">(</span>a<span class="op">)</span> <span class="op">*</span> <span class="va">m_f</span><span class="op">-&gt;</span>Eval<span class="op">(</span>b<span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0.0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        error <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">0.0</span><span class="op">;</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> Bisezione<span class="op">::</span>CercaZeri<span class="op">(</span><span class="dt">double</span> a<span class="op">,</span> <span class="dt">double</span> b<span class="op">,</span> <span class="dt">bool</span> <span class="op">&amp;</span> error<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    error <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="va">m_f</span><span class="op">-&gt;</span>Eval<span class="op">(</span>a<span class="op">)</span> <span class="op">*</span> <span class="va">m_f</span><span class="op">-&gt;</span>Eval<span class="op">(</span>b<span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0.0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        error <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">0.0</span><span class="op">;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
 <li><p>Instead of a <code>bool</code>, you can use a class to record the
 type of error and complex information.</p></li>
 </ul>
@@ -494,18 +542,18 @@ type of error and complex information.</p></li>
 <ul>
 <li><p>Languages like C# and Kotlin define the <em>nullable</em> type,
 which can be used with any type, and indicates its <em>absence</em>:</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode csharp"><code class="sourceCode cs"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// C# example</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Note the &quot;?&quot; after &quot;double&quot;: this is the same syntax as in Kotlin</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span><span class="op">?</span> result <span class="op">=</span> <span class="fu">my_function</span><span class="op">(...);</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="op">(!</span> result<span class="op">.</span><span class="fu">HasValue</span><span class="op">)</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Something wrong happened, my_function didn&#39;t compute the result</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>Alternatively, there may be a type defined in the standard
-library that implements this functionality (<a
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode csharp"><code class="sourceCode cs"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">// C# example</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Note the &quot;?&quot; after &quot;double&quot;: this is the same syntax as in Kotlin</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span><span class="op">?</span> result <span class="op">=</span> <span class="fu">my_function</span><span class="op">(...);</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="op">(!</span> result<span class="op">.</span><span class="fu">HasValue</span><span class="op">)</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Something wrong happened, my_function didn&#39;t compute the result</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
+<li><p>Check if the standard library of your language implements this
+functionality (<a
 href="https://en.cppreference.com/w/cpp/utility/optional"><code>std::optional</code></a>
 in C++17, <a
 href="https://en.cppreference.com/w/cpp/utility/expected"><code>std::expected</code></a>
@@ -520,20 +568,19 @@ Nim…)</p></li>
 versatile version of <em>nullable</em> (like C++23’s <a
 href="https://en.cppreference.com/w/cpp/utility/expected"><code>std::expected</code></a>).</p></li>
 <li><p>The <code>Result</code> type is a <em>sum type</em> (we will see
-them better when we will discuss compiler theory), and allows you to
-associate a type <code>A</code> in case of success, and a type
-<code>B</code> in case of failure:</p>
-<div class="sourceCode" id="cb13"><pre
-class="sourceCode rust"><code class="sourceCode rust"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> OutputData <span class="op">{</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> mass<span class="op">:</span> <span class="dt">f32</span><span class="op">;</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> charge<span class="op">:</span> <span class="dt">f32</span><span class="op">;</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> SomeError <span class="op">{</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> message<span class="op">:</span> <span class="dt">String</span><span class="op">;</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> compute_quantities(…) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>OutputData<span class="op">,</span> SomeError<span class="op">&gt;</span> <span class="op">{</span> … <span class="op">}</span></span></code></pre></div></li>
+them better later) that acts as type <code>A</code> in case of success
+and type <code>B</code> in case of failure:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> OutputData <span class="op">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> mass<span class="op">:</span> <span class="dt">f32</span><span class="op">;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> charge<span class="op">:</span> <span class="dt">f32</span><span class="op">;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> SomeError <span class="op">{</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> message<span class="op">:</span> <span class="dt">String</span><span class="op">;</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> compute_quantities(…) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>OutputData<span class="op">,</span> SomeError<span class="op">&gt;</span> <span class="op">{</span> … <span class="op">}</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="binary-and-text-files" class="slide level1">
@@ -543,7 +590,7 @@ class="sourceCode rust"><code class="sourceCode rust"><span id="cb13-1"><a href=
 <h1>Binary Files</h1>
 <ul>
 <li><p>Binary files are the simplest type: they consist of a sequence of
-bytes (i.e., 8 bits written in sequence).</p></li>
+bytes (where each byte consists of 8 bits).</p></li>
 <li><p>Each byte can contain an integer value in the range
 0–255</p></li>
 <li><p>To print the content of a binary file you can use the
@@ -563,8 +610,8 @@ numbers to the hard disk, stored as bytes.</p></li>
 <section id="from-binary-to-decimal" class="slide level1">
 <h1>From Binary to Decimal</h1>
 <ul>
-<li><p>To reason about the values of bytes, binary numbering is used,
-which obviously uses the number 2 as its base:</p>
+<li><p>To interpret the values of bytes, binary numbering is used, which
+obviously uses the number 2 as its base:</p>
 <pre><code>0  → 0
 1  → 1
 2  → 10
@@ -586,7 +633,7 @@ class="math inline">0 \times 2^0 + 0 \times 2^1 + 1\times 2^2 =
 <h1>Hexadecimal Notation</h1>
 <ul>
 <li><p>Binary notation, however, is cumbersome because numbers quickly
-require many digits (131 in binary requires 8 digits!).</p></li>
+require many digits (131 requires 8 bits in binary!).</p></li>
 <li><p>As an alternative to binary notation, hexadecimal (base 16)
 notation is widely used, which uses the digits</p>
 <pre><code>0 1 2 3 4 5 6 7 8 9 A B C D E F</code></pre></li>
@@ -625,12 +672,10 @@ term taken from <em>Gulliver’s Travels</em> (1726) by J. Swift:</p>
 <li><em>Little-endian</em> encoding starts from the <em>lowest</em>
 power (“little”).</li>
 </ol></li>
-<li><p>Intel and AMD CPUs used in personal computers today all use
-<em>little-endian</em> encoding. <em>Big-endian</em> encoding is instead
-the standard for network transmissions (and is still used today in some
-ARM CPUs).</p></li>
 <li><p>Fortunately, <em>bit endianness</em> will not be something we
-have to worry about in our code, but we will have to deal with <em>byte
+have to worry about in our code, because the hardware abstracts
+it.</p></li>
+<li><p>However, we will have to deal with <em>byte
 endianness</em>!</p></li>
 </ul>
 </section>
@@ -657,7 +702,10 @@ bytes), <code>int32_t</code> (32 bits → 4 bytes), <code>int64_t</code>
 encoded with the byte pair <code>1F 3D</code> (<em>big-endian</em>) or
 <code>3D 1F</code> (<em>little-endian</em>)?</p></li>
 <li><p>In this case too, we speak of <em>big-endian</em> or
-<em>little-endian</em> byte encoding.</p></li>
+<em>little-endian</em> byte encoding. Intel and AMD CPUs used in
+personal computers today all use <em>little-endian</em> encoding.
+<em>Big-endian</em> encoding is instead the standard for network
+transmissions (and is still used today in some ARM CPUs).</p></li>
 <li><p>Unlike <em>bit endianness</em>, we will have to worry about
 <em>byte endianness</em> when handling PFM files 🙁</p></li>
 </ul>
@@ -668,17 +716,17 @@ encoded with the byte pair <code>1F 3D</code> (<em>big-endian</em>) or
 <li><p>In addition to the <em>endianness</em> problem, you also need to
 understand how your language handles binary files. Look at this C++
 example:</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fstream&gt;</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> x<span class="op">{</span><span class="dv">138</span><span class="op">};</span>  <span class="co">// 138 &lt; 256, so the value fits in *one* byte</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>ofstream outf<span class="op">{</span><span class="st">&quot;file.bin&quot;</span><span class="op">};</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  outf <span class="op">&lt;&lt;</span> x<span class="op">;</span> <span class="co">// Ouch! It writes *three* bytes: &#39;1&#39;, &#39;3&#39;, &#39;8&#39;</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fstream&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> x<span class="op">{</span><span class="dv">138</span><span class="op">};</span>  <span class="co">// 138 &lt; 256, so the value fits in *one* byte</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>ofstream outf<span class="op">{</span><span class="st">&quot;file.bin&quot;</span><span class="op">};</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  outf <span class="op">&lt;&lt;</span> x<span class="op">;</span> <span class="co">// Ouch! It writes *three* bytes: &#39;1&#39;, &#39;3&#39;, &#39;8&#39;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>The value <code>138</code> has been saved in <em>textual form</em>!
-(If you use the <code>uint8_t</code> type instead, C++ will use the
-usual <em>binary form</em>)</p></li>
+(To write it in binary form, you must use
+<code>outf.write()</code>.)</p></li>
 <li><p>Let’s now see the secrets of text encoding.</p></li>
 </ul>
 </section>
@@ -694,8 +742,8 @@ part</p></li>
 codes!</p></li>
 <li><p>Some of you may also have had error messages from Git regarding
 strange <code>CRLF</code> character conversions</p></li>
-<li><p>Let’s now see in detail the text encoding of files, it will be
-very useful especially in these two areas:</p>
+<li><p>Let’s now see in detail the text encoding of files. This is
+useful for us because of two contexts:</p>
 <ol type="1">
 <li>Comments in the code;</li>
 <li>Writing messages to the user.</li>
@@ -771,7 +819,7 @@ Deity will see to it
 That You never do it -
 
 (Emily Dickinson, 1863)</code></pre></li>
-<li><p>How is the end of a line encoded in each verse of the
+<li><p>How is the end of a line encoded in each line of the
 poem?</p></li>
 <li><p>Is it possible to encode <em>all</em> characters using 128
 values?</p></li>
@@ -816,25 +864,25 @@ and <code>\r</code> are still in use.</p></li>
 <li><p>The type of newline depends on the operating system used:</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Operating System</th>
 <th>Encoding</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>MS-DOS, Windows</td>
 <td><code>13 10</code> (<code>\r\n</code>)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>RISC OS</td>
 <td><code>10 13</code> (<code>\n\r</code>)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>C64, macOS classic</td>
 <td><code>13</code> (<code>\r</code>)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Linux, Mac OS X</td>
 <td><code>10</code> (<code>\n</code>)</td>
 </tr>
@@ -848,8 +896,8 @@ with <code>git add</code></p></li>
 <h1>Beyond 127 Characters</h1>
 <ul>
 <li><p>Even though ASCII was born for computers with 7 bits per byte,
-computer manufacturers soon standardized on using 8 bits in each byte
-(more convenient because it is a power of 2)</p></li>
+computer manufacturers soon standardized the use of 8-bit bytes (more
+convenient because it is a power of 2)</p></li>
 <li><p>Since <span class="math inline">2^8 = 256</span>, this means that
 the numbers 128–255 are unused in ASCII: a waste!</p></li>
 <li><p>To meet the needs of non-English speaking users, <em>code
@@ -946,7 +994,7 @@ script: 𒀄)</p></li>
 <h1>Unicode Releases</h1>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Version</th>
 <th>Date</th>
 <th>Scripts</th>
@@ -954,37 +1002,37 @@ script: 𒀄)</p></li>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>1.0</td>
 <td>October 1991</td>
 <td>24</td>
 <td>7,129</td>
 </tr>
-<tr class="even">
+<tr>
 <td>…</td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>14.0</td>
 <td>September 2021</td>
 <td>159</td>
 <td>144,697</td>
 </tr>
-<tr class="even">
+<tr>
 <td>15.0</td>
 <td>September 2022</td>
 <td>161</td>
 <td>149,186</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>15.1</td>
 <td>September 2023</td>
 <td>161</td>
 <td>149,813</td>
 </tr>
-<tr class="even">
+<tr>
 <td>16.0</td>
 <td>September 2024</td>
 <td>168</td>
@@ -1001,7 +1049,7 @@ script: 𒀄)</p></li>
 <li>Uppercase letter E with grave accent: <code>É</code> (201);</li>
 <li>Ellipsis: <code>…</code> (8230);</li>
 <li>Flat symbol: <code>♭</code> (9837);</li>
-<li>Grinning face: <code>😀</code> (128,512).</li>
+<li>Grinning face emoji: <code>😀</code> (128,512).</li>
 </ul>
 </section>
 <section id="unicode-encoding" class="slide level1">
@@ -1087,7 +1135,7 @@ points</em> are the same as the ASCII values.</p></li>
 <col style="width: 17%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Code point</th>
 <th>Byte 1</th>
 <th>Byte 2</th>
@@ -1096,28 +1144,28 @@ points</em> are the same as the ASCII values.</p></li>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>0x0000</code>–<code>0x007F</code></td>
 <td><code>0xxxxxxx</code></td>
 <td>—</td>
 <td>—</td>
 <td>—</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>0x0080</code>–<code>0x07FF</code></td>
 <td><code>110xxxxx</code></td>
 <td><code>10xxxxxx</code></td>
 <td>—</td>
 <td>—</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>0x0800</code>–<code>0xFFFF</code></td>
 <td><code>1110xxxx</code></td>
 <td><code>10xxxxxx</code></td>
 <td><code>10xxxxxx</code></td>
 <td>—</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>0x10000</code>–<code>0x10FFFF</code></td>
 <td><code>11110xxx</code></td>
 <td><code>10xxxxxx</code></td>
@@ -1162,7 +1210,7 @@ which corresponds to the <em>code point</em> <code>0xFEFF</code>. If the
 first two bytes of a file are <code>0xFE 0xFF</code>, then the file uses
 <em>big endian</em>; if they are <code>0xFF 0xFE</code>, it uses
 <em>little endian</em>. (UTF-8 also has a BOM:
-<code>0xEF 0xBB 0xBF</code>).</p></li>
+<code>0xEF 0xBB 0xBF</code>, but it’s discouraged).</p></li>
 <li><p>UTF-16 is used by Windows and in Java-based languages (Kotlin,
 Scala, etc.).</p></li>
 </ul>
@@ -1205,8 +1253,8 @@ limited to ASCII characters (some also allow Unicode characters in
 variable and function names, such as Julia and Python)</p></li>
 <li><p>However, in the slides shown earlier we saw that literal strings
 can also be inserted into programs:</p>
-<div class="sourceCode" id="cb22"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;The calculation completed successfully! 😀&quot;</span>)</span></code></pre></div></li>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;The calculation completed successfully! 😀&quot;</span>)</span></code></pre></div></li>
 <li><p>How to ensure that the code is interpreted correctly?</p></li>
 </ul>
 </section>
@@ -1224,9 +1272,9 @@ supports everything: UTF-8, UTF-16, UTF-32, with any
 <li><p>Python, in principle, allows <a
 href="https://peps.python.org/pep-0263/">any encoding</a>, indicated by
 a comment at the beginning of the file:</p>
-<div class="sourceCode" id="cb23"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># -*- encoding: utf-8 -*-</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># -*- encoding: utf-8 -*-</span></span></code></pre></div></li>
 <li><p>C++’s relationship with Unicode is complicated!
 <code>clang</code> uses UTF-8, GCC allows it from the command line
 (<code>-finput-charset=</code>)…</p></li>

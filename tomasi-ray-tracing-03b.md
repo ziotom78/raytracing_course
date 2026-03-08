@@ -4,14 +4,14 @@
 
 -   The `HdrImage` class must be able to load and save images to disk.
 
--   Since `HdrImage` uses floating-point for the three color components (red, green, blue), an HDR format is required, so PNG, JPEG and the like are not suitable.
+-   Since `HdrImage` uses floating-point for the three color components (red, green, blue), an HDR format is required; therefore, standard formats like PNG or JPEG are unsuitable.
 
 -   We will use the PFM format.
 
 
 # The PFM Format
 
--   Writing PFM files is relatively trivial, because they have a very simple [format](http://www.pauldebevec.com/Research/HDR/PFM/)
+-   Implementing PFM output is straightforward, because they have a very simple [format](http://www.pauldebevec.com/Research/HDR/PFM/)
 
 -   A PFM file is a **binary** file, but it starts as if it were a text file (with ASCII characters, so we don't have to worry about Unicode):
 
@@ -32,7 +32,7 @@
 
 -   This number is used to signal how each of the RGB components of a color (32-bit floating-point) is encoded:
 
-    1.  A positive value indicates that *big endian* encoding is used;
+    1.  A positive value specifies bit-endian encoding;
     2.  A negative value indicates that *little endian* encoding is used.
 
 -   When writing, we could choose one of the two formats and not worry too much, but when reading, we must handle both!
@@ -98,7 +98,7 @@
 
 -   You can think of a binary file as a vector (one-dimensional array) of bytes, one after the other. (A text file is the same, but in UTF encoding it is a sequence of *code points* rather than bytes, and it is a bit more complicated).
 
--   Modern languages introduce an abstraction: the *stream*. (Alas, D doesn't have it [in its standard libraries](https://github.com/dlang/phobos/pull/3631): if you program in D, use [stream.d](https://github.com/dlang/undeaD/blob/master/src/undead/stream.d))
+-   Modern languages introduce an abstraction: the *stream*. (Unfortunately, D lacks this abstraction [in its standard library](https://github.com/dlang/phobos/pull/3631): if you program in D, use [stream.d](https://github.com/dlang/undeaD/blob/master/src/undead/stream.d))
 
 -   This abstraction is very useful in tests.
 
@@ -121,9 +121,9 @@
 <asciinema-player src="./cast/files-streams-75x25.cast" cols="75" rows="25" font-size="medium"></asciinema-player>
 
 
-# Streams, APIs and Testing
+# Streams, APIs, and Testing
 
--   We could consider modifying our API so that it writes to a generic stream, like the `write_hello` example in the video:
+-   We should design our API to accept a generic stream instead of a filename, like the `write_hello` example in the video:
 
     ```python
     stream = CreateSomeStream(...)
@@ -259,7 +259,6 @@ assert buf.getvalue() == reference_bytes
         HdrImage image(std::istream & stream);
         // ...
     };
-
     std::ifstream myfile{"input.pfm"};
     HdrImage img{myfile};
     ```
@@ -321,7 +320,7 @@ assert buf.getvalue() == reference_bytes
     ```
 
 
-# Stream e nomi di file
+# Stream and filenames
 
 -   Unfortunately this is not valid C++: the code does not compile!
 
@@ -333,7 +332,7 @@ assert buf.getvalue() == reference_bytes
     hdrimages.cpp:33:58: error: cannot bind non-const lvalue reference of type ‘std::istream&’ {aka ‘std::basic_istream<char>&’} to an rvalue of type ‘std::basic_istream<char>’
     ```
 
--   There are similar problems in C♯ and Kotlin, as secondar constructors must first call primary constructors before anything else. This problem is known as *constructor chaining issue*.
+-   There are similar problems in C♯ and Kotlin, as secondary constructors must first call primary constructors before anything else. This problem is known as *constructor chaining issue*.
 
 -   The easiest solution is to implement the functionality in a function/method and call it in both constructors.
 
@@ -374,7 +373,7 @@ public:
     1.  The file must start with `PF\n`, otherwise it is not in PFM format;
     2.  The second line must contain two positive integers;
     3.  The third line must contain `1.0` or `-1.0`;
-    4.  The amount of binary data must be enough; we expect $\text{width} \times \text{height}$ pixels, each made of three components (R, G, B) of 4 bytes each, for a total of $12 \times \text{width} \times \text{height}$ bytes.
+    4.  We expect $\text{width} \times \text{height}$ pixels, each made of three components (R, G, B) of 4 bytes each, for a total of $12 \times \text{width} \times \text{height}$ bytes.
 
 
 # Error Handling
@@ -491,7 +490,7 @@ def _read_float(stream, endianness=Endianness.LITTLE_ENDIAN):
         return struct.unpack(format_str, stream.read(4))[0]
 
     except struct.error:
-        # Capture the exception and convert it in a more appropriate type
+        # Capture the exception and convert it to a more appropriate type
         raise InvalidPfmFileFormat("impossible to read binary data from the file")
 ```
 
@@ -603,7 +602,7 @@ def read_pfm_image(stream):
 
 -   But how can we be sure that we have correctly combined the functions?
 
--   It is necessary to go beyond *unit tests* and perform a test that runs the entire machinery from start to finish.
+-   It is necessary to go beyond *unit tests* and perform a test that exercises the entire logic from end to end.
 
 -   A test on a complex function that calls already tested simple functions is called an *integration test*.
 

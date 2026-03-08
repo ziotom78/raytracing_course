@@ -138,16 +138,16 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 <li><p>The <code>HdrImage</code> class must be able to load and save
 images to disk.</p></li>
 <li><p>Since <code>HdrImage</code> uses floating-point for the three
-color components (red, green, blue), an HDR format is required, so PNG,
-JPEG and the like are not suitable.</p></li>
+color components (red, green, blue), an HDR format is required;
+therefore, standard formats like PNG or JPEG are unsuitable.</p></li>
 <li><p>We will use the PFM format.</p></li>
 </ul>
 </section>
 <section id="the-pfm-format" class="slide level1">
 <h1>The PFM Format</h1>
 <ul>
-<li><p>Writing PFM files is relatively trivial, because they have a very
-simple <a
+<li><p>Implementing PFM output is straightforward, because they have a
+very simple <a
 href="http://www.pauldebevec.com/Research/HDR/PFM/">format</a></p></li>
 <li><p>A PFM file is a <strong>binary</strong> file, but it starts as if
 it were a text file (with ASCII characters, so we don’t have to worry
@@ -172,8 +172,7 @@ you must <strong>not</strong> write newlines using
 <li><p>This number is used to signal how each of the RGB components of a
 color (32-bit floating-point) is encoded:</p>
 <ol type="1">
-<li>A positive value indicates that <em>big endian</em> encoding is
-used;</li>
+<li>A positive value specifies bit-endian encoding;</li>
 <li>A negative value indicates that <em>little endian</em> encoding is
 used.</li>
 </ol></li>
@@ -244,9 +243,9 @@ array) of bytes, one after the other. (A text file is the same, but in
 UTF encoding it is a sequence of <em>code points</em> rather than bytes,
 and it is a bit more complicated).</p></li>
 <li><p>Modern languages introduce an abstraction: the <em>stream</em>.
-(Alas, D doesn’t have it <a
+(Unfortunately, D lacks this abstraction <a
 href="https://github.com/dlang/phobos/pull/3631">in its standard
-libraries</a>: if you program in D, use <a
+library</a>: if you program in D, use <a
 href="https://github.com/dlang/undeaD/blob/master/src/undead/stream.d">stream.d</a>)</p></li>
 <li><p>This abstraction is very useful in tests.</p></li>
 </ul>
@@ -276,11 +275,10 @@ supports it.</li>
 <p><asciinema-player src="./cast/files-streams-75x25.cast" cols="75" rows="25" font-size="medium"></asciinema-player></p>
 </section>
 <section id="streams-apis-and-testing" class="slide level1">
-<h1>Streams, APIs and Testing</h1>
+<h1>Streams, APIs, and Testing</h1>
 <ul>
-<li><p>We could consider modifying our API so that it writes to a
-generic stream, like the <code>write_hello</code> example in the
-video:</p>
+<li><p>We should design our API to accept a generic stream instead of a
+filename, like the <code>write_hello</code> example in the video:</p>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>stream <span class="op">=</span> CreateSomeStream(...)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>img.write_pfm(stream)</span></code></pre></div></li>
@@ -443,9 +441,8 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    HdrImage image<span class="op">(</span><span class="bu">std::</span>istream <span class="op">&amp;</span> stream<span class="op">);</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>ifstream myfile<span class="op">{</span><span class="st">&quot;input.pfm&quot;</span><span class="op">};</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>HdrImage img<span class="op">{</span>myfile<span class="op">};</span></span></code></pre></div></li>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>ifstream myfile<span class="op">{</span><span class="st">&quot;input.pfm&quot;</span><span class="op">};</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>HdrImage img<span class="op">{</span>myfile<span class="op">};</span></span></code></pre></div></li>
 <li><p>It’s ok to define a <code>read_pfm_file</code>
 <strong>function</strong>:</p>
 <div class="sourceCode" id="cb12"><pre
@@ -508,8 +505,8 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
 </ul>
 </section>
-<section id="stream-e-nomi-di-file" class="slide level1">
-<h1>Stream e nomi di file</h1>
+<section id="stream-and-filenames" class="slide level1">
+<h1>Stream and filenames</h1>
 <ul>
 <li><p>Unfortunately this is not valid C++: the code does not
 compile!</p></li>
@@ -518,7 +515,7 @@ is temporary and cannot be passed to the first constructor:</p>
 <pre class="text"><code>$ g++ -c hdrimages.cpp
 hdrimages.cpp: In constructor ‘HdrImage::HdrImage(const string&amp;)’:
 hdrimages.cpp:33:58: error: cannot bind non-const lvalue reference of type ‘std::istream&amp;’ {aka ‘std::basic_istream&lt;char&gt;&amp;’} to an rvalue of type ‘std::basic_istream&lt;char&gt;’</code></pre></li>
-<li><p>There are similar problems in C♯ and Kotlin, as secondar
+<li><p>There are similar problems in C♯ and Kotlin, as secondary
 constructors must first call primary constructors before anything else.
 This problem is known as <em>constructor chaining issue</em>.</p></li>
 <li><p>The easiest solution is to implement the functionality in a
@@ -558,11 +555,10 @@ PFM format;</li>
 <li>The second line must contain two positive integers;</li>
 <li>The third line must contain <code>1.0</code> or
 <code>-1.0</code>;</li>
-<li>The amount of binary data must be enough; we expect <span
-class="math inline">\text{width} \times \text{height}</span> pixels,
-each made of three components (R, G, B) of 4 bytes each, for a total of
-<span class="math inline">12 \times \text{width} \times
-\text{height}</span> bytes.</li>
+<li>We expect <span class="math inline">\text{width} \times
+\text{height}</span> pixels, each made of three components (R, G, B) of
+4 bytes each, for a total of <span class="math inline">12 \times
+\text{width} \times \text{height}</span> bytes.</li>
 </ol></li>
 </ul>
 </section>
@@ -703,7 +699,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a h
 <span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> struct.unpack(format_str, stream.read(<span class="dv">4</span>))[<span class="dv">0</span>]</span>
 <span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> struct.error:</span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Capture the exception and convert it in a more appropriate type</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Capture the exception and convert it to a more appropriate type</span></span>
 <span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> InvalidPfmFileFormat(<span class="st">&quot;impossible to read binary data from the file&quot;</span>)</span></code></pre></div>
 </section>
 <section id="test-24" class="slide level1">
@@ -812,7 +808,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a h
 <li><p>But how can we be sure that we have correctly combined the
 functions?</p></li>
 <li><p>It is necessary to go beyond <em>unit tests</em> and perform a
-test that runs the entire machinery from start to finish.</p></li>
+test that exercises the entire logic from end to end.</p></li>
 <li><p>A test on a complex function that calls already tested simple
 functions is called an <em>integration test</em>.</p></li>
 <li><p>Specifically, our test must verify functionality on
