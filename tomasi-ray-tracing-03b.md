@@ -429,11 +429,6 @@ public:
 -   We need to ensure that we "catch" these exceptions and convert them into `InvalidPfmFileFormat`, otherwise, the code from the previous slide would no longer work.
 
 
-# Example
-
-<asciinema-player src="./cast/catching-exceptions-78x25.cast" cols="78" rows="25" font-size="medium"></asciinema-player>
-
-
 # Writing Tests
 
 -   We saw in the last lesson that it is easier to write tests for smaller functions.
@@ -455,6 +450,9 @@ def _read_line(stream):
     result = b""
     while True:
         cur_byte = stream.read(1)
+        # Python returns "" if you reach the end of file
+        # Be sure to use the appropriate construct in your
+        # language!
         if cur_byte in [b"", b"\n"]:
             return result.decode("ascii")
 
@@ -575,8 +573,7 @@ def test_pfm_parse_img_size():
 
 ```python
 def read_pfm_image(stream):
-    # The first bytes in a binary file are usually called «magic bytes»
-    # See https://hackers.town/@zwol/114155595855705796
+    # The first bytes in a binary file are usually called «magic numbers»
     magic = _read_line(stream)
     if magic != "PF":
         raise InvalidPfmFileFormat("invalid magic in PFM file")
@@ -604,7 +601,7 @@ def read_pfm_image(stream):
 
 -   It is necessary to go beyond *unit tests* and perform a test that exercises the entire logic from end to end.
 
--   A test on a complex function that calls already tested simple functions is called an *integration test*.
+-   A test on a complex function that calls simple functions is called an *integration test*.
 
 -   Specifically, our test must verify functionality on *little-endian* files ([`reference_le.pfm`](./media/reference_le.pfm)), *big-endian* files ([`reference_be.pfm`](./media/reference_be.pfm)), and also on invalid files.
 
@@ -835,6 +832,90 @@ Do the same with `reference_le.pfm`.
     ```
 
 
+# Hints for C\#
+
+# Files and Streams
+
+-   In C#, a stream is of type `Stream`, which is a base class from which [`FileStream`](https://docs.microsoft.com/en-us/dotnet/api/system.io.filestream?view=net-5.0) and [`MemoryStream`](https://docs.microsoft.com/en-us/dotnet/api/system.io.memorystream?view=net-5.0) derive.
+
+-   To open a file for writing, use the [`using`](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement) keyword:
+
+    ```csharp
+    var img = new HdrImage(7, 4);
+
+    using (Stream fileStream = File.OpenWrite("file.pfm"))
+    {
+        img.SavePfm(fileStream);
+    }
+    ```
+
+# Writing Binary Data
+
+-   The [`BitConverter`](https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter?view=net-5.0) class implements methods for reading and writing binary data from streams.
+
+-   The following method writes a 32-bit floating-point number in binary:
+
+    ```csharp
+    private static void writeFloat(Stream outputStream, float value)
+    {
+        var seq = BitConverter.GetBytes(value);
+        outputStream.Write(seq, 0, seq.Length);
+    }
+    ```
+
+-   The variable `BitConverter.IsLittleEndian` exists to decide whether to write `1.0` or `-1.0` in the PFM file.
+
+# Writing Text
+
+-   C#, unlike C++, distinguishes between strings (encoded in Unicode with UTF-16) and byte sequences.
+
+-   To correctly write the header, the simplest thing is to create a Unicode string and then convert it to ASCII:
+
+    ```csharp
+    var header = Encoding.ASCII.GetBytes($"PF\n{width} {height}\n{endianness_value}\n");
+    ```
+
+    where `endianness_value` is a `double` that is either `1.0` or `-1.0`.
+
+
+# Hints for Rust
+
+# Use of `enum` and `match`
+
+-   To specify the *endianness* there is the type [`ByteOrder`](https://docs.rs/endianness/latest/endianness/enum.ByteOrder.html) in the crate [endianness](https://docs.rs/endianness/latest/endianness/)
+
+-   With `enum`s get used to using `match` instead of `if`:
+
+    ```rust
+    fn endianness_number(endianness: &ByteOrder) -> f32 {
+        match endianness {
+            ByteOrder::LittleEndian => -1.0,
+            ByteOrder::BigEndian => 1.0,
+        }
+    }
+    ```
+
+
+# Streams
+
+-   Use the `Write` and `Read` *traits* to define functions that read and write to a stream. For example:
+
+    ```rust
+    fn write_float<T: Write>(
+        dest: &mut T,
+        value: f32,
+        endianness: &Endianness,
+    ) -> std::io::Result<usize> {
+        match endianness {
+            Endianness::LittleEndian => dest.write(&value.to_le_bytes()),
+            Endianness::BigEndian => dest.write(&value.to_be_bytes()),
+        }
+    }
+    ```
+
+-   You can make the code faster using [`BufWriter` and `BufReader`](https://doc.rust-lang.org/nightly/std/io/index.html#bufreader-and-bufwriter), but it's not necessary (it certainly won't be the bottleneck!).
+
+
 # Hints for Julia
 
 # Files and Streams
@@ -891,51 +972,6 @@ Do the same with `reference_le.pfm`.
         # ...
     end
     ```
-
-# Hints for C\#
-
-# Files and Streams
-
--   In C#, a stream is of type `Stream`, which is a base class from which [`FileStream`](https://docs.microsoft.com/en-us/dotnet/api/system.io.filestream?view=net-5.0) and [`MemoryStream`](https://docs.microsoft.com/en-us/dotnet/api/system.io.memorystream?view=net-5.0) derive.
-
--   To open a file for writing, use the [`using`](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement) keyword:
-
-    ```csharp
-    var img = new HdrImage(7, 4);
-
-    using (Stream fileStream = File.OpenWrite("file.pfm"))
-    {
-        img.SavePfm(fileStream);
-    }
-    ```
-
-# Writing Binary Data
-
--   The [`BitConverter`](https://docs.microsoft.com/en-us/dotnet/api/system.bitconverter?view=net-5.0) class implements methods for reading and writing binary data from streams.
-
--   The following method writes a 32-bit floating-point number in binary:
-
-    ```csharp
-    private static void writeFloat(Stream outputStream, float value)
-    {
-        var seq = BitConverter.GetBytes(value);
-        outputStream.Write(seq, 0, seq.Length);
-    }
-    ```
-
--   The variable `BitConverter.IsLittleEndian` exists to decide whether to write `1.0` or `-1.0` in the PFM file.
-
-# Writing Text
-
--   C#, unlike C++, distinguishes between strings (encoded in Unicode with UTF-16) and byte sequences.
-
--   To correctly write the header, the simplest thing is to create a Unicode string and then convert it to ASCII:
-
-    ```csharp
-    var header = Encoding.ASCII.GetBytes($"PF\n{width} {height}\n{endianness_value}\n");
-    ```
-
-    where `endianness_value` is a `double` that is either `1.0` or `-1.0`.
 
 
 # Hints for D
@@ -1034,42 +1070,6 @@ Do the same with `reference_le.pfm`.
 
 -   The library [streams](https://nim-lang.org/docs/streams.html) implements the concept of *stream* both associated with a file and with a string in memory
 
-
-# Hints for Rust
-
-# Use of `enum` and `match`
-
--   To specify the *endianness* there is the type [`ByteOrder`](https://docs.rs/endianness/latest/endianness/enum.ByteOrder.html) in the crate [endianness](https://docs.rs/endianness/latest/endianness/)
-
--   With `enum`s get used to using `match` instead of `if`:
-
-    ```rust
-    fn endianness_number(endianness: &ByteOrder) -> f32 {
-        match endianness {
-            ByteOrder::LittleEndian => -1.0,
-            ByteOrder::BigEndian => 1.0,
-        }
-    }
-    ```
-
-# Streams
-
--   Use the `Write` and `Read` *traits* to define functions that read and write to a stream. For example:
-
-    ```rust
-    fn write_float<T: Write>(
-        dest: &mut T,
-        value: f32,
-        endianness: &Endianness,
-    ) -> std::io::Result<usize> {
-        match endianness {
-            Endianness::LittleEndian => dest.write(&value.to_le_bytes()),
-            Endianness::BigEndian => dest.write(&value.to_be_bytes()),
-        }
-    }
-    ```
-
--   You can make the code faster using [`BufWriter` and `BufReader`](https://doc.rust-lang.org/nightly/std/io/index.html#bufreader-and-bufwriter), but it's not necessary (it certainly won't be the bottleneck!).
 
 ---
 title: "Laboratory 3"
