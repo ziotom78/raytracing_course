@@ -366,32 +366,6 @@ def main(argv):
 -   To document code, the most used tool is [Doxygen](https://github.com/doxygen/doxygen), but there are other choices available (See again the [section “Documentation” in the Awesome C++ website](https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#documentation).)
 
 
-# Hints for Julia
-
-# The [Images.jl](https://github.com/JuliaImages/Images.jl) package
-
--   The Julia community has developed a complete solution for image management.
--   The main package is Images.jl, which defines the `Image` type.
--   Many other specialized sub-packages refer to Images.jl. We are interested in installing [ImageIO.jl](https://github.com/JuliaIO/ImageIO.jl), which allows reading/writing graphic formats.
-
-# Saving PNG files
-
--   Using `Pkg.add`, install both `Images` and `ImageIO` in your package.
-
--   Just create matrices of `RGB` values and save them with the `save` command; the file extension determines its format:
-
-    ```julia
-    using Images
-
-    # Values must be expressed in the range [0, 1]
-    image = [RGB(0.0, 0.0, 1.0) RGB(1.0, 0.0, 0.0);
-             RGB(0.0, 1.0, 0.0) RGB(1.0, 1.0, 1.0)]
-
-    # It's all too easy!
-    save("test.png", image)
-    ```
-
-
 # Hints for C\#
 
 # Importing Libraries
@@ -494,6 +468,31 @@ fun main(args: Array<String>) {
 
     ```text
     ./gradlew run --args="input_file.pfm 0.3 1.0 output_file.png"
+    ```
+
+# Hints for Julia
+
+# The [Images.jl](https://github.com/JuliaImages/Images.jl) package
+
+-   The Julia community has developed a complete solution for image management.
+-   The main package is Images.jl, which defines the `Image` type.
+-   Many other specialized sub-packages refer to Images.jl. We are interested in installing [ImageIO.jl](https://github.com/JuliaIO/ImageIO.jl), which allows reading/writing graphic formats.
+
+# Saving PNG files
+
+-   Using `Pkg.add`, install both `Images` and `ImageIO` in your package.
+
+-   Just create matrices of `RGB` values and save them with the `save` command; the file extension determines its format:
+
+    ```julia
+    using Images
+
+    # Values must be expressed in the range [0, 1]
+    image = [RGB(0.0, 0.0, 1.0) RGB(1.0, 0.0, 0.0);
+             RGB(0.0, 1.0, 0.0) RGB(1.0, 1.0, 1.0)]
+
+    # It's all too easy!
+    save("test.png", image)
     ```
 
 
