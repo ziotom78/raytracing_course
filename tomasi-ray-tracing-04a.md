@@ -345,7 +345,7 @@ plot [0:10] [] x/(1 + x) lw 4
 
     (`pandoc` would instead transform it into a single paragraph).
 
--   You can use a subset of LaTeX within `$…$`
+-   You can write LaTeX formulae within `$…$`
 
 # Other tools
 
@@ -403,7 +403,7 @@ Your task is to generate a set of 5-7 slides in Markdown format suitable for a 1
 
 -    Use clear and concise bullet points.
 -    Highlight key findings and contributions.
--    Format code snippets or equations using LaTeX within '′or′$' delimiters where applicable.
+-    Format equations using LaTeX within `$$` delimiters where applicable.
 -    Include a 'Summary' or 'Conclusions' slide.
 -    Prioritize visual clarity and readability.
 
@@ -414,10 +414,15 @@ Your task is to generate a set of 5-7 slides in Markdown format suitable for a 1
 # Using LLMs for READMEs
 
 -   Provide existing project information: usage examples, installation steps…
+
 -   Ask for specific formatting: Markdown, code block formatting, tables…
+
 -   Example of a good question:
+
     > What does this README lacks to be understandable for a user who has never used ray-tracing programs?
+
 -   Iterative process: review and refine its output, as human expertise is crucial!
+
 -   LLM as a tool, not a replacement
 
 
