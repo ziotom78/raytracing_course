@@ -10,8 +10,8 @@
 |         1 | [23 Febbraio 2026](tomasi-ray-tracing-01a.html) | [25 Febbraio 2026](tomasi-ray-tracing-01b.html) |
 |         2 |  [2 Marzo 2026](tomasi-ray-tracing-02a.html)   |  [4 Marzo 2026](tomasi-ray-tracing-02b.html)   |
 |         3 |  [9 Marzo 2026](tomasi-ray-tracing-03a.html)   |  [11 Marzo 2026](tomasi-ray-tracing-03b.html)   |
-<!--
 |         4 |  [23 Marzo 2026](tomasi-ray-tracing-04a.html)   |  [25 Marzo 2026](tomasi-ray-tracing-04b.html)   |
+<!--
 |         5 | [30 Marzo 2026](tomasi-ray-tracing-05a.html) | [1 Aprile 2026](tomasi-ray-tracing-05b.html) |
 |         6 | [7 Aprile 2026](tomasi-ray-tracing-06a.html) | [9 Aprile 2026](tomasi-ray-tracing-06b.html) |
 |         7 | [23 Aprile 2026](tomasi-ray-tracing-07a.html) |  |
@@ -44,9 +44,9 @@
 -   [Conflitti e _merging_](tomasi-ray-tracing-02b.html#/team-work-in-git)
 -   [Gestione degli errori](tomasi-ray-tracing-03a.html#/error-handling)
 -   [Eccezioni](tomasi-ray-tracing-03a.html#/exceptions)
-<!--
 -   [Tone mapping](tomasi-ray-tracing-04a.html#/tone-mapping)
 -   [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenses)
+<!--
 -   [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modeling-objects)
 -   [Trasformazioni](tomasi-ray-tracing-05a.html#/transformations): [di scala](tomasi-ray-tracing-05a.html#/scaling-transformations), [applicate a normali](tomasi-ray-tracing-05a.html#/transformations-and-normals), [rotazioni](tomasi-ray-tracing-05a.html#/rotations), [traslazioni](tomasi-ray-tracing-05a.html#/translations)
 -   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/version-numbers)
@@ -78,9 +78,9 @@
 -   [Il formato PFM](tomasi-ray-tracing-02a.html#/pfm-file-format)
 -   [File di testo e file binari](tomasi-ray-tracing-03a.html#/binary-and-text-files)
 -   [Lo standard Unicode](tomasi-ray-tracing-03a.html#/unicode)
-<!--
 -   [File e stream](tomasi-ray-tracing-03b.html#/file-e-stream)
 -   [Il formato Markdown](tomasi-ray-tracing-04a.html#/markdown)
+<!--
 -   [Numeri complessi e quaternioni](tomasi-ray-tracing-07a.html#/complex-numbers-and-quaternions)
 -   [Algebre di Clifford](tomasi-ray-tracing-07a.html#/clifford-algebras)
 -   [*Issues*](tomasi-ray-tracing-08b.html#/issues)

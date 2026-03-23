@@ -8,9 +8,9 @@
 
 # Tone mapping
 
--   A conversion from RGB to sRGB should preserve the overall «hue» of an image.
+-   Converting from RGB to sRGB should preserve the overall «hue» of an image.
 -   This is why we don't talk about *tone mapping* for a single RGB color, but for a matrix of colors (i.e., an image).
--   We will use the *tone mapping* described by [Shirley & Morley (2003)](https://books.google.it/books/about/Realistic_Ray_Tracing_Second_Edition.html?id=ywOtPMpCcY8C&redir_esc=y): it is physically less accurate than other methods (e.g., CIE standard normalization using D65), but more intuitive and easier to implement.
+-   We will use the *tone mapping* described by [Shirley & Morley (2003)](https://books.google.it/books/about/Realistic_Ray_Tracing_Second_Edition.html?id=ywOtPMpCcY8C&redir_esc=y): it is physically less accurate than methods based on colorimetric standards (e.g., CIE XYZ tristimulus mapping with a D65 white point), but more intuitive and easier to implement.
 
 # Tone Mapping Algorithm
 
@@ -34,7 +34,7 @@
     $$
     \left<l\right> = 10^{\frac{\sum_i \log_{10}(\delta + l_i)}N},
     $$
--   The purpose of the parameter $\delta \ll 1$ is to avoid the singularity of $\log_{10} x$ at $x = 0$.
+-   The parameter $\delta \ll 1$ prevents the singularity of $\log_{10} x$ at $x = 0$.
 
 # The Logarithmic Average
 
@@ -53,7 +53,7 @@ Arithmetic Mean
 : $l_i = \frac{R_i + G_i + B_i}3$;
 
 Weighted Average
-: $l_i = \frac{w_R R_i + w_G G_i + w_B B_i}{w_R + w_G + w_B}$, given a triplet of positive values $(w_R, w_G, w_B)$;
+: $l_i = \frac{w_R R_i + w_G G_i + w_B B_i}{w_R + w_G + w_B}$, which is what is done in the [ITU-R BT.709](https://en.wikipedia.org/wiki/Rec._709) standard;
 
 Distance from the Origin
 : $l_i = \sqrt{R_i^2 + G_i^2 + B_i^2}$;
@@ -61,7 +61,7 @@ Distance from the Origin
 Luminosity Function
 : $l_i = \frac{\max(R_i, G_i, B_i) + \min(R_i, G_i, B_i)}2$
 
-We will use the last: it isn’t physically meaningful but produces good results.
+We will use the latter: it is not physically meaningful but produces good results.
 
 
 # Normalization {#normalization}
@@ -85,7 +85,7 @@ These are notoriously difficult to handle!
 
 # Bright Spots {#bright-spot-transformation}
 
-Shirley & Morley suggest to apply the following transformation to the R, G, B components of each pixel:
+Shirley & Morley suggest applying the following transformation to the R, G, B components of each pixel:
 $$
 R_i \rightarrow \frac{R_i}{1 + R_i}.
 $$
@@ -108,6 +108,15 @@ plot [0:10] [] x/(1 + x) lw 4
 ```
 </center>
 
+# Overall effect
+
+-   We must put the bright spot correction *after* normalization
+-   The final equation is thus
+    \[
+    R'_i = \frac{a \times \frac{R_i}{\left<l\right>}}{1 + a \times \frac{R_i}{\left<l\right>}}
+    \]
+-   In our code, we will however keep the two transformations in separate functions and will apply them one after another, so there is no need to implement the *whole* equation in the same place. (It is easier to test!)
+
 # γ correction {#gamma-correction}
 
 -   We might want to apply a gamma correction to the image values.
@@ -118,7 +127,7 @@ plot [0:10] [] x/(1 + x) lw 4
     \Phi \propto x^\gamma,
     $$
 
-    then the RGB values to be saved in the LDR image must be
+    then the RGB values to be stored in the LDR image must be
 
     $$
     r = \left[2^8\times R^{1/\gamma}\right],\quad
@@ -137,7 +146,7 @@ plot [0:10] [] x/(1 + x) lw 4
 
 # Comments in code
 
--   Everyone knows how important it is to write comments in the code!
+-   We all know the importance of writing comments in the code!
 
 -   A comment helps those reading the code understand what that code does.
 
@@ -145,12 +154,12 @@ plot [0:10] [] x/(1 + x) lw 4
 
 # Comments to avoid
 
--   Comments, however, should not be pedantic: it is not necessary to comment on obvious things, perhaps avoiding commenting on important things.
+-   Comments, however, should not be pedantic: it is not necessary to comment on obvious things while failing to comment on the important parts!
 
     ```c++
     // Initialize variable "a" and set it to zero
     int a = 0;
-    // Cycle over the vector "v"
+    // Iterate through vector "v"
     for(auto elem : v) {
         // Increment a by 2*sin(elem)
         a += 2 * sin(elem);
@@ -162,9 +171,9 @@ plot [0:10] [] x/(1 + x) lw 4
 
 # *Docstrings*
 
--   Modern editors are able to read comments placed at the beginning of classes/methods/functions/types, and display them in certain contexts (for example, when you hover the mouse over a function call).
+-   Modern IDEs are able to read comments placed at the beginning of classes/methods/functions/types, and display them in certain contexts (for example, when you hover the mouse over a function call).
 
--   Get used to relying on this feature: it will teach you how to write comments better and prevent you from going back and forth in the code.
+-   Get used to relying on this feature: it encourages better commenting habits and reduces the need to constantly navigate back to the function definition.
 
 -   Usually, to declare a *docstring*, you must start a comment with a special character or string, for example:
 
@@ -186,7 +195,7 @@ plot [0:10] [] x/(1 + x) lw 4
 -   When publishing a project on GitHub, it is essential to include a README:
     -   The amount of FOSS (Free and Open Source Software) on the Internet is impressive;
     -   Users need to understand quickly whether a project is right for them or not;
-    -   A README today combines the function of an advertisement (in a good way!) and a first user manual.
+    -   A README serves as both a showcase and an introductory manual.
 -   It is therefore essential to have a `README` in your repositories.
 -   In fact, when you create a new repository on GitHub, you are prompted to generate one automatically!
 
@@ -203,8 +212,8 @@ plot [0:10] [] x/(1 + x) lw 4
     1.  What the program is for;
     2.  What it requires to work (Windows? Linux? a GPU? a printer?);
     3.  How to install it;
-    4.  Practical examples showing what the program can do (possibly more than one: starting from simple cases and synthetically showing at least one realistic case);
-    5.  Usage license.
+    4.  Practical examples showing what the program can do (possibly more than one: starting from simple cases and synthetically showing at least one realistic case); for scientific codes, it is great to include plots/diagrams/…!
+    5.  License.
 -   It shouldn't go into too much detail.
 
 ---
@@ -243,22 +252,22 @@ plot [0:10] [] x/(1 + x) lw 4
 
 -   In the past, READMEs and user manuals were simple text files.
 -   However, we have seen that READMEs used today include graphics, highlighted code, titles, etc. (The same applies to user manuals!)
--   What do we do? Do we really have to write everything in LaTeX?!?
+-   Should we resort to LaTeX?
 
 # Markup languages
 
--   There's no need to despair and resort to LaTeX!
+-   No need to worry: there are alternatives to LaTeX for these tasks
 -   Over the years, a series of markup languages have emerged that allow you to easily write structured text:
     -   [Markdown](https://en.wikipedia.org/wiki/Markdown) (`.md` extension, e.g., `README.md`);
     -   [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) (`.rst` extension), widely used in the Python world;
     -   [Asciidoc](https://en.wikipedia.org/wiki/AsciiDoc) (`.adoc` or `.txt` extension);
-    -   [Org-mode](https://en.wikipedia.org/wiki/Org-mode) (`.org` extension: my favourite, but it only works with Emacs);
+    -   [Org-mode](https://en.wikipedia.org/wiki/Org-mode) (`.org` extension: my favourite; however, it is primarily tailored for Emacs);
     -   etc.
 -   The most widely used is undoubtedly Markdown.
 
 # Markdown {#markdown}
 
--   Usually, the documents accompanying a program are written in Markdown (it's the default choice on GitHub).
+-   Markdown is the industry standard for software documentation (it's the default choice on GitHub).
 
 -   The standard tool for Markdown is [pandoc](https://pandoc.org/), which can convert `.md` files into:
 
@@ -336,18 +345,20 @@ plot [0:10] [] x/(1 + x) lw 4
 
     (`pandoc` would instead transform it into a single paragraph).
 
+-   You can use a subset of LaTeX within `$…$`
+
 # Other tools
 
 -   [Quarto](https://quarto.org/) builds on Pandoc to produce complex documents (papers, books, technical manuals…)
--   [Typst](https://typst.app/) is mainly an alternative to LaTeX, as it (currently) targets PDF. It is superb to produce scientific documents
+-   [Typst](https://typst.app/) is a modern alternative to LaTeX. It is much faster than LaTeX (being written in Rust and using saner and simpler defaults!) and is superb to produce scientific documents, although its usage is not widespread
 
 
 # Can we use LLMs?
 
 -   Large Language Models (LLMs) are the Big New Thing™!
--   Neural network trained on massive text datasets to generate text, translate, answer questions…
+-   Neural networks trained on massive text datasets to generate text, translate, answer questions…
 -   They only recognize statistical patterns: no true understanding!
--   Very good for text manipulation and structuring, but remember that they can only provide **structure**, not **content**!
+-   Very good for text manipulation and structuring, but remember that you must be responsible for the **content**, while they assist with the **structure**!
 
 ---
 
@@ -357,11 +368,12 @@ See also [Papers and peer reviews with evidence of ChatGPT writing](https://retr
 
 # README Creation with LLMs
 
--   You can use them to produce a nice `README`: you write a messy draft and ask the LLM to improve it
+-   You can use them to produce a nice `README`: you can provide a rough draft and ask the LLM to refine it
 -   LLMs can:
     -   Format existing text
     -   Generate boilerplate sections
     -   Improve clarity and consistency
+    -   Do “rubber duck debugging”: if they do not understand your text, perhaps it is not clear enough
 -   **Caution:** Don't rely solely on LLM for technical details
 
 # Pro tip
@@ -403,6 +415,8 @@ Your task is to generate a set of 5-7 slides in Markdown format suitable for a 1
 
 -   Provide existing project information: usage examples, installation steps…
 -   Ask for specific formatting: Markdown, code block formatting, tables…
+-   Example of a good question:
+    > What does this README lacks to be understandable for a user who has never used ray-tracing programs?
 -   Iterative process: review and refine its output, as human expertise is crucial!
 -   LLM as a tool, not a replacement
 
@@ -434,13 +448,13 @@ Your task is to generate a set of 5-7 slides in Markdown format suitable for a 1
 
 # *GitHub's terms of service*
 
--   Even if you have published code on GitHub, you remain the owner of the code.
+-   Regardless of publishing on GitHub, you retain ownership of your code.
 
 -   But you obviously give GitHub the right to keep a copy of the code on their server (in legal terms it's called "content," because it also includes other types of files, such as images and Markdown text).
 
 -   You also give GitHub permission to [**display**](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#5-license-grant-to-other-users) your *content*, and to allow users to download it.
 
--   What you do **not** necessarily guarantee to users is the ability to compile, modify, or run your code, let alone use the results produced by it in a publication!
+-   However, you do **not** automatically grant users the right to compile, modify, or run your code (but, had you the right to run it, you *should* then be able to use these results in a publication)
 
 # Software Licenses
 
@@ -460,7 +474,7 @@ Your task is to generate a set of 5-7 slides in Markdown format suitable for a 1
 
 -   It is important that the results are reproducible: a reader should be able to run the same program used by the authors and obtain the same results.
 
--   The program should therefore be distributed along with its source code: in this way, readers can verify its correctness.
+-   Distributing the source code alongside the program is essential for peer verification and scientific integrity.
 
 -   A license establishes the rights of the program's creator and the rights of the user, and is therefore **very important** for physicists too!
 
@@ -480,7 +494,7 @@ Your task is to generate a set of 5-7 slides in Markdown format suitable for a 1
 
 # Your repositories
 
--   From the way I asked you to create your repositories, I reckon that none of you have added a `LICENSE` or `LICENSE.md` file.
+-   From the way I asked you to create your repositories, I suspect most of your repositories currently lack a `LICENSE` or `LICENSE.md` file.
 
 -   This is a text file that specifies the user's rights: if this file does not exist in the repository, the user is **not** authorized to compile your code, nor to run it, etc. You must give your explicit consent!
 
@@ -535,47 +549,35 @@ Copyleft
 
 -   If code under a *copyleft license* is used within another codebase, the latter must also be released under a *copyleft license* (but it is not mandatory to release it!).
 
--   The most famous example is the [GNU Public License](https://opensource.org/licenses/gpl-license), used for Linux, Emacs, Bash, and your beloved GCC. It is called a *viral license*: if a program "touches" *copyleft* code, it automatically becomes *copyleft* itself, even if it merely links to it. (Many detest it for this!)
+-   The most famous example is the [GNU Public License](https://opensource.org/licenses/gpl-license), used for Linux, Emacs, Bash, and your beloved GCC. It is called a *viral license*: if a program "touches" *copyleft* code, it automatically becomes *copyleft* itself, even if it merely links to it. (This viral nature is often a point of contention!)
 
 # European Union Public License (EUPL)
 
--   It is an open-source software license designed by the European Union, and legalized translations are available in the 23 languages of the EU!
+-   EUPL 1.2 is the official open-source license of the European Union
 
--   Proposed in 2007, it has now reached version 1.2.
+-   It is specifically designed to comply with EU law (unlike parts of the GPL).
 
--   Compatible with [GPL](https://en.wikipedia.org/wiki/GNU_General_Public_License), [LGPL](https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License), and [AGPL](https://en.wikipedia.org/wiki/GNU_Affero_General_Public_License) (as well as others), but it is not viral… and this is a good thing!
+-   It is a *copyleft* license, but in a “smart” way: if you modify the code, you must share your changes under the same license, but you can link your program to a EUPL library without being forced to change your own license.
 
--   Let's see the differences between EUPL and GPL, which is the most famous *copyleft* license of all.
-
-# EUPL vs GPL
-
--   It is compatible with European legislation, unlike the GPL, which has some parts that may not be applicable in the EU.
-
--   Despite being *copyleft*, it is not viral: you can write a program that interfaces with an EUPL program and choose the license you want because an explicit exception is provided in the text.
-
--   It explicitly covers the case of so-called SaaS ("Software as a Service"), which are programs that are not run on your own computer but work within a browser. (One of the reasons why [AGPL](https://en.wikipedia.org/wiki/GNU_Affero_General_Public_License) was written was to fill this gap in the GPL).
-
--   It is the "recommended" license in a large number of countries (including [Italy](https://joinup.ec.europa.eu/collection/eupl/news/agid-guidelines)) for software used in public administration (*mandatory* in Spain!).
-
-# Further Information on the EUPL
-
--   The European Union offers a [free official course on the EUPL](https://academy.europa.eu/courses/the-european-union-public-license-eupl)! (Those who complete the quiz with at least 60% correct answers get a certificate.)
-
--   [Discussion on the EUPL](https://discourse.writefreesoftware.org/t/eupl-a-better-choice-for-european-citizens/43/9) on the [writefreesoftware.org](https://discourse.writefreesoftware.org) website.
-
--   Simple explanation of why the virality of the GPL is not compatible with European legislation: [Why viral licensing is a ghost](https://joinup.ec.europa.eu/collection/eupl/news/why-viral-licensing-ghost). (Spoiler: the problem is how to deal with static/dynamic linking of libraries.)
-
--   Interesting [discussion](https://discourse.julialang.org/t/package-licenses-contemplations-and-considerations/117922) on the Julia forum.
+-   It is the recommended license for public institutions in Italy (mandatory in Spain!)
 
 # Which License to Use?
 
--   For the code developed in this course, in principle, you could use a *permissive* or *copyleft license* at your discretion.
 
--   But if in the next lessons you use external libraries (the time will come), you will have to be careful that the library's license is compatible:
+-   If you want maximum freedom and citations, use MIT
+
+-   If you want that people share their improvements, use the EUPL or the GPL
+
+-   If you want to avoid legal headaches, use the EUPL (**safest choice**)
+
+-   When using external libraries, be careful:
+
     -   If your code uses a *copyleft license*, you must verify its compatibility with that of the library;
+
     -   If your code uses a *permissive license*, in general, you cannot use libraries with a *copyleft license* unless you change your license.
 
--   You can use the sites [TLDRLegal](https://tldrlegal.com/) and [Choose an open source license](https://choosealicense.com/) to decide. If you really don't know what to use, the safest choice is probably the EUPL.
+-   [TLDRLegal](https://tldrlegal.com/) and [Choose an open source license](https://choosealicense.com/) can help you.
+
 
 # How to "Use" a License?
 
@@ -584,17 +586,44 @@ Copyleft
 -   To apply a license to your code, you must take the following steps:
 
     1.  Choose the license. We take the EUPL 1.2 as an example (see [OSI](https://opensource.org/license/eupl-1-2)).
-    2.  The website <https://license.md> provides the text of various open-source licenses in text or Markdown format. From this site, you can download the text of the [EUPL 1.2](https://license.md/licenses/european-union-public-license-1-2/), which we use as an example.
+    2.  <https://license.md> provides the text of various open-source licenses. For instance, here is the text of the [EUPL 1.2](https://license.md/licenses/european-union-public-license-1-2/)
     3.  Save the license text in the file `LICENSE` (if it is in ASCII format) or `LICENSE.md` (if it is in Markdown) inside your repository.
     4.  Most licenses recommend including a short text in a comment at the top of *every* source file in your repository.
 
 # Beyond the `LICENSE.md` File
 
--   It is common practice to also include a copy of the license in a comment at the beginning of each source file: this way, anyone who copies a file from a repository into their own code "brings" the license with them.
+-   It is common practice to also include a copy of the **full** license in a comment at the beginning of each source file: this way, anyone who copies a file from a repository into their own code "brings" the license with them.
 
--   However, it is not necessary (I never do it…); alternatively, you can insert a short message: *This file is released under a … license. See LICENSE.md*.
+-   However, it is not necessary (I never do it…) and can make the source files much longer; I prefer to insert the banner of the project and a short message: *This file is released under a … license. See LICENSE.md*.
 
 -   There are more structured methods for reporting the license type in the code. One example is [SPDX](https://spdx.dev/), a standard also followed by the [Linux kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2c1212de6), which allows license information to be processed automatically (e.g., by a script).
+
+# Example
+
+```
+/*               ███
+* ████           ██                  █
+ *  ██            ██                 ██
+ *  ██     ████   ████   ███   ████ ████  ███  ███ █
+ *  ██    ██ ███  ██ ██ ██ ██ ███    ██  ██ ██  ████
+ *  ██    ██  ██  ██ ██ █████  ███   ██  █████  ██
+ *  ██  █ ███ ██  ██ ██ ██      ███  ██  ██     ██
+ * ██████  ████   ████   ████ ████    ██  ████ ████
+ *
+ * Reflector antenna simulation code
+ *
+ * Licensed under the European Union Public License (EUPL) 1.2.
+ * See the file LICENSE.txt
+ *
+ * Copyright (c) 2025 Maurizio Tomasi
+ */
+```
+
+You can create banners like this using [Figlet](http://www.figlet.org/) or [Toilet](http://caca.zoy.org/wiki/toilet). I created mine with
+
+```sh
+figlet -f utopiab Lobester | sed 's/#/█/g'  # Change '#' with a filled Unicode rectangle
+```
 
 ---
 title: "Lesson 4"
