@@ -658,12 +658,13 @@ def test_pfm_read_wrong(self):
 
 1.  Implement the following functions:
 
-    -   Reading a sequence of 4 bytes into a 32-bit floating point, considering the *endianness* (`_read_float` in the Python example);
+    -   Reading/writing a sequence of 4 bytes into a 32-bit floating point, considering the *endianness* (`_read_float` in the Python example);
     -   Reading a sequence of bytes up to `\n` or the end of the stream (`_read_line`);
     -   Reading the image dimensions from a string (`_parse_img_size`);
     -   Decoding the type of *endianness* from a string (`_parse_endianness`).
+    -   A function to write the header of a PFM file
 
-2.  Implement a function/method that reads a PFM file from a stream.
+2.  Implement functions/methods that read/write a PFM file from a stream.
 
 3.  Implement the same tests as in the Python example. Also, verify that your methods correctly handle errors.
 
