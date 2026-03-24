@@ -13,7 +13,7 @@
     $
     ```
 
--   The goal is to convert a PFM file into a PNG file (or your preferred LDR format). The values `0.3` and `1.0` refer to the [scale factor](tomasi-ray-tracing-05b.html#/normalization) $a$ and $\gamma$, respectively.
+-   The goal is to convert a PFM file into a PNG file (or your preferred LDR format). The values `0.3` and `1.0` correspond to the [scale factor](tomasi-ray-tracing-05b.html#/normalization) $a$ and the gamma parameter $\gamma$, respectively.
 
 # Implementation
 
@@ -27,7 +27,7 @@ The tasks to be performed on the code are the following:
 
 # Luminosity (1/2)
 
--   Let's add simple `luminosity` method to the `Color` class that uses Shirley & Morley’s formula (you can implement [others](tomasi-ray-tracing-04a.html#/average-luminosities), if you want):
+-   Let's add a simple `luminosity` method to the `Color` class that uses Shirley & Morley’s formula (you can implement [others](tomasi-ray-tracing-04a.html#/average-luminosities), if you want):
 
     ```python
     class Color:
@@ -49,8 +49,8 @@ The tasks to be performed on the code are the following:
 
     ```python
     def test_luminosity():
-        col1 = Color(1.0, 2.0, 3.0)
-        col2 = Color(9.0, 5.0, 7.0)
+        col1 = Color(1.0, 2.9, 3.0)
+        col2 = Color(9.0, 5.0, 5.1)
 
         # This works for Shirley & Morley’s formula; update the numbers, if needed
         assert pytest.approx(2.0) == col1.luminosity()
@@ -61,7 +61,7 @@ The tasks to be performed on the code are the following:
 
 # Average Luminosity (1/2)
 
-This is a trivial implementation of the [equation](tomasi-ray-tracing-04a.html#/logarithmic-average) we discussed during the last class:
+The following is a straightforward implementation of the [equation](tomasi-ray-tracing-04a.html#/logarithmic-average) we discussed during the last class:
 
 ```python
 class HdrImage:
@@ -109,7 +109,7 @@ def test_average_luminosity():
 
 # Normalization (2/3)
 
--   It’s better to ask for the luminosity instead of calculating it:
+-   It is preferable to pass the luminosity as an argument rather than recomputing it within the function:
 
     -   In tests, it can be convenient to pass different values for the brightness;
     -   The user might want to specify this value.
@@ -181,7 +181,7 @@ def test_clamp_image():
 
 # Dependency Management
 
--   Implementing code to save an image in one of the most common LDR formats (PNG, JPEG, TIFF, WebP) would be very interesting, but very complex!
+-   Implementing image encoders from scratch (PNG, JPEG, TIFF, WebP) would be very interesting, but excessively complex for this course!
 -   We will implement this functionality by relying on an external library.
 -   In this way, we will learn how the language we are using allows us to manage dependencies.
 
@@ -189,7 +189,11 @@ def test_clamp_image():
 
 <center>![](media/dependencies-simple.svg)</center>
 
--   This kind of library is usually installed using `sudo` in some way, such as `./configure && make && sudo make install`.
+-   These libraries are typically installed system-wide using using `sudo`. For instance,
+
+    ```
+    ./configure && make && sudo make install
+    ```
 
 -   Example: installing ROOT on your system to work on TNDS exercises!
 
@@ -220,6 +224,8 @@ Local libraries solve these problems because they are not installed system-wide,
 
 -   These features are usually implemented in the programs you have used so far to create projects (`nimble`, `gradle`, `dotnet`, `dub`, `cargo`...).
 
+-   C++ is an exception: there are solutions but are not widespread, and the safest solution is represented by [header-only libraries](https://github.com/p-ranav/awesome-hpp).
+
 -   Your task for today is to choose a library that supports *writing* LDR images and to import it into your project as a **local** dependency (no `sudo`!).
 
 -   The use of local libraries will help us a lot when we deal with *continuous integration*.
@@ -229,7 +235,7 @@ Local libraries solve these problems because they are not installed system-wide,
 # HDR→LDR Conversion (1/3)
 
 -   Once `normalize_image` and `clamp_image` have been applied, all RGB components of the colors in the matrix will be in the range [0, 1].
--   At this point, the conversion to the sRGB space takes place via the [usual formula with γ](tomasi-ray-tracing-04a.html#/gamma-correction).
+-   At this point, the conversion to the sRGB space is performed using the [standard gamma correction formula](tomasi-ray-tracing-04a.html#/gamma-correction).
 -   The result of the conversion is a matrix that must be saved in an LDR graphic format: PNG, JPEG, WebP...
 -   For saving, you need to choose an appropriate library.
 
@@ -239,7 +245,7 @@ Local libraries solve these problems because they are not installed system-wide,
 |-------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
 | C\#                                                   | [ImageSharp](https://docs.sixlabors.com/articles/imagesharp/?tabs=tabid-1)                             |
 | D                                                     | [imageformats](https://code.dlang.org/packages/imageformats)                                           |
-| Java/Kotlin                                           | [javax.imageio](https://docs.oracle.com/javase/8/docs/api/javax/imageio/ImageIO.html) (già installato) |
+| Java/Kotlin                                           | [javax.imageio](https://docs.oracle.com/javase/8/docs/api/javax/imageio/ImageIO.html) (system library) |
 | Nim                                                   | [simplepng](https://github.com/jrenner/nim-simplepng)                                                  |
 | Python                                                | [Pillow](https://pillow.readthedocs.io/en/stable/)                                                     |
 | Rust                                                  | [image](https://crates.io/crates/image)                                                                |
@@ -253,7 +259,7 @@ Choose an LDR library that has these characteristics:
 -   Creation of an image by specifying the number of columns (`width`) and the number of rows (`height`)
 -   Setting the sRGB value of a pixel given its `x` and `y` coordinates
 -   Saving the image in a common graphic format
--   Pay close attention to the coordinate system: is the pixel at `(0, 0)` at the top left? Bottom left? Or…?
+-   Pay close attention to the coordinate system: is the origin `(0, 0)` located at the top-left, bottom-left, or elsewhere?
 
 # HDR→LDR Conversion (3/3)
 
@@ -308,7 +314,7 @@ class Parameters:
         self.output_png_file_name = sys.argv[4]
 ```
 
-(Instead of using global variables for the parameters read from `argv`, I use a `struct` and pass it to other functions: it’s easier to write tests!)
+Using a struct (or dataclass) to pass parameters makes the code more modular and significantly easier to test.
 
 # The `main` function (2/2)
 
@@ -321,8 +327,8 @@ def main(argv):
         print("Error: ", err)
         return
 
-    # You should put a try…except block here and produce a nice error
-    # message is the image couldn't be saved
+    # Wrap this section in a try…except block to provide a user-friendly
+    # message if the image couldn't be saved
     with open(parameters.input_pfm_file_name, "rb") as inpf:
         img = hdrimages.read_pfm_image(inpf)
 
@@ -348,29 +354,31 @@ def main(argv):
 2. Define a function that normalizes the values of an `HdrImage` using a certain average luminosity, optionally passed as an argument and add tests;
 3. Define a function that applies the correction for light sources and add tests;
 4. Implement the `main` function in the application code, so that it accepts 4 arguments: the PFM file to read, the value of $a$, the value of γ, and the name of the PNG/JPEG/etc. file to create.
-5. Add *docstrings* to those classes, methods, functions, types, etc. that you feel need them, but make sure that each comment **is not pedantic**.
+5. Add *docstrings* where appropriate, ensuring clarity **without being redundant**.
 6. Choose a [usage license](./tomasi-ray-tracing-04a.html#/licenses).
 
 # Reference Images
 
 - If you need a realistic PFM image, you can use [memorial.pfm](http://www.pauldebevec.com/Research/HDR/memorial.pfm).
 
-- There is also the site [Scenes for pbrt-v3](https://www.pbrt.org/scenes-v3.html).
+- High-quality scenes are also available at the [pbrt-v3 website](https://www.pbrt.org/scenes-v3.html).
 
 # Hints for C++
 
 # Hints for C++
 
--   [Awesome C++](https://github.com/fffaraz/awesome-cpp) is a treasure trove of C++ libraries. Have a look at the section [Image processing](https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#image-processing) to find a viable image processing library to use in your project.
+-   [Awesome-hpp](https://github.com/p-ranav/awesome-hpp) lists the most used header-only C++ libraries available online. (However, finding header-only image libraries can be challenging! You can try [stb_image_write.h](https://github.com/nothings/stb).)
 
--   To document code, the most used tool is [Doxygen](https://github.com/doxygen/doxygen), but there are other choices available (See again the [section “Documentation” in the Awesome C++ website](https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#documentation).)
+-   You can use "true" C++ libraries, but in this case you should rely on a C++ package manager, like [Xmake](https://xmake.io/guide/package-management/using-official-packages.html), [Conan](https://conan.io/), or [vcpkg](https://vcpkg.io/en/). The website [Awesome C++](https://github.com/fffaraz/awesome-cpp) has a wider selection of C++ libraries.
+
+-   To document code, the most used tool is [Doxygen](https://github.com/doxygen/doxygen), but there are other choices available (See the [section “Documentation” in the Awesome C++ website](https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#documentation).)
 
 
 # Hints for C\#
 
 # Importing Libraries
 
--   The ImageSharp library supports many formats: JPEG, PNG, BMP, GIF, and TGA (avoid the latter if you can, as it is very old and provides no compression).
+-   The [ImageSharp](https://github.com/SixLabors/ImageSharp) library supports many formats: JPEG, PNG, BMP, GIF, and TGA (avoid the latter if you can, as it is very old and provides no compression).
 
 -   In C\#, you can automatically download and install libraries and specify that they should be used in your projects without the need to modify Makefiles or use `root-config`, `pkg-config`, or similar tools.
 
@@ -404,7 +412,7 @@ using (Stream fileStream = File.OpenWrite("output.png")) {
 - You can install libraries in your project with your package manager:
 
     - In Nim, use `nimble install NAME`;
-    - In Cargo, use `cargo` following [the guide](https://doc.rust-lang.org/cargo/guide/dependencies.html);
+    - For Rust, manage dependencies via `cargo` following [the official documentation](https://doc.rust-lang.org/cargo/guide/dependencies.html);
     - In D, use `dub add NAME`.
 
 - These libraries will be installed as dependencies of your program, and not system-wide.
@@ -425,7 +433,7 @@ using (Stream fileStream = File.OpenWrite("output.png")) {
     00000000 rrrrrrrr gggggggg bbbbbbbb
     ```
 
-    where `r` are the bits for red, `g` for green and `b` for blue. Usually colors are indicated using hexadecimal notation, because this way they are always six digits, e.g. `0x12FA51`.
+    where `r` are the bits for red, `g` for green and `b` for blue. Colors are typically represented in hexadecimal notation because it consistently uses six digits (e.g. `0x12FA51`)
 
 - If `r`, `g` and `b` are bytes in the range [0, 255], you can use one of these two formulas:
 
@@ -447,8 +455,10 @@ fun main(args: Array<String>) {
             ldrImage.setRGB(x, y, 0xFF0000)
         }
     }
-    // Save the image to the file specified on the command line
-    ImageIO.write(args[0], "PNG", stream)
+    // Save the image to the file specified on the command line,
+    // assuming that the file name is in `args[4]`
+    val outputFile = File(args[4])
+    ImageIO.write(ldrImage, "PNG", outputFile)
 }
 ```
 
@@ -462,7 +472,7 @@ fun main(args: Array<String>) {
     $ ./main.py input_file.pfm 0.3 1.0 output_file.png
     ```
 
-    because it is compiled for the JVM.
+    since it is compiled for the JVM.
 
 - If you are using Kotlin, you have to go through `gradlew`, which requires that parameters be passed through `--args`:
 
