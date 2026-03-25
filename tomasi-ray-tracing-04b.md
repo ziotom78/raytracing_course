@@ -359,7 +359,7 @@ def main(argv):
 
 # Reference Images
 
-- If you need a realistic PFM image, you can use [memorial.pfm](http://www.pauldebevec.com/Research/HDR/memorial.pfm).
+- If you need a realistic PFM image, you can use [memorial.pfm](https://www.pauldebevec.com/Research/HDR/memorial.pfm) (see [Paul Debevec’s website](https://www.pauldebevec.com/Research/HDR/PFM/)).
 
 - High-quality scenes are also available at the [pbrt-v3 website](https://www.pbrt.org/scenes-v3.html).
 
