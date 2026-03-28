@@ -11,8 +11,8 @@
 |         2 |  [2 Marzo 2026](tomasi-ray-tracing-02a.html)   |  [4 Marzo 2026](tomasi-ray-tracing-02b.html)   |
 |         3 |  [9 Marzo 2026](tomasi-ray-tracing-03a.html)   |  [11 Marzo 2026](tomasi-ray-tracing-03b.html)   |
 |         4 |  [23 Marzo 2026](tomasi-ray-tracing-04a.html)   |  [25 Marzo 2026](tomasi-ray-tracing-04b.html)   |
-<!--
 |         5 | [30 Marzo 2026](tomasi-ray-tracing-05a.html) | [1 Aprile 2026](tomasi-ray-tracing-05b.html) |
+<!--
 |         6 | [7 Aprile 2026](tomasi-ray-tracing-06a.html) | [9 Aprile 2026](tomasi-ray-tracing-06b.html) |
 |         7 | [23 Aprile 2026](tomasi-ray-tracing-07a.html) |  |
 |         8 | [28 Aprile 2026](tomasi-ray-tracing-08a.html) | [30 Aprile 2026](tomasi-ray-tracing-08b.html) |
@@ -46,11 +46,11 @@
 -   [Eccezioni](tomasi-ray-tracing-03a.html#/exceptions)
 -   [Tone mapping](tomasi-ray-tracing-04a.html#/tone-mapping)
 -   [Licenze d'uso](tomasi-ray-tracing-04a.html#/licenses)
-<!--
 -   [Modellizzazione di oggetti](tomasi-ray-tracing-05a.html#/modeling-objects)
 -   [Trasformazioni](tomasi-ray-tracing-05a.html#/transformations): [di scala](tomasi-ray-tracing-05a.html#/scaling-transformations), [applicate a normali](tomasi-ray-tracing-05a.html#/transformations-and-normals), [rotazioni](tomasi-ray-tracing-05a.html#/rotations), [traslazioni](tomasi-ray-tracing-05a.html#/translations)
 -   [Numeri di versione, *semantic versioning*](tomasi-ray-tracing-05a.html#/version-numbers)
 -   [*Branch* e *pull requests*](tomasi-ray-tracing-05b.html#/pull-requests)
+<!--
 -   [Soluzioni analitiche dell'equazione del rendering](tomasi-ray-tracing-06a.html#/solution-of-the-rendering-equation)
 -   [Algoritmi *image order*](tomasi-ray-tracing-06a.html#/image-order-algorithms)
 -   [Schermi virtuali e osservatori](tomasi-ray-tracing-06a.html#/screen-and-observer)
