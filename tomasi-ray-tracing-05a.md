@@ -34,15 +34,15 @@
 
 # The Geometric Problem
 
--   Placement of objects in space?
+-   How do we place objects in space?
 -   Where is the observer, and what are they looking at?
--   Surface of the objects?
+-   How do we describe the surface of the objects?
 
 # Positions and Transformations
 
 -   The geometric description of an object in space usually makes use of transformations.
 
--   These transformations are necessary to place the objects that make up the scene so that their position, orientation, and size are as desired.
+-   These transformations are necessary to achieve the desired position, orientation, and size.
 
 -   The position of the camera is also specified through transformations that identify its position (where is the observer?) and orientation (in which direction are they looking?).
 
@@ -52,7 +52,7 @@
 ![](./media/surface-normals-wikipedia.svg)
 </center>
 
-The way a ray of light interacts with a surface depends on the BRDF, which [is expressed in terms of the angle](tomasi-ray-tracing-01a.html#/brdf) $\theta = N_x \cdot \Psi$ between the direction of incidence $\Psi$ and the normal $N_x$ to the surface at point $x$.
+The way a ray of light interacts with a surface depends on the BRDF, which [is expressed in terms of the angle](tomasi-ray-tracing-01a.html#/brdf) $\theta = \arccos N_x \cdot \Psi$ between the direction of incidence $\Psi$ and the normal $N_x$ to the surface at point $x$.
 
 # Using Geometry
 
@@ -64,7 +64,7 @@ Our code will simulate the propagation of light rays in the environment:
 
 -   …until it hits the surface of an object; at that point the code will have to calculate the angle between the direction of arrival and the **normal**.
 
-All this is complicated by the fact that each object will have its own orientation in space, encoded by a transformation (translation, rotation…).
+This process is further influenced by the fact that each object will have its own orientation in space, encoded by a transformation (translation, rotation…).
 
 # Encoding Geometry
 
@@ -95,33 +95,27 @@ Let's review the properties of these geometric objects.
 
 # Vector Spaces
 
-A vector space $V$ over a field $F$ is a non-empty set $V$ of elements, called *vectors*, associated with two operators $+: V \times V \rightarrow V$ and $\cdot: F \times V \rightarrow V$ that satisfy these properties $\forall u, v, w \in V, \forall \alpha, \beta \in F$:
-
-#.  $+$ is commutative and associative;
-#.  There exists a vector $0$ which is the identity element for $+$;
-#.  $\forall u \in V,\ \exist -u \in V: u + (-u) = 0$;
-#.  $\alpha(\beta v) = (\alpha\beta) v,\quad (\alpha + \beta) v = \alpha v + \beta v,\quad \alpha(v + u) = \alpha v + \alpha u$;
-#.  If $1 \in F$ is the multiplicative identity element in $F$, then $1u = u$.
+We assume the standard properties of a vector space over ℝ.
 
 # Inner Product
 
--   Given a vector space $V$ over $F$, the inner product is an operation $\left<\cdot, \cdot\right>: V \times V \rightarrow F$ that has the following properties $\forall u, v, w \in V, \forall \alpha \in F$:
+-   We use the standard definition of the scalar product on $\mathbb{R}^3$:
+    \[
+    \vec u \cdot \vec v = \left\|\vec u\right\|\,\left\|\vec v\right\|\,\cos\theta.
+    \]
 
-    #.  $\left<\alpha u, v\right> = \alpha \left<u, v\right>$;
-    #.  $\left<u + v, w\right> = \left<u, w\right> + \left<v, w\right>$;
-    #.  $\left<u, v\right> = \overline{\left<v, u\right>}$;
-    #.  $\left<u, u\right> > 0$ if $u \not= 0$.
+-   Two vectors $u$ and $v$ are defined as *orthogonal* if
 
--   Scalar product on $\mathbb{R}^3$: $\vec u \cdot \vec v = \left\|\vec u\right\|\,\left\|\vec v\right\|\,\cos\theta$.
-
--   Two vectors $u$ and $v$ are defined as *orthogonal* if $\left<u, v\right> = 0$.
+    \[
+    u \cdot v = 0.
+    \]
 
 # Norm of a Vector
 
 -   Given an inner product, we can define the *norm* $\left\|\cdot\right\|: V \rightarrow F$ as follows:
 
     $$
-    \left\|u\right\| = \sqrt{\left<u, u\right>},
+    \left\|u\right\| = \sqrt{u \cdot u},
     $$
 
     which is positive definite and is zero only if $u = 0$.
@@ -170,7 +164,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 
     holds if and only if $\alpha_i = 0\ \forall i=1\ldots N$.
 
--   A set of vectors $\left\{v_i\right\}_{i=1}^N$ is called *basis* of $B$ if they are linearly independent and they generate $V$, i.e.,
+-   A set of vectors $\left\{v_i\right\}_{i=1}^N$ is called a *basis* of $V$ if they are linearly independent and they generate $V$, i.e.,
 
     $$
     \mathrm{Span}\left(\{v_i\}_{i=1}^N\right) = V.
@@ -183,7 +177,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 -   An *orthonormal basis* of a vector space $V$ equipped with an inner product is defined as the set of vectors $\left\{e_i\right\}_{i=1}^N$ such that
 
     $$
-    \left<e_i, e_j\right> = \delta_{ij}\quad\forall i, j = 1 \ldots N.
+    e_i \cdot e_j = \delta_{ij}\quad\forall i, j = 1 \ldots N.
     $$
 
 # Vector Representation
@@ -198,23 +192,23 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 
 -   This representation is always unique; **if the basis is orthonormal** then
 
-    $$\alpha_i = \left<v, e_i\right>.$$
+    $$\alpha_i = v \cdot e_i.$$
 
--   Vectors are represented as column matrices: $v = (\alpha_1\ \alpha_2\ \ldots)^t$.
+-   Vectors are represented as column vectors: $v = (\alpha_1\ \alpha_2\ \ldots)^t$.
 
 # Vector Representation
 
--   The fact that $\alpha_i = \left<v, e_i\right>$ holds **only** if the basis is orthonormal!
+-   The fact that $\alpha_i = v \cdot e_i$ holds **only** if the basis is orthonormal; otherwise, to get its components you must invert the transformation matrix (slow!).
 
--   For example, consider the basis $e_1 = (1, 0), e_2 = (1, 1)$ on the plane $\mathbb{R}^2$. The vector $v = (4, 3)$ is decomposed by solving a linear system, and the solution is
+-   Consider the basis $e_1 = (1, 0), e_2 = (1, 1)$ on the plane $\mathbb{R}^2$. Decomposing $v = (4, 3)$ leads to the representation
 
     $$
     v = e_1 + 3 e_2 = \begin{pmatrix}1\\0\end{pmatrix} + 3 \begin{pmatrix}1\\1\end{pmatrix} = \begin{pmatrix}4\\3\end{pmatrix},
     $$
 
-    but $\left<v, e_1\right> = 4$ and $\left<v, e_2\right> = 7$.
+    but $v \cdot e_1 = 4$ and $v \cdot e_2 = 7$.
 
--   Our code will always use orthonormal bases: $\alpha_i = \left<v, e_i\right>$ is too convenient!
+-   Our code will always use orthonormal bases: $\alpha_i = v \cdot e_i$ is too convenient!
 
 # Linear Transformations
 
@@ -257,7 +251,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 
     and the canonical basis $e_1 = (1\ 0)^t, e_2 = (0\ 1)^t$.
 
--   It is easy to see that the first column of $M$ is equal to $M e_1$ and the second to $M e_2$:
+-   The first column of $M$ is equal to $M e_1$ and the second to $M e_2$:
 
     $$
     M e_1 = \begin{pmatrix}3&4\\2&-1\end{pmatrix} \begin{pmatrix}1\\0\end{pmatrix} = \begin{pmatrix}3\\2\end{pmatrix},\ {}
@@ -303,7 +297,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 
 # Pseudovectors
 
--   The problem with $\vec\omega$ is that it is defined through the cross product: $\vec \omega = \vec r \times \vec p$, and the result of a cross product is *always* a pseudovector.
+-   The problem with pseudovectors like $\vec\omega$ is that they are defined through the cross product: $\vec \omega = \vec r \times \vec p$, and the result of a cross product is *always* a pseudovector.
 
 -   This can also be seen in the case of Ampère's law:
 
@@ -324,7 +318,7 @@ draw(rot * ((0, 0, 0) -- (0.3 * (X + 2Y))), red, Arrow3);
 
 In our code, we will implement only **invertible** transformations:
 
-1. Scaling (enlargement/reduction);
+1. Scaling (uniform and non-uniform);
 2. Rotation around an axis;
 3. Translation (displacement).
 
@@ -398,13 +392,13 @@ In our code, we will implement only **invertible** transformations:
 
 # Transformations and Normals
 
--   A normal $\hat n$ is defined in terms of the tangent vector $\hat v$:
+-   A normal $\hat n$ to a surface on a point $P$ is defined in terms of the generic tangent vector $\hat v$ on $P$:
 
     $$
     \hat n^t \hat v = 0.
     $$
 
--   Suppose we want to apply the (invertible) transformation $N$ to the vector $\hat v$. We must apply a transformation $M$ to the vector $\hat n$ such that
+-   Suppose we apply the (invertible) transformation $N$ to a tangent vector $\hat v$. We must apply a transformation $M$ to the vector $\hat n$ such that
 
     $$
     \left(M \hat n\right)^t \left(N \hat v\right) = 0.
@@ -430,17 +424,17 @@ In our code, we will implement only **invertible** transformations:
 
 -   Note that the result we obtained is *general*: it is not only valid for scaling transformations, but for **any** invertible transformation $N$.
 
--   In numerical code, it is convenient to store both the matrix $N$ corresponding to a transformation and the transpose of its inverse $\left(N^{-1}\right)^t$ in a type (`struct`, `class`, `record`, etc.) that represents an invertible transformation: it uses more memory, but the calculations are faster.
+-   In numerical code, it is convenient to store both the matrix $N$ corresponding to a transformation and the transpose of its inverse $\left(N^{-1}\right)^t$ in a type (`struct`, `class`, `record`, etc.) that represents an invertible transformation: this involves a small memory overhead but significantly accelerates rendering.
 
 # Rotations {#rotations}
 
 # Formalism
 
--   To define a rotation on the plane around the origin, only **one** degree of freedom is sufficient.
+-   Defining a rotation on the plane around the origin requires only **one** degree of freedom.
 
 -   However, to define a rotation in three dimensions around the origin, **three** degrees of freedom are needed: the rotation axis and the angle. (The rotation axis is a unit-length vector, so it only has two degrees of freedom).
 
--   There are various ways to represent a rotation, some more effective than others depending on the context: Euler angles, axis/angle, rotation matrices, quaternions. We will focus on rotation matrices.
+-   There are various ways to represent a rotation, some being more efficient than others depending on the application: Euler angles, axis/angle, rotation matrices, quaternions. We will focus on rotation matrices.
 
 
 # Rotations and Matrices
@@ -493,13 +487,25 @@ In our code, we will implement only **invertible** transformations:
 
 # 3D Rotations
 
--   In 3 dimensions, rotations can be considerably more complex because there are infinitely many axes that can be used for rotation around the origin!
+-   In 3 dimensions, rotations around the origin are considerably more complex due to the infinite number of possible rotation axes!
 
     <center>
         <video src="./media/rotating-cubes.mp4" width="960" height="360" controls loop autoplay/>
     </center>
 
 -   In general, a matrix $R$ in $\mathbb{R^n}$ represents a rotation if and only if $\det R = 1$ and $R R^t = \mathbb{1}$, i.e., if its transpose coincides with its inverse.
+
+# Rotations and normals
+
+-   We previously saw that if matrix $M$ transforms a vector $\vec v$ into $M$, then a normal $\hat n$ transforms as $(M^{-1})^t \hat n$
+
+-   But rotations are such that $R^{-1} = R^t$. Thus,
+
+    \[
+    (R^{-1})^t = (R^t)^t = R.
+    \]
+
+    Unlike scaling transformations, rotations are “well-behaved” with respect to normals
 
 # Composition of Rotations
 
@@ -513,7 +519,7 @@ In our code, we will implement only **invertible** transformations:
 
 # Elementary Rotations
 
--   It is easy to write the rotations around the three axes $\hat e_x$, $\hat e_y$ and $\hat e_z$. For example, the rotation around $\hat e_z$ is
+-   Rotations around the three principal axes $\hat e_x$, $\hat e_y$ and $\hat e_z$ are straightforward to derive. For example, the rotation around $\hat e_z$ is
 
     $$
     R_z(\theta) v = \begin{pmatrix}\cos\theta&-\sin\theta&0\\\sin\theta&\cos\theta&0\\0&0&1\end{pmatrix}.
@@ -538,7 +544,7 @@ In our code, we will implement only **invertible** transformations:
     T_{\vec{k}} (P) = P + \vec{k}.
     $$
 
--   So far we have used matrices to represent scaling and rotation transformations. Unfortunately, 3×3 matrices **cannot** represent translations in three-dimensional space: a translation $T$ is not a linear operator! If it were, then it would hold that
+-   So far we have used matrices to represent scaling and rotation transformations. Consequently, 3×3 matrices are insufficient for representing translations in 3D space: a translation $T$ is an affine, rather than a linear, operator. If it were linear, then it would hold that
 
     $$
     T_{\vec{k}}(0) = 0\quad\forall\ \vec{k}.
@@ -546,7 +552,7 @@ In our code, we will implement only **invertible** transformations:
 
 # Homogeneous Coordinates {#homogeneous-coordinates}
 
--   Fortunately, there is a trick, widely used in *computer graphics*, which consists of using **homogeneous coordinates**.
+-   To address this, computer graphics relies on a standard technique known as  **homogeneous coordinates**.
 
 -   In homogeneous coordinates, we consider the space $\mathbb{R}^4$ instead of $\mathbb{R}^3$, and we write points $P$ and vectors $\vec{v}$ differently:
 
@@ -575,7 +581,7 @@ In our code, we will implement only **invertible** transformations:
     \end{pmatrix}
     $$
 
--   From the block form of $M_h$, it is easy to understand that applying $M_h$ to $P$ and $\vec{v}$ leads to the same result as in the non-homogeneous case in $\mathbb{R}^3$.
+-   The block structure of $M_h$ ensures that its application to $P$ and $\vec v$ yields results consistent with the non-homogeneous operations in $\mathbb{R}^3$.
 
 # Translations
 
@@ -591,7 +597,7 @@ In our code, we will implement only **invertible** transformations:
     \end{pmatrix}
     $$
 
--   The operator is obviously linear because it is in matrix form.
+-   By embedding the transformation in ℝ⁴, the translation becomes a linear operator represented by a 4×4 matrix.
 
 # Properties
 
@@ -630,7 +636,7 @@ In our code, we will implement only **invertible** transformations:
 # Example II: Irrational Number
 
 -   TeX: a digital typography program created by Donald Knuth (to type *The Art of Computer Programming*, 1962–2019).
--   The version is the rounding of the value of $\pi$, where each subsequent version adds a digit:
+-   Each version is a closer approximation of $\pi$, where each subsequent version adds a digit:
 
     -   3
     -   3.1
@@ -649,7 +655,7 @@ In our code, we will implement only **invertible** transformations:
 
 # Example IV: *Semantic Versioning*
 
--   The scheme we will use in this course is called [*semantic versioning*](https://semver.org/), used for example by Julia. It uses the `X.Y.Z` scheme:
+-   The scheme we will use in this course is called [*semantic versioning*](https://semver.org/), or **SemVer**. It uses the `X.Y.Z` scheme:
     -   `X` is the «major version»
     -   `Y` is the «minor version»
     -   `Z` is the «patch version»
@@ -673,7 +679,7 @@ In our code, we will implement only **invertible** transformations:
 
 # Example (1/3)
 
--   We have written a program that prints `Hello, world!`:
+-   We have written a program that prints `Hello, world!` (wrong!):
 
     ```
     $ ./hello
@@ -706,13 +712,13 @@ In our code, we will implement only **invertible** transformations:
 -   The code checks the value of the `$LANG` environment variable (used on Unix systems) and decides which language to print the message in:
 
     ```
-    $ ./hello Maurizio     # …when I run it on a english-talking machine
+    $ ./hello Maurizio     # …when I run it on a English-speaking machine
     Hello, Maurizio!
     $ LANG=it_IT.UTF-8 ./hello Maurizio
     Salve, Maurizio!
     ```
 
--   The program is **not compatible** with version `1.1.0` because on an Italian machine it now prints `Salve, mondo!` instead of `Hello, world!`.
+-   The program is **not compatible** with version `1.1.0`! (What if the output is fed to `grep`?)
 
 -   Therefore, I must release version `2.0.0`.
 
@@ -734,9 +740,9 @@ In our code, we will implement only **invertible** transformations:
     >
     > We follow [Semver](https://semver.org/) which says that after 1.0, all breaking changes bump the major version number. We have some breaking changes here, which will be trivial to fix -- if they effect you at all. But a breaking change is a breaking change!
 
-# Disadvantages of semantic versioning
+# Disadvantages of SemVer
 
--   Sometimes it is difficult to establish whether a change is "breaking" or not (see for example the article [Semantic Versioning Will Not Save You](https://hynek.me/articles/semver-will-not-save-you/)) or this [XKCD comic](https://xkcd.com/1172/).
+-   Sometimes it can be difficult to determine what constitutes a "breaking change" (see for example the article [Semantic Versioning Will Not Save You](https://hynek.me/articles/semver-will-not-save-you/)) or this [XKCD comic](https://xkcd.com/1172/).
 
 -   For projects with a large critical mass, it may make more sense to use the release date, as is the case with C++.  Python is also moving in this direction with [PEP 2026](https://peps.python.org/pep-2026/).
 

@@ -32,7 +32,7 @@
 
 -   We have been using Git for a few weeks, and we should have learned how it works.
 
--   In particular, we have seen that Git saves every code change (the *commit*) by linking it to the previous modification:
+-   In particular, we have seen that Git saves every code change (the *commit*) by linking it to the parent commit:
 
     <center>
     ![](./media/git-commit.svg)
@@ -80,7 +80,7 @@
 
 -   `git checkout NAME` activates the already existing branch `NAME`.
 
--   `git merge NAME1 NAME2` incorporates the changes from branch `NAME1` into branch `NAME2` (`NAME1` → `NAME2`); usually `NAME2` is `master` or `main`.
+-   `git merge NAME` incorporates the changes from branch `NAME` into the current branch.
 
 -   `git fetch` and `git pull` import **all** branches.
 
@@ -111,7 +111,7 @@
 # Checklists
 
 -   In complex pull requests, you might plan to implement several different features with separate commits (**highly** recommended!)
--   The GitHub interface lets you to include checklists with this syntax:
+-   The GitHub interface lets you include checklists with this syntax:
 
     ```
     -   [X] Add the feature
@@ -119,7 +119,7 @@
     -   [ ] Update the documentation
     ```
 
--   To activate/deactivate items, just click on them; there is no need to modify the Markdown.
+-   To activate/deactivate items, just click on them without manually editing the Markdown source.
 
 # Checklists
 
@@ -129,11 +129,11 @@
 
 # How to Use Them in Practice
 
--   If one of you creates a pull request on GitHub, others can add commits to that pull request with the commands
+-   If one of you creates a pull request on GitHub, team members can contribute to the same pull request.
 
     ```text
     git fetch
-    git checkout PULL_REQUEST_NAME
+    git checkout BRANCH_NAME
     ```
 
     as if it were a branch they created themselves (`git fetch` downloads all new branches from GitHub, including pull requests).
@@ -161,14 +161,15 @@
 
 # Why Three Types?
 
--   It might seem silly to have to define three types `Vec`, `Point`, `Normal`: after all, their structures are identical!
+-   It might seem redundant to have to define three types `Vec`, `Point`, `Normal`: after all, their structures are identical!
 
     ```c++
-    // C++ code
     struct Vec { float x, y, z; };
     struct Point { float x, y, z; };
     struct Normal { float x, y, z; };
     ```
+
+    But this will make the compiler complain about meaningless operations, like summing two points.
 
 -   In some ray-tracers, in fact, a single `Vec` type is used to encode vectors, points, and normals (and even RGB colors!), but the use of distinct types will make our code more robust and clear.
 
@@ -266,25 +267,23 @@ class Vec:
 # Other operations on `Vec`
 
 ```python
-def dot(self, other):
+def dot(self, other: "Vec") -> float:
     return self.x * other.x + self.y * other.y + self.z * other.z
 
-def squared_norm(self):
+def squared_norm(self) -> float:
     return self.x ** 2 + self.y ** 2 + self.z ** 2
 
-def norm(self):
+def norm(self) -> float:
     return math.sqrt(self.squared_norm())
 
-def cross(self, other):
+def cross(self, other: "Vec") -> "Vec":
     return Vec(x=self.y * other.z - self.z * other.y,
                y=self.z * other.x - self.x * other.z,
                z=self.x * other.y - self.y * other.x)
 
-def normalize(self):
+def normalize(self) -> "Vec":
     norm = self.norm()
-    x /= norm
-    y /= norm
-    z /= norm
+    return Vec(self.x / norm, self.y / norm, self.z / norm)
 ```
 
 # Transformations
@@ -407,7 +406,7 @@ newp = Point(x=p.x * row0[0] + p.y * row0[1] + p.z * row0[2] + row0[3],
 w = p.x * row3[0] + p.y * row3[1] + p.z * row3[2] + row3[3]
 
 if w == 1.0:
-    return newp   # Avoid three (potentially costly) divisions if not needed
+    return newp   # Avoid three (potentially costly) divisions when w = 1
 else:
     return Point(newp.x / w, newp.y / w, newp.z / w)
 ```
@@ -481,7 +480,7 @@ else:
 
 # Implementation
 
--   It is useless to construct the transposed matrix of `self.invm` and calculate the product of this with the normal.
+-   It is inefficient to explicitly construct the transposed matrix of `self.invm` and calculate the product of this with the normal.
 
 -   I suggest you implement the product between matrix and normal in the most direct way possible:
 
@@ -504,7 +503,7 @@ else:
 
     1.  Avoid using constructs like `vector<vector<float>>` (C++), as data would be in the heap and not contiguous in memory.
 
-    2.  In fact, avoid `vector` (C++) and similar constructs altogether and define a simple array of 16 elements.
+    2.  In fact, avoid `vector` (C++) and similar constructs altogether and define a `std::array` of 16 elements.
 
 
 # Tests
@@ -527,8 +526,8 @@ else:
 # Type definitions
 
 -   It’s crucial that `Vec` and `Point` be efficient!
--   Don’t worry to define classes with methods like `GetX`/`SetX`: just define `Vec` and `Point` as plain `struct`, or `class` with public members `x`, `y`, `z`.
--   Define most (all?) of the methods as `inline` by declaring them in the `.h` file. This gives the C++ compiler many chances to optimize the code.
+-   Don’t worry about defining classes with methods like `GetX`/`SetX`: just define `Vec` and `Point` as plain `struct`, or `class` with public members `x`, `y`, `z`.
+-   If your code does not use C++23 modules, define most (all?) of the methods as `inline` by declaring them in the `.h` file. This gives the C++ compiler many chances to optimize the code.
 
 # Not-recommended solution!
 
@@ -539,7 +538,7 @@ class Vec {
 
 public:
     Vec(float _x = 0, float _y = 0, float _z = 0) : x{_x}, y{_y}, z{_z} {}
-    Vec(const Vec &); // Copy constructor; here it’s useless!
+    Vec(const Vec &); // Copy constructor; here it is unnecessary!
     Vec(const Vec &&); // Move constructor; ditto!
 
     float getx() const { return x; }
@@ -608,7 +607,7 @@ I suggested this approach when you implemented `Color`, but it is even more impo
 
 -   This could be a good opportunity to reduce code duplication by leveraging the metaprogramming capabilities of your language…
 
--   …but if you find it difficult to use them, don't go crazy and just use duplicated code! (In the future, when you have studied the LISP language well, you can fix it 😀)
+-   …but if you find them difficult to use, don't overcomplicate things and just use duplicated code!
 
 -   I'll show an example with Nim: similar results can be achieved with Rust and D.
 
@@ -687,7 +686,7 @@ I suggested this approach when you implemented `Color`, but it is even more impo
 
 -   It can be used to do amazing things (for example, [modify the language to support more OOP constructs](https://nim-by-example.github.io/macros/)).
 
--   However, I advise you to be careful, because it is difficult to debug macros, and the generated code can be unreadable.
+-   However, I advise caution, as macros can be difficult to debug and the generated code can be unreadable.
 
 -   A good way to understand how to use macros is to first practice with a LISP language ([Racket](https://racket-lang.org/), [Clojure](https://clojure.org/), [Scheme](https://www.scheme.com/tspl4/)…).
 

@@ -98,7 +98,7 @@
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -114,7 +114,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -168,7 +168,7 @@ feature.</p></li>
 <li><p>We have been using Git for a few weeks, and we should have
 learned how it works.</p></li>
 <li><p>In particular, we have seen that Git saves every code change (the
-<em>commit</em>) by linking it to the previous modification:</p>
+<em>commit</em>) by linking it to the parent commit:</p>
 <center>
 <p><img data-src="./media/git-commit.svg" /></p>
 </center></li>
@@ -224,10 +224,8 @@ already merged it).</p></li>
 it active.</p></li>
 <li><p><code>git checkout NAME</code> activates the already existing
 branch <code>NAME</code>.</p></li>
-<li><p><code>git merge NAME1 NAME2</code> incorporates the changes from
-branch <code>NAME1</code> into branch <code>NAME2</code>
-(<code>NAME1</code> → <code>NAME2</code>); usually <code>NAME2</code> is
-<code>master</code> or <code>main</code>.</p></li>
+<li><p><code>git merge NAME</code> incorporates the changes from branch
+<code>NAME</code> into the current branch.</p></li>
 <li><p><code>git fetch</code> and <code>git pull</code> import
 <strong>all</strong> branches.</p></li>
 </ul>
@@ -271,13 +269,13 @@ add this</em>”, etc.</p></li>
 <li><p>In complex pull requests, you might plan to implement several
 different features with separate commits (<strong>highly</strong>
 recommended!)</p></li>
-<li><p>The GitHub interface lets you to include checklists with this
+<li><p>The GitHub interface lets you include checklists with this
 syntax:</p>
 <pre><code>-   [X] Add the feature
 -   [ ] Implement tests
 -   [ ] Update the documentation</code></pre></li>
-<li><p>To activate/deactivate items, just click on them; there is no
-need to modify the Markdown.</p></li>
+<li><p>To activate/deactivate items, just click on them without manually
+editing the Markdown source.</p></li>
 </ul>
 </section>
 <section id="checklists-1" class="slide level1">
@@ -289,10 +287,10 @@ need to modify the Markdown.</p></li>
 <section id="how-to-use-them-in-practice" class="slide level1">
 <h1>How to Use Them in Practice</h1>
 <ul>
-<li><p>If one of you creates a pull request on GitHub, others can add
-commits to that pull request with the commands</p>
+<li><p>If one of you creates a pull request on GitHub, team members can
+contribute to the same pull request.</p>
 <pre class="text"><code>git fetch
-git checkout PULL_REQUEST_NAME</code></pre>
+git checkout BRANCH_NAME</code></pre>
 <p>as if it were a branch they created themselves
 (<code>git fetch</code> downloads all new branches from GitHub,
 including pull requests).</p></li>
@@ -332,14 +330,15 @@ href="https://pbr-book.org/4ed/Geometry_and_Transformations.html">Chapter
 <section id="why-three-types" class="slide level1">
 <h1>Why Three Types?</h1>
 <ul>
-<li><p>It might seem silly to have to define three types
+<li><p>It might seem redundant to have to define three types
 <code>Vec</code>, <code>Point</code>, <code>Normal</code>: after all,
 their structures are identical!</p>
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// C++ code</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Vec <span class="op">{</span> <span class="dt">float</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span> <span class="op">};</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Point <span class="op">{</span> <span class="dt">float</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span> <span class="op">};</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Normal <span class="op">{</span> <span class="dt">float</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span> <span class="op">};</span></span></code></pre></div></li>
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Vec <span class="op">{</span> <span class="dt">float</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span> <span class="op">};</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Point <span class="op">{</span> <span class="dt">float</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span> <span class="op">};</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Normal <span class="op">{</span> <span class="dt">float</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">;</span> <span class="op">};</span></span></code></pre></div>
+<p>But this will make the compiler complain about meaningless
+operations, like summing two points.</p></li>
 <li><p>In some ray-tracers, in fact, a single <code>Vec</code> type is
 used to encode vectors, points, and normals (and even RGB colors!), but
 the use of distinct types will make our code more robust and
@@ -473,25 +472,23 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a hr
 <section id="other-operations-on-vec" class="slide level1">
 <h1>Other operations on <code>Vec</code></h1>
 <div class="sourceCode" id="cb6"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dot(<span class="va">self</span>, other):</span>
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dot(<span class="va">self</span>, other: <span class="st">&quot;Vec&quot;</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.x <span class="op">*</span> other.x <span class="op">+</span> <span class="va">self</span>.y <span class="op">*</span> other.y <span class="op">+</span> <span class="va">self</span>.z <span class="op">*</span> other.z</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> squared_norm(<span class="va">self</span>):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> squared_norm(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.x <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> <span class="va">self</span>.y <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> <span class="va">self</span>.z <span class="op">**</span> <span class="dv">2</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> norm(<span class="va">self</span>):</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> norm(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> math.sqrt(<span class="va">self</span>.squared_norm())</span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cross(<span class="va">self</span>, other):</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cross(<span class="va">self</span>, other: <span class="st">&quot;Vec&quot;</span>) <span class="op">-&gt;</span> <span class="st">&quot;Vec&quot;</span>:</span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Vec(x<span class="op">=</span><span class="va">self</span>.y <span class="op">*</span> other.z <span class="op">-</span> <span class="va">self</span>.z <span class="op">*</span> other.y,</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>               y<span class="op">=</span><span class="va">self</span>.z <span class="op">*</span> other.x <span class="op">-</span> <span class="va">self</span>.x <span class="op">*</span> other.z,</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>               z<span class="op">=</span><span class="va">self</span>.x <span class="op">*</span> other.y <span class="op">-</span> <span class="va">self</span>.y <span class="op">*</span> other.x)</span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize(<span class="va">self</span>):</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="st">&quot;Vec&quot;</span>:</span>
 <span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    norm <span class="op">=</span> <span class="va">self</span>.norm()</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    x <span class="op">/=</span> norm</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    y <span class="op">/=</span> norm</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    z <span class="op">/=</span> norm</span></code></pre></div>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Vec(<span class="va">self</span>.x <span class="op">/</span> norm, <span class="va">self</span>.y <span class="op">/</span> norm, <span class="va">self</span>.z <span class="op">/</span> norm)</span></code></pre></div>
 </section>
 <section id="transformations" class="slide level1">
 <h1>Transformations</h1>
@@ -640,7 +637,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a h
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> p.x <span class="op">*</span> row3[<span class="dv">0</span>] <span class="op">+</span> p.y <span class="op">*</span> row3[<span class="dv">1</span>] <span class="op">+</span> p.z <span class="op">*</span> row3[<span class="dv">2</span>] <span class="op">+</span> row3[<span class="dv">3</span>]</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> w <span class="op">==</span> <span class="fl">1.0</span>:</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> newp   <span class="co"># Avoid three (potentially costly) divisions if not needed</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> newp   <span class="co"># Avoid three (potentially costly) divisions when w = 1</span></span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Point(newp.x <span class="op">/</span> w, newp.y <span class="op">/</span> w, newp.z <span class="op">/</span> w)</span></code></pre></div>
 </section>
@@ -733,8 +730,8 @@ therefore ignore the problem.</p></li>
 <section id="implementation" class="slide level1">
 <h1>Implementation</h1>
 <ul>
-<li><p>It is useless to construct the transposed matrix of
-<code>self.invm</code> and calculate the product of this with the
+<li><p>It is inefficient to explicitly construct the transposed matrix
+of <code>self.invm</code> and calculate the product of this with the
 normal.</p></li>
 <li><p>I suggest you implement the product between matrix and normal in
 the most direct way possible:</p>
@@ -764,7 +761,7 @@ allocate:</p>
 <code>vector&lt;vector&lt;float&gt;&gt;</code> (C++), as data would be
 in the heap and not contiguous in memory.</p></li>
 <li><p>In fact, avoid <code>vector</code> (C++) and similar constructs
-altogether and define a simple array of 16 elements.</p></li>
+altogether and define a <code>std::array</code> of 16 elements.</p></li>
 </ol></li>
 </ul>
 </section>
@@ -800,13 +797,14 @@ yourselves, and then implement <code>Transformation</code>.</li>
 <ul>
 <li>It’s crucial that <code>Vec</code> and <code>Point</code> be
 efficient!</li>
-<li>Don’t worry to define classes with methods like
+<li>Don’t worry about defining classes with methods like
 <code>GetX</code>/<code>SetX</code>: just define <code>Vec</code> and
 <code>Point</code> as plain <code>struct</code>, or <code>class</code>
 with public members <code>x</code>, <code>y</code>, <code>z</code>.</li>
-<li>Define most (all?) of the methods as <code>inline</code> by
-declaring them in the <code>.h</code> file. This gives the C++ compiler
-many chances to optimize the code.</li>
+<li>If your code does not use C++23 modules, define most (all?) of the
+methods as <code>inline</code> by declaring them in the <code>.h</code>
+file. This gives the C++ compiler many chances to optimize the
+code.</li>
 </ul>
 </section>
 <section id="not-recommended-solution" class="slide level1">
@@ -818,7 +816,7 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    Vec<span class="op">(</span><span class="dt">float</span> _x <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">float</span> _y <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">float</span> _z <span class="op">=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">:</span> x<span class="op">{</span>_x<span class="op">},</span> y<span class="op">{</span>_y<span class="op">},</span> z<span class="op">{</span>_z<span class="op">}</span> <span class="op">{}</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    Vec<span class="op">(</span><span class="at">const</span> Vec <span class="op">&amp;);</span> <span class="co">// Copy constructor; here it’s useless!</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    Vec<span class="op">(</span><span class="at">const</span> Vec <span class="op">&amp;);</span> <span class="co">// Copy constructor; here it is unnecessary!</span></span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    Vec<span class="op">(</span><span class="at">const</span> Vec <span class="op">&amp;&amp;);</span> <span class="co">// Move constructor; ditto!</span></span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> getx<span class="op">()</span> <span class="at">const</span> <span class="op">{</span> <span class="cf">return</span> x<span class="op">;</span> <span class="op">}</span></span>
@@ -909,9 +907,8 @@ href="https://ziotom78.github.io/raytracing_course/language-comparison.html"><em
 comparison between a few programming languages</em></a>.</p></li>
 <li><p>This could be a good opportunity to reduce code duplication by
 leveraging the metaprogramming capabilities of your language…</p></li>
-<li><p>…but if you find it difficult to use them, don’t go crazy and
-just use duplicated code! (In the future, when you have studied the LISP
-language well, you can fix it 😀)</p></li>
+<li><p>…but if you find them difficult to use, don’t overcomplicate
+things and just use duplicated code!</p></li>
 <li><p>I’ll show an example with Nim: similar results can be achieved
 with Rust and D.</p></li>
 </ul>
@@ -1004,8 +1001,8 @@ in Nim.</p></li>
 <li><p>It can be used to do amazing things (for example, <a
 href="https://nim-by-example.github.io/macros/">modify the language to
 support more OOP constructs</a>).</p></li>
-<li><p>However, I advise you to be careful, because it is difficult to
-debug macros, and the generated code can be unreadable.</p></li>
+<li><p>However, I advise caution, as macros can be difficult to debug
+and the generated code can be unreadable.</p></li>
 <li><p>A good way to understand how to use macros is to first practice
 with a LISP language (<a href="https://racket-lang.org/">Racket</a>, <a
 href="https://clojure.org/">Clojure</a>, <a
