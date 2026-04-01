@@ -672,11 +672,11 @@ I suggested this approach when you implemented `Color`, but it is even more impo
       proc fname(arg: t): t =
         result = arg + arg
 
-    define_double_proc(double_int, int)
+    define_double_proc(double_int, int) # A function that defines another function! 😲
     define_double_proc(double_float32, float32)
     ```
 
-    I have defined two new functions, `double_int` and `double_float32`, but I have not specified an equivalent for `float32` or for `uint`.
+    I have defined two new functions, `double_int` and `double_float32`, but I have not specified an equivalent for `float64` or for `uint`.
 
 # Macros
 
