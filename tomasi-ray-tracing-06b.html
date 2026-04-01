@@ -137,7 +137,7 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 <ul>
 <li><p>Today we will implement three very simple types:</p>
 <ol type="1">
-<li>The <code>Ray</code> type represents a ray of light;</li>
+<li>The <code>Ray</code> type represents a geometric light ray;</li>
 <li>The <code>Camera</code> type represents the observer/camera;</li>
 <li>The <code>ImageTracer</code> type sends rays from the observer to
 the screen.</li>
@@ -223,9 +223,10 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 <li>Orthogonal projection</li>
 <li>Perspective projection</li>
 </ol></li>
-<li><p>This is a good opportunity to implement <em>polymorphism</em>,
-that is, the ability to have a single function name correspond to
-different implementations depending on the type of the object.</p></li>
+<li><p>This is a perfect opportunity to implement <em>polymorphism</em>:
+the ability to use a common interface (<code>Camera</code>) for
+different underlying behaviors (<code>OrthogonalCamera</code>,
+<code>PerspectiveCamera</code>).</p></li>
 </ul>
 </section>
 <section id="example" class="slide level1">
@@ -241,9 +242,8 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#c
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    print<span class="op">(</span><span class="dv">1</span><span class="op">);</span>    <span class="co">// &quot;Integer: 1&quot;</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    print<span class="op">(</span><span class="fl">1.0</span><span class="bu">f</span><span class="op">);</span> <span class="co">// &quot;Float: 1&quot;</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>The function <code>print</code> takes two <em>forms</em>
-depending on whether the argument is an integer or a floating-point
-number.</p></li>
+<li><p>The <code>print</code> function is overloaded to handle different
+argument types.</p></li>
 <li><p>The decision of which call to use is made by the compiler at
 compile time.</p></li>
 </ul>
@@ -264,14 +264,14 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#c
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>string kind_of_camera <span class="op">=</span> input_camera<span class="op">();</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ?</span></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></li>
-<li><p>But what type do we establish for the variable <code>cam</code>?
+<li><p>Which type should be assigned to the variable <code>cam</code>?
 <code>OrthogonalCamera</code> or
 <code>PerspectiveCamera</code>?</p></li>
 </ul>
 </section>
 <section id="dynamic-polymorphism-12" class="slide level1">
 <h1>Dynamic Polymorphism (1/2)</h1>
-<p>OOP allows us to avoid this mess by introducing a
+<p>OOP allows us to avoid this complexity by introducing a
 <strong>third</strong> type in addition to <code>OrthogonalCamera</code>
 or <code>PerspectiveCamera</code>, as shown in this C++ code:</p>
 <div class="sourceCode" id="cb5"><pre
@@ -328,10 +328,9 @@ and Kotlin) or using procedural programming.</p></li>
 <section id="interfaces-and-traits" class="slide level1">
 <h1>Interfaces and <em>traits</em></h1>
 <ul>
-<li><p>A very common case is when the base class is just a
-<em>workaround</em> to have a base type, but all methods are pure
-virtual (abstract).</p></li>
-<li><p>Some modern languages offer lighter mechanisms called
+<li><p>A very common case is when the base class serves only as a common
+interface for different derived types.</p></li>
+<li><p>Some modern languages provide more flexible mechanisms called
 <em>interfaces</em> (Go, C#) or <em>traits</em> (Rust). An
 <em>interface</em> is the analogue of a class where all methods are
 empty; here is an example in Go:</p>
@@ -386,9 +385,9 @@ P = (-d, 0, 0),\ \vec d = (d, 0, 0),\ \vec u = (0, 0, 1), \vec r = (0,
 <li><p>The only adjustable parameters of <code>Camera</code> are
 <code>d</code> (screen-observer distance) and <code>a</code> (image
 <em>aspect ratio</em>).</p></li>
-<li><p>The reference system of the previous slide is rigid: it is
-therefore very easy to implement because there is no need to store the
-vectors <span class="math inline">\vec d</span>, <span
+<li><p>The reference system of the previous slide is rigid: this makes
+implementation straightforward, as there is no need to manually manage
+the basis vectors <span class="math inline">\vec d</span>, <span
 class="math inline">\vec u</span> and <span class="math inline">\vec
 v</span>.</p></li>
 <li><p>To orient a <code>Camera</code>, we can use the
@@ -409,9 +408,8 @@ class="math inline">P</span>, <span class="math inline">\vec d</span>,
 <span class="math inline">\vec u</span> and <span
 class="math inline">\vec r</span>, and move/orient the
 observer.</p></li>
-<li><p>But this makes it complicated to calculate the directions of the
-rays that pass through the screen in the <code>fire_ray</code>
-function!</p></li>
+<li><p>However, this complicates the calculation of ray directions that
+pass through the screen in the <code>fire_ray</code> function!</p></li>
 <li><p>It is better to create the rays in the original reference system,
 and <strong>then</strong> apply the transformation to the ray: it is
 simpler and requires fewer calculations.</p></li>
@@ -500,8 +498,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a h
 projected correctly. We also choose an <em>aspect ratio</em> different
 from 1.</p></li>
 <li><p>For <code>OrthogonalCamera</code> we verify that the rays are
-parallel to each other: we do this by calculating their dot product and
-verifying that it coincides with the null vector.</p></li>
+parallel to each other: we do this by calculating their cross product
+and verifying that it coincides with the null vector.</p></li>
 <li><p>(For <code>PerspectiveCamera</code> we will instead verify that
 all rays have the same origin).</p></li>
 </ul>
@@ -539,7 +537,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a h
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    ray <span class="op">=</span> cam.fire_ray(<span class="fl">0.5</span>, <span class="fl">0.5</span>)</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> ray.at(<span class="fl">1.0</span>).is_close(Point(<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="fl">0.0</span>))</span></code></pre></div></li>
-<li><p>Things are similar for <code>PerspectiveCamera</code>.</p></li>
+<li><p>A similar testing strategy applies to the
+<code>PerspectiveCamera</code>.</p></li>
 </ul>
 </section>
 <section id="perspectivecamera" class="slide level1">
@@ -588,13 +587,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a h
 <section id="imagetracer" class="slide level1">
 <h1><code>ImageTracer</code></h1>
 <ul>
-<li><p>We are now missing the last piece: a functionality that links the
-<code>HdrImage</code> type to one of the types derived from
+<li><p>We are now ready for the final component: a functionality that
+links the <code>HdrImage</code> type to one of the types derived from
 <code>Camera</code>.</p></li>
-<li><p>The new <code>ImageTracer</code> type will be responsible for
-sending rays to the corresponding pixels in an image, converting between
-the pixel index <code>(column, row)</code> used by <code>HdrImage</code>
-and the <code>(u, v)</code> values used by <code>Camera</code>.</p></li>
+<li><p>The <code>ImageTracer</code> type manages the mapping between
+pixel indices in <code>HdrImage</code> and the <code>(u, v)</code>
+coordinates of <code>Camera</code>.</p></li>
 <li><p>For convenience, we define two functions associated with
 <code>ImageTracer</code>:</p>
 <ol type="1">
@@ -613,8 +611,8 @@ pixel in the image.</p></li>
 <li><p>Apart from converting the coordinates from the
 <code>(u, v)</code> space to the pixel space, there is the problem of
 the pixel’s <em>surface</em>.</p></li>
-<li><p>A pixel is not in fact a point, because it has a certain area: at
-which point inside the pixel should the ray pass?</p></li>
+<li><p>A pixel is not in fact a point, because it has a certain area:
+through which point within the pixel area should the ray pass?</p></li>
 <li><p>For the moment we will make the ray pass through the center of
 the pixel, but let’s make it possible to specify a <em>relative</em>
 position through two coordinates <code>(u_pixel, v_pixel)</code>,
@@ -628,9 +626,9 @@ pixel surface instead of the image.</p></li>
 <li><p>Once a ray has been “cast” towards a pixel, the
 <code>fire_all_rays</code> function should calculate the solution to the
 rendering equation.</p></li>
-<li><p>We will implement multiple solution methods, some accurate but
-slow and others coarse but very fast: therefore polymorphism can be used
-here as well.</p></li>
+<li><p>We will implement multiple solution methods, ranging from
+high-fidelity, computationally expensive methods to fast, coarse
+implementations.</p></li>
 <li><p>For the moment I recommend you use a procedural approach:
 <code>fire_all_rays</code> accepts as an argument a
 <strong>function</strong> that is invoked for each pixel/ray of the
@@ -682,7 +680,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a h
 <h1>CI builds</h1>
 <ul>
 <li><p>When managing <em>pull requests</em>, it is necessary to be sure
-that the change does not worsen the code.</p></li>
+that the change does not break the existing code.</p></li>
 <li><p>A basic requirement is that all tests continue to pass once the
 <em>pull request</em> is merged.</p></li>
 <li><p>GitHub allows you to automatically verify this requirement, using
@@ -693,7 +691,7 @@ actions</em>).</p></li>
 <section id="continuous-integration-ci" class="slide level1">
 <h1>Continuous Integration (CI)</h1>
 <ul>
-<li><p>It is a term that indicates a working method in which
+<li><p>It is a term that refers to a development practice in which
 improvements and code changes are incorporated as soon as possible into
 the <code>master</code> branch.</p></li>
 <li><p>Before they can be incorporated, it is necessary to be 100% sure
@@ -728,7 +726,7 @@ request is opened, every time a commit is made, etc.</p></li>
 href="https://docs.github.com/en/actions">GitHub Actions</a>, a service
 that includes several possibilities that go beyond simple CI
 builds.</p></li>
-<li><p>To activate a CI build, it is sufficient to create a hidden
+<li><p>To activate a CI build, you simply need to create a hidden
 directory <code>.github/workflows</code> in your repository, containing
 a text file in <a href="https://en.wikipedia.org/wiki/YAML">YAML</a>
 format, which contains this information:</p>
@@ -774,7 +772,7 @@ height="720" />
 href="https://github.com/astral-sh/ruff">ruff check</a> for Python or <a
 href="https://clang-analyzer.llvm.org/">CSA</a> for C++.</p></li>
 <li><p>Make the job fail if the code is not formatted properly, if you
-use an tools like <a href="https://github.com/astral-sh/ruff">ruff
+use tools like <a href="https://github.com/astral-sh/ruff">ruff
 format</a> (Python), <a
 href="https://clang.llvm.org/docs/ClangFormat.html">clang-format</a>
 (C++), etc.</p></li>
@@ -787,7 +785,7 @@ href="https://jupyterbook.org/en/stable/intro.html">Jupyter Book</a>,
 etc.</p></li>
 <li><p>Generate ready-to-download executables (so the user is not forced
 to install a C++/Nim/Rust/… compiler)</p></li>
-<li><p>Do not add too many tasks: free CI build time is
+<li><p>Avoid over-complicating the workflow: free CI build time is
 limited!</p></li>
 <li><p><strong>The only requirement for this course is that you run the
 tests!</strong></p></li>

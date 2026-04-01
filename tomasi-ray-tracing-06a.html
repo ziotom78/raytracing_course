@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -49,7 +49,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -71,8 +71,8 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 <h1>Review</h1>
 <ul>
 <li><p><strong>Radiance</strong> (flux <span
-class="math inline">\Phi</span> in Watt normalized on the projected
-surface per unit solid angle): <span class="math display">
+class="math inline">\Phi</span> in Watt normalized by the projected area
+and per unit solid angle): <span class="math display">
 L = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A^\perp}
   = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A\,\cos\theta},
 \qquad [L] = \mathrm{W}/\mathrm{m}^2/\mathrm{sr}.
@@ -129,7 +129,8 @@ equation <strong>analytically</strong>.</p></li>
 <p><span class="math display">
 L = 0.
 </span></p>
-<p>It’s a perfectly dark scene: not very interesting!</p></li>
+<p>This is a perfectly dark environment, which is computationally
+trivial.</p></li>
 <li><p>If a point emits isotropic radiation with radiance <span
 class="math inline">L_e</span> at <span class="math inline">x_0</span>,
 then at every other point <span class="math inline">x</span> in space it
@@ -146,7 +147,7 @@ interesting!</p></li>
 <p>Consider an infinite, non-emitting (<span class="math inline">L_e =
 0</span>), diffuse plane and a sphere of radius <span
 class="math inline">r</span> at a distance <span class="math inline">d
-\gg r</span> from the plane, emitting isotropically with radiance <span
+\gg r</span> from the plane with a constant surface radiance <span
 class="math inline">L_d</span>.</p>
 <p><img data-src="./media/plane.png" height="360" /></p>
 </section>
@@ -214,8 +215,8 @@ L(x \rightarrow \Theta) \approx
 </span></p>
 <ul>
 <li>Even though the point emits isotropically and the surface is ideally
-diffuse, there is still a dependence on <span
-class="math inline">\cos\theta</span>.</li>
+diffuse, the reflected radiance still exhibits a <span
+class="math inline">\cos\theta</span> dependence.</li>
 <li>The reflected radiance is proportional to the surface area of the
 sphere (<span class="math inline">\propto r^2</span>).</li>
 <li>As <span class="math inline">d</span> increases, the radiance
@@ -326,9 +327,9 @@ and the direction in which they observe.</p></li>
 <li><p>The screen is represented by a two-dimensional rectangular
 surface <span class="math inline">S</span>.</p></li>
 <li><p>The rendering solution is calculated only for the points <span
-class="math inline">\vec x</span> on the surfaces <span
-class="math inline">S</span> of the scene that are visible to the
-observer through the screen.</p></li>
+class="math inline">\vec x</span> on the surfaces of objects in the
+scene that are visible to the observer through the screen <span
+class="math inline">S</span>.</p></li>
 </ul>
 </section>
 <section id="forward-ray-tracing" class="slide level1">
@@ -341,8 +342,8 @@ follow these steps:</p>
 <ol>
 <li>Generate radiation from light sources.</li>
 <li>Trace the path of the radiation using geometrical optics.</li>
-<li>Every time a photon reaches the observer’s eye, record the direction
-it came from and its color (SED).</li>
+<li>Whenever a photon reaches the observer, its incident direction and
+SED are recorded.</li>
 </ol></li>
 <li><p>This approach is called <em>forward</em> ray-tracing: it follows
 the natural path of light rays.</p></li>
@@ -394,12 +395,13 @@ order</em> approach) is useful in animations:</p>
 generated without having to recalculate the solution <span
 class="math inline">N</span> times.</li>
 </ol>
-<p>This obviously only applies if nothing in the scene changes, except
-possibly the observer’s position.</p></li>
-<li><p>Widely used <em>forward</em> ray tracing algorithms are <a
+<p>This is particularly effective when the scene remains static while
+only the observer moves.</p></li>
+<li><p>Widely used <em>forward</em> algorithms are <a
 href="https://en.wikipedia.org/wiki/Radiosity_(computer_graphics)">radiosity</a>
-and <a href="https://en.wikipedia.org/wiki/Photon_mapping">photon
-mapping</a>.</p></li>
+(which however does not use rays) and <a
+href="https://en.wikipedia.org/wiki/Photon_mapping">photon mapping</a>
+(which is really a <em>hybrid</em> f./b. method)</p></li>
 </ul>
 </section>
 <section id="screen-and-observer" class="slide level1">
@@ -408,8 +410,8 @@ mapping</a>.</p></li>
 <section id="screen-discretization" class="slide level1">
 <h1>Screen Discretization</h1>
 <ul>
-<li><p>Alberti conceived of a screen as a drawable surface; the same
-idea is found in <a
+<li><p>Alberti conceived of a screen as a drawing surface; the same idea
+is found in <a
 href="https://www.metmuseum.org/art/collection/search/366555">some Dürer
 prints</a> (16th century).</p></li>
 <li><p>In computer graphics, we use the same idea, with the caveat that
@@ -453,7 +455,7 @@ to solve the rendering equation!</p></li>
 </ul>
 </section>
 <section id="ray-through-a-pixel" class="slide level1">
-<h1>Ray throug a Pixel</h1>
+<h1>Ray through a Pixel</h1>
 <ul>
 <li><p>We assume that each ray passes through the center of a pixel:</p>
 <center>
@@ -484,7 +486,8 @@ vector);</li>
 <li><p>You are probably familiar with the canonical equation of a line
 used in analytic geometry (<span class="math inline">ax + by + c =
 0</span>, or <span class="math inline">y = mx + q</span>), but these
-formulas are valid only in 2D and are not oriented.</p></li>
+formulas only apply to 2D and do not represent a <em>directed</em>
+path.</p></li>
 <li><p>The path of a light ray is better represented by the equation</p>
 <p><span class="math display">
 r(t) = O + t \vec d,
@@ -548,8 +551,8 @@ height="320" /></p>
 <ul>
 <li><p>Similarly, it makes sense to set a maximum distance <span
 class="math inline">t_\text{max}</span>.</p></li>
-<li><p>This distance is used for objects so far from the observer that
-their contribution to the scene is considered negligible.</p></li>
+<li><p>This limit can be used to ignore objects so distant that their
+contribution to the scene is negligible.</p></li>
 <li><p>If we are not interested in setting a maximum limit on the
 distance of the represented objects, we can set <span
 class="math inline">t_\text{max} = +\infty</span>.</p>
@@ -577,8 +580,8 @@ ray is created from a reflection:</p>
 <h1>Ray Generation</h1>
 <ul>
 <li><p>Having defined the screen and how to represent a light ray, the
-problem remains of <em>how</em> to generate the rays that pass through
-the screen.</p></li>
+challenge remains of <em>how</em> to generate rays that pass through the
+screen pixels.</p></li>
 <li><p>There are many ways to produce these rays, each leading to a
 different representation.</p></li>
 <li><p>We will focus on two types of projections:</p>
@@ -638,7 +641,7 @@ realistic.</p></li>
 <h1>Observer</h1>
 <ul>
 <li><p>To implement a projection, it is necessary to define the position
-of the observer and the direction in which they are looking.</p></li>
+of the observer and the direction along which they are looking.</p></li>
 <li><p>A widely used approach is to use these quantities:</p>
 <ol type="1">
 <li>Observer position <span class="math inline">P</span> (3D
@@ -663,13 +666,13 @@ data-im_fname="standard-observer" /></p>
 <section id="aspect-ratio-1" class="slide level1">
 <h1>Aspect Ratio</h1>
 <ul>
-<li><p>In the representation of the vectors that identify the observer,
-<span class="math inline">\vec r</span> and <span
-class="math inline">\vec u</span> had different lengths.</p></li>
+<li><p>When defining the observer’s coordinate system, <span
+class="math inline">\vec r</span> and <span class="math inline">\vec
+u</span> often have different lengths.</p></li>
 <li><p>This is due to the fact that computer screens are not
 square.</p></li>
 <li><p>The ratio between width and height is called <em>aspect
-ratio</em>; if referring to a screen, it is called <em>display aspect
+ratio</em>; when referring to a screen, it is called <em>display aspect
 ratio</em>.</p></li>
 </ul>
 </section>
@@ -677,12 +680,12 @@ ratio</em>.</p></li>
 <h1>CRT Monitors</h1>
 <ul>
 <li><p>Old CRT monitors and televisions had an <em>aspect ratio</em> of
-4:3 (and also non-square pixels, but fortunately this is no longer true
-today…).</p></li>
+4:3 (and also non-square pixels, but fortunately this is no longer the
+case today…).</p></li>
 <li><p>Modern monitors have an <em>aspect ratio</em> of 16:9 (more
 often) or 16:10.</p></li>
-<li><p>The trend of manufacturers seems to be to abandon 16:9/16:10 and
-adopt 3:2 (e.g., Microsoft Surface).</p></li>
+<li><p>The trend among manufacturers seems to be moving away from
+16:9/16:10 and adopt 3:2 (e.g., Microsoft Surface).</p></li>
 <li><p>Ray-tracing programs should define <span class="math inline">\vec
 r</span> so that</p>
 <p><span class="math display">

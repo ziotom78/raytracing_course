@@ -4,7 +4,7 @@
 
 -   Today we will implement three very simple types:
 
-    1.  The `Ray` type represents a ray of light;
+    1.  The `Ray` type represents a geometric light ray;
     2.  The `Camera` type represents the observer/camera;
     3.  The `ImageTracer` type sends rays from the observer to the screen.
 
@@ -75,7 +75,7 @@ class TestRays(unittest.TestCase):
     1.  Orthogonal projection
     2.  Perspective projection
 
--   This is a good opportunity to implement *polymorphism*, that is, the ability to have a single function name correspond to different implementations depending on the type of the object.
+-   This is a perfect opportunity to implement *polymorphism*: the ability to use a common interface (`Camera`) for different underlying behaviors (`OrthogonalCamera`, `PerspectiveCamera`).
 
 # Example
 
@@ -91,7 +91,7 @@ class TestRays(unittest.TestCase):
     }
     ```
 
--   The function `print` takes two *forms* depending on whether the argument is an integer or a floating-point number.
+-   The `print` function is overloaded to handle different argument types.
 
 -   The decision of which call to use is made by the compiler at compile time.
 
@@ -112,11 +112,11 @@ class TestRays(unittest.TestCase):
     }
     ```
 
--   But what type do we establish for the variable `cam`? `OrthogonalCamera` or `PerspectiveCamera`?
+-   Which type should be assigned to the variable `cam`? `OrthogonalCamera` or `PerspectiveCamera`?
 
 # Dynamic Polymorphism (1/2)
 
-OOP allows us to avoid this mess by introducing a **third** type in addition to `OrthogonalCamera` or `PerspectiveCamera`, as shown in this C++ code:
+OOP allows us to avoid this complexity by introducing a **third** type in addition to `OrthogonalCamera` or `PerspectiveCamera`, as shown in this C++ code:
 
 ```c++
 struct Camera { virtual void fire_ray(...) = 0; };
@@ -168,9 +168,9 @@ int main() {
 
 # Interfaces and *traits*
 
--   A very common case is when the base class is just a *workaround* to have a base type, but all methods are pure virtual (abstract).
+-   A very common case is when the base class serves only as a common interface for different derived types.
 
--   Some modern languages offer lighter mechanisms called *interfaces* (Go, C#) or *traits* (Rust). An *interface* is the analogue of a class where all methods are empty; here is an example in Go:
+-   Some modern languages provide more flexible mechanisms called *interfaces* (Go, C#) or *traits* (Rust). An *interface* is the analogue of a class where all methods are empty; here is an example in Go:
 
     ```go
     type camera interface { fire_ray(...) void }
@@ -245,7 +245,7 @@ $$
 
 -   The only adjustable parameters of `Camera` are `d` (screen-observer distance) and `a` (image *aspect ratio*).
 
--   The reference system of the previous slide is rigid: it is therefore very easy to implement because there is no need to store the vectors $\vec d$, $\vec u$ and $\vec v$.
+-   The reference system of the previous slide is rigid: this makes implementation straightforward, as there is no need to manually manage the basis vectors $\vec d$, $\vec u$ and $\vec v$.
 
 -   To orient a `Camera`, we can use the `Transformation` type that we implemented last week.
 
@@ -256,7 +256,7 @@ $$
 
 -   If we associate a transformation $T$ to the observer, we could apply it to the points/vectors that define the observer, namely $P$, $\vec d$, $\vec u$ and $\vec r$, and move/orient the observer.
 
--   But this makes it complicated to calculate the directions of the rays that pass through the screen in the `fire_ray` function!
+-   However, this complicates the calculation of ray directions that pass through the screen in the `fire_ray` function!
 
 -   It is better to create the rays in the original reference system, and **then** apply the transformation to the ray: it is simpler and requires fewer calculations.
 
@@ -331,7 +331,7 @@ def test_transform():
 
 -   It is important to verify that the four corners of the image are projected correctly.  We also choose an *aspect ratio* different from 1.
 
--   For `OrthogonalCamera` we verify that the rays are parallel to each other: we do this by calculating their dot product and verifying that it coincides with the null vector.
+-   For `OrthogonalCamera` we verify that the rays are parallel to each other: we do this by calculating their cross product and verifying that it coincides with the null vector.
 
 -   (For `PerspectiveCamera` we will instead verify that all rays have the same origin).
 
@@ -370,7 +370,7 @@ def test_orthogonal_camera(self):
         assert ray.at(1.0).is_close(Point(0.0, -2.0, 0.0))
     ```
 
--   Things are similar for `PerspectiveCamera`.
+-   A similar testing strategy applies to the `PerspectiveCamera`.
 
 
 # `PerspectiveCamera`
@@ -419,9 +419,9 @@ def test_perspective_camera(self):
 
 # `ImageTracer`
 
--   We are now missing the last piece: a functionality that links the `HdrImage` type to one of the types derived from `Camera`.
+-   We are now ready for the final component: a functionality that links the `HdrImage` type to one of the types derived from `Camera`.
 
--   The new `ImageTracer` type will be responsible for sending rays to the corresponding pixels in an image, converting between the pixel index `(column, row)` used by `HdrImage` and the `(u, v)` values used by `Camera`.
+-   The `ImageTracer` type manages the mapping between pixel indices in `HdrImage` and the `(u, v)` coordinates of `Camera`.
 
 -   For convenience, we define two functions associated with `ImageTracer`:
 
@@ -434,7 +434,7 @@ def test_perspective_camera(self):
 
 -   Apart from converting the coordinates from the `(u, v)` space to the pixel space, there is the problem of the pixel's *surface*.
 
--   A pixel is not in fact a point, because it has a certain area: at which point inside the pixel should the ray pass?
+-   A pixel is not in fact a point, because it has a certain area: through which point within the pixel area should the ray pass?
 
 -   For the moment we will make the ray pass through the center of the pixel, but let's make it possible to specify a *relative* position through two coordinates `(u_pixel, v_pixel)`, similar to the `(u, v)` coordinates but referring to the pixel surface instead of the image.
 
@@ -442,7 +442,7 @@ def test_perspective_camera(self):
 
 -   Once a ray has been "cast" towards a pixel, the `fire_all_rays` function should calculate the solution to the rendering equation.
 
--   We will implement multiple solution methods, some accurate but slow and others coarse but very fast: therefore polymorphism can be used here as well.
+-   We will implement multiple solution methods, ranging from high-fidelity, computationally expensive methods to fast, coarse implementations.
 
 -   For the moment I recommend you use a procedural approach: `fire_all_rays` accepts as an argument a **function** that is invoked for each pixel/ray of the image and returns a `Color` object.
 
@@ -491,7 +491,7 @@ def test_image_tracer(self):
 
 # CI builds
 
--   When managing *pull requests*, it is necessary to be sure that the change does not worsen the code.
+-   When managing *pull requests*, it is necessary to be sure that the change does not break the existing code.
 
 -   A basic requirement is that all tests continue to pass once the *pull request* is merged.
 
@@ -499,7 +499,7 @@ def test_image_tracer(self):
 
 # Continuous Integration (CI)
 
--   It is a term that indicates a working method in which improvements and code changes are incorporated as soon as possible into the `master` branch.
+-   It is a term that refers to a development practice in which improvements and code changes are incorporated as soon as possible into the `master` branch.
 
 -   Before they can be incorporated, it is necessary to be 100% sure of their quality!
 
@@ -521,7 +521,7 @@ def test_image_tracer(self):
 
 -   A CI build can be created and executed in GitHub using [GitHub Actions](https://docs.github.com/en/actions), a service that includes several possibilities that go beyond simple CI builds.
 
--   To activate a CI build, it is sufficient to create a hidden directory `.github/workflows` in your repository, containing a text file in [YAML](https://en.wikipedia.org/wiki/YAML) format, which contains this information:
+-   To activate a CI build, you simply need to create a hidden directory `.github/workflows` in your repository, containing a text file in [YAML](https://en.wikipedia.org/wiki/YAML) format, which contains this information:
 
     #.   When to execute the action (on every pull request? on every commit?)
     #.   Which operating system to use (Linux? Windows? which version?)
@@ -553,13 +553,13 @@ def test_image_tracer(self):
 
 -   Run *linters* like [ruff check](https://github.com/astral-sh/ruff) for Python or [CSA](https://clang-analyzer.llvm.org/) for C++.
 
--   Make the job fail if the code is not formatted properly, if you use an tools like [ruff format](https://github.com/astral-sh/ruff) (Python), [clang-format](https://clang.llvm.org/docs/ClangFormat.html) (C++), etc.
+-   Make the job fail if the code is not formatted properly, if you use tools like [ruff format](https://github.com/astral-sh/ruff) (Python), [clang-format](https://clang.llvm.org/docs/ClangFormat.html) (C++), etc.
 
 -   Publish your User’s manual (including docstrings!) using sites like [ReadTheDocs](https://about.readthedocs.com/?ref=readthedocs.org), [Sphinx](https://www.sphinx-doc.org/), [MkDocs](https://www.mkdocs.org/), [Jupyter Book](https://jupyterbook.org/en/stable/intro.html), etc.
 
 -   Generate ready-to-download executables (so the user is not forced to install a C++/Nim/Rust/… compiler)
 
--   Do not add too many tasks: free CI build time is limited!
+-   Avoid over-complicating the workflow: free CI build time is limited!
 
 -   **The only requirement for this course is that you run the tests!**
 

@@ -2,8 +2,8 @@
 
 # Review
 
--   **Radiance** (flux $\Phi$ in Watt normalized on the projected surface
-    per unit solid angle):
+-   **Radiance** (flux $\Phi$ in Watt normalized by the projected area
+    and per unit solid angle):
     $$
     L = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A^\perp}
       = \frac{\mathrm{d}^2\Phi}{\mathrm{d}\Omega\,\mathrm{d}A\,\cos\theta},
@@ -49,7 +49,7 @@
     L = 0.
     $$
 
-    It's a perfectly dark scene: not very interesting!
+    This is a perfectly dark environment, which is computationally trivial.
 
 -   If a point emits isotropic radiation with radiance $L_e$ at $x_0$, then at every other point $x$ in space it holds that
 
@@ -61,7 +61,7 @@
 
 # Luminous Point and Plane
 
-Consider an infinite, non-emitting ($L_e = 0$), diffuse plane and a sphere of radius $r$ at a distance $d \gg r$ from the plane, emitting isotropically with radiance $L_d$.
+Consider an infinite, non-emitting ($L_e = 0$), diffuse plane and a sphere of radius $r$ at a distance $d \gg r$ from the plane with a constant surface radiance $L_d$.
 
 ![](./media/plane.png){height=360}
 
@@ -131,7 +131,7 @@ where $\theta$ is the angle between the normal and the direction of the small sp
 L(x \rightarrow \Theta) \approx \rho_d\,L_d\,\cos\theta\,\left(\frac{r}d\right)^2.
 \]
 
--   Even though the point emits isotropically and the surface is ideally diffuse, there is still a dependence on $\cos\theta$.
+-   Even though the point emits isotropically and the surface is ideally diffuse, the reflected radiance still exhibits a $\cos\theta$ dependence.
 -   The reflected radiance is proportional to the surface area of the sphere ($\propto r^2$).
 -   As $d$ increases, the radiance reflected from the plane decreases as $d^{-2}$ (conservation of energy).
 
@@ -212,7 +212,7 @@ How do we handle this case?
 
 -   The screen is represented by a two-dimensional rectangular surface $S$.
 
--   The rendering solution is calculated only for the points $\vec x$ on the surfaces $S$ of the scene that are visible to the observer through the screen.
+-   The rendering solution is calculated only for the points $\vec x$ on the surfaces of objects in the scene that are visible to the observer through the screen $S$.
 
 # Forward Ray-Tracing {#forward-ray-tracing}
 
@@ -222,7 +222,7 @@ How do we handle this case?
 
     #.  Generate radiation from light sources.
     #.  Trace the path of the radiation using geometrical optics.
-    #.  Every time a photon reaches the observer's eye, record the direction it came from and its color (SED).
+    #.  Whenever a photon reaches the observer, its incident direction and SED are recorded.
 
 -   This approach is called *forward* ray-tracing: it follows the natural path of light rays.
 
@@ -259,15 +259,15 @@ How do we handle this case?
     #.  The rendering equation is solved for all surfaces in the scene.
     #.  $N$ frames of the animation are generated without having to recalculate the solution $N$ times.
 
-    This obviously only applies if nothing in the scene changes, except possibly the observer's position.
+    This is particularly effective when the scene remains static while only the observer moves.
 
--   Widely used *forward* ray tracing algorithms are [radiosity](https://en.wikipedia.org/wiki/Radiosity_(computer_graphics)) and [photon mapping](https://en.wikipedia.org/wiki/Photon_mapping).
+-   Widely used *forward* algorithms are [radiosity](https://en.wikipedia.org/wiki/Radiosity_(computer_graphics)) (which however does not use rays) and [photon mapping](https://en.wikipedia.org/wiki/Photon_mapping) (which is really a *hybrid* f./b. method)
 
 # Screen and Observer {#screen-and-observer}
 
 # Screen Discretization
 
--   Alberti conceived of a screen as a drawable surface; the same idea is found in [some Dürer prints](https://www.metmuseum.org/art/collection/search/366555) (16th century).
+-   Alberti conceived of a screen as a drawing surface; the same idea is found in [some Dürer prints](https://www.metmuseum.org/art/collection/search/366555) (16th century).
 
 -   In computer graphics, we use the same idea, with the caveat that the screen is represented as a discrete matrix of points.
 
@@ -298,7 +298,7 @@ How do we handle this case?
 
 -   This is a *general* approach: we haven't yet explained how to solve the rendering equation!
 
-# Ray throug a Pixel {#ray-through-a-pixel}
+# Ray through a Pixel {#ray-through-a-pixel}
 
 -   We assume that each ray passes through the center of a pixel:
 
@@ -322,7 +322,7 @@ How do we handle this case?
 
 # Origin and Direction
 
--   You are probably familiar with the canonical equation of a line used in analytic geometry ($ax + by + c = 0$, or $y = mx + q$), but these formulas are valid only in 2D and are not oriented.
+-   You are probably familiar with the canonical equation of a line used in analytic geometry ($ax + by + c = 0$, or $y = mx + q$), but these formulas only apply to 2D and do not represent a *directed* path.
 
 -   The path of a light ray is better represented by the equation
 
@@ -376,7 +376,7 @@ How do we handle this case?
 
 -   Similarly, it makes sense to set a maximum distance $t_\text{max}$.
 
--   This distance is used for objects so far from the observer that their contribution to the scene is considered negligible.
+-   This limit can be used to ignore objects so distant that their contribution to the scene is negligible.
 
 -   If we are not interested in setting a maximum limit on the distance of the represented objects, we can set $t_\text{max} = +\infty$.
 
@@ -396,7 +396,7 @@ How do we handle this case?
 
 # Ray Generation
 
--   Having defined the screen and how to represent a light ray, the problem remains of *how* to generate the rays that pass through the screen.
+-   Having defined the screen and how to represent a light ray, the challenge remains of *how* to generate rays that pass through the screen pixels.
 
 -   There are many ways to produce these rays, each leading to a different representation.
 
@@ -445,7 +445,7 @@ How do we handle this case?
 
 # Observer
 
--   To implement a projection, it is necessary to define the position of the observer and the direction in which they are looking.
+-   To implement a projection, it is necessary to define the position of the observer and the direction along which they are looking.
 
 -   A widely used approach is to use these quantities:
 
@@ -488,19 +488,19 @@ label("$\vec u$", (1.0, 0, 0.7));
 
 # Aspect Ratio
 
--   In the representation of the vectors that identify the observer, $\vec r$ and $\vec u$ had different lengths.
+-   When defining the observer’s coordinate system, $\vec r$ and $\vec u$ often have different lengths.
 
 -   This is due to the fact that computer screens are not square.
 
--   The ratio between width and height is called *aspect ratio*; if referring to a screen, it is called *display aspect ratio*.
+-   The ratio between width and height is called *aspect ratio*; when referring to a screen, it is called *display aspect ratio*.
 
 # CRT Monitors
 
--   Old CRT monitors and televisions had an *aspect ratio* of 4:3 (and also non-square pixels, but fortunately this is no longer true today...).
+-   Old CRT monitors and televisions had an *aspect ratio* of 4:3 (and also non-square pixels, but fortunately this is no longer the case today...).
 
 -   Modern monitors have an *aspect ratio* of 16:9 (more often) or 16:10.
 
--   The trend of manufacturers seems to be to abandon 16:9/16:10 and adopt 3:2 (e.g., Microsoft Surface).
+-   The trend among manufacturers seems to be moving away from 16:9/16:10 and adopt 3:2 (e.g., Microsoft Surface).
 
 -   Ray-tracing programs should define $\vec r$ so that
 
