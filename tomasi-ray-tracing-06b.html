@@ -251,8 +251,8 @@ compile time.</p></li>
 <section id="projections-and-polymorphism" class="slide level1">
 <h1>Projections and Polymorphism</h1>
 <ul>
-<li><p>We could then use overloading to implement the two projections
-(orthogonal and perspective):</p>
+<li><p>Is overloading useful for orthogonal and perspective
+projections?</p>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> OrthogonalCamera <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">};</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> PerspectiveCamera <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">};</span></span>
@@ -364,7 +364,7 @@ in Rust, etc.</p></li>
 </section>
 <section class="slide level1">
 
-<p><img data-src="media/coordinate-system-chart.jpg" /></p>
+<p><img data-src="media/coordinate-system-chart.jpg" height="580" /></p>
 <p><a href="https://x.com/FreyaHolmer/status/1325556229410861056">Tweet
 by Freya Holmér</a>, cited in <a
 href="https://vazgriz.com/762/f-16-flight-sim-in-unity-3d/">Translating
@@ -831,13 +831,17 @@ aesthetics.</p></li>
 <section id="github-actions" class="slide level1">
 <h1>GitHub Actions</h1>
 <ul>
-<li><p>Once you have saved the code in a GitHub repository, set up a new
-“Action” (see the following video).</p></li>
-<li><p>The template is “CMake based projects” (ignore the fact that it
-seems to only support the C language):</p>
+<li><p>Set up a new “Action” as shown in the following video.</p></li>
+<li><p>If you use CMake, use the template “CMake based projects” (ignore
+the fact that it seems to only support the C language):</p>
 <center>
 <p><img data-src="./media/cmake-github-action.png" /></p>
 </center></li>
+<li><p><a
+href="https://github.com/marketplace/actions/setup-xmake">XMake</a> and
+other build systems are supported as well. LLMs are usually very good in
+creating/improving CI build descriptions, but <strong>be sure to
+understand what they propose!</strong></p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -873,46 +877,10 @@ need the one for programs that work from the command line):</p>
 </center></li>
 </ul>
 </section>
-<section id="hints-for-julia" class="slide level1">
-<h1>Hints for Julia</h1>
-</section>
-<section id="dynamic-polymorphism-2" class="slide level1">
-<h1>Dynamic polymorphism</h1>
-<ul>
-<li><p>Julia makes heavy use of multiple dispatch, so use it!</p></li>
-<li><p>You should define an <a
-href="https://docs.julialang.org/en/v1/manual/types/#man-abstract-types">abstract
-type</a> <code>Camera</code> and then implement the two types
-<code>OrthogonalCamera</code> and <code>PerspectiveCamera</code> as a
-hierarchy</p></li>
-<li><p>Implement the function <code>fire_ray</code> twice:</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode julia"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">fire_ray</span>(cam<span class="op">::</span><span class="dt">OrthogonalCamera</span>, <span class="op">…</span>) <span class="op">…</span> <span class="kw">end</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">fire_ray</span>(cam<span class="op">::</span><span class="dt">PerspectiveCamera</span>, <span class="op">…</span>) <span class="op">…</span> <span class="kw">end</span></span></code></pre></div>
-<p>When using multiple dispatch, you <em>must</em> define the type of
-the <code>cam</code> parameter, so that Julia can distinguish between
-the two implementation.</p></li>
-</ul>
-</section>
-<section id="github-actions-2" class="slide level1">
-<h1>GitHub Actions</h1>
-<ul>
-<li>The repository for standard Julia Actions is <a
-href="https://github.com/julia-actions">Julia Actions</a>.</li>
-<li>The most useful actions are:
-<ol>
-<li><code>julia-actions/setup-julia@v2</code> to set up the Julia
-compiler;</li>
-<li><code>julia-actions/julia-buildpkg@v1</code> to build the
-package;</li>
-<li><code>julia-actions/julia-runtest@v1</code> to run the tests.</li>
-</ol></li>
-</ul>
-</section>
 <section id="hints-for-javakotlin" class="slide level1">
 <h1>Hints for Java/Kotlin</h1>
 </section>
-<section id="github-actions-3" class="slide level1">
+<section id="github-actions-2" class="slide level1">
 <h1>GitHub Actions</h1>
 <ul>
 <li><p>Whether you use Java or Kotlin, select «Java with Gradle»:</p>
@@ -932,8 +900,8 @@ tests in the repository</p></li>
 commit</p></li>
 <li><p>If you have problems in Kotlin due to the Gradle version,
 regenerate <code>gradlew</code> from the command line like this:</p>
-<div class="sourceCode" id="cb18"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> wrapper <span class="at">--gradle-version</span> 8.4</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gradle</span> wrapper <span class="at">--gradle-version</span> 8.4</span></code></pre></div>
 <p>(Keep in mind that Gradle supports Kotlin only starting from version
 5.3).</p></li>
 </ul>
@@ -941,14 +909,54 @@ class="sourceCode sh"><code class="sourceCode bash"><span id="cb18-1"><a href="#
 <section id="hints-for-dnimrust" class="slide level1">
 <h1>Hints for D/Nim/Rust</h1>
 </section>
-<section id="github-actions-4" class="slide level1">
+<section id="github-actions-3" class="slide level1">
 <h1>GitHub Actions</h1>
 <ul>
+<li><p>Rust has <a
+href="https://github.com/marketplace?type=actions&amp;query=rust">too
+many toolchains</a>: pick one with enough stars, like <a
+href="https://github.com/marketplace/actions/rustup-toolchain-install">rustup-toolchain-install</a></p></li>
 <li><p>For D, you can use <a
 href="https://github.com/dlang-community/setup-dlang">setup-dlang</a></p></li>
 <li><p>For Nim, there is <a
 href="https://github.com/marketplace/actions/setup-nim-environment">Setup
 Nim Environment</a></p></li>
+</ul>
+</section>
+<section id="hints-for-julia" class="slide level1">
+<h1>Hints for Julia</h1>
+</section>
+<section id="dynamic-polymorphism-2" class="slide level1">
+<h1>Dynamic polymorphism</h1>
+<ul>
+<li><p>Julia makes heavy use of multiple dispatch, so use it!</p></li>
+<li><p>You should define an <a
+href="https://docs.julialang.org/en/v1/manual/types/#man-abstract-types">abstract
+type</a> <code>Camera</code> and then implement the two types
+<code>OrthogonalCamera</code> and <code>PerspectiveCamera</code> as a
+hierarchy</p></li>
+<li><p>Implement the function <code>fire_ray</code> twice:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">fire_ray</span>(cam<span class="op">::</span><span class="dt">OrthogonalCamera</span>, <span class="op">…</span>) <span class="op">…</span> <span class="kw">end</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">fire_ray</span>(cam<span class="op">::</span><span class="dt">PerspectiveCamera</span>, <span class="op">…</span>) <span class="op">…</span> <span class="kw">end</span></span></code></pre></div>
+<p>When using multiple dispatch, you <em>must</em> define the type of
+the <code>cam</code> parameter, so that Julia can distinguish between
+the two implementation.</p></li>
+</ul>
+</section>
+<section id="github-actions-4" class="slide level1">
+<h1>GitHub Actions</h1>
+<ul>
+<li>The repository for standard Julia Actions is <a
+href="https://github.com/julia-actions">Julia Actions</a>.</li>
+<li>The most useful actions are:
+<ol>
+<li><code>julia-actions/setup-julia@v2</code> to set up the Julia
+compiler;</li>
+<li><code>julia-actions/julia-buildpkg@v1</code> to build the
+package;</li>
+<li><code>julia-actions/julia-runtest@v1</code> to run the tests.</li>
+</ol></li>
 </ul>
 </section>
     </div>

@@ -1,3 +1,7 @@
+# Clifford algebras
+
+When shall we organize this seminar?
+
 # The Rendering Equation
 
 # Review
@@ -43,7 +47,7 @@
 
 # Trivial Examples
 
--   Absence of radiation: in this case $L_e = 0$ and $\forall\Psi: L(x \leftarrow \Psi) = 0$, therefore
+-   Absence of radiation: $L_e = 0$ and $\forall\Psi: L(x \leftarrow \Psi) = 0$, and
 
     $$
     L = 0.
@@ -252,14 +256,14 @@ How do we handle this case?
 
 # Advantages and Disadvantages
 
--   In this course, we will implement a *backward* ray-tracing algorithm, but this is not always the best choice!
+-   *Backward* ray-tracing algorithms are efficient but not necessarily the best!
 
 -   *Forward* ray-tracing (combined with the *object order* approach) is useful in animations:
 
     #.  The rendering equation is solved for all surfaces in the scene.
     #.  $N$ frames of the animation are generated without having to recalculate the solution $N$ times.
 
-    This is particularly effective when the scene remains static while only the observer moves.
+    This is effective when the scene remains static while only the observer moves.
 
 -   Widely used *forward* algorithms are [radiosity](https://en.wikipedia.org/wiki/Radiosity_(computer_graphics)) (which however does not use rays) and [photon mapping](https://en.wikipedia.org/wiki/Photon_mapping) (which is really a *hybrid* f./b. method)
 

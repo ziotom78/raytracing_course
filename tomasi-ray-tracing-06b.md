@@ -97,7 +97,7 @@ class TestRays(unittest.TestCase):
 
 # Projections and Polymorphism
 
--   We could then use overloading to implement the two projections (orthogonal and perspective):
+-   Is overloading useful for orthogonal and perspective projections?
 
     ```c++
     struct OrthogonalCamera { /* ... */ };
@@ -203,7 +203,7 @@ int main() {
 
 ---
 
-![](media/coordinate-system-chart.jpg)
+![](media/coordinate-system-chart.jpg){height=580px}
 
 [Tweet by Freya Holmér](https://x.com/FreyaHolmer/status/1325556229410861056), cited in [Translating a Fortran F-16 Simulator to Unity3D](https://vazgriz.com/762/f-16-flight-sim-in-unity-3d/) (vazgriz)
 
@@ -592,13 +592,15 @@ def test_image_tracer(self):
 
 # GitHub Actions
 
-- Once you have saved the code in a GitHub repository, set up a new "Action" (see the following video).
+- Set up a new "Action" as shown in the following video.
 
-- The template is "CMake based projects" (ignore the fact that it seems to only support the C language):
+- If you use CMake, use the template "CMake based projects" (ignore the fact that it seems to only support the C language):
 
     <center>
     ![](./media/cmake-github-action.png)
     </center>
+
+-   [XMake](https://github.com/marketplace/actions/setup-xmake) and other build systems are supported as well. LLMs are usually very good in creating/improving CI build descriptions, but **be sure to understand what they propose!**
 
 ---
 
@@ -623,32 +625,6 @@ def test_image_tracer(self):
     <center>
     ![](./media/dotnet-github-action.png)
     </center>
-
-
-# Hints for Julia
-
-# Dynamic polymorphism
-
--   Julia makes heavy use of multiple dispatch, so use it!
-
--   You should define an [abstract type](https://docs.julialang.org/en/v1/manual/types/#man-abstract-types) `Camera` and then implement the two types `OrthogonalCamera` and `PerspectiveCamera` as a hierarchy
-
--   Implement the function `fire_ray` twice:
-
-    ```julia
-    function fire_ray(cam::OrthogonalCamera, …) … end
-    function fire_ray(cam::PerspectiveCamera, …) … end
-    ```
-
-    When using multiple dispatch, you *must* define the type of the `cam` parameter, so that Julia can distinguish between the two implementation.
-
-# GitHub Actions
-
--   The repository for standard Julia Actions is [Julia Actions](https://github.com/julia-actions).
--   The most useful actions are:
-    #.   `julia-actions/setup-julia@v2` to set up the Julia compiler;
-    #.   `julia-actions/julia-buildpkg@v1` to build the package;
-    #.   `julia-actions/julia-runtest@v1` to run the tests.
 
 
 # Hints for Java/Kotlin
@@ -682,9 +658,37 @@ def test_image_tracer(self):
 
 # GitHub Actions
 
+-   Rust has [too many toolchains](https://github.com/marketplace?type=actions&query=rust): pick one with enough stars, like [rustup-toolchain-install](https://github.com/marketplace/actions/rustup-toolchain-install)
+
 -   For D, you can use [setup-dlang](https://github.com/dlang-community/setup-dlang)
 
 -   For Nim, there is [Setup Nim Environment](https://github.com/marketplace/actions/setup-nim-environment)
+
+
+# Hints for Julia
+
+# Dynamic polymorphism
+
+-   Julia makes heavy use of multiple dispatch, so use it!
+
+-   You should define an [abstract type](https://docs.julialang.org/en/v1/manual/types/#man-abstract-types) `Camera` and then implement the two types `OrthogonalCamera` and `PerspectiveCamera` as a hierarchy
+
+-   Implement the function `fire_ray` twice:
+
+    ```julia
+    function fire_ray(cam::OrthogonalCamera, …) … end
+    function fire_ray(cam::PerspectiveCamera, …) … end
+    ```
+
+    When using multiple dispatch, you *must* define the type of the `cam` parameter, so that Julia can distinguish between the two implementation.
+
+# GitHub Actions
+
+-   The repository for standard Julia Actions is [Julia Actions](https://github.com/julia-actions).
+-   The most useful actions are:
+    #.   `julia-actions/setup-julia@v2` to set up the Julia compiler;
+    #.   `julia-actions/julia-buildpkg@v1` to build the package;
+    #.   `julia-actions/julia-runtest@v1` to run the tests.
 
 
 ---
