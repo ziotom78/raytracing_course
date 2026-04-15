@@ -203,7 +203,7 @@ Refer to the tests in the [`pytracer`](https://github.com/ziotom78/pytracer) pro
 2. Comparison between normals (for tests);
 3. Negation of a normal ($-\vec n$);
 4. Multiplication by a scalar;
-5. Dot product `Vec·Normal` and cross product `Vec×Normal` and `Normal×Normal`;
+5. Dot product `Vec·Normal`;
 6. Calculation of $\left\|n\right\|^2$ (`squared_norm`) and of $\left\|n\right\|$ (`norm`);
 7. Function that normalizes the normal: $n \rightarrow n / \left\|n\right\|$.
 
