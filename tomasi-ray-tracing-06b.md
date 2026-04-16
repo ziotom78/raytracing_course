@@ -258,7 +258,7 @@ $$
 
 -   However, this complicates the calculation of ray directions that pass through the screen in the `fire_ray` function!
 
--   It is better to create the rays in the original reference system, and **then** apply the transformation to the ray: it is simpler and requires fewer calculations.
+-   It is better to create the rays in the original reference system, and **then** apply the transformation to the ray: it is simpler to code and the impact on time is negligible.
 
 -   Therefore, we need to implement the `Transformation * Ray` operator, which will apply the transformation $T$ to both $O$ (origin) and $\vec d$ (ray direction).
 
