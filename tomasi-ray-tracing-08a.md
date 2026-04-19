@@ -6,7 +6,7 @@
 
 # Rendering Equation {#rendering-equation}
 
--   To solve the rendering equation, we need to trace the path of light rays in three-dimensional space and solve the rendering equation:
+-   To solve the rendering equation, we need to trace the path of light rays in three-dimensional space and evaluate the integral in:
 
     $$
     \begin{aligned}
@@ -15,7 +15,7 @@
     \end{aligned}
     $$
 
--   The integral is calculated over the solid angle, and it is not very convenient for the numerical solution of the problem: we will have a list of **objects**, not solid angles, to iterate over.
+-   The integral is evaluated over the solid angle, and it is not very convenient for the numerical solution of the problem: we will have a list of **objects**, not solid angles, to iterate over.
 
 -   Therefore, we look for an alternative formulation that makes things simpler.
 
@@ -27,9 +27,9 @@
     \int_{4\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
     $$
 
--   The integral is calculated over the entire solid angle 4π, and its physical meaning is to take into account the radiation falling on point $x$ of a surface.
+-   The integral is evaluate over the full solid angle 4π, and its physical meaning is to take into account the radiation falling on point $x$ of a surface.
 
--   This radiation must have been emitted by some surface element $\mathrm{d}\sigma'$ on the scene, corresponding to a point $x'$ in space (see the following figure).
+-   This radiation originates from a surface element $\mathrm{d}\sigma'$ on the scene, corresponding to a point $x'$ in space (see the following figure).
 
 ---
 
@@ -42,13 +42,13 @@
 -   By definition of solid angle, therefore, $\mathrm{d}\omega_\Psi$ is written as follows:
 
     $$
-    \mathrm{d}\omega_\Psi = \frac{\mathrm{d}\sigma'\,\cos\theta_i'}{\left\|x - x'\right\|^2}.
+    \mathrm{d}\omega_\Psi = \frac{\mathrm{d}\sigma'\,\cos\theta'}{\left\|x - x'\right\|^2}.
     $$
 
 -   The integral term of the rendering equation can therefore be rewritten as follows:
 
     $$
-    \int_{\sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x, x - x')\,\frac{\cos\theta_i\,\cos\theta'}{\left\|x - x'\right\|^2}\mathrm{d}\sigma',
+    \int_{\sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow x')\,\frac{\cos\theta\,\cos\theta'}{\left\|x - x'\right\|^2}\mathrm{d}\sigma',
     $$
 
     where $\sum S$ indicates all surfaces **visible** from $x$.
@@ -61,7 +61,7 @@
 
 # Visibility Function
 
--   To resolve this ambiguity, a visibility function $v(x, x')$ is usually introduced, defined as follows:
+-   To account for occlusions, a visibility function $v(x, x')$ is usually introduced, defined as follows:
 
     $$
     v(x, x') = \begin{cases}
@@ -73,7 +73,7 @@
 -   In this way, the integral is rewritten over the entire set of points $x'$:
 
     $$
-    \int_{\forall x' \in \sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x, x - x')\,\frac{\cos\theta_i\,\cos\theta'}{\left\|x - x'\right\|^2}\,v(x, x')\,\mathrm{d}\sigma'.
+    \int_{\forall x' \in \sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x, x - x')\,\frac{\cos\theta\,\cos\theta'}{\left\|x - x'\right\|^2}\,v(x, x')\,\mathrm{d}\sigma'.
     $$
 
 # Rays and Geometric Shapes
@@ -94,7 +94,7 @@
 -   The intersection between light rays and shapes is calculated using the rules of analytic geometry:
 
     #.   Rays and shapes are represented as equations where the unknown is the point $(x, y, z)$ in space.
-    #.   The system of equations for the ray and for the shape is solved, in order to find the points $(x, y, z)$ in common between the two equations.
+    #.   The system of equations for the ray and for the shape is solved, in order to find the points $(x, y, z)$ common to both equations.
 
 -   Thanks to our implementation of affine transformations, we can implement only the simplest shapes, which can then be modified through concatenations of transformations.
 
@@ -106,13 +106,13 @@
     x^2 + y^2 + z^2 = 1.
     $$
 
--   However, we know how to apply a transformation $T$ only to points, vectors, and normals, not to implicit equations.
+-   However, while we can easily apply $T$ to `Point` and `Vec`, applying it directly to an implicit equation is often impractical.
 
 -   It is more convenient to apply the **inverse** transformation to the light rays: if $T$ transforms the "privileged" reference frame of a shape into the real world system, $T^{-1}$ can transform a ray $O + t \vec d$ in the real world system into the privileged one of the shape.
 
 # Transforming Rays
 
--   Suppose that $T$ is the transformation to be applied to the surface $S$. The transformed surface $T\cdot S$ is then the set of points
+-   Let $T$ be the transformation applied to surface $S$. The transformed surface $T\cdot S$ is then the set of points
 
     $$
     T\cdot S = \left\{T x: x \in S\right\},
@@ -146,10 +146,10 @@
 -   The equation of a three-dimensional sphere with center $C$ and radius $R$ is
 
     $$
-    (x - c_x)^2 + (y - c_y)^2 + (z - c_z)^2 = R^2,
+    (x - c_x)^2 + (y - c_y)^2 + (z - c_z)^2 = R^2.
     $$
 
-    and it derives from the geometric definition of a sphere.
+    This follows directly from the geometric definition of a sphere.
 
 -   But we will just consider the unit sphere centered at the origin:
 
@@ -180,7 +180,7 @@
     (O + t\vec d - 0) \cdot (O + t\vec d - 0) - 1 = 0.
     $$
 
--   The notation $O - 0$ simply indicates that $O$ should be considered a *vector* rather than a point. We simplify the notation as follows:
+-   The expression $O - 0$ represents the position vector of point $O$ relative to the origin.
 
     $$
     O - 0 = \vec O,
@@ -330,27 +330,27 @@
 
 # Infinite Plane
 
--   In affine geometry, a plane is defined by its normal vector $\hat n$ and a point $O$ through which the plane passes:
+-   In affine geometry, a plane is defined by its normal vector $\hat n$ and a point $P_0$ through which the plane passes:
 
     $$
-    (P - O) \cdot \hat n = 0,
+    (P - P_0) \cdot \hat n = 0,
     $$
 
     where $P$ is a generic point on the plane.
 
--   (As you can guess, in algebraic geometry, planes are represented by bivectors: calculations are much simpler, especially if you employ projective geometric algebra!)
+-   (In algebraic geometry, planes are represented by bivectors: calculations are much simpler, especially if you use projective geometric algebra!)
 
 # Standard Plane
 
--   Since we can exploit transformations, we study the particular plane that passes through the origin and is generated by the $x$ and $y$ axes (i.e., it is perpendicular to the $z$ axis).
+-   Since we can exploit transformations, we study the particular plane that passes through the origin ($P_0 = 0$) and is generated by the $x$ and $y$ axes (i.e., it is perpendicular to the $z$ axis).
 
 -   In this case
 
     $$
-    (P - O) \cdot \hat n = 0\ \Rightarrow\ \vec P \cdot \hat e_z = 0,
+    (P - P_0) \cdot \hat n = 0\ \Rightarrow\ \vec P \cdot \hat e_z = 0,
     $$
 
-    which is equivalent to requiring that
+    which simplifies to the condition
 
     $$
     P_z = 0.
@@ -358,7 +358,7 @@
 
 # Ray-Plane Intersection
 
--   The intersection between the plane and the ray $O + t \vec d$ is therefore trivially simple: just require that the $z$ component of the point along the ray vanishes for some value of $t$.
+-   The intersection between the plane and the ray $O + t \vec d$ is therefore trivially simple: we simply require the $z$ component of the point along the ray to be zero for some value of $t$.
 
 -   The analytical solution is
 
@@ -366,7 +366,7 @@
     O_z + t d_z = 0\ \Rightarrow\ t = -\frac{O_z}{d_z},
     $$
 
-    which is obviously valid only if $d_z \not= 0$, i.e., if the direction $\vec d$ of the ray is not parallel to the $xy$ plane.
+    which is obviously valid only if $d_z \not\approx 0$, i.e., if the direction $\vec d$ of the ray is not parallel to the $xy$ plane.
 
 
 # Normals
@@ -403,9 +403,9 @@
 
 # *Constructive Solid Geometry*
 
--   The shapes seen so far are very simple: spheres and planes.
+-   The shapes we have covered so far (spheres and planes) are relatively simple.
 
--   We will see in the future that arbitrarily complex shapes can be approximated with sets of triangles, but handling this kind of shape efficiently is complex!
+-   We will see in the future that arbitrarily complex shapes can be approximated with sets of triangles, but managing such complex geometry efficiently is a non-trivial task!
 
 -   Today we present a simple technique to construct complex geometric shapes starting from simple shapes: *Constructive Solid Geometry* (CSG).
 
@@ -443,7 +443,7 @@
 -   Only the intersections in one of the two shapes that are internal to the other shape are considered (point B intersects #2 and is internal to #1, C intersects #1 and is internal to #2).
 
 
-# Fusion
+# Fusion / Merge
 
 <center>![](./media/boolean-operations-2d.svg)</center>
 
@@ -483,8 +483,8 @@
 
 Triangles are a geometric shape widely used in 3D modeling and rendering programs, due to their many properties:
 
-#. They are the planar surface with the fewest vertices (→ efficient to store).
-#. Their representation in space is unique (one and only one planar triangle passes through three points).
+#. They are the simplest planar surfaces (→ efficient to store).
+#. Their representation in space is unique (exactly one plane passes through three non-collinear points).
 #. Their surface is parameterizable in $(u, v)$ coordinates in a very simple way.
 #. Complex surfaces can be represented as a union of multiple triangles.
 
@@ -557,7 +557,7 @@ Triangles are a geometric shape widely used in 3D modeling and rendering program
 
 # Ray Intersection
 
--   Let's now see how to use barycentric coordinates to efficiently calculate the intersection between a triangle and a ray.
+-   Let's now see how to use barycentric coordinates to efficiently calculate the intersection between a triangle and a ray ([Möller-Trumblore algorithm](https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm)).
 
 -   Unlike what we did with spheres and planes, in this case we will not adopt a simplified reference system. The reason will be clear when we explain triangle *meshes*.
 
@@ -571,9 +571,9 @@ Triangles are a geometric shape widely used in 3D modeling and rendering program
     A + \beta (B - A) + \gamma (C - A) = O + t \vec d,
     $$
 
-    with the constraint $0 \leq (\beta, \gamma) \leq 1$.
+    with the constraints $\beta \geq 0, \gamma \geq 0, \beta + \gamma \leq 1$.
 
--   Let's rearrange the equation to move the three unknowns $\beta$, $\gamma$ and $t$ to the left:
+-   We rearrange the equation to isolate the the three unknowns $\beta$, $\gamma$ and $t$ on the left-hand side:
 
     $$
     \beta (B - A) + \gamma (C - A) - t \vec d = O - A.

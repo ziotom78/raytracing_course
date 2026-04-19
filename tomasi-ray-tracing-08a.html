@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -49,7 +49,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -75,8 +75,7 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 <h1>Rendering Equation</h1>
 <ul>
 <li><p>To solve the rendering equation, we need to trace the path of
-light rays in three-dimensional space and solve the rendering
-equation:</p>
+light rays in three-dimensional space and evaluate the integral in:</p>
 <p><span class="math display">
 \begin{aligned}
 L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
@@ -84,7 +83,7 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
 \end{aligned}
 </span></p></li>
-<li><p>The integral is calculated over the solid angle, and it is not
+<li><p>The integral is evaluated over the solid angle, and it is not
 very convenient for the numerical solution of the problem: we will have
 a list of <strong>objects</strong>, not solid angles, to iterate
 over.</p></li>
@@ -101,11 +100,11 @@ integral:</p>
 \int_{4\pi} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
 \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi.
 </span></p></li>
-<li><p>The integral is calculated over the entire solid angle 4π, and
-its physical meaning is to take into account the radiation falling on
-point <span class="math inline">x</span> of a surface.</p></li>
-<li><p>This radiation must have been emitted by some surface element
-<span class="math inline">\mathrm{d}\sigma&#39;</span> on the scene,
+<li><p>The integral is evaluate over the full solid angle 4π, and its
+physical meaning is to take into account the radiation falling on point
+<span class="math inline">x</span> of a surface.</p></li>
+<li><p>This radiation originates from a surface element <span
+class="math inline">\mathrm{d}\sigma&#39;</span> on the scene,
 corresponding to a point <span class="math inline">x&#39;</span> in
 space (see the following figure).</p></li>
 </ul>
@@ -125,14 +124,14 @@ class="math inline">\mathrm{d}\omega_\Psi</span> is written as
 follows:</p>
 <p><span class="math display">
 \mathrm{d}\omega_\Psi =
-\frac{\mathrm{d}\sigma&#39;\,\cos\theta_i&#39;}{\left\|x -
+\frac{\mathrm{d}\sigma&#39;\,\cos\theta&#39;}{\left\|x -
 x&#39;\right\|^2}.
 </span></p></li>
 <li><p>The integral term of the rendering equation can therefore be
 rewritten as follows:</p>
 <p><span class="math display">
-\int_{\sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x, x -
-x&#39;)\,\frac{\cos\theta_i\,\cos\theta&#39;}{\left\|x -
+\int_{\sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
+x&#39;)\,\frac{\cos\theta\,\cos\theta&#39;}{\left\|x -
 x&#39;\right\|^2}\mathrm{d}\sigma&#39;,
 </span></p>
 <p>where <span class="math inline">\sum S</span> indicates all surfaces
@@ -150,7 +149,7 @@ height="560" />
 <section id="visibility-function" class="slide level1">
 <h1>Visibility Function</h1>
 <ul>
-<li><p>To resolve this ambiguity, a visibility function <span
+<li><p>To account for occlusions, a visibility function <span
 class="math inline">v(x, x&#39;)</span> is usually introduced, defined
 as follows:</p>
 <p><span class="math display">
@@ -163,7 +162,7 @@ v(x, x&#39;) = \begin{cases}
 points <span class="math inline">x&#39;</span>:</p>
 <p><span class="math display">
 \int_{\forall x&#39; \in \sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x, x
-- x&#39;)\,\frac{\cos\theta_i\,\cos\theta&#39;}{\left\|x -
+- x&#39;)\,\frac{\cos\theta\,\cos\theta&#39;}{\left\|x -
 x&#39;\right\|^2}\,v(x, x&#39;)\,\mathrm{d}\sigma&#39;.
 </span></p></li>
 </ul>
@@ -196,8 +195,8 @@ using the rules of analytic geometry:</p>
 <li>Rays and shapes are represented as equations where the unknown is
 the point <span class="math inline">(x, y, z)</span> in space.</li>
 <li>The system of equations for the ray and for the shape is solved, in
-order to find the points <span class="math inline">(x, y, z)</span> in
-common between the two equations.</li>
+order to find the points <span class="math inline">(x, y, z)</span>
+common to both equations.</li>
 </ol></li>
 <li><p>Thanks to our implementation of affine transformations, we can
 implement only the simplest shapes, which can then be modified through
@@ -212,9 +211,10 @@ example, the unit sphere is represented by an implicit equation:</p>
 <p><span class="math display">
 x^2 + y^2 + z^2 = 1.
 </span></p></li>
-<li><p>However, we know how to apply a transformation <span
-class="math inline">T</span> only to points, vectors, and normals, not
-to implicit equations.</p></li>
+<li><p>However, while we can easily apply <span
+class="math inline">T</span> to <code>Point</code> and <code>Vec</code>,
+applying it directly to an implicit equation is often
+impractical.</p></li>
 <li><p>It is more convenient to apply the <strong>inverse</strong>
 transformation to the light rays: if <span class="math inline">T</span>
 transforms the “privileged” reference frame of a shape into the real
@@ -226,10 +226,10 @@ system into the privileged one of the shape.</p></li>
 <section id="transforming-rays" class="slide level1">
 <h1>Transforming Rays</h1>
 <ul>
-<li><p>Suppose that <span class="math inline">T</span> is the
-transformation to be applied to the surface <span
-class="math inline">S</span>. The transformed surface <span
-class="math inline">T\cdot S</span> is then the set of points</p>
+<li><p>Let <span class="math inline">T</span> be the transformation
+applied to surface <span class="math inline">S</span>. The transformed
+surface <span class="math inline">T\cdot S</span> is then the set of
+points</p>
 <p><span class="math display">
 T\cdot S = \left\{T x: x \in S\right\},
 </span></p></li>
@@ -273,9 +273,10 @@ boxes</em> and <em>triangle meshes</em>).</p></li>
 class="math inline">C</span> and radius <span
 class="math inline">R</span> is</p>
 <p><span class="math display">
-(x - c_x)^2 + (y - c_y)^2 + (z - c_z)^2 = R^2,
+(x - c_x)^2 + (y - c_y)^2 + (z - c_z)^2 = R^2.
 </span></p>
-<p>and it derives from the geometric definition of a sphere.</p></li>
+<p>This follows directly from the geometric definition of a
+sphere.</p></li>
 <li><p>But we will just consider the unit sphere centered at the
 origin:</p>
 <p><span class="math display">
@@ -312,10 +313,9 @@ the second equation into the first:</p>
 <p><span class="math display">
 (O + t\vec d - 0) \cdot (O + t\vec d - 0) - 1 = 0.
 </span></p></li>
-<li><p>The notation <span class="math inline">O - 0</span> simply
-indicates that <span class="math inline">O</span> should be considered a
-<em>vector</em> rather than a point. We simplify the notation as
-follows:</p>
+<li><p>The expression <span class="math inline">O - 0</span> represents
+the position vector of point <span class="math inline">O</span> relative
+to the origin.</p>
 <p><span class="math display">
 O - 0 = \vec O,
 </span></p>
@@ -504,30 +504,30 @@ u = \frac\phi{2\pi} = \frac{\arctan p_y / p_x}{2\pi}, \quad v =
 <ul>
 <li><p>In affine geometry, a plane is defined by its normal vector <span
 class="math inline">\hat n</span> and a point <span
-class="math inline">O</span> through which the plane passes:</p>
+class="math inline">P_0</span> through which the plane passes:</p>
 <p><span class="math display">
-(P - O) \cdot \hat n = 0,
+(P - P_0) \cdot \hat n = 0,
 </span></p>
 <p>where <span class="math inline">P</span> is a generic point on the
 plane.</p></li>
-<li><p>(As you can guess, in algebraic geometry, planes are represented
-by bivectors: calculations are much simpler, especially if you employ
-projective geometric algebra!)</p></li>
+<li><p>(In algebraic geometry, planes are represented by bivectors:
+calculations are much simpler, especially if you use projective
+geometric algebra!)</p></li>
 </ul>
 </section>
 <section id="standard-plane" class="slide level1">
 <h1>Standard Plane</h1>
 <ul>
 <li><p>Since we can exploit transformations, we study the particular
-plane that passes through the origin and is generated by the <span
-class="math inline">x</span> and <span class="math inline">y</span> axes
-(i.e., it is perpendicular to the <span class="math inline">z</span>
-axis).</p></li>
+plane that passes through the origin (<span class="math inline">P_0 =
+0</span>) and is generated by the <span class="math inline">x</span> and
+<span class="math inline">y</span> axes (i.e., it is perpendicular to
+the <span class="math inline">z</span> axis).</p></li>
 <li><p>In this case</p>
 <p><span class="math display">
-(P - O) \cdot \hat n = 0\ \Rightarrow\ \vec P \cdot \hat e_z = 0,
+(P - P_0) \cdot \hat n = 0\ \Rightarrow\ \vec P \cdot \hat e_z = 0,
 </span></p>
-<p>which is equivalent to requiring that</p>
+<p>which simplifies to the condition</p>
 <p><span class="math display">
 P_z = 0.
 </span></p></li>
@@ -538,17 +538,17 @@ P_z = 0.
 <ul>
 <li><p>The intersection between the plane and the ray <span
 class="math inline">O + t \vec d</span> is therefore trivially simple:
-just require that the <span class="math inline">z</span> component of
-the point along the ray vanishes for some value of <span
+we simply require the <span class="math inline">z</span> component of
+the point along the ray to be zero for some value of <span
 class="math inline">t</span>.</p></li>
 <li><p>The analytical solution is</p>
 <p><span class="math display">
 O_z + t d_z = 0\ \Rightarrow\ t = -\frac{O_z}{d_z},
 </span></p>
-<p>which is obviously valid only if <span class="math inline">d_z \not=
-0</span>, i.e., if the direction <span class="math inline">\vec d</span>
-of the ray is not parallel to the <span class="math inline">xy</span>
-plane.</p></li>
+<p>which is obviously valid only if <span class="math inline">d_z
+\not\approx 0</span>, i.e., if the direction <span
+class="math inline">\vec d</span> of the ray is not parallel to the
+<span class="math inline">xy</span> plane.</p></li>
 </ul>
 </section>
 <section id="normals" class="slide level1">
@@ -594,11 +594,11 @@ repetition of the region <span class="math inline">[0, 1] \times [0,
 <section id="constructive-solid-geometry-1" class="slide level1">
 <h1><em>Constructive Solid Geometry</em></h1>
 <ul>
-<li><p>The shapes seen so far are very simple: spheres and
-planes.</p></li>
+<li><p>The shapes we have covered so far (spheres and planes) are
+relatively simple.</p></li>
 <li><p>We will see in the future that arbitrarily complex shapes can be
-approximated with sets of triangles, but handling this kind of shape
-efficiently is complex!</p></li>
+approximated with sets of triangles, but managing such complex geometry
+efficiently is a non-trivial task!</p></li>
 <li><p>Today we present a simple technique to construct complex
 geometric shapes starting from simple shapes: <em>Constructive Solid
 Geometry</em> (CSG).</p></li>
@@ -649,8 +649,8 @@ the other shape are considered (point B intersects #2 and is internal to
 #1, C intersects #1 and is internal to #2).</li>
 </ul>
 </section>
-<section id="fusion" class="slide level1">
-<h1>Fusion</h1>
+<section id="fusion-merge" class="slide level1">
+<h1>Fusion / Merge</h1>
 <center>
 <img data-src="./media/boolean-operations-2d.svg" />
 </center>
@@ -702,10 +702,9 @@ Circles</em></a>, by Tor Olav Kristensen (2004)</span></p>
 <p>Triangles are a geometric shape widely used in 3D modeling and
 rendering programs, due to their many properties:</p>
 <ol>
-<li>They are the planar surface with the fewest vertices (→ efficient to
-store).</li>
-<li>Their representation in space is unique (one and only one planar
-triangle passes through three points).</li>
+<li>They are the simplest planar surfaces (→ efficient to store).</li>
+<li>Their representation in space is unique (exactly one plane passes
+through three non-collinear points).</li>
 <li>Their surface is parameterizable in <span class="math inline">(u,
 v)</span> coordinates in a very simple way.</li>
 <li>Complex surfaces can be represented as a union of multiple
@@ -808,7 +807,9 @@ show today are easily extendable to them as well:</p>
 <h1>Ray Intersection</h1>
 <ul>
 <li><p>Let’s now see how to use barycentric coordinates to efficiently
-calculate the intersection between a triangle and a ray.</p></li>
+calculate the intersection between a triangle and a ray (<a
+href="https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm">Möller-Trumblore
+algorithm</a>).</p></li>
 <li><p>Unlike what we did with spheres and planes, in this case we will
 not adopt a simplified reference system. The reason will be clear when
 we explain triangle <em>meshes</em>.</p></li>
@@ -826,12 +827,12 @@ d</span> and the generic point <span class="math inline">P(\beta,
 <p><span class="math display">
 A + \beta (B - A) + \gamma (C - A) = O + t \vec d,
 </span></p>
-<p>with the constraint <span class="math inline">0 \leq (\beta, \gamma)
-\leq 1</span>.</p></li>
-<li><p>Let’s rearrange the equation to move the three unknowns <span
+<p>with the constraints <span class="math inline">\beta \geq 0, \gamma
+\geq 0, \beta + \gamma \leq 1</span>.</p></li>
+<li><p>We rearrange the equation to isolate the the three unknowns <span
 class="math inline">\beta</span>, <span
 class="math inline">\gamma</span> and <span class="math inline">t</span>
-to the left:</p>
+on the left-hand side:</p>
 <p><span class="math display">
 \beta (B - A) + \gamma (C - A) - t \vec d = O - A.
 </span></p></li>

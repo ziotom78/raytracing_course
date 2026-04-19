@@ -9,7 +9,7 @@
     v = (row + v_pixel) / (self.image.height - 1)
     ```
 
--   The error lies in the fact that the rows in `HdrImage` are numbered from the *top*, not the *bottom*, while the $v$ coordinate increases *upwards*. In the second line, however, the variable `v` increases as `row` increases: this is wrong!
+-   The error stems from a coordinate system mismatch: `HdrImage` rows are indexed from the top down, wereas the $v$ coordinate increases *upwards*. In the second line, however, the variable `v` increases as `row` increases: this is wrong!
 
 # What to do with bugs
 
@@ -88,7 +88,7 @@ Corrections in a public repository like GitHub require these steps:
     #.  The two existing checks, which however must be divided into two distinct tests;
     #.  A new test that fails due to the bug we highlighted.
 
--   In implementing this test in Python, I used a feature of the testing framework (`unittest`) that probably also exists in your frameworks.
+-   In implementing this test in Python, I used a feature of the testing framework (`unittest`) that probably also exists in your frameworks. (If you cannot find it, look for alternative terms like “fixtures”, “before clauses”, …)
 
 
 # Inelegant Repetitions
@@ -118,7 +118,7 @@ def test_image_coverage():
 
 # *Set-up* e *tear-down*
 
--   The inelegance lies in the fact that we must create the `image`, `camera`, and `tracer` objects in every test.
+-   The repetition arises because we must re-initialize the `image`, `camera`, and `tracer` objects in every test.
 
 -   Test frameworks (not all 🙁) usually provide the ability to invoke *set-up* procedures to create the objects on which the tests are then executed.
 
@@ -129,7 +129,7 @@ def test_image_coverage():
 
 ```python
 class TestImageTracer(unittest.TestCase):
-    # This is invoked automatically whenever you run `pytest`
+    # This is invoked automatically before *every* test
     def setUp(self):
         self.image = HdrImage(width=4, height=2)
         self.camera = PerspectiveCamera(aspect_ratio=2)
@@ -183,7 +183,7 @@ class TestImageTracer(unittest.TestCase):
 
     2.  Will those who see these changes be able to understand them without reading the entire codebase?
 
--   Avoid including «gratuitous» changes…
+-   Avoid unnecessary changes (*drive-by commits*) that are unrelated to the bug.
 
 ---
 
@@ -205,7 +205,7 @@ Example taken from a PR for [pytracer](https://github.com/ziotom78/pytracer/pull
 
 # CHANGELOG {#changelog}
 
--   All public repositories should have a `CHANGELOG`/`NEWS`/`HISTORY`/… file, which lists the bugs fixed and the new features of the code, listed by version number.
+-   All public repositories should have a `CHANGELOG`/`NEWS`/`HISTORY`/… file, which lists bugs fixes and new features, organized by version number.
 
 -   See for example the [`HISTORY.md`](https://github.com/JuliaLang/julia/blob/master/HISTORY.md) file of the Julia compiler
 
@@ -213,11 +213,11 @@ Example taken from a PR for [pytracer](https://github.com/ziotom78/pytracer/pull
 
 -   In a `CHANGELOG` file you should indicate all the corrections and modifications made to the code.
 
--   No need to be verbose: one or two lines per change are sufficient, if you include the link to the *issue*/*pull request*
+-   Keep it concise: one or two lines per change are sufficient, provided you include a link to the corresponding *issue* or *pull request*
 
 -   It should be written in **reverse chronological order**: the most recent changes are at the top. This makes it easier for the reader to see what's new in the latest version (which is likely the one they want to download).
 
--   It is usually divided into sections, one for each version of the code. The first section is usually called `HEAD`, and contains the corrections and modifications that will end up in the next future version of the code.
+-   It is [usually](https://keepachangelog.com/) divided into one section for each version of the code. The first section is called `HEAD` or `[Unreleased]`, and contains the corrections and modifications that will end up in the next future version of the code.
 
 
 # CHANGELOG of [Healpix.jl](https://github.com/ziotom78/Healpix.jl)
@@ -253,7 +253,7 @@ size(0,100);
 import three;
 currentlight=Viewport;
 
-// Spheres on the vertexes of the cube
+// Spheres on the vertices of the cube
 draw(shift( 0.5,  0.5,  0.5) * scale3(0.1) * unitsphere, white);
 draw(shift(-0.5,  0.5,  0.5) * scale3(0.1) * unitsphere, white);
 draw(shift( 0.5, -0.5,  0.5) * scale3(0.1) * unitsphere, white);
@@ -309,7 +309,7 @@ label("$z$", 1.5Z + 0.2X);
 
 -   We need to implement shapes in our code.
 
--   For today, it is sufficient to implement a `Sphere` type; if you want, add also a `Plane` (it's very quick to add).
+-   For today, implementing a `Sphere` type is sufficient; you may also add a `Plane` if you wish (it’s very quick to implement).
 
 -   Create an abstract type `Shape`, which implements the (abstract) method `ray_intersection`. This accepts a `Ray` parameter and returns a `HitRecord` type. If your language supports it, you can make the return type *nullable* (intersection exists/doesn't exist).
 
@@ -336,13 +336,13 @@ class Shape:
     2.  `normal`: surface normal at the intersection (`Normal`);
     3.  `surface_point`: $(u, v)$ coordinates of the intersection (new type `Vec2d`);
     4.  `t`: ray parameter associated with the intersection;
-    5.  `ray`: the light ray that caused the intersection.
+    5.  `ray`: the light ray that caused the intersection
 
 -   For testing, it's helpful if it implements an `is_close`/`are_close` method.
 
 # `Sphere` in Python
 
--   The number of intersections between the ray $O + t \vec d$ and the sphere depends on the sign of
+-   The intersection between the ray $O + t \vec d$ and the sphere is determined by the discriminant
 
     $$
     \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
@@ -421,7 +421,7 @@ In all these cases, also verify the $(u, v)$ coordinates and the value of $t$.
 
 -   Apply a translation $\vec t = (10, 0, 0)$ to the sphere and intersect it with the ray with $O = (10, 0, 2)$ and $\vec d = -\hat e_z$.
 -   Intersect the same translated sphere with the ray with $O = (13, 0, 0)$ and $\vec d = -\hat e_x$. The intersection should be $P = (11, 0, 0)$ with normal $\hat n = \hat e_x$.
--   Verify that there are no potential intersections with the **untranslated** sphere, using these rays:
+-   Verify that the ray used in the first test no longer hits the sphere after it has been translated:
     1. Ray with $O = (0, 0, 2)$ and $\vec d = -\hat e_z$;
     2. Ray with $O = (-10, 0, 0)$ and $\vec d = -\hat e_z$;
 
@@ -462,13 +462,13 @@ class World:
 
 <center>![](./media/pytracer-first-image.png)</center>
 
-The asymmetry in the arrangement of the spheres allows for the identification of errors in the ordering of the rows/columns of the image.
+The asymmetry in the arrangement of the spheres helps in detecting errors in the image row/column ordering.
 
 # The Scene
 
 -   Position the spheres at the vertices of the cube with edges $(\pm 0.5, \pm 0.5, \pm 0.5)$, plus two spheres at $(0, 0, -0.5)$ and $(0, 0.5, 0)$.
 -   Each sphere must have a radius of 1/10.
--   The observer should be moved by $-\hat e_x$, meaning their position should be $(-2, 0, 0)$ and the center of the screen $(-1, 0, 0)$.
+-   The observer should be moved by $-\hat e_x$, placing them at $(-2, 0, 0)$ with the screen center at $(-1, 0, 0)$.
 -   Choose whether to use `OrthogonalCamera` or `PerspectiveCamera`.
 
 # The `main`
@@ -480,7 +480,7 @@ The asymmetry in the arrangement of the spheres allows for the identification of
 
 # Example in Python
 
--   In Python, I used the Click library, which allows building command-line user interfaces that support so-called *actions* (other libraries call them *verbs*).
+-   In Python, I used the Click library, which allows building command-line interfaces (CLIs) that support *subcommands* (also known as *actions* or *verbs*).
 
 -   After the executable name, a command should be provided, optionally followed by parameters:
 
@@ -501,7 +501,7 @@ The asymmetry in the arrangement of the spheres allows for the identification of
 
 -   Two separate executables: `demo` and `pfm2png`
 
--   Requesting input from the terminal (not recommended):
+-   Interactive terminal input (not recommended for automation):
 
     ```python
     print("What do you want to do? (demo/pfm2png)")
@@ -564,16 +564,16 @@ The asymmetry in the arrangement of the spheres allows for the identification of
 
 1.  Fix the bug from last time by opening an *issue*;
 2.  Create a `CHANGELOG.md` file;
-3.  Work on a new `demo` branch;
+3.  Create and switch to a new `demo` branch;
 4.  Create the `Shape`, `Sphere`, `World`, `Vec2d`, `HitRecord` types;
-5.  Implement the `demo` command, in the way you prefer (you can look for a library to interpret the command line);
+5.  Implement the `demo` command using your preferred method (you can look for a library to interpret the command line);
 6.  Open a PR and update the `CHANGELOG.md` file.
 
 # Hints for C++
 
 # Hints for C++
 
--   If you like the command-line interface provided by Pytracer, have a look at the list of libraries available in the repository [Awesome C++ [CLI]](https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#cli).
+-   To replicate the command-line interface provided by Pytracer, check the libraries in [Awesome C++ [CLI]](https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#cli).
 
 -   To implement the `World` type, use [`make_shared`](https://www.cplusplus.com/reference/memory/make_shared/) and [`shared_ptr`](https://www.cplusplus.com/reference/memory/shared_ptr/): in this way, you avoid calling `new` and `delete` to create/destroy objects derived from `Shape`. (Both `new` and `delete` should be avoided whenever possible: they are rarely needed in real-world code!)
 
@@ -586,7 +586,7 @@ The asymmetry in the arrangement of the spheres allows for the identification of
 
 using namespace std;
 
-struct Shape {};
+struct Shape { virtual ~Shape() = default; };
 struct Sphere : public Shape {};
 struct Plane : public Shape {};
 
@@ -601,24 +601,26 @@ int main() {
 }
 ```
 
-# Hints for Julia
-
-# Hints for Julia
-
--   Don’t worry too much for the command-line interface: Julia programs are not meant to be executed from the command line. You could just provide a script named `demo.jl` alongside another script called `pfm2png.jl`.
-
--   Define an `abstract struct` for `Shape` and then derive `Sphere`, `Plane`, etc..
-
--   In this lesson, you will likely see how elegant can be mathematical code in Julia!
-
-
 # Hints for C\#
 
 # Hints for C\#
 
 -   Today there should not be significant issues.
 
+-   Given that `Shape` must contain the `Transformation` instance, it’s probably better to use an `abstract class` rather than an `interface`, as the latter cannot have data members.
+
 -   If you want to implement a good command-line interface, have a look at the repository [Awesome .NET [CLI]](https://github.com/quozd/awesome-dotnet?tab=readme-ov-file#cli).
+
+
+# Hints for Julia
+
+# Hints for Julia
+
+-   Don’t worry too much about the command-line interface: Julia programs are not meant to be executed from the command line. You could just provide a script named `demo.jl` alongside another script called `pfm2png.jl`.
+
+-   Define an `abstract type` for `Shape` and then derive `Sphere`, `Plane`, etc..
+
+-   In this lesson, you will likely see how elegant can be mathematical code in Julia!
 
 
 ---

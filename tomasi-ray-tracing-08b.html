@@ -98,7 +98,7 @@
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -114,7 +114,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -140,8 +140,8 @@ implementation of the <code>ImageTracer.fire_ray</code> method:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>u <span class="op">=</span> (col <span class="op">+</span> u_pixel) <span class="op">/</span> (<span class="va">self</span>.image.width <span class="op">-</span> <span class="dv">1</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> (row <span class="op">+</span> v_pixel) <span class="op">/</span> (<span class="va">self</span>.image.height <span class="op">-</span> <span class="dv">1</span>)</span></code></pre></div></li>
-<li><p>The error lies in the fact that the rows in <code>HdrImage</code>
-are numbered from the <em>top</em>, not the <em>bottom</em>, while the
+<li><p>The error stems from a coordinate system mismatch:
+<code>HdrImage</code> rows are indexed from the top down, wereas the
 <span class="math inline">v</span> coordinate increases
 <em>upwards</em>. In the second line, however, the variable
 <code>v</code> increases as <code>row</code> increases: this is
@@ -241,7 +241,8 @@ distinct tests;</li>
 </ol></li>
 <li><p>In implementing this test in Python, I used a feature of the
 testing framework (<code>unittest</code>) that probably also exists in
-your frameworks.</p></li>
+your frameworks. (If you cannot find it, look for alternative terms like
+“fixtures”, “before clauses”, …)</p></li>
 </ul>
 </section>
 <section id="inelegant-repetitions" class="slide level1">
@@ -271,7 +272,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <section id="set-up-e-tear-down" class="slide level1">
 <h1><em>Set-up</em> e <em>tear-down</em></h1>
 <ul>
-<li><p>The inelegance lies in the fact that we must create the
+<li><p>The repetition arises because we must re-initialize the
 <code>image</code>, <code>camera</code>, and <code>tracer</code> objects
 in every test.</p></li>
 <li><p>Test frameworks (not all 🙁) usually provide the ability to
@@ -286,7 +287,7 @@ delete temporary files created during the tests themselves).</p></li>
 
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TestImageTracer(unittest.TestCase):</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is invoked automatically whenever you run `pytest`</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is invoked automatically before *every* test</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> setUp(<span class="va">self</span>):</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.image <span class="op">=</span> HdrImage(width<span class="op">=</span><span class="dv">4</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.camera <span class="op">=</span> PerspectiveCamera(aspect_ratio<span class="op">=</span><span class="dv">2</span>)</span>
@@ -348,7 +349,8 @@ example</a>).</p></li>
 <li><p>Will those who see these changes be able to understand them
 without reading the entire codebase?</p></li>
 </ol></li>
-<li><p>Avoid including «gratuitous» changes…</p></li>
+<li><p>Avoid unnecessary changes (<em>drive-by commits</em>) that are
+unrelated to the bug.</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -381,8 +383,8 @@ type of documentation.</p></li>
 <ul>
 <li><p>All public repositories should have a
 <code>CHANGELOG</code>/<code>NEWS</code>/<code>HISTORY</code>/… file,
-which lists the bugs fixed and the new features of the code, listed by
-version number.</p></li>
+which lists bugs fixes and new features, organized by version
+number.</p></li>
 <li><p>See for example the <a
 href="https://github.com/JuliaLang/julia/blob/master/HISTORY.md"><code>HISTORY.md</code></a>
 file of the Julia compiler</p></li>
@@ -393,17 +395,18 @@ file of the Julia compiler</p></li>
 <ul>
 <li><p>In a <code>CHANGELOG</code> file you should indicate all the
 corrections and modifications made to the code.</p></li>
-<li><p>No need to be verbose: one or two lines per change are
-sufficient, if you include the link to the <em>issue</em>/<em>pull
-request</em></p></li>
+<li><p>Keep it concise: one or two lines per change are sufficient,
+provided you include a link to the corresponding <em>issue</em> or
+<em>pull request</em></p></li>
 <li><p>It should be written in <strong>reverse chronological
 order</strong>: the most recent changes are at the top. This makes it
 easier for the reader to see what’s new in the latest version (which is
 likely the one they want to download).</p></li>
-<li><p>It is usually divided into sections, one for each version of the
-code. The first section is usually called <code>HEAD</code>, and
-contains the corrections and modifications that will end up in the next
-future version of the code.</p></li>
+<li><p>It is <a href="https://keepachangelog.com/">usually</a> divided
+into one section for each version of the code. The first section is
+called <code>HEAD</code> or <code>[Unreleased]</code>, and contains the
+corrections and modifications that will end up in the next future
+version of the code.</p></li>
 </ul>
 </section>
 <section id="changelog-of-healpix.jl" class="slide level1">
@@ -444,16 +447,16 @@ triangle</a>”!</h1>
 </section>
 <section id="geometry" class="slide level1">
 <h1>Geometry</h1>
-<p><embed width="640px" height="640px" src="pd-images/f0c42b9c8202a1ba84c09e1a7f5f70fa96adf3fe.html"
-data-im_fname="first-image-geometry" /></p>
+<p>?? missing
+pd-images/f7d955a07920182f00743fb5a9c965c13e1be5e5.html</p>
 </section>
 <section id="shapes" class="slide level1">
 <h1>Shapes</h1>
 <ul>
 <li><p>We need to implement shapes in our code.</p></li>
-<li><p>For today, it is sufficient to implement a <code>Sphere</code>
-type; if you want, add also a <code>Plane</code> (it’s very quick to
-add).</p></li>
+<li><p>For today, implementing a <code>Sphere</code> type is sufficient;
+you may also add a <code>Plane</code> if you wish (it’s very quick to
+implement).</p></li>
 <li><p>Create an abstract type <code>Shape</code>, which implements the
 (abstract) method <code>ray_intersection</code>. This accepts a
 <code>Ray</code> parameter and returns a <code>HitRecord</code> type. If
@@ -487,7 +490,7 @@ to use a dedicated type: <code>HitRecord</code>.</p></li>
 <li><code>surface_point</code>: <span class="math inline">(u, v)</span>
 coordinates of the intersection (new type <code>Vec2d</code>);</li>
 <li><code>t</code>: ray parameter associated with the intersection;</li>
-<li><code>ray</code>: the light ray that caused the intersection.</li>
+<li><code>ray</code>: the light ray that caused the intersection</li>
 </ol></li>
 <li><p>For testing, it’s helpful if it implements an
 <code>is_close</code>/<code>are_close</code> method.</p></li>
@@ -496,9 +499,8 @@ coordinates of the intersection (new type <code>Vec2d</code>);</li>
 <section id="sphere-in-python" class="slide level1">
 <h1><code>Sphere</code> in Python</h1>
 <ul>
-<li><p>The number of intersections between the ray <span
-class="math inline">O + t \vec d</span> and the sphere depends on the
-sign of</p>
+<li><p>The intersection between the ray <span class="math inline">O + t
+\vec d</span> and the sphere is determined by the discriminant</p>
 <p><span class="math display">
 \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec
 d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
@@ -601,8 +603,8 @@ class="math inline">O = (13, 0, 0)</span> and <span
 class="math inline">\vec d = -\hat e_x</span>. The intersection should
 be <span class="math inline">P = (11, 0, 0)</span> with normal <span
 class="math inline">\hat n = \hat e_x</span>.</li>
-<li>Verify that there are no potential intersections with the
-<strong>untranslated</strong> sphere, using these rays:
+<li>Verify that the ray used in the first test no longer hits the sphere
+after it has been translated:
 <ol type="1">
 <li>Ray with <span class="math inline">O = (0, 0, 2)</span> and <span
 class="math inline">\vec d = -\hat e_z</span>;</li>
@@ -658,9 +660,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a h
 <center>
 <img data-src="./media/pytracer-first-image.png" />
 </center>
-<p>The asymmetry in the arrangement of the spheres allows for the
-identification of errors in the ordering of the rows/columns of the
-image.</p>
+<p>The asymmetry in the arrangement of the spheres helps in detecting
+errors in the image row/column ordering.</p>
 </section>
 <section id="the-scene" class="slide level1">
 <h1>The Scene</h1>
@@ -671,9 +672,9 @@ at <span class="math inline">(0, 0, -0.5)</span> and <span
 class="math inline">(0, 0.5, 0)</span>.</li>
 <li>Each sphere must have a radius of 1/10.</li>
 <li>The observer should be moved by <span class="math inline">-\hat
-e_x</span>, meaning their position should be <span
-class="math inline">(-2, 0, 0)</span> and the center of the screen <span
-class="math inline">(-1, 0, 0)</span>.</li>
+e_x</span>, placing them at <span class="math inline">(-2, 0, 0)</span>
+with the screen center at <span class="math inline">(-1, 0,
+0)</span>.</li>
 <li>Choose whether to use <code>OrthogonalCamera</code> or
 <code>PerspectiveCamera</code>.</li>
 </ul>
@@ -696,8 +697,8 @@ above.</li>
 <h1>Example in Python</h1>
 <ul>
 <li><p>In Python, I used the Click library, which allows building
-command-line user interfaces that support so-called <em>actions</em>
-(other libraries call them <em>verbs</em>).</p></li>
+command-line interfaces (CLIs) that support <em>subcommands</em> (also
+known as <em>actions</em> or <em>verbs</em>).</p></li>
 <li><p>After the executable name, a command should be provided,
 optionally followed by parameters:</p>
 <pre class="text"><code>./main.py pfm2png input.pfm output.png
@@ -717,7 +718,7 @@ optionally followed by parameters:</p>
 them);</p></li>
 <li><p>Two separate executables: <code>demo</code> and
 <code>pfm2png</code></p></li>
-<li><p>Requesting input from the terminal (not recommended):</p>
+<li><p>Interactive terminal input (not recommended for automation):</p>
 <div class="sourceCode" id="cb15"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;What do you want to do? (demo/pfm2png)&quot;</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>choice <span class="op">=</span> <span class="bu">input</span>(choice)</span>
@@ -795,12 +796,12 @@ class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#
 <ol type="1">
 <li>Fix the bug from last time by opening an <em>issue</em>;</li>
 <li>Create a <code>CHANGELOG.md</code> file;</li>
-<li>Work on a new <code>demo</code> branch;</li>
+<li>Create and switch to a new <code>demo</code> branch;</li>
 <li>Create the <code>Shape</code>, <code>Sphere</code>,
 <code>World</code>, <code>Vec2d</code>, <code>HitRecord</code>
 types;</li>
-<li>Implement the <code>demo</code> command, in the way you prefer (you
-can look for a library to interpret the command line);</li>
+<li>Implement the <code>demo</code> command using your preferred method
+(you can look for a library to interpret the command line);</li>
 <li>Open a PR and update the <code>CHANGELOG.md</code> file.</li>
 </ol>
 </section>
@@ -810,8 +811,8 @@ can look for a library to interpret the command line);</li>
 <section id="hints-for-c-1" class="slide level1">
 <h1>Hints for C++</h1>
 <ul>
-<li><p>If you like the command-line interface provided by Pytracer, have
-a look at the list of libraries available in the repository <a
+<li><p>To replicate the command-line interface provided by Pytracer,
+check the libraries in <a
 href="https://github.com/fffaraz/awesome-cpp?tab=readme-ov-file#cli">Awesome
 C++ [CLI]</a>.</p></li>
 <li><p>To implement the <code>World</code> type, use <a
@@ -833,7 +834,7 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> std<span class="op">;</span></span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Shape <span class="op">{};</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Shape <span class="op">{</span> <span class="kw">virtual</span> <span class="op">~</span>Shape<span class="op">()</span> <span class="op">=</span> <span class="cf">default</span><span class="op">;</span> <span class="op">};</span></span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Sphere <span class="op">:</span> <span class="kw">public</span> Shape <span class="op">{};</span></span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Plane <span class="op">:</span> <span class="kw">public</span> Shape <span class="op">{};</span></span>
 <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
@@ -847,22 +848,6 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#
 <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  list_of_shapes<span class="op">.</span>push_back<span class="op">(</span>make_shared<span class="op">&lt;</span>Plane<span class="op">&gt;());</span></span>
 <span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </section>
-<section id="hints-for-julia" class="slide level1">
-<h1>Hints for Julia</h1>
-</section>
-<section id="hints-for-julia-1" class="slide level1">
-<h1>Hints for Julia</h1>
-<ul>
-<li><p>Don’t worry too much for the command-line interface: Julia
-programs are not meant to be executed from the command line. You could
-just provide a script named <code>demo.jl</code> alongside another
-script called <code>pfm2png.jl</code>.</p></li>
-<li><p>Define an <code>abstract struct</code> for <code>Shape</code> and
-then derive <code>Sphere</code>, <code>Plane</code>, etc..</p></li>
-<li><p>In this lesson, you will likely see how elegant can be
-mathematical code in Julia!</p></li>
-</ul>
-</section>
 <section id="hints-for-c-2" class="slide level1">
 <h1>Hints for C#</h1>
 </section>
@@ -870,10 +855,30 @@ mathematical code in Julia!</p></li>
 <h1>Hints for C#</h1>
 <ul>
 <li><p>Today there should not be significant issues.</p></li>
+<li><p>Given that <code>Shape</code> must contain the
+<code>Transformation</code> instance, it’s probably better to use an
+<code>abstract class</code> rather than an <code>interface</code>, as
+the latter cannot have data members.</p></li>
 <li><p>If you want to implement a good command-line interface, have a
 look at the repository <a
 href="https://github.com/quozd/awesome-dotnet?tab=readme-ov-file#cli">Awesome
 .NET [CLI]</a>.</p></li>
+</ul>
+</section>
+<section id="hints-for-julia" class="slide level1">
+<h1>Hints for Julia</h1>
+</section>
+<section id="hints-for-julia-1" class="slide level1">
+<h1>Hints for Julia</h1>
+<ul>
+<li><p>Don’t worry too much about the command-line interface: Julia
+programs are not meant to be executed from the command line. You could
+just provide a script named <code>demo.jl</code> alongside another
+script called <code>pfm2png.jl</code>.</p></li>
+<li><p>Define an <code>abstract type</code> for <code>Shape</code> and
+then derive <code>Sphere</code>, <code>Plane</code>, etc..</p></li>
+<li><p>In this lesson, you will likely see how elegant can be
+mathematical code in Julia!</p></li>
 </ul>
 </section>
     </div>
