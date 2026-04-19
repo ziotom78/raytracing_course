@@ -26,7 +26,7 @@
 
 -   The scenes seen in the previous slides are formed by the combination of many simple shapes.
 
--   Keeping a list of simple shapes in memory requires a series of non-trivial measures.
+-   Managing scenes with millions of primitive shapes requires sophisticated memory management and data structures.
 
 -   Today we will discuss *triangular meshes*, in which the elementary shape is precisely a planar triangle. (The same discussion can be made for quadrilateral *meshes*, but for simplicity we will focus on triangles).
 
@@ -34,7 +34,7 @@
 
 -   We have seen how to implement the code to calculate the intersection between a ray and a triangle in the general case where the triangle is encoded by its three vertices $A$, $B$, and $C$.
 
--   We did not follow the approach used for spheres and planes of choosing a "standard" shape (e.g., a triangle on the $xy$ plane), because this would have required storing a 4×4 transformation and its inverse, for a total of 32 floating-point numbers (128 bytes at single precision).
+-   Unlike our approach for spheres and planes (where we applied transformations to canonical shapes), meshes require a more direct storage method: storing a 4×4 transformation and its inverse requires 32 floating-point numbers (128 bytes at single precision).
 
 -   Storing the three coordinates of a triangle requires only 3×3×4 = 36 bytes…
 
@@ -52,7 +52,7 @@
 
 -   If 32-bit integers are used to store the indices, each triangle requires 3×4 = 12 bytes.
 
--   This is advantageous if a vertex is shared by multiple triangles, which is generally true.
+-   This approach is highly efficient, since vertices are typically shared by multiple adjacent triangles. And it’s easier to move vertices in 3D space!
 
 ---
 
@@ -79,6 +79,8 @@ Model: 44,000 vertices, 80,000 triangles.
     $$
     \hat n_P = \alpha \hat n_1 + \beta \hat n_2 + \gamma \hat n_3.
     $$
+    
+    (Caution: $\hat n_P$ is not necessarily normalized!)
 
 ---
 
@@ -98,12 +100,12 @@ Model: 44,000 vertices, 80,000 triangles.
 
 # [Wavefront OBJ](https://en.wikipedia.org/wiki/Wavefront_.obj_file)
 
--   It's a very simple format to load and used to store meshes (not just triangles).
+-   It is a very simple format, widely used to store meshes (not just triangles).
 
 -   Example (beginning of the `minicooper.obj` model):
 
     ```text
-    # Vertexes
+    # Vertices
     v  20.851225 -39.649834 32.571609
     v  20.720263 -39.659435 32.675613
     v  20.589304 -39.649834 32.571609
@@ -113,7 +115,7 @@ Model: 44,000 vertices, 80,000 triangles.
     vn  -0.000006 38.811405 3.583478
     vn  -0.000006 38.811405 3.583478
     …
-    # Triangles («faces»)
+    # Triangles («faces»). Indices start from 1, not from 0!
     f 3//3 2//2 1//1
     f 4//4 3//3 1//1
     f 5//5 4//4 1//1
@@ -129,11 +131,11 @@ Model: 44,000 vertices, 80,000 triangles.
 
 -   Calculating the intersection between a mesh and a ray is not easy to implement.
 
--   The problem is that much of the time required to calculate the solution to the rendering equation is spent on ray-shape intersections.
+-   The bottleneck in solving the rendering equation is typically the time spent on ray-shape intersections.
 
--   As the number of shapes increases, the computation time necessarily increases as well.
+-   As the number of shapes increases, the computation time necessarily increases as well as $O(N)$.
 
--   An effective optimization is the use of boundary boxes, which rely on the concept of “axis-aligned box”. Let’s start from the latter.
+-   An effective optimization is the use of bounding boxes, which rely on the concept of “axis-aligned box”. Let’s start from the latter.
 
 
 # *Axis-aligned boxes*
@@ -147,11 +149,11 @@ Model: 44,000 vertices, 80,000 triangles.
     #.   We will not limit ourselves to the unit cube with a vertex at the origin…
     #.   …but we will assume that the faces are parallel to the coordinate planes.
 
--   These assumptions are referred to in the literature as *axis-aligned bounding box* (AAB).
+-   These assumptions are referred to in the literature as *axis-aligned bounding box* (AABB).
 
 # In-memory representation
 
--   A parallelepiped with edges aligned along the $xyz$ axes can be defined by the following quantities:
+-   A box with edges aligned along the $xyz$ axes can be defined by the following quantities:
 
     #. The minimum and maximum $x$ values;
     #. The minimum and maximum $y$ values;
@@ -268,7 +270,7 @@ This image contains three geometric shapes (two planes and a sphere), and was ca
 
 # Usefulness of AABBs
 
--   AABBs are useful only for scenes made up of many objects. For simple scenes, they can **slow down** the rendering.
+-   AABBs are useful only for scenes made up of many objects. For simple scenes, they can introduce unnecessary overhead.
 
 -   They are however very useful with triangle *meshes* and complex CSG objects.
 
@@ -300,17 +302,17 @@ This image contains three geometric shapes (two planes and a sphere), and was ca
 
 -   Scenes are often almost completely occupied by a few complex objects, and in this case AABBs do not provide any advantage (as in the previous image).
 
--   However, there are several sophisticated optimizations that transform the problem of looking for ray-triangle hits from $O(N)$ to $O(\log_2 N)$. The most used ones employ [KD-trees](https://en.wikipedia.org/wiki/K-d_tree) and [Bounding Volume Hierarchies](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy). They are both explained in the [book by Pharr, Jakob & Humphreys](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration); we will quickly explain the former.
+-   However, there are several sophisticated optimizations that transform the problem of looking for ray-triangle hits from $O(N)$ to $O(\log_2 N)$. The most common acceleration structures are [KD-trees](https://en.wikipedia.org/wiki/K-d_tree) and [Bounding Volume Hierarchies](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy). They are both explained in the [book by Pharr, Jakob & Humphreys](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration); we will quickly explain the former.
 
 # KD-trees
 
 # KD-trees
 
-- KD-trees are a specific application of a broader family of algorithms called *Binary Space Partitions* (BSP).
+- KD-trees are a specific application of a broader family of algorithms called *Binary Space Partitioning* (BSP).
 
 - BSP algorithms are used for searching in spatio-temporal domains; in our case, the problem is to find the potential triangle in the *mesh* that intersects a given ray.
 
-- BSP methods are iterative, and at each iteration, they halve the volume of the space to be searched.
+- BSP methods are iterative, and at each iteration, they partition the volume of the space to be searched.
 
 # Bisection Method
 
@@ -387,7 +389,7 @@ If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient 
   2.  Determine which of the two halves is crossed first by the ray:
       * If only one half is crossed, analyze only that one;
       * If both are crossed, first analyze the one intersected for smaller values of $t$.
-  3.  The process continues until a terminal node is reached: at that point, analyze all triangles in the node using the linear algorithm.
+  3.  The traversal continues until a leaf node is reached. At that point, analyze all triangles in the node using the linear algorithm.
 
 - For the Oceania tree, in the case of a perfectly balanced KD-tree (50%–50%), fewer than 25 comparisons are needed to determine the intersection with a ray.
 
@@ -400,7 +402,7 @@ If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient 
 
 - To build a KD-tree, some questions need to be answered:
 
-  1.  At each split, along which axis is it best to perform the subdivision? (The axis along which the AABB is longest?)
+  1.  At each split, along which axis is it best to perform the subdivision? (The axis with the widest extent?)
   2.  At which point on the axis should the split occur? (The midpoint?)
   3.  When is it best to stop? (When a node contains fewer than *N* shapes?)
 
@@ -432,7 +434,7 @@ If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient 
     - $P_L$ and $P_R$ (probability that the ray hits a shape) are proportional to the total surface area of the triangles in the subcell;
     - Calculate $C(L)$ and $C(R)$ recursively, assuming that for terminal nodes, it is proportional to the number of triangles.
 
-- A robust algorithm tries various tree splits, calculating the cost of each, and chooses the split that leads to the lowest cost.
+- A robust algorithm tries various tree splits, calculating the cost of each, and chooses the split that leads to the lowest cost (“Surface area heuristic”).
 
 - The speed benefits can range from a factor of 10 to a factor of 100 compared to a KD-tree built with simple assumptions.
 
@@ -454,7 +456,7 @@ If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient 
 
 # Fault, Infection, and Failure
 
--   Zeller's excellent book [*Why Programs Fail: A Guide to Systematic Debugging*](https://www.whyprogramsfail.com/) explains the discovery of a *bug* as the combination of three factors:
+-   Zeller's excellent book [*Why Programs Fail: A Guide to Systematic Debugging*](https://www.whyprogramsfail.com/) categorizes the manifestation of a *bug* into three distinct stages:
 
     1.  **Fault**: an error in the way the code is written;
     2.  **Infection**: a certain input "activates" the fault and alters the value of some variables compared to the expected case;
@@ -537,7 +539,7 @@ If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient 
     2.  Program output
     3.  Description of the expected behavior and the observed behavior instead
 
-    This is because the developer must be able to **reproduce** the *failure* in order to identify the *fault* that caused it.
+    This is because the developer must be able to **reproduce** the *failure* in a controlled environment to identify the *fault* that caused it.
 
 -   If a user reports an issue to you without some of these things being clear, do not hesitate to ask for more details.
 
@@ -547,7 +549,7 @@ If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient 
 
 1.  Observe/reproduce a *failure*
 2.  Formulate a hypothesis about the *fault* that caused the *failure*
-3.  Use the hypothesis to
+3.  Use the hypothesis to predict where an infection might be visible (e.g., using a debugger or `print` statements). If the observation contradicts the prediction, refine the hypothesis.
 
 # Debugging tools
 
@@ -557,7 +559,7 @@ If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient 
 | Memory checkers                             | [Memcheck](https://valgrind.org/docs/manual/mc-manual.html)                                            |
 | Dynamic analysis                            | [Valgrind](https://valgrind.org/docs/manual/mc-manual.html)                                            |
 | Record-and-replay                           | [rr](https://rr-project.org/), [UDB](https://undo.io/products/udb/)                                    |
-| Fuzzying debuggers                          | [AFL++](https://github.com/AFLplusplus/AFLplusplus), [libFuzzer](https://llvm.org/docs/LibFuzzer.html) |
+| Fuzzing debuggers                          | [AFL++](https://github.com/AFLplusplus/AFLplusplus), [libFuzzer](https://llvm.org/docs/LibFuzzer.html) |
 
 ---
 title: "Lesson 9"

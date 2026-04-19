@@ -98,7 +98,7 @@
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -114,7 +114,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -163,8 +163,8 @@ Pritchett, EGSR 2019)</a> </small></p>
 <ul>
 <li><p>The scenes seen in the previous slides are formed by the
 combination of many simple shapes.</p></li>
-<li><p>Keeping a list of simple shapes in memory requires a series of
-non-trivial measures.</p></li>
+<li><p>Managing scenes with millions of primitive shapes requires
+sophisticated memory management and data structures.</p></li>
 <li><p>Today we will discuss <em>triangular meshes</em>, in which the
 elementary shape is precisely a planar triangle. (The same discussion
 can be made for quadrilateral <em>meshes</em>, but for simplicity we
@@ -179,10 +179,9 @@ intersection between a ray and a triangle in the general case where the
 triangle is encoded by its three vertices <span
 class="math inline">A</span>, <span class="math inline">B</span>, and
 <span class="math inline">C</span>.</p></li>
-<li><p>We did not follow the approach used for spheres and planes of
-choosing a “standard” shape (e.g., a triangle on the <span
-class="math inline">xy</span> plane), because this would have required
-storing a 4×4 transformation and its inverse, for a total of 32
+<li><p>Unlike our approach for spheres and planes (where we applied
+transformations to canonical shapes), meshes require a more direct
+storage method: storing a 4×4 transformation and its inverse requires 32
 floating-point numbers (128 bytes at single precision).</p></li>
 <li><p>Storing the three coordinates of a triangle requires only 3×3×4 =
 36 bytes…</p></li>
@@ -207,8 +206,9 @@ of the vertices <span class="math inline">P_{i_1}, P_{i_2},
 P_{i_3}</span> in the ordered list.</p></li>
 <li><p>If 32-bit integers are used to store the indices, each triangle
 requires 3×4 = 12 bytes.</p></li>
-<li><p>This is advantageous if a vertex is shared by multiple triangles,
-which is generally true.</p></li>
+<li><p>This approach is highly efficient, since vertices are typically
+shared by multiple adjacent triangles. And it’s easier to move vertices
+in 3D space!</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -246,7 +246,9 @@ class="math inline">\alpha, \beta, \gamma</span>, the normal is assigned
 as</p>
 <p><span class="math display">
 \hat n_P = \alpha \hat n_1 + \beta \hat n_2 + \gamma \hat n_3.
-</span></p></li>
+</span></p>
+<p>(Caution: <span class="math inline">\hat n_P</span> is not
+necessarily normalized!)</p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -278,10 +280,10 @@ class="math inline">(u, v)</span> mapping of each element.</p></li>
 href="https://en.wikipedia.org/wiki/Wavefront_.obj_file">Wavefront
 OBJ</a></h1>
 <ul>
-<li><p>It’s a very simple format to load and used to store meshes (not
-just triangles).</p></li>
+<li><p>It is a very simple format, widely used to store meshes (not just
+triangles).</p></li>
 <li><p>Example (beginning of the <code>minicooper.obj</code> model):</p>
-<pre class="text"><code># Vertexes
+<pre class="text"><code># Vertices
 v  20.851225 -39.649834 32.571609
 v  20.720263 -39.659435 32.675613
 v  20.589304 -39.649834 32.571609
@@ -291,7 +293,7 @@ vn  -0.000006 38.811405 3.583478
 vn  -0.000006 38.811405 3.583478
 vn  -0.000006 38.811405 3.583478
 …
-# Triangles («faces»)
+# Triangles («faces»). Indices start from 1, not from 0!
 f 3//3 2//2 1//1
 f 4//4 3//3 1//1
 f 5//5 4//4 1//1</code></pre></li>
@@ -316,12 +318,12 @@ model from there).</p></li>
 <ul>
 <li><p>Calculating the intersection between a mesh and a ray is not easy
 to implement.</p></li>
-<li><p>The problem is that much of the time required to calculate the
-solution to the rendering equation is spent on ray-shape
-intersections.</p></li>
+<li><p>The bottleneck in solving the rendering equation is typically the
+time spent on ray-shape intersections.</p></li>
 <li><p>As the number of shapes increases, the computation time
-necessarily increases as well.</p></li>
-<li><p>An effective optimization is the use of boundary boxes, which
+necessarily increases as well as <span
+class="math inline">O(N)</span>.</p></li>
+<li><p>An effective optimization is the use of bounding boxes, which
 rely on the concept of “axis-aligned box”. Let’s start from the
 latter.</p></li>
 </ul>
@@ -343,13 +345,13 @@ origin…</li>
 planes.</li>
 </ol></li>
 <li><p>These assumptions are referred to in the literature as
-<em>axis-aligned bounding box</em> (AAB).</p></li>
+<em>axis-aligned bounding box</em> (AABB).</p></li>
 </ul>
 </section>
 <section id="in-memory-representation" class="slide level1">
 <h1>In-memory representation</h1>
 <ul>
-<li><p>A parallelepiped with edges aligned along the <span
+<li><p>A box with edges aligned along the <span
 class="math inline">xyz</span> axes can be defined by the following
 quantities:</p>
 <ol>
@@ -530,8 +532,7 @@ proceed with the intersection calculation.</li>
 <h1>Usefulness of AABBs</h1>
 <ul>
 <li><p>AABBs are useful only for scenes made up of many objects. For
-simple scenes, they can <strong>slow down</strong> the
-rendering.</p></li>
+simple scenes, they can introduce unnecessary overhead.</p></li>
 <li><p>They are however very useful with triangle <em>meshes</em> and
 complex CSG objects.</p></li>
 <li><p>If you want to support AABBs in your ray-tracer, you should add
@@ -573,7 +574,7 @@ previous image).</p></li>
 <li><p>However, there are several sophisticated optimizations that
 transform the problem of looking for ray-triangle hits from <span
 class="math inline">O(N)</span> to <span class="math inline">O(\log_2
-N)</span>. The most used ones employ <a
+N)</span>. The most common acceleration structures are <a
 href="https://en.wikipedia.org/wiki/K-d_tree">KD-trees</a> and <a
 href="https://en.wikipedia.org/wiki/Bounding_volume_hierarchy">Bounding
 Volume Hierarchies</a>. They are both explained in the <a
@@ -589,12 +590,12 @@ former.</p></li>
 <h1>KD-trees</h1>
 <ul>
 <li><p>KD-trees are a specific application of a broader family of
-algorithms called <em>Binary Space Partitions</em> (BSP).</p></li>
+algorithms called <em>Binary Space Partitioning</em> (BSP).</p></li>
 <li><p>BSP algorithms are used for searching in spatio-temporal domains;
 in our case, the problem is to find the potential triangle in the
 <em>mesh</em> that intersects a given ray.</p></li>
-<li><p>BSP methods are iterative, and at each iteration, they halve the
-volume of the space to be searched.</p></li>
+<li><p>BSP methods are iterative, and at each iteration, they partition
+the volume of the space to be searched.</p></li>
 </ul>
 </section>
 <section id="bisection-method" class="slide level1">
@@ -713,9 +714,8 @@ stops.</li>
 <li>If both are crossed, first analyze the one intersected for smaller
 values of <span class="math inline">t</span>.</li>
 </ul></li>
-<li>The process continues until a terminal node is reached: at that
-point, analyze all triangles in the node using the linear
-algorithm.</li>
+<li>The traversal continues until a leaf node is reached. At that point,
+analyze all triangles in the node using the linear algorithm.</li>
 </ol></li>
 <li><p>For the Oceania tree, in the case of a perfectly balanced KD-tree
 (50%–50%), fewer than 25 comparisons are needed to determine the
@@ -736,7 +736,7 @@ Rendering</em> (Pharr, Jakob, Humphreys, 3rd ed.)</span></p>
 <li><p>To build a KD-tree, some questions need to be answered:</p>
 <ol type="1">
 <li>At each split, along which axis is it best to perform the
-subdivision? (The axis along which the AABB is longest?)</li>
+subdivision? (The axis with the widest extent?)</li>
 <li>At which point on the axis should the split occur? (The
 midpoint?)</li>
 <li>When is it best to stop? (When a node contains fewer than <em>N</em>
@@ -786,8 +786,8 @@ class="math inline">C(R)</span> recursively, assuming that for terminal
 nodes, it is proportional to the number of triangles.</li>
 </ul></li>
 <li><p>A robust algorithm tries various tree splits, calculating the
-cost of each, and chooses the split that leads to the lowest
-cost.</p></li>
+cost of each, and chooses the split that leads to the lowest cost
+(“Surface area heuristic”).</p></li>
 <li><p>The speed benefits can range from a factor of 10 to a factor of
 100 compared to a KD-tree built with simple assumptions.</p></li>
 </ul>
@@ -817,8 +817,8 @@ guidelines.</p></li>
 <ul>
 <li><p>Zeller’s excellent book <a
 href="https://www.whyprogramsfail.com/"><em>Why Programs Fail: A Guide
-to Systematic Debugging</em></a> explains the discovery of a
-<em>bug</em> as the combination of three factors:</p>
+to Systematic Debugging</em></a> categorizes the manifestation of a
+<em>bug</em> into three distinct stages:</p>
 <ol type="1">
 <li><strong>Fault</strong>: an error in the way the code is
 written;</li>
@@ -938,8 +938,8 @@ issues, which at first glance did not seem related.</p></li>
 instead</li>
 </ol>
 <p>This is because the developer must be able to
-<strong>reproduce</strong> the <em>failure</em> in order to identify the
-<em>fault</em> that caused it.</p></li>
+<strong>reproduce</strong> the <em>failure</em> in a controlled
+environment to identify the <em>fault</em> that caused it.</p></li>
 <li><p>If a user reports an issue to you without some of these things
 being clear, do not hesitate to ask for more details.</p></li>
 <li><p>GitHub allows you to configure an <a
@@ -954,7 +954,9 @@ class="slide level1">
 <li>Observe/reproduce a <em>failure</em></li>
 <li>Formulate a hypothesis about the <em>fault</em> that caused the
 <em>failure</em></li>
-<li>Use the hypothesis to</li>
+<li>Use the hypothesis to predict where an infection might be visible
+(e.g., using a debugger or <code>print</code> statements). If the
+observation contradicts the prediction, refine the hypothesis.</li>
 </ol>
 </section>
 <section id="debugging-tools" class="slide level1">
@@ -965,34 +967,34 @@ class="slide level1">
 <col style="width: 69%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Type</th>
 <th>Examples</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Symbolic debuggers</td>
 <td><a href="https://sourceware.org/gdb/">GDB</a>, <a
 href="https://lldb.llvm.org/">LLDB</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Memory checkers</td>
 <td><a
 href="https://valgrind.org/docs/manual/mc-manual.html">Memcheck</a></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Dynamic analysis</td>
 <td><a
 href="https://valgrind.org/docs/manual/mc-manual.html">Valgrind</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Record-and-replay</td>
 <td><a href="https://rr-project.org/">rr</a>, <a
 href="https://undo.io/products/udb/">UDB</a></td>
 </tr>
-<tr class="odd">
-<td>Fuzzying debuggers</td>
+<tr>
+<td>Fuzzing debuggers</td>
 <td><a href="https://github.com/AFLplusplus/AFLplusplus">AFL++</a>, <a
 href="https://llvm.org/docs/LibFuzzer.html">libFuzzer</a></td>
 </tr>
