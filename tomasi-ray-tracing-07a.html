@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -49,7 +49,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -73,8 +73,8 @@ class="email">maurizio.tomasi@unimi.it</a></p>
 <li><p>The mathematics of transformations that we introduced in the last
 lesson allows us to easily create <em>static</em> images.</p></li>
 <li><p>What would change if we wanted to create
-<strong>animations</strong> instead? (We limit to the case where we only
-animate transformations.)</p></li>
+<strong>animations</strong> instead? (We will limit ourselves to the
+case where we only animate transformations.)</p></li>
 <li><p>Let’s see a practical example.</p></li>
 </ul>
 </section>
@@ -104,7 +104,7 @@ A(t) = T_{\vec k_0 + (\vec k_1 - \vec k_0) t} =
 <section id="transformations-over-time-22" class="slide level1">
 <h1>Transformations over time (2/2)</h1>
 <ul>
-<li><p>Scaling transformation are equally trivial to animate: to scale
+<li><p>Scaling transformations are equally trivial to animate: to scale
 from <span class="math inline">s_0</span> to <span
 class="math inline">s_1</span>, I can define <span
 class="math inline">\xi(t) = s_0 + (s_1 - s_0) t</span></p></li>
@@ -125,9 +125,10 @@ A(t) = M_{s_0 + (s_1 - s_0) t} = M_{\xi(t)} =
 <ul>
 <li><p>Rotations are represented through orthogonal matrices (<span
 class="math inline">R(t) R(t)^t = I</span>).</p></li>
-<li><p>We cannot interpolate the coefficients of two rotation matrices
-with two arbitrary axes <span class="math inline">\vec a_1</span> and
-<span class="math inline">\vec a_2</span> <span class="math display">
+<li><p>We cannot simply interpolate the coefficients of two rotation
+matrices representing rotations around two arbitrary axes <span
+class="math inline">\vec a_1</span> and <span class="math inline">\vec
+a_2</span> <span class="math display">
 R(0) = \begin{pmatrix}
 m_{11}&amp;m_{12}&amp;m_{13}\\
 m_{21}&amp;m_{22}&amp;m_{23}\\
@@ -172,7 +173,7 @@ rate as the scientific data, so interpolation is necessary.</p></li>
 <section id="complex-numbers-and-quaternions-1" class="slide level1">
 <h1>Complex Numbers and Quaternions</h1>
 <ul>
-<li><p><a href="tomasi-ray-tracing-05a.html#rotations">We already
+<li><p><a href="tomasi-ray-tracing-05a.html#rotations">We have already
 expressed</a> rotations in matrix form.</p></li>
 <li><p>It is also possible to express rotations using complex numbers
 (in 2D) or quaternions (in 3D).</p></li>
@@ -208,7 +209,7 @@ is easier to remember:</p>
 <section id="rotations-and-complex-numbers" class="slide level1">
 <h1>Rotations and Complex Numbers</h1>
 <ul>
-<li><p>On the plane, it is possible to encode a rotation <span
+<li><p>In the plane, it is possible to encode a rotation <span
 class="math inline">R(\theta)</span> around the origin using the complex
 number</p>
 <p><span class="math display">
@@ -236,7 +237,7 @@ generalize the ability of complex numbers to encode rotations in 3D.
 They were proposed by <a
 href="https://en.wikipedia.org/wiki/William_Rowan_Hamilton">W. R. Hamilton</a>
 (the one from the Hamiltonian) in 1843 precisely to extend ℂ (“invented”
-a few decades earlier), and their algebra is indicated by ℍ.</p></li>
+a few decades earlier), and their algebra is denoted by ℍ.</p></li>
 <li><p>If a complex number <span class="math inline">z</span> is formed
 by two coefficients (the real part <span class="math inline">\Re
 z</span> and the imaginary part <span class="math inline">\Im z</span>),
@@ -253,7 +254,7 @@ q_2\ q_3)</span> is the <em>vector part</em>.</p></li>
 <section id="quaternion-product" class="slide level1">
 <h1>Quaternion Product</h1>
 <ul>
-<li><p>The product <span class="math inline">p q</span> between two
+<li><p>The product <span class="math inline">p q</span> of two
 quaternions is defined as follows:</p>
 <p><span class="math display">
 p q = \begin{pmatrix}
@@ -268,7 +269,7 @@ algebra but <strong>is not commutative</strong>: <span
 class="math inline">p q \not= q p</span>. (First algebra of this kind in
 history!).</p></li>
 <li><p>It is easy (but boring) to prove that <span
-class="math inline">\forall q\not=0 \in \mathbb{C}</span> there is one
+class="math inline">\forall q\not=0 \in \mathbb{H}</span> there is one
 and only one <span class="math inline">q^{-1}</span> such that <span
 class="math inline">qq^{-1} = 1</span>.</p></li>
 </ul>
@@ -281,7 +282,7 @@ class="math inline">qq^{-1} = 1</span>.</p></li>
 q = q_0 + q_1 \mathbf{i} + q_2 \mathbf{j} + q_3 \mathbf{k}.
 </span></p></li>
 <li><p>If the following rules are defined, the product between
-quaternions from the previous slide follows consequently:</p>
+quaternions from the previous slide follows directly:</p>
 <p><span class="math display">
 \begin{aligned}
 \mathbf{i} \mathbf{i} &amp;= -1, &amp;\mathbf{i} \mathbf{j}
@@ -329,7 +330,7 @@ n\right),
 <p>which represents the rotation by an angle <span
 class="math inline">\theta</span> around <span class="math inline">\hat
 n</span>.</p></li>
-<li><p>Note that it looks similar to the complex rotor <span
+<li><p>Note the similarity to the complex rotor <span
 class="math inline">e^{i\theta} = \cos\theta + i\sin\theta</span>, but
 with <span class="math inline">\theta/2</span> instead of <span
 class="math inline">\theta</span>.</p></li>
@@ -356,8 +357,8 @@ angle <span class="math inline">\theta/2</span>, and not simply on the
 angle <span class="math inline">\theta</span>.</p></li>
 <li><p>From the formula, it is evident that <span
 class="math inline">r(\theta, \hat n)</span> and <span
-class="math inline">-r(\theta, \hat n)</span> represent the “same”
-rotation (90 clockwise vs. 270° counterclockwise).</p></li>
+class="math inline">-r(\theta, \hat n)</span> represent the same
+rotation (this property is called <em>double cover</em>).</p></li>
 </ul>
 </section>
 <section id="are-quaternions-efficient" class="slide level1">
@@ -369,14 +370,16 @@ memory, while a quaternion requires only 4.</p></li>
 code?</p></li>
 <li><p>Generally <strong>no</strong>! If you explicitly write the
 sequence of operations needed to rotate a vector, you’ll see that the
-matrix representation requires fewer calculations.</p></li>
+matrix representation requires fewer calculations. (But quaternions are
+faster to compose.)</p></li>
 <li><p>What are quaternions useful for, then?</p></li>
 </ul>
 </section>
 <section id="slerp-and-rotations" class="slide level1">
 <h1><em>Slerp</em></h1>
 <ul>
-<li><p>The term <em>slerp</em> refers to the interpolation <span
+<li><p><em>Slerp</em> is an acronym for “Spherical Linear
+Interpolation”. It refers to the interpolation <span
 class="math inline">r(t)</span> between two rotations <span
 class="math inline">r_1</span> and <span
 class="math inline">r_2</span>.</p></li>
@@ -409,9 +412,9 @@ represents a rotation <span class="math inline">\forall t\in [0,
 <section id="animating-transformations" class="slide level1">
 <h1>Animating Transformations</h1>
 <ul>
-<li><p>Representing rotations with quaternions fills the last missing
-“hole”: all the transformations presented in the previous lesson are
-easily interpolable:</p>
+<li><p>Representing rotations with quaternions fills the final gap, as
+all the transformations presented in the previous lesson can be easily
+interpolated:</p>
 <ol type="1">
 <li>Translations;</li>
 <li>Scale transformations;</li>
@@ -435,7 +438,7 @@ are.</p></li>
 <ul>
 <li><p>Vectors and pseudovectors follow different transformation
 rules.</p></li>
-<li><p>To describe rotations on a 2D plane, it is necessary to use 3D
+<li><p>To describe rotations in a 2D plane, it is necessary to use 3D
 (pseudo)vectors, like <em>angular momentum</em> <span
 class="math inline">\vec{L} = \vec{r} \times \vec{p}</span> or
 <em>torque</em> <span class="math inline">\vec{\tau} = \vec r \times
@@ -452,8 +455,8 @@ quaternions…).</p></li>
 class="math inline">\vec a \times \vec x = \vec b</span> with <span
 class="math inline">\vec a</span> and <span class="math inline">\vec
 b</span> known and <span class="math inline">x</span> an unknown vector,
-there is no way to uniquely reconstruct <span class="math inline">\vec
-x</span>.</p></li>
+<span class="math inline">\vec x</span> cannot be uniquely
+determined.</p></li>
 </ul>
 </section>
 <section id="geometric-algebra" class="slide level1">
@@ -462,7 +465,7 @@ x</span>.</p></li>
 <li><p><strong>Clifford algebras</strong>, and in particular
 <em>geometric algebra</em>, overcome all the problems listed in the
 previous slide.</p></li>
-<li><p>It is a branch of mathematics that rebuilds classical linear
+<li><p>It is a branch of mathematics that generalizes classical linear
 algebra and provides a more intuitive and coherent interpretation of
 certain geometric properties. <a
 href="https://en.wikipedia.org/wiki/William_Kingdon_Clifford">Clifford</a>
@@ -473,8 +476,8 @@ and is what usually interests physicists. We will limit ourselves to
 these.</p></li>
 </ul>
 </section>
-<section id="the-outer-product-or-grassmans" class="slide level1">
-<h1>The Outer Product (or Grassman’s)</h1>
+<section id="the-outer-product-or-grassmanns" class="slide level1">
+<h1>The Outer Product (or Grassmann’s)</h1>
 </section>
 <section id="product-between-vectors" class="slide level1">
 <h1>Product between Vectors</h1>
@@ -532,8 +535,8 @@ w)</span>.</p>
 <li><p>This is the information encoded by an outer product <span
 class="math inline">\vec v \wedge \vec w</span>:</p>
 <ol type="1">
-<li>Extent of the surface (e.g., 15 m²);</li>
-<li>Inclination of the plane on which the surface lies;</li>
+<li>Magnitude of the surface (e.g., 15 m²);</li>
+<li>Orientation of the plane on which the surface lies;</li>
 <li>Orientation of the surface.</li>
 </ol></li>
 <li><p>This information is <em>not</em> encoded:</p>
@@ -574,8 +577,8 @@ is reversed, otherwise it remains the same.</p>
 <ul>
 <li><p>The sum appears geometrically complicated, but it enables the
 construction of a vector space.</p></li>
-<li><p>Being a vector space, it is possible to decompose bivectors using
-<strong>bases</strong>, and in this way the sum is trivial to
+<li><p>Being a vector space, bivectors can be decomposed into a
+<strong>basis</strong>, and in this way the sum is trivial to
 understand: as simple as adding <span class="math inline">\vec v = 3\hat
 e_1 + 2\hat e_2</span> to <span class="math inline">\vec w = -2\hat e_1
 + \hat e_2</span>.</p></li>
@@ -635,9 +638,9 @@ oriented area, while the cross product returns an axial vector.</p></li>
 <section id="outer-and-vector-product" class="slide level1">
 <h1>Outer and Vector Product</h1>
 <ul>
-<li><p>It turns out that the physical laws that employ the × product can
-be interpreted more easily if we reformulate them as <strong>laws
-combining oriented areas</strong>.</p></li>
+<li><p>Physical laws that employ the × product can be interpreted more
+intuitively if reformulated as <strong>laws combining oriented
+areas</strong>.</p></li>
 <li><p>Moreover, the outer product has a number of advantages over the
 vector product:</p>
 <ol type="1">
@@ -705,7 +708,7 @@ w = \vec u \wedge (\vec v \wedge \vec w)</span></p></li>
 <li><p>The trivector <span class="math inline">\vec u \wedge \vec v
 \wedge \vec w</span> represents an <em>oriented volume</em>.</p></li>
 <li><p>By repeatedly applying the outer product, we can generate
-trivectors, quadrivectors, etc. (This is why it is called
+trivectors, quadvectors, etc. (This is why it is called
 <em>outer</em>).</p></li>
 <li><p>In general, we speak of <em>multivectors</em>, or <span
 class="math inline">k</span>-vectors: a scalar is a 0-vector, vectors
@@ -824,7 +827,7 @@ vector space.</p></li>
 the sum of the real/imaginary parts (<span class="math inline">z = x +
 iy</span>) or of orthogonal vectors (<span class="math inline">\vec v =
 3\hat ı + 4\hat ȷ</span>).</p></li>
-<li><p>You can see the notation <span class="math inline">\vec v \cdot
+<li><p>You can view the notation <span class="math inline">\vec v \cdot
 \vec w + \vec v \wedge \vec w</span> as a mnemonic aid to remember how
 geometric products are added and multiplied.</p></li>
 <li><p>Since <span class="math inline">\vec v \cdot \vec w \propto
@@ -859,8 +862,9 @@ v}{\left\|\vec v\right\|^2} = 1,
 <section id="other-examples" class="slide level1">
 <h1>Other Examples</h1>
 <ul>
-<li><p>Suppose that <span class="math inline">\vec v \perp \vec
-w</span>. Then</p>
+<li><p>Suppose that <span class="math inline">\vec v</span> and <span
+class="math inline">\vec w</span> are orthogonal (<span
+class="math inline">\vec v \perp \vec w</span>). Then</p>
 <p><span class="math display">
 \vec v \vec w = \vec v \cdot \vec w + \vec v \wedge \vec w = \vec v
 \wedge \vec w.
@@ -932,7 +936,7 @@ e_2\bigr) = 2\hat e_1 \hat e_2 - \hat e_2^2 = 2\hat e_{12} - 1,\\
 <section id="general-multivector-in-2d" class="slide level1">
 <h1>General Multivector in 2D</h1>
 <ul>
-<li><p>In <span class="math inline">\mathbb{R}^2</span> you can only
+<li><p>In <span class="math inline">\mathbb{R}^2</span>, one can only
 have 0-vectors (scalars), 1-vectors, and 2-vectors (bivectors).</p></li>
 <li><p>The general form of a multivector is therefore</p>
 <p><span class="math display">
@@ -959,11 +963,11 @@ is nonzero, the subspace is isomorphic to <span
 class="math inline">\mathbb{R}</span>.</li>
 <li>If only <span
 class="math inline">\textcolor{#26a342}{\beta_1}</span> and <span
-class="math inline">\textcolor{#26a342}{\beta_2}</span> are nonzero,
-it’s is isomorphic to the vector space <span
+class="math inline">\textcolor{#26a342}{\beta_2}</span> are nonzero, it
+is isomorphic to the vector space <span
 class="math inline">\mathbb{R}^2</span>.</li>
 <li>If only <span class="math inline">\textcolor{#a34226}{\gamma}</span>
-is nonzero, it “looks isomorphic” to <span
+is nonzero, it is isomorphic to <span
 class="math inline">\mathbb{R}</span>; these multivectors are called
 <em>pseudoscalars</em>.</li>
 </ol></li>
@@ -993,8 +997,8 @@ e_{12} + 2 = 5 - 5 \hat e_{12}.
 class="math inline">\textcolor{#682673}{\alpha} +
 \textcolor{#734226}{\gamma} \hat e_{12}</span> are isomorphic to <span
 class="math inline">\mathbb{C}</span>, and we set <span
-class="math inline">\hat e_{12} = I</span> (<strong>capital
-case</strong>!).</p></li>
+class="math inline">\hat e_{12} = I</span>
+(<strong>uppercase</strong>!).</p></li>
 </ul>
 </section>
 <section id="multivectors-and-2d-rotations" class="slide level1">
@@ -1013,9 +1017,9 @@ case</strong>!).</p></li>
 \left\|\vec u\right\| \cdot \left\|\vec v\right\| \cdot e^{I\theta}.
 \end{aligned}
 </span></p></li>
-<li><p>For <span class="math inline">\left\|\vec u\right\| = \left\|\vec
-v\right\| = 1</span> leads to <span class="math inline">\vec u \vec v =
-e^{I\theta}</span>, the rotation by an angle <span
+<li><p>If <span class="math inline">\left\|\vec u\right\| = \left\|\vec
+v\right\| = 1</span>, this leads to <span class="math inline">\vec u
+\vec v = e^{I\theta}</span>, the rotation by an angle <span
 class="math inline">\theta</span>!</p></li>
 </ul>
 </section>
@@ -1043,9 +1047,9 @@ general form.</p></li>
 <section id="alternative-2d-rotation" class="slide level1">
 <h1>Alternative 2D Rotation</h1>
 <ul>
-<li><p>The product between two complex numbers commutes, and so it is
-also in the Clifford subalgebra that contains multivectors in the form
-<span class="math inline">\alpha + \hat e_1 \hat e_2
+<li><p>The product between two complex numbers commutes, and this is
+also true within the Clifford subalgebra that contains multivectors in
+the form <span class="math inline">\alpha + \hat e_1 \hat e_2
 \beta</span>.</p></li>
 <li><p>However, in the formula <span class="math inline">\vec v&#39; =
 e^{I\theta} \vec v</span> the <em>vector</em> <span

@@ -4,7 +4,7 @@
 
 -   The mathematics of transformations that we introduced in the last lesson allows us to easily create *static* images.
 
--   What would change if we wanted to create **animations** instead? (We limit to the case where we only animate transformations.)
+-   What would change if we wanted to create **animations** instead? (We will limit ourselves to the case where we only animate transformations.)
 
 -   Let's see a practical example.
 
@@ -29,7 +29,7 @@
 
 # Transformations over time (2/2)
 
--   Scaling transformation are equally trivial to animate: to scale from $s_0$ to $s_1$, I can define $\xi(t) = s_0 + (s_1 - s_0) t$
+-   Scaling transformations are equally trivial to animate: to scale from $s_0$ to $s_1$, I can define $\xi(t) = s_0 + (s_1 - s_0) t$
 
 -   The transformation is
 
@@ -47,7 +47,7 @@
 
 -   Rotations are represented through orthogonal matrices ($R(t) R(t)^t = I$).
 
--   We cannot interpolate the coefficients of two rotation matrices with two arbitrary axes $\vec a_1$ and $\vec a_2$
+-   We cannot simply interpolate the coefficients of two rotation matrices representing rotations around two arbitrary axes $\vec a_1$ and $\vec a_2$
     $$
     R(0) = \begin{pmatrix}
     m_{11}&m_{12}&m_{13}\\
@@ -85,7 +85,7 @@
 
 # Complex Numbers and Quaternions
 
--   [We already expressed](tomasi-ray-tracing-05a.html#rotations) rotations in matrix form.
+-   [We have already expressed](tomasi-ray-tracing-05a.html#rotations) rotations in matrix form.
 
 -   It is also possible to express rotations using complex numbers (in 2D) or quaternions (in 3D).
 
@@ -111,7 +111,7 @@
 
 # Rotations and Complex Numbers
 
--   On the plane, it is possible to encode a rotation $R(\theta)$ around the origin using the complex number
+-   In the plane, it is possible to encode a rotation $R(\theta)$ around the origin using the complex number
 
     $$
     r(\theta) = e^{i \theta} = \cos\theta + i\sin\theta
@@ -129,7 +129,7 @@
 
 # From 2D to 3D
 
--   [*Quaternions*](https://en.wikipedia.org/wiki/Quaternion) generalize the ability of complex numbers to encode rotations in 3D. They were proposed by [W. R. Hamilton](https://en.wikipedia.org/wiki/William_Rowan_Hamilton) (the one from the Hamiltonian) in 1843 precisely to extend ℂ (“invented” a few decades earlier), and their algebra is indicated by ℍ.
+-   [*Quaternions*](https://en.wikipedia.org/wiki/Quaternion) generalize the ability of complex numbers to encode rotations in 3D. They were proposed by [W. R. Hamilton](https://en.wikipedia.org/wiki/William_Rowan_Hamilton) (the one from the Hamiltonian) in 1843 precisely to extend ℂ (“invented” a few decades earlier), and their algebra is denoted by ℍ.
 
 -   If a complex number $z$ is formed by two coefficients (the real part $\Re z$ and the imaginary part $\Im z$), a quaternion $q \in \mathbb{H}$ is composed of **four** coefficients:
 
@@ -141,7 +141,7 @@
 
 # Quaternion Product
 
--   The product $p q$ between two quaternions is defined as follows:
+-   The product $p q$ of two quaternions is defined as follows:
 
     $$
     p q = \begin{pmatrix}
@@ -154,7 +154,7 @@
 
 -   This product satisfies all the properties of an associative algebra but **is not commutative**: $p q \not= q p$. (First algebra of this kind in history!).
 
--   It is easy (but boring) to prove that $\forall q\not=0 \in \mathbb{C}$ there is one and only one $q^{-1}$ such that $qq^{-1} = 1$.
+-   It is easy (but boring) to prove that $\forall q\not=0 \in \mathbb{H}$ there is one and only one $q^{-1}$ such that $qq^{-1} = 1$.
 
 # Notation for Quaternions {#quaternion-notation}
 
@@ -163,7 +163,7 @@
     q = q_0 + q_1 \mathbf{i} + q_2 \mathbf{j} + q_3 \mathbf{k}.
     $$
 
--   If the following rules are defined, the product between quaternions from the previous slide follows consequently:
+-   If the following rules are defined, the product between quaternions from the previous slide follows directly:
 
     $$
     \begin{aligned}
@@ -203,7 +203,7 @@
 
     which represents the rotation by an angle $\theta$ around $\hat n$.
 
--   Note that it looks similar to the complex rotor $e^{i\theta} = \cos\theta + i\sin\theta$, but with $\theta/2$ instead of $\theta$.
+-   Note the similarity to the complex rotor $e^{i\theta} = \cos\theta + i\sin\theta$, but with $\theta/2$ instead of $\theta$.
 
 -   If $\left\|\hat n\right\| = 1$, it obviously holds that $\left\|r(\theta, \hat n)\right\| = 1$.
 
@@ -218,7 +218,7 @@
 
 -   Intuitively, $r(\theta, \hat n)$ appears **twice** in the formula because it depends on the angle $\theta/2$, and not simply on the angle $\theta$.
 
--   From the formula, it is evident that $r(\theta, \hat n)$ and $-r(\theta, \hat n)$ represent the “same” rotation (90 clockwise vs. 270° counterclockwise).
+-   From the formula, it is evident that $r(\theta, \hat n)$ and $-r(\theta, \hat n)$ represent the same rotation (this property is called *double cover*).
 
 # Are Quaternions Efficient?
 
@@ -226,14 +226,14 @@
 
 -   Should we therefore use quaternions to represent rotations in our code?
 
--   Generally **no**! If you explicitly write the sequence of operations needed to rotate a vector, you’ll see that the matrix representation requires fewer calculations.
+-   Generally **no**! If you explicitly write the sequence of operations needed to rotate a vector, you’ll see that the matrix representation requires fewer calculations. (But quaternions are faster to compose.)
 
 -   What are quaternions useful for, then?
 
 
 # *Slerp* {#slerp-and-rotations}
 
--   The term *slerp* refers to the interpolation $r(t)$ between two rotations $r_1$ and $r_2$.
+-   *Slerp* is an acronym for “Spherical Linear Interpolation”. It refers to the interpolation $r(t)$ between two rotations $r_1$ and $r_2$.
 
 -   The formula for $r(t) \in \mathbb{H}$ for $t \in [0, 1]$ is simply
 
@@ -255,7 +255,7 @@
 
 # Animating Transformations
 
--   Representing rotations with quaternions fills the last missing "hole": all the transformations presented in the previous lesson are easily interpolable:
+-   Representing rotations with quaternions fills the final gap, as all the transformations presented in the previous lesson can be easily interpolated:
 
     1.  Translations;
     2.  Scale transformations;
@@ -274,24 +274,24 @@
 
 -   Vectors and pseudovectors follow different transformation rules.
 
--   To describe rotations on a 2D plane, it is necessary to use 3D (pseudo)vectors, like *angular momentum* $\vec{L} = \vec{r} \times \vec{p}$ or *torque* $\vec{\tau} = \vec r \times \vec F$.
+-   To describe rotations in a 2D plane, it is necessary to use 3D (pseudo)vectors, like *angular momentum* $\vec{L} = \vec{r} \times \vec{p}$ or *torque* $\vec{\tau} = \vec r \times \vec F$.
 
 -   The cross product only exists in $\mathbb{R}^3$ (and $\mathbb{R}^7$, [due to octonions](https://en.m.wikipedia.org/wiki/Seven-dimensional_cross_product)…).
 
 -   The representation of rotations requires increasingly complicated algebras as the dimensions increase (complex numbers, quaternions…).
 
--   It is not possible to invert products between vectors: if $\vec a \times \vec x = \vec b$ with $\vec a$ and $\vec b$ known and $x$ an unknown vector, there is no way to uniquely reconstruct $\vec x$.
+-   It is not possible to invert products between vectors: if $\vec a \times \vec x = \vec b$ with $\vec a$ and $\vec b$ known and $x$ an unknown vector, $\vec x$ cannot be uniquely determined.
 
 # Geometric Algebra
 
 -   **Clifford algebras**, and in particular *geometric algebra*, overcome all the problems listed in the previous slide.
 
--   It is a branch of mathematics that rebuilds classical linear algebra and provides a more intuitive and coherent interpretation of certain geometric properties. [Clifford](https://en.wikipedia.org/wiki/William_Kingdon_Clifford) proposed it in 1878.
+-   It is a branch of mathematics that generalizes classical linear algebra and provides a more intuitive and coherent interpretation of certain geometric properties. [Clifford](https://en.wikipedia.org/wiki/William_Kingdon_Clifford) proposed it in 1878.
 
 -   **Geometric algebra** is the application of Clifford algebras to the case of $\mathbb{R}^n$, and is what usually interests physicists. We will limit ourselves to these.
 
 
-# The Outer Product (or Grassman’s)
+# The Outer Product (or Grassmann’s)
 
 # Product between Vectors
 
@@ -333,8 +333,8 @@ It may sound strange! However, this guarantees that $(2\vec v) \wedge \vec w = \
 
 -   This is the information encoded by an outer product $\vec v \wedge \vec w$:
 
-    1.  Extent of the surface (e.g., 15 m²);
-    2.  Inclination of the plane on which the surface lies;
+    1.  Magnitude of the surface (e.g., 15 m²);
+    2.  Orientation of the plane on which the surface lies;
     3.  Orientation of the surface.
 
 -   This information is *not* encoded:
@@ -367,7 +367,7 @@ It may sound strange! However, this guarantees that $(2\vec v) \wedge \vec w = \
 
 -   The sum appears geometrically complicated, but it enables the construction of a vector space.
 
--   Being a vector space, it is possible to decompose bivectors using **bases**, and in this way the sum is trivial to understand: as simple as adding $\vec v = 3\hat e_1 + 2\hat e_2$ to $\vec w = -2\hat e_1 + \hat e_2$.
+-   Being a vector space, bivectors can be decomposed into a **basis**, and in this way the sum is trivial to understand: as simple as adding $\vec v = 3\hat e_1 + 2\hat e_2$ to $\vec w = -2\hat e_1 + \hat e_2$.
 
 -   We can define the **canonical basis** as the set of the three bivectors of unit area on the $xy$, $yz$ and $xz$ planes:
 
@@ -440,7 +440,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 # Outer and Vector Product
 
--   It turns out that the physical laws that employ the × product can be interpreted more easily if we reformulate them as **laws combining oriented areas**.
+-   Physical laws that employ the × product can be interpreted more intuitively if reformulated as **laws combining oriented areas**.
 
 -   Moreover, the outer product has a number of advantages over the vector product:
 
@@ -489,7 +489,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 -   The trivector $\vec u \wedge \vec v \wedge \vec w$ represents an *oriented volume*.
 
--   By repeatedly applying the outer product, we can generate trivectors, quadrivectors, etc. (This is why it is called *outer*).
+-   By repeatedly applying the outer product, we can generate trivectors, quadvectors, etc. (This is why it is called *outer*).
 
 -   In general, we speak of *multivectors*, or $k$-vectors: a scalar is a 0-vector, vectors are 1-vectors, bivectors are 2-vectors, etc.
 
@@ -575,7 +575,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 -   The «sum» must be understood in a non-literal sense, just like the sum of the real/imaginary parts ($z = x + iy$) or of orthogonal vectors ($\vec v = 3\hat ı + 4\hat ȷ$).
 
--   You can see the notation $\vec v \cdot \vec w + \vec v \wedge \vec w$ as a mnemonic aid to remember how geometric products are added and multiplied.
+-   You can view the notation $\vec v \cdot \vec w + \vec v \wedge \vec w$ as a mnemonic aid to remember how geometric products are added and multiplied.
 
 -   Since $\vec v \cdot \vec w \propto \cos\theta$ and $\left\|\vec v \wedge \vec w\right\| \propto \sin\theta$, it is reminiscent of
 
@@ -601,7 +601,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 # Other Examples
 
--   Suppose that $\vec v \perp \vec w$. Then
+-   Suppose that $\vec v$ and $\vec w$ are orthogonal ($\vec v \perp \vec w$). Then
 
     $$
     \vec v \vec w = \vec v \cdot \vec w + \vec v \wedge \vec w = \vec v \wedge \vec w.
@@ -655,7 +655,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 # General Multivector in 2D
 
--   In $\mathbb{R}^2$ you can only have 0-vectors (scalars), 1-vectors, and 2-vectors (bivectors).
+-   In $\mathbb{R}^2$, one can only have 0-vectors (scalars), 1-vectors, and 2-vectors (bivectors).
 
 -   The general form of a multivector is therefore
 
@@ -676,8 +676,8 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
     it is possible to identify four subspaces (subalgebras):
 
     1.  If only $\textcolor{#2826a3}{\alpha}$ is nonzero, the subspace is isomorphic to $\mathbb{R}$.
-    2.  If only $\textcolor{#26a342}{\beta_1}$ and $\textcolor{#26a342}{\beta_2}$ are nonzero, it's is isomorphic to the vector space $\mathbb{R}^2$.
-    3.  If only $\textcolor{#a34226}{\gamma}$ is nonzero, it “looks isomorphic” to $\mathbb{R}$; these multivectors are called *pseudoscalars*.
+    2.  If only $\textcolor{#26a342}{\beta_1}$ and $\textcolor{#26a342}{\beta_2}$ are nonzero, it is isomorphic to the vector space $\mathbb{R}^2$.
+    3.  If only $\textcolor{#a34226}{\gamma}$ is nonzero, it is  isomorphic to $\mathbb{R}$; these multivectors are called *pseudoscalars*.
 
 -   Apart from these trivial cases, are there other interesting subalgebras?
 
@@ -698,7 +698,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
     \end{aligned}
     $$
 
-    They coincide! Multivectors of the form $\textcolor{#682673}{\alpha} + \textcolor{#734226}{\gamma} \hat e_{12}$ are isomorphic to $\mathbb{C}$, and we set $\hat e_{12} = I$ (**capital case**!).
+    They coincide! Multivectors of the form $\textcolor{#682673}{\alpha} + \textcolor{#734226}{\gamma} \hat e_{12}$ are isomorphic to $\mathbb{C}$, and we set $\hat e_{12} = I$ (**uppercase**!).
 
 # Multivectors and 2D Rotations
 
@@ -714,7 +714,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
     \end{aligned}
     $$
 
--   For $\left\|\vec u\right\| = \left\|\vec v\right\| = 1$ leads to $\vec u \vec v = e^{I\theta}$, the rotation by an angle $\theta$!
+-   If $\left\|\vec u\right\| = \left\|\vec v\right\| = 1$, this leads to $\vec u \vec v = e^{I\theta}$, the rotation by an angle $\theta$!
 
 # Multivectors and 2D Rotation
 
@@ -732,7 +732,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 # Alternative 2D Rotation {#alternative-2d-rotation}
 
--   The product between two complex numbers commutes, and so it is also in the Clifford subalgebra that contains multivectors in the form $\alpha + \hat e_1 \hat e_2 \beta$.
+-   The product between two complex numbers commutes, and this is also true within the Clifford subalgebra that contains multivectors in the form $\alpha + \hat e_1 \hat e_2 \beta$.
 
 -   However, in the formula $\vec v' = e^{I\theta} \vec v$ the *vector* $\vec v$ appears, which is not part of the subalgebra: in this case the product does not commute!
 
@@ -771,7 +771,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
     \vec v' = e^{\hat n \theta/2} \vec v e^{-\hat n \theta/2},
     $$
 
-    which is the expression we [already saw](tomasi-ray-tracing-06a.html#/alternative-2d-rotation) in the 2D case, where $\hat n = I = \hat e_{12}$: the basis bivector laying on the complex plane.
+    which is the expression we [already saw](tomasi-ray-tracing-06a.html#/alternative-2d-rotation) in the 2D case, where $\hat n = I = \hat e_{12}$: the basis bivector lying in the complex plane.
 
 -   We have a geometric interpretation of the presence of $i$ in the classic complex rotor $e^{i\theta}$!
 
@@ -801,7 +801,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 -   It turns out that the $\vec q$ in $q = (q_0, \vec q)$ is not a vector, but a bivector!
 
--   As is easy to demonstrate, all the [properties we had listed](tomasi-ray-tracing-06a-clifford-algebras.html#/quaternion-notation) continue to be valid.
+-   As is easy to demonstrate, all the [properties we listed](tomasi-ray-tracing-06a-clifford-algebras.html#/quaternion-notation) continue to be valid.
 
 # Quantum Mechanics
 
@@ -817,7 +817,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 -   Whenever you can implement a physical equation using the geometric product, you can use **algebra** on it.
 
--   This simplifies the calculations enormously, as you do no longer need to decompose vectors in their components $x, y, z$ and solve for each component separately, like it is usually done in classical textbooks.
+-   This simplifies the calculations enormously, as you no longer need to decompose vectors in their components $x, y, z$ and solve for each component separately, like it is usually done in classical textbooks.
 
 -   An example of the complexity of the standard approach is shown in the next slides, taken from the book by R. Paknys “Applied frequency-domain electromagnetics”.
 
@@ -835,22 +835,22 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 -   After having read and understood the paper, have a look at the same calculations done using GA: [Sunset geometry](https://www.shapeoperator.com/2016/12/12/sunset-geometry/) (Merrill, 2016).
 
--   Merrill’s approach requires to be proficient with GA calculation techniques, but it has two distinct advantages:
+-   Merrill’s approach requires proficiency with GA calculation techniques, but it has two distinct advantages:
 
     1.  No need to perform computations using sines and cosines;
-    2.  The relationships between angles come out naturally from the vectors, while in Vanderbei’s paper they need to be derived by hand.
+    2.  The relationships between angles come out naturally from the vectors, while in Vanderbei’s paper they must be derived by hand.
 
 # Beyond GA
 
 Two interesting sub-branches of Geometric Algebras are:
 
-1.  **Projective geometric algebras**: Generalizing the implicit equation for 3D planes $ax + by + cz + d = 0$, you can derive the concept of *point* and *direction* using a 4D space. ([Homogeneous coordinates](tomasi-ray-tracing-05a#homogeneous-coordinates) are born out of this.) See the YouTube Video [A Swift Introduction to Projective Geometric Algebra](https://www.youtube.com/watch?v=0i3ocLhbxJ4);
+1.  **Projective geometric algebras**: By generalizing the implicit equation for 3D planes $ax + by + cz + d = 0$, one can derive the concept of *point* and *direction* using a 4D space. ([Homogeneous coordinates](tomasi-ray-tracing-05a#homogeneous-coordinates) originate from this framework.) See the YouTube Video [A Swift Introduction to Projective Geometric Algebra](https://www.youtube.com/watch?v=0i3ocLhbxJ4);
 
 2.  **Conformal geometric algebras**: These are a further generalization of projective geometric algebras that can represent any *conformal transformation* (i.e., a transformation that preserves relative angles) in 3D space using a 5D (!) versor $t$, so that any of these transformations is just $v' = t v t^{-1}$.
 
 # Multivectors and Ray Tracing?
 
--   Geometric algebra greatly simplifies the geometric equations needed in our course: scalars, vectors, planes, and volumes could be encoded by a single `Multivector` type, and transformations (rotations, translations, etc.) should be implemented only once: how wonderful!
+-   Geometric algebra greatly simplifies the geometric equations needed in our course: scalars, vectors, planes, and volumes could be encoded by a single `Multivector` type, and transformations (rotations, translations, etc.) could be implemented only once: how wonderful!
 
 -   However, a multivector in ℝ³ requires 8 floating-point numbers to be stored: since ray tracers mostly use vectors, this is a waste (our `Vec` structure requires only 3 floating-point numbers).
 
@@ -871,7 +871,7 @@ Two interesting sub-branches of Geometric Algebras are:
 
 -   [Geometric algebra for computer science](https://geometricalgebra.org/) (Dorst, 2007): great introduction to projective geometric algebras. It contains a full implementation of a C++ library.
 
--   [*A history of vector analysis*](https://en.wikipedia.org/wiki/A_History_of_Vector_Analysis) (M. J. Crowe): this textbook describes the history of vector analysis, comparing the algebras of Hamilton, Grassmann/Clifford, and the vector system of Gibbs/Heavyside (which is the “classical” one, but it was born last).
+-   [*A history of vector analysis*](https://en.wikipedia.org/wiki/A_History_of_Vector_Analysis) (M. J. Crowe): this textbook describes the history of vector analysis, comparing the algebras of Hamilton, Grassmann/Clifford, and the vector system of Gibbs/Heaviside (which is the “classical” one, but it was born last).
 
 
 ---
