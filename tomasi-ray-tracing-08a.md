@@ -15,9 +15,9 @@
     \end{aligned}
     $$
 
--   The integral is evaluated over the solid angle, and it is not very convenient for the numerical solution of the problem: we will have a list of **objects**, not solid angles, to iterate over.
+-   The integral is evaluated over the solid angle, but for some algorithms it might be more convenient to iterate over **objects**, not solid angles.
 
--   Therefore, we look for an alternative formulation that makes things simpler.
+-   We now show an alternative formulation that introduces some important new concepts.
 
 # Alternative Form
 
@@ -45,13 +45,11 @@
     \mathrm{d}\omega_\Psi = \frac{\mathrm{d}\sigma'\,\cos\theta'}{\left\|x - x'\right\|^2}.
     $$
 
--   The integral term of the rendering equation can therefore be rewritten as follows:
+-   The integral term of the rendering equation can therefore be rewritten as follows, where $\sum S$ indicates all surfaces **visible** from $x$:
 
     $$
     \int_{\sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow x')\,\frac{\cos\theta\,\cos\theta'}{\left\|x - x'\right\|^2}\mathrm{d}\sigma',
     $$
-
-    where $\sum S$ indicates all surfaces **visible** from $x$.
 
 ---
 
@@ -118,13 +116,13 @@
     T\cdot S = \left\{T x: x \in S\right\},
     $$
 
--   If the ray $O + t \vec d$ intersects $T\cdot S$ when $t = \tilde t$, then
+-   If the ray $O + t \vec d$ intersects $T\cdot S$ at $\textcolor{#2826a3}{\tilde x}$ when $t = \textcolor{#2826a3}{\tilde t}$, then
 
     $$
-    O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde t\,T^{-1} \vec d = \tilde x,
+    O + \textcolor{#2826a3}{\tilde t} \vec d = T \textcolor{#2826a3}{\tilde x},\ \Rightarrow\ T^{-1} O + \textcolor{#2826a3}{\tilde t}\,T^{-1} \vec d = \textcolor{#2826a3}{\tilde x},
     $$
 
-    which is equivalent to formulating the intersection problem in the reference frame of $S$. Note that $\tilde t$ **does not change** between the two formulations!
+    which is equivalent to formulating the intersection problem in the reference frame of $S$. Note that $\textcolor{#2826a3}{\tilde t}$ **does not change** between the two formulations!
 
 # Types of Shapes
 
@@ -425,6 +423,7 @@
 
 -   The intersections with *all* the shapes are determined;
 -   The closest intersection is chosen, assigning it the BRDF of the corresponding shape.
+-   For semi-transparent materials, reflection and refraction are computed for all intersection points (A, B, C, D).
 
 
 # Difference
@@ -448,7 +447,7 @@
 <center>![](./media/boolean-operations-2d.svg)</center>
 
 -   It works like a union, but the internal points B and C are not considered.
--   It is only useful for semi-transparent materials.
+-   It is only useful for semi-transparent materials: reflection and refraction are computed only on A and D.
 
 
 # Hierarchies

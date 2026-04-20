@@ -83,12 +83,11 @@ L(x \rightarrow \Theta) = &amp;L_e(x \rightarrow \Theta) +\\
 \Psi)\,\cos(N_x, \Psi)\,\mathrm{d}\omega_\Psi,
 \end{aligned}
 </span></p></li>
-<li><p>The integral is evaluated over the solid angle, and it is not
-very convenient for the numerical solution of the problem: we will have
-a list of <strong>objects</strong>, not solid angles, to iterate
-over.</p></li>
-<li><p>Therefore, we look for an alternative formulation that makes
-things simpler.</p></li>
+<li><p>The integral is evaluated over the solid angle, but for some
+algorithms it might be more convenient to iterate over
+<strong>objects</strong>, not solid angles.</p></li>
+<li><p>We now show an alternative formulation that introduces some
+important new concepts.</p></li>
 </ul>
 </section>
 <section id="alternative-form" class="slide level1">
@@ -128,15 +127,14 @@ follows:</p>
 x&#39;\right\|^2}.
 </span></p></li>
 <li><p>The integral term of the rendering equation can therefore be
-rewritten as follows:</p>
+rewritten as follows, where <span class="math inline">\sum S</span>
+indicates all surfaces <strong>visible</strong> from <span
+class="math inline">x</span>:</p>
 <p><span class="math display">
 \int_{\sum S} f_r(x, \Psi \rightarrow \Theta)\,L(x \leftarrow
 x&#39;)\,\frac{\cos\theta\,\cos\theta&#39;}{\left\|x -
 x&#39;\right\|^2}\mathrm{d}\sigma&#39;,
-</span></p>
-<p>where <span class="math inline">\sum S</span> indicates all surfaces
-<strong>visible</strong> from <span
-class="math inline">x</span>.</p></li>
+</span></p></li>
 </ul>
 </section>
 <section class="slide level1">
@@ -234,16 +232,18 @@ points</p>
 T\cdot S = \left\{T x: x \in S\right\},
 </span></p></li>
 <li><p>If the ray <span class="math inline">O + t \vec d</span>
-intersects <span class="math inline">T\cdot S</span> when <span
-class="math inline">t = \tilde t</span>, then</p>
+intersects <span class="math inline">T\cdot S</span> at <span
+class="math inline">\textcolor{#2826a3}{\tilde x}</span> when <span
+class="math inline">t = \textcolor{#2826a3}{\tilde t}</span>, then</p>
 <p><span class="math display">
-O + \tilde t \vec d = T \tilde x,\ \Rightarrow\ T^{-1} O + \tilde
-t\,T^{-1} \vec d = \tilde x,
+O + \textcolor{#2826a3}{\tilde t} \vec d = T \textcolor{#2826a3}{\tilde
+x},\ \Rightarrow\ T^{-1} O + \textcolor{#2826a3}{\tilde t}\,T^{-1} \vec
+d = \textcolor{#2826a3}{\tilde x},
 </span></p>
 <p>which is equivalent to formulating the intersection problem in the
 reference frame of <span class="math inline">S</span>. Note that <span
-class="math inline">\tilde t</span> <strong>does not change</strong>
-between the two formulations!</p></li>
+class="math inline">\textcolor{#2826a3}{\tilde t}</span> <strong>does
+not change</strong> between the two formulations!</p></li>
 </ul>
 </section>
 <section id="types-of-shapes" class="slide level1">
@@ -624,6 +624,8 @@ Geometry</em> (CSG).</p></li>
 <li>The intersections with <em>all</em> the shapes are determined;</li>
 <li>The closest intersection is chosen, assigning it the BRDF of the
 corresponding shape.</li>
+<li>For semi-transparent materials, reflection and refraction are
+computed for all intersection points (A, B, C, D).</li>
 </ul>
 </section>
 <section id="difference" class="slide level1">
@@ -657,7 +659,8 @@ the other shape are considered (point B intersects #2 and is internal to
 <ul>
 <li>It works like a union, but the internal points B and C are not
 considered.</li>
-<li>It is only useful for semi-transparent materials.</li>
+<li>It is only useful for semi-transparent materials: reflection and
+refraction are computed only on A and D.</li>
 </ul>
 </section>
 <section id="hierarchies" class="slide level1">
