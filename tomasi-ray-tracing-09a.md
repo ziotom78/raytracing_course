@@ -60,35 +60,10 @@
 
 Model: 44,000 vertices, 80,000 triangles.
 
-# Normals
-
-<p style="text-align:center">![](media/triangle-normals.png){height=240px}</p>
-
--   A triangle is a planar surface, and therefore every point on its surface has the same normal $\hat n$.
-
--   In the case of triangle *meshes*, the barycentric coordinates of the triangle can be used to simulate a smooth surface: this is especially useful when the mesh is obtained from the discretization of a smooth surface.
-
-# Smooth Shading
-
-<p style="text-align:center">![](media/triangle-normals.png){height=240px}</p>
-
--   When approximating a smooth surface, it is necessary to calculate both the vertices of the triangles and the normals at the vertices.
-
--   At the point $P$ defined by $\alpha, \beta, \gamma$, the normal is assigned as
-
-    $$
-    \hat n_P = \alpha \hat n_1 + \beta \hat n_2 + \gamma \hat n_3.
-    $$
-    
-    (Caution: $\hat n_P$ is not necessarily normalized!)
-
----
-
-<iframe src="https://player.vimeo.com/video/546515481?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1138" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Flat and smooth shading in Blender"></iframe>
 
 # $(u, v)$ Coordinates
 
--   In the case of a mesh, there are infinitely many possible ways to create a $(u, v)$ mapping on the surface.
+-   In the case of an arbitrary mesh, there are infinitely many possible ways to create a $(u, v)$ mapping on the surface.
 
 -   In *meshes*, each element of the mesh is made to cover a specific portion of the entire space $[0, 1] \times [0, 1]$.
 
@@ -97,35 +72,6 @@ Model: 44,000 vertices, 80,000 triangles.
 ---
 
 <center>![](./media/blender-uv-mapping.webp)</center>
-
-# [Wavefront OBJ](https://en.wikipedia.org/wiki/Wavefront_.obj_file)
-
--   It is a very simple format, widely used to store meshes (not just triangles).
-
--   Example (beginning of the `minicooper.obj` model):
-
-    ```text
-    # Vertices
-    v  20.851225 -39.649834 32.571609
-    v  20.720263 -39.659435 32.675613
-    v  20.589304 -39.649834 32.571609
-    …
-    # Normals
-    vn  -0.000006 38.811405 3.583478
-    vn  -0.000006 38.811405 3.583478
-    vn  -0.000006 38.811405 3.583478
-    …
-    # Triangles («faces»). Indices start from 1, not from 0!
-    f 3//3 2//2 1//1
-    f 4//4 3//3 1//1
-    f 5//5 4//4 1//1
-    ```
-
-# OBJ Files
-
--   The easiest way to view them is to use [Blender](https://www.blender.org/), of course! Under Linux you can also use `openctm-tools`, which is more lightweight (the command `ctmviewer FILENAME` displays an OBJ file in an interactive window).
-
--   The website of [J. Burkardt](https://people.sc.fsu.edu/~jburkardt/data/obj/obj.html) contains many freely downloadable OBJ files (I took the Mini Cooper model from there).
 
 # Ray Intersection
 
@@ -225,11 +171,11 @@ Model: 44,000 vertices, 80,000 triangles.
 
 <center>![](./media/pathtracer100.webp)</center>
 
-This image contains three geometric shapes (two planes and a sphere), and was calculated in ~156 seconds.
+This image contains three geometric shapes (two planes and a sphere), and was calculated  in ~156 seconds by a code written in a compiled language (FreePascal).
 
 ---
 
-<iframe src="https://player.vimeo.com/video/517979969?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1934" height="810" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Moana (Clements, Musker, Hall, Williams) Beach scene (no sound)"></iframe>
+![](media/moana-beach-scene.jpg){height=720px}
 
 # [*Moana island scene*](https://www.disneyanimation.com/resources/moana-island-scene/)
 
@@ -302,141 +248,7 @@ This image contains three geometric shapes (two planes and a sphere), and was ca
 
 -   Scenes are often almost completely occupied by a few complex objects, and in this case AABBs do not provide any advantage (as in the previous image).
 
--   However, there are several sophisticated optimizations that transform the problem of looking for ray-triangle hits from $O(N)$ to $O(\log_2 N)$. The most common acceleration structures are [KD-trees](https://en.wikipedia.org/wiki/K-d_tree) and [Bounding Volume Hierarchies](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy). They are both explained in the [book by Pharr, Jakob & Humphreys](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration); we will quickly explain the former.
-
-# KD-trees
-
-# KD-trees
-
-- KD-trees are a specific application of a broader family of algorithms called *Binary Space Partitioning* (BSP).
-
-- BSP algorithms are used for searching in spatio-temporal domains; in our case, the problem is to find the potential triangle in the *mesh* that intersects a given ray.
-
-- BSP methods are iterative, and at each iteration, they partition the volume of the space to be searched.
-
-# Bisection Method
-
-- Let's recall the bisection method used to find the zeros of a function, which is explained in the TNDS course (II year of the Bachelor's degree).
-
-- Given a continuous function $f: [a, b] \rightarrow \mathbb{R}$ such that $f(a) \cdot f(b) \leq 0$, the intermediate value theorem guarantees that $\exists x \in [a, b]: f(x) = 0$.
-
-- The bisection method consists of dividing the interval $[a, b]$ into two parts $[a, c]$ and $[c, b]$, with $c = (a + b)/2$, and applying the method to the sub-interval where the intermediate value theorem still holds.
-
-- It can be shown that to achieve a precision $\epsilon$ in estimating the zero, $N = \log_2 ((b - a)/\epsilon)$ steps are needed, i.e., $O(\log N)$: it's very efficient\!
-
------
-
-<p style="text-align:center">![](media/bisection-method.svg){height=520px}</p>
-
-If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient to reach a precision of $\pm 2^{-20} = \pm 10^{-6}$.
-
-# BSP Methods
-
-- BSP methods enclose all the shapes of a world within a bounding box, then divide it into two regions, partitioning the shapes into one half or the other (or both, if they lie along the division).
-
-- This subdivision is repeated recursively up to a certain depth: ideally, until the bounding boxes contain a certain (small) number of objects.
-
-- KD-trees are a type of BSP where the bounding boxes are the well-known AABBs.
-
-- KD-trees are explained and implemented in [section 4.4 of *Physically Based Rendering*](https://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Kd-Tree_Accelerator) (Pharr, Jakob, Humphreys, 3rd ed.)
-
------
-
-<center>![](./media/kd-tree.svg){height=640px}</center>
-[Figure 4.14 from *Physically Based Rendering* (Pharr, Jakob, Humphreys, 3rd ed.)]{style="float:right"}
-
-# KD-trees and *Meshes*
-
-- This is the procedure to build a KD-tree in memory:
-
-  1.  Calculate the AABB of the *mesh*;
-  2.  Decide along which direction (x/y/z) to perform the split;
-  3.  Partition the triangles between the two halves of the AABB; triangles that fall along the splitting line are included in **both** halves;
-  4.  Repeat the procedure for each of the two halves until the number of triangles in each compartment is below a certain threshold (e.g., between 1 and 10).
-
-- This procedure needs to be done **only once**, before solving the rendering equation.
-
-# KD-tree in Memory
-
-- A KD-tree can be stored in a tree structure built when loading the mesh.
-
-- To represent the splits, a `KdTreeSplit` type can be defined:
-
-    ```python
-    class KdTreeSplit:
-        axis: int     # Index of the axis; 0: x, 1: y, 2: z
-        split: float  # Location of the split along the axis
-    ```
-
-- The generic node of the tree is represented like this:
-
-    ```python
-    class KdTreeNode:
-        entry: Union[KdTreeSplit, List[int]]  # List[int]: List of indexes to ◺
-        left: Optional[KdTreeNode]
-        right: Optional[KdTreeNode]
-    ```
-
------
-
-<center>![](./media/kd-tree-structure.svg){height=640px}</center>
-
-# Ray Intersection
-
-- To determine if a ray intersects a *mesh* optimized with a KD-tree, follow this procedure:
-
-  1.  Check if the ray intersects the AABB; if not, the process stops.
-  2.  Determine which of the two halves is crossed first by the ray:
-      * If only one half is crossed, analyze only that one;
-      * If both are crossed, first analyze the one intersected for smaller values of $t$.
-  3.  The traversal continues until a leaf node is reached. At that point, analyze all triangles in the node using the linear algorithm.
-
-- For the Oceania tree, in the case of a perfectly balanced KD-tree (50%–50%), fewer than 25 comparisons are needed to determine the intersection with a ray.
-
------
-
-<center>![](./media/kd-tree-traversal.svg){height=640px}</center>
-[Figure 4.17 from *Physically Based Rendering* (Pharr, Jakob, Humphreys, 3rd ed.)]{style="float:right"}
-
-# Details
-
-- To build a KD-tree, some questions need to be answered:
-
-  1.  At each split, along which axis is it best to perform the subdivision? (The axis with the widest extent?)
-  2.  At which point on the axis should the split occur? (The midpoint?)
-  3.  When is it best to stop? (When a node contains fewer than *N* shapes?)
-
-- Answering these questions is not trivial, but finding an *efficient* solution is important\!
-
-# Irregularity of *Meshes*
-
-<center>![](./media/toy-story-woody-mesh.webp)</center>
-
-# "Cost" of a KD-tree
-
--   To build an efficient KD-tree, the *computational cost* of the tree needs to be evaluated, which is given by
-
-
-    $$
-    C(t) = C_\text{trav} + P_L \cdot C(L) + P_R \cdot C(R),
-    $$
-
-    where
-
-    1.  $C_\text{trav}$ is the *traversal cost*: the time required to descend one level in the tree (constant);
-    2.  $P_L, P_R$ are the probabilities that the ray hits a triangle within the branch;
-    3.  $C(L), C(R)$ is the cost of the subnode, i.e., the time required to analyze the left/right side.
-
-# Optimized Construction
-
-- These assumptions can be made:
-
-    - $P_L$ and $P_R$ (probability that the ray hits a shape) are proportional to the total surface area of the triangles in the subcell;
-    - Calculate $C(L)$ and $C(R)$ recursively, assuming that for terminal nodes, it is proportional to the number of triangles.
-
-- A robust algorithm tries various tree splits, calculating the cost of each, and chooses the split that leads to the lowest cost (“Surface area heuristic”).
-
-- The speed benefits can range from a factor of 10 to a factor of 100 compared to a KD-tree built with simple assumptions.
+-   However, there are several sophisticated optimizations that transform the problem of looking for ray-triangle hits from $O(N)$ to $O(\log_2 N)$. The most common acceleration structures are [KD-trees](https://en.wikipedia.org/wiki/K-d_tree) and [Bounding Volume Hierarchies](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy) (see [this video by Sebastian Lague](https://www.youtube.com/watch?v=C1H4zIiCOaI&pp=ygUZYm91bmRpbmcgdm9sdW1lIGhpZXJhcmNoeQ%3D%3D)). They are both explained in the [book by Pharr, Jakob & Humphreys](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration).
 
 
 # Debugging {#debugging}
@@ -545,11 +357,13 @@ If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient 
 
 -   GitHub allows you to configure an [issue template](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository).
 
-# Identifying *Faults* Scientifically (Zeller)
+# Identifying *Faults* Scientifically
 
 1.  Observe/reproduce a *failure*
 2.  Formulate a hypothesis about the *fault* that caused the *failure*
 3.  Use the hypothesis to predict where an infection might be visible (e.g., using a debugger or `print` statements). If the observation contradicts the prediction, refine the hypothesis.
+
+We have already seen this pattern many times with LLMs: you must *verify* claims (ChatGPT’s output, reason for a fault) before assuming they are true!
 
 # Debugging tools
 
@@ -560,6 +374,190 @@ If the zero $x_0$ is known with precision $\pm 1$, just 20 steps are sufficient 
 | Dynamic analysis                            | [Valgrind](https://valgrind.org/docs/manual/mc-manual.html)                                            |
 | Record-and-replay                           | [rr](https://rr-project.org/), [UDB](https://undo.io/products/udb/)                                    |
 | Fuzzing debuggers                          | [AFL++](https://github.com/AFLplusplus/AFLplusplus), [libFuzzer](https://llvm.org/docs/LibFuzzer.html) |
+
+
+# Using LLMs to debug codes
+
+-   Today, LLMs can be very effective in finding some types of errors
+
+-   Example of a prompt:
+
+    ```
+    The following C++ code should print all the numbers from 0 to 10 in steps of 2, so the expected output should be 0, 2, 4, 6, 8, 10. However the code fails to print 10:
+
+        for (int i{}; i < 10; ++i) {
+            println("{}", i);
+        }
+
+    Can you help me in understanding why it does not work?
+    ```
+
+-   More advanced LLMs can acts as *agents*: they interact with your build system to modify the code, compile it, run tests, and iterate. Examples: [Claude Code](https://claude.com/product/claude-code), [Gemini Code Assist](https://plugins.jetbrains.com/plugin/24198-gemini-code-assist)…
+
+# Are they worth it?
+
+-   Sometimes, they can be very useful!
+
+-   However, they have the tendency to overdo changes
+
+-   As described in the article [Coding models are doing too much](https://nrehiew.github.io/blog/minimal_editing/), the authors purposefully injected some simple bugs (e.g., changing `<` into `<=`) and then asked the LLM to fix it. The result often overwrote the whole function instead of just fixing that single character!
+
+-   As I have said repeatedly, **never trust a LLM** before having verified its suggestions!
+
+# Ethical considerations about bugs and bug reports
+
+# Claude Mythos Preview
+
+-   [Anthropic](https://www.anthropic.com/glasswing) is a key player in the LLM world. They produce very effective LLM agents like Code, Sonnet, Opus, etc.
+
+-   In April 2026, they announced their new product, Claude Mythos, which seems to have [incredible potential](https://red.anthropic.com/2026/mythos-preview/):
+
+    #.   They discovered a 27-year-old (quite harmless) bug in [OpenBSD](https://www.openbsd.org/), one of the most secure Operating System on Earth;
+    #.   They discovered a 16-year-old bug in [FFmpeg](https://www.ffmpeg.org/), which we learned to use just a few days ago
+
+-   This new tool has huge ethical implications, which Anthropic addressed by starting the [Glasswing project](https://www.anthropic.com/glasswing).
+
+# Project Glasswing
+
+-   Instead of releasing Claude Mythos to the general public, they decided to freely grant its usage (100 M$ tokens) to “selected partners” like Microsoft, Apple, NVIDIA, The Linux Foundation, Broadcom, etc.
+
+-   Each partner will use Mythos to find and fix bugs in **their own codebase**
+
+-   The general public won’t have access to Claude Mythos: this prevents malicious actors (hackers) from compromising critical systems
+
+# Why are bug reports critical?
+
+-   Consider this code:
+
+    ```c++
+    float buffer[1024]; // This is large enough for any reasonable case
+    for(int i{}; i < nsamples; ++i) {
+        buffer[i] = read_next_float();
+    }
+    ```
+
+-   The number `1024` was probably picked as a very large limit, because **in normal conditions** the program will never read more than this.
+
+-   However, if you pass the wrong input and it’s too large, you will overwrite the memory and likely cause a *segmentation fault*
+
+-   This turns out to be an annoyance, as the program crashes. But…
+
+# Why are bug reports critical?
+
+-   …what if the user is a **malicious actor** who wants to take control of the machine?
+
+-   A possible hacking technique here would be to pass 1024 floating point numbers, followed by some specific machine code (the *payload*)
+
+-   The `buffer` variable resides on the stack, where other crucial information about the program flow is saved (return address of the function). By carefully injecting specific values after the 1024 `float`-s, the hacker can overwrite the return address and force the program to execute arbitrary code that can grant the hacker access to the machine.
+
+-   This bug is no longer an annoyance: it is a **security hole**!
+
+# Can scientific code be exploited for this?
+
+-   You might think this is relevant for operating system developers, but all of this can affect **you** as well!
+
+-   Let’s imagine a possible example
+
+---
+
+-   Suppose you developed a library to perform conversion between coordinate systems (Cartesian, spherical, cylindrical, etc.)
+
+-   ESA wants to publish an interactive 3D viewer of Planck’s maps of the Cosmic Microwave Background and internally uses your library in a web app
+
+    <center>![](media/cmb-3d-view.jpg){height=240px}</center>
+
+-   However, your library has a [zero-day vulnerability](https://en.wikipedia.org/wiki/Zero-day_vulnerability), i.e., a bug that nobody discovered yet. This bug works similarly to what we just described: it lets malicious actors run arbitrary code on the machine hosting the web app.
+
+---
+
+-   The malicious actors execute a payload to gain a remote shell
+
+-   Being an ESA machine, the webserver is likely connected with the internal network
+
+    <center>![](media/computer_networks.jpg)</center>
+
+-   ESA and EUMETSAT develop weather satellites like METEOSAT and MetOp, and their data likely land on some of the computers in this schema
+
+---
+
+-   Once a malicious actor has access to satellite data, several bad things can happen:
+
+    -   Access to raw data before they are processed (e.g., to have them before sensitive information is hidden)
+
+    -   Modification/removal of existing data (e.g., hiding hints that a hurricane is forming near a densely inhabited area)
+
+-   All of this because of a bug in a seemingly harmless numerical library any of us could have developed!
+
+# Cyberwarfare
+
+::: side-by-side
+
+::: content
+
+-   In modern times, a new idea of warfare emerged: the “cyberwarfare”
+
+-   One of the most studied cases in literature is Russia, as its leaders have repeatedly talked about this concept and theorized it (the so-called “Gerasimov doctrine”, a term used by analysts after a talk by [Valery Gerasimov](https://en.wikipedia.org/wiki/Valery_Gerasimov))
+
+-   It is well explained in the book [Brigate russe](https://www.bompiani.it/catalogo/brigate-russe-9788830119437) (Marta Ottaviani, ed. Bompiani)
+
+:::
+
+::: media
+
+![](media/ottaviani-brigate-russe.jpg){width=360px}
+
+:::
+:::
+
+# Cyberwarfare
+
+-   In cyberwarfare, you employ cyber capabilities to attack your enemy:
+
+    -   Spread of fake news through social media and mass media
+    -   Espionage and sabotage of critical infrastructure
+    -   Cyberattacks
+
+-   Historically, Russia was the first country to invest in this because of the possibility to fill the huge gap with the raw military power of other countries like China and the US (cyberwarfare is much cheaper!)
+
+# Examples of cyberwarfare
+
+-   [Russia attacked Estonia in 2007](https://en.wikipedia.org/wiki/2007_cyberattacks_on_Estonia) because of the relocation of a statue from a public square to a military cemetery. This is considered to have been the first true general test of “cyberwarfare”
+
+-   Three weeks before Russia invaded Georgia in 2008, Russian cyberattacks targeted [English local media and Government sites](https://en.wikipedia.org/wiki/Cyberattacks_during_the_Russo-Georgian_War) to disrupt the flow of information regarding the conflict
+
+-   In the years 2014–2015, Russia targeted Ukraine with cyberattacks to [halt the Maidan revolution and to affect the (internationally unrecognized) referendum in Crimea](https://mwi.westpoint.edu/from-georgia-to-ukraine-seventeen-years-of-russian-cyber-capabilities-at-war/)
+
+# Bug reporting
+
+-   The potential impact of bugs in one’s own code cannot be determined easily
+
+-   It is extremely important to fix bugs in your code…
+
+-   …but, as we just saw, it is equally important to report bugs to others as well!
+
+-   Open-source projects usually encourage people to provide pull requests to fix issues. But what about closed-source programs like Microsoft Windows, Adobe Photoshop, Google Sheet…?
+
+
+# When things go wrong
+
+-   [18 year old guy arrested for reporting a shamefully stupid bug in the new Budapest e-Ticket system](https://web.archive.org/web/20170725211521/https://blog.marai.me/2017/07/24/18-year-old-arrested-bkk-tsystems-e-ticket/)
+
+-   [County pays $600,000 to pentesters it arrested for assessing courthouse security ](https://arstechnica.com/security/2026/01/county-pays-600000-to-pentesters-it-arrested-for-assessing-courthouse-security/) (security experts were asked to review the IT system of a Iowa court and were jailed because of this.)
+
+-   [Students and lecturer in FreeHour hacking case get presidential pardons](https://timesofmalta.com/article/pardon-issued-students-lecturer-ethical-hacking-case.1112315) (four students in Malta reported a vulnerability and were jailed.)
+
+-   [I found a Vulnerability. They found a Lawyer.](https://dixken.de/blog/i-found-a-vulnerability-they-found-a-lawyer) (A diving instructor found a vulnerability on the website of an insurance company and reported it, only to be threatened with legal consequences.)
+
+
+# Report bugs in commercial software
+
+-   Hopefully, these failures in handling bug reports are becoming rarer and rarer
+
+-   In general, do *not* report the bug on social media or your website! Think that you are protecting users, not only the firm. Instead, inform the firm through private channels (big firms usually have a “Vulnerability Disclosure Policy”, which offer legal protections for contributors)
+
+-   You should give them some time to acknowledge the bug and fix it. After a grace period (usually 90 days), you can probably disclose the bug
+
+-   Some firms organize [bug bounty programs](https://en.wikipedia.org/wiki/Bug_bounty_program)
 
 ---
 title: "Lesson 9"
