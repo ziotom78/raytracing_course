@@ -425,7 +425,7 @@ We have already seen this pattern many times with LLMs: you must *verify* claims
 
 -   The general public won’t have access to Claude Mythos: this prevents malicious actors (hackers) from compromising critical systems
 
-# Why are bug reports critical?
+# How can hackers exploit a bug?
 
 -   Consider this code:
 
@@ -442,7 +442,7 @@ We have already seen this pattern many times with LLMs: you must *verify* claims
 
 -   This turns out to be an annoyance, as the program crashes. But…
 
-# Why are bug reports critical?
+# How can hackers exploit a bug?
 
 -   …what if the user is a **malicious actor** who wants to take control of the machine?
 
@@ -452,9 +452,15 @@ We have already seen this pattern many times with LLMs: you must *verify* claims
 
 -   This bug is no longer an annoyance: it is a **security hole**!
 
-# Can scientific code be exploited for this?
+# How does this affect you?
 
--   You might think this is relevant for operating system developers, but all of this can affect **you** as well!
+-   Even seemingly innocent bugs can have dangerous consequences and open security holes.
+
+-   LLMs did not create this problem, but by having the potential to discover *several of them* all at once and with relatively little effort, the problem is exhacerbated.
+
+-   You might think this is relevant only for operating system developers, but you are just targeting scientific software.
+
+-   Do not be fooled! All of this can affect **you** as well!
 
 -   Let’s imagine a possible example
 
@@ -470,23 +476,49 @@ We have already seen this pattern many times with LLMs: you must *verify* claims
 
 ---
 
+::: side-by-side
+
+::: content
+
 -   The malicious actors execute a payload to gain a remote shell
 
 -   Being an ESA machine, the webserver is likely connected with the internal network
 
-    <center>![](media/computer_networks.jpg)</center>
-
 -   ESA and EUMETSAT develop weather satellites like METEOSAT and MetOp, and their data likely land on some of the computers in this schema
+
+:::
+
+::: media
+
+![](media/computer_networks.jpg)
+
+:::
+
+:::
 
 ---
 
+::: side-by-side
+
+::: contents
+
 -   Once a malicious actor has access to satellite data, several bad things can happen:
 
-    -   Access to raw data before they are processed (e.g., to have them before sensitive information is hidden)
+    -   Access to raw data before they are processed and filtered (e.g., to find minute erosion signs in dams or gas reservoirs)
 
     -   Modification/removal of existing data (e.g., hiding hints that a hurricane is forming near a densely inhabited area)
 
 -   All of this because of a bug in a seemingly harmless numerical library any of us could have developed!
+
+:::
+
+::: media
+
+![](media/satellite-image.webp)
+
+:::
+
+:::
 
 # Cyberwarfare
 
@@ -496,7 +528,9 @@ We have already seen this pattern many times with LLMs: you must *verify* claims
 
 -   In modern times, a new idea of warfare emerged: the “cyberwarfare”
 
--   One of the most studied cases in literature is Russia, as its leaders have repeatedly talked about this concept and theorized it (the so-called “Gerasimov doctrine”, a term used by analysts after a talk by [Valery Gerasimov](https://en.wikipedia.org/wiki/Valery_Gerasimov))
+-   One of the most studied cases in literature is Russia, as its leaders have repeatedly talked about this concept (the so-called “[Gerasimov](https://en.wikipedia.org/wiki/Valery_Gerasimov) doctrine”)
+
+-   With cyberwarfare, the boundary between “war” and “pace” becomes less definite
 
 -   It is well explained in the book [Brigate russe](https://www.bompiani.it/catalogo/brigate-russe-9788830119437) (Marta Ottaviani, ed. Bompiani)
 
@@ -515,7 +549,7 @@ We have already seen this pattern many times with LLMs: you must *verify* claims
 
     -   Spread of fake news through social media and mass media
     -   Espionage and sabotage of critical infrastructure
-    -   Cyberattacks
+    -   → **Cyberattacks** ←
 
 -   Historically, Russia was the first country to invest in this because of the possibility to fill the huge gap with the raw military power of other countries like China and the US (cyberwarfare is much cheaper!)
 
@@ -527,13 +561,22 @@ We have already seen this pattern many times with LLMs: you must *verify* claims
 
 -   In the years 2014–2015, Russia targeted Ukraine with cyberattacks to [halt the Maidan revolution and to affect the (internationally unrecognized) referendum in Crimea](https://mwi.westpoint.edu/from-georgia-to-ukraine-seventeen-years-of-russian-cyber-capabilities-at-war/)
 
+# How to prevent these attacks?
+
+-   EU is allocating significant resources in cyberdefense:
+
+    -   [Cyber Resilience Act](https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act) (CRA): mandatory security requirements for digital products sold in Europe (December 2024)
+    -   [Cyber Solidarity Act](https://digital-strategy.ec.europa.eu/en/policies/cyber-solidarity) (CSA): ~1 G€ to fund a system that uses AI to spot cyberattacks as soon as possible (*Cybersecurity Alert System*), implements a system that can substitute essential systems compromised by an attack (*Cybersecurity Emergency Mechanism*), and establishes a mechanism to review past incidents (*Cybersecurity Incident Review Mechanism*)
+
+-   Apart from these institutional measures, what can one do to improve cybersecurity?
+
 # Bug reporting
 
 -   The potential impact of bugs in one’s own code cannot be determined easily
 
 -   It is extremely important to fix bugs in your code…
 
--   …but, as we just saw, it is equally important to report bugs to others as well!
+-   …but, as we just saw, it is equally important to **report bugs to others** as well!
 
 -   Open-source projects usually encourage people to provide pull requests to fix issues. But what about closed-source programs like Microsoft Windows, Adobe Photoshop, Google Sheet…?
 
