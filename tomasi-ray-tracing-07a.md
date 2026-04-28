@@ -2,7 +2,7 @@
 
 # Creating animations
 
--   The mathematics of transformations that we introduced in the last lesson allows us to easily create *static* images.
+-   The mathematics of homogeneous transformations allows us to easily create *static* images using a matrix formalism.
 
 -   What would change if we wanted to create **animations** instead? (We will limit ourselves to the case where we only animate transformations.)
 
@@ -233,7 +233,7 @@
 
 # *Slerp* {#slerp-and-rotations}
 
--   *Slerp* is an acronym for “Spherical Linear Interpolation”. It refers to the interpolation $r(t)$ between two rotations $r_1$ and $r_2$.
+-   *Slerp* (“Spherical Linear Interpolation”) interpolates $r(t)$ between $r_1$ and $r_2$.
 
 -   The formula for $r(t) \in \mathbb{H}$ for $t \in [0, 1]$ is simply
 
@@ -436,7 +436,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
     \end{aligned}
     $$
 
--   However, they are not the same: the outer product returns an oriented area, while the cross product returns an axial vector.
+-   However, they are not the same: the outer product returns an oriented area, while the cross product returns an axial vector (pseudovector).
 
 # Outer and Vector Product
 
@@ -582,6 +582,21 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
     $$
     z = \left|z\right|\bigl(\cos\theta + i\sin\theta\bigr).
     $$
+
+# Combining $n$-vectors
+
+-   In Clifford’s algebras, one can combine multiple objects in **multivectors**. For instance, scalars and vectors:
+    \[
+    3 + 2 \hat e_3.
+    \]
+-   Or vectors and bivectors:
+    \[
+    5 \hat e_2 - 4 \hat e_{31}.
+    \]
+-   Or all of three:
+    \[
+    6 - 2 \hat e_1 + 7 \hat e_{12}.
+    \]
 
 # Existence of the Inverse
 
