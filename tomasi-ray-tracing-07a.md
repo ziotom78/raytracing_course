@@ -585,15 +585,13 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 # Combining $n$-vectors
 
--   In Clifford’s algebras, one can combine multiple objects in **multivectors**. For instance, scalars and vectors:
+-   The result of a geometric product between $\vec v$ and $\vec w$ is the sum of a scalar ($\vec v \cdot \vec w$) and a bivector ($\vec v \wedge \vec w$).
+
+-   Following the same reasoning, one might want to add other objects together, like a scalar and a vector
     \[
     3 + 2 \hat e_3.
     \]
--   Or vectors and bivectors:
-    \[
-    5 \hat e_2 - 4 \hat e_{31}.
-    \]
--   Or all of three:
+-   In general, one can sum together different objects, getting a **multivector**:
     \[
     6 - 2 \hat e_1 + 7 \hat e_{12}.
     \]
@@ -650,21 +648,19 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 # Examples
 
--   If you know how to operate on the elements of $\left\{\hat e_i\right\}$, it is easy to perform calculations on arbitrary vectors.
+If you know how to operate on the elements of $\left\{\hat e_i\right\}$, it is easy to perform calculations on arbitrary vectors. For example, given
 
--   Take for example the vectors
+$$\vec v = 2\hat e_1 + \hat e_2,\quad \vec w = -\hat e_2.$$
 
-    $$\vec v = 2\hat e_1 + \hat e_2,\quad \vec w = -\hat e_2.$$
+then
 
-    Then:
-
-    $$
-    \begin{aligned}
-    \vec v \vec w &= \bigl(2\hat e_1 + \hat e_2\bigr) \bigl(-\hat e_2\bigr) = 2\hat e_1 \hat e_2 - \hat e_2^2 = 2\hat e_{12} - 1,\\
-    \vec v^2 &= \vec v \vec v = \bigl(2\hat e_1 + \hat e_2\bigr) \bigl(2\hat e_1 + \hat e_2\bigr) =\\
-    &= 4\hat e_1^2  + \cancel{2 \hat e_{21}} + \cancel{2\hat e_{12}} + \hat e_2^2 = 5.\\
-    \end{aligned}
-    $$
+$$
+\begin{aligned}
+\vec v \vec w &= \bigl(2\hat e_1 + \hat e_2\bigr) \bigl(-\hat e_2\bigr) = 2\hat e_1 \hat e_2 - \hat e_2^2 = 2\hat e_{12} - 1,\\
+\vec v^2 &= \vec v \vec v = \bigl(2\hat e_1 + \hat e_2\bigr) \bigl(2\hat e_1 + \hat e_2\bigr) =\\
+&= 4\hat e_1^2  + \cancel{2 \hat e_{21}} + \cancel{2\hat e_{12}} + \hat e_2^2 = 5.\\
+\end{aligned}
+$$
 
 # Geometric Algebra in 2D
 
@@ -692,7 +688,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
     1.  If only $\textcolor{#2826a3}{\alpha}$ is nonzero, the subspace is isomorphic to $\mathbb{R}$.
     2.  If only $\textcolor{#26a342}{\beta_1}$ and $\textcolor{#26a342}{\beta_2}$ are nonzero, it is isomorphic to the vector space $\mathbb{R}^2$.
-    3.  If only $\textcolor{#a34226}{\gamma}$ is nonzero, it is  isomorphic to $\mathbb{R}$; these multivectors are called *pseudoscalars*.
+    3.  If only $\textcolor{#a34226}{\gamma}$ is nonzero, the space is peculiar; elements like $\gamma \hat e_{12}$ are called *pseudoscalars*.
 
 -   Apart from these trivial cases, are there other interesting subalgebras?
 
@@ -709,11 +705,11 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
     $$
     \begin{aligned}
     (3 + i) (1 - 2 i) &= 3 + i - 6 i + 2 = 5 - 5i,\\
-    (3 + \hat e_{12}) (1 - 2\hat e_{12}) &= 3 + \hat e_{12} - 6 \hat e_{12} + 2 = 5 - 5 \hat e_{12}.
+    (3 + \hat e_{12}) (1 - 2\hat e_{12}) &= 3 + \hat e_{12} - 6 \hat e_{12} - 2 \hat e_{1212} = 5 - 5 \hat e_{12}.
     \end{aligned}
     $$
 
-    They coincide! Multivectors of the form $\textcolor{#682673}{\alpha} + \textcolor{#734226}{\gamma} \hat e_{12}$ are isomorphic to $\mathbb{C}$, and we set $\hat e_{12} = I$ (**uppercase**!).
+    They coincide! The algebra of multivectors of the form $\textcolor{#682673}{\alpha} + \textcolor{#734226}{\gamma} \hat e_{12}$ is isomorphic to $\mathbb{C}$, and we set $\hat e_{12} = I$ (**uppercase**!).
 
 # Multivectors and 2D Rotations
 
@@ -753,7 +749,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 -   In 2D, $z \vec v = \vec v z^*$ holds, where $z^*$ is the complex conjugate.
 
--   Using these properties, we can rewrite the rotation operation into something similar to the one [seen for quaternions](tomasi-ray-tracing-06a.html#/slerp-and-rotations):
+-   Using these properties, we can rewrite the rotation operation into something similar to the one [seen for quaternions](tomasi-ray-tracing-07a.html#/slerp-and-rotations):
 
     $$
     \vec v' = e^{I\theta} \vec v = e^{I\theta/2} e^{I\theta/2} \vec v = e^{I\theta/2} \left(e^{I\theta/2} \vec v\right) = e^{I\theta/2} \vec v e^{-I\theta/2}.
@@ -780,15 +776,15 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 -   In 3D, a rotation is specified by the angle and the axis of rotation. However, in GA you don't specify the *axis*, but the *plane* of rotation: a bivector!
 
--   If the rotation plane is the **normalized** bivector $\hat n$, the vector $\vec v$ rotates into $\vec v'$ through
+-   If the rotation plane is the **normalized** bivector $\hat n$, the vector $\vec v$ rotates into $\vec v'$ around the origin through
 
     $$
     \vec v' = e^{\hat n \theta/2} \vec v e^{-\hat n \theta/2},
     $$
 
-    which is the expression we [already saw](tomasi-ray-tracing-06a.html#/alternative-2d-rotation) in the 2D case, where $\hat n = I = \hat e_{12}$: the basis bivector lying in the complex plane.
+    which is the expression we [already saw](tomasi-ray-tracing-07a.html#/alternative-2d-rotation) in the 2D case, where $\hat n = I = \hat e_{12}$: the basis bivector lying in the complex plane.
 
--   We have a geometric interpretation of the presence of $i$ in the classic complex rotor $e^{i\theta}$!
+-   We have a geometric interpretation of the classic complex rotor $e^{i\theta}$!
 
 # Quantum Mechanics
 
@@ -816,7 +812,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 -   It turns out that the $\vec q$ in $q = (q_0, \vec q)$ is not a vector, but a bivector!
 
--   As is easy to demonstrate, all the [properties we listed](tomasi-ray-tracing-06a-clifford-algebras.html#/quaternion-notation) continue to be valid.
+-   As it is easy to demonstrate, all the [properties we listed](tomasi-ray-tracing-07a.html#/quaternion-notation) continue to be valid.
 
 # Quantum Mechanics
 
@@ -859,7 +855,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 Two interesting sub-branches of Geometric Algebras are:
 
-1.  **Projective geometric algebras**: By generalizing the implicit equation for 3D planes $ax + by + cz + d = 0$, one can derive the concept of *point* and *direction* using a 4D space. ([Homogeneous coordinates](tomasi-ray-tracing-05a#homogeneous-coordinates) originate from this framework.) See the YouTube Video [A Swift Introduction to Projective Geometric Algebra](https://www.youtube.com/watch?v=0i3ocLhbxJ4);
+1.  **Projective geometric algebras**: By generalizing the implicit equation for 3D planes $ax + by + cz + d = 0$, one can derive the concept of *point* and *direction* using a 4D space. ([Homogeneous coordinates](tomasi-ray-tracing-05a.html#homogeneous-coordinates) originate from this framework.) See the video [A Swift Introduction to Projective Geometric Algebra](https://www.youtube.com/watch?v=0i3ocLhbxJ4);
 
 2.  **Conformal geometric algebras**: These are a further generalization of projective geometric algebras that can represent any *conformal transformation* (i.e., a transformation that preserves relative angles) in 3D space using a 5D (!) versor $t$, so that any of these transformations is just $v' = t v t^{-1}$.
 
