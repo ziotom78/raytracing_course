@@ -747,7 +747,7 @@ label("$\hat e_3 \wedge \hat e_1$", (0.5, 0.05, 0.5));
 
 # Alternative 2D Rotation {#alternative-2d-rotation}
 
--   The product between two complex numbers commutes, and this is also true within the Clifford subalgebra that contains multivectors in the form $\alpha + \hat e_1 \hat e_2 \beta$.
+-   The product between two complex numbers commutes, and this is also true for 2D multivectors in the form $\alpha + \hat e_1 \hat e_2 \beta$.
 
 -   However, in the formula $\vec v' = e^{I\theta} \vec v$ the *vector* $\vec v$ appears, which is not part of the subalgebra: in this case the product does not commute!
 
