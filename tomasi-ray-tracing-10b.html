@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="it-IT">
 <head>
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/reset.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.css">
   <style>
     .reveal .sourceCode {  /* see #7635 */
       /* overflow: visible; */
@@ -94,11 +94,11 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/theme/white.min.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/theme/white.min.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -114,7 +114,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -396,45 +396,45 @@ and 1 is added, resulting in <code>0b11110100</code> (8 bits).</p></li>
 <p><small></p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Name</th>
 <th>Example (Julia)</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>And</td>
 <td><code>0b1001 &amp; 0b0011 == 0b0001</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Or</td>
 <td><code>0b1001 | 0b0011 == 0b1011</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Xor</td>
 <td><code>0b1001 ^ 0b0011 == 0b1010</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Arithmetic shift</td>
 <td><code>0b1001 &gt;&gt; 1 == 0b100</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td></td>
 <td><code>Int8(-12) &gt;&gt; 1 == -6</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td></td>
 <td><code>Int16(-12) &gt;&gt; 1 == -6</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Logical shift</td>
 <td><code>0b1001 &gt;&gt;&gt; 1 == 0b100</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td></td>
 <td><code>Int8(-12) &gt;&gt;&gt; 1 == 122</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td></td>
 <td><code>Int16(-12) &gt;&gt;&gt; 1 == 32762</code></td>
 </tr>
@@ -541,26 +541,47 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a hr
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 32-bit variable</span></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    rot <span class="op">=</span> oldstate <span class="op">&gt;&gt;</span> <span class="dv">59</span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Rotation with a wrap; in Java/Kotlin, use Integer.rotateRight(xorshifted, rot)</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># In Java, apply a two&#39;s complement (&amp; 0xffffffffL) to return a long</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> to_uint32((xorshifted <span class="op">&gt;&gt;</span> rot) <span class="op">|</span> (xorshifted <span class="op">&lt;&lt;</span> ((<span class="op">-</span>rot) <span class="op">&amp;</span> <span class="dv">31</span>)))</span></code></pre></div>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Rotation with a wrap</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> to_uint32((xorshifted <span class="op">&gt;&gt;</span> rot) <span class="op">|</span> (xorshifted <span class="op">&lt;&lt;</span> ((<span class="op">-</span>rot) <span class="op">&amp;</span> <span class="dv">31</span>)))</span></code></pre></div>
+</section>
+<section id="wrapped-rotation" class="slide level1">
+<h1>Wrapped rotation</h1>
+<ul>
+<li><p>This Python code implements a “wrapped rotation” of the bits:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> to_uint32((xorshifted <span class="op">&gt;&gt;</span> rot) <span class="op">|</span> (xorshifted <span class="op">&lt;&lt;</span> ((<span class="op">-</span>rot) <span class="op">&amp;</span> <span class="dv">31</span>)))</span></code></pre></div></li>
+<li><p>Check what your language offers to implement this operation
+effectively:</p>
+<ol>
+<li>In C++20 you can use <a
+href="https://en.cppreference.com/cpp/numeric/rotr"><code>std::rotr</code></a>
+(in <code>&lt;bit&gt;</code>);</li>
+<li>In Rust, there is <a
+href="https://doc.rust-lang.org/std/intrinsics/fn.rotate_right.html"><code>xorshifted.rotate_right(rot)</code></a>;</li>
+<li>In Java/Kotlin, use <a
+href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/rotate-right.html"><code>Integer.rotateRight(xorshifted, rot)</code></a>.</li>
+</ol></li>
+<li><p>Remember that you need a 32-bit value; depending on your
+language, you might have to apply a two’s complement
+(<code>&amp; 0xffffffffL</code>).</p></li>
+</ul>
 </section>
 <section id="tests-for-pcg" class="slide level1">
 <h1>Tests for <code>PCG</code></h1>
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_random():</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    pcg <span class="op">=</span> PCG()</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># You can check these members in a test only if you</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># did not declare &quot;state&quot; and &quot;inc&quot; as private members</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># of the PCG type</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pcg.state <span class="op">==</span> <span class="dv">1753877967969059832</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pcg.inc <span class="op">==</span> <span class="dv">109</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> expected <span class="kw">in</span> [<span class="dv">2707161783</span>, <span class="dv">2068313097</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">3122475824</span>, <span class="dv">2211639955</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">3215226955</span>, <span class="dv">3421331566</span>]:</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> expected <span class="op">==</span> pcg.random()</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_random():</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    pcg <span class="op">=</span> PCG()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># You can check these members in a test only if you</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># did not declare &quot;state&quot; and &quot;inc&quot; as private members</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># of the PCG type</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pcg.state <span class="op">==</span> <span class="dv">1753877967969059832</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pcg.inc <span class="op">==</span> <span class="dv">109</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> expected <span class="kw">in</span> [<span class="dv">2707161783</span>, <span class="dv">2068313097</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">3122475824</span>, <span class="dv">2211639955</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">3215226955</span>, <span class="dv">3421331566</span>]:</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> expected <span class="op">==</span> pcg.random()</span></code></pre></div>
 </section>
 <section id="floating-point-numbers" class="slide level1">
 <h1>Floating-Point Numbers</h1>
@@ -569,14 +590,16 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a hr
 <em>integer</em>.</p></li>
 <li><p>In path tracing, however, we will always need pseudo-random
 numbers <span class="math inline">X_i</span> uniformly distributed on
-<span class="math inline">[0, 1]</span>.</p></li>
-<li><p>Since the PCG implementation we are using is 32-bit and has a
-period of <span class="math inline">2^{32} - 1</span>, it is sufficient
-to normalize the integers returned by the algorithm to obtain the
-uniform distribution:</p>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_float(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.random() <span class="op">/</span> <span class="bn">0xffffffff</span></span></code></pre></div></li>
+<span class="math inline">[0, 1)</span> (avoiding 1 helps when computing
+quantities that are ill-behaved near <span
+class="math inline">x=1</span>, like <code>acos(1 - x)</code>).</p></li>
+<li><p>Since the PCG implementation returns 32-bit numbers, it is
+sufficient to normalize the integers returned by the algorithm with
+<span class="math inline">2^{32}</span> to obtain the uniform
+distribution on <span class="math inline">[0, 1)</span>:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_float(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.random() <span class="op">/</span> <span class="bn">0x100000000</span>  <span class="co"># Result ∈ [0, 1)</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="seed" class="slide level1">
@@ -609,8 +632,8 @@ represents the BRDF of a material, which must contain a
 <code>Pigment</code> member;</li>
 <li>The <code>Material</code> type is <strong>concrete</strong> and
 represents the union of the emissive part of a material (the <span
-class="math inline">L_e</span> term, which we still represent as a
-<code>Pigment</code>) and its BRDF.</li>
+class="math inline">L_e</span> term, still a <code>Pigment</code>) and
+its BRDF.</li>
 </ol></li>
 <li><p>From the abstract types <code>Pigment</code> and
 <code>BRDF</code>, we will then derive a series of concrete
@@ -666,10 +689,10 @@ that band.</p></li>
 <li><p>This is the prototype of <code>BRDF.Eval</code> as implemented in
 <a
 href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L92-L98">pytracer</a>:</p>
-<div class="sourceCode" id="cb8"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BRDF:</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="bu">eval</span>(<span class="va">self</span>, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) <span class="op">-&gt;</span> Color:</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># …</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BRDF:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="bu">eval</span>(<span class="va">self</span>, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) <span class="op">-&gt;</span> Color:</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># …</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="brdf-and-pigment" class="slide level1">
@@ -688,10 +711,10 @@ band are absorbed).</p></li>
 href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L101-L108">pytracer</a>,
 which effectively assumes <span class="math inline">\rho_d =
 \rho_d(\lambda)</span>:</p>
-<div class="sourceCode" id="cb9"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DiffuseBRDF(BRDF):</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="bu">eval</span>(<span class="va">self</span>, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) <span class="op">-&gt;</span> Color:</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.pigment.get_color(uv) <span class="op">*</span> (<span class="va">self</span>.reflectance <span class="op">/</span> pi)</span></code></pre></div></li>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DiffuseBRDF(BRDF):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="bu">eval</span>(<span class="va">self</span>, normal: Normal, in_dir: Vec, out_dir: Vec, uv: Vec2d) <span class="op">-&gt;</span> Color:</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.pigment.get_color(uv) <span class="op">*</span> (<span class="va">self</span>.reflectance <span class="op">/</span> pi)</span></code></pre></div></li>
 </ul>
 </section>
 <section id="material" class="slide level1">
@@ -708,12 +731,12 @@ about the interaction between surface points and photons:</p>
 <li><p>In <a
 href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4aace5cd4c/materials.py#L111-L115">pytracer</a>
 it is defined as follows:</p>
-<div class="sourceCode" id="cb10"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Material:</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A material&quot;&quot;&quot;</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    brdf: BRDF <span class="op">=</span> DiffuseBRDF()</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    emitted_radiance: Pigment <span class="op">=</span> UniformPigment(BLACK)  <span class="co"># A *pigment*!</span></span></code></pre></div></li>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Material:</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;A material&quot;&quot;&quot;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    brdf: BRDF <span class="op">=</span> DiffuseBRDF()</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    emitted_radiance: Pigment <span class="op">=</span> UniformPigment(BLACK)  <span class="co"># A *pigment*!</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="versatility" class="slide level1">
@@ -740,12 +763,12 @@ be extended.</p></li>
 <ul>
 <li><p>You must add an instance of a <code>Material</code> inside
 <code>Shape</code>:</p>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Shape:</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, transformation: Transformation <span class="op">=</span> Transformation(),</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                 material: Material <span class="op">=</span> Material()):</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.material <span class="op">=</span> material</span></code></pre></div></li>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Shape:</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, transformation: Transformation <span class="op">=</span> Transformation(),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                 material: Material <span class="op">=</span> Material()):</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transformation <span class="op">=</span> transformation</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.material <span class="op">=</span> material</span></code></pre></div></li>
 <li><p>The <code>HitRecord</code> type should be modified to also
 contain a pointer to the <code>Shape</code> object that was “hit” by the
 ray: this way it will be possible to trace back to the
@@ -802,22 +825,22 @@ command in a way similar to this:</p>
 </section>
 <section id="generate-image.sh" class="slide level1">
 <h1><code>generate-image.sh</code></h1>
-<div class="sourceCode" id="cb13"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;&quot;</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Usage: </span><span class="va">$(</span><span class="fu">basename</span> <span class="va">$0)</span><span class="st"> ANGLE&quot;</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">exit</span> 1</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">angle</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">angleNNN</span><span class="op">=</span><span class="va">$(</span><span class="bu">printf</span> <span class="st">&quot;%03d&quot;</span> <span class="va">$angle)</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">pfmfile</span><span class="op">=</span>image<span class="va">$angleNNN</span>.pfm</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">pngfile</span><span class="op">=</span>image<span class="va">$angleNNN</span>.png</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="bu">time</span> ./main.py demo <span class="at">--algorithm</span> flat <span class="at">--angle-deg</span> <span class="va">$angle</span> <span class="dt">\</span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">--width</span> 640 <span class="at">--height</span> 480 <span class="at">--pfm-output</span> <span class="va">$pfmfile</span> <span class="dt">\</span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="ex">./main.py</span> pfm2png <span class="at">--luminosity</span> 0.5 <span class="va">$pfmfile</span> <span class="va">$pngfile</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;&quot;</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Usage: </span><span class="va">$(</span><span class="fu">basename</span> <span class="va">$0)</span><span class="st"> ANGLE&quot;</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">exit</span> 1</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">angle</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">angleNNN</span><span class="op">=</span><span class="va">$(</span><span class="bu">printf</span> <span class="st">&quot;%03d&quot;</span> <span class="va">$angle)</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">pfmfile</span><span class="op">=</span>image<span class="va">$angleNNN</span>.pfm</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="bu">readonly</span> <span class="va">pngfile</span><span class="op">=</span>image<span class="va">$angleNNN</span>.png</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="bu">time</span> ./main.py demo <span class="at">--algorithm</span> flat <span class="at">--angle-deg</span> <span class="va">$angle</span> <span class="dt">\</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">--width</span> 640 <span class="at">--height</span> 480 <span class="at">--pfm-output</span> <span class="va">$pfmfile</span> <span class="dt">\</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="ex">./main.py</span> pfm2png <span class="at">--luminosity</span> 0.5 <span class="va">$pfmfile</span> <span class="va">$pngfile</span></span></code></pre></div>
 </section>
 <section id="what-to-do-today" class="slide level1">
 <h1>What to do today</h1>
@@ -847,12 +870,12 @@ href="https://github.com/ziotom78/pytracer/blob/f6431700cab1205632d32a0021b0cd4a
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.js"></script>
 
   <!-- reveal.js plugins -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/plugin/notes/notes.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/plugin/search/search.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/plugin/zoom/zoom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/zoom/zoom.min.js"></script>
 
   <script>
 

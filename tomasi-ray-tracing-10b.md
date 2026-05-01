@@ -260,10 +260,25 @@ def random(self) -> int:  # 32-bit unsigned number (in Java, return a 64-bit num
     # 32-bit variable
     rot = oldstate >> 59
 
-    # Rotation with a wrap; in Java/Kotlin, use Integer.rotateRight(xorshifted, rot)
-    # In Java, apply a two's complement (& 0xffffffffL) to return a long
+    # Rotation with a wrap
     return to_uint32((xorshifted >> rot) | (xorshifted << ((-rot) & 31)))
 ```
+
+# Wrapped rotation
+
+-   This Python code implements a “wrapped rotation” of the bits:
+
+    ```python
+    return to_uint32((xorshifted >> rot) | (xorshifted << ((-rot) & 31)))
+    ```
+
+-   Check what your language offers to implement this operation effectively:
+
+    #. In C++20 you can use [`std::rotr`](https://en.cppreference.com/cpp/numeric/rotr) (in `<bit>`);
+    #. In Rust, there is [`xorshifted.rotate_right(rot)`](https://doc.rust-lang.org/std/intrinsics/fn.rotate_right.html);
+    #. In Java/Kotlin, use [`Integer.rotateRight(xorshifted, rot)`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/rotate-right.html).
+
+-   Remember that you need a 32-bit value; depending on your language, you might have to apply a two's complement (`& 0xffffffffL`).
 
 # Tests for `PCG`
 
@@ -287,13 +302,13 @@ def test_random():
 
 -   Obviously, the `PCG.random` method returns an *integer*.
 
--   In path tracing, however, we will always need pseudo-random numbers $X_i$ uniformly distributed on $[0, 1]$.
+-   In path tracing, however, we will always need pseudo-random numbers $X_i$ uniformly distributed on $[0, 1)$  (avoiding 1 helps when computing quantities that are ill-behaved near $x=1$, like `acos(1 - x)`).
 
--   Since the PCG implementation we are using is 32-bit and has a period of $2^{32} - 1$, it is sufficient to normalize the integers returned by the algorithm to obtain the uniform distribution:
+-   Since the PCG implementation returns 32-bit numbers, it is sufficient to normalize the integers returned by the algorithm with $2^{32}$ to obtain the uniform distribution on $[0, 1)$:
 
     ```python
     def random_float(self) -> float:
-        return self.random() / 0xffffffff
+        return self.random() / 0x100000000  # Result ∈ [0, 1)
     ```
 
 # *Seed*
@@ -316,7 +331,7 @@ def test_random():
 
     #.  The `Pigment` type is **abstract** and represents the color associated with a particular point on a surface $(u, v)$;
     #.  The `BRDF` type is **abstract** and represents the BRDF of a material, which must contain a `Pigment` member;
-    #.  The `Material` type is **concrete** and represents the union of the emissive part of a material (the $L_e$ term, which we still represent as a `Pigment`) and its BRDF.
+    #.  The `Material` type is **concrete** and represents the union of the emissive part of a material (the $L_e$ term, still a `Pigment`) and its BRDF.
 
 -   From the abstract types `Pigment` and `BRDF`, we will then derive a series of concrete types.
 

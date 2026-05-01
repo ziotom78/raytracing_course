@@ -36,6 +36,13 @@
 
 -   **This is the most important lesson provided by this course!**
 
+# Example: intersection tests in Lobester
+
+![](media/lobester-test-1.svg){height=480px}
+
+# Example: intersection tests in Lobester
+
+![](media/lobester-test-2.svg){height=480px}
 
 # Orthonormal Bases (ONB)
 
@@ -144,7 +151,7 @@ for i in range(100):
         phi = 2.0 * pi * pcg.random_float()
 
         return Ray(origin=interaction_point,
-                   dir=e1 * cos(phi) * cos_theta + e2 * sin(phi) * cos_theta + e3 * sin_theta,
+                   dir=e1 * cos(phi) * sin_theta + e2 * sin(phi) * sin_theta + e3 * cos_theta,
                    tmin=1.0e-3,   # Be generous here
                    tmax=inf,
                    depth=depth)
@@ -432,7 +439,7 @@ for i in range(5):
 # Optional Additions
 
 -   [Antialiasing](tomasi-ray-tracing-11a.html#aliasing) (see [PR#13 of pytracer](https://github.com/ziotom78/pytracer/pull/13));
--   [Point-light tracing](tomasi-ray-tracing-11a.html#point-light-tracing-1) (see [PR#14 of pytracer](https://github.com/ziotom78/pytracer/pull/14)).
+-   [Point-light tracing](tomasi-ray-tracing-11a.html#point-light-tracing-1), a.k.a. *Whitted algorithm* (see [PR#14 of pytracer](https://github.com/ziotom78/pytracer/pull/14)).
 
 ---
 title: "Laboratory 11"

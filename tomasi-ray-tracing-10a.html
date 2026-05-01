@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="it-IT">
 <head>
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/reset.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.css">
   <style>
     .reveal .sourceCode {  /* see #7635 */
       /* overflow: visible; */
@@ -94,11 +94,11 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/theme/white.min.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/theme/white.min.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -114,7 +114,7 @@
 }}});
   </script>
   <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
 </head>
 <body>
   <div class="reveal">
@@ -262,13 +262,13 @@ class="math inline">p(x)</span> is defined as</p>
 E_p[f] = \int_\mathbb{R}\,f(x)\,p(x)\,\mathrm{d}x.
 </span></p></li>
 <li><p>The <em>variance</em> of <span class="math inline">f(X)</span>
-with respect to <span class="math inline">p</span> is defined as</p>
+with respect to <span class="math inline">p</span> is <span
+class="math inline">V_p[f]</span> and the <em>standard deviation</em> is
+<span class="math inline">\sqrt{V_p[f]}</span>, where</p>
 <p><span class="math display">
 V_p[f] = E_p\left[\bigl(f(x) - E_p[f]\bigr)^2\right] =
 \int_\mathbb{R}\,\bigl(f(x) - E_p[f]\bigr)^2\,p(x)\,\mathrm{d}x.
 </span></p></li>
-<li><p>The <em>standard deviation</em> is defined as <span
-class="math inline">\sqrt{V_p[f]}</span>.</p></li>
 </ul>
 </section>
 <section id="probability-review-3" class="slide level1">
@@ -367,8 +367,9 @@ estimate it!</p></li>
 <section id="example" class="slide level1">
 <h1>Example</h1>
 <ul>
-<li><p>Let’s see a practical example in the calculation of the integral
-of <span class="math inline">f(x) = \sqrt{x}\,\sin x</span>:</p>
+<li><p>Consider the integral of <span class="math inline">f(x) =
+\sqrt{x}\,\sin x</span> over <span class="math inline">[0,
+\pi]</span>:</p>
 <p><span class="math display">
 \int_0^\pi f(x)\,\mathrm{d}x = \int_0^\pi \sqrt{x}\,\sin x\,\mathrm{d}x
 \approx 2.435.
@@ -395,9 +396,8 @@ our hypotheses for <span class="math inline">p(x)</span>:</p>
 data-src="pd-images/1433de1529e0045101dd2a5777ee7d806b8bd383.svg"
 data-im_fname="importance-sampling-demo1" /></p>
 </center></li>
-<li><p>Clearly the best option is <span class="math inline">p(x) \propto
-\sin x</span>, because its shape resembles that of <span
-class="math inline">f(x)</span>.</p></li>
+<li><p>The best option seems <span class="math inline">p(x) \propto \sin
+x</span>.</p></li>
 </ul>
 </section>
 <section id="example-1" class="slide level1">
@@ -483,7 +483,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_importance2(f, n):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.random.rand(n)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is because P⁻¹ (y) = (3/2 y)^⅔</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is because P⁻¹ (y) = π y^⅔</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    xp <span class="op">=</span> np.pi <span class="op">*</span> x <span class="op">**</span> (<span class="dv">2</span> <span class="op">/</span> <span class="dv">3</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># p(x) = 3/(2π^3/2) * √x</span></span>
@@ -611,9 +611,9 @@ the CDF of the <span class="math inline">Y</span>:</p>
 <p><span class="math display">
 P_Y(y) = \mathrm{Pr}(Y \leq y) = \mathrm{Pr}\bigl(f(X) \leq y\bigr).
 </span></p>
-<p>At this point we can apply <span class="math inline">f^{-1}</span> to
-both sides of the inequality <span class="math inline">f(X) \leq
-y</span>, but with a caveat.</p></li>
+<p>Then, we apply <span class="math inline">f^{-1}</span> to both sides
+of <span class="math inline">f(X) \leq y</span>, but with a
+caveat.</p></li>
 </ul>
 </section>
 <section id="d-probability-distributions-1" class="slide level1">
@@ -764,8 +764,8 @@ J(y)}\right|.
 <li><p>Suppose we draw two numbers <span class="math inline">r,
 \theta</span> with probability <span class="math inline">p(r,
 \theta)</span>. If <span class="math inline">r, \theta</span> are the
-polar coordinates of a point on the plane, then the point has Cartesian
-coordinates</p>
+polar coordinates of a point on the plane, then the point <span
+class="math inline">(x, y)</span> is such that</p>
 <p><span class="math display">
 x = r \cos \theta, \quad y = r \sin \theta.
 </span></p></li>
@@ -976,8 +976,8 @@ class="math inline">\theta</span>:</p>
 \theta = P_\theta^{-1}(X_1) = \arccos (1 - X_1) = \arccos X&#39;_1,
 </span></p>
 <p>where we employ the fact that both <span
-class="math inline">X_1</span> and <span class="math inline">1 -
-X_1</span> are random numbers uniformly distributed over <span
+class="math inline">X_1</span> and <span class="math inline">X_1&#39; =
+1 - X_1</span> are random numbers uniformly distributed over <span
 class="math inline">[0, 1]</span>: this saves a subtraction.</p></li>
 </ul>
 </section>
@@ -1141,18 +1141,14 @@ is not the <em>entire</em> BRDF, but only the pigment.</p></li>
 usually defined:</p>
 <ol>
 <li>Uniform (also called <em>solid</em>, who knows why).</li>
-<li>Checkered: very useful for debugging.</li>
+<li>Checkered: very useful for debugging (it’s a kind of procedural
+pigment).</li>
 <li>Image (also called <em>textured</em>).</li>
 <li><a
 href="https://en.wikipedia.org/wiki/Procedural_texture">Procedural</a>
 (see chapter 5 of Shirley &amp; Morley).</li>
 </ol></li>
 </ul>
-</section>
-<section class="slide level1">
-
-<iframe src="https://player.vimeo.com/video/549664049?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1102" height="620" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Path-tracing example">
-</iframe>
 </section>
 <section id="brdf-form" class="slide level1">
 <h1>BRDF Form</h1>
@@ -1186,12 +1182,12 @@ file</a> (using a <em>textured</em> pigment).</p>
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.js"></script>
 
   <!-- reveal.js plugins -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/plugin/notes/notes.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/plugin/search/search.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/plugin/zoom/zoom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/zoom/zoom.min.js"></script>
 
   <script>
 

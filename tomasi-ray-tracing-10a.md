@@ -99,13 +99,11 @@
     E_p[f] = \int_\mathbb{R}\,f(x)\,p(x)\,\mathrm{d}x.
     $$
 
--   The *variance* of $f(X)$ with respect to $p$ is defined as
+-   The *variance* of $f(X)$ with respect to $p$ is $V_p[f]$ and the *standard deviation* is $\sqrt{V_p[f]}$, where
 
     $$
     V_p[f] = E_p\left[\bigl(f(x) - E_p[f]\bigr)^2\right] = \int_\mathbb{R}\,\bigl(f(x) - E_p[f]\bigr)^2\,p(x)\,\mathrm{d}x.
     $$
-
--   The *standard deviation* is defined as $\sqrt{V_p[f]}$.
 
 
 # Probability Review
@@ -189,7 +187,7 @@ $$
 
 # Example
 
--   Let's see a practical example in the calculation of the integral of $f(x) = \sqrt{x}\,\sin x$:
+-   Consider the integral of $f(x) = \sqrt{x}\,\sin x$ over $[0, \pi]$:
 
     $$
     \int_0^\pi f(x)\,\mathrm{d}x = \int_0^\pi \sqrt{x}\,\sin x\,\mathrm{d}x \approx 2.435.
@@ -219,7 +217,7 @@ $$
     ```
     </center>
 
--   Clearly the best option is $p(x) \propto \sin x$, because its shape resembles that of $f(x)$.
+-   The best option seems $p(x) \propto \sin x$.
 
 # Example
 
@@ -291,7 +289,7 @@ plt.legend()
     def estimate_importance2(f, n):
         x = np.random.rand(n)
 
-        # This is because P⁻¹ (y) = (3/2 y)^⅔
+        # This is because P⁻¹ (y) = π y^⅔
         xp = np.pi * x ** (2 / 3)
 
         # p(x) = 3/(2π^3/2) * √x
@@ -391,7 +389,7 @@ If we choose the way we integrate carefully, we can reduce the variance in the p
     P_Y(y) = \mathrm{Pr}(Y \leq y) = \mathrm{Pr}\bigl(f(X) \leq y\bigr).
     $$
 
-    At this point we can apply $f^{-1}$ to both sides of the inequality $f(X) \leq y$, but with a caveat.
+    Then, we apply $f^{-1}$ to both sides of $f(X) \leq y$, but with a caveat.
 
 # 1D Probability Distributions
 
@@ -508,7 +506,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
 
 # Polar Coordinates
 
--   Suppose we draw two numbers $r, \theta$ with probability $p(r, \theta)$. If $r, \theta$ are the polar coordinates of a point on the plane, then the point has Cartesian coordinates
+-   Suppose we draw two numbers $r, \theta$ with probability $p(r, \theta)$. If $r, \theta$ are the polar coordinates of a point on the plane, then the point $(x, y)$ is such that
 
     $$
     x = r \cos \theta, \quad y = r \sin \theta.
@@ -659,7 +657,7 @@ plt.savefig("distributions-python.svg", bbox_inches="tight")
     \theta = P_\theta^{-1}(X_1) = \arccos (1 - X_1) = \arccos X'_1,
     $$
 
-    where we employ the fact that both $X_1$ and $1 - X_1$ are random numbers uniformly distributed over $[0, 1]$: this saves a subtraction.
+    where we employ the fact that both $X_1$ and $X_1' = 1 - X_1$ are random numbers uniformly distributed over $[0, 1]$: this saves a subtraction.
 
 # Sampling θ and φ
 
@@ -798,13 +796,9 @@ plt.savefig("uniform-density-random.svg", bbox_inches="tight")
 -   In *computer graphics*, various types of pigments are usually defined:
 
     #.   Uniform (also called *solid*, who knows why).
-    #.   Checkered: very useful for debugging.
+    #.   Checkered: very useful for debugging (it’s a kind of procedural pigment).
     #.   Image (also called *textured*).
     #.   [Procedural](https://en.wikipedia.org/wiki/Procedural_texture) (see chapter 5 of Shirley & Morley).
-
----
-
-<iframe src="https://player.vimeo.com/video/549664049?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1102" height="620" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Path-tracing example"></iframe>
 
 # BRDF Form
 

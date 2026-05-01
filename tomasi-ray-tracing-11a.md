@@ -398,7 +398,7 @@ where, obviously, it is necessary that the $\Psi_i$ are distributed according to
 
 -   Let's now briefly look at some possibilities for improving the path tracing algorithm:
     -   Antialiasing;
-    -   *Point-light tracing*;
+    -   *Point-light tracing* (Whitted algorithm);
     -   Direct illumination;
     -   *Photon mapping*.
 -   If you wish, you can implement antialiasing and *point-light tracing* in your code.
@@ -503,7 +503,7 @@ The problem with *aliasing* is that some pixels cover areas of the screen that c
 
 # Point-light tracing
 
--   A widely used algorithm for generating 3D images is what we will call *point-light tracing*. (It is usually called *ray tracing* or *ray casting*; however, both terms are very generic, and sometimes indicate different algorithms).
+-   A widely used algorithm for generating 3D images is what we will call *point-light tracing*, or *Whitted algorithm*. ([*An improved illumination model for shaded display*, Whitted, 1980](https://dl.acm.org/doi/10.1145/358876.358882)).
 
 -   It is based on the consideration that in certain scenes most of the light energy originates from a few objects with a small apparent diameter: a lamp, the sun, etc.
 
