@@ -415,7 +415,7 @@ We have already seen this pattern many times with LLMs: you must *verify* claims
     #.   They discovered a 27-year-old (quite harmless) bug in [OpenBSD](https://www.openbsd.org/), one of the most secure Operating System on Earth;
     #.   They discovered a 16-year-old bug in [FFmpeg](https://www.ffmpeg.org/), which we learned to use just a few days ago
 
--   This new tool has huge ethical implications, which Anthropic addressed by starting the [Glasswing project](https://www.anthropic.com/glasswing).
+-   This new tool has huge ethical implications (and [raised questions…](https://www.bbc.com/future/article/20260428-ai-companies-want-you-to-be-afraid-of-them)), which Anthropic addressed by starting the [Glasswing project](https://www.anthropic.com/glasswing).
 
 # Project Glasswing
 
