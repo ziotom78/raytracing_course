@@ -602,6 +602,11 @@ vector ::= "[" number "," number "," number "]"
 
 -   Keep in mind, however, that most people prefer to write *lexers* and *parsers* by hand…
 
+---
+
+![](media/walter-bright-error-messages.webp){height=560px}
+
+Post by [Walter Bright](https://en.wikipedia.org/wiki/Walter_Bright) on [HackerNews](https://news.ycombinator.com/item?id=44281238) (June, 18th 2025)
 
 # Further resources
 
