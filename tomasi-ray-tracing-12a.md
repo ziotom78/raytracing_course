@@ -30,9 +30,9 @@
 
 # User Categories
 
--   In the case where the language used is Julia or Python, which allows interactive use, the best solution would be to define the scenes directly on the REPL (or in a Jupyter/Pluto notebook)!
+-   In the case where the language used is Julia or Python, which allows interactive use, the best solution would be to define the scenes directly in the REPL (or in a Jupyter/Pluto notebook)!
 
--   But in the case of programs written in C#, Nim or Rust, such a solution is obviously not feasible.
+-   But in the case of programs written in C#, Nim or Rust, such a solution is not easy to implement within your executable!
 
 -   (This is even truer for those of you who provide binaries with each new *release* of the code: in that case, your users may not even have compilers installed!)
 
@@ -373,7 +373,7 @@ camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 1.0)
 
 In compiler theory, the following terms are fundamental:
 
-- **Lexical** analysis studies the typology of individual words and establishes, for example, that the word "apple" is correct, while "aple" is incorrect.
+- **Lexical** analysis studies the categorization of individual words and establishes, for example, that the word "apple" is correct, while "aple" is incorrect.
 - **Syntactic** analysis studies the relationships between the elements of an expression and establishes, for example, that a verb can never follow an article ("the compile").
 - **Semantic** analysis studies the relationship between an expression like "the house at the end of the road" and the extra-linguistic object to which it refers (precisely, that particular house at the end of the road).
 
@@ -406,7 +406,7 @@ graph "" {
 ```
 
 -   The *lexer* breaks down the source code into simple elements, called *tokens*, and reports lexical errors;
--   The *parser* analyzes the sequence of tokens to link them together and understand their syntax and semantics;
+-   The *parser* analyzes the sequence of tokens to link them together and understand their syntax and semantics (e.g., correctness of types);
 -   The *AST builder* creates the so-called *Abstract Syntax Tree* (not used in our case);
 -   The *optimizer* applies optimizations to the AST (not used in our case);
 -   The executable is generated from the optimized AST (not used in our case).
@@ -811,7 +811,7 @@ void print_token(const Token & t) {
 
 # *Sum types* vs hierarchies
 
--   A *sum type* like `union` in C/C++ is useful when the number of types (`LiteralToken`, `SymbolToken`, …) is limited and will not change easily, while the number of *methods* to apply to that type (e.g., `print_token`) can grow indefinitely.
+-   A *sum type* is useful when the number of types (`LiteralToken`, `SymbolToken`, …) is limited and will not change easily, while the number of *methods* to apply to that type (e.g., `print_token`) can grow indefinitely.
 
 -   A class hierarchy is useful in the opposite case: the number of types can grow potentially indefinitely, but the number of methods is in principle limited. A good example is `Shape`: you can define infinite shapes (`Sphere`, `Plane`, `Cone`, `Cylinder`, `Parabola`, etc.), but the number of operations to perform is limited (`ray_intersection`, `is_point_inside`, etc.).
 

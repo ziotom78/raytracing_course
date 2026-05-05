@@ -361,6 +361,24 @@ vector ::= "[" number "," number "," number "]"
 
 -   In a language like ours, it is not easy to identify a *termination token*; the best thing would be to require the presence of `;` at the end of each *statement*, as in C++, or to require definitions to be terminated by a newline character (encoded as a `TOKEN_NEWLINE` token).
 
+# LLMs and errors
+
+-   AI agents are LLMs that can operate on a codebase to run tests, make modifications, fire the compiler, etc.
+
+-   A recent issue is to make error message helpful to AI agents
+
+-   See for instance this post in the Nim Language Forum: [Better error messages would help AI agents](https://forum.nim-lang.org/t/13205)
+
+---
+
+![](media/nim-ai-compiler-errors.png)
+
+---
+
+![](media/nim-pr25052.png)
+
+[PR#25052](https://github.com/nim-lang/Nim/pull/25052) has been successfully merged on July, 14th 2025.
+
 # Language Comparison {#comparison-of-languages}
 
 # Compiler Complexity

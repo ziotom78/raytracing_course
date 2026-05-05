@@ -98,7 +98,7 @@ This is the kind of file for which our lexer will have to produce a list of *tok
         location: SourceLocation
     ```
 
--   If you use *sum types*, remember to properly use *tags*. (In C++, implement them using an `enum class`, since this language does not support tags natively.)
+-   If you use *sum types*, remember to properly use *tags*. (Sum types have poor support in C++; if you really want to play with them, use an `enum class` to implement tagging.)
 
 # Reporting Errors
 
@@ -316,7 +316,7 @@ def read_token(self) -> Token:
             token_location=token_location,
         )
     else:
-        # We got some weird character, like '@` or `&`
+        # We got an invalid character, like '@` or `&`
         raise GrammarError(self.location, f"Invalid character {ch}")
 ```
 
