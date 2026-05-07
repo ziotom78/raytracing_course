@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="it-IT">
 <head>
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/reset.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.css">
   <style>
     .reveal .sourceCode {  /* see #7635 */
       /* overflow: visible; */
@@ -94,7 +94,7 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/theme/white.min.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/theme/white.min.css" id="theme">
   <link rel="stylesheet" href="./css/custom.css"/>
   <link rel="stylesheet" href="./css/asciinema-player.css"/>
   <script defer=""
@@ -499,8 +499,8 @@ coordinates of the intersection (new type <code>Vec2d</code>);</li>
 <section id="sphere-in-python" class="slide level1">
 <h1><code>Sphere</code> in Python</h1>
 <ul>
-<li><p>The intersection between the ray <span class="math inline">O + t
-\vec d</span> and the sphere is determined by the discriminant</p>
+<li><p><a href="tomasi-ray-tracing-08a.html#ray-sphere-intersection">We
+found</a> that the intersection is determined by the discriminant</p>
 <p><span class="math display">
 \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec
 d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
@@ -515,6 +515,47 @@ t_2 &amp;= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec
 d\right\|^2}.
 \end{cases}
 </span></p></li>
+</ul>
+</section>
+<section id="sphere-numerical-robustness" class="slide level1">
+<h1>Numerical robustness</h1>
+<ul>
+<li><p>If the ray starts from a very far point and the sphere is small,
+then the two values <span class="math inline">t_1</span> and <span
+class="math inline">t_2</span> might be very close.</p></li>
+<li><p>In this case, <span class="math inline">\Delta / 4</span> might
+become so small that it could suffer from <em>catastrophic
+cancellation</em>: in a quadratic equation <span class="math inline">a
+t^2 + b t + c = 0</span>, this happens when <span
+class="math inline">b^2 \approx 4 a c</span> but both terms are
+large.</p></li>
+<li><p>We can rewrite it using <a
+href="https://en.wikipedia.org/wiki/Lagrange%27s_identity">Lagrange’s
+identity in 3D</a>, which states that for two 3D vectors <span
+class="math inline">\vec a</span> and <span class="math inline">\vec
+b</span>, the following relation holds:</p>
+<p><span class="math display">
+\left\| \vec a \right\|^2 \left\| \vec b \right\|^2 - (\vec a \cdot \vec
+b)^2 = \left\| \vec a \times \vec b \right\|^2.
+</span></p></li>
+</ul>
+</section>
+<section id="numerical-robustness" class="slide level1">
+<h1>Numerical robustness</h1>
+<ul>
+<li><p>Rewriting <span class="math inline">\Delta / 4</span>, we get</p>
+<p><span class="math display">
+\frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec
+d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right) = \left\|\vec
+d\right\|^2 - \left\|\vec d \times \vec O\right\|^2
+</span></p></li>
+<li><p>Now the only way catastrophic cancellation can occur is when
+<span class="math inline">\left\|\vec d\right\|^2 \approx \left\|\vec
+O\right\|^2</span> and <span class="math inline">\vec d \perp \vec
+O</span>, i.e., when we are close to the sphere’s surface and are
+looking along a tangential direction. In this case, <span
+class="math inline">t_{1/2}</span> is small and will be rejected by our
+code.</p></li>
 </ul>
 </section>
 <section id="sphere-in-python-1" class="slide level1">
@@ -884,12 +925,12 @@ mathematical code in Julia!</p></li>
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/reveal.min.js"></script>
 
   <!-- reveal.js plugins -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/plugin/notes/notes.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/plugin/search/search.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.0/plugin/zoom/zoom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.2.1/plugin/zoom/zoom.min.js"></script>
 
   <script>
 

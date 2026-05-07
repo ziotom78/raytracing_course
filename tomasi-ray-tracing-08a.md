@@ -186,7 +186,7 @@
 
     which suggests that we can use the `Point.toVec()` function/method.
 
-# Solving the Equation
+# Solving the Equation {#ray-sphere-intersection}
 
 -   Expanding the definition of the dot product, we obtain
 

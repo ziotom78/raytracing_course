@@ -342,7 +342,7 @@ class Shape:
 
 # `Sphere` in Python
 
--   The intersection between the ray $O + t \vec d$ and the sphere is determined by the discriminant
+-   [We found](tomasi-ray-tracing-08a.html#ray-sphere-intersection) that the intersection is determined by the discriminant
 
     $$
     \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right).
@@ -356,6 +356,29 @@ class Shape:
     t_2 &= \frac{-\vec O \cdot d + \sqrt{\Delta / 4}}{\left\|\vec d\right\|^2}.
     \end{cases}
     $$
+
+
+# Numerical robustness {#sphere-numerical-robustness}
+
+-   If the ray starts from a very far point and the sphere is small, then the two values $t_1$ and $t_2$ might be very close.
+
+-   In this case, $\Delta / 4$ might become so small that it could suffer from *catastrophic cancellation*: in a quadratic equation $a t^2 + b t + c = 0$, this happens when $b^2 \approx 4 a c$ but both terms are large.
+
+-   We can rewrite it using [Lagrange’s identity in 3D](https://en.wikipedia.org/wiki/Lagrange%27s_identity), which states that for two 3D vectors $\vec a$ and $\vec b$, the following relation holds:
+
+    \[
+    \left\| \vec a \right\|^2 \left\| \vec b \right\|^2 - (\vec a \cdot \vec b)^2 = \left\| \vec a \times \vec b \right\|^2.
+    \]
+
+# Numerical robustness
+
+-   Rewriting $\Delta / 4$, we get
+
+    \[
+    \frac\Delta4 = \left(\vec O \cdot \vec d\right)^2 - \left\|\vec d\right\|^2\cdot \left(\left\|\vec O\right\|^2 - 1\right) = \left\|\vec d\right\|^2 - \left\|\vec d \times \vec O\right\|^2
+    \]
+
+-   Now the only way catastrophic cancellation can occur is when $\left\|\vec d\right\|^2 \approx \left\|\vec O\right\|^2$ and $\vec d \perp \vec O$, i.e., when we are close to the sphere’s surface and are looking along a tangential direction. In this case, $t_{1/2}$ is small and will be rejected by our code.
 
 # `Sphere` in Python
 
