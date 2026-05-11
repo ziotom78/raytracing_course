@@ -17,8 +17,8 @@
 |         8 | [20 Aprile 2026](tomasi-ray-tracing-08a.html) | [22 Aprile 2026](tomasi-ray-tracing-08b.html) |
 |         9 | [27 Aprile 2026](tomasi-ray-tracing-09a.html) | — |
 |        10 | [4 Maggio 2026](tomasi-ray-tracing-10a.html) | [6 Maggio 2026](tomasi-ray-tracing-10b.html) |
-<!--
 |        11 | [11 Maggio 2026](tomasi-ray-tracing-11a.html) | [13 Maggio 2026](tomasi-ray-tracing-11b.html) |
+<!--
 |        12 | [18 Maggio 2026](tomasi-ray-tracing-12a.html) | [20 Maggio 2026](tomasi-ray-tracing-12b.html) |
 |        13 | [25 Maggio 2026](tomasi-ray-tracing-13a.html) | [27 Maggio 2026](tomasi-ray-tracing-13b.html) |
 -->
