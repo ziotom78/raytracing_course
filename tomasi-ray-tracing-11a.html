@@ -276,11 +276,11 @@ class="math inline">0 \leq q \leq 1</span> (in real Russian roulette,
 <ol type="1">
 <li>A random number <span class="math inline">0 \leq x \leq 1</span> is
 drawn;</li>
+<li>If <span class="math inline">x \leq q</span>, the calculation is
+stopped and zero is returned;</li>
 <li>If <span class="math inline">x &gt; q</span>, the radiance <span
 class="math inline">L</span> is calculated and <span
-class="math inline">L / (1 - q)</span> is returned;</li>
-<li>If <span class="math inline">x \leq q</span>, the calculation is
-stopped and zero is returned.</li>
+class="math inline">L / (1 - q)</span> is returned.</li>
 </ol></li>
 </ul>
 </section>
@@ -292,8 +292,8 @@ class="math inline">L</span> with a random radiance <span
 class="math inline">L&#39;</span> as follows:</p>
 <p><span class="math display">
 L&#39; = \begin{cases}
-\frac{L}{1 - q}\ &amp;\text{if $x &gt; q$},\\
-0&amp;\text{otherwise}.
+0&amp;\text{if $x &gt; q$}, \\
+\frac{L}{1 - q}\ &amp;\text{otherwise}.
 \end{cases}
 </span></p>
 <p><span class="math inline">L&#39;</span> has expected value</p>
@@ -661,7 +661,7 @@ vector.</p></li>
 the arbitrary vector <span class="math inline">\vec g</span> is not
 aligned with <span class="math inline">\hat n</span>, otherwise</p>
 <p><span class="math display">
-\hat n \times \vec g = 0.
+\hat n \times \vec g \approx 0.
 </span></p></li>
 <li><p>Therefore, in the algorithm implementation, we need to include a
 test: if <span class="math inline">\hat n \approx \vec g</span>, then we
@@ -1079,8 +1079,8 @@ optical measurement systems</em></a>, Retzlaff et al. (2017)</span></p>
 executions of the <em>path tracing</em> algorithm (possibly saving it to
 disk).</p></li>
 <li><p>Searching for the photons closest to a point <span
-class="math inline">x</span> can be made very fast using a KD-Tree
-structure (stored directly in <code>World</code>).</p></li>
+class="math inline">x</span> can be made very fast using optimized data
+structures, stored directly in <code>World</code>.</p></li>
 <li><p>It is easy to use it to simulate effects related to the light
 spectrum (prism diffraction, caustics, etc.).</p></li>
 <li><p>Usually, <em>photon mapping</em> is used only to calculate the

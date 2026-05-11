@@ -107,8 +107,8 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 -   The procedure requires setting a probability $0 \leq q \leq 1$ (in real Russian roulette, $q = 1/6$). This is the algorithm:
 
     1.  A random number $0 \leq x \leq 1$ is drawn;
-    2.  If $x > q$, the radiance $L$ is calculated and $L / (1 - q)$ is returned;
-    3.  If $x \leq q$, the calculation is stopped and zero is returned.
+    2.  If $x \leq q$, the calculation is stopped and zero is returned;
+    3.  If $x > q$, the radiance $L$ is calculated and $L / (1 - q)$ is returned.
 
 ---
 
@@ -116,8 +116,8 @@ def radiance(self, ray: Ray, num_of_samples=100) -> Color:
 
     $$
     L' = \begin{cases}
-    \frac{L}{1 - q}\ &\text{if $x > q$},\\
-    0&\text{otherwise}.
+    0&\text{if $x > q$}, \\
+    \frac{L}{1 - q}\ &\text{otherwise}.
     \end{cases}
     $$
 
@@ -377,7 +377,7 @@ where, obviously, it is necessary that the $\Psi_i$ are distributed according to
 -   However, the method for creating a new ONB only works as long as the arbitrary vector $\vec g$ is not aligned with $\hat n$, otherwise
 
     $$
-    \hat n \times \vec g = 0.
+    \hat n \times \vec g \approx 0.
     $$
 
 -   Therefore, in the algorithm implementation, we need to include a test: if $\hat n \approx \vec g$, then we replace $\vec g$ with another vector $\vec h$. Usually, we choose $\vec g = (1, 0, 0)$ and $\vec h = (0, 1, 0)$.
@@ -637,7 +637,7 @@ If the $p(\omega)$ used in *importance sampling* could «weigh» the presence or
 
 -   The calculation of photons can be reused for subsequent executions of the *path tracing* algorithm (possibly saving it to disk).
 
--   Searching for the photons closest to a point $x$ can be made very fast using a KD-Tree structure (stored directly in `World`).
+-   Searching for the photons closest to a point $x$ can be made very fast using optimized data structures, stored directly in `World`.
 
 -   It is easy to use it to simulate effects related to the light spectrum (prism diffraction, caustics, etc.).
 
