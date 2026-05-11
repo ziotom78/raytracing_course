@@ -65,11 +65,11 @@
 -   [Direzioni casuali](tomasi-ray-tracing-10a.html#/random-directions): distribuzione uniforme e distribuzione di Phong
 -   [BRDF e pigmenti](tomasi-ray-tracing-10a.html#/brdf)
 -   [Generazione di numeri pseudo-casuali](tomasi-ray-tracing-10b.html#/random-numbers)
-<!--
 -   [*Importance sampling* nell'equazione del rendering](tomasi-ray-tracing-11a.html#/mc-integrals-and-importance-sampling)
 -   [Roulette russa](tomasi-ray-tracing-11a.html#/russian-roulette)
 -   [*Antialiasing*](tomasi-ray-tracing-11a.html#/antialiasing)
 -   [Test della fornace](tomasi-ray-tracing-11b.html#/furnace-test)
+<!--
 -   [Terminologia nella teoria dei compilatori](tomasi-ray-tracing-12a.html#/terminology): lessico, sintassi, semantica, *token*, *look-ahead*
 -->
 
@@ -86,13 +86,13 @@
 -   [*Change log*](tomasi-ray-tracing-08b.html#/changelog)
 -   [Mesh](tomasi-ray-tracing-09a.html#/polygonal-meshes)
 -   [*Axis-aligned boxes*](tomasi-ray-tracing-09a.html#/axis-aligned-boxes)
-<!--
 -   [Generatore PCG](tomasi-ray-tracing-10b.html#/pcg-algorithm)
 -   [Basi ortonormali arbitrarie](tomasi-ray-tracing-11a.html#/orthonormal-basis)
 -   [Algoritmi di illuminazione diretta](tomasi-ray-tracing-11a.html#/direct-illumination)
 -   [*Photon mapping*](tomasi-ray-tracing-11a.html#/photon-mapping)
 -   [*Stratified sampling*](tomasi-ray-tracing-11a.html#/stratified-sampling)
 -   [*Point-light tracing*](tomasi-ray-tracing-11a.html#/point-light-tracing)
+<!--
 -   [Panoramica sulla definizione di scene](tomasi-ray-tracing-12a.html#/scene-definition-languages): DKBTrace, POV-Ray, YafaRay
 -   [Gerarchie di classi e *sum types*](tomasi-ray-tracing-12a.html#/tokens-and-class-hierarchies)
 -   [Gestione degli errori di un compilatore](tomasi-ray-tracing-13a.html#/compiler-errors)
