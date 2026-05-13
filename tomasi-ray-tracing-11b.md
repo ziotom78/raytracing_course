@@ -51,7 +51,7 @@
 -   It is convenient to use the algorithm from [Duff et al. 2017](https://graphics.pixar.com/library/OrthonormalB/paper.pdf):
 
     ```python
-    def create_onb_from_z(normal: Union[Vec, Normal]) -> Tuple[Vec, Vec, Vec]:
+    def create_onb_from_z(normal: Normal) -> Tuple[Vec, Vec, Vec]:
         # In Python there isn't a `copysign` function 🙁
         sign = 1.0 if (normal.z > 0.0) else -1.0
         a = -1.0 / (sign + normal.z)
