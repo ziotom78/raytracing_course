@@ -18,8 +18,8 @@
 |         9 | [27 Aprile 2026](tomasi-ray-tracing-09a.html) | — |
 |        10 | [4 Maggio 2026](tomasi-ray-tracing-10a.html) | [6 Maggio 2026](tomasi-ray-tracing-10b.html) |
 |        11 | [11 Maggio 2026](tomasi-ray-tracing-11a.html) | [13 Maggio 2026](tomasi-ray-tracing-11b.html) |
-<!--
 |        12 | [18 Maggio 2026](tomasi-ray-tracing-12a.html) | [20 Maggio 2026](tomasi-ray-tracing-12b.html) |
+<!--
 |        13 | [25 Maggio 2026](tomasi-ray-tracing-13a.html) | [27 Maggio 2026](tomasi-ray-tracing-13b.html) |
 -->
 
@@ -69,9 +69,7 @@
 -   [Roulette russa](tomasi-ray-tracing-11a.html#/russian-roulette)
 -   [*Antialiasing*](tomasi-ray-tracing-11a.html#/antialiasing)
 -   [Test della fornace](tomasi-ray-tracing-11b.html#/furnace-test)
-<!--
 -   [Terminologia nella teoria dei compilatori](tomasi-ray-tracing-12a.html#/terminology): lessico, sintassi, semantica, *token*, *look-ahead*
--->
 
 ## Parti non richieste per l'esame
 
@@ -92,9 +90,9 @@
 -   [*Photon mapping*](tomasi-ray-tracing-11a.html#/photon-mapping)
 -   [*Stratified sampling*](tomasi-ray-tracing-11a.html#/stratified-sampling)
 -   [*Point-light tracing*](tomasi-ray-tracing-11a.html#/point-light-tracing)
-<!--
 -   [Panoramica sulla definizione di scene](tomasi-ray-tracing-12a.html#/scene-definition-languages): DKBTrace, POV-Ray, YafaRay
 -   [Gerarchie di classi e *sum types*](tomasi-ray-tracing-12a.html#/tokens-and-class-hierarchies)
+<!--
 -   [Gestione degli errori di un compilatore](tomasi-ray-tracing-13a.html#/compiler-errors)
 -   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/comparison-of-languages)
 -   [Testing di compilatori](tomasi-ray-tracing-13a.html#/compiler-testing)
