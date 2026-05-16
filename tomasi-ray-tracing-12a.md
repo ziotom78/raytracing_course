@@ -87,7 +87,7 @@ In our case, we will have to define a DSL and implement a compiler for it. Our a
 
 # DKBTrace
 
--   In 1986, David K. Buck released DKBTrace, a ray tracer that used the *point-light tracing* algorithm.
+-   In 1986, David K. Buck released DKBTrace, a ray tracer that used Whitted’s algorithm.
 -   Written in C.
 -   The program only worked on the [Commodore Amiga](https://en.wikipedia.org/wiki/Amiga), an old microcomputer widely used at the time for graphics.
 -   The developer soon abandoned DKBTrace to work on POV-Ray (which we'll see shortly).
@@ -132,7 +132,7 @@ END_OBJECT
 
 # [POV-Ray](http://povray.org/)
 
--   POV-Ray solves the rendering equation using *point-light tracing* (but which in the POV-Ray manual is simply called *raytracing*), just like DKBTrace.
+-   POV-Ray solves the rendering equation using Whitted’s algorithm (but which in the POV-Ray manual is simply called *raytracing*), just like DKBTrace.
 
 -   The first version was released in 1991; currently the most recent version is 3.7.0 (released in 2013). Version 3.8 is under development.
 
@@ -252,7 +252,7 @@ light_source { <2, 4, -3> color White }
 
 -   Our new exciting task is to define our own format!
 
--   We could draw inspiration from very simple formats, such as the Wavefront OBJ that we described [earlier](./tomasi-ray-tracing-10a-other-shapes.html#wavefront-obj): each line contains a letter (`v`, `f`, `n`, etc.) followed by a sequence of numbers.
+-   We could draw inspiration from very simple formats: for instance, each line might contain a letter (`v`, `f`, `n`, etc.) specifying the object and followed by a sequence of parameters when needed.
 
 -   For example, we could define a diffuse BRDF (`d`) with color $(0.3, 0.7, 0.5)$ associated with a sphere (`s`) centered at $(1, 3, 6)$ with radius $r = 2$ with code like this:
 
@@ -271,7 +271,7 @@ light_source { <2, 4, -3> color White }
 
 -   The notation `s 1 3 6 2` is not clear because the radius is not distinguished from the coordinates. Inspired by the syntax of Python and Julia, we will indicate points and vectors with square brackets, e.g., `[1, 3, 6]`.
 
--   We will also implement the ability to associate a name with objects: this way we can refer to previously created BRDFs (e.g., `green_matte`) when we define new `Shape` objects.
+-   We will also implement the ability to associate a name with objects (**variables**!), so we can refer to previously-created BRDFs (e.g., `green_matte`) when we define new shapes.
 
 # What to Include
 
@@ -664,13 +664,11 @@ int main() {
     };
     ```
 
--   It is easier to read and understand than a class hierarchy:
+-   It is easier to read and understand than a class hierarchy, where classes might be sparse over several files:
 
     ```c++
     struct Value {};
-
     struct Int32Value : Value { int32_t a; };
-
     struct UInt8Value : Value { uint8_t c; };
     ```
 
@@ -806,7 +804,7 @@ void print_token(const Token & t) {
      * Keyword _                                         *)
     ```
 
--   *Sum types* represent "rigid" class hierarchies, where there is only one ancestor (`token`) and the child classes are known a priori: precisely the case of tokens! Languages like [OCaml](https://ocaml.org/) are in fact often used to write compilers (e.g., [FFTW](http://www.fftw.org/fftw-paper-ieee.pdf),  [Rust](https://www.reddit.com/r/rust/comments/18b808/is_the_original_ocaml_compiler_still_available/)).
+-   *Sum types* represent "rigid" class hierarchies where the child classes are known a priori: precisely the case of tokens! Languages like [OCaml](https://ocaml.org/) are in fact often used to write compilers (e.g., [FFTW](http://www.fftw.org/fftw-paper-ieee.pdf),  [Rust](https://www.reddit.com/r/rust/comments/18b808/is_the_original_ocaml_compiler_still_available/)).
 
 
 # *Sum types* vs hierarchies

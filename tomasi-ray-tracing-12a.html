@@ -253,8 +253,8 @@ will:</p>
 <section id="dkbtrace" class="slide level1">
 <h1>DKBTrace</h1>
 <ul>
-<li>In 1986, David K. Buck released DKBTrace, a ray tracer that used the
-<em>point-light tracing</em> algorithm.</li>
+<li>In 1986, David K. Buck released DKBTrace, a ray tracer that used
+Whitted’s algorithm.</li>
 <li>Written in C.</li>
 <li>The program only worked on the <a
 href="https://en.wikipedia.org/wiki/Amiga">Commodore Amiga</a>, an old
@@ -301,9 +301,9 @@ END_OBJECT</code></pre>
 <section id="pov-ray" class="slide level1">
 <h1><a href="http://povray.org/">POV-Ray</a></h1>
 <ul>
-<li><p>POV-Ray solves the rendering equation using <em>point-light
-tracing</em> (but which in the POV-Ray manual is simply called
-<em>raytracing</em>), just like DKBTrace.</p></li>
+<li><p>POV-Ray solves the rendering equation using Whitted’s algorithm
+(but which in the POV-Ray manual is simply called <em>raytracing</em>),
+just like DKBTrace.</p></li>
 <li><p>The first version was released in 1991; currently the most recent
 version is 3.7.0 (released in 2013). Version 3.8 is under
 development.</p></li>
@@ -433,11 +433,10 @@ class="sourceCode xml"><code class="sourceCode xml"><span id="cb5-1"><a href="#c
 <h1>Defining the Format</h1>
 <ul>
 <li><p>Our new exciting task is to define our own format!</p></li>
-<li><p>We could draw inspiration from very simple formats, such as the
-Wavefront OBJ that we described <a
-href="./tomasi-ray-tracing-10a-other-shapes.html#wavefront-obj">earlier</a>:
-each line contains a letter (<code>v</code>, <code>f</code>,
-<code>n</code>, etc.) followed by a sequence of numbers.</p></li>
+<li><p>We could draw inspiration from very simple formats: for instance,
+each line might contain a letter (<code>v</code>, <code>f</code>,
+<code>n</code>, etc.) specifying the object and followed by a sequence
+of parameters when needed.</p></li>
 <li><p>For example, we could define a diffuse BRDF (<code>d</code>) with
 color <span class="math inline">(0.3, 0.7, 0.5)</span> associated with a
 sphere (<code>s</code>) centered at <span class="math inline">(1, 3,
@@ -462,9 +461,9 @@ radius is not distinguished from the coordinates. Inspired by the syntax
 of Python and Julia, we will indicate points and vectors with square
 brackets, e.g., <code>[1, 3, 6]</code>.</p></li>
 <li><p>We will also implement the ability to associate a name with
-objects: this way we can refer to previously created BRDFs (e.g.,
-<code>green_matte</code>) when we define new <code>Shape</code>
-objects.</p></li>
+objects (<strong>variables</strong>!), so we can refer to
+previously-created BRDFs (e.g., <code>green_matte</code>) when we define
+new shapes.</p></li>
 </ul>
 </section>
 <section id="what-to-include" class="slide level1">
@@ -925,13 +924,12 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb22-1"><a href="#
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int32_t</span> a<span class="op">;</span>   <span class="co">// This takes 4 bytes</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> c<span class="op">;</span>   <span class="co">// This takes 1 byte</span></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div></li>
-<li><p>It is easier to read and understand than a class hierarchy:</p>
+<li><p>It is easier to read and understand than a class hierarchy, where
+classes might be sparse over several files:</p>
 <div class="sourceCode" id="cb23"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Value <span class="op">{};</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Int32Value <span class="op">:</span> Value <span class="op">{</span> <span class="dt">int32_t</span> a<span class="op">;</span> <span class="op">};</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> UInt8Value <span class="op">:</span> Value <span class="op">{</span> <span class="dt">uint8_t</span> c<span class="op">;</span> <span class="op">};</span></span></code></pre></div></li>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Int32Value <span class="op">:</span> Value <span class="op">{</span> <span class="dt">int32_t</span> a<span class="op">;</span> <span class="op">};</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> UInt8Value <span class="op">:</span> Value <span class="op">{</span> <span class="dt">uint8_t</span> c<span class="op">;</span> <span class="op">};</span></span></code></pre></div></li>
 </ul>
 </section>
 <section id="sum-types-and-tokens-1" class="slide level1">
@@ -1083,11 +1081,10 @@ class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb29-1"><a hre
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">(* Warning 8 [partial-match]: this pattern-matching is not exhaustive.</span></span>
 <span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"> * Here is an example of a case that is not matched:</span></span>
 <span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"> * Keyword _                                         *)</span></span></code></pre></div></li>
-<li><p><em>Sum types</em> represent “rigid” class hierarchies, where
-there is only one ancestor (<code>token</code>) and the child classes
-are known a priori: precisely the case of tokens! Languages like <a
-href="https://ocaml.org/">OCaml</a> are in fact often used to write
-compilers (e.g., <a
+<li><p><em>Sum types</em> represent “rigid” class hierarchies where the
+child classes are known a priori: precisely the case of tokens!
+Languages like <a href="https://ocaml.org/">OCaml</a> are in fact often
+used to write compilers (e.g., <a
 href="http://www.fftw.org/fftw-paper-ieee.pdf">FFTW</a>, <a
 href="https://www.reddit.com/r/rust/comments/18b808/is_the_original_ocaml_compiler_still_available/">Rust</a>).</p></li>
 </ul>

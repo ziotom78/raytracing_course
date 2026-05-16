@@ -161,8 +161,6 @@ and unfortunately, algorithms that work well for one family do not
 necessarily work well for others!</p></li>
 <li><p>Our language is of type LL(1), like <a
 href="https://en.wikipedia.org/wiki/Pascal_(programming_language)">Pascal</a>
-and <a
-href="https://en.wikipedia.org/wiki/Rust_(programming_language)">Rust</a>
 but unlike C++, and the algorithm for analyzing LL grammars is among the
 simplest.</p></li>
 </ul>
@@ -587,7 +585,7 @@ help AI agents</a></p></li>
 </section>
 <section class="slide level1">
 
-<p><img data-src="media/nim-pr25052.png" /></p>
+<p><img data-src="media/nim-pr25052.png" height="640" /></p>
 <p><a href="https://github.com/nim-lang/Nim/pull/25052">PR#25052</a> has
 been successfully merged on July, 14th 2025.</p>
 </section>
@@ -643,8 +641,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a h
 <code>data</code> in this way:</p>
 <div class="sourceCode" id="cb15"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;&gt;</span> data<span class="op">;</span></span></code></pre></div></li>
-<li><p>However, this definition was not correct: pre-C++11 compilers
-would refuse to compile this code. Can you guess why?</p></li>
+<li><p>Before C++11, this definition was not correct: pre-C++11
+compilers would refuse to compile it. Can you guess why?</p></li>
 </ul>
 </section>
 <section id="first-example-2" class="slide level1">
@@ -785,17 +783,18 @@ two tokens, otherwise one;</li>
 expressions like <code>a &gt; b</code>.</li>
 </ol></li>
 <li><p>Pascal, Nim, and Kotlin use <code>shl</code> and <code>shr</code>
-for these operators.</p></li>
+instead of <code>&lt;&lt;</code> and <code>&gt;&gt;</code>.</p></li>
 </ul>
 </section>
 <section id="solutions-to-the-problem-22" class="slide level1">
 <h1>Solutions to the problem (2/2)</h1>
 <ul>
 <li><p>The D language instead uses a <a
-href="https://dlang.org/spec/template.html">different syntax</a> for
-<em>templates</em>, and in the previous example would write</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode d"><code class="sourceCode d"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>MyStruct<span class="op">!(</span>sizeof<span class="op">(</span><span class="bu">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">)</span> A<span class="op">;</span></span></code></pre></div>
-<p>This syntax is much easier to parse!</p></li>
+href="https://dlang.org/spec/template.html">different, easier-to-parse
+syntax</a> for <em>templates</em>, and in the previous example would
+write</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode d"><code class="sourceCode d"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>MyStruct<span class="op">!(</span>sizeof<span class="op">(</span><span class="bu">size_t</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">4</span><span class="op">)</span> A<span class="op">;</span></span></code></pre></div></li>
 <li><p>Rust uses <code>&lt;&gt;</code> like C++, but to remove the
 ambiguity it requires writing <code>::&lt;</code> in expressions:</p>
 <div class="sourceCode" id="cb22"><pre
@@ -917,10 +916,11 @@ few pages it shows how to implement a compiler for the <a
 href="https://en.wikipedia.org/wiki/Oberon_(programming_language)">Oberon</a>
 language (a language created by Wirth as a successor to
 Pascal).</p></li>
-<li><p>The “sacred” text that illustrates compiler theory is the
-so-called <em>dragon book</em> by Aho, Sethi, Lam &amp; Ullman:
-<em>Compilers – Principles, Techniques and Tools</em> (Pearson
-Publishing, 2006).</p></li>
+<li><p>A good recent book is “<a
+href="https://nostarch.com/writing-c-compiler">Writing a C compiler</a>”
+by Nora Sandler, which takes inspiration by Abdulaziz Ghuloum’s seminal
+paper <a href="http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf">An
+Incremental Approach to Compiler Construction</a> (2006).</p></li>
 <li><p>Today, compilers are considerably more complex due to the
 necessary integration with development environments (PyCharm, CLion,
 IntelliJ IDEA, etc.). Watch the video <a
@@ -1010,253 +1010,6 @@ case with the scene description language we invented).</p></li>
 <section class="slide level1">
 
 <p><img data-src="media/thats_all_folks.png" height="650" /></p>
-</section>
-<section id="deep-dive-into-input-and-output" class="slide level1">
-<h1>Deep Dive into Input and Output</h1>
-</section>
-<section id="possible-approaches" class="slide level1">
-<h1>Possible Approaches</h1>
-<ul>
-<li><p>The versatility of a program’s input/output can be achieved in
-various ways:</p>
-<ol>
-<li>Using an already available generic data format;</li>
-<li>Inventing a <em>custom</em> data format for the program;</li>
-<li>Embedding the compiler/interpreter of a language into the
-program;</li>
-<li>Creating <em>bindings</em> to our code in an interpreted language
-(e.g., Python).</li>
-</ol></li>
-<li><p>Let’s examine these possibilities one by one.</p></li>
-</ul>
-</section>
-<section id="using-an-existing-format" class="slide level1">
-<h1>1. Using an Existing Format</h1>
-</section>
-<section id="example" class="slide level1">
-<h1>Example</h1>
-<ul>
-<li><p>Consider a program that simulates a physical phenomenon and
-prints results to the screen:</p>
-<pre><code>$ ./myprogram
-Calculating…
-Estimated temperature of the air: 296 K
-The speed of the particle is 8.156 m/s²
-Force: 156.0 N
-$</code></pre></li>
-<li><p>The program’s output is not easily usable: numbers are difficult
-to extract from the text. A better choice would be to use the <a
-href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV</a>
-format, which can be imported in spreadsheets like Excel or <a
-href="https://github.com/andmarti1424/sc-im">Sc-im</a>:</p>
-<pre><code>$ ./myprogram
-&quot;Temperature [K]&quot;,296
-&quot;Speed [m/s²]&quot;,8.156
-&quot;Force [N]&quot;,156.0</code></pre></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<p><asciinema-player src="cast/sc-im-84x19.cast" cols="84" rows="19" font-size="medium"></asciinema-player></p>
-</section>
-<section id="using-an-existing-format-1" class="slide level1">
-<h1>Using an Existing Format</h1>
-<ul>
-<li><p>The advantage of existing formats is that they can be read by
-programs other than your own. This is especially convenient when you
-need to share data with others.</p></li>
-<li><p>If you only need to store numerical tables, the best solutions
-are probably CSV files (text-based) or Excel files (binary). The Python
-library <a
-href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html">Pandas</a>
-supports both.</p></li>
-<li><p>More compact formats suitable for tabular and matrix data include
-<a href="https://en.wikipedia.org/wiki/FITS">FITS</a> (old but
-well-supported) and <a
-href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format">HDF5</a>
-(newer and more efficient, though less widely supported).</p></li>
-</ul>
-</section>
-<section id="more-complex-formats" class="slide level1">
-<h1>More Complex Formats</h1>
-<ul>
-<li><p>CSV and Excel are good for <em>storing</em> numbers organized in
-tables, but often, you need to apply complex filters and calculations to
-this data.</p></li>
-<li><p>A great format for this purpose is <a
-href="https://www.sqlite.org/index.html">sqlite3</a>: unlike CSV and
-Excel, it offers excellent functions for searching and computing data
-and is optimized for large data volumes (up to terabytes).</p></li>
-<li><p>When your data are more structured than plain tables, consider <a
-href="https://en.wikipedia.org/wiki/JSON">JSON</a>, <a
-href="https://en.wikipedia.org/wiki/YAML">YAML</a> (which you have
-already used for GitHub Actions), or <a
-href="https://en.wikipedia.org/wiki/XML">XML</a>: these can store
-complex data types as lists and dictionaries.</p></li>
-<li><p>XML is the most complex, but it implements a validation system
-(called <a href="https://en.wikipedia.org/wiki/XML_schema">XML
-schema</a>) which makes it much more robust than JSON or YAML.</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<p>In this example, a Python program saves the value of a complex
-variable in a JSON file, which is then read back by a Julia program:</p>
-<p><asciinema-player src="cast/json-example-python-julia-78x20.cast" cols="78" rows="20" font-size="medium"></asciinema-player></p>
-<p>Many tools are available for JSON; see, for example, <a
-href="https://stedolan.github.io/jq/">jq</a>.</p>
-</section>
-<section id="the-case-of-our-ray-tracer" class="slide level1">
-<h1>The Case of Our Ray Tracer</h1>
-<ul>
-<li><p>In our program, we could have used the JSON format:</p>
-<div class="sourceCode" id="cb28"><pre
-class="sourceCode json"><code class="sourceCode json"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> <span class="dt">&quot;camera&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;projection&quot;</span><span class="fu">:</span> <span class="st">&quot;perspective&quot;</span><span class="fu">,</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;transformations&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">{</span> <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;rotation_z&quot;</span><span class="fu">,</span> <span class="dt">&quot;angle_deg&quot;</span><span class="fu">:</span> <span class="fl">30.0</span> <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">{</span> <span class="dt">&quot;type:&quot;</span> <span class="dt">&quot;translation&quot;</span><span class="fu">,</span> <span class="dt">&quot;vector&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="dv">-4</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">]</span> <span class="fu">}</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>        <span class="ot">]</span><span class="fu">,</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;distance&quot;</span><span class="fu">:</span> <span class="fl">1.0</span><span class="fu">,</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;aspect_ratio&quot;</span><span class="fu">:</span> <span class="fl">1.0</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    <span class="er">…</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></li>
-<li><p>No need to write a compiler, but our program must still validate
-the content (e.g., checking that <code>camera</code> contains a
-<code>projection</code> is still our duty!).</p></li>
-</ul>
-</section>
-<section id="inventing-a-format" class="slide level1">
-<h1>2. Inventing a Format</h1>
-</section>
-<section id="inventing-a-format-1" class="slide level1">
-<h1>Inventing a Format</h1>
-<ul>
-<li><p>This is the approach we adopted to describe 3D scenes in our
-program.</p></li>
-<li><p>It is a highly creative activity but has some potential
-issues:</p>
-<ul>
-<li><p>It may take a lot of time for the developer…</p></li>
-<li><p>…and requires users to learn the syntax and semantics of your
-language.</p></li>
-</ul></li>
-<li><p>We adopted this approach in class for its educational value
-(understanding compilers, error handling, etc.) and because using a
-generic format like JSON in this specific context would have been not
-necessarily easier.</p></li>
-</ul>
-</section>
-<section id="embedding-a-language" class="slide level1">
-<h1>3. Embedding a Language</h1>
-</section>
-<section id="embedding-a-language-1" class="slide level1">
-<h1>Embedding a Language</h1>
-<ul>
-<li><p>A solution often used in large and complex programs is to embed
-an interpreter of a “simple” language into the program (this type of
-interpreter is called <em>embedded</em>).</p></li>
-<li><p>Notable examples:</p>
-<ul>
-<li>Microsoft <a
-href="https://en.wikipedia.org/wiki/Visual_Basic_for_Applications">Visual
-Basic for Applications</a> (BASIC language included in Word, Excel, and
-many others);</li>
-<li><a href="https://en.wikipedia.org/wiki/AutoLISP">AutoLISP</a> (LISP
-interpreter used in AutoCAD);</li>
-<li><a href="https://www.gnu.org/software/guile/">GNU Guile</a> (Scheme
-interpreter used in <a
-href="https://docs.gimp.org/en/gimp-concepts-script-fu.html">The
-Gimp</a>, <a
-href="https://lilypond.org/doc/v2.18/Documentation/extending/scheme-tutorial">Lilypond</a>,
-etc.);</li>
-<li>Python (used in <a
-href="https://docs.blender.org/manual/en/latest/advanced/scripting/introduction.html">Blender</a>,
-<a
-href="https://wiki.inkscape.org/wiki/index.php/Python_modules_for_extensions">Inkscape</a>,
-<a href="https://www.gimp.org/docs/python/index.html">The Gimp</a>, <a
-href="https://projects.raspberrypi.org/en/projects/getting-started-with-minecraft-pi/4">Minecraft</a>).</li>
-</ul></li>
-<li><p>See <a
-href="https://dspace.mit.edu/handle/1721.1/5980"><em>Programmable
-Applications: Interpreter Meets Interface</em></a> (Eisenberg,
-1995).</p></li>
-</ul>
-</section>
-<section class="slide level1">
-
-<center>
-<img data-src="media/blender-python.webp" height="620" />
-</center>
-<p>In Blender, you can open a Python terminal to run commands for
-creating and modifying objects.</p>
-</section>
-<section id="functioning-logic" class="slide level1">
-<h1>Functioning Logic</h1>
-<ul>
-<li><p>The language embedded in the application is “extended” with
-functions specific to manipulating the objects managed by the
-application. For example, this VBA code modifies cell <code>A1</code> in
-an Excel sheet:</p>
-<div class="sourceCode" id="cb29"><pre
-class="sourceCode monobasic"><code class="sourceCode monobasic"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">Sub </span>Macro1()</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Value = <span class="st">&quot;Wow!&quot;</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    Worksheets(1).Range(<span class="st">&quot;A1&quot;</span>).Borders.LineStyle = xlDouble</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="kw">End Sub</span></span></code></pre></div></li>
-<li><p>Useful for automating repetitive tasks (e.g., animating an object
-in Blender following an accurate physical model).</p></li>
-<li><p>Some languages (<a href="https://www.gnu.org/software/guile/">GNU
-Guile</a>, <a href="https://www.lua.org/">Lua</a>…) are primarily
-designed for <em>embedded</em> use.</p></li>
-</ul>
-</section>
-<section id="python-example" class="slide level1">
-<h1>Python Example</h1>
-<p>This C program initializes the Python interpreter and executes a
-simple script. In reality, this script could have been provided by the
-user in the GUI of the program:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define PY_SSIZE_T_CLEAN</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Python.h&gt;</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">wchar_t</span> <span class="op">*</span>program <span class="op">=</span> Py_DecodeLocale<span class="op">(</span>argv<span class="op">[</span><span class="dv">0</span><span class="op">],</span> NULL<span class="op">);</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>program <span class="op">==</span> NULL<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Fatal error: cannot decode argv[0]</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    Py_SetProgramName<span class="op">(</span>program<span class="op">);</span>  <span class="co">/* optional but recommended */</span></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    Py_Initialize<span class="op">();</span></span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* Run a simple Python program that prints the current date */</span></span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    PyRun_SimpleString<span class="op">(</span><span class="st">&quot;from time import time,ctime</span><span class="sc">\n</span><span class="st">&quot;</span></span>
-<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;print(&#39;Today is&#39;, ctime(time()))</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>Py_FinalizeEx<span class="op">()</span> <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span><span class="dv">120</span><span class="op">);</span></span>
-<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>    PyMem_RawFree<span class="op">(</span>program<span class="op">);</span></span>
-<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-</section>
-<section id="creating-bindings" class="slide level1">
-<h1>4. Creating <em>Bindings</em></h1>
-</section>
-<section id="creating-bindings-1" class="slide level1">
-<h1>Creating <em>Bindings</em></h1>
-<ul>
-<li><p>A similar approach to embedded interpreters is making your code
-callable from an external language (usually Python).</p></li>
-<li><p>The difference from the previous solution is that in this case,
-you use the system-installed Python interpreter, not a dedicated
-one.</p></li>
-<li><p>The advantage is that you can combine your library with existing
-ones: this makes it much more versatile and is generally the preferred
-approach.</p></li>
-<li><p>This solution is easily achievable with languages like C++, Nim,
-Rust…; it is considerably more complex for Julia, C#, or
-Kotlin.</p></li>
-</ul>
 </section>
     </div>
   </div>

@@ -14,7 +14,7 @@
 
 -   Each of these families requires specific algorithms for parsing, and unfortunately, algorithms that work well for one family do not necessarily work well for others!
 
--   Our language is of type LL(1), like [Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)) and [Rust](https://en.wikipedia.org/wiki/Rust_(programming_language)) but unlike C++, and the algorithm for analyzing LL grammars is among the simplest.
+-   Our language is of type LL(1), like [Pascal](https://en.wikipedia.org/wiki/Pascal_(programming_language)) but unlike C++, and the algorithm for analyzing LL grammars is among the simplest.
 
 # How to Approach the Problem
 
@@ -375,7 +375,7 @@ vector ::= "[" number "," number "," number "]"
 
 ---
 
-![](media/nim-pr25052.png)
+![](media/nim-pr25052.png){height=640px}
 
 [PR#25052](https://github.com/nim-lang/Nim/pull/25052) has been successfully merged on July, 14th 2025.
 
@@ -420,7 +420,7 @@ vector ::= "[" number "," number "," number "]"
     std::vector<std::vector<double>> data;
     ```
 
--   However, this definition was not correct: pre-C++11 compilers would refuse to compile this code. Can you guess why?
+-   Before C++11, this definition was not correct: pre-C++11 compilers would refuse to compile it. Can you guess why?
 
 # First example
 
@@ -515,17 +515,15 @@ vector ::= "[" number "," number "," number "]"
     1.  To distinguish between the case where `>>` should be interpreted as two tokens or one, the rule is that if the next token is `(`, `)`, `]`, `:`, `;`, `,`, `.`, `?`, `==`, or `!=`, then it should be interpreted as two tokens, otherwise one;
     2.  Inside `<>` you can only specify types, not expressions like `a > b`.
 
--   Pascal, Nim, and Kotlin use `shl` and `shr` for these operators.
+-   Pascal, Nim, and Kotlin use `shl` and `shr` instead of `<<` and `>>`.
 
 # Solutions to the problem (2/2)
 
--   The D language instead uses a [different syntax](https://dlang.org/spec/template.html) for *templates*, and in the previous example would write
+-   The D language instead uses a [different, easier-to-parse syntax](https://dlang.org/spec/template.html) for *templates*, and in the previous example would write
 
     ```d
     MyStruct!(sizeof(size_t) > 4) A;
     ```
-
-    This syntax is much easier to parse!
 
 -   Rust uses `<>` like C++, but to remove the ambiguity it requires writing `::<` in expressions:
 
@@ -612,7 +610,7 @@ Post by [Walter Bright](https://en.wikipedia.org/wiki/Walter_Bright) on [HackerN
 
 -   Wirth's book [*Compiler Construction*](https://people.inf.ethz.ch/wirth/CompilerConstruction/) (Addison-Wesley, 1996) is remarkably clear: in a few pages it shows how to implement a compiler for the [Oberon](https://en.wikipedia.org/wiki/Oberon_(programming_language)) language (a language created by Wirth as a successor to Pascal).
 
--   The "sacred" text that illustrates compiler theory is the so-called *dragon book* by Aho, Sethi, Lam & Ullman: *Compilers – Principles, Techniques and Tools* (Pearson Publishing, 2006).
+-   A good recent book is “[Writing a C compiler](https://nostarch.com/writing-c-compiler)” by Nora Sandler, which takes inspiration by Abdulaziz Ghuloum’s seminal paper [An Incremental Approach to Compiler Construction](http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf) (2006).
 
 -   Today, compilers are considerably more complex due to the necessary integration with development environments (PyCharm, CLion, IntelliJ IDEA, etc.). Watch the video [*Anders Hejlsberg on Modern Compiler Construction*](https://www.youtube.com/watch?v=wSdV1M7n4gQ): you will appreciate much more what your IDEs do!
 
@@ -673,187 +671,6 @@ Post by [Walter Bright](https://en.wikipedia.org/wiki/Walter_Bright) on [HackerN
 ---
 
 ![](media/thats_all_folks.png){height=650px}
-
-# Deep Dive into Input and Output
-
-# Possible Approaches
-
--   The versatility of a program's input/output can be achieved in various ways:
-
-    #.  Using an already available generic data format;
-    #.  Inventing a *custom* data format for the program;
-    #.  Embedding the compiler/interpreter of a language into the program;
-    #.  Creating *bindings* to our code in an interpreted language (e.g., Python).
-
--   Let's examine these possibilities one by one.
-
-# 1. Using an Existing Format
-
-# Example
-
--   Consider a program that simulates a physical phenomenon and prints results to the screen:
-
-    ```
-    $ ./myprogram
-    Calculating…
-    Estimated temperature of the air: 296 K
-    The speed of the particle is 8.156 m/s²
-    Force: 156.0 N
-    $
-    ```
-
--   The program's output is not easily usable: numbers are difficult to extract from the text. A better choice would be to use the [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) format, which can be imported in spreadsheets like Excel or [Sc-im](https://github.com/andmarti1424/sc-im):
-
-    ```
-    $ ./myprogram
-    "Temperature [K]",296
-    "Speed [m/s²]",8.156
-    "Force [N]",156.0
-    ```
-
----
-
-<asciinema-player src="cast/sc-im-84x19.cast" cols="84" rows="19" font-size="medium"></asciinema-player>
-
-
-# Using an Existing Format
-
--   The advantage of existing formats is that they can be read by programs other than your own. This is especially convenient when you need to share data with others.
-
--   If you only need to store numerical tables, the best solutions are probably CSV files (text-based) or Excel files (binary). The Python library [Pandas](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html) supports both.
-
--   More compact formats suitable for tabular and matrix data include [FITS](https://en.wikipedia.org/wiki/FITS) (old but well-supported) and [HDF5](https://en.wikipedia.org/wiki/Hierarchical_Data_Format) (newer and more efficient, though less widely supported).
-
-
-# More Complex Formats
-
--   CSV and Excel are good for *storing* numbers organized in tables, but often, you need to apply complex filters and calculations to this data.
-
--   A great format for this purpose is [sqlite3](https://www.sqlite.org/index.html): unlike CSV and Excel, it offers excellent functions for searching and computing data and is optimized for large data volumes (up to terabytes).
-
--   When your data are more structured than plain tables, consider [JSON](https://en.wikipedia.org/wiki/JSON), [YAML](https://en.wikipedia.org/wiki/YAML) (which you have already used for GitHub Actions), or [XML](https://en.wikipedia.org/wiki/XML): these can store complex data types as lists and dictionaries.
-
--   XML is the most complex, but it implements a validation system (called [XML schema](https://en.wikipedia.org/wiki/XML_schema)) which makes it much more robust than JSON or YAML.
-
----
-
-In this example, a Python program saves the value of a complex variable in a JSON file, which is then read back by a Julia program:
-
-<asciinema-player src="cast/json-example-python-julia-78x20.cast" cols="78" rows="20" font-size="medium"></asciinema-player>
-
-Many tools are available for JSON; see, for example, [jq](https://stedolan.github.io/jq/).
-
-# The Case of Our Ray Tracer
-
--   In our program, we could have used the JSON format:
-
-    ```json
-    { "camera": {
-            "projection": "perspective",
-            "transformations": [
-                { "type": "rotation_z", "angle_deg": 30.0 },
-                { "type:" "translation", "vector": [-4, 0, 1] }
-            ],
-            "distance": 1.0,
-            "aspect_ratio": 1.0
-        },
-        …
-    }
-    ```
-
--   No need to write a compiler, but our program must still validate the content (e.g., checking that `camera` contains a `projection` is still our duty!).
-
-# 2. Inventing a Format
-
-# Inventing a Format
-
--   This is the approach we adopted to describe 3D scenes in our program.
-
--   It is a highly creative activity but has some potential issues:
-
-    -   It may take a lot of time for the developer…
-
-    -   …and requires users to learn the syntax and semantics of your language.
-
--   We adopted this approach in class for its educational value (understanding compilers, error handling, etc.) and because using a generic format like JSON in this specific context would have been not necessarily easier.
-
-
-# 3. Embedding a Language
-
-# Embedding a Language
-
--   A solution often used in large and complex programs is to embed an interpreter of a "simple" language into the program (this type of interpreter is called *embedded*).
-
--   Notable examples:
-
-    -   Microsoft [Visual Basic for Applications](https://en.wikipedia.org/wiki/Visual_Basic_for_Applications) (BASIC language included in Word, Excel, and many others);
-    -   [AutoLISP](https://en.wikipedia.org/wiki/AutoLISP) (LISP interpreter used in AutoCAD);
-    -   [GNU Guile](https://www.gnu.org/software/guile/) (Scheme interpreter used in [The Gimp](https://docs.gimp.org/en/gimp-concepts-script-fu.html), [Lilypond](https://lilypond.org/doc/v2.18/Documentation/extending/scheme-tutorial), etc.);
-    -   Python (used in [Blender](https://docs.blender.org/manual/en/latest/advanced/scripting/introduction.html), [Inkscape](https://wiki.inkscape.org/wiki/index.php/Python_modules_for_extensions), [The Gimp](https://www.gimp.org/docs/python/index.html), [Minecraft](https://projects.raspberrypi.org/en/projects/getting-started-with-minecraft-pi/4)).
-
--   See [*Programmable Applications: Interpreter Meets Interface*](https://dspace.mit.edu/handle/1721.1/5980) (Eisenberg, 1995).
-
----
-
-<center>![](media/blender-python.webp){height=620px}</center>
-
-In Blender, you can open a Python terminal to run commands for creating and modifying objects.
-
-# Functioning Logic
-
--   The language embedded in the application is "extended" with functions specific to manipulating the objects managed by the application. For example, this VBA code modifies cell `A1` in an Excel sheet:
-
-    ```monobasic
-    Sub Macro1()
-        Worksheets(1).Range("A1").Value = "Wow!"
-        Worksheets(1).Range("A1").Borders.LineStyle = xlDouble
-    End Sub
-    ```
-
--   Useful for automating repetitive tasks (e.g., animating an object in Blender following an accurate physical model).
-
--   Some languages ([GNU Guile](https://www.gnu.org/software/guile/), [Lua](https://www.lua.org/)…) are primarily designed for *embedded* use.
-
-# Python Example
-
-This C program initializes the Python interpreter and executes a simple script. In reality, this script could have been provided by the user in the GUI of the program:
-
-```c
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
-
-int
-main(int argc, char *argv[])
-{
-    wchar_t *program = Py_DecodeLocale(argv[0], NULL);
-    if (program == NULL) {
-        fprintf(stderr, "Fatal error: cannot decode argv[0]\n");
-        exit(1);
-    }
-    Py_SetProgramName(program);  /* optional but recommended */
-    Py_Initialize();
-    /* Run a simple Python program that prints the current date */
-    PyRun_SimpleString("from time import time,ctime\n"
-                       "print('Today is', ctime(time()))\n");
-    if (Py_FinalizeEx() < 0) {
-        exit(120);
-    }
-    PyMem_RawFree(program);
-    return 0;
-}
-```
-
-# 4. Creating *Bindings*
-
-# Creating *Bindings*
-
--   A similar approach to embedded interpreters is making your code callable from an external language (usually Python).
-
--   The difference from the previous solution is that in this case, you use the system-installed Python interpreter, not a dedicated one.
-
--   The advantage is that you can combine your library with existing ones: this makes it much more versatile and is generally the preferred approach.
-
--   This solution is easily achievable with languages like C++, Nim, Rust…; it is considerably more complex for Julia, C#, or Kotlin.
 
 ---
 title: "Lesson 13"

@@ -98,7 +98,7 @@ This is the kind of file for which our lexer will have to produce a list of *tok
         location: SourceLocation
     ```
 
--   If you use *sum types*, remember to properly use *tags*. (Sum types have poor support in C++; if you really want to play with them, use an `enum class` to implement tagging.)
+-   If you use *sum types* in C++ (not recommended), remember to use *tags* via an `enum class`.
 
 # Reporting Errors
 
@@ -225,7 +225,7 @@ class InputStream:
 
 -   The token types to define are the following:
 
-    #.  *Keyword*: use an enumerated type (`enum` in [Nim](https://nim-lang.org/docs/manual.html#types-enumeration-types), [D](https://dlang.org/spec/enum.html), [C\#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum), [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), [Java](https://www.w3schools.com/java/java_enums.asp), `enum class` in [Kotlin](https://kotlinlang.org/docs/enum-classes.html)), because it will make the parser more efficient;
+    #.  *Keyword*: use an enumerated type (`enum` in [Nim](https://nim-lang.org/docs/manual.html#types-enumeration-types), [D](https://dlang.org/spec/enum.html), [C\#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum), [Rust](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html), [Java](https://www.w3schools.com/java/java_enums.asp), `enum class` in C++ and [Kotlin](https://kotlinlang.org/docs/enum-classes.html)), because it will make the parser more efficient;
     #.  *Identifier*: it's a string;
     #.  *Literal string*: it's again a string;
     #.  *Literal number*: a floating-point value;
