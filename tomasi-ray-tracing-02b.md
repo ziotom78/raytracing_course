@@ -194,8 +194,8 @@ Can we avoid those repetitions?
 - The simplest way is to print the output and visually check it’s ok:
 
   ```python
-  color1 = Color(1.0, 2.0, 3.0)  # Avoid trivial cases like Color(3.0, 3.0, 3.0)
-  color2 = Color(5.0, 6.0, 7.0)  # in your tests!
+  color1 = Color(1.0, 2.0, 3.0)  # Avoid repeated values like Color(3.0, 3.0, 3.0)
+  color2 = Color(5.0, 6.0, 7.0)  # in your tests! This is called *fingerprinting*
   print(color1 + color2)
   print(color1 * 2)
   # Output:
