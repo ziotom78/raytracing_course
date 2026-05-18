@@ -140,7 +140,7 @@ for i in range(100):
 
 -   For the diffuse BRDF, we deduced that $p(\omega) \propto \cos\theta$.
 
--   The implementation of [`DiffuseBRDF.scatter_ray`](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L117-L130) must therefore use the [algorithm we derived](tomasi-ray-tracing-10a.html#risultato-di-phong) for the Phong distribution with $n = 1$:
+-   The implementation of [`DiffuseBRDF.scatter_ray`](https://github.com/ziotom78/pytracer/blob/01a672c782515030dd5abc9a33d1e0c843bbd394/materials.py#L117-L130) must therefore use the [algorithm we derived](tomasi-ray-tracing-10a.html#phong-distribution) for the Phong distribution with $n = 1$:
 
     ```python
     def scatter_ray(self, pcg: PCG, incoming_dir: Vec,
