@@ -742,11 +742,13 @@ In our code, we will implement only **invertible** transformations:
 
 # Disadvantages of SemVer
 
--   Sometimes it can be difficult to determine what constitutes a "breaking change" (see for example the article [Semantic Versioning Will Not Save You](https://hynek.me/articles/semver-will-not-save-you/)) or this [XKCD comic](https://xkcd.com/1172/).
+-   Sometimes it can be difficult to determine what constitutes a "breaking change" (examples: [Semantic Versioning Will Not Save You](https://hynek.me/articles/semver-will-not-save-you/), [Why I don’t like SemVer anymore](https://snarky.ca/why-i-dont-like-semver/), and the obligatory [XKCD comic](https://xkcd.com/1172/); be sure to read the tooltip!).
 
 -   For projects with a large critical mass, it may make more sense to use the release date, as is the case with C++.  Python is also moving in this direction with [PEP 2026](https://peps.python.org/pep-2026/).
 
--   We will use *semantic versioning* for consistency, but in your projects you should evaluate which is the most appropriate solution.
+-   Somebody advocates [linearly increasing version numbers](https://bernat.tech/posts/version-numbers/), which is the simplest solution and is probably good for 95% of the projects managed by physicists.
+
+-   We will use *semantic versioning* because of its pedagogical value, but in your projects you should evaluate which is the most appropriate solution.
 
 
 ---
