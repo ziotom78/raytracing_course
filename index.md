@@ -19,8 +19,8 @@
 |        10 | [4 Maggio 2026](tomasi-ray-tracing-10a.html) | [6 Maggio 2026](tomasi-ray-tracing-10b.html) |
 |        11 | [11 Maggio 2026](tomasi-ray-tracing-11a.html) | [13 Maggio 2026](tomasi-ray-tracing-11b.html) |
 |        12 | [18 Maggio 2026](tomasi-ray-tracing-12a.html) | [20 Maggio 2026](tomasi-ray-tracing-12b.html) |
-<!--
 |        13 | [25 Maggio 2026](tomasi-ray-tracing-13a.html) | [27 Maggio 2026](tomasi-ray-tracing-13b.html) |
+<!--
 -->
 
 # Argomenti per l'esame (A.A. 2025–2026)
@@ -92,11 +92,11 @@
 -   [*Point-light tracing*](tomasi-ray-tracing-11a.html#/point-light-tracing)
 -   [Panoramica sulla definizione di scene](tomasi-ray-tracing-12a.html#/scene-definition-languages): DKBTrace, POV-Ray, YafaRay
 -   [Gerarchie di classi e *sum types*](tomasi-ray-tracing-12a.html#/tokens-and-class-hierarchies)
-<!--
 -   [Gestione degli errori di un compilatore](tomasi-ray-tracing-13a.html#/compiler-errors)
 -   [Linguaggi a confronto](tomasi-ray-tracing-13a.html#/comparison-of-languages)
 -   [Testing di compilatori](tomasi-ray-tracing-13a.html#/compiler-testing)
 -   [Generazione automatica di compilatori](tomasi-ray-tracing-13a.html#/automatic-generation-of-compilers)
+<!--
 -->
 
 ---
