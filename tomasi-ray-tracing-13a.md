@@ -668,6 +668,24 @@ Post by [Walter Bright](https://en.wikipedia.org/wiki/Walter_Bright) on [HackerN
 
 -   In general, it's good to rely on widespread formats (PNG, JPEG) rather than obscure formats (PFM) or even ones you invent yourself! This last option is viable only if there are no suitable formats (as is the case with the scene description language we invented).
 
+# Exams
+
+# How to Register for the Exam (1/2)
+
+- **Scheduling the date:** The exam is individual. To set the date for your interview, please send me an email: we will agree on a date individually, even for members of the same group.
+
+- **Mandatory registration requirement:** In order to take the exam, it is mandatory to *already* be registered for an official exam session on SIFA. No exceptions will be made, and it is not possible to take the exam “provisionally” and record the grade at a later time.
+
+- **Why this rule?** For transparency and security. Your grade is officially recorded online on SIFA **immediately** at the end of the interview. This prevents any risk of lost grades, career delays, or future disputes.
+
+# How to Register for the Exam (2/2)
+
+- **The timing rule (Pay attention to dates):** The system does not allow grades to be recorded for future exam sessions. Consequently, you can only take the exam on the exact date of the session you are registered for or on the following days, **never** before the official session date.
+
+- **SIFA Deadlines:** Please remember that the SIFA system closes registrations automatically a few days before the exam date. Check the deadline well in advance so you don't get locked out.
+
+- **My advice:** Register **now** to the first exam session available on SIFA!
+
 ---
 
 ![](media/thats_all_folks.png){height=650px}
