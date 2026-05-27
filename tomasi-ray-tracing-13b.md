@@ -255,6 +255,7 @@ class InputStream:
 
 # What to do today
 
+#.  Register for an exam session!
 #.  Keep working in the `scenefiles` branch;
 #.  Modify `InputStream` to support look-ahead of tokens;
 #.  Create the functions `expect_*` and `parse_*`;
